@@ -3,4 +3,4 @@
 // initialize action element to access the API
 CmsTemplateNavigation cms = new CmsTemplateNavigation(pageContext, request, response);
 
-%><%= cms.buildNavigationLeft() %><%= cms.buildNavLeftIncludeElement() %>
+%><%= cms.buildNavigationLeft() %><% cms.buildNavLeftIncludeElement(); %>

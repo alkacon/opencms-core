@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2004/11/16 12:07:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/06 11:06:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,13 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 
@@ -65,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
     
@@ -433,21 +435,20 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     }
     
     /**
-     * Returns the html for the inclusion of the editable element under the left navigation tree.<p>
+     * Builds the html for the inclusion of the editable element under the left navigation tree.<p>
      * 
-     * @return the html for the inclusion of the editable element under the left navigation tree
+     * @throws IOException if writing the output fails
+     * @throws JspException if including the element fails
      */
-    public String buildNavLeftIncludeElement() {
+    public void buildNavLeftIncludeElement() throws IOException, JspException {
+        JspWriter out = getJspContext().getOut();
         if (showNavLeftElement()) {
-            StringBuffer result = new StringBuffer(2048);
-            result.append("\t<div style=\"line-height: 1px; font-size: 1px; display: block; height: 4px;\">&nbsp;</div>\n");
-            result.append(getContent(getNavLeftElementUri(), "text1", new Locale(getLocale())));
-            return result.toString();
+            out.print("\t<div style=\"line-height: 1px; font-size: 1px; display: block; height: 4px;\">&nbsp;</div>\n");
+            include(getNavLeftElementUri(), "text1", true);    
         } else if (!showNavLeftTree()) {
             // none of the left navigation elements is shown, add a non breaking space to avoid html display errors
-            return "&nbsp;";    
+            out.print("&nbsp;");    
         }
-        return "";
     }
     
     /**
