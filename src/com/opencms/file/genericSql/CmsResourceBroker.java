@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/08 07:24:38 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/06/08 07:55:43 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/06/08 07:24:38 $
+ * @version $Revision: 1.22 $ $Date: 2000/06/08 07:55:43 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -630,6 +630,22 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public void writeExportPath(CmsUser currentUser, CmsProject currentProject, String path)
         throws CmsException {
+        // check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			
+			// security is ok - write the exportpath.
+			if(m_dbAccess.readProperty(C_SYSTEMPROPERTY_EXPORTPATH) == null) {
+				// the property wasn't set before.
+				m_dbAccess.addProperty(C_SYSTEMPROPERTY_EXPORTPATH, path);
+			} else {
+				// overwrite the property.
+				m_dbAccess.writeProperty(C_SYSTEMPROPERTY_EXPORTPATH, path);
+			}	
+			
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + path, 
+				CmsException.C_NO_ACCESS);
+		}		
     }
    
     	
@@ -679,7 +695,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public Hashtable readMimeTypes(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
-     return null;
+    	return(Hashtable) m_dbAccess.readProperty(C_SYSTEMPROPERTY_MIMETYPES);			
+	
     }
 	
 	/**
@@ -696,7 +713,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
 	public Hashtable readFileExtensions(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
-     return null;
+        Hashtable res=(Hashtable) m_dbAccess.readProperty(C_SYSTEMPROPERTY_EXTENSIONS);
+		return ( (res!=null)? res : new Hashtable());	
     }
 	
 	
@@ -714,6 +732,21 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void writeFileExtensions(CmsUser currentUser, CmsProject currentProject,
 									Hashtable extensions)
         throws CmsException {
+        if (extensions != null) {
+			if (isAdmin(currentUser, currentProject)) { 
+				
+				if (m_dbAccess.readProperty(C_SYSTEMPROPERTY_EXTENSIONS) == null) {
+					// the property wasn't set before.
+					m_dbAccess.addProperty(C_SYSTEMPROPERTY_EXTENSIONS, extensions);
+				} else {
+					// overwrite the property.
+					m_dbAccess.writeProperty(C_SYSTEMPROPERTY_EXTENSIONS, extensions);
+				}	
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "] " + extensions.size(), 
+					CmsException.C_NO_ACCESS);
+			}
+		}
     }
 	
 	/**
@@ -731,6 +764,22 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void addFileExtension(CmsUser currentUser, CmsProject currentProject,
 								 String extension, String resTypeName)
         throws CmsException {
+        if (extension != null && resTypeName != null) {
+			if (isAdmin(currentUser, currentProject)) { 
+				Hashtable suffixes=(Hashtable) m_dbAccess.readProperty(C_SYSTEMPROPERTY_EXTENSIONS); 
+				if (suffixes == null) {
+					suffixes = new Hashtable();	
+					suffixes.put(extension, resTypeName);
+					m_dbAccess.addProperty(C_SYSTEMPROPERTY_EXTENSIONS, suffixes); 
+				} else {
+					suffixes.put(extension, resTypeName);
+					m_dbAccess.writeProperty(C_SYSTEMPROPERTY_EXTENSIONS, suffixes); 
+				}   
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "] " + extension, 
+					CmsException.C_NO_ACCESS);
+			}
+		} 
     }
 	
 	
@@ -752,6 +801,37 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							  String mountpoint, String driver, String connect,
 							  String name)
         throws CmsException {
+        	if( isAdmin(currentUser, currentProject) ) {
+			
+			// read the folder, to check if it exists.
+			// if it dosen't exist a exception will be thrown
+			readFolder(currentUser, onlineProject(currentUser, currentProject), 
+					   mountpoint, "");
+			
+			// create the new mountpoint			
+			CmsMountPoint newMountPoint = new CmsMountPoint(mountpoint, driver,
+															  connect, name);
+			
+			// read all mountpoints from propertys
+			Hashtable mountpoints = (Hashtable) 
+									 m_dbAccess.readProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
+			
+			// if mountpoints dosen't exists - create them.
+			if(mountpoints == null) {
+				mountpoints = new Hashtable();
+				m_dbAccess.addProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);
+			}
+			
+			// add the new mountpoint
+			mountpoints.put(newMountPoint.getMountpoint(), newMountPoint);
+			
+			// write the mountpoints back to the properties
+			m_dbAccess.writeProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);			
+			
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + mountpoint, 
+				CmsException.C_NO_ACCESS);
+		}	
     }
 
     /**
@@ -775,6 +855,46 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							  String mountpoint, String mountpath, String name, 
 							  String user, String group, String type, int accessFlags)
         throws CmsException {
+        if( isAdmin(currentUser, currentProject) ) {
+			
+			// read the folder, to check if it exists.
+			// if it dosen't exist a exception will be thrown
+			readFolder(currentUser, onlineProject(currentUser, currentProject), 
+					   mountpoint, "");
+			
+			// read the resource-type for this mountpoint.			
+			CmsResourceType resType = 
+				getResourceType(currentUser, currentProject, type);
+			
+			// create the new mountpoint
+			CmsMountPoint newMountPoint = 
+				new CmsMountPoint(mountpoint, mountpath, name, 
+								  readUser(currentUser, currentProject, user), 
+								  readGroup(currentUser, currentProject, group), 
+								  onlineProject(currentUser, currentProject), 
+								  resType.getResourceType(), 0, accessFlags,
+								  resType.getLauncherType(), resType.getLauncherClass());
+			
+			// read all mountpoints from propertys
+			Hashtable mountpoints = (Hashtable) 
+									m_dbAccess.readProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
+			
+			// if mountpoints don't exist - create them.
+			if(mountpoints == null) {
+				mountpoints = new Hashtable();
+				m_dbAccess.addProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);
+			}
+			
+			// add the new mountpoint
+			mountpoints.put(newMountPoint.getMountpoint(), newMountPoint);
+			
+			// write the mountpoints back to the properties
+			m_dbAccess.writeProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);			
+			
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + mountpoint, 
+				CmsException.C_NO_ACCESS);
+		}		
     }
 	
 	/**
