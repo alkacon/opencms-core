@@ -302,10 +302,63 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
 
 <script language=JavaScript>
 <!--
+
 function show_help()
 {
 	return '5_2_1_1_1.html';
 }
+
+
+function checkFormData(a,b)
+{
+	var result=true;
+	var at_pos, entry, strLength;
+
+	form=b;
+	
+	entry = form.value;
+	strLength=entry.length;
+
+	if(entry.length>0){
+		for (i=0; i < strLength; i++)
+		{
+			if(entry.charAt(i)=="\"")
+			{
+				alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + entry.charAt(i));
+				form.focus;
+				result= false;
+			}
+		}
+	}
+	if(result==true)return 0;
+	else return 1;
+
+}
+
+function checkForm(){
+
+	var a=0;
+
+	a+=checkFormData(document.USERNEW,document.USERNEW.USER);
+	a+=checkFormData(document.USERNEW,document.USERNEW.USERDESC);
+
+	a+=checkFormData(document.USERNEW,document.USERNEW.USERNAME);
+	a+=checkFormData(document.USERNEW,document.USERNEW.USEREMAIL);
+
+	a+=checkFormData(document.USERNEW,document.USERNEW.USERFIRSTNAME);
+	a+=checkFormData(document.USERNEW,document.USERNEW.USERSTREET);
+
+	a+=checkFormData(document.USERNEW,document.USERNEW.ZIP);
+	a+=checkFormData(document.USERNEW,document.USERNEW.TOWN);
+
+	if(a==0)return true;
+	else return false;
+	
+	//document.USERNEW.submit();
+
+}
+
+
 //-->
 </script>
 
@@ -322,7 +375,7 @@ function show_help()
 <tr><td align=middle valign=center>
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id=USERNEW name=USERNEW>
+<form id=USERNEW name=USERNEW onSubmit="return checkForm();">
 <input type=hidden name="perspective" value="newuser">
 <table cellspacing=0 cellpadding=0 border=2 width=500>
 	<tr><td>
