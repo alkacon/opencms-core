@@ -1,0 +1,100 @@
+<project name="OpenCms" default="compile" basedir=".">
+
+    <property name="app.name"                   value="opencms"/>
+    <property name="build.home"                 value="../build"/>
+    <property name="build.classes"              value="${build.home}/classes"/>
+    <property name="build.inputlib"             value="../ExternalComponents"/>
+    <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>
+    <property name="build.inputlib.activation"  value="${build.inputlib}/activation.jar"/>
+    <property name="build.inputlib.mail"        value="${build.inputlib}/mail.jar"/>
+    <property name="build.inputlib.xerces"      value="${build.inputlib}/xerces.jar"/>
+    <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>
+    <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql_2_uncomp.jar"/>
+    <property name="build.inputlib.fop"         value="${build.inputlib}/fop_bin.jar"/>
+    <property name="build.web"                  value="${build.home}/${app.name}"/>    
+    <property name="build.webinf"               value="${build.web}/web-inf"/>    
+    <property name="build.lib"                  value="${build.webinf}/lib"/>
+    <property name="build.oclib"                value="${build.webinf}/oclib"/>
+
+
+    <target name="prepare">
+        <mkdir dir="${build.classes}"/>
+        <mkdir dir="${build.home}"/>
+        <mkdir dir="${build.lib}"/>
+        <mkdir dir="${build.oclib}"/>
+    </target>
+
+
+    <target name="clean">
+        <delete dir="${build.home}"/>
+    </target>
+    
+
+    <target name="compileclasses" depends="prepare">
+       <javac 
+            srcdir="src" 
+            destdir="${build.classes}"
+            classpath=" ${build.inputlib.servlet}:
+                        ${build.inputlib.activation}:
+                        ${build.inputlib.mail}:
+                        ${build.inputlib.xerces}:
+                        ${build.inputlib.oracle}:
+                        ${build.inputlib.mysql}:
+                        ${build.inputlib.fop}"
+            debug="on" 
+            optimize="off" 
+            deprecation="off"/>
+
+       <copy todir="${build.classes}">
+            <fileset dir="src" includes="**/*.properties,**/*.txt"/>
+       </copy>
+    </target>
+    
+    <target name="jar" depends="compileclasses">
+        <jar 
+            jarfile="${build.lib}/opencmsboot.jar"
+            basedir="${build.classes}"
+            includes="com/opencms/boot/**,source/**"
+            manifest="${build.classes}/mainClass.txt"
+            />
+
+        <jar 
+            jarfile="${build.oclib}/opencms.jar"
+            basedir="${build.classes}"
+            includes="com/opencms/**"
+            excludes="com/opencms/build/**"
+            />
+        
+    </target>
+    
+    <target name="copy" depends="jar">
+       <copy todir="${build.home}">
+            <fileset dir="." includes="*.*" excludes="web.xml"/>
+       </copy>
+        
+       <copy file="${build.inputlib.xerces}" todir="${build.oclib}"/>
+       <copy file="${build.inputlib.mysql}" todir="${build.oclib}"/>
+       <copy file="${build.inputlib.activation}" todir="${build.oclib}"/>
+       <copy file="${build.inputlib.mail}" todir="${build.oclib}"/>
+       <copy file="${build.inputlib.fop}" todir="${build.oclib}"/>
+       
+       <copy todir="${build.webinf}">
+            <fileset dir="etc" excludes="*/CVS/*"/>
+       </copy>
+       
+    </target>
+    
+    <target name="war" depends="copy">
+        <war 
+            warfile="${build.home}/${app.name}.war"
+            webxml="${build.webinf}/web.xml"
+            basedir="${build.web}"
+            />
+    </target>
+    
+
+    <target name="all" depends="clean,war"/>
+
+    <target name="compile" depends="copy"/>
+
+</project>
