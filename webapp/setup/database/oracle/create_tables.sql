@@ -294,7 +294,7 @@ CREATE TABLE CMS_TaskLog (
 	id INT NOT NULL, 
 	starttime DATE, 
 	taskref INT, 
-	userref INT, 
+	userref VARCHAR2(36), 
 	type INT DEFAULT '0', 
 	CONSTRAINT PK_TASKLOG PRIMARY KEY(id) USING INDEX TABLESPACE ${indexTablespace}
 );
