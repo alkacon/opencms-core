@@ -105,7 +105,7 @@ public static Vector getFilterMethods(CmsObject cms) {
 /**
  * Gets the lockstates 
  * You have to override this method in your content definition, if you have overwritten
- * the isLackable method with true.
+ * the isLockable method with true.
  * @returns a String with the lockstate
  */
 public String getLockstate() {
@@ -116,6 +116,15 @@ public String getLockstate() {
  * @returns a string with the Id 
  */
 public abstract String getUniqueId(CmsObject cms) ;
+/**
+ * Gets the url of the field entry 
+ * You have to override this method in your content definition, 
+ * if you wish to link url´s to the field entries
+ * @returns a String with the url
+ */
+public String getUrl() {
+	return null;
+}
 /**
  * if the content definition objects should be lockable
  * this method has to be overwritten with value true
