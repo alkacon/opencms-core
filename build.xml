@@ -172,17 +172,26 @@ ${opencms.inputlib.dbcp}
     <target name="versioninfo" 
     	unless="classesUpToDate" description="Generate version information files">
 
-        <echo file="${opencms.output.classes}/com/opencms/core/version.properties">
-version.number=${version.number}
-version.name=${version.name}
-		</echo>
-
-       	<echo file="${opencms.output.classes}/version.js">var version = '${version.number} ${version.name}';
-		</echo>
+		<copy 
+			file="${opencms.input.warfiles}/WEB-INF/setupdata/version.properties" 
+			tofile="${opencms.output.classes}/com/opencms/core/version.properties" overwrite="true">			
+    		<filterset>
+      			<filter token="OPENCMS_VERSION_NUMBER" value="${version.number}"/>
+      			<filter token="OPENCMS_VERSION_NAME" value="${version.name}"/>
+    		</filterset>			
+		</copy>
+		
+		<copy 
+			file="${opencms.input.warfiles}/WEB-INF/setupdata/vfs/system/login/version.js" 
+			tofile="${opencms.output.classes}/version.js" overwrite="true">			
+    		<filterset>
+      			<filter token="OPENCMS_VERSION" value="${version.number} ${version.name}"/>
+    		</filterset>			
+		</copy>
 
 		<copy 
 			file="${opencms.input.warfiles}/setup/versions.txt" 
-			todir="${opencms.output.classes}" overwrite="true">			
+			tofile="${opencms.output.classes}/versions.txt" overwrite="true">			
     		<filterset>
       			<filter token="OPENCMS_VERSION" value="OpenCms ${version.number}"/>
     		</filterset>			
@@ -190,7 +199,7 @@ version.name=${version.name}
        	
 	   	<copy 
 	   		file="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" 
-	   		todir="${opencms.output.classes}" overwrite="true">	   		
+	   		tofile="${opencms.output.classes}/opencms.properties" overwrite="true">	   		
     		<filterset>
       			<filter token="DRIVERS_VFS" value="${drivers.vfs}"/>
       			<filter token="DRIVERS_PROJECT" value="${drivers.project}"/>
