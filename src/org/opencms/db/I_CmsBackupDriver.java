@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/17 10:05:32 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/09/17 12:05:48 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.25 $ $Date: 2003/09/17 10:05:32 $
+ * @version $Revision: 1.26 $ $Date: 2003/09/17 12:05:48 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -184,7 +184,7 @@ public interface I_CmsBackupDriver {
     Vector readBackupProjectResources(int tagId) throws CmsException;
 
     /**
-     * Returns all projects from the history.
+     * Returns all projects from the history.<p>
      *
      * @return a Vector of projects
      * @throws CmsException if an error occurs
@@ -205,9 +205,7 @@ public interface I_CmsBackupDriver {
      * Returns a list of all properties of a backup file or folder.<p>
      *
      * @param resource the resource to read the properties from
-     * 
      * @return a Map of Strings representing the properties of the resource
-     *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     HashMap readBackupProperties(CmsBackupResource resource) throws CmsException;

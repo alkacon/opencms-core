@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/17 07:29:20 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/09/17 12:05:48 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2003/09/17 07:29:20 $
+ * @version $Revision: 1.24 $ $Date: 2003/09/17 12:05:48 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -79,7 +79,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     CmsGroup createGroup(CmsUUID groupId, String groupName, String description, int flags, String parentGroupName) throws CmsException;
 
     /**
-     * Adds a user to the database.
+     * Adds a user to the database.<p>
      *
      * @param name username
      * @param password user-password
@@ -94,20 +94,19 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param address user-defauladdress
      * @param section user-section
      * @param type user-type
-     *
      * @return the created user.
      * @throws CmsException if something goes wrong.
      */
     CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
 
     /**
-     * Adds a user to a group.<BR/>
+     * Adds a user to a group.<p>
      *
-     * Only the admin can do this.<P/>
-     *
-     * @param userid The id of the user that is to be added to the group.
-     * @param groupid The id of the group.
-     * @throws CmsException Throws CmsException if operation was not succesfull.
+     * Only the admin can do this.
+     * 
+     * @param userid the id of the user that is to be added to the group
+     * @param groupid the id of the group
+     * @throws CmsException if operation was not succesfull
      */
     void createUserInGroup(CmsUUID userid, CmsUUID groupid) throws CmsException;
 
@@ -130,32 +129,31 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     void deleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
 
     /**
-     * Delete a group from the Cms.<BR/>
+     * Delete a group from the Cms.<p>
+     * 
      * Only groups that contain no subgroups can be deleted.
+     * Only the admin can do this.
      *
-     * Only the admin can do this.<P/>
-     *
-     * @param delgroup The name of the group that is to be deleted.
-     * @throws CmsException  Throws CmsException if operation was not succesfull.
+     * @param delgroup the name of the group that is to be deleted
+     * @throws CmsException if operation was not succesfull
      */
     void deleteGroup(String delgroup) throws CmsException;
 
-
     /**
-     * Deletes a user from the database.
+     * Deletes a user from the database.<p>
      *
      * @param userName the user to delete
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void deleteUser(String userName) throws CmsException;
 
     /**
-     * Removes a user from a group.
+     * Removes a user from a group.<p>
      *
-     * Only the admin can do this.<P/>
-     *
-     * @param userId The id of the user that is to be added to the group
-     * @param groupId The id of the group
+     * Only the admin can do this.
+     * 
+     * @param userId the id of the user that is to be added to the group
+     * @param groupId the id of the group
      * @throws CmsException if something goes wrong
      */
     void deleteUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
@@ -169,15 +167,15 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     void destroy() throws Throwable, CmsException;
 
     /**
-     * Method to encrypt the passwords.
+     * Method to encrypt the passwords.<p>
      *
-     * @param value The value to encrypt.
-     * @return The encrypted value.
+     * @param value The value to encrypt
+     * @return the encrypted value
      */
     String encryptPassword(String value);
 
     /**
-     * Adds a user to the database.
+     * Adds a user to the database.<p>
      *
      * @param id user id
      * @param name username
@@ -195,9 +193,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param address user-defauladdress
      * @param section user-section
      * @param type user-type
-     *
      * @return the created user.
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
 
@@ -215,7 +212,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     org.opencms.db.generic.CmsSqlManager initQueries();
 
     /**
-     * Publish all access control entries of a resource from the given offline project to the online project.
+     * Publish all access control entries of a resource from the given offline project to the online project.<p>
+     * 
      * Within the given project, the resource is identified by its offlineId, in the online project,
      * it is identified by the given onlineId.
      * 
@@ -250,17 +248,17 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
 
     /**
-     * Returns all child groups of a groups<P/>
+     * Returns all child groups of a groups.<p>
      *
      *
-     * @param groupname The name of the group.
-     * @return users A Vector of all child groups or null.
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @param groupname the name of the group
+     * @return users a Vector of all child groups or null
+     * @throws CmsException if operation was not succesful
      */
     Vector readChildGroups(String groupname) throws CmsException;
 
     /**
-     * Returns a group object.<P/>
+     * Returns a group object.<p>
      * 
      * @param groupId the id of the group that is to be read
      * @return the CmsGroup object.
@@ -278,19 +276,19 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     CmsGroup readGroup(String groupName) throws CmsException;
 
     /**
-     * Returns all groups<P/>
+     * Returns all groups.<p>
      *
-     * @return users A Vector of all existing groups.
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @return a Vector of all existing groups.
+     * @throws CmsException if operation was not succesful
      */
     Vector readGroups() throws CmsException;
 
     /**
-     * Returns a list of groups of a user.<P/>
+     * Returns a list of groups of a user.<p>
      *
-     * @param userId The id of the user.
-     * @return Vector of groups
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @param userId the id of the user.
+     * @return vector of groups
+     * @throws CmsException if operation was not succesful
      */
     Vector readGroupsOfUser(CmsUUID userId) throws CmsException;
 
@@ -299,7 +297,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @param id the id of the user
      * @return the user object
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsUser readUser(CmsUUID id) throws CmsException;
 
@@ -309,7 +307,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param name the name of the user
      * @param type the type of the user
      * @return the read user
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsUser readUser(String name, int type) throws CmsException;
 
@@ -337,7 +335,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     CmsUser readUser(String name, String password, String remoteAddress, int type) throws CmsException;
 
     /**
-     * Gets all users of a type.
+     * Gets all users of a type.<p>
      *
      * @param type the type of the user
      * @return list of users of this type
@@ -346,7 +344,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     Vector readUsers(int type) throws CmsException;
 
     /**
-     * Gets all users of a type and namefilter.
+     * Gets all users of a type and namefilter.<p>
      *
      * @param type the type of the user
      * @param namefilter the namefilter
@@ -356,22 +354,20 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     Vector readUsers(int type, String namefilter) throws CmsException;
 
     /**
-     * Gets all users with a certain Lastname.
+     * Gets all users with a certain Lastname.<p>
      *
      * @param lastname      the start of the users lastname
      * @param userType      webuser or systemuser
      * @param userStatus    enabled, disabled
      * @param wasLoggedIn   was the user ever locked in?
      * @param nMax          max number of results
-     *
-     * @return the users.
-     *
-     * @throws CmsException if operation was not successful.
+     * @return the users
+     * @throws CmsException if operation was not successful
      */
     Vector readUsers(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException;
 
     /**
-     * Returns a list of users of a group.<P/>
+     * Returns a list of users of a group.<p>
      *
      * @param name the name of the group
      * @param type the type of the users to read
@@ -414,8 +410,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param userId the id of the user to check
      * @param groupId the id of the group to check
      * @return true if user is member of group
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not succesful
      */
     boolean validateUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
 
@@ -429,9 +424,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     void writeAccessControlEntry(CmsProject project, CmsAccessControlEntry acEntry) throws CmsException;
 
     /**
-     * Writes an already existing group in the Cms.<BR/>
+     * Writes an already existing group in the Cms.<p>
      *
-     * Only the admin can do this.<P/>
+     * Only the admin can do this.
      *
      * @param group The group that should be written to the Cms.
      * @throws CmsException  Throws CmsException if operation was not succesfull.
@@ -467,18 +462,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     void writeRecoveryPassword(String userName, String password) throws CmsException;
 
     /**
-     * Writes a user to the database.
+     * Writes a user to the database.<p>
      *
      * @param user the user to write
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void writeUser(CmsUser user) throws CmsException;
 
     /**
-     * Changes the user type of the user
+     * Changes the user type of the user.<p>
      *
-     * @param userId The id of the user to change
-     * @param userType The new usertype of the user
+     * @param userId the id of the user to change
+     * @param userType the new usertype of the user
      * @throws CmsException if something goes wrong
      */
     void writeUserType(CmsUUID userId, int userType) throws CmsException;
