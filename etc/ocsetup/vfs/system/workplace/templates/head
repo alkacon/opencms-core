@@ -16,6 +16,11 @@
     function loadFoot(){
         window.top.foot.location.href="foot.html"
     }
+    
+    function openHelp() {
+		var helpUrl = "../help/]]><PROCESS>LOCALE</PROCESS><![CDATA[/index.html"; 
+		openwin( helpUrl, ']]><LABEL value="button.help" /><![CDATA[', 310, 600 );    
+    }
 
 </SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
@@ -45,8 +50,8 @@
 
         <td class=dialogtxt>&nbsp;&nbsp;&nbsp;]]><BUTTON href="javascript:window.location.reload(true)" name="bt_reload" action="" alt="reload"/><![CDATA[</td>
         <td class=dialogtxt>]]><BUTTON href="#" name="bt_einstellungen" action="javascript:window.top.body.location.href='preferences.html?initial=true&amp;panel=explorer'" alt="preferences"/><![CDATA[</td>
-        ]]><PROCESS>SYNC</PROCESS><![CDATA[
-        <td class=dialogtxt>]]><BUTTON href="#" action="javascript:url='../help/de/index.html'; openwin(url, 'Hilfe', 310, 600);" name="bt_hilfe" alt="help"/><![CDATA[</td>
+        ]]><PROCESS>SYNC</PROCESS>
+        <PROCESS>HELP</PROCESS><![CDATA[
         <td class=dialogtxt>&nbsp;</td>
         <td class=dialogtxt>]]><BUTTON href="javascript:window.top.location.href='../../login/index.html?logout=true'" name="bt_exit" action="" alt="exit"/><![CDATA[</td>
         <td class=dialogtxt width=10%>&nbsp;</td>
@@ -74,5 +79,13 @@
 <PUBLISH_ENABLED>
 <![CDATA[<td class=dialogtxt><p class=tab>]]><BUTTON href="#" name="bt_publish" action="javascript:window.top.body.location.href='publish_project.html?fromExplorer=true'" alt="publish"/><![CDATA[</td>]]>
 </PUBLISH_ENABLED>
+
+<HELP_ENABLED>
+<![CDATA[<td class=dialogtxt>]]><BUTTON href="#" action="javascript:openHelp();" name="bt_hilfe" alt="help"/><![CDATA[</td>]]>
+</HELP_ENABLED>
+
+<HELP_DISABLED>
+<![CDATA[<td></td>]]>
+</HELP_DISABLED>
 
 </WORKPLACE>
