@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/21 14:46:17 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2000/06/22 15:57:41 $
+ * Version: $Revision: 1.74 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.73 $ $Date: 2000/06/21 14:46:17 $ * 
+ * @version $Revision: 1.74 $ $Date: 2000/06/22 15:57:41 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2679,7 +2679,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 						// create a new File
 						currentFile.setState(C_STATE_UNCHANGED);
 						onlineFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(),
-												currentFile.getAbsolutePath());
+												currentFile.getAbsolutePath(), false);
 					}
 				}// end of catch
 				PreparedStatement statement = null;
@@ -2740,7 +2740,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				}
 				// create the new file 
 				CmsFile newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(),
-											parentId.intValue(),currentFile.getAbsolutePath());
+											parentId.intValue(),currentFile.getAbsolutePath(), false);
 				newFile.setState(C_STATE_UNCHANGED);
 				writeFile(onlineProject, onlineProject,newFile,false);
 				// copy properties
@@ -3555,7 +3555,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                CmsProject onlineProject,
                                CmsFile file,
                                int userId,
-                               int parentId, String filename)
+                               int parentId, String filename, boolean copy)
          throws CmsException {
           int state=0;         
           if (project.equals(onlineProject)) {
@@ -3576,7 +3576,29 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                }              
            }
            
+           int newFileId = file.getFileId();
            int resourceId = nextId(C_TABLE_RESOURCES);
+           
+           if (copy){
+					PreparedStatement statementFileWrite = null; 
+                    try {
+						newFileId = nextId(C_TABLE_FILES);
+                        statementFileWrite = m_pool.getPreparedStatement(C_FILES_WRITE_KEY);
+                        statementFileWrite.setInt(1, newFileId);     
+                        statementFileWrite.setBytes(2, file.getContents());
+                        statementFileWrite.executeUpdate();
+                    } catch (SQLException se) {
+                        if(A_OpenCms.isLogging()) {
+                            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsAccessFileMySql] " + se.getMessage());
+                            se.printStackTrace();
+                            }                            
+                        }finally {
+							if( statementFileWrite != null) {
+								m_pool.putPreparedStatement(C_FILES_WRITE_KEY, statementFileWrite);
+							}
+						} 
+				
+           }
 	       
 		   PreparedStatement statementResourceWrite = null;
            try {   
@@ -3589,7 +3611,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 statementResourceWrite.setInt(6,file.getOwnerId());
                 statementResourceWrite.setInt(7,file.getGroupId());
                 statementResourceWrite.setInt(8,project.getId());
-                statementResourceWrite.setInt(9,file.getFileId());
+                statementResourceWrite.setInt(9,newFileId);
                 statementResourceWrite.setInt(10,file.getAccessFlags());
                 statementResourceWrite.setInt(11,state);
                 statementResourceWrite.setInt(12,file.isLockedBy());
@@ -4196,7 +4218,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
          // read sourcefile
          file=readFile(project.getId(),onlineProject.getId(),source);
          // create destination file
-         createFile(project,onlineProject,file,userId,parentId,destination);
+         createFile(project,onlineProject,file,userId,parentId,destination, true);
      }
 
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/22 13:58:36 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2000/06/22 15:57:41 $
+ * Version: $Revision: 1.63 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.62 $ $Date: 2000/06/22 13:58:36 $
+ * @version $Revision: 1.63 $ $Date: 2000/06/22 15:57:41 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -691,9 +691,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
 				CmsException.C_NO_ACCESS);
 		}
-
 		// read the metadefinition
-		CmsPropertydefinition metadef = readPropertydefinition(currentUser,currentProject,property, res.getName());
+		CmsResourceType resType = getResourceType(currentUser,currentProject,res.getType());
+		CmsPropertydefinition metadef = readPropertydefinition(currentUser,currentProject,property, resType.getResourceName());
 		
 		// is this a mandatory metadefinition?
 		if(  (metadef != null) && 
@@ -813,6 +813,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 												  CmsProject currentProject, 
 												  String name, String resourcetype)
         throws CmsException {
+
         CmsResourceType resType = getResourceType(currentUser,currentProject,resourcetype);
         CmsPropertydefinition returnValue = null;
         returnValue = (CmsPropertydefinition)m_propertyDefCache.get(name + resType.getResourceType());
