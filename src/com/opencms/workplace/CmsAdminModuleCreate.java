@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/08/08 09:39:12 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -175,24 +175,28 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     reg.createModule(packetname, getStringValue(modulename), getStringValue(description), getStringValue(author), createDateLong, v);
                     reg.setModuleAuthorEmail(packetname, getStringValue(email));
                     reg.setModuleMaintenanceEventClass(packetname, getStringValue(maintenance));
-                    tryToCreateFolder(cms, "/system/", "classes");
+                    
                     tryToCreateFolder(cms, "/", "moduledemos");
                     tryToCreateFolder(cms, "/moduledemos/", packetname);
 
+                    String modulePath = "/system/modules/" + packetname + "/";
                     // create the class folder:
+                    tryToCreateFolder(cms, modulePath, "classes");
                     Vector cFolders = new Vector();
                     String workString = packetname;
                     while(workString.lastIndexOf('.') > -1) {
                         cFolders.addElement(workString.substring(workString.lastIndexOf('.') + 1));
                         workString = workString.substring(0, workString.lastIndexOf('.'));
                     }
-                    tryToCreateFolder(cms, "/system/classes/", workString);
-                    workString = "/system/classes/" + workString + "/";
+                    tryToCreateFolder(cms, modulePath+"classes/", workString);
+                    workString = modulePath + "classes/" + workString + "/";
                     for(int i = cFolders.size() - 1;i >= 0;i--) {
                         tryToCreateFolder(cms, workString, (String)cFolders.elementAt(i));
                         workString = workString + (String)cFolders.elementAt(i) + "/";
                     }
-                    String modulePath = "/system/modules/" + packetname + "/";
+                    
+                    
+                    tryToCreateFolder(cms, modulePath, "lib");
                     tryToCreateFolder(cms, modulePath, "templates");
                     tryToCreateFolder(cms, modulePath, "contenttemplates");
                     tryToCreateFolder(cms, modulePath, "frametemplates");
