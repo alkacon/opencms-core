@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDescriptor.java,v $
-* Date   : $Date: 2001/05/03 16:00:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/07 08:57:24 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -67,5 +67,21 @@ public class CmsElementDescriptor {
      */
     public String getKey() {
         return m_className + "|" + m_templateName;
+    }
+
+    /**
+     * Get the class name for the element defined.
+     * @return Class name for the element.
+     */
+    public String getClassName() {
+        return m_className;
+    }
+
+    /**
+     * Get the template name for the element defined.
+     * @return Template name for the element.
+     */
+    public String getTemplateName() {
+        return m_templateName;
     }
 }

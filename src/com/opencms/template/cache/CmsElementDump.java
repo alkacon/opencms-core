@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2001/05/03 16:00:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/07 08:57:24 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -50,8 +50,8 @@ public class CmsElementDump extends A_CmsElement {
     /**
      * Constructor for an element with the given class and template name.
      */
-    public CmsElementDump(String className, String templateName, String elementName) {
-        init(className, templateName, elementName);
+    public CmsElementDump(String className, String templateName, CmsCacheDirectives cd) {
+        init(className, templateName, cd);
     }
 
     /**
@@ -59,10 +59,11 @@ public class CmsElementDump extends A_CmsElement {
      * definitions.
      * @param name the name of this element-definition.
      * @param className the classname of this element-definition.
+     * @param cd Cache directives for this element     *
      * @param defs Vector with ElementDefinitions for this element.
      */
-    public CmsElementDump(String className, String templateName, String elementName, Vector defs) {
-        init(className, templateName, elementName, defs);
+    public CmsElementDump(String className, String templateName, CmsCacheDirectives cd, Vector defs) {
+        init(className, templateName, cd, defs);
     }
 
 
@@ -76,7 +77,7 @@ public class CmsElementDump extends A_CmsElement {
 
         // Collect cache directives from subtemplates
         // TODO: Replace root template name here
-        CmsCacheDirectives cd = templateClass.getCacheDirectives(cms, m_templateName, m_elementName, parameters, null);
+        CmsCacheDirectives cd = templateClass.collectCacheDirectives(cms, m_templateName, m_elementName, parameters, null);
 
         // We really don't want to stream here
         /*boolean streamable = cms.getRequestContext().isStreaming() && cd.isStreamable();
@@ -93,10 +94,11 @@ public class CmsElementDump extends A_CmsElement {
 
         // Now check, if there is a variant of this element in the cache.
 
-        if(cacheable && m_variants.containsKey(cacheKey) && !templateClass.shouldReload(cms, m_templateName, m_elementName, parameters, null)) {
-            variant = (CmsElementVariant)m_variants.get(cacheKey);
+        if(cacheable && !templateClass.shouldReload(cms, m_templateName, m_elementName, parameters, null)) {
+            variant = getVariant(cacheKey);
         }
-        else {
+
+        if(variant == null) {
             // This element was not found in the variant cache.
             // We have to generate it.
             try {
@@ -138,7 +140,7 @@ public class CmsElementDump extends A_CmsElement {
                     System.err.println("= Trying to resolve link \"" + lookupName +"\".");
                     CmsElementDefinition elDef = getElementDefinition(lookupName);
                     if(elDef != null) {
-                        A_CmsElement subEl = staging.getElementLocator().get(elDef.getDescriptor());
+                        A_CmsElement subEl = staging.getElementLocator().get(cms, elDef.getDescriptor(), parameters);
                         System.err.println("= Element defintion for \"" + lookupName +"\" says: ");
                         System.err.println("= -> Class    : " + elDef.getClassName());
                         System.err.println("= -> Template : " + elDef.getTemplateName());

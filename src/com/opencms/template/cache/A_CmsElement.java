@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/05/03 16:00:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/07 08:57:24 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -29,6 +29,7 @@ package com.opencms.template.cache;
 
 import java.util.*;
 import java.io.*;
+import com.opencms.boot.*;
 import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.template.*;
@@ -45,7 +46,10 @@ import com.opencms.template.*;
  * @author Andreas Schouten
  * @author Alexander Lucas
  */
-public abstract class A_CmsElement {
+public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels {
+
+    /** Set to <code>true</true> for additional debug output */
+    private boolean C_DEBUG = true;
 
     /** The class-name of this element definition. */
     protected String m_className;
@@ -56,6 +60,9 @@ public abstract class A_CmsElement {
     /** The name of this element. */
     protected String m_elementName;
 
+    /** Cache directives of this element. */
+    private CmsCacheDirectives m_cacheDirectives;
+
     /**
      * A Vector with definitions declared in this element.
      */
@@ -63,15 +70,15 @@ public abstract class A_CmsElement {
 
 
     /** Hashtable for element variant cache */
-    protected Hashtable m_variants;
+    private Hashtable m_variants;
 
     /**
      * Constructor for an element with the given class and template name.
      */
-    protected void init(String className, String templateName, String elementName) {
+    protected void init(String className, String templateName, CmsCacheDirectives cd) {
         m_className = className;
         m_templateName = templateName;
-        m_elementName = elementName;
+        m_cacheDirectives = cd;
         m_elementDefinitions = new Vector();
         m_variants = new Hashtable();
     }
@@ -81,12 +88,13 @@ public abstract class A_CmsElement {
      * definitions.
      * @param name the name of this element-definition.
      * @param className the classname of this element-definition.
+     * @param cd Cache directives for this element
      * @param defs Vector with ElementDefinitions for this element.
      */
-    protected void init(String className, String templateName, String elementName, Vector defs) {
+    protected void init(String className, String templateName, CmsCacheDirectives cd, Vector defs) {
         m_className = className;
         m_templateName = templateName;
-        m_elementName = elementName;
+        m_cacheDirectives = cd;
         m_elementDefinitions = defs;
         m_variants = new Hashtable();
     }
@@ -104,8 +112,22 @@ public abstract class A_CmsElement {
      * @param def - the ElementVariant to add.
      */
     public void addVariant(Object key, CmsElementVariant variant) {
-        System.err.println("??? " + toString() + " adding variant " + variant + " with key: " + key);
+        if(C_DEBUG && CmsBase.isLogging()) {
+            CmsBase.log(C_OPENCMS_STAGING, toString() + " adding variant \"" + key + "\" to cache. ");
+        }
         m_variants.put(key, variant);
+    }
+
+    /**
+     * Get a variant from the vatiant cache
+     * @param key Key of the ElementVariant.
+     * @return Cached CmsElementVariant object
+     */
+    public CmsElementVariant getVariant(Object key) {
+        if(C_DEBUG && CmsBase.isLogging()) {
+            CmsBase.log(C_OPENCMS_STAGING, toString() + " getting variant \"" + key + "\" from cache. ");
+        }
+        return (CmsElementVariant)m_variants.get(key);
     }
 
     /**
@@ -116,6 +138,11 @@ public abstract class A_CmsElement {
         return m_elementDefinitions;
     }
 
+    /**
+     * Get the element definition for the sub-element with the given name
+     * @param name Name of the sub-element that should be looked up
+     * @return Element definition of <em>name</em>
+     */
     public CmsElementDefinition getElementDefinition(String name) {
         CmsElementDefinition result = null;
         int numDefs = m_elementDefinitions.size();
@@ -129,6 +156,9 @@ public abstract class A_CmsElement {
         return result;
     }
 
+    public CmsCacheDirectives collectCacheDirectives() {
+        return m_cacheDirectives;
+    }
     public abstract byte[] getContent(CmsStaging staging, CmsObject cms, Hashtable parameters) throws CmsException;
 
     protected I_CmsTemplate getTemplateClass(CmsObject cms, String classname) throws CmsException {

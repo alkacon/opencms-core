@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/05/03 16:00:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/07 08:57:24 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -89,7 +89,7 @@ public class CmsUri {
     }
 
     public byte[] callCanonicalRoot(CmsStaging staging, CmsObject cms, Hashtable parameters) throws CmsException  {
-        A_CmsElement elem = staging.getElementLocator().get(m_startingElement);
+        A_CmsElement elem = staging.getElementLocator().get(cms, m_startingElement, parameters);
         return elem.getContent(staging, cms, parameters);
     }
 

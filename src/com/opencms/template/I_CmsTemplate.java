@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsTemplate.java,v $
-* Date   : $Date: 2001/05/03 16:00:51 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/05/07 08:56:25 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * have to be implemtented.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2001/05/03 16:00:51 $
+ * @version $Revision: 1.12 $ $Date: 2001/05/07 08:56:25 $
  */
 public interface I_CmsTemplate {
 
@@ -200,7 +200,7 @@ public interface I_CmsTemplate {
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
      */
-    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector);
+    public CmsCacheDirectives collectCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector);
 
     /**
      * Tests, if the template cache is setted.
@@ -228,5 +228,5 @@ public interface I_CmsTemplate {
      */
     public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector);
 
-    public abstract A_CmsElement createElement(CmsObject cms, String templateFile, String elementName, Hashtable parameters);
+    public abstract A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters);
 }

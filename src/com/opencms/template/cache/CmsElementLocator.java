@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/05/03 16:00:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/07 08:57:24 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -29,7 +29,9 @@ package com.opencms.template.cache;
 
 import java.util.*;
 import java.io.*;
+import com.opencms.core.*;
 import com.opencms.file.*;
+import com.opencms.template.*;
 
 /**
  * The ElementLocator is used to receive CmsElement-Objects. It is the Cache for
@@ -58,7 +60,7 @@ public class CmsElementLocator {
      * @param descriptor - the descriptor for this element.
      * @param element - the Element to put in this locator.
      */
-    public void put(CmsElementDescriptor desc, A_CmsElement element) {
+    private void put(CmsElementDescriptor desc, A_CmsElement element) {
         m_elements.put(desc.getKey(), element);
     }
 
@@ -67,7 +69,22 @@ public class CmsElementLocator {
      * @param desc - the descriptor to locate the element.
      * @returns the element that was found.
      */
-    public A_CmsElement get(CmsElementDescriptor desc) {
-        return (A_CmsElement) m_elements.get(desc.getKey());
+    public A_CmsElement get(CmsObject cms, CmsElementDescriptor desc, Hashtable parameters) {
+        A_CmsElement result;
+        result = (A_CmsElement)m_elements.get(desc.getKey());
+        if(result == null) {
+            // the element was not found in the element cache
+            // we have to generate it
+            try {
+                Object o = com.opencms.template.CmsTemplateClassManager.getClassInstance(cms, desc.getClassName());
+                I_CmsTemplate cmsTemplate = (I_CmsTemplate)o;
+                result = cmsTemplate.createElement(cms, desc.getTemplateName(), parameters);
+            } catch(CmsException e) {
+                System.err.println(e);
+            }
+            put(desc, result);
+        }
+        return result;
+
     }
 }

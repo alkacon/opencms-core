@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/05/03 16:01:29 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/05/07 08:57:13 $
+* Version: $Revision: 1.21 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2001/05/03 16:01:29 $
+ * @version $Revision: 1.21 $ $Date: 2001/05/07 08:57:13 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -411,7 +411,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
     public boolean isStreamable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
-    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public CmsCacheDirectives collectCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         CmsCacheDirectives myCd = new CmsCacheDirectives(false);
         return myCd;
     }
@@ -448,7 +448,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         return false;
     }
 
-    public A_CmsElement createElement(CmsObject cms, String templateFile, String elementName, Hashtable parameters) {
-        return new CmsElementDump(getClass().getName(), templateFile, elementName);
+    public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
+        return new CmsElementDump(getClass().getName(), templateFile, collectCacheDirectives(cms, templateFile, null, parameters, null));
     }
 }

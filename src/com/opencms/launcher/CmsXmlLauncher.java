@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/05/03 16:01:16 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/05/07 08:57:49 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2001/05/03 16:01:16 $
+ * @version $Revision: 1.22 $ $Date: 2001/05/07 08:57:49 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -176,18 +176,18 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
 
             if(cmsUri == null) {
                 // hammer nich
-                I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);
+                /*I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);
                 if(!(tmpl instanceof I_CmsXmlTemplate)) {
                     String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class.";
                     if(A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
                     }
                     throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
-                }
+                }*/
 
                 CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, templateName);
                 cmsUri = new CmsUri(elemDesc, null, (Vector)null);
-                staging.getElementLocator().put(elemDesc, tmpl.createElement(cms, templateName, C_ROOT_TEMPLATE_NAME, newParameters));
+                //staging.getElementLocator().put(elemDesc, tmpl.createElement(cms, templateName, newParameters));
                 staging.getUriLocator().put(uriDesc, cmsUri);
             }
 

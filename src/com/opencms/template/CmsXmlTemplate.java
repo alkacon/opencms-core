@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/05/03 16:00:51 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2001/05/07 08:56:25 $
+* Version: $Revision: 1.52 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.51 $ $Date: 2001/05/03 16:00:51 $
+ * @version $Revision: 1.52 $ $Date: 2001/05/07 08:56:25 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -700,7 +700,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
      */
-    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public CmsCacheDirectives collectCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
 
         // Frist build our own cache directives.
         boolean isCacheable = isCacheable(cms, templateFile, elementName, parameters, templateSelector);
@@ -730,15 +730,15 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
                 if(className != null) {
                     I_CmsTemplate templClass = (I_CmsTemplate)CmsTemplateClassManager.getClassInstance(cms, className);
-                    CmsCacheDirectives cd2 = templClass.getCacheDirectives(cms, templateName, elName, parameters, null);
+                    CmsCacheDirectives cd2 = templClass.collectCacheDirectives(cms, templateName, elName, parameters, null);
                     /*System.err.println("*                INT PUB PRV EXP STR");
                     debugPrint(elementName, result.m_cd);
                     System.err.println(" ");
                     debugPrint(elName, cd2.m_cd);
                     System.err.println(" " + templClass.getClass());
-                    System.err.println("*                -------------------");
-                    */
-                    //result.merge(templClass.getCacheDirectives(cms, templateName, elName, parameters, null));
+                    System.err.println("*                -------------------");*/
+
+                    //result.merge(templClass.collectCacheDirectives(cms, templateName, elName, parameters, null));
                     result.merge(cd2);
                     /*debugPrint(elementName, result.m_cd);
                     System.err.println(" ");
@@ -842,7 +842,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 
         System.err.println("*** startProcessing called for " + getClass().getName() + "/" + xmlTemplateDocument.getAbsoluteFilename());
-        String result = null;
+        byte[] result = null;
 
         if(cms.getRequestContext().isStaging()) {
             System.err.println("*** staging mode");
@@ -853,22 +853,19 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // Get current element.
             CmsStaging staging = OpenCms.getStaticStaging();
             CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), xmlTemplateDocument.getAbsoluteFilename());
-            A_CmsElement currElem = staging.getElementLocator().get(elKey);
+            A_CmsElement currElem = staging.getElementLocator().get(cms, elKey, parameters);
 
-            if(currElem == null) {
-                System.err.println("** Cannot find element for the variant I'm currently generating. This hould not happen!");
-                System.err.println("** Avoiding further errors by creating a new element on the fly.");
-                //currElem = new CmsElementXml(getClass().getName(), xmlTemplateDocument.getAbsoluteFilename(), elementName);
-                currElem = createElement(cms, xmlTemplateDocument.getAbsoluteFilename(), elementName, parameters);
-                staging.getElementLocator().put(elKey, currElem);
-            }
             // Store the new variant
-            currElem.addVariant(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector), variant);
-            return null;
+            if(currElem.collectCacheDirectives().isInternalCacheable()) {
+                currElem.addVariant(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector), variant);
+            } //else {
+                result = ((CmsElementXml)currElem).resolveVariant(cms, variant, staging, parameters);
+            //}
+            return result;
         } else {
         // Try to process the template file
         try {
-            result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector);
+            result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector).getBytes();
         }
         catch(Throwable e) {
 
@@ -897,7 +894,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         }
         }
-        return result.getBytes();
+        return result;
     }
 //---------------------------------------------------------------------
 
@@ -1058,7 +1055,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         // Try to get the result from the cache
         //if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {
-        if(subTemplate.getCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable()) {
+        if(subTemplate.collectCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable()) {
             subTemplateKey = subTemplate.getKey(cms, templateFilename, parameterHashtable, null);
             if(m_cache.has(subTemplateKey) && (!subTemplate.shouldReload(cms, templateFilename, tagcontent, parameterHashtable, null))) {
                 result = m_cache.get(subTemplateKey);
@@ -1115,7 +1112,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
             // Store the results in the template cache, if cacheable
             //if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {
-            if(subTemplate.getCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable()) {
+            if(subTemplate.collectCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable()) {
 
                 // we don't need to re-get the caching-key here since it already exists
                 m_cache.put(subTemplateKey, result);
@@ -1171,11 +1168,11 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         }
     }
 
-    public A_CmsElement createElement(CmsObject cms, String templateFile, String elementName, Hashtable parameters) {
+    public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
         Vector subtemplateDefinitions = new Vector();
 
         try {
-            CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, null);
+            CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, null, parameters, null);
 
             // Code for collecting all ElementDefinitions
             // Where shall we do this
@@ -1205,7 +1202,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         } catch(Exception e) {
             System.err.println("=== E");
         }
-        CmsElementXml result = new CmsElementXml(getClass().getName(), templateFile, elementName, subtemplateDefinitions);
+        CmsElementXml result = new CmsElementXml(getClass().getName(),
+                                                 templateFile,
+                                                 collectCacheDirectives(cms, templateFile, null, parameters, null),
+                                                 subtemplateDefinitions);
         return result;
     }
 }
