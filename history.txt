@@ -9,6 +9,9 @@ Legend:
 - General comment
 
 OpenCms 4.3.26 Bela Tegeuse - 17 July 2001
+* Bug in import module fixed: added the root folder in the system projects for module import and delete
+
+OpenCms 4.3.26 Bela Tegeuse - 17 July 2001
 * Bug in admin module (lost of the parameters) fixed.
 ! New features on the workplace: resources can be undeleted, changes can be 
   undone by copying the resource from the online project, a single resource can be published.
