@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/01/21 09:42:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/02/04 14:55:17 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
     
@@ -542,6 +542,25 @@ public class CmsTemplateBean extends CmsJspActionElement {
             m_resPath = link(m_resPath);
         }
         return m_resPath;
+    }
+    
+    /**
+     * Returns the search index name to use, depending on the current site.<p>
+     * 
+     * Returns "[Projectname] project (VFS)" for the default site and the site root as index name for other sites.<p>
+     * 
+     * @return the search index name to use, depending on the current site
+     */
+    public String getSearchIndexName() {
+        
+        String currentSite = getRequestContext().getSiteRoot();
+        if (currentSite.indexOf("sites/default") == -1) {
+            // return site root as index name
+            return currentSite;
+        } else {
+            // return default index
+            return getRequestContext().currentProject().getName() + " project (VFS)";
+        }
     }
       
     /**

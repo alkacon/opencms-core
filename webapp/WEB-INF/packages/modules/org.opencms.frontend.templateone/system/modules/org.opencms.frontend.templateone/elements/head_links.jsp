@@ -29,7 +29,7 @@ String separator = "";
 	<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>" />
 	<input type="hidden" name="query" value="" />
 	<input type="hidden" name="page" value="1" />
-	<input type="hidden" name="index" value="<%= cms.getRequestContext().currentProject().getName() %> project (VFS)" />
+	<input type="hidden" name="index" value="<%= cms.getSearchIndexName() %>" />
 	&nbsp;<span style="vertical-align: middle;"><input type="text" class="search" name="query2" /></span>
 	&nbsp;<span style="vertical-align: middle;"><input type="submit" name="startsearch" value="<%= cms.key("link.search") %>" class="formbutton" /></span>&nbsp;
 	</form>
