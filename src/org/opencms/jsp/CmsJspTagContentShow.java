@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/20 23:44:28 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.I_CmsMacroResolver;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -56,7 +55,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
@@ -95,9 +94,7 @@ public class CmsJspTagContentShow extends TagSupport {
                 // read the element from the content
                 return content.getStringValue(cms, element, locale);
             } catch (CmsXmlException e) {
-                OpenCms.getLog(CmsJspTagContentShow.class).error(
-                    "Error processing content element '" + element,
-                    e);
+                OpenCms.getLog(CmsJspTagContentShow.class).error("Error processing content element '" + element, e);
                 return null;
             }
         } else {
@@ -109,10 +106,11 @@ public class CmsJspTagContentShow extends TagSupport {
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     public int doStartTag() throws JspException {
-        
+
         // initialize a string mapper to resolve EL like strings in tag attributes
-        CmsFlexController controller = (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        CmsObject cms = controller.getCmsObject();        
+        CmsFlexController controller = 
+            (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsObject cms = controller.getCmsObject();
 
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
@@ -124,7 +122,7 @@ public class CmsJspTagContentShow extends TagSupport {
         // get loaded content from parent <contentload> tag
         A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
         Locale locale = contentContainer.getXmlDocumentLocale();
- 
+
         String element = getElement();
 
         if (CmsStringUtil.isEmpty(element)) {
@@ -133,19 +131,16 @@ public class CmsJspTagContentShow extends TagSupport {
             element = CmsXmlUtils.concatXpath(contentContainer.getXmlDocumentElement(), element);
         }
 
-
-            
         String content;
-        if (element.startsWith(I_CmsMacroResolver.C_MACRO_DELIMITER + I_CmsMacroResolver.C_MACRO_START)
-            && element.endsWith(I_CmsMacroResolver.C_MACRO_END)) {
-            // initialize a string mapper to resolve EL like strings in tag attributes
+        if (CmsMacroResolver.isMacro(element)) {
+            // this is a macro, initialize a macro resolver
             String resourcename = CmsJspTagContentLoad.getResourceName(cms, contentContainer);
             CmsMacroResolver resolver = CmsMacroResolver.newInstance()
                 .setCmsObject(cms)
                 .setJspPageContext(pageContext)
                 .setResourceName(resourcename)            
                 .setKeepEmptyMacros(true);
-            // this is an EL like string
+            // resolve the macro
             content = resolver.resolveMacros(element);
         } else if (xmlContent == null) {
             // no XML content- no output

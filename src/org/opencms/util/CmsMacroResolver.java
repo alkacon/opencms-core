@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/20 23:44:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
@@ -159,21 +159,41 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     protected I_CmsXmlContentHandler m_xmlContentHandler;
 
     /**
-     * Adds macro delelimiters to the given key, 
+     * Adds macro delelimiters to the given input, 
      * for example <code>key</code> becomes <code>${key}</code>.<p>
      * 
-     * @param key the key to format as macro
+     * @param input the input to format as a macro
      * 
-     * @return the key formatted as a macro
+     * @return the input formatted as a macro
      */
-    public static String formatMacro(String key) {
+    public static String formatMacro(String input) {
 
         StringBuffer result = new StringBuffer(32);
-        result.append(I_CmsMacroResolver.C_MACRO_DELIMITER);
-        result.append(I_CmsMacroResolver.C_MACRO_START);
-        result.append(key);
-        result.append(I_CmsMacroResolver.C_MACRO_END);
+        result.append(I_CmsMacroResolver.MACRO_DELIMITER);
+        result.append(I_CmsMacroResolver.MACRO_START);
+        result.append(input);
+        result.append(I_CmsMacroResolver.MACRO_END);
         return result.toString();
+    }
+
+    /**
+     * Returns <code>true</code> if the given input String if formatted like a macro,
+     * that is it starts with <code>{@link I_CmsMacroResolver#MACRO_DELIMITER} +
+     * {@link I_CmsMacroResolver#MACRO_START}</code> and ends with 
+     * <code>{@link I_CmsMacroResolver#MACRO_END}</code>.<p>
+     * 
+     * @param input the input to check for a macro
+     * @return <code>true</code> if the given input String if formatted like a macro
+     */
+    public static boolean isMacro(String input) {
+
+        if (CmsStringUtil.isEmpty(input) || (input.length() < 3)) {
+            return false;
+        }
+        
+        return ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER)  
+                && (input.charAt(1) == I_CmsMacroResolver.MACRO_START)
+                && (input.charAt(input.length()-1) == I_CmsMacroResolver.MACRO_END));
     }
 
     /**
@@ -185,13 +205,13 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         return new CmsMacroResolver();
     }
-
+    
     /**
-     * Resolves macros in the provided input content using the given macro resolver.<p>
+     * Resolves macros in the provided input String using the given macro resolver.<p>
      * 
-     * A macro in the form <code>${key}</code> in the content is replaced with its assigned value
-     * returned by the <code>{@link I_CmsMacroResolver#getValue(String)}</code> method of the given 
-     * <code>{@link I_CmsMacroResolver}</code> instance.
+     * A macro in the form <code>${key}</code> in the content is replaced with it's assigned value
+     * returned by the <code>{@link I_CmsMacroResolver#getMacroValue(String)}</code> method of the given 
+     * <code>{@link I_CmsMacroResolver}</code> instance.<p>
      * 
      * If a macro is found that can not be mapped to a value by the given macro resolver,
      * <code>{@link I_CmsMacroResolver#isKeepEmptyMacros()}</code> controls if the macro is replaced by
@@ -204,56 +224,51 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      */
     public static String resolveMacros(String input, I_CmsMacroResolver resolver) {
 
-        String segments[];
-        String replacements[];
-        String macros[];
-
-        if (input == null) {
-            return null;
-        } else {
-            segments = (String[])CmsStringUtil.splitAsList(input, I_CmsMacroResolver.C_MACRO_DELIMITER).toArray(
-                new String[10]);
-            replacements = new String[segments.length];
-            macros = new String[segments.length];
-        }
+        if (CmsStringUtil.isEmpty(input)) {
+            return input;
+        } 
+        
+        String[] segments = CmsStringUtil.splitAsArray(input, I_CmsMacroResolver.MACRO_DELIMITER);
 
         if (segments.length == 1) {
             return input;
         }
-
-        int totalLength = 0;
-        for (int i = 0; i < segments.length && segments[i] != null; i++) {
-            int len = segments[i].length(), pos;
-            if (segments[i].startsWith(I_CmsMacroResolver.C_MACRO_START)
-                && (pos = segments[i].indexOf(I_CmsMacroResolver.C_MACRO_END)) > 0) {
-                macros[i] = segments[i].substring(1, pos);
-                replacements[i] = resolver.getValue(macros[i]);
-                segments[i] = segments[i].substring(pos + 1);
-                len = (replacements[i] != null) ? replacements[i].length() : 0;
-                len += (segments[i] != null) ? segments[i].length() : 0;
-            } else if (i > 0) {
-                replacements[i] = I_CmsMacroResolver.C_MACRO_DELIMITER;
-                len += 1;
+        
+        String macro;
+        String value;
+        int pos;
+        StringBuffer result = new StringBuffer(input.length() * 2);
+        
+        for (int i = 0; i < segments.length; i++) {
+            if ((segments[i].length() > 0)
+                && (segments[i].charAt(0) == I_CmsMacroResolver.MACRO_START)
+                && (pos = segments[i].indexOf(I_CmsMacroResolver.MACRO_END)) > 0) {
+                // segment contains a macro
+                
+                // get macro name
+                macro = segments[i].substring(1, pos);
+                // resolve macro
+                value = resolver.getMacroValue(macro);                
+                if (value != null) {
+                    // macro was successfully resolved
+                    result.append(value);
+                } else if (resolver.isKeepEmptyMacros()) {
+                    // macro was unknown, but should be kept
+                    result.append(formatMacro(macro));
+                }
+                // append remaining segment
+                result.append(segments[i].substring(pos + 1));
+            } else {
+                // this segment is not a macro
+                if (i > 0) {
+                    // add delimiter that was cut of when splitting
+                    result.append(I_CmsMacroResolver.MACRO_DELIMITER);
+                }
+                // add the rest of the segment
+                result.append(segments[i]);
             }
-            totalLength += len;
         }
-
-        StringBuffer sb = new StringBuffer(totalLength);
-        for (int i = 0; i < segments.length && segments[i] != null; i++) {
-
-            if (replacements[i] != null) {
-                sb.append(replacements[i]);
-            } else if (resolver.isKeepEmptyMacros() && macros[i] != null) {
-                sb.append(I_CmsMacroResolver.C_MACRO_DELIMITER).append(I_CmsMacroResolver.C_MACRO_START).append(
-                    macros[i]).append(I_CmsMacroResolver.C_MACRO_END);
-            }
-
-            if (segments[i] != null) {
-                sb.append(segments[i]);
-            }
-        }
-
-        return sb.toString();
+        return result.toString();
     }
 
     /**
@@ -272,9 +287,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     }
 
     /**
-     * @see org.opencms.util.I_CmsMacroResolver#getValue(java.lang.String)
+     * @see org.opencms.util.I_CmsMacroResolver#getMacroValue(java.lang.String)
      */
-    public String getValue(String macro) {
+    public String getMacroValue(String macro) {
 
         if (m_jspPageContext != null) {
 

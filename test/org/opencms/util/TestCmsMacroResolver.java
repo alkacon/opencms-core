@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsMacroResolver.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/20 23:44:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import junit.framework.TestCase;
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com}
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCmsMacroResolver extends TestCase {
       
@@ -141,7 +141,7 @@ public class TestCmsMacroResolver extends TestCase {
     public void testResolverInterface() {
     
         I_CmsMacroResolver resolver = new I_CmsMacroResolver() {
-            public String getValue(String key) {
+            public String getMacroValue(String key) {
                 if ("test".equals(key)) {
                     return "REPLACED";
                 } else {
@@ -159,6 +159,18 @@ public class TestCmsMacroResolver extends TestCase {
         };
         
         String content, result;
+        
+        content = null;
+        result  = resolver.resolveMacros(null);
+        assertEquals(null, result);   
+        
+        content = "";
+        result  = resolver.resolveMacros(content);
+        assertEquals("", result);           
+        
+        content = "${test}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("REPLACED", result);    
         
         content = "<<This is a prefix >>${test}<<This is a suffix>>";
         result  = resolver.resolveMacros(content);
@@ -208,7 +220,20 @@ public class TestCmsMacroResolver extends TestCase {
         result  = resolver.resolveMacros(content);
         assertEquals("${unknown}<<This is a suffix>>", result);   
         
-      
+        content = "Uncle Scrooge owns many $$$$";
+        result  = resolver.resolveMacros(content);
+        assertEquals(content, result);
         
+        content = "$$$$ is what uncle Scrooge owns";
+        result  = resolver.resolveMacros(content);
+        assertEquals(content, result);
+        
+        content = "$$$$ is $ what $ uncle $$$ Scrooge $ owns $$$";
+        result  = resolver.resolveMacros(content);
+        assertEquals(content, result);        
+        
+        content = "$${test}$}${test} is ${ what ${test}{$} uncle ${${test} Scrooge $ owns ${${test}}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("$REPLACED$}REPLACED is ${ what REPLACED{$} uncle ${REPLACED Scrooge $ owns ${REPLACED}", result);   
     }
 }

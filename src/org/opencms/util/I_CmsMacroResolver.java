@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/I_CmsMacroResolver.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/20 23:44:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,19 +40,19 @@ package org.opencms.util;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.2
  */
 public interface I_CmsMacroResolver {
 
-    /** String to indicate the start of a macro. */
-    String C_MACRO_DELIMITER = "$";
+    /** Delimiter char <code>'$'</code> for a macro. */
+    char MACRO_DELIMITER = '$';
 
-    /** String to indicate the end of a macro. */
-    String C_MACRO_END = "}";
+    /** End char <code>'}'</code> for a macro. */
+    char MACRO_END = '}';
 
-    /** String to indicate the start of a macro. */
-    String C_MACRO_START = "{";
+    /** Start char <code>'{'</code> for a macro.  */
+    char MACRO_START = '{';
 
     /**
      * Resolves a single macro to the macro value, returns <code>null</code> if the macro could not be resolved.<p> 
@@ -60,7 +60,7 @@ public interface I_CmsMacroResolver {
      * @param macro the macro to resolve
      * @return the resolved macro or <code>null</code> if the macro could not be resolved
      */
-    String getValue(String macro);
+    String getMacroValue(String macro);
 
     /**
      * Returns <code>true</code> if macros that could not be resolved are kept "as is" in the 

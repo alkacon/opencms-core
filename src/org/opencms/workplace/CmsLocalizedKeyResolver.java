@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLocalizedKeyResolver.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/20 23:44:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ class CmsLocalizedKeyResolver implements I_CmsMacroResolver {
 
     /** The workplace settings to use for the localization.<p> */
     private CmsWorkplaceSettings m_workplaceSettings;
-    
+
     /**
      * Factory method to create a new {@link CmsLocalizedKeyResolver} instance.<p>
      * 
@@ -60,9 +60,9 @@ class CmsLocalizedKeyResolver implements I_CmsMacroResolver {
     }
 
     /**
-     * @see org.opencms.util.I_CmsMacroResolver#getValue(java.lang.String)
+     * @see org.opencms.util.I_CmsMacroResolver#getMacroValue(java.lang.String)
      */
-    public String getValue(String key) {
+    public String getMacroValue(String key) {
 
         if (m_workplaceSettings != null) {
             if (key.startsWith(MACRO_KEY)) {

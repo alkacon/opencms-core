@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/20 23:44:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.jsp;
 
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsMacroResolver;
 
@@ -50,19 +51,10 @@ import javax.servlet.jsp.tagext.TagSupport;
  * Used to access and display XML content item information from the VFS.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 6.0 alpha 3
  */
-public class CmsJspTagContentInfo extends TagSupport {
-
-    /** The name of the variable under which the content info bean should be saved in the page context. */
-    private String m_variable;
-
-    /** The name of the content info's value that should be printed out. */
-    private String m_value;
-
-    /** The scope under which the content info is saved in the page context. */
-    private String m_scope;
+public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolver {
 
     /** The keys of the supported content info values. */
     private static final String[] m_keys = {
@@ -75,14 +67,23 @@ public class CmsJspTagContentInfo extends TagSupport {
         "pageNavEndIndex",
         "pageNavLength"};
 
-    /** The keys of the supported content info values as a list. */
-    private static final List m_valueKeys = Collections.unmodifiableList(Arrays.asList(m_keys));
-
     /** The scopes supported by the page context. */
     private static final String[] m_scopes = {"application", "session", "request", "page"};
 
     /** The scopes supported by the page context as a list. */
     private static final List m_scopeKeys = Collections.unmodifiableList(Arrays.asList(m_scopes));
+
+    /** The keys of the supported content info values as a list. */
+    private static final List m_valueKeys = Collections.unmodifiableList(Arrays.asList(m_keys));
+
+    /** The scope under which the content info is saved in the page context. */
+    private String m_scope;
+
+    /** The name of the content info's value that should be printed out. */
+    private String m_value;
+
+    /** The name of the variable under which the content info bean should be saved in the page context. */
+    private String m_variable;
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
@@ -105,17 +106,15 @@ public class CmsJspTagContentInfo extends TagSupport {
         }
 
         if (CmsStringUtil.isNotEmpty(m_value)) {
-            CmsContentInfoBean contentInfoBean = readContentInfoBean(m_value);
-            if (contentInfoBean != null) {
-                tagContent = getTagContent(contentInfoBean, m_value);
-            }
+            // value is provided - resolve macros
+            tagContent = resolveMacros(m_value);
         }
 
         try {
             pageContext.getOut().print(tagContent);
         } catch (IOException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error in Jsp <contentshow> tag processing", e);
+                OpenCms.getLog(this).error("Error in Jsp <contentinfo> tag processing", e);
             }
             throw new JspException(e);
         }
@@ -124,140 +123,145 @@ public class CmsJspTagContentInfo extends TagSupport {
     }
 
     /**
-     * Returns the tag content for a specified content info bean and value.<p>
-     * 
-     * @param contentInfoBean a content info bean
-     * @param value a string such as ${myinfo.resultSize}
-     * @return the tag content
-     * @throws JspException if something goes wrong
+     * @see org.opencms.util.I_CmsMacroResolver#getMacroValue(java.lang.String)
      */
-    protected String getTagContent(CmsContentInfoBean contentInfoBean, String value) throws JspException {
+    public String getMacroValue(String macro) {
 
-        String variableValue = getVariableValue(value);
-        String tagContent = "";
+        
+        int dotIndex = macro.indexOf('.');
+        String beanName = null;
 
-        switch (m_valueKeys.indexOf(variableValue)) {
+        if ((dotIndex > 1) && (dotIndex < (macro.length() - 1))) {
+            beanName = macro.substring(2, dotIndex);
+        } else {
+            return null;
+        }
+        
+        String variableName = macro.substring(dotIndex + 1, macro.length() - 1);
+        
+        if (CmsStringUtil.isEmpty(beanName) || CmsStringUtil.isEmpty(variableName)) {
+            return null;
+        }
+        
+        // extract bean from page context
+        CmsContentInfoBean bean;
+        int scope = pageContext.getAttributesScope(beanName);        
+        try { 
+            bean = (CmsContentInfoBean)pageContext.getAttribute(beanName, scope);
+        } catch (ClassCastException e) {
+            // attribute exists but is not of required class
+            return null;
+        }
+        
+        if (bean == null) {
+            return null;
+        }        
+
+        switch (m_valueKeys.indexOf(variableName)) {
             case 0:
                 // "resultSize"
-                tagContent = Integer.toString(contentInfoBean.getResultSize());
-                break;
+                return Integer.toString(bean.getResultSize());
             case 1:
                 // "resultIndex"
-                tagContent = Integer.toString(contentInfoBean.getResultIndex());
-                break;
+                return Integer.toString(bean.getResultIndex());
             case 2:
                 // "pageCount"
-                tagContent = Integer.toString(contentInfoBean.getPageCount());
-                break;
+                return Integer.toString(bean.getPageCount());
             case 3:
                 // "pageIndex"
-                tagContent = Integer.toString(contentInfoBean.getPageIndex());
-                break;
+                return Integer.toString(bean.getPageIndex());
             case 4:
                 // "pageSize"
-                tagContent = Integer.toString(contentInfoBean.getPageSize());
-                break;
+                return Integer.toString(bean.getPageSize());
             case 5:
                 // pageNavStartIndex
-                tagContent = Integer.toString(contentInfoBean.getPageNavStartIndex());
-                break;
+                return Integer.toString(bean.getPageNavStartIndex());
             case 6:
                 // pageNavEndIndex
-                tagContent = Integer.toString(contentInfoBean.getPageNavEndIndex());
-                break; 
+                return Integer.toString(bean.getPageNavEndIndex());
             case 7:
                 // pageNavLength
-                tagContent = Integer.toString(contentInfoBean.getPageNavLength());
-                break;                 
+                return Integer.toString(bean.getPageNavLength());
             default:
-                throw new JspException("Unsupported content info value requested: " + value);
+                // unknown value
+                return null;
         }
-
-        return tagContent;
     }
 
     /**
-     * Returns a content info bean from the page context as specified by a string such as "${myinfo.resultSize}".<p>
+     * Returns the scope under which the content info is saved in the page context.<p>
      * 
-     * @param value a string such as ${myinfo.resultSize}
-     * @return the content info bean
+     * @return the scope under which the content info is saved in the page context
      */
-    protected CmsContentInfoBean readContentInfoBean(String value) {
+    public String getScope() {
 
-        String variable = getVariableName(value);
-
-        if (CmsStringUtil.isNotEmpty(variable)) {
-            int scope = pageContext.getAttributesScope(variable);
-            return (CmsContentInfoBean)pageContext.getAttribute(variable, scope);
-        }
-
-        return null;
+        return m_scope;
     }
 
     /**
-     * Extracts the variable name out of a string such as "${myinfo.resultSize}".<p>
+     * Returns the name of the content info's value that should be printed out.<p>
      * 
-     * @param value a string such as ${myinfo.resultSize}
-     * @return the variable name, e.g. "myinfo"
+     * @return the name of the content info's value that should be printed out
      */
-    protected String getVariableName(String value) {
+    public String getValue() {
 
-        int todo = 0;
-        // TODO: replace with macro resolver
-        
-        int dotIndex = -1;
-        String variableName = null;
-
-        if (value.startsWith(I_CmsMacroResolver.C_MACRO_DELIMITER + I_CmsMacroResolver.C_MACRO_START)
-            && value.endsWith(I_CmsMacroResolver.C_MACRO_END)
-            && (dotIndex = value.indexOf(".")) > 0) {
-
-            variableName = value.substring(2, dotIndex);
-        }
-
-        return variableName;
+        return m_value;
     }
 
     /**
-     * Extracts the variable value out of a string such as "${myinfo.resultSize}".<p>
+     * Returns the name of the variable under which the content info bean should be saved in the page context.<p>
      * 
-     * @param value a string such as ${myinfo.resultSize}
-     * @return the variable name, e.g. "resultSize"
+     * @return the name of the variable under which the content info bean should be saved in the page context
      */
-    protected String getVariableValue(String value) {
-        
-        int todo = 0;
-        // TODO: replace with macro resolver
-        
-        int dotIndex = -1;
-        String variableValue = null;
+    public String getVar() {
 
-        if (value.startsWith(I_CmsMacroResolver.C_MACRO_DELIMITER + I_CmsMacroResolver.C_MACRO_START)
-            && value.endsWith(I_CmsMacroResolver.C_MACRO_END)
-            && (dotIndex = value.indexOf(".")) > 0) {
-
-            variableValue = value.substring(dotIndex + 1, value.length() - 1);
-        }
-
-        return variableValue;
+        return m_variable;
     }
 
     /**
-     * Stores the container's content info bean under the specified scope in the page context.<p>
-     * 
-     * @param container the parent container
-     * @param variable the variable under which the content info bean is saved
-     * @param scope the scope under which the content info bean is saved
+     * @see org.opencms.util.I_CmsMacroResolver#isKeepEmptyMacros()
      */
-    protected void storeContentInfoBean(CmsJspTagContentLoad container, String variable, int scope) {
+    public boolean isKeepEmptyMacros() {
 
-        CmsContentInfoBean contentInfoBean = container.getContentInfoBean();
+        return true;
+    }
 
-        contentInfoBean.setPageSize(container.getContentInfoBean().getPageSize());
-        contentInfoBean.setPageIndex(container.getContentInfoBean().getPageIndex());
-        contentInfoBean.setResultSize(container.getContentInfoBean().getResultSize());
+    /**
+     * @see org.opencms.util.I_CmsMacroResolver#resolveMacros(java.lang.String)
+     */
+    public String resolveMacros(String input) {
 
-        pageContext.setAttribute(variable, contentInfoBean, scope);
+        return CmsMacroResolver.resolveMacros(input, this);
+    }
+
+    /**
+     * Sets the scope under which the content info is saved in the page context.<p>
+     * 
+     * @param scope the scope under which the content info is saved in the page context
+     */
+    public void setScope(String scope) {
+
+        m_scope = scope;
+    }
+
+    /**
+     * Sets the name of the content info's value that should be printed out.<p>
+     * 
+     * @param value the name of the content info's value that should be printed out
+     */
+    public void setValue(String value) {
+
+        m_value = value;
+    }
+
+    /**
+     * Sets the name of the variable under which the content info bean should be saved in the page context.<p>
+     * 
+     * @param var the name of the variable under which the content info bean should be saved in the page context
+     */
+    public void setVar(String var) {
+
+        m_variable = var;
     }
 
     /**
@@ -293,65 +297,22 @@ public class CmsJspTagContentInfo extends TagSupport {
         return scopeValue;
 
     }
-
+    
     /**
-     * Sets the name of the variable under which the content info bean should be saved in the page context.<p>
+     * Stores the container's content info bean under the specified scope in the page context.<p>
      * 
-     * @param var the name of the variable under which the content info bean should be saved in the page context
+     * @param container the parent container
+     * @param variable the variable under which the content info bean is saved
+     * @param scope the scope under which the content info bean is saved
      */
-    public void setVar(String var) {
+    protected void storeContentInfoBean(CmsJspTagContentLoad container, String variable, int scope) {
 
-        m_variable = var;
+        CmsContentInfoBean contentInfoBean = container.getContentInfoBean();
+
+        contentInfoBean.setPageSize(container.getContentInfoBean().getPageSize());
+        contentInfoBean.setPageIndex(container.getContentInfoBean().getPageIndex());
+        contentInfoBean.setResultSize(container.getContentInfoBean().getResultSize());
+
+        pageContext.setAttribute(variable, contentInfoBean, scope);
     }
-
-    /**
-     * Returns the name of the variable under which the content info bean should be saved in the page context.<p>
-     * 
-     * @return the name of the variable under which the content info bean should be saved in the page context
-     */
-    public String getVar() {
-
-        return m_variable;
-    }
-
-    /**
-     * Returns the name of the content info's value that should be printed out.<p>
-     * 
-     * @return the name of the content info's value that should be printed out
-     */
-    public String getValue() {
-
-        return m_value;
-    }
-
-    /**
-     * Sets the name of the content info's value that should be printed out.<p>
-     * 
-     * @param value the name of the content info's value that should be printed out
-     */
-    public void setValue(String value) {
-
-        m_value = value;
-    }
-
-    /**
-     * Returns the scope under which the content info is saved in the page context.<p>
-     * 
-     * @return the scope under which the content info is saved in the page context
-     */
-    public String getScope() {
-
-        return m_scope;
-    }
-
-    /**
-     * Sets the scope under which the content info is saved in the page context.<p>
-     * 
-     * @param scope the scope under which the content info is saved in the page context
-     */
-    public void setScope(String scope) {
-
-        m_scope = scope;
-    }
-
 }
