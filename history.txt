@@ -8,6 +8,16 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.35 Arakis - 31 August 2000
+
+! added a registry to maintain informations about modules
+* writeUser now changes the default group
+* getUsersOfGroup now returns users with the right default group
+* readFile, readFileHeader now throw an exception (instead of online fallback) for a deleted file
+- the existing import extended for resources of a module
+- the administration and views are prepared for module system
+- started to implement a module system
+
 OpenCms 4.1.34 Arakis - 14 August 2000
 
 ! export extended, now several folders and files can be exported to a single zip file
