@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/07/12 12:49:03 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/07/14 11:05:23 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.21 $ $Date: 2003/07/14 11:05:23 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -75,7 +75,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
                         CmsUUID lockedByUserId, int launcherType,
                         String launcherClassname, long dateCreated,
                         long dateLastModified,
-                        CmsUUID resourceLastModifiedByUserId,byte[] fileContent, int size, int lockedInProject){
+                        CmsUUID resourceLastModifiedByUserId,byte[] fileContent, int size, int lockedInProject, int vfsLinkType){
 
         // create the CmsResource.
         super(structureId, resourceId, parentId,
@@ -84,7 +84,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
               projectId,accessFlags,state,
               lockedByUserId,launcherType,
               launcherClassname,dateCreated,
-              dateLastModified,resourceLastModifiedByUserId, size, lockedInProject);
+              dateLastModified,resourceLastModifiedByUserId, size, lockedInProject, vfsLinkType);
 
         // set content and size.
         m_fileContent=fileContent;
@@ -105,7 +105,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
                              this.getAccessFlags(),this.getState(), this.isLockedBy(),
                              this.getLauncherType(), new String(this.getLauncherClassname()),
                              this.getDateCreated(),this.getDateLastModified(),
-                             this.getResourceLastModifiedBy(), newContent, this.getLength(), this.getLockedInProject());
+                             this.getResourceLastModifiedBy(), newContent, this.getLength(), this.getLockedInProject(), this.getVfsLinkType());
     }
     /**
      * Gets the content of this file.

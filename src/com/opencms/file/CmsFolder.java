@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/14 11:05:23 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/14 11:05:23 $
  */
 public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -66,14 +66,14 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
                         CmsUUID lockedByUserId, long dateCreated
                         ,long dateLastModified, CmsUUID resourceLastModifiedByUserId, int lockedInProject){
 
-        // create the CmsResource.
+        // TODO VFS links: refactor all upper methods to support the VFS link type param
         super(structureId, resourceId,parentId,fileId,
               resourceName,resourceType,
               resourceFlags,userId,groupId,
               projectId,accessFlags,state,
               lockedByUserId,I_CmsConstants.C_UNKNOWN_LAUNCHER_ID,
               I_CmsConstants.C_UNKNOWN_LAUNCHER,dateCreated,
-              dateLastModified,resourceLastModifiedByUserId, -1, lockedInProject);
+              dateLastModified,resourceLastModifiedByUserId, -1, lockedInProject, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
    }
     /**
     * Clones the CmsFolder by creating a new CmsFolder.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/10 13:13:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/14 11:05:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/07/10 13:13:07 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/14 11:05:23 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -61,6 +61,9 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
      * @see org.opencms.db.I_CmsVfsDriver#createFile(com.opencms.file.CmsUser, com.opencms.file.CmsProject, java.lang.String, int, com.opencms.flex.util.CmsUUID, byte[], com.opencms.file.I_CmsResourceType)
      */
     public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
+        
+        // TODO VFS links: refactor all upper methods to support the VFS link type param
+        
         if (filename.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
             throw new CmsException("The resource name '" + filename + "' is too long! (max. allowed length must be <= " + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + " chars.!)", CmsException.C_BAD_NAME);
         }
@@ -114,7 +117,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 			stmt.setInt(11, state);
             stmt.setInt(12, contents.length);
             stmt.executeUpdate();
-            m_sqlManager.closeAll(null, stmt, null);
+            m_sqlManager.closeAll(null, stmt, null);                      
 
             // write the structure
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
@@ -123,7 +126,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             stmt.setString(3, resourceId.toString());
             stmt.setInt(4, project.getId());
             stmt.setString(5, filename);
-            stmt.setInt(6, 0);
+            stmt.setInt(6, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
             stmt.setInt(7, state);
             stmt.setString(8, CmsUUID.getNullUUID().toString());
             stmt.setString(9, user.getId().toString());

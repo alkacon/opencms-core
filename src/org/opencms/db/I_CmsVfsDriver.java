@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/11 13:31:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/14 11:05:23 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/07/11 13:31:20 $
+ * @version $Revision: 1.10 $ $Date: 2003/07/14 11:05:23 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -107,7 +107,7 @@ public interface I_CmsVfsDriver {
      */    
     CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet, boolean hasFileContentInResultSet) throws SQLException, CmsException;
     
-    CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
+    CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename, boolean isVfsLink) throws CmsException;
     
     /**
      * Creates a new file with the given content and resourcetype.<p>
@@ -150,7 +150,7 @@ public interface I_CmsVfsDriver {
     void deleteProjectResources(CmsProject project) throws CmsException;
     void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException;
     void deletePropertydefinition(CmsPropertydefinition metadef) throws CmsException;
-    void deleteResource(CmsResource resource) throws CmsException;
+    //void deleteResource(CmsResource resource) throws CmsException;
     
     /**
      * Destroys this driver.<p>
@@ -280,7 +280,7 @@ public interface I_CmsVfsDriver {
      * @param resourceId the ID of the resource
      * @throws CmsException if something goes wrong
      */
-    void removeFile(CmsProject currentProject, CmsUUID resourceId) throws CmsException;
+    void removeFile(CmsProject currentProject, CmsResource resource) throws CmsException;
     void removeFile(CmsProject currentProject, CmsUUID parentId, String filename) throws CmsException;
 
 	/**
@@ -346,7 +346,15 @@ public interface I_CmsVfsDriver {
     
     CmsPropertydefinition writePropertydefinition(CmsPropertydefinition metadef) throws CmsException;
     void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, boolean isChanged, CmsUUID userId) throws CmsException;
-    void updateOnlineResourceFromOfflineResource( CmsResource onlineResource, CmsResource offlineResource) throws CmsException;
+    
+    /**
+     * Publishes the content of an existing offline resource into it's existing online counterpart.<p>
+     * 
+     * @param onlineResource the online resource
+     * @param offlineResource the offline resource
+     * @throws CmsException if somethong goes wrong
+     */
+    void publishResource( CmsResource onlineResource, CmsResource offlineResource) throws CmsException;
     
     /**
      * Reads the project ID's by matching a given path to all project resources.<p>
@@ -396,7 +404,6 @@ public interface I_CmsVfsDriver {
      */
     List getSubResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException;
     
-    
     /**
      * Gets all resources with a modification date within a given time frame.<p>
      * 
@@ -407,5 +414,5 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if operation was not succesful 
      */
     List getResourcesInTimeRange(int currentProject, long starttime, long endtime) throws CmsException;
-    
+        
 }

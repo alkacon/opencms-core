@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/07/14 11:05:23 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/14 11:05:23 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -80,7 +80,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         boolean checkurl = true;
 
         String filename = null;
-        String link = null;
+        String targetName = null;
         String foldername = null;
         String type = null;
         I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -113,12 +113,12 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             // try to get the value from the session, e.g. after an error
             filename = (String)session.getValue(C_PARA_FILE)!=null?(String)session.getValue(C_PARA_FILE):"";
         }
-        link = cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
-        if(link != null) {
-            session.putValue(C_PARA_LINK, link);
+        targetName = cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
+        if(targetName != null) {
+            session.putValue(C_PARA_LINK, targetName);
         } else {
             // try to get the value from the session, e.g. after an error
-            link = (String)session.getValue(C_PARA_LINK)!=null?(String)session.getValue(C_PARA_LINK):"";
+            targetName = (String)session.getValue(C_PARA_LINK)!=null?(String)session.getValue(C_PARA_LINK):"";
         }
         
         // get the parameters
@@ -167,7 +167,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 
         // set the values e.g. after an error
         xmlTemplateDocument.setData("LINKNAME", filename);
-        xmlTemplateDocument.setData("LINKVALUE", link);
+        xmlTemplateDocument.setData("LINKVALUE", targetName);
         xmlTemplateDocument.setData("NAVTITLE", Encoder.escapeHtml(navtitle));
         xmlTemplateDocument.setData("KEEPPROPERTIES", keepTargetProperties==true ? "true" : "false" );
         xmlTemplateDocument.setData("ADDTONAV", addToNav==true ? "true" : "false" );
@@ -201,18 +201,18 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                         foldername = cms.readAbsolutePath(cms.rootFolder());
                     }
 
-                    String title = lang.getLanguageValue("explorer.linkto") + " " + link;
+                    String title = lang.getLanguageValue("explorer.linkto") + " " + targetName;
                     type = "link";
                     if(notChange != null && notChange.equals("false")) {
 
                         // change old file
                         CmsFile editFile = cms.readFile(filename);
                         String oldLink = new String( editFile.getContents() );
-                        editFile.setContents(link.getBytes());
+                        editFile.setContents(targetName.getBytes());
 
                         if(step.equals("1")){
-                            if(!link.startsWith("/")){
-                                checkurl = CmsLinkCheck.checkUrl(link);
+                            if(!targetName.startsWith("/")){
+                                checkurl = CmsLinkCheck.checkUrl(targetName);
                             }
                         }
                         if(checkurl){
@@ -220,8 +220,8 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                             cms.writeProperty(filename, C_PROPERTY_TITLE, title);
                             
                             cms.doDecrementLinkCountForResource( oldLink );
-                            cms.doIncrementLinkCountForResource( link );
-                            cms.linkResourceToTarget( filename, link );
+                            cms.doIncrementLinkCountForResource( targetName );
+                            cms.linkResourceToTarget( filename, targetName );
                         }
                         linkResource = (CmsResource)editFile;
                     } else {
@@ -229,8 +229,8 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                         Hashtable prop = new Hashtable();
                         prop.put(C_PROPERTY_TITLE, title);
                         if(step.equals("1")){
-                            if(!link.startsWith("/")){
-                                checkurl = CmsLinkCheck.checkUrl(link);
+                            if(!targetName.startsWith("/")){
+                                checkurl = CmsLinkCheck.checkUrl(targetName);
                             }
                         }
                         if(checkurl){
@@ -238,12 +238,14 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                             
                             if (keepTargetProperties) {
                                 try {
-                                    targetProperties = cms.readProperties(link);
+                                    targetProperties = cms.readProperties(targetName);
                                 } 
                                 catch (Exception e) {}
                             }
                             
-                            linkResource = cms.createResource( foldername + filename, type, prop, link.getBytes(), targetProperties );
+                            // TODO VFS links: creates an external HTTP link following the new linking paradigm
+                            //linkResource = cms.createResource(foldername + filename, type, prop, targetName.getBytes(), targetProperties);
+                            linkResource = cms.createVfsLink(foldername + filename, targetName, targetProperties);
                         }
                     }
                     // now check if navigation informations have to be added to the new page.
@@ -297,7 +299,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         if(!checkurl){
             xmlTemplateDocument.setData("folder", foldername);
             xmlTemplateDocument.setData("newlink", notChange);
-            session.putValue(C_PARA_LINK, link);
+            session.putValue(C_PARA_LINK, targetName);
             session.putValue(C_PARA_FILE, filename);
             session.putValue(C_PARA_NAVTEXT, navtitle);
             session.putValue(C_PARA_NAVPOS, navpos);
@@ -305,7 +307,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         }
         if(!"".equals(error.trim())){
             xmlTemplateDocument.setData("errordetails", error);
-            session.putValue(C_PARA_LINK, link);
+            session.putValue(C_PARA_LINK, targetName);
             session.putValue(C_PARA_FILE, filename);
             session.putValue(C_PARA_NAVTEXT, navtitle);
             session.putValue(C_PARA_NAVPOS, navpos);

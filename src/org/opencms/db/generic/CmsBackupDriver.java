@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/10 13:13:07 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/14 11:05:23 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/07/10 13:13:07 $
+ * @version $Revision: 1.13 $ $Date: 2003/07/14 11:05:23 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -105,6 +105,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_CREATED")));
         String userCreatedName = res.getString(m_sqlManager.get("C_RESOURCES_USER_CREATED_NAME"));        
         int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+        int vfsLinkType = res.getInt(m_sqlManager.get("C_RESOURCES_LINK_TYPE"));
 
         if (hasContent) {
             content = m_sqlManager.getBytes(res, m_sqlManager.get("C_RESOURCES_FILE_CONTENT"));
@@ -112,7 +113,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             content = new byte[0];
         }
 
-        return new CmsBackupResource(versionId, structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, userCreated, userCreatedName, CmsUUID.getNullUUID(), "", projectID, 0, state, launcherType, launcherClass, dateCreated, dateLastModified, userLastModified, userLastModifiedName, content, resourceSize, lockedInProject);
+        return new CmsBackupResource(versionId, structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, userCreated, userCreatedName, CmsUUID.getNullUUID(), "", projectID, 0, state, launcherType, launcherClass, dateCreated, dateLastModified, userLastModified, userLastModifiedName, content, resourceSize, lockedInProject, vfsLinkType);
     }
 
     /**
@@ -557,6 +558,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         String createdName = null;
         CmsUUID backupPkId = new CmsUUID();
         byte[] content = null;
+        int vfsLinkType = I_CmsConstants.C_UNKNOWN_ID;
 
         try {
             CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getResourceLastModifiedBy());
@@ -572,31 +574,36 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         try {
             conn = m_sqlManager.getConnectionForBackup();           
             
-            if (resource.getType() != I_CmsConstants.C_TYPE_FOLDER) {
-				// write the file content
-				content = ((CmsFile)resource).getContents();
-				writeBackupFileContent(backupPkId,resource.getFileId(),content,versionId);               
+            if (resource.isHardLink()) {
+                if (resource.getType() != I_CmsConstants.C_TYPE_FOLDER) {
+    				// write the file content
+    				content = ((CmsFile)resource).getContents();
+    				writeBackupFileContent(backupPkId,resource.getFileId(),content,versionId);               
+                }
+    
+                // write the resource
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_BACKUP");
+                stmt.setString(1, resource.getResourceId().toString());
+                stmt.setInt(2, resource.getType());
+                stmt.setInt(3, resource.getFlags());
+                stmt.setString(4, resource.getFileId().toString());
+                stmt.setInt(5, resource.getLauncherType());
+                stmt.setString(6, resource.getLauncherClassname());
+                stmt.setTimestamp(7, new Timestamp(publishDate));
+    			stmt.setString(8, resource.getOwnerId().toString());
+                stmt.setTimestamp(9, new Timestamp(resource.getDateLastModified()));
+    			stmt.setString(10, resource.getResourceLastModifiedBy().toString());
+    			stmt.setInt(11, resource.getState());
+                stmt.setInt(12, resource.getLength());
+                stmt.setInt(13, versionId);
+                stmt.setString(14, backupPkId.toString());
+                stmt.executeUpdate();                
+                m_sqlManager.closeAll(null, stmt, null);
+                
+                vfsLinkType = I_CmsConstants.C_VFS_LINK_TYPE_MASTER;
+            } else {
+                vfsLinkType = I_CmsConstants.C_VFS_LINK_TYPE_SLAVE;
             }
-
-            // write the resource
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_BACKUP");
-            stmt.setString(1, resource.getResourceId().toString());
-            stmt.setInt(2, resource.getType());
-            stmt.setInt(3, resource.getFlags());
-            stmt.setString(4, resource.getFileId().toString());
-            stmt.setInt(5, resource.getLauncherType());
-            stmt.setString(6, resource.getLauncherClassname());
-            stmt.setTimestamp(7, new Timestamp(publishDate));
-			stmt.setString(8, resource.getOwnerId().toString());
-            stmt.setTimestamp(9, new Timestamp(resource.getDateLastModified()));
-			stmt.setString(10, resource.getResourceLastModifiedBy().toString());
-			stmt.setInt(11, resource.getState());
-            stmt.setInt(12, resource.getLength());
-            stmt.setInt(13, versionId);
-            stmt.setString(14, backupPkId.toString());
-            stmt.executeUpdate();
-            
-            m_sqlManager.closeAll(null, stmt, null);
 
             // write the structure
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_WRITE_BACKUP");
@@ -605,7 +612,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             stmt.setString(3, resource.getResourceId().toString());
             stmt.setInt(4, publishProject.getId());
             stmt.setString(5, resource.getResourceName());
-            stmt.setInt(6, 0);
+            stmt.setInt(6, vfsLinkType);
             stmt.setInt(7, resource.getState());
             stmt.setString(8, resource.isLockedBy().toString());
             stmt.setString(9, resource.getResourceLastModifiedBy().toString());
@@ -618,6 +625,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             
             List existingBackups = readAllBackupFileHeaders(resource.getId());
             if (existingBackups.size() > getMaxResourceVersionCount()) {
+                // delete redundant backups
                 deleteBackups(existingBackups);
             }            
 

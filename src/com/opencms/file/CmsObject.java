@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/12 12:49:03 $
-* Version: $Revision: 1.313 $
+* Date   : $Date: 2003/07/14 11:05:23 $
+* Version: $Revision: 1.314 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.313 $
+ * @version $Revision: 1.314 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4481,6 +4481,10 @@ public int getBackupVersionId(){
         
         // adjust the resource path for the current site root
         return removeSiteRoot(resource.getFullResourceName());
+    }    
+    
+    public CmsResource createVfsLink(String linkName, String targetName, Map linkProperties) throws CmsException {
+        return m_driverManager.createVfsLink(m_context.currentUser(), m_context.currentProject(), addSiteRoot(linkName), addSiteRoot(targetName), linkProperties);
     }    
     
 }

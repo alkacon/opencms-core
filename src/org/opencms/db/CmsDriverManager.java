@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/12 12:49:03 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/07/14 11:05:23 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.37 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.38 $ $Date: 2003/07/14 11:05:23 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1600,8 +1600,8 @@ public class CmsDriverManager extends Object {
             filecontent = new byte[0];
         }
 
-        CmsResource newResource = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), parentFolder.getId(), CmsUUID.getNullUUID(), resourceName, resourceType, 0, owner.getId(), group.getId(), currentProject.getId(), accessFlags, I_CmsConstants.C_STATE_NEW, currentUser.getId(), launcherType, launcherClassname, lastmodified, lastmodified, currentUser.getId(), filecontent.length, currentProject.getId());
-        //newResource.setDateLastModified(lastmodified);
+        // TODO VFS links: refactor all upper methods to support the VFS link type param
+        CmsResource newResource = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), parentFolder.getId(), CmsUUID.getNullUUID(), resourceName, resourceType, 0, owner.getId(), group.getId(), currentProject.getId(), accessFlags, I_CmsConstants.C_STATE_NEW, currentUser.getId(), launcherType, launcherClassname, lastmodified, lastmodified, currentUser.getId(), filecontent.length, currentProject.getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
 
         // create the folder.
         newResource = m_vfsDriver.importResource(currentProject, parentFolder.getId(), newResource, filecontent, currentUser.getId(), isFolder);
@@ -2006,7 +2006,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         if (onlineFile == null) {
             // the onlinefile dosent exist => remove the file
             deleteAllProperties(currentUser, currentProject, filename);
-            m_vfsDriver.removeFile(currentProject, offlineFile.getId());
+            m_vfsDriver.removeFile(currentProject, offlineFile);
             // remove the access control entries
             m_userDriver.removeAllAccessControlEntries(currentProject, offlineFile.getResourceAceId());
         } else {
@@ -2210,7 +2210,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                     // delete the properties
                     m_vfsDriver.deleteAllProperties(id, currentFile.getId());
                     // delete the file
-                    m_vfsDriver.removeFile(currentProject, currentFile.getId());
+                    m_vfsDriver.removeFile(currentProject, currentFile);
                     // remove the access control entries
                     m_userDriver.removeAllAccessControlEntries(currentProject, currentFile.getResourceAceId());
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_CHANGED) {
@@ -5938,7 +5938,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
                     currentUser.getId(),
                     backupFile.getContents(),
                     backupFile.getLength(),
-                    currentProject.getId());
+                    currentProject.getId(), backupFile.getVfsLinkType());
             writeFile(currentUser, currentProject, newFile);
             clearResourceCache();
         }
@@ -6228,7 +6228,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
                     currentUser.getId(),
                     onlineFile.getContents(),
                     onlineFile.getLength(),
-                    currentProject.getId());
+                    currentProject.getId(), onlineFile.getVfsLinkType());
             // write the file in the offline project
 
             // check if the user has write access 
@@ -8600,5 +8600,59 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         }
         return result;
     }    
+    
+    public CmsResource createVfsLink(CmsUser currentUser, CmsProject currentProject, String linkName, String targetName, Map linkProperties) throws CmsException {
+        CmsResource targetResource = null;
+        CmsFile linkResource = null;
+        String parentFolderName = null;
+        CmsFolder parentFolder = null;
+        String resourceName = null;
+
+        parentFolderName = linkName.substring(0, linkName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
+        resourceName = linkName.substring(linkName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1, linkName.length());
+
+        // read the target resource
+        targetResource = this.readFileHeader(currentUser, currentProject, targetName);
+        // read the parent folder
+        parentFolder = this.readFolder(currentUser, currentProject, parentFolderName, false);
+
+        // for the parernt folder is write access required
+        checkPermissions(currentUser, currentProject, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
+
+        // construct a dummy that is written to the db
+        linkResource =
+            new CmsFile(
+                new CmsUUID(),
+                targetResource.getResourceId(),
+                parentFolder.getId(),
+                CmsUUID.getNullUUID(),
+                resourceName,
+                targetResource.getType(),
+                targetResource.getFlags(),
+                currentUser.getId(),
+                currentUser.getDefaultGroupId(),
+                currentProject.getId(),
+                com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
+                com.opencms.core.I_CmsConstants.C_STATE_NEW,
+                CmsUUID.getNullUUID(),
+                targetResource.getLauncherType(),
+                targetResource.getLauncherClassname(),
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                currentUser.getId(),
+                new byte[0],
+                0,
+                currentProject.getId(),
+                I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
+
+        // write the link
+        linkResource = m_vfsDriver.createFile(currentProject, linkResource, currentUser.getId(), parentFolder.getId(), resourceName, true);
+        // write its properties
+        m_vfsDriver.writeProperties(linkProperties, currentProject.getId(), (CmsResource) linkResource, linkResource.getType());
+
+        clearResourceCache();
+
+        return linkResource;
+    }
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/12 12:49:03 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/07/14 11:05:23 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.19 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/14 11:05:23 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -272,7 +272,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         }
     }
 
-   /**
+    /**
     * Creates a project.<p>
     *
     * @param owner The owner of this project
@@ -785,7 +785,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     /**
 	 * @see java.lang.Object#finalize()
 	 */
-	protected void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         if (m_sqlManager!=null) {
             m_sqlManager.finalize();
         }
@@ -1108,7 +1108,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     /**
 	 * @see org.opencms.db.I_CmsProjectDriver#init(source.org.apache.java.util.Configurations, java.lang.String, org.opencms.db.CmsDriverManager)
 	 */
-	public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException {
+    public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException {
         m_sqlManager = this.initQueries(dbPoolUrl);      
         m_driverManager = driverManager;  
 
@@ -1155,8 +1155,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         List projectResources = null;
         boolean publishCurrentResource = false;
         int count = 0;
-        
-        // TODO ensure that online resources from my own project get published        
+       
 
         if (backupEnabled) {
             backupVersionId = m_driverManager.getBackupVersionId();
@@ -1165,7 +1164,6 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         
         projectResources = m_driverManager.getVfsDriver().readProjectResources(publishProject);
 
-        // read all folders in the offline project
         offlineFolders = m_driverManager.getVfsDriver().readFolders(publishProject, false, true);
 
         i = offlineFolders.iterator();
@@ -1220,7 +1218,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                                 throw exc;
                             }
     
-                            m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource((CmsResource)onlineFolder, (CmsResource)currentFolder);
+                            m_driverManager.getVfsDriver().publishResource( (CmsResource)onlineFolder, (CmsResource)currentFolder);
                         } else {
                             throw e;
                         }
@@ -1279,7 +1277,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         }
                     }                                    
     
-                    m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource((CmsResource)onlineFolder, (CmsResource)currentFolder);               
+                    m_driverManager.getVfsDriver().publishResource( (CmsResource)onlineFolder, (CmsResource)currentFolder);               
                     
                     // copy the access control entries of the folder
                     m_driverManager.getUserDriver().publishAccessControlEntries(publishProject, onlineProject, currentFolder.getResourceAceId(), onlineFolder.getResourceAceId());                
@@ -1347,7 +1345,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     //in this case do nothing
                 } else if (currentFile.getResourceName().startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
                     m_driverManager.getVfsDriver().deleteAllProperties(publishProjectId, currentFile);
-                    m_driverManager.getVfsDriver().removeFile(publishProject, currentFile.getId());
+                    m_driverManager.getVfsDriver().removeFile(publishProject, currentFile);
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_DELETED) {
                     // C_STATE_DELETE
                     
@@ -1378,8 +1376,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     }
                     
                     try {
-                        m_driverManager.getVfsDriver().deleteResource(currentOnlineFile);
-                        m_driverManager.getVfsDriver().deleteResource(currentFile);
+                        m_driverManager.getVfsDriver().removeFile(onlineProject, currentOnlineFile);
+                        m_driverManager.getVfsDriver().removeFile(publishProject, currentFile);
                     } catch (CmsException exc) {
                         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
@@ -1433,12 +1431,15 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         if (exc.getType() == CmsException.C_NOT_FOUND) {                        
                             // create a new File
                             currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                            onlineFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, currentUser.getId(), currentFile.getParentId(), currentFile.getResourceName());
+                            onlineFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, currentUser.getId(), currentFile.getParentId(), currentFile.getResourceName(), currentFile.isHardLink());
                         }
                     }
     
-                    m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource((CmsResource)onlineFile, (CmsResource)currentFile);
-                    m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
+                    m_driverManager.getVfsDriver().publishResource((CmsResource)onlineFile, (CmsResource)currentFile);
+                    
+                    if (currentFile.isHardLink()) {
+                        m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
+                    }
                     
                     // copy properties
                     Map props = (Map) new HashMap();
@@ -1491,7 +1492,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     try {
                         newFile = (CmsFile) currentFile.clone();
                         newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().createFile(onlineProject, newFile, currentUser.getId(), newFile.getParentId(), newFile.getResourceName());
+                        m_driverManager.getVfsDriver().createFile(onlineProject, newFile, currentUser.getId(), newFile.getParentId(), newFile.getResourceName(), newFile.isHardLink());
                     } catch (CmsException e) {
                         if (e.getType() == CmsException.C_FILE_EXISTS) {
                             CmsFile onlineFile = null;
@@ -1501,8 +1502,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                                 throw exc;
                             }
     
-                            m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource((CmsResource)onlineFile, (CmsResource)currentFile);
-                            m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
+                            m_driverManager.getVfsDriver().publishResource( (CmsResource)onlineFile, (CmsResource)currentFile);
+                            if (currentFile.isHardLink()) {
+                                m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
+                            }
                         } else {
                             throw e;
                         }
@@ -2080,7 +2083,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         return property;
     }
 
-	/**
+    /**
      * Helper method to serialize the hashtable.<p>
      * This method is used by updateSession() and createSession().
      * 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/11 21:35:49 $
-* Version: $Revision: 1.242 $
+* Date   : $Date: 2003/07/14 11:05:23 $
+* Version: $Revision: 1.243 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.242 $ $Date: 2003/07/11 21:35:49 $
+ * @version $Revision: 1.243 $ $Date: 2003/07/14 11:05:23 $
  */
 public interface I_CmsConstants {
 
@@ -1428,6 +1428,12 @@ public interface I_CmsConstants {
     
     /** name of the special body element from an XMLTemplate */
     String C_XML_BODY_ELEMENT = "body"; 
+    
+    /** Type ID of a hard VFS link.<p> */
+    int C_VFS_LINK_TYPE_MASTER = 1;
+    
+    /** Type ID of a soft VFS link.<p> */
+    int C_VFS_LINK_TYPE_SLAVE = 2;     
   
     /** suffix for caching of simple pages */
     String C_XML_CONTROL_FILE_SUFFIX = ".xmlcontrol";
