@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/CmsAccessGuard.java,v $
- * Date   : $Date: 2003/06/12 15:16:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/12 16:51:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.file.CmsUser;
  * An access guard checks the permissions of an user on a given resource against required permissions,
  * additionally depending on the policy that is implemented in a subclass.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/06/12 15:16:32 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/12 16:51:19 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public abstract class CmsAccessGuard {
@@ -73,7 +73,7 @@ public abstract class CmsAccessGuard {
 	 * @param resource		the resource on which permissions are required
 	 * 
 	 * @return a set of allowed and denied permissions for the given user on the resource  
-	 * @throws CmsException
+	 * @throws CmsException if something goes wrong
 	 */
 	public abstract CmsPermissionSet evaluatePermissions (CmsResource resource) throws CmsException;
 	
@@ -86,7 +86,7 @@ public abstract class CmsAccessGuard {
 	 * @param resource			  	the resource on which permissions are required
 	 * @param requiredPermissions 	the set of permissions required to access the reosurce
 	 * 
-	 * @throws CmsException
+	 * @throws CmsException			if something goes wrong
 	 */
 	public void check (CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
 		
@@ -104,7 +104,7 @@ public abstract class CmsAccessGuard {
 	 * @param requiredPermissions	the set of permissions required to access the resource
 	 * @param blockAccess			if true, an access denied exception is thrown if the required permissions are not satisfied
 	 * @return						if the required permissions are satisfied
-	 * @throws CmsException
+	 * @throws CmsException			if something goes wrong
 	 */
 	public boolean check (CmsResource resource, CmsPermissionSet requiredPermissions, boolean blockAccess) throws CmsException {
 	
@@ -138,7 +138,7 @@ public abstract class CmsAccessGuard {
 		return m_project;
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/CmsPermissionSet.java,v $
- * Date   : $Date: 2003/06/12 16:42:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/12 16:51:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.I_CmsConstants;
 /**
  * A permission set contains both allowed and denied permissions as bitsets.
  * 
- * @version $Revision: 1.4 $ $Date: 2003/06/12 16:42:57 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/12 16:51:19 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
@@ -80,8 +80,8 @@ public class CmsPermissionSet {
 	/**
 	 * Constructor to create a permission set with some preset allowed and denied permissions.
 	 * 
-	 * @param allowedPermissions
-	 * @param deniedPermissions
+	 * @param allowedPermissions	the set of permissions to allow
+	 * @param deniedPermissions		the set of permissions to deny
 	 */
 	public CmsPermissionSet(int allowedPermissions, int deniedPermissions) {
 		
@@ -246,7 +246,7 @@ public class CmsPermissionSet {
 		return p.toString();			
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString () {
