@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/02/20 16:25:06 $
- * Version: $Revision: 1.231 $
+ * Date   : $Date: 2001/02/21 12:35:28 $
+ * Version: $Revision: 1.232 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.231 $ $Date: 2001/02/20 16:25:06 $
+ * @version $Revision: 1.232 $ $Date: 2001/02/21 12:35:28 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4056,9 +4056,15 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 	// check the security
 	if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) && (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
         // check, if we update class-files with this publishing
-        CmsClassLoader loader = (CmsClassLoader)getClass().getClassLoader();
-        Vector classFiles = loader.getFilenames();
-        boolean shouldReload = shouldReloadClasses(id, classFiles);
+        ClassLoader loader = getClass().getClassLoader();
+        boolean shouldReload = false;
+        // check if we are using our own classloader
+        // e.g. the cms-shell uses the default classloader
+        if(loader instanceof CmsClassLoader) {
+            // yes we have our own classloader
+            Vector classFiles = ((CmsClassLoader)loader).getFilenames();
+            shouldReload = shouldReloadClasses(id, classFiles);
+        }
 
 		m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
 		m_subresCache.clear();
@@ -4093,7 +4099,9 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 			deleteProject(currentUser, currentProject, id);
 		}
         // inform about the reload classes
-        loader.setShouldReload(shouldReload);
+        if(loader instanceof CmsClassLoader) {
+            ((CmsClassLoader)loader).setShouldReload(shouldReload);
+        }
 	} else {
 		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
 	}

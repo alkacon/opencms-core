@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2001/02/20 14:22:11 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2001/02/21 12:35:28 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2001/02/20 14:22:11 $
+ * @version $Revision: 1.28 $ $Date: 2001/02/21 12:35:28 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -689,8 +689,6 @@ public Class getModuleMaintenanceEventClass(String modulname) {
 		for (int i=0; i<reposNoVector.length; i++){
 			repositories.addElement(reposNoVector[i]);
 		}
-		//CmsClassLoader loader = new CmsClassLoader(m_cms, repositories, null);
-		// CmsClassLoader loader = new CmsClassLoader();
         ClassLoader loader = this.getClass().getClassLoader();
 
 		return loader.loadClass(getModuleData(modulname, "maintenance_class"));
