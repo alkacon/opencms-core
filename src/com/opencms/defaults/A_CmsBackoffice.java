@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/24 13:47:03 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/10/25 09:50:57 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -2279,9 +2279,9 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         cd.check(true);
 
         // unlock resource if save&exit was selected
-        if (action.equals("saveexit")) {
+        /* if (action.equals("saveexit")) {
           cd.setLockstate(-1);
-        }
+        } */
 
         // write the data to the database
         cd.write(cms);

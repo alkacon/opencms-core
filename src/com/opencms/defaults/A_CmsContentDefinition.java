@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2001/10/19 15:02:17 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/10/25 09:50:57 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -290,7 +290,7 @@ protected boolean hasWriteAccess(CmsObject cms) throws CmsException {
  *
  * @return wether the user has access, or not.
  */
-private boolean accessOwner(CmsObject cms, CmsUser currentUser,
+protected boolean accessOwner(CmsObject cms, CmsUser currentUser,
                                 int flags) throws CmsException {
     // The Admin has always access
     if( cms.isAdmin() ) {
@@ -316,7 +316,7 @@ private boolean accessOwner(CmsObject cms, CmsUser currentUser,
  *
  * @return wether the user has access, or not.
  */
-private boolean accessGroup(CmsObject cms, CmsUser currentUser,
+protected boolean accessGroup(CmsObject cms, CmsUser currentUser,
                               int flags) throws CmsException {
     // is the user in the group for the resource?
     if(cms.userInGroup(currentUser.getName(), getGroup() )) {
@@ -337,7 +337,7 @@ private boolean accessGroup(CmsObject cms, CmsUser currentUser,
  *
  * @return wether the user has access, or not.
  */
-private boolean accessOther( int flags ) throws CmsException {
+protected boolean accessOther( int flags ) throws CmsException {
     if ((getAccessFlags() & flags) == flags) {
         return true;
     } else {
