@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2004/02/24 13:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/27 14:29:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,11 @@ import javax.servlet.jsp.PageContext;
 
 
 /**
- * Superclass for OpenCms JSP beans.<p>
+ * Superclass for OpenCms JSP beans that provides convient access 
+ * to OpenCms core and VFS functionality.<p>
+ * 
+ * If you have large chunks of code on your JSP that you want to 
+ * move to a Class file, conside creating a subclass of this bean.
  * 
  * Initialize this bean at the beginning of your JSP like this:
  * <pre>
@@ -52,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3
  */
