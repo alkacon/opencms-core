@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/10/17 10:28:00 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  *
  * @see org.opencms.cache.I_CmsLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsLruCache extends java.lang.Object {
     
@@ -266,9 +266,11 @@ public class CmsLruCache extends java.lang.Object {
         
         // set the touched object as the new head in the linked list:
         I_CmsLruCacheObject oldHead = this.m_listHead;
-        oldHead.setNextLruObject(theCacheObject);
-        theCacheObject.setNextLruObject(null);
-        theCacheObject.setPreviousLruObject(oldHead);
+        if (oldHead != null) {
+            oldHead.setNextLruObject(theCacheObject);
+            theCacheObject.setNextLruObject(null);
+            theCacheObject.setPreviousLruObject(oldHead);
+        }
         this.m_listHead = theCacheObject;
         
         return true;
