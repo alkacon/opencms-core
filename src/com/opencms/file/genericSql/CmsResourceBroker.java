@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/07 14:45:20 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/06/07 16:08:23 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/06/07 14:45:20 $
+ * @version $Revision: 1.18 $ $Date: 2000/06/07 16:08:23 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -898,7 +898,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readAgent(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
         throws CmsException {
-     return null;
+		return m_dbAccess.readUser(task.getAgentUser(), C_USER_TYPE_SYSTEMUSER) ;
     }
     
     
@@ -918,7 +918,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOriginalAgent(CmsUser currentUser, CmsProject currentProject, 
 									   CmsTask task) 
         throws CmsException {
-     return null;
+		return m_dbAccess.readUser(task.getOriginalUser(), C_USER_TYPE_SYSTEMUSER);
     }
     
 	/**
@@ -936,7 +936,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsResource resource) 
         throws CmsException {
-     return null;
+		return m_dbAccess.readUser(resource.getOwnerId(), C_USER_TYPE_SYSTEMUSER);
     }
 	
 	/**
@@ -953,7 +953,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, CmsTaskLog log) 
         throws CmsException {
-     return null;
+		return m_dbAccess.readUser(log.getUser(), C_USER_TYPE_SYSTEMUSER);
     }
 							
 	/**
@@ -972,7 +972,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
         throws CmsException {
-     return null;
+		return this.m_dbAccess.readUser(task.getInitiatorUser(), C_USER_TYPE_SYSTEMUSER);
     }
 							
 	/**
@@ -1028,7 +1028,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsProject project) 
         throws CmsException {
-     return null;
+		return m_dbAccess.readUser(project.getOwnerId(), C_USER_TYPE_SYSTEMUSER);
     }
 	
 	/**
