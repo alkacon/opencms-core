@@ -54,7 +54,7 @@
             debug="on"
             optimize="off"
             deprecation="off"
-            depend="on"/>
+            />
 
        <copy todir="${build.classes}">
             <fileset dir="src" includes="**/*.properties,**/*.txt"/>

@@ -2469,6 +2469,15 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_file_compatiblePlain.gif</source>
+            <destination>pics/system/ic_file_compatiblePlain.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>pics/system/ic_file_script.gif</source>
             <destination>pics/system/ic_file_script.gif</destination>
             <type>image</type>
