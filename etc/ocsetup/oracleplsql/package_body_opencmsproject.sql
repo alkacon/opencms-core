@@ -1,4 +1,4 @@
-CREATE OR REPLACE
+CREATE OR REPLACE 
 PACKAGE BODY OpenCmsProject IS
    -- variable/funktions/procedures which are used only in this package
    bList userTypes.numberTable;
@@ -15,13 +15,13 @@ PACKAGE BODY OpenCmsProject IS
                     where user_id = pUserID
                     and project_flags = 0
                     order by project_name;
-                    	
+
       CURSOR cProjGroup(cGroupID NUMBER) IS
              select * from cms_projects
                     where (group_id = cGroupId or managergroup_id = cGroupId)
                     and project_flags = 0
-                    order by project_name; 
-                    
+                    order by project_name;
+
       vCursor userTypes.anyCursor := opencmsgroup.getGroupsOfUser (pUserID);
       recAllAccProjects userTypes.anyCursor;
       recGroup cms_groups%ROWTYPE;
@@ -65,7 +65,7 @@ PACKAGE BODY OpenCmsProject IS
         CLOSE vCursor;
         OPEN recAllAccProjects FOR 'select * from (select * from cms_projects where user_id = '||to_char(pUserID)||' and project_flags = 0 '||
                                   vQueryStr||') order by project_name';
-      END IF; 
+      END IF;
       -- return the cursor
       bList.DELETE;
       RETURN recAllAccProjects;
@@ -237,9 +237,11 @@ PACKAGE BODY OpenCmsProject IS
                  from cms_online_resources
                  where resource_name = opencmsResource.getParent(recFolders.resource_name);
         EXCEPTION
-          WHEN NO_DATA_FOUND THEN
-            vParentId := opencmsConstants.C_UNKNOWN_ID;
-        END;
+		  WHEN NO_DATA_FOUND THEN
+            raise_application_error(-20002, '[opencmsproject.publishProject] '||opencmsResource.getParent(recFolders.resource_name),true);
+          WHEN OTHERS THEN
+		  	RAISE;
+		END;
         BEGIN
           opencmsResource.createFolder(pUserId, pOnlineProjectId, pOnlineProjectId, recFolders,
             	                         vParentId, recFolders.resource_name, curNewFolder);
@@ -300,9 +302,11 @@ PACKAGE BODY OpenCmsProject IS
                    from cms_online_resources
                    where resource_name = opencmsResource.getParent(recFolders.resource_name);
           EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-              vParentId := opencmsConstants.C_UNKNOWN_ID;
-          END;
+		    WHEN NO_DATA_FOUND THEN
+              raise_application_error(-20002, '[opencmsproject.publishProject] '||opencmsResource.getParent(recFolders.resource_name),true);
+            WHEN OTHERS THEN
+			  RAISE;
+		  END;
           opencmsResource.createFolder(pUserId, pOnlineProjectId, pOnlineProjectId, recFolders,
                                        vParentId, recFolders.resource_name, curNewFolder);
           FETCH curNewFolder INTO recNewFolder;
@@ -386,9 +390,11 @@ PACKAGE BODY OpenCmsProject IS
                  from cms_online_resources
                  where resource_name = opencmsResource.getParent(recFiles.resource_name);
         EXCEPTION
-          WHEN NO_DATA_FOUND THEN
-            vParentId := opencmsConstants.C_UNKNOWN_ID;
-        END;
+		  WHEN NO_DATA_FOUND THEN
+            raise_application_error(-20002, '[opencmsproject.publishProject] '||opencmsResource.getParent(recFiles.resource_name),true);
+          WHEN OTHERS THEN
+		    RAISE;
+		END;
         BEGIN
           opencmsResource.createFile(pOnlineProjectId, pOnlineProjectId, recFiles, pUserId, vParentId,
                                      recFiles.resource_name, 'FALSE', curNewFile);
@@ -451,9 +457,11 @@ PACKAGE BODY OpenCmsProject IS
                    from cms_online_resources
                    where resource_name = opencmsResource.getParent(recFiles.resource_name);
           EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-              vParentId := opencmsConstants.C_UNKNOWN_ID;
-          END;
+		    WHEN NO_DATA_FOUND THEN
+              raise_application_error(-20002, '[opencmsproject.publishProject] '||opencmsResource.getParent(recFiles.resource_name),true);
+            WHEN OTHERS THEN
+			  RAISE;
+		  END;
           opencmsResource.createFile(pOnlineProjectId, pOnlineProjectId, recFiles, pUserId,
                                      vParentId, recFiles.resource_name, 'FALSE', curNewFile);
           FETCH curNewFile INTO recNewFile;
@@ -657,3 +665,4 @@ PACKAGE BODY OpenCmsProject IS
 ------------------------------------------------------------------------------------------
 END ;
 /
+
