@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2002/02/18 07:05:42 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/02/19 09:52:13 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.defaults.master.*;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2002/02/18 07:05:42 $
+ * @version $Revision: 1.3 $ $Date: 2002/02/19 09:52:13 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -428,7 +428,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
      * @exception throws a CmsException if something goes wrong.
      */
     private void writeXmlEntrys(CmsResource resource) throws CmsException {
-System.err.print("Exporting channel: "+resource.getAbsolutePath());
+        System.out.print("Exporting channel: "+resource.getAbsolutePath());
         String source, type, user, group, access, launcherStartClass;
 
         // get all needed informations from the resource
@@ -481,7 +481,7 @@ System.err.print("Exporting channel: "+resource.getAbsolutePath());
                 addCdataElement(m_docXml, property, C_EXPORT_TAG_VALUE, value);
             }
         }
-System.err.println("...OK");
+        System.out.println("...OK");
     }
 
     /**
@@ -559,7 +559,7 @@ System.err.println("...OK");
      */
     private void exportData(String classname, Hashtable exportedChannels) throws CmsException {
         // get the modulemaster for each exported channel
-System.err.println("Export Module "+classname);
+        System.out.println("Export Module "+classname);
         Enumeration keys = exportedChannels.keys();
         // get the subId of the module
         int subId = getContentDefinition(classname, new Class[]{CmsObject.class}, new Object[]{m_cms}).getSubId();
