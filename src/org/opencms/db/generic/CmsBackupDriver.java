@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/05/24 17:14:55 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2004/05/26 09:34:44 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.90 $ $Date: 2004/05/24 17:14:55 $
+ * @version $Revision: 1.91 $ $Date: 2004/05/26 09:34:44 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -988,7 +988,6 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         Connection conn = null;
         PreparedStatement stmt = null;
         String key = null;
-        boolean hasBatch = false;
         CmsProperty property = null;
         int mappingType = -1;
         String value = null;
@@ -997,11 +996,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         
         try {
             conn = m_sqlManager.getConnectionForBackup();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_CREATE_BACKUP");
             
             Iterator dummy = properties.iterator();
             while (dummy.hasNext()) {
-                hasBatch = false;
                 property = (CmsProperty) dummy.next();
                 key = property.getKey();
                 propdef = readBackupPropertyDefinition(key, resource.getType());
@@ -1034,6 +1031,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                             }
                         }
 
+                        stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_CREATE_BACKUP");
+                        
                         stmt.setString(1, backupId.toString());
                         stmt.setInt(2, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTIES_BACKUP")));
                         stmt.setInt(3, propdef.getId());
@@ -1042,12 +1041,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                         stmt.setString(6, m_sqlManager.validateNull(value));
                         stmt.setInt(7, tagId);
                         stmt.setInt(8, versionId);
-                        stmt.addBatch();
-                        hasBatch = true;
-                    }
-                    
-                    if (hasBatch) {
-                        stmt.executeBatch();
+                        
+                        stmt.executeUpdate();
+                        m_sqlManager.closeAll(null, stmt, null);
                     }                    
                 }
             }
