@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/10/02 12:10:21 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/10/06 12:59:53 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.workplace.CmsWorkplaceAction;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFolder;
@@ -40,15 +38,17 @@ import com.opencms.file.CmsResourceTypePointer;
 import com.opencms.util.CmsLinkCheck;
 import com.opencms.util.Utils;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
+
+import org.opencms.workplace.CmsWorkplaceAction;
 
 /**
  * Template Class for administration of picture galleries
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.23 $ $Date: 2003/10/02 12:10:21 $
+ * @version $Revision: 1.24 $ $Date: 2003/10/06 12:59:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -243,7 +243,8 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                                 checkurl = CmsLinkCheck.checkUrl(link);
                             }
                             if(checkurl){
-                                cms.createResource(foldername, filename, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, prop, link.getBytes());
+                                Map targetProperties = null;
+                                cms.createResource(foldername+filename, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, prop, link.getBytes(), targetProperties);
                             }
                         } catch (CmsException e){
                             error = e.getShortException();
