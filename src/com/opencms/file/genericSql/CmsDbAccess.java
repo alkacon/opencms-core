@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/06/22 16:00:44 $
- * Version: $Revision: 1.199 $
+ * Date   : $Date: 2001/06/27 07:24:40 $
+ * Version: $Revision: 1.200 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.199 $ $Date: 2001/06/22 16:00:44 $ *
+ * @version $Revision: 1.200 $ $Date: 2001/06/27 07:24:40 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -6347,7 +6347,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                byte[] fileContent = res.getBytes(m_cq.get("C_FILE_CONTENT"));
+                //byte[] fileContent = res.getBytes(m_cq.get("C_FILE_CONTENT"));
+                byte[] fileContent = new byte[0];
 				file = new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
 								groupId,projectID,accessFlags,state,lockedBy,
 								launcherType,launcherClass,created,modified,modifiedBy,

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/06/22 16:00:44 $
- * Version: $Revision: 1.243 $
+ * Date   : $Date: 2001/06/27 07:24:41 $
+ * Version: $Revision: 1.244 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.243 $ $Date: 2001/06/22 16:00:44 $
+ * @version $Revision: 1.244 $ $Date: 2001/06/27 07:24:41 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -170,11 +170,29 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
             return false;
         }
 
+         // check the rights for the current resource
+        if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) ||
+                accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
+                accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
+            // no write access to this resource!
+            return false;
+        }
+
+        // read the parent folder
+        if(resource.getParent() != null) {
+            // readFolder without checking access
+            //resource = readFolder(currentUser,currentProject, resource.getParent());
+            resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getParent());
+        } else {
+            // no parent folder!
+            return true;
+        }
+
         // check the rights and if the resource is not locked
         do {
-            if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) ||
-                accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
-                accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
+            if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) ||
+                accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) ||
+                accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 
                 // is the resource locked?
                 if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
@@ -584,10 +602,11 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
 
 
         // check the rights and if the resource is not locked
+        // for parent folders only read access is needed
         do {
-           if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) ||
-                accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
-                accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
+           if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) ||
+                accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) ||
+                accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 
                 // is the resource locked?
                 if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
@@ -4558,22 +4577,10 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
              }
          } catch(CmsException exc) {
              // the resource was not readable
-            // NO NEED TO READ FROM ONLINE PROJECT
-           //  if(currentProject.equals(onlineProject(currentUser, currentProject))) {
-                 // this IS the onlineproject - throw the exception
-                 throw exc;
-         /*    } else {
-                 // try to read the resource in the onlineproject
-                 cmsFile=(CmsResource)m_resourceCache.get(C_FILE+ C_PROJECT_ONLINE_ID+filename);
-                 if (cmsFile==null) {
-                    cmsFile = m_dbAccess.readFileHeader(C_PROJECT_ONLINE_ID,filename);
-                     m_resourceCache.put(C_FILE+C_PROJECT_ONLINE_ID+filename,cmsFile);
-                 }
-             } */
+             throw exc;
          }
 
          if( accessRead(currentUser, currentProject, cmsFile) ) {
-
             // acces to all subfolders was granted - return the file-header.
             return cmsFile;
         } else {
@@ -4582,7 +4589,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
         }
      }
 
-         /**
+    /**
      * Reads a file header a previous project of the Cms.<BR/>
      * The reading excludes the filecontent. <br>
      *
