@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/10/30 08:35:38 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2001/11/02 08:50:37 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.82 $ $Date: 2001/10/30 08:35:38 $
+ * @version $Revision: 1.83 $ $Date: 2001/11/02 08:50:37 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -958,7 +958,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             if(cosDeps != null){
                 for (int i = 0; i < cosDeps.size(); i++){
                     A_CmsContentDefinition contentDef = (A_CmsContentDefinition)cosDeps.elementAt(i);
-                    String key = cms.getSiteName() + "/cos/"+contentDef.getClass().getName() +"/"+contentDef.getUniqueId(cms);
+                    String key = cms.getSiteName() + cms.C_ROOTNAME_COS + "/"+contentDef.getClass().getName() +"/"+contentDef.getUniqueId(cms);
                     allDeps.add(key);
                     if(contentDef.isTimedContent()){
                         long time = ((I_CmsTimedContentDefinition)cosDeps.elementAt(i)).getPublicationDate();
@@ -975,7 +975,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // now for the Classes
             if(cosClassDeps != null){
                 for(int i=0; i<cosClassDeps.size(); i++){
-                    String key = cms.getSiteName() + "/cos/" + ((Class)cosClassDeps.elementAt(i)).getName() +"/";
+                    String key = cms.getSiteName() + cms.C_ROOTNAME_COS + "/" + ((Class)cosClassDeps.elementAt(i)).getName() +"/";
                     allDeps.add(key);
                 }
             }
