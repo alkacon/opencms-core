@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/18 13:56:08 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.3
  */
@@ -195,6 +195,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public void actionUpload() throws JspException {
         // determine the type of upload
         boolean unzipFile = Boolean.valueOf(getParamUnzipFile()).booleanValue();
+        // Suffix for error messages (e.g. when exceeding the maximum file upload size)
+        String errorMsgSuffix = "";
         
         try {
             // get the file item from the multipart request
@@ -216,8 +218,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 String contentType = fi.getContentType();
                 long size = fi.getSize();
                 long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms());
+                // check file size
                 if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
-                    throw new CmsException("File size larger than maximum allowed upload size");
+                    // file size is larger than maximum allowed file size, throw an error
+                    errorMsgSuffix = "size";
+                    throw new CmsException("File size larger than maximum allowed upload size, currently set to " + (maxFileSizeBytes / 1024) + " kb");
                 }
                 byte[] content = fi.get();
                 fi.delete();
@@ -239,10 +244,15 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     setParamResource(computeFullResourceName());
                     // determine the resource type id from the given information
                     int resTypeId = computeFileType(newResname, contentType);
-                    // create the resource
-                    getCms().createResource(getParamResource(), resTypeId, Collections.EMPTY_LIST, content, null);
+                    try {
+                        // create the resource
+                        getCms().createResource(getParamResource(), resTypeId, Collections.EMPTY_LIST, content, null);
+                    } catch (CmsException e) {
+                        // resource was present, overwrite it
+                        getCms().lockResource(getParamResource(), true);
+                        getCms().replaceResource(getParamResource(), resTypeId, null, content);
+                    }
                 }
-                fi.delete();
             } else {
                 throw new CmsException("Upload file not found");
             }
@@ -252,7 +262,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
             setParamErrorstack(e.getStackTraceAsString());
             setParamMessage(key("error.message.upload"));
-            setParamReasonSuggestion(key("error.reason.upload") + "<br>\n" + key("error.suggestion.upload") + "\n");
+            setParamReasonSuggestion(key("error.reason.upload" + errorMsgSuffix) + "<br>\n" + key("error.suggestion.upload" + errorMsgSuffix) + "\n");
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
     }
@@ -362,8 +372,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
         }
         fileExtensions=fileExtensions.substring(0, fileExtensions.length()-1);
         
-        // get the file size upload limitation value (value is in kB)
-        int maxFileSize = OpenCms.getWorkplaceManager().getFileMaxUploadSize(); 
+        // get the file size upload limitation value (value is in bytes for the applet)
+        long maxFileSize = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms()); 
         
         // get the current folder
         String currentFolder = computeCurrentFolder();

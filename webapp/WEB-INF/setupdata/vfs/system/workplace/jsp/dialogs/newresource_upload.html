@@ -56,6 +56,10 @@ case CmsNewResourceUpload.ACTION_SUBMITFORM:
 		}
 		break;
 	}
+	if (wp.getAction() == CmsNewResourceUpload.ACTION_SHOWERROR) {
+		// in case of an upload error, interrupt here
+		break;
+	}
 
 
 case CmsNewResourceUpload.ACTION_NEWFORM2:
