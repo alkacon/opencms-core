@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2004/09/20 08:15:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/01/07 08:47:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,14 @@ import org.opencms.staticexport.CmsLinkManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides File utility functions.<p>
@@ -163,5 +166,42 @@ public final class CmsFileUtil {
         out.close();
 
         return new String(out.toByteArray(), encoding);
+    }
+    
+    /**
+     * Returns a list of all filtered resources of the RFS in a subtree.<p>
+     * 
+     * If the <code>name</code> is not a folder the folder that contains the
+     * given file will be used instead.<p>
+     * 
+     * Despite the filter may not accept folders, every subfolder is traversed.<p>
+     * 
+     * @param name a folder or file name
+     * @param filter a filter
+     * 
+     * @return a list of filtered <code>{@link File}</code> objects
+     */
+    public static List getSubtree(String name, FileFilter filter) {
+        List ret = new ArrayList();
+        
+        File file = new File(name);
+        if (!file.isDirectory()) {
+            file = new File(file.getParent());
+            if (!file.isDirectory()) {
+                return ret;
+            }
+        }
+        File[] dirContent = file.listFiles();
+        for (int i = 0; i < dirContent.length; i++) {
+            File f = dirContent[i];
+            if (filter.accept(f)) {
+                ret.add(f);
+            }
+            if (f.isDirectory()) {
+                ret.addAll(getSubtree(f.getAbsolutePath(), filter));
+            }
+        }
+        
+        return ret;
     }
 }
