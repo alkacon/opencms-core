@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2000/06/05 13:37:56 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/06/06 09:30:52 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/06/05 13:37:56 $
+ * @version $Revision: 1.18 $ $Date: 2000/06/06 09:30:52 $
  */
 
 public class CmsUser implements I_CmsConstants,
@@ -53,6 +53,12 @@ public class CmsUser implements I_CmsConstants,
     private int m_id=C_UNKNOWN_ID;
     
     /**
+     * The password of the user.
+     */
+    private String m_password=null;
+     
+    
+    /**
      * The description of the user.
      */
     private String m_description=null;
@@ -66,6 +72,17 @@ public class CmsUser implements I_CmsConstants,
      * The default group of this user.
      */
     private CmsGroup m_defaultGroup= null;
+	
+	/**
+     * The default group ID of this user.
+     */
+    private int m_defaultGroupId= C_UNKNOWN_INT;
+	
+	/**
+     * The section of the user.
+     */
+    private String m_section=null;
+    
 	
 	/**
 	 * The flags of the user.
@@ -93,9 +110,21 @@ public class CmsUser implements I_CmsConstants,
 	private String m_lastname = "";
 	
 	/**
+	 * The address of the user.
+	 */
+	private String m_address = "";
+	
+	
+	/**
 	 * The last login of the user.
 	 */
 	private long m_lastlogin = C_UNKNOWN_LONG;
+    
+    /**
+	 * The typ of the user.
+	 */
+	private int m_typ = C_UNKNOWN_INT;
+	
     	 
     /**
      * Constructor, creates a new Cms user object.
@@ -205,9 +234,7 @@ public class CmsUser implements I_CmsConstants,
      */
     public void setDefaultGroup(CmsGroup defaultGroup) {
         m_defaultGroup = defaultGroup;
-        m_additionalInfo.put(C_ADDITIONAL_INFO_DEFAULTGROUP_ID, 
-							 new Integer(defaultGroup.getId()));
-
+        m_defaultGroupId = defaultGroup.getId();
     }
 
 	/**
@@ -288,6 +315,26 @@ public class CmsUser implements I_CmsConstants,
         m_additionalInfo=additionalInfo;
     }
     
+    /**
+	 * Gets the password.
+	 * 
+	 * @return the USER_PASSWORD, or null.
+	 */
+	public String getPassword() {
+        return m_password;
+    }
+     
+    /**
+     * Sets the password.
+	 * 
+	 * @param The new password.
+     */
+    public void setPassword(String value) {
+        m_password = value;
+    }
+
+	
+    
 	/**
 	 * Gets the email.
 	 * 
@@ -343,43 +390,39 @@ public class CmsUser implements I_CmsConstants,
     }
 	
 	/**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_ADDRESS);</pre>
+	 * Gets the address.
 	 * 
 	 * @return the USER_ADDRESS, or null.
 	 */
 	public String getAddress() {
-        String value=null;
-        value =(String)m_additionalInfo.get(C_ADDITIONAL_INFO_ADDRESS);
-        return value;
+         return m_address;
     }
     
      /**
-	 * This is a shortcut for: <pre>setAdditionalInfo(C_ADDITIONAL_INFO_ADDRESS,value);</pre>
+	 * Sets the address.
      *	 
      * @param value The user adress.
 	 */
     public void setAddress(String value) {
-        m_additionalInfo.put(C_ADDITIONAL_INFO_ADDRESS,value);
+        m_address = value;
     }
 
 	/**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_SECTION);</pre>
+	 * Gets the section of the user.
 	 * 
 	 * @return the USER_SECTION, or null.
 	 */
 	public String getSection() {
-        String value=null;
-        value =(String)m_additionalInfo.get(C_ADDITIONAL_INFO_SECTION);
-        return value;
+        return m_section;
     }
     
      /**
-	 * This is a shortcut for: <pre>setAdditionalInfo(C_ADDITIONAL_INFO_SECTION,value);</pre>
+	 * Sets the section of the user.
 	 * 
 	 * @param value The new user section.
 	 */
     public void setSection(String value) {
-        m_additionalInfo.put(C_ADDITIONAL_INFO_SECTION,value);
+        m_section = value;
     }
     
     /**
@@ -437,15 +480,32 @@ public class CmsUser implements I_CmsConstants,
      }
        
      /**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP_ID);</pre>
+	 * Gets the defaultgroup id.
 	 * 
 	 * @return the USER_DEFAULTGROUP_ID, or null.
 	 */
 	public int getDefaultGroupId() {
-        int value=C_UNKNOWN_ID;
-        value =((Integer)m_additionalInfo.get(C_ADDITIONAL_INFO_DEFAULTGROUP_ID)).intValue();
-        return value;
+        return m_defaultGroupId;
     }
+    
+     /**
+	 * Gets the typ.
+	 * 
+	 * @return the USER_typ, or C_UNKNOWN_INT.
+	 */
+	public int getTyp() {
+        return m_typ;
+    }
+ 
+    /**
+	 * Sets the typ.
+	 * 
+	 * @param value The new user typ.
+	 */
+     void setTyp(int value) {
+         m_typ = value;
+     }
+     
     
     /** 
     * Clones the CmsResource by creating a new CmsUser Object.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/06/06 08:23:07 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2000/06/06 09:30:52 $
+ * Version: $Revision: 1.80 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.79 $ $Date: 2000/06/06 08:23:07 $
+ * @version $Revision: 1.80 $ $Date: 2000/06/06 09:30:52 $
  */
 public interface I_CmsConstants
 {
@@ -211,26 +211,6 @@ public interface I_CmsConstants
 	 static final String C_USER_ADMIN = "Admin";
 
 	 /**
-	 * Key for additional info emailaddress.
-	 */
-	 final static String C_ADDITIONAL_INFO_EMAIL		= "USER_EMAIL";
-
-	/**
-	 * Key for additional info firstname.
-	 */
-	 final static String C_ADDITIONAL_INFO_FIRSTNAME	= "USER_FIRSTNAME";
-
-	/**
-	 * Key for additional info surname.
-	 */
-	 final static String C_ADDITIONAL_INFO_LASTNAME	= "USER_LASTNAME";
-
-	/**
-	 * Key for additional info address.
-	 */
-	 final static String C_ADDITIONAL_INFO_ADDRESS	= "USER_ADDRESS";
-
-	 /**
 	 * Key for additional info address.
 	 */
 	 final static String C_ADDITIONAL_INFO_ZIPCODE	= "USER_ZIPCODE";
@@ -240,26 +220,6 @@ public interface I_CmsConstants
 	 */
 	 final static String C_ADDITIONAL_INFO_TOWN	= "USER_TOWN";
 	 
-	/**
-	 * Key for additional info section.
-	 */
-	 final static String C_ADDITIONAL_INFO_SECTION	= "USER_SECTION";
-     
-     /**
-	 * Key for additional info default group id.
-	 */
-	 final static String C_ADDITIONAL_INFO_DEFAULTGROUP_ID	= "USER_DEFAULTGROUP_ID";
-     
-     /**
-	 * Key for additional info last login.
-	 */
-	 final static String C_ADDITIONAL_INFO_LASTLOGIN	= "USER_LASTLOGIN";
-
-     /**
-	 * Key for additional info flags.
-	 */
-	 final static String C_ADDITIONAL_INFO_FLAGS	= "USER_FLAGS";
-     
      /**
 	 * Key for additional info flags.
 	 */
