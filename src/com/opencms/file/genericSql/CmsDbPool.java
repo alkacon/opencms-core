@@ -3,8 +3,8 @@ package com.opencms.file.genericSql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/08/08 14:08:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/08/30 08:41:56 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ public class CmsDbPool {
 	/**
 	 * A simple statement to keep alive all connections.
 	 */
-	private static final String C_KEEP_ALIVE_STATEMENT = "select 1 from DUAL;";
+	private static final String C_KEEP_ALIVE_STATEMENT = "select 1 from DUAL";
 	
 	/*
 	 * maximum of connections to the database
