@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2004/08/17 07:09:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/10/15 15:08:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsException extends Exception {
 
@@ -122,9 +122,6 @@ public class CmsException extends Exception {
 
     /** Error code internal file. */
     public static final int C_INTERNAL_FILE = 15;
-
-    /** Error code for error "Password too short". */
-    public static final int C_INVALID_PASSWORD = 30;
 
     /** 
      * Error code for access denied exception for vfs resources.
