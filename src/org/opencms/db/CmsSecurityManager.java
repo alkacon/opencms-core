@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/21 10:16:36 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/12/21 10:44:54 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -1239,7 +1239,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.deleteGroup(dbc, name);
         } catch (Exception e) {
-            dbc.report(null, "Error deleteing group " + name, e);
+            dbc.report(null, "Error deleting group " + name, e);
         } finally {
             dbc.clear();
         }
