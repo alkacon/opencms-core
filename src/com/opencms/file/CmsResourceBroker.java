@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.25 $ $Date: 2000/01/14 12:52:41 $
+ * @version $Revision: 1.26 $ $Date: 2000/01/20 18:31:23 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -1670,7 +1670,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 								  Hashtable metainfos)
 		throws CmsException {
 		
-		// TODO: write the metainfos!
+		// check for mandatory metainfos
+		 checkMandatoryMetainfos(currentUser, currentProject, C_TYPE_FOLDER_NAME, 
+								 metainfos);
 		
 		// checks, if the filename is valid, if not it throws a exception
 		validFilename(newFolderName);
@@ -1679,10 +1681,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 													folder);
 		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
-			// write-acces  was granted - create and return the folder.
-			return(m_fileRb.createFolder(currentUser, currentProject, 
-										 folder + newFolderName + C_FOLDER_SEPERATOR,
-										 0));
+			// write-acces  was granted - create the folder.
+			CmsFolder newFolder = m_fileRb.createFolder(currentUser, currentProject, 
+														folder + newFolderName + 
+														C_FOLDER_SEPERATOR,
+														0);
+			// write metainfos for the folder
+			m_metadefRb.writeMetainformations((A_CmsResource) newFolder, metainfos);
+			// return the folder
+			return( newFolder );			
 		} else {
 			throw new CmsException(folder + newFolderName, CmsException.C_NO_ACCESS);
 		}
@@ -1713,7 +1720,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deleteFolder(A_CmsUser currentUser, A_CmsProject currentProject,
 							 String foldername)
 		throws CmsException {
-		// TODO: delete the metainfos!
 		
 		// read the folder, that shold be deleted
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
@@ -1722,7 +1728,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( (!cmsFolder.isLocked()) &&
 			accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
-			// write-acces  was granted - delete the folder.
+			// write-acces  was granted - delete the folder and metainfos.
+			m_metadefRb.deleteAllMetainformations((A_CmsResource) cmsFolder);
 			m_fileRb.deleteFolder(currentProject, foldername, false);
 		
 		} else {
@@ -1760,8 +1767,22 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
 			// acces to all subfolders was granted - return the sub-folders.
-			// TODO: check the viewability for the resources!
-			return(m_fileRb.getSubFolders(currentProject, foldername) );
+			Vector folders = m_fileRb.getSubFolders(currentProject, foldername);
+			CmsFolder folder;
+			for(int z=0 ; z < folders.size() ; z++) {
+				// read the current folder
+				folder = (CmsFolder)folders.elementAt(z);
+				// check the readability for the folder
+				if( ! ( accessOther(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_PUBLIC_READ) || 
+						accessOwner(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_OWNER_READ) ||
+						accessGroup(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_GROUP_READ) ) ) {
+					// no access, delete the folder
+					folders.removeElementAt(z);
+					// correct the current index
+					z--;
+				}
+			}
+			return(folders);
 		} else {
 			throw new CmsException(foldername, CmsException.C_NO_ACCESS);
 		}
@@ -1902,9 +1923,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                                A_CmsProject currentProject, String folder,
                                String filename, byte[] contents, String type,
 							   Hashtable metainfos) 
-						
-         throws CmsException {
-		// TODO: write the metainfos!
+		 throws CmsException {
+
+		// check for mandatory metainfos
+		 checkMandatoryMetainfos(currentUser, currentProject, type, metainfos);
 		
 		// checks, if the filename is valid, if not it throws a exception
 		validFilename(filename);
@@ -1931,12 +1953,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 												  folder);
 		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
-			// write-acces  was granted - create and return the file.
-			return(m_fileRb.createFile(currentUser, currentProject, 
-									   onlineProject(currentUser, currentProject), 
-									   folder + filename, 0, contents, 
-									   getResourceType(currentUser, currentProject, 
-													   type)) );
+			// write-acces was granted - create and return the file.
+			CmsFile file = m_fileRb.createFile(currentUser, currentProject, 
+											   onlineProject(currentUser, currentProject), 
+											   folder + filename, 0, contents, 
+											   getResourceType(currentUser, currentProject, type));
+			// write the metainfos
+			m_metadefRb.writeMetainformations((A_CmsResource) file, metainfos );
+			return( file );
 		} else {
 			throw new CmsException(folder + filename, CmsException.C_NO_ACCESS);
 		}
@@ -2001,7 +2025,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
+	 * <li>the user can read the old resource</li>
+	 * <li>the user can write the new resource</li>
 	 * <li>the resource is locked by the callingUser</li>
 	 * </ul>
 	 * 
@@ -2020,7 +2045,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		validFilename(newname);
 		
 		// read the old file
-		A_CmsResource file = m_fileRb.readFileHeader(currentProject, oldname);
+		A_CmsResource file = readFileHeader(currentUser, currentProject, oldname);
 		
 		// has the user write-access?
 		if( accessWrite(currentUser, currentProject, file) ) {
@@ -2078,7 +2103,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * Copies a file in the Cms. <br>
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read the sourceresource</li>
@@ -2100,7 +2125,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// read the source-file, to check readaccess
 		A_CmsResource file = readFileHeader(currentUser, currentProject, source);
 		
-		// TODO: write the metainfos!
+		// TODO: copy the metainfos!
 		
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  destination);
@@ -2194,7 +2219,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * The user may change this, if he is admin of the resource. <br>
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user is owner of the resource or the user is admin</li>
@@ -2308,9 +2333,23 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 
 		if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
-			// acces to all subfolders was granted - return the sub-folders.
-			// TODO: check the viewability for the resources!
-			return(m_fileRb.getFilesInFolder(currentProject, foldername) );
+			// acces to the folder was granted - return the files.
+			Vector files = m_fileRb.getFilesInFolder(currentProject, foldername);
+			CmsFile file;
+			for(int z=0 ; z < files.size() ; z++) {
+				// read the current folder
+				file = (CmsFile)files.elementAt(z);
+				// check the readability for the file
+				if( ! ( accessOther(currentUser, currentProject, (A_CmsResource)file, C_ACCESS_PUBLIC_READ) || 
+						accessOwner(currentUser, currentProject, (A_CmsResource)file, C_ACCESS_OWNER_READ) ||
+						accessGroup(currentUser, currentProject, (A_CmsResource)file, C_ACCESS_GROUP_READ) ) ) {
+					// no access, remove the file
+					files.removeElementAt(z);
+					// correct the current index
+					z--;
+				}
+			}
+			return(files);
 		} else {
 			throw new CmsException(foldername, CmsException.C_NO_ACCESS);
 		}
@@ -2603,6 +2642,36 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				(c != '|') && (c != '_') //removed because of MYSQL regexp syntax
 				) {
 				throw new CmsException(filename, CmsException.C_BAD_NAME);
+			}
+		}
+	}
+	
+	/**
+	 * Checks, if all mandatory metainfos for the resource type are set as key in the
+	 * metainfo-hashtable. It throws a exception, if a mandatory metainfo is missing.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourceType The type of the rersource to check the metainfos for.
+	 * @param metainfos The metainfos to check.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	private void checkMandatoryMetainfos(A_CmsUser currentUser, 
+										 A_CmsProject currentProject, 
+										 String resourceType, 
+										 Hashtable metainfos) 
+		throws CmsException {
+		// read the mandatory metadefs
+		Vector metadefs = readAllMetadefinitions(currentUser, currentProject, 
+												 resourceType, C_METADEF_TYPE_MANDATORY);
+		
+		// check, if the mandatory metainfo is given
+		for(int i = 0; i < metadefs.size(); i++) {
+			if( metainfos.containsKey(metadefs.elementAt(i) ) ) {
+				// mandatory metainfo is missing - throw exception
+				throw new CmsException((String)metadefs.elementAt(i),
+					CmsException.C_MANDATORY_METAINFO);
 			}
 		}
 	}
