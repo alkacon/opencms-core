@@ -44,7 +44,7 @@ function show_help()
 	<tr>
 		<td nowrap valign=top><A href="javascript:showkontext('project_lock',0)"><img src="pics/ic_project_small.gif" width=16 height=16 border=0></a></td>
 		<td nowrap valign=top><IMG src="pics/ic_lock.gif" width=16 height=16 border=0></td>
-		<td nowrap valign=top><p class=einzug><a href="administration_content_projectresent_all.html" onClick="parent.frames[0].location.href='administration_head_aktprojects.html'" class=task>Relaunch Sozial</a></td>
+		<td nowrap valign=top><p class=einzug><a href="javascript:document.location.href='administration_content_projectresent_all.html';parent.frames[0].location.href='administration_head_aktprojects.html';" class=task>Relaunch Sozial</a></td>
 		<td class=projectdescr>Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Blabla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Blabla</td>
 		<td nowrap valign=top><p class=einzug>Dateien in Bearbeitung</td>
 		<td nowrap valign=top><p class=einzug>Administrators</td>
@@ -55,7 +55,7 @@ function show_help()
 	<tr>
 		<td nowrap valign=top><A href="javascript:showkontext('project_unlock',1)"><img src="pics/ic_project_small.gif" width=16 height=16 border=0></a></td>
 		<td nowrap valign=top>&nbsp;</td>
-		<td nowrap valign=top><p class=einzug><a href="administration_content_projectresent_all.html" onClick="parent.frames[0].location.href='administration_head_aktprojects.html'" class=task>Karitas</a></td>
+		<td nowrap valign=top><p class=einzug><a href="javascript:document.location.href='administration_content_projectresent_all.html';parent.frames[0].location.href='administration_head_aktprojects.html';" class=task>Karitas</a></td>
 		<td class=projectdescr>Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Blabla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Blabla</td>
 		<td nowrap valign=top><p class=einzug>nicht in Bearbeitung</td>
 		<td nowrap valign=top><p class=einzug>Administrators</td>
@@ -66,7 +66,7 @@ function show_help()
 	<tr>
 		<td nowrap valign=top><A href="javascript:showkontext('project_lock',2)"><img src="pics/ic_project_small.gif" width=16 height=16 border=0></a></td>
 		<td nowrap valign=top><IMG src="pics/ic_lock.gif" width=16 height=16 border=0></td>
-		<td nowrap valign=top><p class=einzug><a href="administration_content_projectresent_all.html" onClick="parent.frames[0].location.href='administration_head_aktprojects.html'" class=task>Der Papst</a></td>
+		<td nowrap valign=top><p class=einzug><a href="javascript:document.location.href='administration_content_projectresent_all.html';parent.frames[0].location.href='administration_head_aktprojects.html';" class=task>Der Papst</a></td>
 		<td class=projectdescr>Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Blabla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Blabla</td>
 		<td nowrap valign=top><p class=einzug>Dateien in Bearbeitung</td>
 		<td nowrap valign=top><p class=einzug>Administrators</td>
@@ -78,6 +78,10 @@ function show_help()
 </table>
 <!-- Ende Inhalt Aufgaben Projektbezogen -->
 
+<!-- nicht zur Implementation -->
+<br><br>
+<center>[Es gilt folgende Regel: Wer ein Projekt ver&ouml;ffentlichen kann, darf es auch l&ouml;schen]</center>
+<!-- Ende: nicht zur Implementation -->
 </body>
 </html>
 
@@ -98,6 +102,9 @@ function show_help()
 <TR><TD>
 <A class=kontextlink href="javascript:doPAction(DO_PUNLOCK);">Sperrungen aufheben</A> 
 </TD></TR>
+<TR><TD class="inaktiv">
+		Veröffentlichen
+	</TD></TR>
 
 <tr><td><hr></td></tr>
 
@@ -125,6 +132,9 @@ function show_help()
 
 <tr><td><hr></td></tr>
 
+<TR><TD class="inaktiv">
+		Sperrungen aufheben
+	</TD></TR>
 <TR><TD>
 <A class=kontextlink href="javascript:doPAction(DO_PONLINE);">Veröffentlichen</A> 
 </TD></TR>

@@ -15,32 +15,32 @@ function show_help()
 <title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
 
 <link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_choosebrowser.js"></SCRIPT>
 
 </HEAD>
 
 <body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
-
 <!-- Beginn neue Datei Anlegen -->
 <div id="NEWWITHOUTLINK" style="FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8pt; position: absolute; LEFT: 0px; TOP: 0px; width:100%; height:100%; VISIBILITY: hidden; Z-INDEX: 1;">
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form id="NEU" name="NEU">
+<form id="NEU" name="NEU" action="explorer_files_projekt.html" onSubmit="return checkFormData('NEU','NEUNAME','NEWWITHOUTLINK')">
 <table border=2 cellspacing=0 cellpadding=0 width=555px>
 <tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 	<tr><td colspan=2 class=head>Neue Seite anlegen</td></tr>
 	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
 	<tr>
 		<td class=formular width=35%>Name:</td>
-		<td class=dialogtxt><INPUT type="text" value=" " size=40 class="textfeld2" id=NEUNAME name=NEUNAME size=20 onfocus="NEU.FERTIG.disabled=false;"></td>
+		<td class=dialogtxt><INPUT type="text" size=40 class="textfeld2" id=NEUNAME name=NEUNAME size=20 onfocus="NEU.FERTIG.disabled=false"></td>
 	</tr>
 	<tr>
 		<td class=formular>Titel:</td>
-		<td class=dialogtxt><INPUT type="text" value=" " size=40 class="textfeld2" id=NEUTITEL name=NEUTITEL size=20"></td>
+		<td class=dialogtxt><INPUT type="text" size=40 class="textfeld2" id=NEUTITEL name=NEUTITEL size="20"></td>
 	</tr>
 	<tr>
-		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> in Navigation mit aufnehmen</td>
+		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData('NEU','LINK','NEWWITHOUTLINK','NEWLINK');if(LINK.NEUNAME.value != '') LINK.FERTIG.disabled=false; else LINK.FERTIG.disabled=true;this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> in Navigation mit aufnehmen</td>
 	</tr>
 	
 	<tr><td colspan=2 class="leerzeile"><img src="pics/empty.gif" border=0 width=1 height=70px></td></tr>
@@ -49,7 +49,7 @@ function show_help()
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
 				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="<< Zurück" id=ZURUECK name=ZURUECK onClick="location='explorer_files_neu.html';"></td>
-				<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="Fertig stellen" id=FERTIG name=FERTIG onClick="location='explorer_files_projekt.html';"></td>
+				<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="submit" value="Fertig stellen" id=FERTIG name=FERTIG></td>
 				<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files_projekt.html';"></td>
 			</tr>
 			</table>
@@ -60,7 +60,7 @@ function show_help()
 </tr>
 </table>
 </form>
-[bei Fehlender Dateiendung im im Namen bitte beim Anlegen (programmiertechnisch) '.html' anhängen]
+
 </td></tr>
 </table>
 </div>
@@ -73,26 +73,26 @@ function show_help()
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form id="LINK" name="LINK">
+<form id="LINK" name="LINK" action="explorer_files_projekt.html" onSubmit="return checkFormData('LINK','NEUNAME','NEWLINK')">
 <table border=2 cellspacing=0 cellpadding=0 width=555px>
 <tr><td><table cellspacing=0 cellpadding=5 border=0 width=100%>
 <tr><td colspan=2 class=head>Neue Seite anlegen</td></tr>
 	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
 	<tr>
 		<td class=formular width=35%>Name:</td>
-		<td class=dialogtxt><INPUT type="text" size=40 value=" " class="textfeld2" id=NEUNAME name=NEUNAME size=20 onfocus="LINK.FERTIG.disabled=false;"></td>
+		<td class=dialogtxt><INPUT type="text" size=40 class="textfeld2" id=NEUNAME name=NEUNAME size=20 onfocus="LINK.FERTIG.disabled=false;"></td>
 	</tr>
 	<tr>
 		<td class=formular>Titel:</td>
-		<td class=dialogtxt><INPUT type="text" size=40 value=" " class="textfeld2" id=NEUTITEL name=NEUTITEL size=20"></td>
+		<td class=dialogtxt><INPUT type="text" size=40 class="textfeld2" id=NEUTITEL name=NEUTITEL size=20></td>
 	</tr>
 	<tr>
-		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> in Navigation mit aufnehmen</td>
+		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');if(NEU.NEUNAME.value != '') NEU.FERTIG.disabled=false; else NEU.FERTIG.disabled=true;switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> in Navigation mit aufnehmen</td>
 	</tr>
 	<tr><td colspan=2 class=leerzeile><img src="pics/empty.gif" border=0 width=1 height=10px</td></tr>
 	<tr>
 		<td class=formular>Navigationstext:</td>
-		<td class=dialogtxt><INPUT type="text" size=40 class="textfeld2" id=NEUNAME name=NEUNAME size=20 onfocus="NEU.FERTIG.disabled=false;"></td>
+		<td class=dialogtxt><INPUT type="text" size=40 class="textfeld2" id=NAVTEXT name=NAVTEXT size=20 onfocus=""></td>
 	</tr>
 	<tr>
 		<td class=formular>Einfügen</td>
@@ -110,7 +110,7 @@ function show_help()
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
 				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="<< Zurück" id=ZURUECK name=ZURUECK onClick="location='explorer_files_neu.html';"></td>
-				<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="Fertig stellen" id=FERTIG name=FERTIG onClick="location='explorer_files_projekt.html';"></td>
+				<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="submit" value="Fertig stellen" id=FERTIG name=FERTIG></td>
 				<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files_projekt.html';"></td>
 			</tr>
 			</table>
@@ -121,7 +121,6 @@ function show_help()
 </tr>
 </table>
 </form>
-[bei Fehlender Dateiendung im im Namen bitte beim Anlegen (programmiertechnisch) '.html' anhängen]
 </td></tr>
 </table>
 </div>

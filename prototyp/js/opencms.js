@@ -37,6 +37,10 @@ var selectedTask=0;
 var lastVisited="tasks_content_nafm.html";
 var formID;
 
+// perform a simple browser check
+ns = (document.layers)? true:false;
+ie = (document.all)? true:false;
+
 // Formularfelder (Textfelder) auf Inhalt überprüfen
 function check_textfeld(formular, feld)
 {
@@ -328,3 +332,52 @@ function checkPiclistNav()
 				
 	parent.frames[0].document.location.href="edit_html_piclist_head" + version + ".html";
 }	
+
+
+//------------------------------------------------------------------------------------
+// checkFormData(formField) 
+// 
+// author:	Matthias Schreiber
+// company:	mindfact interaktive medien ag
+// date:	13.03.2000
+// update:	14.03.2000
+//
+// Method checkFormData performs a client-side check of fields containing names.
+// Form can be surrounded by <DIV>-section (layer).
+// 
+// @param form Name of the form where the field to be checked is situated
+// @param field Name of the field to be checked
+// @param lyr Name of the layer in which the form is embedded. If there's no layer set it to null.
+// 
+//------------------------------------------------------------------------------------
+
+function checkFormData(form,field,lyr)
+{
+	var result=true;
+	var at_pos, entry, strLength;
+	
+	// List of valid characters:
+	var charList="0123456789-._~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	
+	if (ie || lyr==null)
+		entry = eval('document.' + form +'.'+ field + '.value');
+	else if (ns && lyr!=null) 
+		entry = eval('document["'+lyr+'"].document.forms["'+form+'"].'+ field +'.value');
+	
+	strLength=entry.length;
+	
+	for (i=0; i < strLength; i++) 
+	{
+		if (charList.indexOf(entry.charAt(i))==-1)
+		{
+			alert('Unerlaubtes Zeichen in Eingabefeld: '+ entry.charAt(i));
+			if (ie || lyr==null)
+				eval('document.' + form +'.'+ field + '.focus()');
+			else if (ns && lyr!=null) 
+				eval('document["'+lyr+'"].document.forms["'+form+'"].'+ field + '.focus()');
+			return false;
+		}
+	}
+	return result;
+}
+	

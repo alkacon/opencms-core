@@ -14,6 +14,7 @@ function show_help()
 
 <title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
 <link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -23,7 +24,7 @@ function show_help()
 <tr><td align=middle valign=center>
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id=RENAME name=RENAME>
+<form id=RENAME name=RENAME action="explorer_files_projekt.html" onSubmit="return checkFormData('RENAME','name',null)">
 <table cellspacing=0 cellpadding=0 border=2 width=300>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -67,7 +68,7 @@ function show_help()
 			<tr>
 				<td class=formular nowrap>
 					Neuer Name:</td>
-				<td class=dialogtxt width=100%><input value="bilder" class="textfeld" maxlength="8" name="name" id="name" ></td>
+				<td class=dialogtxt width=100%><input value="bilder" class="textfeld" size="20" maxlength="40" name="name" id="name" ></td>
 			</tr>
 			<!-- Ende Textfeld-->
 
@@ -81,7 +82,7 @@ function show_help()
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width = 100 type="button" value="OK" id=OK name=OK onClick="location.href='explorer_files_projekt.html'"></td>
+					<td class=formular align=right width=50%><INPUT class=button width = 100 type="submit" value="OK" id=OK name=OK></td>
 					<td class=formular align=left width=50%><INPUT class=button width = 100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="location.href='explorer_files_projekt.html'"></td>
 				</tr>
 				</table>
