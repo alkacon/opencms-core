@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2004/03/10 16:50:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/11 09:47:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,10 +47,13 @@ import java.util.Map;
 
 /**
  * Holds all information to build the explorer context menu of a resource type 
- * and information about the new resource dialog.<p>
+ * and information for the new resource dialog.<p>
+ * 
+ * Objects of this type are sorted by their order value which specifies the order
+ * in the new resource dialog.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -192,7 +195,8 @@ public class CmsExplorerTypeSettings implements Comparable {
             String key = (String)i.next();
             String value = (String)m_accessControl.get(key);
             CmsUUID principalId = new CmsUUID();
-            String principal = key.substring(key.indexOf(".")+1, key.length());
+            // get the principal name from the principal String
+            String principal = key.substring(key.indexOf(".") + 1, key.length());
     
             if (key.startsWith(CmsImportExportConfiguration.C_PRINCIPAL_GROUP)) {
                 // read the group
@@ -202,7 +206,8 @@ public class CmsExplorerTypeSettings implements Comparable {
                 // read the user
                 principal = OpenCms.getImportExportManager().translateUser(principal);  
                 principalId = cms.readUser(principal).getId();
-            }                      
+            }
+            // create a new entry for the principal
             CmsAccessControlEntry entry = new CmsAccessControlEntry(null, principalId , value);
             m_accessControlList.add(entry);
         }
@@ -210,6 +215,9 @@ public class CmsExplorerTypeSettings implements Comparable {
     
     /**
      * Adds all context menu entries to the context menu object.<p>
+     * 
+     * This method has to be called when all context menu entries have been 
+     * added to the list of entries.<p>
      */
     public void createContextMenu() {
         m_contextMenu.addEntries(getContextMenuEntries());

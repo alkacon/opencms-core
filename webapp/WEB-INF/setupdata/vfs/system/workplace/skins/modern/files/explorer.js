@@ -140,12 +140,12 @@ function vars_index() {
 }
 
 
-function res(text, nicename, icon, createLink, uploadable){
+function res(text, nicename, icon, createLink, isEditable){
 	this.text = text;
 	this.nicename = nicename;
 	this.icon = icon;
 	this.createLink = createLink;
-	this.uploadable = uploadable;
+	this.editable = isEditable;
 }
 
 
@@ -385,7 +385,7 @@ function printList(wo) {
 		var noaccess = false;
 		var plainresid = 3;
 
-		if (typeof vi.resource[vi.liste[i].type] == 'undefined') {
+		if ((typeof vi.resource[vi.liste[i].type] == 'undefined') || (vi.resource[vi.liste[i].type].editable == false)) {
 			// the user has no access to this resource type
 			noaccess = true;
 			vi_icon = vi.resource[plainresid].icon;
@@ -526,7 +526,7 @@ function printList(wo) {
 	for (i = 0; i < vi.liste.length; i++) {
 
 		var access = true;
-		if (typeof vi.resource[vi.liste[i].type] == 'undefined') {
+		if ((typeof vi.resource[vi.liste[i].type] == 'undefined') || (vi.resource[vi.liste[i].type].editable == false)) {
 			// the user has no access to this resource type
 			access = false;
 		}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2004/03/10 16:50:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/11 09:47:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,9 @@
 package org.opencms.workplace;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringSubstitution;
 
 import java.util.ArrayList;
@@ -49,13 +51,15 @@ import java.util.List;
  * in the OpenCms configuration.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
 public class CmsExplorerContextMenu {
 
+    /** All context menu entries */
     private List m_allEntries;
+    /** Stores already generated javascript menu outputs with a Locale object as key */
     private HashMap m_generatedScripts;
     
     /**
@@ -69,11 +73,13 @@ public class CmsExplorerContextMenu {
     /**
      * Adds a list of CmsContextMenuItem objects to the context menu list.<p>
      * 
+     * The list is sorted by their order after that operation.<p>
+     * 
      * @param entries a list of initialized context menu items
      */
     public void addEntries(List entries) {
         m_allEntries.addAll(entries);
-        Collections.sort(m_allEntries);
+        sortEntries();
     }
       
     /**
@@ -99,13 +105,13 @@ public class CmsExplorerContextMenu {
         String entries = (String)m_generatedScripts.get(cms.getRequestContext().getLocale());
         if (entries == null) { 
             // entries not yet in Map, so generate them
-            StringBuffer result = new StringBuffer(4096);
+            StringBuffer result = new StringBuffer(3072);
             String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplace.C_PATH_WORKPLACE);  
             String xmlWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_PATH_XML_WORKPLACE);
             
             // create the JS for the resource object
-            result.append("\nvi.resource[" + resTypeId + "]=new res(\"" + settings.getName() + "\",");
-            result.append("\"" + messages.key(settings.getKey()) + "\",vi.skinPath+\"filetypes/" + settings.getIcon() + "\",\"" + settings.getNewResourceUri() + "\",true);\n");
+            result.append("\nvi.resource[" + resTypeId + "]=new res(\"" + settings.getName() + "\", ");
+            result.append("\"" + messages.key(settings.getKey()) + "\", vi.skinPath + \"filetypes/" + settings.getIcon() + "\", \"" + settings.getNewResourceUri() + "\", true);\n");
             
             Iterator i = getAllEntries().iterator();
             while (i.hasNext()) {
@@ -136,7 +142,7 @@ public class CmsExplorerContextMenu {
                     result.append("\"'" + target + "'\", ");
                     // remove all blanks from the rule String
                     String rules = CmsStringSubstitution.substitute(item.getRules(), " ", "");
-                    // parse the rules to create autlock column
+                    // parse the rules to create the autolock column
                     rules = parseRules(rules, item.getKey());
                     result.append("\"" + rules + "\");\n");
                     // result: addMenuEntry([id], "[language_key]", "[dialogURI]", "'[target]'", "ddiiiiaaaiaaaiddddddddddddiiiidddd");
@@ -149,6 +155,23 @@ public class CmsExplorerContextMenu {
             entries = result.toString();
             // store the generated entries
             m_generatedScripts.put(cms.getRequestContext().getLocale(), entries);
+        }
+        
+        // determine if this resource type is editable for the current user
+        CmsPermissionSet permissions;
+        try {
+            // get permissions of the current user
+            permissions = settings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
+        } catch (CmsException e) {
+            // error reading the groups of the current user
+            permissions = settings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
+            }      
+        }
+        if (permissions.getPermissionString().indexOf("+w") == -1) {
+            // the type is not editable, set editable to false
+            entries += "vi.resource[" + resTypeId + "].editable = false;\n";
         }
         
         return entries;
@@ -178,11 +201,13 @@ public class CmsExplorerContextMenu {
     /**
      * Sets all entries of the context menu.<p>
      * 
+     * The list is sorted by their order after that operation.<p>
+     * 
      * @param entries all entries of the context menu
      */
     public void setAllEntries(List entries) {
         m_allEntries = entries;
-        Collections.sort(m_allEntries);
+        sortEntries();
     }
     
     /**
