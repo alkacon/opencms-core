@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/16 13:44:06 $
- * Version: $Revision: 1.178 $
+ * Date   : $Date: 2000/10/16 13:51:11 $
+ * Version: $Revision: 1.179 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.178 $ $Date: 2000/10/16 13:44:06 $
+ * @version $Revision: 1.179 $ $Date: 2000/10/16 13:51:11 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4265,6 +4265,7 @@ public CmsSite newSite(String name, String description, int category, int langua
 		m_dbAccess.writeFolder(newOnlineProject, pFolder, false);
 
 		//Set the right group access
+		/*
 		chgrp(currentUser, currentProject, rootFolder.getAbsolutePath(), C_GROUP_USERS);
 		chgrp(currentUser, currentProject, cbFolder.getAbsolutePath(), C_GROUP_USERS);
 		chgrp(currentUser, currentProject, cFolder.getAbsolutePath(), C_GROUP_USERS);
@@ -4272,7 +4273,7 @@ public CmsSite newSite(String name, String description, int category, int langua
 		chgrp(currentUser, currentProject, ctFolder.getAbsolutePath(), C_GROUP_USERS);
 		chgrp(currentUser, currentProject, dFolder.getAbsolutePath(), C_GROUP_USERS);
 		chgrp(currentUser, currentProject, pFolder.getAbsolutePath(), C_GROUP_USERS);
-		
+		*/
 		return newSite;
 	}
 	else
