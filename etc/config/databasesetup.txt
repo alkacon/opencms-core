@@ -1,7 +1,3 @@
-create database opencms;
-
-use opencms;
-
 create table CMS_PROPERTIES             (PROPERTY_NAME VARCHAR(40) not null, 
                                          PROPERTY_VALUE blob,
                                          primary key(PROPERTY_NAME));
