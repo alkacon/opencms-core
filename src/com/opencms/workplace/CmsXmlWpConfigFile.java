@@ -13,7 +13,7 @@ import java.util.*;
  * Content definition for "/workplace/workplace.ini".
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/02/03 09:38:18 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/10 09:45:11 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -62,6 +62,7 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
         try {
            configFile = cms.readFile(C_WORKPLACE_INI);
         } catch(Exception e) {
+            e.printStackTrace();
             throwException("Configuration file \"workplace.ini\" missing.", CmsException.C_NOT_FOUND);
         }        
         init(cms, configFile);

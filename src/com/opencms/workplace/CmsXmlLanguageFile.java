@@ -9,7 +9,7 @@ import com.opencms.template.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/26 09:16:28 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/10 09:45:11 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -73,6 +73,7 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
         try {
             languageFile = cms.readFile(languagePath + currentLanguage);
         } catch(Exception e) {
+            e.printStackTrace();
             throwException("Could not load language file " + languagePath + currentLanguage + ".", CmsException.C_NOT_FOUND);
         }
         
@@ -130,6 +131,19 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
         return result;
     }
         
+    /**
+     * Checks if there exists a language value vor the requested tag.
+     * @param tag requested tag.
+     * @return Language value.
+     */
+    public boolean hasLanguageValue(String tag) {
+        if(m_localSection != null) {
+            return (hasData(tag) || hasData(m_localSection + "." + tag));
+        } else {
+            return hasData(tag);
+        }        
+    }
+    
     /**
      * Overridden internal method for getting datablocks.
      * This method first checkes, if the requested value exists.
