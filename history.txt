@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/05/13 12:45:10 $
- * Version: $Revision: 1.474 $
+ * Date   : $Date: 2003/05/16 11:54:39 $
+ * Version: $Revision: 1.475 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,10 +20,16 @@ Legend:
 - General comment
 
 OpenCms (next 5.1 version)
+- Updated MySQL JDBC driver to the latest version
+- Removed requirement for fesi.jar as the JavaScript interpreter is not longer used
+* Allowed unicode &#123; chars in task names
+! Switched database IDs for Resources, Users and Groups to cross-platform UUIDs instead of Integers
+- Removed deprecated calls for encoding in com.opencms.util.Encoder class.
 ! Added "getNavigationBreadCrumb()" methods to com.opencms.flex.jsp.CmsJspNavBuilder
 - Refactored JSP integration to be more standards compliant
 
 OpenCms 5.1.0
+* Applied fix to bug #15 contributed by ulrich.rueth@gmx.de
 ! Inroduced first version of I_CmsUserAccess 
 ! Splitted VFS and user management code from CmsDbAccess classes 
 - The OpenCms 5.1.x version are development versions only.
