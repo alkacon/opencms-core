@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/10/30 08:35:38 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/03/20 17:30:56 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import com.opencms.core.*;
 import com.opencms.template.cache.CmsTimeout;
 import com.opencms.file.*;
 import java.util.*;
+import javax.servlet.http.*;
 
 /**
  * Abstact class for all CacheDirectives classes.
@@ -189,7 +190,13 @@ public abstract class A_CmsCacheDirectives implements I_CmsLogChannels{
         }
 
         // ok, a cachekey exists. lets put it together
-        String key = "key_";
+        // first we need the scheme of the request
+        String scheme = "http";
+        try{
+            scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
+        }catch(Exception e){
+        }
+        String key = "key_"+scheme+"_";
         if(m_uri){
             key += reqContext.getUri();
         }
