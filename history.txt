@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/11/10 08:22:19 $
- * Version: $Revision: 1.511 $
+ * Date   : $Date: 2003/11/17 07:47:23 $
+ * Version: $Revision: 1.512 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,13 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.1.13 Salusa Secundus - November xx, 2003
+- Updated jug.jar to latest stable version 1.0.3
+- Updated commons-dbcp.jar to latest stable version 1.1
+! JSP Workplace touch dialog now has a calendar selector
+- Improved memory handling to use less system resources
+! Added cleanup (evictor) Thread configuration to DBCP
 
 OpenCms 5.1.12 Salusa Secundus - November 10, 2003
 ! Added memory monitor to watch memory consumption
