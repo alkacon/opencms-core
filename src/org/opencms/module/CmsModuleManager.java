@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2004/07/27 11:09:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -150,7 +150,7 @@ public class CmsModuleManager {
     }
 
     /**
-     * Checks if a modules depedencies are fullfilled.<p> 
+     * Checks if a modules depedencies are fulfilled.<p> 
      * 
      * The possible values for the <code>mode</code> parameter are:<dl>
      * <dt>{@link #C_DEPENDENCY_MODE_DELETE}</dt>
@@ -162,7 +162,7 @@ public class CmsModuleManager {
      * 
      * @param module the module to check the dependencies for
      * @param mode the dependency check mode
-     * @return a list of dependencies that are not fullfilled, if empty all dependencies are fullfilled
+     * @return a list of dependencies that are not fulfilled, if empty all dependencies are fulfilled
      */
     public List checkDependencies(CmsModule module, int mode) {
 
@@ -181,7 +181,7 @@ public class CmsModuleManager {
             }
 
         } else if (mode == C_DEPENDENCY_MODE_IMPORT) {
-            // import mode, check if all module dependencies are fullfilled            
+            // import mode, check if all module dependencies are fulfilled            
             Iterator i = m_modules.values().iterator();
             // add all dependencies that must be found
             result.addAll(module.getDependencies());

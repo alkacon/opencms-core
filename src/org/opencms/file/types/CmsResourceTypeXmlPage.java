@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.validation.I_CmsHtmlLinkValidatable;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +59,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -95,7 +96,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         }
 
         try {
-            xmlPage = CmsXmlPage.unmarshal(cms, file);
+            xmlPage = CmsXmlPageFactory.unmarshal(cms, file);
             locales = xmlPage.getLocales();
 
             // iterate over all languages
@@ -186,12 +187,12 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         // empty file content is allowed
         if (resource.getLength() > 0) {
             // read the xml page, use the encoding set in the property       
-            CmsXmlPage xmlPage = CmsXmlPage.unmarshal(cms, resource, false);
+            CmsXmlPage xmlPage = CmsXmlPageFactory.unmarshal(cms, resource, false);
             // validate the xml structure before writing the file         
             // an exception will be thrown if the structure is invalid
             xmlPage.validateXmlStructure(new CmsXmlEntityResolver(cms));
             // correct the HTML structure 
-            resource = xmlPage.correctHtmlStructure(cms);
+            resource = xmlPage.correctXmlStructure(cms);
         }
         // xml is valid if no exception occured
         return super.writeFile(cms, driverManager, resource);

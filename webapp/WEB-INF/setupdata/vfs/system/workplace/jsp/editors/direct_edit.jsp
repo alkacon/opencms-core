@@ -2,7 +2,8 @@
 --%><%@ page import="
 	org.opencms.workplace.*,
 	org.opencms.workplace.editor.*,
-	org.opencms.jsp.*"
+	org.opencms.jsp.*,
+	org.opencms.i18n.*"
 	buffer="none"
 	session="false"%><%
 
@@ -15,12 +16,30 @@ String editTarget = request.getParameter(I_CmsEditorActionHandler.C_DIRECT_EDIT_
 String editElement = request.getParameter(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT);
 String editLocale = request.getParameter(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE);
 String editButtonStyleParam = request.getParameter(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE);
+String editOptions = request.getParameter(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_OPTIONS);
+String editNewLink = request.getParameter(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_NEWLINK);
+
+String editAction = I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_EDIT;
+String deleteAction = I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_DELETE;
+String newAction = I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_NEW;
+
+boolean showEdit = true;
+boolean showDelete = false;
+boolean showNew = false;
+
+if (editOptions != null) {
+	showEdit = (editOptions.indexOf(editAction) >= 0);
+	showDelete = (editOptions.indexOf(deleteAction) >= 0);
+	showNew = (editOptions.indexOf(newAction) >= 0);
+} 
 
 int editButtonStyle = 1;
 try {
 	editButtonStyle = Integer.parseInt(editButtonStyleParam);
 } catch (Exception e) {}
+
 String editLink = cms.link("/system/workplace/jsp/editors/editor.html");
+String deleteLink = cms.link("/system/workplace/jsp/dialogs/delete.html");
 
 String editId = "directedit";
 
@@ -41,18 +60,51 @@ if (editElement != null) {
 <input type="hidden" name="elementlanguage" value="<%= editLocale %>">
 <input type="hidden" name="elementname" value="<%= editElement %>">
 <input type="hidden" name="backlink" value="<%= uri %>">
+<input type="hidden" name="newlink">
+<input type="hidden" name="closelink">
 </form>
 <span class="directedit_button" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
 <table border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td class="directedit"><a href="#" onclick="javascript:document.forms['form_<%= editId %>'].submit();" class="button"><span unselectable="on" class="over" onmouseover="className='over'" onmouseout="className='over'" onmousedown="className='push'" onmouseup="className='over'"><%
+<% 
+if (showEdit) { 
+%>
+	<td class="directedit"><a href="#" onclick="javascript:doSubmit('<%= editId %>', '<%= editAction %>');" class="button"><span unselectable="on" class="over" onmouseover="className='over'" onmouseout="className='over'" onmousedown="className='push'" onmouseup="className='over'"><%
    if (editButtonStyle == 1) { 
 	%><span id="bt_<%= editId %>" unselectable="on" class="combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif');">&nbsp;<%= wp.key("editor.frontend.button.edit") %></span><%
    } else if (editButtonStyle == 2) { 
 	%><span unselectable="on" class="combobutton" style="padding-left: 4px;"><%= wp.key("editor.frontend.button.edit") %></span><%
    } else { 
-	%><span id="bt_<%= editId %>" unselectable="on" class="combobutton" style="padding-left: 15px; padding-right: 1px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif'); background-position: 0px 0px;">&nbsp;</span></span></a></td><%
+	%><span id="bt_<%= editId %>" unselectable="on" class="combobutton" style="padding-left: 15px; padding-right: 1px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif'); background-position: 0px 0px;">&nbsp;</span><%
    } %></span></a></td>
+<% 
+}
+if (showDelete) {
+%>
+
+	<td class="directedit"><a href="#" onclick="javascript:doSubmit('<%= editId %>', '<%= deleteAction %>');" class="button"><span unselectable="on" class="over" onmouseover="className='over'" onmouseout="className='over'" onmousedown="className='push'" onmouseup="className='over'"><%
+   if (editButtonStyle == 1) { 
+	%><span id="del_<%= editId %>" unselectable="on" class="combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/deletecontent.gif');">&nbsp;<%= wp.key("button.delete") %></span><%
+   } else if (editButtonStyle == 2) { 
+	%><span unselectable="on" class="combobutton" style="padding-left: 4px;"><%= wp.key("button.delete") %></span><%
+   } else { 
+	%><img class="button" border="0" src="<%= wp.getSkinUri() %>buttons/deletecontent.gif"><%
+   } %></span></a></td>   
+<%
+}
+if (showNew) {
+%>   
+	<td class="directedit"><a href="#" onclick="javascript:doSubmit('<%= editId %>', '<%= newAction %>', '<%= editNewLink %>');" class="button"><span unselectable="on" class="over" onmouseover="className='over'" onmouseout="className='over'" onmousedown="className='push'" onmouseup="className='over'"><%
+   if (editButtonStyle == 1) { 
+	%><span id="new_<%= editId %>" unselectable="on" class="combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/wizard.gif');">&nbsp;<%= wp.key("button.new") %></span><%
+   } else if (editButtonStyle == 2) { 
+	%><span unselectable="on" class="combobutton" style="padding-left: 4px;"><%= wp.key("button.new") %></span><%
+   } else { 
+	%><img class="button" border="0" src="<%= wp.getSkinUri() %>buttons/wizard.gif"><%
+   } %></span></a></td>     
+<%
+}
+%>   
 </tr>
 </table>
 </span>
@@ -192,6 +244,26 @@ function deactivate(id) {
 		bt.style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_cl.gif)";
 	}
 }
+function doSubmit(id, action, link) {
+	var form = document.getElementById("form_" + id);
+	if (form != null) {
+		if (action == "<%= editAction %>") {
+			form.submit();
+			return;
+		} else if (action == "<%= deleteAction %>") {
+			form.action = "<%= deleteLink %>";
+			form.closelink.value = "<%= cms.link(uri) %>";			
+			form.submit();
+			return;
+		} else if (action == "<%= newAction %>") {		
+			form.newlink.value = link;	
+			form.submit();
+			return;
+		}
+	}
+	alert("Unknown form action [" + id + "/" + action + "]");
+}
+
 //-->
 </script>
 </cms:template>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/07/18 17:02:47 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.setup.CmsSetupDb;
-import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsUUID;
 
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.3.5
  */
@@ -143,9 +143,9 @@ public class OpenCmsTestCase extends TestCase {
         copyConfiguration();
 
         // remove potentially created "classes, "lib" and "backup" folder
-        CmsStaticExportManager.purgeDirectory(new File(getTestDataPath() + "WEB-INF/classes/"));        
-        CmsStaticExportManager.purgeDirectory(new File(getTestDataPath() + "WEB-INF/lib/"));
-        CmsStaticExportManager.purgeDirectory(new File(getTestDataPath() + "WEB-INF/config/backup/"));        
+        CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/classes/"));        
+        CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/lib/"));
+        CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/config/backup/"));        
     }
     
     /**
@@ -410,7 +410,7 @@ public class OpenCmsTestCase extends TestCase {
             if (!testDataFolder.exists()) {
                 fail("DB setup data not available at " + testDataFolder.getAbsolutePath());
             }
-            m_testDataPath = testDataFolder.getAbsolutePath() + File.separator;
+            m_testDataPath = CmsFileUtil.normalizePath(testDataFolder.getAbsolutePath() + File.separator);
         }
         // return the path name
         return m_testDataPath;    

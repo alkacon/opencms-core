@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2004/07/18 16:33:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +44,7 @@ import java.util.Set;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  */
 public class CmsLink {
     
@@ -70,6 +71,9 @@ public class CmsLink {
     
     /** The raw uri. */
     private String m_uri;
+    
+    /** The site root of the (internal) link. */
+    private String m_siteRoot;
     
     /**
      * Creates a new link object.<p>
@@ -100,7 +104,7 @@ public class CmsLink {
         if (m_query != null) {
             m_parameters = getParameters(m_query);
         } else {
-            m_parameters = new HashMap();
+            m_parameters = Collections.EMPTY_MAP;
         }
     }
 
@@ -126,12 +130,20 @@ public class CmsLink {
         if (m_query != null) {
             m_parameters = getParameters(m_query);
         } else {
-            m_parameters = new HashMap(); 
+            m_parameters = Collections.EMPTY_MAP; 
         }
         
-        m_uri = m_target 
-            + ((m_query!=null)  ? "?" + m_query  : "")
-            + ((m_anchor!=null) ? "#" + m_anchor : "");
+        StringBuffer uri = new StringBuffer(64);
+        uri.append(m_target);
+        if (m_query != null) {
+            uri.append('?');
+            uri.append(m_query);
+        }
+        if (m_anchor != null) {
+            uri.append('#');
+            uri.append(m_anchor);
+        }
+        m_uri = uri.toString();
     }
 
     /**
@@ -286,11 +298,14 @@ public class CmsLink {
      * @return the site root or null
      */
     public String getSiteRoot() {
-        
-        if (m_internal) {
-            return CmsSiteManager.getSiteRoot(m_target);
+    
+        if (m_siteRoot != null) {
+            return m_siteRoot;
         }
-        
+        if (m_internal) {
+            m_siteRoot = CmsSiteManager.getSiteRoot(m_target);
+            return m_siteRoot;
+        }        
         return null;
     }
     
@@ -329,7 +344,7 @@ public class CmsLink {
     public String getVfsUri() {        
         
         if (m_internal) {
-            String siteRoot = CmsSiteManager.getSiteRoot(m_uri);
+            String siteRoot = getSiteRoot();
             return m_uri.substring(siteRoot.length());
         }
         

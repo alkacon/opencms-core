@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/07/24 06:02:37 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.3.1
  */
@@ -247,8 +247,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public boolean autoLockResources() {
         return m_autoLockResources;
     }
-    
-    
+        
     /**
      * Implements the CmsEvent interface, the to trigger the workplace to reinitalize several settings like locales, editors, etc. <p>
      *

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/07/18 16:33:00 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,8 @@
 package org.opencms.main;
 
 import org.opencms.configuration.CmsMailSettings;
-import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.synchronize.CmsSynchronizeSettings;
-
+import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
 import java.util.Properties;
@@ -51,7 +50,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -153,7 +152,7 @@ public class CmsSystemInfo {
             // apparently this is an absolute path already
             return f.getAbsolutePath();
         }
-        return CmsLinkManager.normalizeRfsPath(getWebApplicationRfsPath() + path);
+        return CmsFileUtil.normalizePath(getWebApplicationRfsPath() + path);
     }
 
     /**
@@ -175,7 +174,7 @@ public class CmsSystemInfo {
             // apparently this is an absolute path already
             return f.getAbsolutePath();
         }
-        return CmsLinkManager.normalizeRfsPath(m_webInfRfsPath + path);
+        return CmsFileUtil.normalizePath(m_webInfRfsPath + path);
     }
     
     /**
@@ -426,7 +425,7 @@ public class CmsSystemInfo {
         if (!webInfRfsPath.endsWith("/")) {
             webInfRfsPath = webInfRfsPath + "/";
         }
-        m_webInfRfsPath = CmsLinkManager.normalizeRfsPath(webInfRfsPath);
+        m_webInfRfsPath = CmsFileUtil.normalizePath(webInfRfsPath);
  
         // set the servlet paths
         if (servletMapping.endsWith("/*")) {

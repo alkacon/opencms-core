@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEvent.java,v $
- * Date   : $Date: 2004/06/14 14:25:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,10 @@ package org.opencms.main;
 
 import org.opencms.file.CmsObject;
 
+import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Event class for OpenCms for system wide events that are thrown by various 
  * operations (e.g. publishing) and can be catched and processed by 
@@ -40,18 +44,18 @@ import org.opencms.file.CmsObject;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsEventListener
  */
-public class CmsEvent extends java.util.EventObject {
+public class CmsEvent extends EventObject {
     
     /** The CmsObject on which this event occurred. */
     private CmsObject m_cms;
 
     /** The event data associated with this event. */
-    private java.util.Map m_data;
+    private Map m_data;
 
     /** The event type this instance represents. */
     private Integer m_type;
@@ -67,8 +71,26 @@ public class CmsEvent extends java.util.EventObject {
      * @param type event type
      * @param data event data
      */
-    public CmsEvent(CmsObject cms, int type, java.util.Map data) {
+    public CmsEvent(CmsObject cms, int type, Map data) {
         this(cms, type, data, false);
+    }
+    
+    /** Reference key for CmsObject in the event parameter map. */
+    public static final String C_PARAM_CMSOBJECT = "__cmsObject";
+    
+    /**
+     * Creates a parameter map for an event that contains the provided CmsObject.<p>
+     * 
+     * @param cms the CmsObject to place in the parameter map
+     * @return a parameter map for an event that contains the provided CmsObject
+     */
+    public static Map createMap(CmsObject cms) {
+       
+        Map result = new HashMap();
+        if (cms != null) {
+            result.put(C_PARAM_CMSOBJECT, cms);    
+        }
+        return result;
     }
     
     /**
@@ -94,7 +116,7 @@ public class CmsEvent extends java.util.EventObject {
      * 
      * @see I_CmsEventListener
      */    
-    public CmsEvent(CmsObject cms, int type, java.util.Map data, boolean isClusterEvent) {
+    public CmsEvent(CmsObject cms, int type, Map data, boolean isClusterEvent) {
         super(cms);
         
         this.m_cms = cms;
@@ -108,7 +130,7 @@ public class CmsEvent extends java.util.EventObject {
      * 
      * @return the event data of this event
      */
-    public java.util.Map getData() {
+    public Map getData() {
         return m_data;
     }
 

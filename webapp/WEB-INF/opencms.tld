@@ -99,6 +99,30 @@
     </tag>
     
     <tag>
+        <name>contentitem</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentItem</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag provides access to XML content items.
+        </description>
+        <attribute>
+            <name>file</name>
+        </attribute>  
+        <attribute>
+            <name>filter</name>
+        </attribute>    
+        <attribute>
+            <name>param</name>
+        </attribute>               
+        <attribute>
+            <name>value</name>
+        </attribute>
+        <attribute>
+            <name>editable</name>
+        </attribute>      
+    </tag>        
+    
+    <tag>
         <name>label</name>
         <tag-class>org.opencms.jsp.CmsJspTagLabel</tag-class>
         <body-content>tagdependent</body-content>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.io.File;
@@ -98,7 +99,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -286,7 +287,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         if (!m_jspWebAppRepository.endsWith("/")) {
             m_jspWebAppRepository += "/";
         }
-        m_jspRepository = CmsLinkManager.normalizeRfsPath(m_jspRepository + m_jspWebAppRepository);
+        m_jspRepository = CmsFileUtil.normalizePath(m_jspRepository + m_jspWebAppRepository);
 
         if (DEBUG > 0) {
             System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);

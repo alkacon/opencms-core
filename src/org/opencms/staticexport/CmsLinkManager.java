@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/07/18 16:33:45 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -51,7 +50,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  */
 public class CmsLinkManager {
     
@@ -107,31 +106,6 @@ public class CmsLinkManager {
             return relativeUri;
         }
     }
-    
-    /**
-     * Normalizes a RFS path that might contain '../' or './' or '//' elements to a normal absolute path.<p>
-     * 
-     * @param path the path to normalize
-     * @return the normalized path
-     */
-    public static String normalizeRfsPath(String path) {
-        if (path != null) {
-            path = path.replace('\\', '/');
-            String drive = "";
-            if ((path.length() > 1) && (path.charAt(1) == ':')) {
-                // windows path like C:
-                drive = path.substring(0, 2);
-                path = path.substring(2);
-            } 
-            if (path.charAt(0) == '/') {
-                // trick to resolve all ../ inside a path
-                path = "." + path;
-            }
-            path = CmsStringUtil.substitute(drive + CmsLinkManager.getAbsoluteUri(path, "/"), "//", "/");            
-            path = path.replace('/', File.separatorChar);
-        }
-        return path;
-    }    
     
     /**
      * Calculates a realtive uri from "fromUri" to "toUri",
@@ -207,6 +181,11 @@ public class CmsLinkManager {
      * @return the root path for the target uri or null
      */
     public static String getSitePath(CmsObject cms, String relativePath, String targetUri) {
+        
+        if (cms == null) {
+            // required by unit test cases
+            return targetUri;
+        }
         
         URI uri;
         String path;
@@ -424,7 +403,7 @@ public class CmsLinkManager {
         } else {
             
             // offline project, no export required
-            if (OpenCms.getRunLevel() > 2) {
+            if (OpenCms.getRunLevel() > 1) {
                 // in unit test this code would fail otherwise
                 resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/07/18 16:32:33 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -219,7 +220,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
                 if (resource.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
                     try {
                         // make sure a page is only read once (not every time for each element)
-                        page = CmsXmlPage.unmarshal(controller.getCmsObject(), CmsFile.upgrade(resource, controller.getCmsObject()));
+                        page = CmsXmlPageFactory.unmarshal(controller.getCmsObject(), CmsFile.upgrade(resource, controller.getCmsObject()));
                         req.setAttribute(filename, page);                
                     } catch (CmsException e) {
                         OpenCms.getLog(CmsJspTagTemplate.class).error("Error checking for XML page", e);
@@ -239,7 +240,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
                     if ((locales != null) && (locales.size() != 0)) {
                         locale = OpenCms.getLocaleManager().getBestMatchingLocale(controller.getCmsObject().getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(controller.getCmsObject(), absolutePath), locales);
                     }                     
-                    if ((locale != null) && page.hasElement(el, locale) && page.isEnabled(el, locale)) {
+                    if ((locale != null) && page.hasValue(el, locale) && page.isEnabled(el, locale)) {
                         
                         found = true;
                         if (!checkall) {

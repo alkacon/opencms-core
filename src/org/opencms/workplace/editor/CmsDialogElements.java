@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/06/28 11:18:09 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.3.0
  */
@@ -216,7 +217,7 @@ public class CmsDialogElements extends CmsDialog {
         try {
             // read the xmlpage file
             CmsFile pageFile = cms.readFile(xmlPageUri, CmsResourceFilter.IGNORE_EXPIRATION);
-            page = CmsXmlPage.unmarshal(cms, pageFile);
+            page = CmsXmlPageFactory.unmarshal(cms, pageFile);
         } catch (CmsException e) {
             OpenCms.getLog(CmsDialogElements.class).warn("Could not read xmlPage from uri '" + xmlPageUri + "'", e);
             // xmlpage will be null, only "template-elements" property on template will be checked
@@ -230,9 +231,9 @@ public class CmsDialogElements extends CmsDialog {
     public void actionDeleteElementContent() {
         try {
             CmsFile file = getCms().readFile(getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
-            CmsXmlPage page = CmsXmlPage.unmarshal(getCms(), file);
+            CmsXmlPage page = CmsXmlPageFactory.unmarshal(getCms(), file);
             // set the content of the element to an empty String
-            page.setContent(getCms(), getParamDeleteElement(), getElementLocale(), "");
+            page.setStringValue(getCms(), getParamDeleteElement(), getElementLocale(), "");
             // write the temporary file
             file.setContents(page.marshal());
             getCms().writeFile(file);
@@ -251,7 +252,7 @@ public class CmsDialogElements extends CmsDialog {
         try {
             List elementList = computeElements();
             CmsFile file = getCms().readFile(getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
-            CmsXmlPage page = CmsXmlPage.unmarshal(getCms(), file);
+            CmsXmlPage page = CmsXmlPageFactory.unmarshal(getCms(), file);
             boolean foundMandatory = false;
             m_changeElement = "";
             Iterator i = elementList.iterator();
@@ -262,7 +263,7 @@ public class CmsDialogElements extends CmsDialog {
                 || "true".equals(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + element.getName()))) {
                     if (!element.isExisting()) {
                         // create element in order to enable it properly 
-                        page.addElement(element.getName(), getElementLocale());
+                        page.addValue(element.getName(), getElementLocale());
                     }
                     page.setEnabled(element.getName(), getElementLocale(), true);
                     if (element.isMandantory() && !foundMandatory) {
@@ -274,9 +275,9 @@ public class CmsDialogElements extends CmsDialog {
                         // must set enabled to true or check for contains always fails
                         page.setEnabled(element.getName(), getElementLocale(), true);
                         // disable element if it is already existing
-                        if ("".equals(page.getContent(getCms(), element.getName(), getElementLocale()))) {
+                        if (page.getStringValue(getCms(), element.getName(), getElementLocale()) == null) {
                             // element is not defined in template, empty and disabled - remove it
-                            page.removeElement(element.getName(), getElementLocale());
+                            page.removeValue(element.getName(), getElementLocale());
                         } else {
                             page.setEnabled(element.getName(), getElementLocale(), false);
                         }
@@ -335,7 +336,7 @@ public class CmsDialogElements extends CmsDialog {
             
             // get all present bodies from the temporary file
             CmsFile file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
-            CmsXmlPage page = CmsXmlPage.unmarshal(getCms(), file);
+            CmsXmlPage page = CmsXmlPageFactory.unmarshal(getCms(), file);
             
             // show all possible elements
             Iterator i = elementList.iterator();
@@ -348,7 +349,7 @@ public class CmsDialogElements extends CmsDialog {
                 retValue.append("</td>\n");
                 retValue.append("\t<td class=\"textcenter\" unselectable=\"on\"><input type=\"checkbox\" name=\"" + PREFIX_PARAM_BODY + element.getName() + "\" value=\"true\"");
                 
-                if ((!page.hasElement(element.getName(), getElementLocale()) && element.isMandantory())
+                if ((!page.hasValue(element.getName(), getElementLocale()) && element.isMandantory())
                 || page.isEnabled(element.getName(), getElementLocale())) {
                     retValue.append(" checked=\"checked\"");
                 }
@@ -359,7 +360,7 @@ public class CmsDialogElements extends CmsDialog {
                 retValue.append("</td>\n");
                 retValue.append("\t<td class=\"textcenter\" unselectable=\"on\">");
                 retValue.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-                if (!"".equals(page.getContent(getCms(), element.getName(), getElementLocale()))) {
+                if (page.getStringValue(getCms(), element.getName(), getElementLocale()) != null) {
                     // current element has content that can be deleted
                     retValue.append(button("javascript:confirmDelete('" + element.getName() + "');", null, "deletecontent", "button.delete", 0));
                 } else {

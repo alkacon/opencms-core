@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/06/28 11:18:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -52,7 +52,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.3.0
  */
@@ -84,7 +84,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
             try {
                 m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
-                m_page = CmsXmlPage.unmarshal(getCms(), m_file);
+                m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
             } catch (CmsException e) {
                 // error during initialization
                 try {
@@ -138,7 +138,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 setParamTempfile(createTempFile());
                 // initialize a page object from the created temporary file
                 m_file =  getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
-                m_page = CmsXmlPage.unmarshal(getCms(), m_file);
+                m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
             } catch (CmsException e) {
                 // error during initialization
                 try {

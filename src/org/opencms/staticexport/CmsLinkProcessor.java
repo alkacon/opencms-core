@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/07/27 14:43:53 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -53,7 +54,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -79,6 +80,9 @@ public class CmsLinkProcessor {
     /** Current processing mode. */
     private int m_mode;
     
+    /** The selected encoding. */
+    private String m_encoding;
+    
     /** Indicates if links should be generated for editing purposes. */
     private boolean m_processEditorLinks;
     
@@ -88,10 +92,18 @@ public class CmsLinkProcessor {
     /**
      * Creates a new CmsLinkProcessor.<p>
      * 
+     * @param cms the cms object
      * @param linkTable the link table to use
+     * @param encoding the encoding to use
+     * @param relativePath additional path for links with relative path (only used in "replace" mode)
      */
-    public CmsLinkProcessor (CmsLinkTable linkTable) {        
+    public CmsLinkProcessor(CmsObject cms, CmsLinkTable linkTable, String encoding, String relativePath) {        
+
+        m_cms = cms;        
         m_linkTable = linkTable;
+        m_encoding = encoding;        
+        m_processEditorLinks = ((null != m_cms) && (null != m_cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_EDITOR)));                   
+        m_relativePath = relativePath;        
     }
     
     /**
@@ -99,21 +111,16 @@ public class CmsLinkProcessor {
      * 
      * Macros are replaced by links.<p>
      * 
-     * @param cms the cms object
      * @param content the content to process
-     * @param encoding the encoding to use
-     * @param processEditorLinks flag to process links for editing purposes
      * @return the processed content with replaced macros
      * 
      * @throws ParserException if something goes wrong
      */
-    public String processLinks(CmsObject cms, String content, String encoding, boolean processEditorLinks) throws ParserException {
+    public String processLinks(String content) throws ParserException {
                 
-        m_processEditorLinks = processEditorLinks;
         m_mode = C_PROCESS_LINKS;
-        m_cms = cms;        
 
-        String result = processContent(content, encoding);
+        String result = processContent(content, m_encoding);
         return result;
     }
     
@@ -122,22 +129,27 @@ public class CmsLinkProcessor {
      * 
      * Links are replaced by macros.<p>
      * 
-     * @param cms the cms object
      * @param content the content to process
-     * @param encoding the encoding to use
-     * @param relativePath additional path for links with relative path
      * @return the processed content with replaced links
      * 
      * @throws ParserException if something goes wrong
      */
-    public String replaceLinks(CmsObject cms, String content, String encoding, String relativePath) throws ParserException {
+    public String replaceLinks(String content) throws ParserException {
                                 
-        m_relativePath = relativePath;
         m_mode = C_REPLACE_LINKS;
-        m_cms = cms; 
         
-        String result = processContent(content, encoding);
+        String result = processContent(content, m_encoding);
         return result;
+    }
+    
+    /**
+     * Returns the link table this lik processor was initialized with.<p>
+     * 
+     * @return the link table this lik processor was initialized with
+     */
+    public CmsLinkTable getLinkTable() {
+        
+        return m_linkTable;
     }
     
     /**
@@ -145,20 +157,22 @@ public class CmsLinkProcessor {
      * 
      * @param imageTag the tag to process
      */
-    protected void processImageTag(ImageTag imageTag) {        
-        
+    protected void processImageTag(ImageTag imageTag) {             
         switch (m_mode) {
+
             case C_REPLACE_LINKS:
                 if (imageTag.getAttribute("src") != null) {
+                    
                     String targetUri = imageTag.getImageURL();   
                     String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                    
                     boolean hasAltAttrib = (imageTag.getAttribute("alt") != null);
                     String title = null;
                     
                     if (internalUri != null) {
                         imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), internalUri, true)));
                         
-                        if (!hasAltAttrib) {
+                        if (!hasAltAttrib && (m_cms != null)) {
                             try {
                                 title = m_cms.readPropertyObject(internalUri, I_CmsConstants.C_PROPERTY_TITLE, false).getValue("\"\"");                                
                             } catch (CmsException e) {
@@ -175,7 +189,7 @@ public class CmsLinkProcessor {
                         }
                     }
                 }
-                break;
+                break;                
                 
             case C_PROCESS_LINKS:
                 if (imageTag.getAttribute("src") != null) {
@@ -187,7 +201,7 @@ public class CmsLinkProcessor {
                     } else {
                         // might happen if the HTML is malformed, this prevents a NPE
                         imageTag.setImageURL(imageUrl);
-                    }                                        
+                    }
                 }
                 break;
                 
@@ -313,9 +327,22 @@ public class CmsLinkProcessor {
         if (link.isInternal()) {
 
             // if we have a local link, leave it unchanged
-            if (link.getUri().charAt(0) == '#') {
+            // cms may be null for unit tests
+            if ((m_cms == null) || (link.getUri().charAt(0) == '#')) {
                 return link.getUri();
             }
+            
+            // Explanation why the "m_processEditorLinks" variable is required:
+            // If the VFS is browsed in the root site, this indicates that a user has switched
+            // the context to the / in the Workplace. In this case the workplace site must be 
+            // the active site. If normal link processing would be used, the site root in the link
+            // would be replaced with server name / port for the other sites. But if a user clicks
+            // on such a link he would leave the workplace site and loose his session. 
+            // A result is that the "direct edit" mode does not work since he in not longer logged in.      
+            // Therefore if the user is NOT in the editor, but in the root site, the links are generated
+            // without server name / port. However, if the editor is opened, the links are generated 
+            // _with_ server name / port so that the source code looks identical to code
+            // that would normally created when running in a regular site.
             
             // we are in the opencms root site but not in edit mode - use link as stored
             if (!m_processEditorLinks && (m_cms.getRequestContext().getSiteRoot().length() == 0)) {
@@ -323,23 +350,24 @@ public class CmsLinkProcessor {
             }
 
             // otherwise get the desired site root from the stored link
-            // - if there is no site root, we have a system link (or the site was deleted),
+            // if there is no site root, we have a /system link (or the site was deleted),
             // return the link prefixed with the opencms context
             String siteRoot = link.getSiteRoot();
             if (siteRoot == null) {
                 return OpenCms.getLinkManager().substituteLink(m_cms, link.getUri());
             }
             
-            // check if the link has to be returned as relative or absolute link
+            // check if the link has to be returned with server name (and port) prefix
             if (m_cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
-                // if we are in the desired site, relative links are generated
+                // if we are in the desired site, no server name is added 
                 return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());
             } else {
-                // otherwise, links are generated as absolute links
+                // otherwise, links are generated with protocol, server name and port (if not 80)
                 return CmsSiteManager.getSite(siteRoot).getUrl() 
                     + OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());
             }
-        } else {            
+        } else {   
+            
             // don't touch external links
             return link.getUri();
         }

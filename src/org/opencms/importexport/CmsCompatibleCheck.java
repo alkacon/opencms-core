@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2004/06/21 09:56:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Node;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsCompatibleCheck {
 
@@ -124,7 +124,7 @@ public class CmsCompatibleCheck {
     }
 
     /**
-     * Checks if the resource path information fullfills the rules for template and body paths.<p>
+     * Checks if the resource path information fulfills the rules for template and body paths.<p>
      *
      * @param name the absolute path of the resource in the VFS
      * @param content the content of the resource.

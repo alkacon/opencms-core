@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/07/18 16:33:45 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.main.OpenCmsCore;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -79,7 +80,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -202,28 +203,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_exportSuffixes = new ArrayList();
         m_exportFolders = new ArrayList();
         m_exportHeaders = new ArrayList();                  
-    }
-
-    /**
-     * Deletes a directory in the file system and all subfolders of that directory.<p>
-     * 
-     * @param directory the directory to delete
-     */
-    public static void purgeDirectory(File directory) {
-
-        if (directory.canRead() && directory.isDirectory()) {
-            java.io.File[] files = directory.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                File f = files[i];
-                if (f.isDirectory()) {
-                    purgeDirectory(f);
-                }
-                if (f.canWrite()) {
-                    f.delete();
-                }
-            }
-            directory.delete();
-        }
     }
 
     /**
@@ -389,7 +368,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         FileOutputStream exportStream = null;
         File exportFile = null;
-        String exportFileName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(1));
+        String exportFileName = CmsFileUtil.normalizePath(getExportPath() + rfsName.substring(1));
 
         // only export those resource where the export property is set
         if (OpenCms.getLinkManager().exportRequired(cms, vfsName)) {
@@ -485,7 +464,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         // first check if the test resource was published already
         // if not, we must do a complete export of all static resources
-        String rfsName = CmsLinkManager.normalizeRfsPath(getExportPath() + getTestResource());
+        String rfsName = CmsFileUtil.normalizePath(getExportPath() + getTestResource());
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Static export, checking test resource " + rfsName);
@@ -532,7 +511,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
             Map eventData = new HashMap();
             eventData.put("report", report);
-            CmsEvent clearCacheEvent = new CmsEvent(cms, I_CmsEventListener.EVENT_CLEAR_CACHES, eventData, false);
+            CmsEvent clearCacheEvent = new CmsEvent(cms, I_CmsEventListener.EVENT_CLEAR_CACHES, eventData);
             OpenCms.fireCmsEvent(clearCacheEvent);
 
             scrubExportFolder();
@@ -1288,7 +1267,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     private void createExportFolder(String rfsName) throws CmsException {
 
-        String exportFolderName = CmsLinkManager.normalizeRfsPath(getExportPath()
+        String exportFolderName = CmsFileUtil.normalizePath(getExportPath()
             + CmsResource.getFolderPath(rfsName).substring(1));
         File exportFolder = new File(exportFolderName);
         if (!exportFolder.exists()) {
@@ -1507,7 +1486,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
                 
                 // get the last modified date and add it to the request
-                String exportFileName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(1));
+                String exportFileName = CmsFileUtil.normalizePath(getExportPath() + rfsName.substring(1));
                 File exportFile = new File(exportFileName);
                 if (exportFile != null) {
                     long dateLastModified = exportFile.lastModified();
@@ -1817,12 +1796,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     private void scrubExportFolder() {
 
-        String exportFolderName = CmsLinkManager.normalizeRfsPath(getExportPath());
+        String exportFolderName = CmsFileUtil.normalizePath(getExportPath());
         try {
             File exportFolder = new File(exportFolderName);
             // check if export file exists, if so delete it
             if (exportFolder.exists() && exportFolder.canWrite()) {
-                purgeDirectory(exportFolder);
+                CmsFileUtil.purgeDirectory(exportFolder);
                 // write log message
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info("Static export deleted main export folder '" + exportFolderName + "'");
@@ -1907,13 +1886,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     String exportFileName;
                     if (res.isFolder()) {
                         if (res.isDeleted()) {
-                            String exportFolderName = CmsLinkManager.normalizeRfsPath(getExportPath()
+                            String exportFolderName = CmsFileUtil.normalizePath(getExportPath()
                                 + rfsName.substring(getRfsPrefix().length() + 1));
                             try {
                                 File exportFolder = new File(exportFolderName);
                                 // check if export file exists, if so delete it
                                 if (exportFolder.exists() && exportFolder.canWrite()) {
-                                    purgeDirectory(exportFolder);
+                                    CmsFileUtil.purgeDirectory(exportFolder);
                                     // write log message
                                     if (OpenCms.getLog(this).isInfoEnabled()) {
                                         OpenCms.getLog(this).info("Static export deleted export folder '" + exportFolderName + "'");
@@ -1934,7 +1913,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                             OpenCms.getLog(this).debug("Static export folder index file rfsName='" + rfsName + "'");
                         }
                     }
-                    exportFileName = CmsLinkManager.normalizeRfsPath(getExportPath()
+                    exportFileName = CmsFileUtil.normalizePath(getExportPath()
                         + rfsName.substring(getRfsPrefix().length() + 1));
                     try {
                         File exportFile = new File(exportFileName);

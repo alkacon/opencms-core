@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsXmlPageDocument.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -52,7 +53,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypeXmlPage</code>.<p>
  * 
- * @version $Revision: 1.11 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.12 $ $Date: 2004/08/03 07:19:03 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsXmlPageDocument extends CmsVfsDocument {
@@ -80,7 +81,7 @@ public class CmsXmlPageDocument extends CmsVfsDocument {
         try {
             CmsFile file = CmsFile.upgrade(resource, m_cms);
             String absolutePath = m_cms.getSitePath(file);
-            CmsXmlPage page = CmsXmlPage.unmarshal(m_cms, file);
+            CmsXmlPage page = CmsXmlPageFactory.unmarshal(m_cms, file);
             
             List pageLocales = page.getLocales();
             if (pageLocales.size() == 0) {
@@ -94,7 +95,10 @@ public class CmsXmlPageDocument extends CmsVfsDocument {
             List elements = page.getNames(locale);
             StringBuffer content = new StringBuffer();
             for (Iterator i = elements.iterator(); i.hasNext();) {
-                content.append(page.getRawContent((String)i.next(), locale));
+                String value = page.getStringValue(null, (String)i.next(), locale);
+                if (value != null) {
+                    content.append(value);
+                }                
             }
             
             CmsHtmlExtractor extractor = new CmsHtmlExtractor();

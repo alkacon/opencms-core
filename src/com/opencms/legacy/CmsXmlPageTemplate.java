@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlPageTemplate.java,v $
- * Date   : $Date: 2004/07/08 15:21:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import com.opencms.template.*;
 
@@ -50,7 +51,7 @@ import java.util.Locale;
  *
  * @author  Carsten Weinholz
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -87,7 +88,7 @@ public class CmsXmlPageTemplate extends CmsDumpTemplate {
             CmsFile file = cms.readFile(filename);
             CmsXmlPageLoader loader = (CmsXmlPageLoader)OpenCms.getResourceManager().getLoader(CmsXmlPageLoader.C_RESOURCE_LOADER_ID);
             // check the current locales
-            CmsXmlPage page = CmsXmlPage.unmarshal(cms, file);
+            CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
             String absolutePath = cms.getSitePath(file);
             Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), page.getLocales());            
             s = loader.dump(cms, file, elementName, locale, null, null);

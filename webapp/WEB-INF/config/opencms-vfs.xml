@@ -40,6 +40,10 @@
 					<mapping suffix=".jsp" />
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" />
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+					<param name="resource.type.id">11</param>
+					<param name="resource.type.name">xmlcontent</param>
+				</type>
 			</resourcetypes>
 		</resources>
 		<translations>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2004/07/18 16:32:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 
 /**
- * @version $Revision: 1.13 $ $Date: 2004/07/18 16:32:33 $
+ * @version $Revision: 1.14 $ $Date: 2004/08/03 07:19:03 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public final class CmsXmlPageConverter {
@@ -72,7 +72,7 @@ public final class CmsXmlPageConverter {
         CmsXmlPage xmlPage = null;
         
         try {
-            xmlPage = new CmsXmlPage(encoding);
+            xmlPage = new CmsXmlPage(locale, encoding);
             Document page = CmsImport.getXmlDocument(content);
             
             Element xmltemplate = page.getRootElement();
@@ -129,8 +129,8 @@ public final class CmsXmlPageConverter {
                 bodyContent = CmsStringUtil.substitute(bodyContent, I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT, OpenCms.getSystemInfo().getOpenCmsContext());
                 
                 if (!"".equals(bodyContent.trim())) {
-                    xmlPage.addElement(bodyName, locale);
-                    xmlPage.setContent(cms, bodyName, locale, bodyContent);
+                    xmlPage.addValue(bodyName, locale);
+                    xmlPage.setStringValue(cms, bodyName, locale, bodyContent);
                 }
             }
             

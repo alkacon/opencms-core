@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2004/07/27 11:09:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ public class CmsConfigurationException extends CmsException {
     /** General configuration error. */
     public static final int C_CONFIGURATION_ERROR = 300;
     
-    /** Required module dependencies not fullfilled. */
+    /** Required module dependencies not fulfilled. */
     public static final int C_CONFIGURATION_MODULE_DEPENDENCIES = 301;
 
     /**
@@ -113,7 +113,7 @@ public class CmsConfigurationException extends CmsException {
             case C_CONFIGURATION_ERROR:
                 return "Error in the OpenCms configuration.";              
             case C_CONFIGURATION_MODULE_DEPENDENCIES:
-                return "Module dependencies not fullfilled.";   
+                return "Module dependencies not fulfilled.";   
             default:
                 return super.getErrorDescription(type);
         }

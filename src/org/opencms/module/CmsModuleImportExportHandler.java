@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2004/07/27 11:09:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/07/27 11:09:56 $
+ * @version $Revision: 1.4 $ $Date: 2004/08/03 07:19:04 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
@@ -401,7 +401,7 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
      * @param report the report to print the progess information to
      * @throws CmsSecurityException if no "Admin" permissions are available
      * @throws CmsConfigurationException if the module is already installed or the 
-     *      dependencies are not fullfilled
+     *      dependencies are not fulfilled
      * @throws CmsException if errors occur reading the module data
      */
     private synchronized void importModule(CmsObject cms, String importResource, I_CmsReport report) 
@@ -423,7 +423,7 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
         // check the module dependencies
         List dependencies = OpenCms.getModuleManager().checkDependencies(importedModule, CmsModuleManager.C_DEPENDENCY_MODE_IMPORT);
         if (dependencies.size() > 0) {
-            // some dependencies not fullfilled
+            // some dependencies not fulfilled
             String missingModules = "";
             Iterator it = dependencies.iterator();
             while (it.hasNext()) {

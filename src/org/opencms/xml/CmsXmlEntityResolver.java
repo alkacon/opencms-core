@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2004/07/07 18:01:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,19 +57,25 @@ import org.xml.sax.InputSource;
  * Resolves XML entities (e.g. external DTDs) in the OpenCms VFS.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
     /** The scheme to identify a file in the OpenCms VFS. */
     public static final String C_OPENCMS_SCHEME = "opencms://";
 
-    /** The location of the xmlpage DTD. */
-    private static final String C_XMLPAGE_DTD_LOCATION = "org/opencms/xml/page/xmlpage.dtd";
-    
-    /** The (old) DTD address of the OpenCms xmlpage (used until 5.3.5). */
-    public static final String C_XMLPAGE_DTD_OLD_SYSTEM_ID = "/system/shared/page.dtd";    
+    /** The location of the XML page XML schema. */
+    private static final String C_XMLPAGE_OLD_DTD_LOCATION = "org/opencms/xml/page/xmlpage.dtd";
 
+    /** The (old) DTD address of the OpenCms xmlpage (used in 5.3.5). */
+    private static final String C_XMLPAGE_OLD_DTD_SYSTEM_ID_1 = "http://www.opencms.org/dtd/6.0/xmlpage.dtd";    
+
+    /** The (old) DTD address of the OpenCms xmlpage (used until 5.3.5). */
+    private static final String C_XMLPAGE_OLD_DTD_SYSTEM_ID_2 = "/system/shared/page.dtd";    
+
+    /** The location of the xmlpage XSD. */
+    private static final String C_XMLPAGE_XSD_LOCATION = "org/opencms/xml/page/xmlpage.xsd";
+    
     /** A permanent cache to avoid multiple readings of often used files from the VFS. */
     private static Map m_cachePermanent;
     
@@ -197,11 +203,11 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             
             // permanent cache contains system id
             return new InputSource(new ByteArrayInputStream(content));
-        } else if (systemId.equals(CmsXmlPage.C_XMLPAGE_DTD_SYSTEM_ID) || systemId.endsWith(C_XMLPAGE_DTD_OLD_SYSTEM_ID)) {
-
-            // XML page DTD reference
+        } else if (systemId.equals(CmsXmlPage.C_XMLPAGE_XSD_SYSTEM_ID)) {
+            
+            // XML page XSD reference
             try {                
-                InputStream stream = getClass().getClassLoader().getResourceAsStream(C_XMLPAGE_DTD_LOCATION);
+                InputStream stream = getClass().getClassLoader().getResourceAsStream(C_XMLPAGE_XSD_LOCATION);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);                
                 for (int b=stream.read(); b>-1; b=stream.read()) {
                     bytes.write(b);
@@ -211,7 +217,24 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cachePermanent.put(systemId, content);                
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                OpenCms.getLog(this).error("Did not find CmsXmlPage DTD at " + C_XMLPAGE_DTD_LOCATION, t);
+                OpenCms.getLog(this).error("Did not find CmsXmlPage schema XSD at " + C_XMLPAGE_XSD_LOCATION, t);
+            }            
+        
+        } else if (systemId.equals(C_XMLPAGE_OLD_DTD_SYSTEM_ID_1) || systemId.endsWith(C_XMLPAGE_OLD_DTD_SYSTEM_ID_2)) {
+
+            // XML page DTD reference
+            try {                
+                InputStream stream = getClass().getClassLoader().getResourceAsStream(C_XMLPAGE_OLD_DTD_LOCATION);
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);                
+                for (int b=stream.read(); b>-1; b=stream.read()) {
+                    bytes.write(b);
+                }
+                content = bytes.toByteArray();
+                // cache the XML page DTD
+                m_cachePermanent.put(systemId, content);                
+                return new InputSource(new ByteArrayInputStream(content));
+            } catch (Throwable t) {
+                OpenCms.getLog(this).error("Did not find CmsXmlPage DTD at " + C_XMLPAGE_OLD_DTD_LOCATION, t);
             }
         } else if ((m_cms != null) && systemId.startsWith(C_OPENCMS_SCHEME)) {
 

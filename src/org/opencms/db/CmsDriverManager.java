@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/19 17:04:30 $
- * Version: $Revision: 1.401 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.402 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.main.OpenCmsCore;
 import org.opencms.module.I_CmsModuleAction;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
@@ -76,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.401 $ $Date: 2004/07/19 17:04:30 $
+ * @version $Revision: 1.402 $ $Date: 2004/08/03 07:19:04 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4663,7 +4662,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             }
 
             // clear all caches to reclaim memory
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
 
             // force a complete object finalization and garbage collection 
             System.runFinalization();

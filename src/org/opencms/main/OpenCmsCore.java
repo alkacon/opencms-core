@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/07/21 15:35:06 $
- * Version: $Revision: 1.136 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.137 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,6 +74,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.xml.CmsXmlContentTypeManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -104,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.136 $
+ * @version $Revision: 1.137 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1052,6 +1053,11 @@ public final class OpenCmsCore {
         
         // intialize the module manager
         m_moduleManager.initialize(adminCms);
+        
+        int todo = 0;
+        // TODO: initializing of XML content types done right
+        // Currently this line is required to initialize the XML content types
+        CmsXmlContentTypeManager.getTypeManager();
     }
 
     /**

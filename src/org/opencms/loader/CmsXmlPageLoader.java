@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,7 +59,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -94,12 +95,16 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
 
         if (page == null) {
             // make sure a page is only read once (not every time for each element)
-            page = CmsXmlPage.unmarshal(cms, CmsFile.upgrade(resource, cms));
+            page = CmsXmlPageFactory.unmarshal(cms, CmsFile.upgrade(resource, cms));
             req.setAttribute(absolutePath, page);
         }    
 
         // get the appropriate content and convert it to bytes
-        return page.getContent(cms, element, locale).getBytes(page.getEncoding());
+        String value = page.getStringValue(cms, element, locale);
+        if (value != null) {
+            return value.getBytes(page.getEncoding());
+        } 
+        return new byte[0];
     }
 
     /**
@@ -201,15 +206,15 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             
         if (page == null) {      
             // make sure a page is only read once (not every time for each element)
-            page = CmsXmlPage.unmarshal(cms, CmsFile.upgrade(resource, cms));
+            page = CmsXmlPageFactory.unmarshal(cms, CmsFile.upgrade(resource, cms));
             req.setAttribute(absolutePath, page);
         }        
         
         // get the element selector
-        String elementName = req.getParameter(I_CmsConstants.C_PARAMETER_ELEMENT);
+        String element = req.getParameter(I_CmsConstants.C_PARAMETER_ELEMENT);
         
         // check the current locales
-        List locales = page.getLocales(elementName);
+        List locales = page.getLocales(element);
         Locale locale;
         if ((locales == null) || (locales.size() == 0)) {
             // no content for the selected element is available
@@ -218,11 +223,11 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), locales);
         }        
         
-        // get the appropriate content and convert it to bytes
-        byte[] result = page.getContent(cms, elementName, locale).getBytes(page.getEncoding()); 
-        
+        // get the appropriate content
+        String value = page.getStringValue(cms, element, locale);
         // append the result to the output stream
-        if (result != null) {
+        if (value != null) {
+            byte[] result = value.getBytes(page.getEncoding());
             res.getOutputStream().write(result);
         }        
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/06/28 07:52:29 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,31 +37,30 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.A_CmsXmlDocument;
-import org.opencms.xml.CmsXmlEntityResolver;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.types.CmsXmlHtmlValue;
+import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlSchemaType;
 
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
-import org.dom4j.DocumentType;
 import org.dom4j.Element;
 import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of a page object used to access and manage xml data.<p>
@@ -75,61 +74,64 @@ import org.xml.sax.EntityResolver;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
-    
+
     /** Name of the name attribute of the elements node. */
-    private static final String C_ATTRIBUTE_ENABLED = "enabled";    
+    public static final String ATTRIBUTE_ENABLED = "enabled";
 
     /** Name of the internal attribute of the link node. */
-    private static final String C_ATTRIBUTE_INTERNAL = "internal";
+    public static final String ATTRIBUTE_INTERNAL = "internal";
 
     /** Name of the language attribute of the elements node. */
-    private static final String C_ATTRIBUTE_LANGUAGE = "language";
+    public static final String ATTRIBUTE_LANGUAGE = "language";
 
     /** Name of the name attribute of the elements node. */
-    private static final String C_ATTRIBUTE_NAME = "name";
+    public static final String ATTRIBUTE_NAME = "name";
 
     /** Name of the type attribute of the elements node. */
-    private static final String C_ATTRIBUTE_TYPE = "type";
-    
-    /** Name of the root document node. */
-    private static final String C_DOCUMENT_NODE = "page";
+    public static final String ATTRIBUTE_TYPE = "type";
 
-    /** Name of the anchor node. */
-    private static final String C_NODE_ANCHOR = "anchor";
-    
-    /** Name of the element node. */
-    private static final String C_NODE_CONTENT = "content";
-
-    /** Name of the element node. */
-    private static final String C_NODE_ELEMENT = "element";
-    
-    /** Name of the elements node. */
-    public static final String C_NODE_ELEMENTS = "elements";
-
-    /** Name of the link node. */
-    public static final String C_NODE_LINK = "link";
-    
-    /** Name of the links node. */
-    public static final String C_NODE_LINKS = "links";
-    
-    /** Name of the query node. */
-    private static final String C_NODE_QUERY = "query";
-    
-    /** Name of the target node. */
-    private static final String C_NODE_TARGET = "target";
-        
     /** Property to check if relative links are allowed. */
-    private static final String C_PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
+    public static final String C_PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
 
     /** The DTD address of the OpenCms xmlpage. */
-    public static final String C_XMLPAGE_DTD_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX + "xmlpage.dtd";    
-    
+    public static final String C_XMLPAGE_XSD_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX + "xmlpage.xsd";
+
+    /** Name of the anchor node. */
+    public static final String NODE_ANCHOR = "anchor";
+
+    /** Name of the element node. */
+    public static final String NODE_CONTENT = "content";
+
+    /** Name of the elements node. */
+    public static final String NODE_ELEMENTS = "elements";
+
+    /** Name of the link node. */
+    public static final String NODE_LINK = "link";
+
+    /** Name of the links node. */
+    public static final String NODE_LINKS = "links";
+
+    /** Name of the page node. */
+    public static final String NODE_PAGE = "page";
+
+    /** Name of the page node. */
+    public static final String NODE_PAGES = "pages";
+
+    /** Name of the query node. */
+    public static final String NODE_QUERY = "query";
+
+    /** Name of the target node. */
+    public static final String NODE_TARGET = "target";
+
+    /** Name of the element node. */
+    private static final String NODE_ELEMENT = "element";
+
     /** Indicates if relative Links are allowed. */
     private boolean m_allowRelativeLinks;
-    
+
     /**
      * Creates a new CmsXmlPage based on the provided document and encoding.<p>
      * 
@@ -139,218 +141,71 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * @param encoding the encoding of the xml page
      */
     public CmsXmlPage(Document document, String encoding) {
-        
+
         initDocument(document, encoding, null);
     }
 
     /**
-     * Creates an empty CmsXmlPage with the provided encoding.<p>
+     * Creates an empty XML page in the provided locale using 
+     * the provided encoding.<p>
      * 
      * The page is initialized according to the minimal neccessary xml structure.
      * The encoding is used for marshalling the XML document later.<p>
      * 
-     * @param encoding the encoding of the xml page
+     * @param locale the initial locale of the XML page
+     * @param encoding the encoding of the XML page
      */
-    public CmsXmlPage(String encoding) {
-        
-        initDocument(createValidDocument(), encoding, null);
-    }
-    
-    /**
-     * Creates a new instance for later initializing using unmarshal helpers.<p> 
-     */
-    private CmsXmlPage() {
-        // noop
+    public CmsXmlPage(Locale locale, String encoding) {
+
+        initDocument(CmsXmlPageFactory.createDocument(locale), encoding, null);
     }
 
     /**
-     * Factory method to unmarshal (read) a XML page instance from a byte array
-     * that contains XML data.<p>
-     * 
-     * When unmarshalling, the encoding is read directly from the XML header. 
-     * The given encoding is used only when marshalling the XML again later.<p>
-     * 
-     * @param xmlData the XML data in a byte array
-     * @param encoding the encoding to use when marshalling the XML page later
-     * @param resolver the XML entitiy resolver to use
-     * @return a XML page instance unmarshalled from the byte array
-     * @throws CmsXmlException if something goes wrong
-     */
-    public static CmsXmlPage unmarshal(byte[] xmlData, String encoding, EntityResolver resolver) throws CmsXmlException {
-        
-        return new CmsXmlPage(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding);
-    }
-    
-    /**
-     * Factory method to unmarshal (read) a XML page instance from a OpenCms VFS file
-     * that contains XML data.<p>
-     * 
-     * @param cms the current cms object
-     * @param file the file with the XML data to unmarshal
-     * @return a XML page instance unmarshalled from the provided file
-     * @throws CmsXmlException if something goes wrong
-     */
-    public static CmsXmlPage unmarshal(CmsObject cms, CmsFile file) throws CmsXmlException {
-        
-        return unmarshal(cms, file, true);
-    }
-        
-    /**
-     * Factory method to unmarshal (read) a XML page instance from a OpenCms VFS file
-     * that contains XML data, using wither the encoding set
-     * in the XML file header, or the encoding set in the VFS file property.<p>
-     * 
-     * If you are not sure about the implications of the encoding issues, 
-     * use {@link #unmarshal(CmsObject, CmsFile) } instead.<p>
-     * 
-     * @param cms the current cms object
-     * @param file the file with the XML data to unmarshal
-     * @param keepEncoding if true, the encoding spefified in the XML header is used, 
-     *    otherwise the encoding from the VFS file property is used
-     * @return a XML page instance unmarshalled from the provided file
-     * @throws CmsXmlException if something goes wrong
-     */
-    public static CmsXmlPage unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding) throws CmsXmlException {
-        
-        byte[] content = file.getContents();
-
-        String fileName = cms.getSitePath(file);
-        boolean allowRelative = false;
-        try {
-            allowRelative = Boolean.valueOf(cms.readPropertyObject(fileName, C_PROPERTY_ALLOW_RELATIVE, false).getValue()).booleanValue();
-        } catch (CmsException e) {
-            // allowRelative will be false
-        }
-        
-        String encoding = null;
-        try { 
-            encoding = cms.readPropertyObject(fileName, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue();
-        } catch (CmsException e) {
-            // encoding will be null 
-        }        
-        if (encoding == null) {
-            encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-        } else {
-            encoding = CmsEncoder.lookupEncoding(encoding, null);
-            if (encoding == null) {
-                throw new CmsXmlException("Invalid content-encoding property set for xml page '" + fileName + "'");
-            }
-        }
-                 
-        CmsXmlPage newPage;        
-        if (content.length > 0) {
-            // content is initialized
-            if (keepEncoding) {
-                // use the encoding from the content
-                newPage = unmarshal(content, encoding, new CmsXmlEntityResolver(cms));
-            } else {
-                // use the encoding from the file property
-                // this usually only triggered by a save operation                
-                try {
-                    String contentStr = new String(content, encoding);
-                    newPage = unmarshal(contentStr, encoding, new CmsXmlEntityResolver(cms)); 
-                } catch (UnsupportedEncodingException e) {
-                    // this will not happen since the encodig has already been validated
-                    throw new CmsXmlException("Invalid content-encoding property set for xml page '" + fileName + "'", e);
-                }                
-            }
-        } else {
-            // content is empty
-            newPage = new CmsXmlPage(encoding);
-        }
-        
-        newPage.m_file = file;
-        newPage.m_allowRelativeLinks = allowRelative;
-        
-        return newPage;
-    }    
-
-    /**
-     * Factory method to unmarshal (read) a XML page instance from a String
-     * that contains XML data.<p>
-     * 
-     * When unmarshalling, the encoding is read directly from the XML header. 
-     * The given encoding is used only when marshalling the XML again later.<p>
-     * 
-     * @param xmlData the XML data in a String
-     * @param encoding the encoding to use when marshalling the XML page later
-     * @param resolver the XML entitiy resolver to use
-     * @return a XML page instance unmarshalled from the String
-     * @throws CmsXmlException if something goes wrong
-     */
-    public static CmsXmlPage unmarshal(String xmlData, String encoding, EntityResolver resolver) throws CmsXmlException {  
-        
-        return new CmsXmlPage(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding);
-    }
-    
-    /**
-     * Returns an initialized document object.<p>
-     * 
-     * @return an initialized document object
-     */
-    protected static Document createValidDocument() {        
-        
-        Document doc = DocumentHelper.createDocument(DocumentHelper.createElement(C_DOCUMENT_NODE));
-        doc.addDocType(C_DOCUMENT_NODE, "", C_XMLPAGE_DTD_SYSTEM_ID);
-        doc.getRootElement().addElement(C_NODE_ELEMENTS);
-        return doc;
-    }          
-    
-    /**
-     * Adds a new empty element with the given name and language.<p>
+     * Adds a new, empty value with the given name and locale
+     * to this XML document.<p>
      *  
-     * @param name name of the element, must be unique
-     * @param locale locale of the element
+     * @param name the name of the value
+     * @param locale the locale of the value
      */
-    public void addElement(String name, Locale locale) {
-        
-        Element elements = m_document.getRootElement().element(C_NODE_ELEMENTS);        
-        Element element = elements.addElement(C_NODE_ELEMENT)
-              .addAttribute(C_ATTRIBUTE_NAME, name)
-              .addAttribute(C_ATTRIBUTE_LANGUAGE, locale.toString());       
-        element.addElement(C_NODE_LINKS);
-        element.addElement(C_NODE_CONTENT);
-        addBookmark(name, locale, true, element);
-    }
-    
-    /**
-     * Validates the HTML code of each content element of the page.<p>
-     * 
-     * @param cms the current cms object
-     * @return the corrected CmsFile
-     * @throws CmsXmlException if validation fails
-     */
-    public CmsFile correctHtmlStructure(CmsObject cms) throws CmsXmlException {
+    public void addValue(String name, Locale locale) {
 
-        // we must loop through all locales and elements to check all the content elements
-        // if they contain correct HTML
-        List elementNames;
-        String elementName;
-        String content;       
-        
-        // iterate over all locales
-        Iterator i = m_locales.iterator();
-        while (i.hasNext()) {
-            Locale locale = (Locale)i.next();
-            elementNames = getNames(locale);
+        Element pages = m_document.getRootElement();
+        String localeStr = locale.toString();
+        Element page = null;
 
-            // iterate over all body elements per language
-            Iterator j = elementNames.iterator();
-            while (j.hasNext()) {
-                elementName = (String) j.next();
-                // get the content of this element
-                // by accessing it that way, it will get a processed content string
-                // which contains links and valid html
-                content = getContent(cms, elementName, locale, false);
-                // put the new content into the element
-                // saving the content will process and validate the content string again
-                setContent(cms, elementName, locale, content);                                  
+        // search if a page for the selected language is already available
+        for (Iterator i = pages.elementIterator(NODE_PAGE); i.hasNext();) {
+            Element nextPage = (Element)i.next();
+            String language = nextPage.attributeValue(ATTRIBUTE_LANGUAGE);
+            if (localeStr.equals(language)) {
+                // a page for the selected language was found
+                page = nextPage;
+                break;
             }
         }
-        // write the modifed xml back to the VFS file 
-        m_file.setContents(marshal());
-        return m_file;
-    }    
+
+        int pos = 0;
+        // create the new element
+        Element element;
+        if (page != null) {
+            // page for selected language already available
+            pos = page.elements(NODE_ELEMENT).size();
+            element = page.addElement(NODE_ELEMENT).addAttribute(ATTRIBUTE_NAME, name);
+        } else {
+            // no page for the selected language was found
+            element = pages.addElement(NODE_PAGE).addAttribute(ATTRIBUTE_LANGUAGE, localeStr);
+            element = element.addElement(NODE_ELEMENT).addAttribute(ATTRIBUTE_NAME, name);
+        }
+
+        // add empty nodes for link table and content to the element
+        element.addElement(NODE_LINKS);
+        element.addElement(NODE_CONTENT);
+
+        CmsXmlHtmlValue value = new CmsXmlHtmlValue(element, NODE_ELEMENT, pos);
+
+        // bookmark the element
+        addBookmark(name, locale, true, value);
+    }
 
     /**
      * Returns if relative links are accepted (and left unprocessed).<p>
@@ -358,67 +213,45 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * @return true if relative links are allowed
      */
     public boolean getAllowRelativeLinks() {
-        
+
         return m_allowRelativeLinks;
     }
-    
-    /**
-     * Returns the display content (processed data) of an element.<p>
-     * 
-     * @param cms the cms object
-     * @param name name of the element
-     * @param locale locale of the element
-     * @return the display content or the empty string "" if the element dos not exist
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    public String getContent(CmsObject cms, String name, Locale locale) throws CmsXmlException {  
-        
-        return getContent(cms, name, locale, false);
-    }
 
     /**
-     * Returns the display content (processed data) of an element.<p>
-     * 
-     * @param cms the cms object
-     * @param name name of the element
-     * @param locale locale of the element
-     * @param forEditor indicates that link processing should be done for editing purposes
-     * @return the display content or the empty string "" if the element dos not exist
-     * 
-     * @throws CmsXmlException if something goes wrong
+     * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition(org.xml.sax.EntityResolver)
      */
-    public String getContent(CmsObject cms, String name, Locale locale, boolean forEditor) throws CmsXmlException {
+    public CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) {
 
-        Element element = (Element)getBookmark(name, locale);        
-        String content = "";
-        
-        if (element != null) {
-
-            Element data = element.element(C_NODE_CONTENT);
-            Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);
-            
-            if (enabled == null || "true".equals(enabled.getValue())) {
-            
-                content = data.getText();
-                
-                CmsLinkTable linkTable = getLinkTable(name, locale);
-                if (!linkTable.isEmpty()) {
-                    
-                    CmsLinkProcessor macroReplacer = new CmsLinkProcessor(linkTable);
-                
-                    try {                    
-                        content = macroReplacer.processLinks(cms, content, getEncoding(), forEditor);
-                    } catch (Exception exc) {
-                        throw new CmsXmlException ("HTML data processing failed", exc);
-                    }
-                } 
-            }
+        // Note regarding exception handling:
+        // Since this object already is a valid XML content object,
+        // it must have a valid schema, otherwise it would not exist.
+        // Therefore the exceptions should never be really thrown.
+        InputSource source;
+        try {
+            source = resolver.resolveEntity(null, C_XMLPAGE_XSD_SYSTEM_ID);
+            return CmsXmlContentDefinition.unmarshal(source, C_XMLPAGE_XSD_SYSTEM_ID, resolver);
+        } catch (SAXException e) {
+            throw new RuntimeException("Could not parse XML page content definition schema", e);
+        } catch (IOException e) {
+            throw new RuntimeException("IO error resolving XML page content definition schema", e);
+        } catch (CmsXmlException e) {
+            throw new RuntimeException("Unable to unmarshal XML page content definition schema", e);
         }
-        
-        return content;
     }
-    
+
+    /**
+     * @see org.opencms.xml.A_CmsXmlDocument#getLinkProcessor(org.opencms.file.CmsObject, org.opencms.staticexport.CmsLinkTable)
+     */
+    public CmsLinkProcessor getLinkProcessor(CmsObject cms, CmsLinkTable linkTable) {
+
+        // initialize link processor
+        String relativeRoot = null;
+        if ((!m_allowRelativeLinks) && (m_file != null)) {
+            relativeRoot = CmsResource.getParentFolder(cms.getSitePath(m_file));
+        }
+        return new CmsLinkProcessor(cms, linkTable, getEncoding(), relativeRoot);
+    }
+
     /**
      * Returns the link table of an element.<p>
      * 
@@ -428,62 +261,11 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      */
     public CmsLinkTable getLinkTable(String name, Locale locale) {
 
-        Element element = (Element)getBookmark(name, locale);
-        Element links = element.element(C_NODE_LINKS);
-        
-        CmsLinkTable linkTable = new CmsLinkTable();
-        
-        if (links != null) {
-            for (Iterator i = links.elementIterator(C_NODE_LINK); i.hasNext();) {
-                        
-                Element lelem = (Element)i.next();
-                Attribute lname = lelem.attribute(C_ATTRIBUTE_NAME);
-                Attribute type = lelem.attribute(C_ATTRIBUTE_TYPE);
-                Attribute internal = lelem.attribute(C_ATTRIBUTE_INTERNAL);
-                
-                Element target = lelem.element(C_NODE_TARGET);
-                Element anchor = lelem.element(C_NODE_ANCHOR);
-                Element query  = lelem.element(C_NODE_QUERY);
-                
-                CmsLink link = new CmsLink(
-                        lname.getValue(), 
-                        type.getValue(), 
-                        (target != null) ? target.getText() : null, 
-                        (anchor != null) ? anchor.getText() : null, 
-                        (query  != null) ? query.getText()  : null, 
-                        Boolean.valueOf(internal.getValue()).booleanValue());
-                
-                linkTable.addLink(link);
-            }        
-        }    
-        return linkTable;
-    }
-    
-    /**
-     * Returns the raw (unprocessed) content of an element.<p>
-     * 
-     * @param name  name of the element
-     * @param locale locale of the element
-     * @return the raw (unprocessed) content
-     */
-    public String getRawContent(String name, Locale locale) {
-        
-        Element element = (Element)getBookmark(name, locale);        
-        String content = "";
-        
-        if (element != null) {
-
-            Element data = element.element(C_NODE_CONTENT);
-            Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);
-            
-            if (enabled == null || "true".equals(enabled.getValue())) {
-                
-                content = data.getStringValue();
-                // content = data.getText();
-            }
+        CmsXmlHtmlValue value = (CmsXmlHtmlValue)getValue(name, locale);
+        if (value != null) {
+            return value.getLinkTable();
         }
-        
-        return content;
+        return new CmsLinkTable();
     }
 
     /**
@@ -495,90 +277,32 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      */
     public boolean isEnabled(String name, Locale locale) {
 
-        Element element = (Element)getBookmark(name, locale);
+        CmsXmlHtmlValue value = (CmsXmlHtmlValue)getValue(name, locale);
 
-        if (element != null) {
-            Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);            
+        if (value != null) {
+            Element element = value.getElement();
+            Attribute enabled = element.attribute(ATTRIBUTE_ENABLED);
             return (enabled == null || Boolean.valueOf(enabled.getValue()).booleanValue());
         }
-        
+
         return false;
     }
 
     /**
-     * Removes an existing element with the given name and locale.<p>
+     * Removes an existing value with the given name and locale
+     * from this XML document.<p>
      * 
-     * @param name name of the element
-     * @param locale the locale of the element
+     * @param name the name of the value
+     * @param locale the locale of the value
      */
-    public void removeElement(String name, Locale locale) {
-        
-        Element elements = m_document.getRootElement().element(C_NODE_ELEMENTS);        
-        Element element = (Element)removeBookmark(name, locale);
-        elements.remove(element);
-    }
-    
-    /**
-     * Sets the data of an already existing element.<p>
-     * 
-     * The data will be enclosed as CDATA within the xml page structure.
-     * When setting the element data, the content of this element will be
-     * processed automatically.<p>
-     * 
-     * @param cms the cms object
-     * @param name name of the element
-     * @param locale locale of the element
-     * @param content character data (CDATA) of the element
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    public void setContent(CmsObject cms, String name, Locale locale, String content) throws CmsXmlException {
-        
-        Element element = (Element)getBookmark(name, locale);
-        Element data = element.element(C_NODE_CONTENT);
-        Element links = element.element(C_NODE_LINKS);
-        CmsLinkTable linkTable = new CmsLinkTable();
-        
-        // ensure all chars in the given content are valid chars for the selected charset
-        content = CmsEncoder.adjustHtmlEncoding(content, getEncoding());
-        
-        try {
+    public void removeValue(String name, Locale locale) {
 
-            CmsLinkProcessor linkReplacer = new CmsLinkProcessor(linkTable);
-        
-            data.setContent(null);
-            if (!m_allowRelativeLinks && m_file != null) {
-                String relativeRoot = CmsResource.getParentFolder(cms.getSitePath(m_file));
-                data.addCDATA(linkReplacer.replaceLinks(cms, content, getEncoding(), relativeRoot));
-            } else {
-                data.addCDATA(linkReplacer.replaceLinks(cms, content, getEncoding(), null));
-            }
-                        
-        } catch (Exception exc) {
-            throw new CmsXmlException ("HTML data processing failed", exc);
-        }
-        
-        links.setContent(null);
-        for (Iterator i = linkTable.iterator(); i.hasNext();) {
-            CmsLink link = linkTable.getLink((String)i.next());
-            
-            Element linkElement = links.addElement(C_NODE_LINK)
-                .addAttribute(C_ATTRIBUTE_NAME, link.getName())
-                .addAttribute(C_ATTRIBUTE_TYPE, link.getType())
-                .addAttribute(C_ATTRIBUTE_INTERNAL, Boolean.toString(link.isInternal()));
-                
-            linkElement.addElement(C_NODE_TARGET)
-                .addCDATA(link.getTarget());
-            
-            if (link.getAnchor() != null) {
-                linkElement.addElement(C_NODE_ANCHOR)
-                    .addCDATA(link.getAnchor());
-            }
-            
-            if (link.getQuery() != null) {
-                linkElement.addElement(C_NODE_QUERY)
-                    .addCDATA(link.getQuery());
-            }
+        List list = removeBookmark(name, locale);
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+            I_CmsXmlContentValue value = (I_CmsXmlContentValue)i.next();
+            Element element = value.getElement();
+            element.detach();
         }
     }
 
@@ -594,73 +318,159 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      */
     public void setEnabled(String name, Locale locale, boolean isEnabled) {
 
-        Element element = (Element)getBookmark(name, locale);
-        Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);
-        
+        CmsXmlHtmlValue value = (CmsXmlHtmlValue)getValue(name, locale);
+        Element element = value.getElement();
+        Attribute enabled = element.attribute(ATTRIBUTE_ENABLED);
+
         if (enabled == null) {
-            element.addAttribute(C_ATTRIBUTE_ENABLED, Boolean.toString(isEnabled));
+            if (!isEnabled) {
+                element.addAttribute(ATTRIBUTE_ENABLED, Boolean.toString(isEnabled));
+            }
         } else if (isEnabled) {
             element.remove(enabled);
         } else {
             enabled.setValue(Boolean.toString(isEnabled));
         }
     }
-    
+
     /**
-     * Initializes the bookmarks according to the named elements in the document.<p>
+     * Sets the data of an already existing value.<p>
+     * 
+     * The data will be enclosed as CDATA within the xml page structure.
+     * When setting the element data, the content of this element will be
+     * processed automatically.<p>
+     * 
+     * @param cms the cms object
+     * @param name name of the element
+     * @param locale locale of the element
+     * @param content character data (CDATA) of the element
+     * 
+     * @throws CmsXmlException if something goes wrong
      */
-    protected void initBookmarks() {
+    public void setStringValue(CmsObject cms, String name, Locale locale, String content) throws CmsXmlException {
 
-        m_bookmarks = new HashMap();
-        m_locales = new HashSet();
-        m_elementLocales = new HashMap();
-        m_elementNames = new HashMap();
-        
-        for (Iterator i = m_document.getRootElement().element(C_NODE_ELEMENTS).elementIterator(C_NODE_ELEMENT); i.hasNext();) {
-   
-            Element elem = (Element)i.next();
-            try {
-                String elementName = elem.attributeValue(C_ATTRIBUTE_NAME);
-                String elementLang = elem.attributeValue(C_ATTRIBUTE_LANGUAGE);
-                String elementEnabled = elem.attributeValue(C_ATTRIBUTE_ENABLED);
-                boolean enabled = (elementEnabled==null)?true:Boolean.valueOf(elementEnabled).booleanValue();
-                addBookmark(elementName, CmsLocaleManager.getLocale(elementLang), enabled, elem);       
+        CmsXmlHtmlValue value = (CmsXmlHtmlValue)getValue(name, locale);
 
-            } catch (NullPointerException e) {
-                OpenCms.getLog(this).error("Error while initalizing xmlPage bookmarks", e);                
-            }    
+        if (value != null) {
+            // set the values
+            value.setStringValue(cms, this, content);
+        } else {
+            throw new CmsXmlException("Invalid XML page element '" + locale + "/" + name + "' selected");
         }
     }
-    
+
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.xml.sax.EntityResolver)
      */
-    protected void initDocument(Document document, String encoding, EntityResolver resolver) {        
-        
-        m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
-        m_document = document;     
-        initBookmarks();
-    }
-        
-    /**
-     * Writes the xml contents into an output stream.<p>
-     * 
-     * @param out the output stream to write to
-     * @param encoding the encoding to use
-     * @return the output stream with the xml content
-     * @throws CmsXmlException if something goes wrong
-     */
-    protected OutputStream marshal(OutputStream out, String encoding) throws CmsXmlException {        
+    protected void initDocument(Document document, String encoding, EntityResolver resolver) {
 
-        // ensure xml page has proper system doc type set
-        DocumentType type = m_document.getDocType();
-        if (type != null) {
-            String systemId = type.getSystemID();
-            if ((systemId != null) && systemId.endsWith(CmsXmlEntityResolver.C_XMLPAGE_DTD_OLD_SYSTEM_ID)) {
-                m_document.addDocType(C_DOCUMENT_NODE, "", C_XMLPAGE_DTD_SYSTEM_ID);
+        m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
+        m_document = document;
+        m_elementLocales = new HashMap();
+        m_elementNames = new HashMap();
+
+        // convert pre 5.5.6 XML page documents
+        if (!NODE_PAGES.equals(m_document.getRootElement().getName())) {
+            convertOldDocument();
+        }
+
+        // initialize the bookmarks
+        Element pages = m_document.getRootElement();
+        try {
+            for (Iterator i = pages.elementIterator(NODE_PAGE); i.hasNext();) {
+
+                Element page = (Element)i.next();
+                Locale locale = CmsLocaleManager.getLocale(page.attributeValue(ATTRIBUTE_LANGUAGE));
+                int pos = 0;
+                for (Iterator j = page.elementIterator(NODE_ELEMENT); j.hasNext();) {
+
+                    Element element = (Element)j.next();
+                    String name = element.attributeValue(ATTRIBUTE_NAME);
+
+                    String elementEnabled = element.attributeValue(ATTRIBUTE_ENABLED);
+                    boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
+
+                    // create an element type from the XML node                    
+                    CmsXmlHtmlValue value = new CmsXmlHtmlValue(element, NODE_ELEMENT, pos);
+
+                    // add the element type bookmark
+                    addBookmark(name, locale, enabled, value);
+                    pos++;
+                }
+            }
+        } catch (NullPointerException e) {
+            OpenCms.getLog(this).error("Error while initalizing XML page bookmarks", e);
+        }
+    }
+
+    /**
+     * Sets the parameter that controls the relative link generation.<p>
+     * 
+     * @param value the parameter that controls the relative link generation
+     */
+    protected void setAllowRelativeLinks(boolean value) {
+
+        m_allowRelativeLinks = value;
+    }
+
+    /**
+     * Sets the file this XML page content is written to.<p> 
+     * 
+     * @param file the file this XML page content is written to
+     */
+    protected void setFile(CmsFile file) {
+
+        m_file = file;
+    }
+
+    /**
+     * Converts the XML structure of the pre 5.5.0 development version of 
+     * the XML page to the final 6.0 version.<p>
+     */
+    private void convertOldDocument() {
+
+        Document newDocument = DocumentHelper.createDocument();
+        Element root = newDocument.addElement(NODE_PAGES);
+        root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
+        root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, C_XMLPAGE_XSD_SYSTEM_ID);
+
+        Map pages = new HashMap();
+
+        for (Iterator i = m_document.getRootElement().element(NODE_ELEMENTS).elementIterator(NODE_ELEMENT); i.hasNext();) {
+
+            Element elem = (Element)i.next();
+            try {
+                String elementName = elem.attributeValue(ATTRIBUTE_NAME);
+                String elementLang = elem.attributeValue(ATTRIBUTE_LANGUAGE);
+                String elementEnabled = elem.attributeValue(ATTRIBUTE_ENABLED);
+                boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
+
+                Element page = (Element)pages.get(elementLang);
+                if (page == null) {
+                    // no page available for the language, add one
+                    page = root.addElement(NODE_PAGE).addAttribute(ATTRIBUTE_LANGUAGE, elementLang);
+                    pages.put(elementLang, page);
+                }
+
+                Element newElement = page.addElement(NODE_ELEMENT).addAttribute(ATTRIBUTE_NAME, elementName);
+                if (!enabled) {
+                    newElement.addAttribute(ATTRIBUTE_ENABLED, String.valueOf(enabled));
+                }
+                Element links = elem.element(NODE_LINKS);
+                if (links != null) {
+                    newElement.add(links.createCopy());
+                }
+                Element content = elem.element(NODE_CONTENT);
+                if (content != null) {
+                    newElement.add(content.createCopy());
+                }
+
+            } catch (NullPointerException e) {
+                OpenCms.getLog(this).error("Error while converting old xmlPage content", e);
             }
         }
-        
-        return CmsXmlUtils.marshal(m_document, out, encoding);        
+
+        // now replace the old with the new document
+        m_document = newDocument;
     }
 }

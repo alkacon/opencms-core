@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/07/18 16:35:07 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -43,6 +44,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 5.1.12
  */
@@ -319,7 +321,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 // current element is the displayed one, mark it as selected
                 currentIndex = counter;
             }
-            if ((!m_page.hasElement(element.getName(), getElementLocale()) && element.isMandantory())
+            if ((!m_page.hasValue(element.getName(), getElementLocale()) && element.isMandantory())
                || m_page.isEnabled(element.getName(), getElementLocale())) {
                 // add element if it is not available or if it is enabled
                 options.add(element.getNiceName());
@@ -449,8 +451,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         
         if (locales.size() == 0) {
             // no body present, create default body
-            if (!m_page.hasElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLocale)) {
-                m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLocale);
+            if (!m_page.hasValue(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLocale)) {
+                m_page.addValue(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLocale);
             }
             try {
                 m_file.setContents(m_page.marshal());
@@ -488,7 +490,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @param elementName the name of the element to initialize or null, if default element should be used
      */
     protected void initBodyElementName(String elementName) { 
-        if (elementName == null || (m_page.hasElement(elementName, getElementLocale()) && !m_page.isEnabled(elementName, getElementLocale()))) {                  
+        if (elementName == null || (m_page.hasValue(elementName, getElementLocale()) && !m_page.isEnabled(elementName, getElementLocale()))) {                  
             // elementName not specified or given element is disabled, set to default element
             List elements = m_page.getNames(getElementLocale());
             if (elements.contains(I_CmsConstants.C_XML_BODY_ELEMENT)) {
@@ -519,8 +521,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
         // get the content from the temporary file        
         try {                                  
-            CmsXmlPage page = CmsXmlPage.unmarshal(getCms(), getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL));
-            String elementData = page.getContent(getCms(), getParamElementname(), getElementLocale(), true);
+            CmsXmlPage page = CmsXmlPageFactory.unmarshal(getCms(), getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL));
+            getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
+            String elementData = page.getStringValue(getCms(), getParamElementname(), getElementLocale());
             if (elementData != null) {
                 setParamContent(elementData);
             } else {
@@ -551,16 +554,16 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         String content = prepareContent(true);
 
         // create the element if necessary and if content is present
-        if (!m_page.hasElement(body, locale) && !"".equals(content)) {
-            m_page.addElement(body, locale);
+        if (!m_page.hasValue(body, locale) && !"".equals(content)) {
+            m_page.addValue(body, locale);
         }
         
         // get the enabled state of the element
         boolean enabled = m_page.isEnabled(body, locale);
         
         // set the element data
-        if (m_page.hasElement(body, locale)) {
-            m_page.setContent(getCms(), body, locale, content);
+        if (m_page.hasValue(body, locale)) {
+            m_page.setStringValue(getCms(), body, locale, content);
         }
         
         // write the file
@@ -568,11 +571,14 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         m_file = getCms().writeFile(m_file);
         
         // content might have been modified during write operation
-        m_page = CmsXmlPage.unmarshal(getCms(), m_file);
-        if (m_page.hasElement(body, locale)) {
-            content = m_page.getContent(getCms(), body, locale, true);            
-            setParamContent(content);   
-            // prepareContent(false);
+        m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
+        if (m_page.hasValue(body, locale)) {
+            getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
+            content = m_page.getStringValue(getCms(), body, locale); 
+            if (content == null) {
+                content = "";
+            }
+            setParamContent(content); 
             m_page.setEnabled(body, locale, enabled);
         }
     }

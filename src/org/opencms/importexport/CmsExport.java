@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/07/20 13:34:46 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.43 $ $Date: 2004/07/20 13:34:46 $
+ * @version $Revision: 1.44 $ $Date: 2004/08/03 07:19:03 $
  */
 public class CmsExport implements Serializable {
 
@@ -181,7 +181,7 @@ public class CmsExport implements Serializable {
 
         // clear all caches
         report.println(report.key("report.clearcache"), I_CmsReport.C_FORMAT_NOTE);
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
         
         try {
             Element exportNode = openExportFile();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/07/07 18:01:09 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.30 $ $Date: 2004/07/07 18:01:09 $
+ * @version $Revision: 1.31 $ $Date: 2004/08/03 07:19:04 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -203,7 +203,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (OpenCms.getLog(this).isWarnEnabled()) {
             OpenCms.getLog(this).warn(", Clearing caches because memory consumption has reached a critical level");
         }        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
         System.gc();       
     }
 

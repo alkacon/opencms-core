@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2004/07/27 14:40:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/03 07:19:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,15 +33,16 @@ package org.opencms.synchronize;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.List;
 
 import junit.extensions.TestSetup;
@@ -53,21 +54,9 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.6
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestSynchronize extends OpenCmsTestCase {
-
-    /** The XML string of an empty Xml page. */
-    protected static final String C_NO_CONTENT_XML_PAGE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        + "<!DOCTYPE page SYSTEM \"http://www.opencms.org/dtd/6.0/xmlpage.dtd\">\n"
-        + "<page>\n"
-        + "\t<elements>\n"
-        + "\t\t<element name=\"body\" language=\"en\">\n"
-        + "\t\t\t<links/>\n"
-        + "\t\t\t<content><![CDATA[Test]]></content>\n"
-        + "\t\t</element>\n"
-        + "\t</elements>\n"
-        + "</page>\n";
 
     /**
      * Default JUnit constructor.<p>
@@ -142,36 +131,38 @@ public class TestSynchronize extends OpenCmsTestCase {
             for (int i = 0, n = tree.size(); i < n; i++) {
                 CmsResource resource = (CmsResource)tree.get(i);
 
-                String name = resource.getName().toLowerCase();
-                if (name.endsWith(".txt") || name.endsWith(".jsp")) {
-                    // txt and jsp files get overwritten with some dummy content
-                    modifyResourceInRfs(cms, resource, null);
-                } else if (name.endsWith(".html")) {
-                    // html pages get overwritten with an empty XML page
-                    modifyResourceInRfs(cms, resource, C_NO_CONTENT_XML_PAGE);
+                int type = resource.getTypeId();
+                if (((type == CmsResourceTypePlain.C_RESOURCE_TYPE_ID)) 
+                || (type == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)
+                || (type == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
+                    // modify date last modified on resource
+                    touchResourceInRfs(cms, resource, syncSettings);
                 }
             }
 
+            // sleep 4 seconds to avoid issues with file system timing
+            Thread.sleep(4000);
+            
             // synchronize everything back to the VFS
             new CmsSynchronize(cms, new CmsShellReport());
 
             // assert if the synchronization worked fine
             for (int i = 0, n = tree.size(); i < n; i++) {
                 CmsResource vfsResource = (CmsResource)tree.get(i);
-                String name = vfsResource.getName().toLowerCase();
+                int type = vfsResource.getTypeId();
+                String vfsname = cms.getSitePath(vfsResource);
                 
-                if (name.endsWith(".txt") || name.endsWith(".jsp") || name.endsWith(".html")) {
+                System.out.println("( " + i + " / " + (n-1) + " ) Checking " + vfsname);
+                if (((type == CmsResourceTypePlain.C_RESOURCE_TYPE_ID)) 
+                || (type == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID) 
+                || (type == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
                     // assert the resource state
-                    assertState(cms, cms.getSitePath(vfsResource), I_CmsConstants.C_STATE_CHANGED);
-                    
+                    assertState(cms, vfsname, I_CmsConstants.C_STATE_CHANGED);                    
                     // assert the modification date
-                    String path = syncSettings.getDestinationPathInRfs() + CmsResource.getFolderPath(cms.getSitePath(vfsResource));
-                    File rfsResource = new File(path, name);
-                    
-                    // TODO file.lastModified() doesn't return always the same timestamp, +/- a few millisecs
-                    assertDateLastModifiedAfter(cms, cms.getSitePath(vfsResource), rfsResource.lastModified());                    
+                    File rfsResource = new File(getRfsPath(cms, vfsResource, syncSettings));
+                    assertDateLastModifiedAfter(cms, vfsname, rfsResource.lastModified());                    
                 } else {
-                    assertState(cms, cms.getSitePath(vfsResource), I_CmsConstants.C_STATE_UNCHANGED);
+                    assertState(cms, vfsname, I_CmsConstants.C_STATE_UNCHANGED);
                 }
             }
 
@@ -179,53 +170,30 @@ public class TestSynchronize extends OpenCmsTestCase {
             
             // remove the test data
             echo("Purging directory " + OpenCms.getSystemInfo().getSynchronizeSettings().getDestinationPathInRfs());
-            CmsStaticExportManager.purgeDirectory(new File(getTestDataPath() + "sync/"));
+            CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "sync/"));
         }
 
     }
 
+    private String getRfsPath(CmsObject cms, CmsResource resource, CmsSynchronizeSettings syncSettings) {
+                
+        String path = syncSettings.getDestinationPathInRfs() + cms.getSitePath(resource);
+        return CmsFileUtil.normalizePath(path);
+    }
+    
     /**
-     * Modifies a resource synchronized from the VFS to the RFS so that it is
+     * "Touches" the last modification date of a resource the RFS so that it is
      * synchronized back to the VFS as a modified resource.<p>
      * 
      * @param cms the current user's Cms object
      * @param resource the VFS resource to be modified in the RFS
-     * @param content some file content, or null
-     * @see #C_NO_CONTENT_XML_PAGE
      */
-    protected void modifyResourceInRfs(CmsObject cms, CmsResource resource, String content) {
+    private void touchResourceInRfs(CmsObject cms, CmsResource resource, CmsSynchronizeSettings syncSettings) {
 
-        PrintStream stream = null;
-        FileOutputStream out = null;
-        String path = null;
-
-        try {
-            path = getTestDataPath() + "sync" + cms.getSitePath(resource);
-            out = new FileOutputStream(path);
-            stream = new PrintStream(out);
-
-            if (content != null) {
-                stream.println(content);
-            } else {
-                stream.println("resource:" + cms.getSitePath(resource));
-            }
-
-            echo("\nModified " + path);
-        } catch (Exception e) {
-            echo("Error modifying " + path);
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-
-                if (stream != null) {
-                    stream.close();
-                }
-            } catch (Throwable t) {
-                echo("Error closing I/O streams of " + path);
-            }
-        }
+        // touch file 2 seconds in the future
+        String path = getRfsPath(cms, resource, syncSettings);
+        System.out.println("Touching: " + path);
+        File file = new File(path);
+        file.setLastModified(file.lastModified() + 2000);
     }
-
 }

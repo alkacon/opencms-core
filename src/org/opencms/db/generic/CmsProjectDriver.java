@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/07/18 16:32:08 $
- * Version: $Revision: 1.176 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.177 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.176 $ $Date: 2004/07/18 16:32:08 $
+ * @version $Revision: 1.177 $ $Date: 2004/08/03 07:19:03 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1314,7 +1314,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             // clear all caches to reclaim memory
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
 
             // force a complete object finalization and garbage collection 
             System.runFinalization();

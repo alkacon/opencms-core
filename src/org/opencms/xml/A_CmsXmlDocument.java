@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/06/13 23:43:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,15 +28,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.xml;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.staticexport.CmsLinkProcessor;
+import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -51,31 +58,41 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3.5
  */
-public abstract class A_CmsXmlDocument {
+public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
-    /** Reference for named elements in the document. */
-    protected Map m_bookmarks;
-    
     /** The document object of the document. */
     protected Document m_document;
-    
+
     /** Maps element names to available locales. */
     protected Map m_elementLocales;
-    
+
     /** Maps locales to avaliable element names. */
     protected Map m_elementNames;
-    
+
     /** The encoding to use for this xml document. */
     protected String m_encoding;
-    
+
     /** The file that contains the document data (note: is not set when creating an empty or document based document). */
     protected CmsFile m_file;
-    
+
     /** Set of locales contained in this document. */
     protected Set m_locales;
+
+    /** Reference for named elements in the document. */
+    private Map m_bookmarks;
+
+    /**
+     * Default constructor for a XML document
+     * that initializes some internal values.<p> 
+     */
+    protected A_CmsXmlDocument() {
+
+        m_bookmarks = new HashMap();
+        m_locales = new HashSet();
+    }
 
     /**
      * Creates the bookmark name for a localized element to be used in the bookmark lookup table.<p>
@@ -85,21 +102,21 @@ public abstract class A_CmsXmlDocument {
      * @return the bookmark name for a localized element
      */
     protected static final String getBookmarkName(String name, Locale locale) {
-        
+
         StringBuffer result = new StringBuffer(64);
         result.append(locale.toString());
         result.append('|');
         result.append(name);
         return result.toString();
     }
-    
+
     /**
      * Returns the encoding used for the page content.<p>
      * 
      * @return the encoding used for the page content
      */
     public String getEncoding() {
-        
+
         return m_encoding;
     }
 
@@ -109,17 +126,40 @@ public abstract class A_CmsXmlDocument {
      * @return the file with the xml page content
      */
     public CmsFile getFile() {
-        
+
         return m_file;
     }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getIndexCount(java.lang.String, java.util.Locale)
+     */
+    public int getIndexCount(String name, Locale locale) {
+
+        List elements = getBookmark(name, locale);
+        if (elements == null) {
+            return -1;
+        } else {
+            return elements.size();
+        }
+    }
+
+    /**
+     * Returns a link processor for the values of this XML element.<p>
+     * 
+     * @param cms an initialized CmsObject that provides the context for the link processor
+     * @param linkTable the link table to use
+     * 
+     * @return a link processor for the values of this XML element
+     */
+    public abstract CmsLinkProcessor getLinkProcessor(CmsObject cms, CmsLinkTable linkTable);
 
     /**
      * Returns a List of all locales that have at last one element in this page.<p>
      * 
      * @return a List of all locales that have at last one element in this page
      */
-    public List getLocales() { 
-        
+    public List getLocales() {
+
         return new ArrayList(m_locales);
     }
 
@@ -132,11 +172,11 @@ public abstract class A_CmsXmlDocument {
      * @return a List of all Locales that have the named element set in this document
      */
     public List getLocales(String element) {
-        
+
         Object result = m_elementLocales.get(element);
         if (result == null) {
             return Collections.EMPTY_LIST;
-        }        
+        }
         return new ArrayList((Set)result);
     }
 
@@ -149,7 +189,7 @@ public abstract class A_CmsXmlDocument {
      * @return list of available element names (Strings)
      */
     public List getNames(Locale locale) {
-        
+
         Object o = m_elementNames.get(locale);
         if (o != null) {
             return new ArrayList((Set)o);
@@ -158,15 +198,75 @@ public abstract class A_CmsXmlDocument {
     }
 
     /**
-     * Checks if the document contains a name specified by name and language.<p>
-     * 
-     * @param name the name of the element the check
-     * @param locale the locale of the element the check
-     * @return true if this element exists
+     * @see org.opencms.xml.I_CmsXmlDocument#getStringValue(org.opencms.file.CmsObject, java.lang.String, java.util.Locale)
      */
-    public boolean hasElement(String name, Locale locale) {  
-        
-        return getBookmark(name, locale) != null;
+    public String getStringValue(CmsObject cms, String name, Locale locale) throws CmsXmlException {
+
+        return getStringValue(cms, name, locale, 0);
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getStringValue(CmsObject, java.lang.String, Locale, int)
+     */
+    public String getStringValue(CmsObject cms, String name, Locale locale, int index) throws CmsXmlException {
+
+        List values = getBookmark(name, locale);
+        if (values != null) {
+            Object value = values.get(index);
+            if (value != null) {
+                return ((I_CmsXmlContentValue)value).getStringValue(cms, this);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getValue(java.lang.String, java.util.Locale)
+     */
+    public I_CmsXmlContentValue getValue(String name, Locale locale) {
+
+        return getValue(name, locale, 0);
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getValue(java.lang.String, java.util.Locale, int)
+     */
+    public I_CmsXmlContentValue getValue(String name, Locale locale, int index) {
+
+        List values = getBookmark(name, locale);
+        if (values != null) {
+            Object value = values.get(index);
+            if (value != null) {
+                return (I_CmsXmlContentValue)value;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getValues(java.lang.String, java.util.Locale)
+     */
+    public List getValues(String name, Locale locale) {
+
+        return getBookmark(name, locale);
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#hasValue(java.lang.String, java.util.Locale)
+     */
+    public boolean hasValue(String name, Locale locale) {
+
+        return hasValue(name, locale, 0);
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#hasValue(java.lang.String, java.util.Locale, int)
+     */
+    public boolean hasValue(String name, Locale locale, int index) {
+
+        List elements = getBookmark(name, locale);
+        return ((elements != null) && (elements.size() >= index));
     }
 
     /**
@@ -177,8 +277,20 @@ public abstract class A_CmsXmlDocument {
      * @throws CmsXmlException if something goes wrong
      */
     public byte[] marshal() throws CmsXmlException {
-              
-        return ((ByteArrayOutputStream)marshal(new ByteArrayOutputStream(), m_encoding)).toByteArray(); 
+
+        return ((ByteArrayOutputStream)marshal(new ByteArrayOutputStream(), m_encoding)).toByteArray();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        try {
+            return CmsXmlUtils.marshal(m_document, m_encoding);
+        } catch (CmsXmlException e) {
+            throw new RuntimeException("Writing XML document to a String failed", e);
+        }
     }
 
     /**
@@ -189,34 +301,87 @@ public abstract class A_CmsXmlDocument {
      * 
      * @param resolver the XML entitiy resolver to use
      * @throws CmsXmlException if the validation fails
-     */    
+     */
     public void validateXmlStructure(EntityResolver resolver) throws CmsXmlException {
 
-        byte[] xmlData = null;
         if (m_file != null) {
+            byte[] xmlData = null;
             // file is set, use bytes from file directly
             xmlData = m_file.getContents();
+            CmsXmlUtils.validateXmlStructure(xmlData, m_encoding, resolver);
+        } else {
+            CmsXmlUtils.validateXmlStructure(m_document, m_encoding, resolver);
         }
-        CmsXmlUtils.validateXmlStructure(xmlData, m_document, getEncoding(), resolver);
     }
     
-    
     /**
-     * Adds a bookmark for the given element.<p>
+     * Corrects the structure of this XML content.<p>
      * 
-     * @param name the name of the element
-     * @param locale the locale of the element
-     * @param enabled if true, the element is enabled, if false it is disabled
-     * @param element the element to bookmark
+     * @param cms the current cms object
+     * @return the file that contains the corrected XML structure
+     * 
+     * @throws CmsXmlException if something goes wrong
      */
-    protected void addBookmark(String name, Locale locale, boolean enabled, Object element) {
+    public CmsFile correctXmlStructure(CmsObject cms) throws CmsXmlException {
+
+        // iterate over all locales
+        Iterator i = m_locales.iterator();
+        while (i.hasNext()) {
+            Locale locale = (Locale)i.next();
+            List names = getNames(locale);
+
+            // iterate over all nodes per language
+            Iterator j = names.iterator();
+            while (j.hasNext()) {
+                String name = (String)j.next();
+                List elements = getBookmark(name, locale);
+                
+                // iterate over all elements of this name
+                for (int pos=0; pos<elements.size(); pos++) {
+                 
+                    I_CmsXmlContentValue value = getValue(name, locale, pos);
+                    String content = value.getStringValue(cms, this);
+                    value.setStringValue(cms, this, content);
+                }
+            }
+        }
         
+        // write the modifed xml back to the VFS file 
+        m_file.setContents(marshal());
+        return m_file;
+    }    
+
+    /**
+     * Adds a bookmark for the given value.<p>
+     * 
+     * @param name the name of the value
+     * @param locale the locale of the value
+     * @param enabled if true, the value is enabled, if false it is disabled
+     * @param value the value to bookmark
+     */
+    protected void addBookmark(String name, Locale locale, boolean enabled, Object value) {
+
         m_locales.add(locale);
-        m_bookmarks.put(getBookmarkName(name, locale), element);
+        
+        List list;
+        Object o;
+        
+        // all bookmarks are stored in lists
+        o = getBookmark(name, locale);
+        if (o == null) {
+            // no bookmark defined yet, initialize new List
+            list = new ArrayList(1);
+        } else {
+            // expand existing list
+            list = (List)o;
+        }
+        list.add(value);                
+        m_bookmarks.put(getBookmarkName(name, locale), list);
+        
         // update mapping of element name to locale
         if (enabled) {
             // only include enabled elements
-            Object o = m_elementLocales.get(name);
+            o = m_elementLocales.get(name);
             if (o != null) {
                 ((Set)o).add(locale);
             } else {
@@ -226,26 +391,26 @@ public abstract class A_CmsXmlDocument {
             }
         }
         // update mapping of locales to element names
-        Object o = m_elementNames.get(locale);
+        o = m_elementNames.get(locale);
         if (o != null) {
             ((Set)o).add(name);
         } else {
             Set set = new HashSet();
             set.add(name);
             m_elementNames.put(locale, set);
-        }        
+        }
     }
 
     /**
-     * Returns the bookmarked element for the given element name.<p>
+     * Returns the bookmarked lists of values for the given name.<p>
      * 
-     * @param name the name of the element
-     * @param locale the locale of the element
-     * @return the bookmarked element
+     * @param name the name to get the bookmark for
+     * @param locale the locale to get the bookmark for
+     * @return the bookmarked list of values
      */
-    protected Object getBookmark(String name, Locale locale) {    
-        
-        return m_bookmarks.get(getBookmarkName(name, locale));
+    protected List getBookmark(String name, Locale locale) {
+
+        return (List)m_bookmarks.get(getBookmarkName(name, locale));
     }
 
     /**
@@ -254,14 +419,9 @@ public abstract class A_CmsXmlDocument {
      * @return the names of all bookmarked elements
      */
     protected Set getBookmarks() {
-        
-        return (m_bookmarks != null)? m_bookmarks.keySet() : new HashSet(); 
-    }
 
-    /**
-     * Initializes the bookmarks according to the named elements in the document.<p>
-     */    
-    protected abstract void initBookmarks();
+        return m_bookmarks.keySet();
+    }
 
     /**
      * Initializes an A_CmsXmlDocument based on the provided document and encoding.<p>
@@ -269,7 +429,7 @@ public abstract class A_CmsXmlDocument {
      * @param document the base XML document to use for initializing
      * @param encoding the encoding to use when marshalling the document later
      * @param resolver the XML entitiy resolver to use
-     */    
+     */
     protected abstract void initDocument(Document document, String encoding, EntityResolver resolver);
 
     /**
@@ -283,7 +443,7 @@ public abstract class A_CmsXmlDocument {
      */
     protected OutputStream marshal(OutputStream out, String encoding) throws CmsXmlException {
 
-        return CmsXmlUtils.marshal(m_document, out, encoding);        
+        return CmsXmlUtils.marshal(m_document, out, encoding);
     }
 
     /**
@@ -293,8 +453,8 @@ public abstract class A_CmsXmlDocument {
      * @param locale the locale of the element
      * @return the element removed from the bookmarks or null
      */
-    protected Object removeBookmark(String name, Locale locale) {
-        
+    protected List removeBookmark(String name, Locale locale) {
+
         // remove mapping of element name to locale
         Object o;
         o = m_elementLocales.get(name);
@@ -305,8 +465,8 @@ public abstract class A_CmsXmlDocument {
         o = m_elementNames.get(locale);
         if (o != null) {
             ((Set)o).remove(name);
-        }        
+        }
         // remove the bookmark and return the removed element
-        return m_bookmarks.remove(getBookmarkName(name, locale));
-    }
+        return (List)m_bookmarks.remove(getBookmarkName(name, locale));
+    }  
 }

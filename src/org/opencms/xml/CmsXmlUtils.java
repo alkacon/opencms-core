@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2004/07/18 16:35:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -61,7 +62,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.3.5
  */
 public final class CmsXmlUtils {
@@ -99,6 +100,27 @@ public final class CmsXmlUtils {
         
         return out;
     }    
+    
+    /**
+     * Marshals (writes) an XML document to a String using XML pretty-print formatting.<p>
+     * 
+     * @param document the XML document to marshal
+     * @param encoding the encoding to use
+     * @return the marshalled XML document
+     * @throws CmsXmlException if something goes wrong
+     */    
+    public static String marshal(Document document, String encoding)  throws CmsXmlException {
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();    
+        
+        marshal(document, out, encoding);
+        
+        try {
+            return out.toString(encoding);
+        } catch (UnsupportedEncodingException e) {
+            throw new CmsXmlException("Marshalling XML document to String failed", e);
+        } 
+    }
 
     /**
      * Helper to unmarshal (read) xml contents from a byte array into a document.<p>
@@ -162,20 +184,16 @@ public final class CmsXmlUtils {
     }
     
     /**
-     * Validates the structure of a XML document with the DTD or XML schema used by the document.<p>
+     * Validates the structure of a XML document contained in a byte array 
+     * with the DTD or XML schema used by the document.<p>
      * 
-     * Validation can be done either on the provided byte array, or on
-     * an already exsinting XML document.
-     * Only one of the parameters need to be provided, the other should be null.
-     * If both parameters are provided, the byte array is used by default.<p>
-     * 
-     * @param xmlData a byte array containing a XML document that should be validated (optional)
-     * @param document a XML document that should be validated (optional)
+     * @param xmlData a byte array containing a XML document that should be validated
      * @param encoding the encoding to use when marshalling the XML document (required)
      * @param resolver the XML entitiy resolver to use
+     * 
      * @throws CmsXmlException if the validation fails
      */    
-    public static void validateXmlStructure(byte[] xmlData, Document document, String encoding, EntityResolver resolver) throws CmsXmlException  {
+    public static void validateXmlStructure(byte[] xmlData, String encoding, EntityResolver resolver) throws CmsXmlException  {
 
         XMLReader reader;
         try {
@@ -222,10 +240,6 @@ public final class CmsXmlUtils {
         }
         
         try {
-            if (xmlData == null) {
-                // file not available, generate bytes from document
-                xmlData = ((ByteArrayOutputStream)marshal(document, new ByteArrayOutputStream(512), encoding)).toByteArray();
-            }
             reader.parse(new InputSource(new ByteArrayInputStream(xmlData)));
         } catch (IOException e) {
             // should not happen since we read form a byte array
@@ -264,4 +278,21 @@ public final class CmsXmlUtils {
             throw new CmsXmlException("XML validation error:\n" + out.toString() + "\n");
         }        
     }    
+    
+    /**
+     * Validates the structure of a XML document with the DTD or XML schema used 
+     * by the document.<p>
+     * 
+     * @param document a XML document that should be validated
+     * @param encoding the encoding to use when marshalling the XML document (required)
+     * @param resolver the XML entitiy resolver to use
+     * 
+     * @throws CmsXmlException if the validation fails
+     */     
+    public static void validateXmlStructure(Document document, String encoding, EntityResolver resolver) throws CmsXmlException  {
+
+        // generate bytes from document
+        byte[] xmlData = ((ByteArrayOutputStream)marshal(document, new ByteArrayOutputStream(512), encoding)).toByteArray();
+        validateXmlStructure(xmlData, encoding, resolver);
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/07/03 10:20:55 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/08/03 07:19:03 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 5.3.0
  */
@@ -190,7 +191,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
                 CmsXmlPage page = (CmsXmlPage)req.getAttribute(filename);                    
                 if (page == null) {
                     // make sure a page is only read once (not every time for each element)
-                    page = CmsXmlPage.unmarshal(cmsObject, cmsObject.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION));
+                    page = CmsXmlPageFactory.unmarshal(cmsObject, cmsObject.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION));
                     req.setAttribute(filename, page);
                 }
                 List locales = page.getLocales();
@@ -200,7 +201,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
                 } else { 
                     locale = OpenCms.getLocaleManager().getBestMatchingLocale(null, OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename), locales);
                 }
-                if (!page.hasElement(element, locale) || !page.isEnabled(element, locale)) {
+                if (!page.hasValue(element, locale) || !page.isEnabled(element, locale)) {
                     return C_DIRECT_EDIT_MODE_INACTIVE;
                 }                
             }
