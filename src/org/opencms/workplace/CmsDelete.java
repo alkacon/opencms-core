@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/09 13:59:08 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
@@ -214,14 +214,14 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
             // get the lock state for the current resource
             lock = getCms().getLock(getParamResource());
         } catch (CmsException e) {
-            lock = CmsLock.getNullLock();
-    
+            // error getting lock state, log the error and return false
             if (OpenCms.getLog(this).isErrorEnabled()) { 
                 OpenCms.getLog(this).error("Error getting lock state for resource " + getParamResource(), e);
             }  
             return false;           
         }
         int type = lock.getType();
+        // check if autolock feature is enabled
         boolean autoLockFeature = lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources();
         return (autoLockFeature || type == CmsLock.C_TYPE_EXCLUSIVE || type == CmsLock.C_TYPE_INHERITED);
     }
