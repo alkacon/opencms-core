@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/05/22 16:07:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/23 09:16:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,9 +69,103 @@ import source.org.apache.java.util.Configurations;
  * This is the generic access module to load and store resources from and into
  * the database.
  *
- * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:00 $ *
+ * @version $Revision: 1.3 $ $Date: 2003/05/23 09:16:02 $ *
  */
 public class CmsProjectDriver implements I_CmsConstants, I_CmsLogChannels {
+	/**
+	 * Returns all projects, which are owned by a user.
+	 *
+	 * @param user The requesting user.
+	 *
+	 * @return a Vector of projects.
+	 */
+	public Vector getAllAccessibleProjectsByUser(CmsUser user) throws CmsException {
+	    Vector projects = new Vector();
+	    ResultSet res = null;
+	    PreparedStatement stmt = null;
+	    Connection conn = null;
+	
+	    try {
+	        // create the statement
+	        conn = m_sqlManager.getConnection();
+	        stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYUSER");
+	
+	        stmt.setString(1, user.getId().toString());
+	        res = stmt.executeQuery();
+	
+	        while (res.next()) {
+	            projects.addElement(new CmsProject(res, m_sqlManager));
+	        }
+	    } catch (Exception exc) {
+	        throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+	    } finally {
+	        m_sqlManager.closeAll(conn, stmt, res);
+	    }
+	    return (projects);
+	}
+	/**
+	 * Returns all projects, which are manageable by a group.
+	 *
+	 * @param group The requesting group.
+	 *
+	 * @return a Vector of projects.
+	 */
+	public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup group) throws CmsException {
+	    Vector projects = new Vector();
+	    ResultSet res = null;
+	    PreparedStatement stmt = null;
+	    Connection conn = null;
+	
+	    try {
+	        // create the statement
+	        conn = m_sqlManager.getConnection();
+	        stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYMANAGER");
+	        
+	        stmt.setString(1, group.getId().toString());
+	        res = stmt.executeQuery();
+	
+	        while (res.next()) {
+	            projects.addElement(new CmsProject(res, m_sqlManager));
+	        }
+	    } catch (Exception exc) {
+	        throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+	    } finally {
+	        m_sqlManager.closeAll(conn, stmt, res);
+	    }
+	    return (projects);
+	}
+	/**
+	 * Returns all projects, which are accessible by a group.
+	 *
+	 * @param group The requesting group.
+	 *
+	 * @return a Vector of projects.
+	 */
+	public Vector getAllAccessibleProjectsByGroup(CmsGroup group) throws CmsException {
+	    Vector projects = new Vector();
+	    ResultSet res = null;
+	    Connection conn = null;
+	    PreparedStatement stmt = null;
+	
+	    try {
+	        // create the statement
+	        conn = m_sqlManager.getConnection();
+	        stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYGROUP");
+	
+	        stmt.setString(1, group.getId().toString());
+	        stmt.setString(2, group.getId().toString());
+	        res = stmt.executeQuery();
+	
+	        while (res.next()) {
+	            projects.addElement(new CmsProject(res, m_sqlManager));
+	        }
+	    } catch (Exception exc) {
+	        throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
+	    } finally {
+	        m_sqlManager.closeAll(conn, stmt, res);
+	    }
+	    return (projects);
+	}
     
     public static int C_RESTYPE_LINK_ID = 2;
     public static boolean C_USE_TARGET_DATE = true;    

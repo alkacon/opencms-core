@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/05/22 16:07:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/05/23 09:16:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/05/22 16:07:45 $
+ * @version $Revision: 1.4 $ $Date: 2003/05/23 09:16:49 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -3188,7 +3188,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                                         currentUser.getName());
 
         // get all projects which are owned by the user.
-        Vector projects = m_userDriver.getAllAccessibleProjectsByUser(currentUser);
+        // cw - belongs to project driver NOT to user driver
+        Vector projects = m_projectDriver.getAllAccessibleProjectsByUser(currentUser);
 
         // get all projects, that the user can access with his groups.
         for(int i = 0; i < groups.size(); i++) {
@@ -3199,7 +3200,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                  projectsByGroup = m_projectDriver.getAllProjects(C_PROJECT_STATE_UNLOCKED);
             } else {
                 // no - get all projects, which can be accessed by the current group
-                projectsByGroup = m_userDriver.getAllAccessibleProjectsByGroup((CmsGroup) groups.elementAt(i));
+				// cw - belongs to project driver NOT to user driver
+                projectsByGroup = m_projectDriver.getAllAccessibleProjectsByGroup((CmsGroup) groups.elementAt(i));
             }
 
             // merge the projects to the vector
@@ -3233,7 +3235,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                                         currentUser.getName());
 
         // get all projects which are owned by the user.
-        Vector projects = m_userDriver.getAllAccessibleProjectsByUser(currentUser);
+		// cw - belongs to project driver NOT to user driver
+        Vector projects = m_projectDriver.getAllAccessibleProjectsByUser(currentUser);
 
         // get all projects, that the user can manage with his groups.
         for(int i = 0; i < groups.size(); i++) {
@@ -3245,7 +3248,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                  projectsByGroup = m_projectDriver.getAllProjects(C_PROJECT_STATE_UNLOCKED);
             } else {
                 // no - get all projects, which can be accessed by the current group
-                projectsByGroup = m_userDriver.getAllAccessibleProjectsByManagerGroup((CmsGroup)groups.elementAt(i));
+				// cw - belongs to project driver NOT to user driver
+                projectsByGroup = m_projectDriver.getAllAccessibleProjectsByManagerGroup((CmsGroup)groups.elementAt(i));
             }
 
             // merge the projects to the vector

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/23 09:16:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
  * (or anything else) to obtain user data. 
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/23 09:16:49 $
  * 
  * @see com.opencms.db.generic.CmsDriverManager#initAccess(Configurations configurations)
  */
@@ -189,7 +189,8 @@ public interface I_CmsUserDriver {
      *
      * @return a Vector of projects.
      */
-    public Vector getAllAccessibleProjectsByGroup(CmsGroup group) throws CmsException;
+    // NOTE: belongs to project driver
+    //public Vector getAllAccessibleProjectsByGroup(CmsGroup group) throws CmsException;
 
     /**
      * Returns all projects, which are manageable by a group.
@@ -198,7 +199,8 @@ public interface I_CmsUserDriver {
      *
      * @return a Vector of projects.
      */
-    public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup group) throws CmsException;
+	// NOTE: belongs to project driver
+    //public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup group) throws CmsException;
 
     /**
      * Returns all projects, which are owned by a user.
@@ -207,7 +209,8 @@ public interface I_CmsUserDriver {
      *
      * @return a Vector of projects.
      */
-    public Vector getAllAccessibleProjectsByUser(CmsUser user) throws CmsException;
+	// NOTE: belongs to project driver
+    //public Vector getAllAccessibleProjectsByUser(CmsUser user) throws CmsException;
 
     /**
     * Returns all groups<P/>
