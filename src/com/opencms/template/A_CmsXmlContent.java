@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2003/08/06 16:32:48 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.template;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -87,7 +88,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.84 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.85 $ $Date: 2003/08/06 16:32:48 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
@@ -837,7 +838,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         Element dBlock = (Element) n.cloneNode(true);
         processNode(dBlock, m_mainProcessTags, null, callingObject, userObj, null);
         String link = getTagValue(dBlock);
-        return m_cms.getLinkSubstitution(link);
+        return CmsLinkManager.substituteLink(m_cms, link);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/04 11:04:50 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2003/08/06 16:32:48 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.db.generic;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.lock.CmsLock;
+import org.opencms.staticexport.*;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -73,7 +74,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.49 $ $Date: 2003/08/04 11:04:50 $
+ * @version $Revision: 1.50 $ $Date: 2003/08/06 16:32:48 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -386,10 +387,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
      * @param link the cmsexportlink object to delete.
      * @throws CmsException if something goes wrong.
      */
-    public void deleteExportLink(CmsExportLink link) throws CmsException {
+    public void deleteExportLink(CmsStaticExportLink link) throws CmsException {
         int deleteId = link.getId();
         if (deleteId == 0) {
-            CmsExportLink dbLink = readExportLink(link.getLink());
+            CmsStaticExportLink dbLink = readExportLink(link.getLink());
             if (dbLink == null) {
                 return;
             } else {
@@ -427,7 +428,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
      * @throws CmsException if something goes wrong.
      */
     public void deleteExportLink(String link) throws CmsException {
-        CmsExportLink dbLink = readExportLink(link);
+        CmsStaticExportLink dbLink = readExportLink(link);
         if (dbLink != null) {
             deleteExportLink(dbLink);
         }
@@ -1644,8 +1645,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
      * @return The exportrequest read from the Cms or null if it is not found.
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public CmsExportLink readExportLink(String request) throws CmsException {
-        CmsExportLink link = null;
+    public CmsStaticExportLink readExportLink(String request) throws CmsException {
+        CmsStaticExportLink link = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
@@ -1657,7 +1658,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
             // create new Cms exportlink object
             if (res.next()) {
-                link = new CmsExportLink(res.getInt(m_sqlManager.get("C_EXPORT_ID")), res.getString(m_sqlManager.get("C_EXPORT_LINK")), SqlHelper.getTimestamp(res, m_sqlManager.get("C_EXPORT_DATE")).getTime(), null);
+                link = new CmsStaticExportLink(res.getInt(m_sqlManager.get("C_EXPORT_ID")), res.getString(m_sqlManager.get("C_EXPORT_LINK")), SqlHelper.getTimestamp(res, m_sqlManager.get("C_EXPORT_DATE")).getTime(), null);
 
                 // now the dependencies
                 try {
@@ -1690,8 +1691,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
      * @return The exportrequest read from the Cms.
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public CmsExportLink readExportLinkHeader(String request) throws CmsException {
-        CmsExportLink link = null;
+    public CmsStaticExportLink readExportLinkHeader(String request) throws CmsException {
+        CmsStaticExportLink link = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
@@ -1703,7 +1704,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
             // create new Cms exportlink object
             if (res.next()) {
-                link = new CmsExportLink(res.getInt(m_sqlManager.get("C_EXPORT_ID")), res.getString(m_sqlManager.get("C_EXPORT_LINK")), SqlHelper.getTimestamp(res, m_sqlManager.get("C_EXPORT_DATE")).getTime(), null);
+                link = new CmsStaticExportLink(res.getInt(m_sqlManager.get("C_EXPORT_ID")), res.getString(m_sqlManager.get("C_EXPORT_LINK")), SqlHelper.getTimestamp(res, m_sqlManager.get("C_EXPORT_DATE")).getTime(), null);
 
             }
             return link;
@@ -2280,7 +2281,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
      * @param link the cmsexportlink object to write.
      * @throws CmsException if something goes wrong.
      */
-    public void writeExportLink(CmsExportLink link) throws CmsException {
+    public void writeExportLink(CmsStaticExportLink link) throws CmsException {
         //first delete old entrys in the database
         deleteExportLink(link);
         int id = link.getId();
@@ -2331,10 +2332,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
      *
      * @throws CmsException if something goes wrong.
      */
-    public void writeExportLinkProcessedState(CmsExportLink link) throws CmsException {
+    public void writeExportLinkProcessedState(CmsStaticExportLink link) throws CmsException {
         int linkId = link.getId();
         if (linkId == 0) {
-            CmsExportLink dbLink = readExportLink(link.getLink());
+            CmsStaticExportLink dbLink = readExportLink(link.getLink());
             if (dbLink == null) {
                 return;
             } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/08/05 15:39:03 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/08/06 16:32:48 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
@@ -521,28 +521,14 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             if (elementreplace) {
                 // we cant cach this
                 eldefs.add(replaceDef);
-                cmsUri = new CmsUri(elemDesc, eldefs, Utils.isHttpsResource(cms, file));
+                cmsUri = new CmsUri(elemDesc, eldefs);
             } else {
-                cmsUri = new CmsUri(elemDesc, eldefs, Utils.isHttpsResource(cms, file));
+                cmsUri = new CmsUri(elemDesc, eldefs);
                 elementCache.getUriLocator().put(uriDesc, cmsUri);
             }
         }
 
         if (elementCacheEnabled) {
-                // lets check if ssl is active
-                if (cms.getMode() == I_CmsConstants.C_MODUS_ONLINE) {
-                    String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
-                    boolean httpsReq = "https".equalsIgnoreCase(scheme);
-                    if (cmsUri.isHttpsResource() != httpsReq) {
-                        if (httpsReq) {
-                            //throw new CmsException(" "+cms.readPath(file)+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
-                        } else if (CmsObject.getStaticExportProperties().isStaticExportEnabled()
-                                || "false_ssl".equals(CmsObject.getStaticExportProperties().getStaticExportEnabledValue())) {
-                            // check if static export is enabled and value is not false_ssl
-                            throw new CmsException(" "+cms.readAbsolutePath(file)+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
-                        }
-                    }
-                }
                 // now lets get the output
                 if (elementreplace) {
                     output = cmsUri.callCanonicalRoot(elementCache, cms, newParameters);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2003/07/31 13:19:37 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/08/06 16:32:48 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package com.opencms.core;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsStaticExportProperties;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.file.CmsFile;
@@ -58,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public abstract class A_OpenCms {
 
@@ -73,6 +74,9 @@ public abstract class A_OpenCms {
 
     /** The driver manager to access the database */
     protected static CmsDriverManager m_driverManager = null;
+
+    /** The object to store the properties from the opencms.property file for the static export */
+    private static CmsStaticExportProperties m_exportProperties;
 
     /** List to save the event listeners in */
     private static java.util.ArrayList m_listeners = new ArrayList();
@@ -236,6 +240,15 @@ public abstract class A_OpenCms {
     }
 
     /**
+     * Returns the properties for the static export.<p>
+     * 
+     * @return the properties for the static export
+     */
+    public static CmsStaticExportProperties getStaticExportProperties() {
+        return m_exportProperties;
+    }
+
+    /**
      * Returns the value for the default user access flags.<p>
      * 
      * @return the value for the default user access flags
@@ -383,6 +396,15 @@ public abstract class A_OpenCms {
      */
     protected static void setSiteManager(CmsSiteManager siteManager) {
         m_siteManager = siteManager;
+    }
+    
+    /**
+     * Sets the properties for the static export.<p>
+     * 
+     * @param exportProperties the properties for the static export
+     */
+    protected static void setStaticExportProperties(CmsStaticExportProperties exportProperties) {
+        m_exportProperties = exportProperties;
     }
 
     /**

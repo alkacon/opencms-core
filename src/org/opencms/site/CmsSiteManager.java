@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/08/01 19:29:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/06 16:32:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -234,7 +234,7 @@ public final class CmsSiteManager implements Cloneable {
                 String folder = (String)i.next();
                 try {
                     CmsResource res = cms.readFileHeader(folder);
-                    if(!workplaceMode || cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS)) {
+                    if (!workplaceMode || cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS)) {
                         String title = cms.readProperty(folder, I_CmsConstants.C_PROPERTY_TITLE);
                         if (title == null) {
                             title = folder;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/08/03 15:11:59 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/08/06 16:32:48 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.workplace;
 
 import org.opencms.security.CmsSecurityException;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -43,7 +44,6 @@ import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.util.LinkSubstitution;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -367,13 +367,13 @@ public class CmsLoginNew extends CmsXmlTemplate {
     throws CmsException {
         try {
             cms.readFileHeader(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
-            return LinkSubstitution.getLinkSubstitution(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            return CmsLinkManager.substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         } catch (CmsSecurityException se) {
-            return LinkSubstitution.getLinkSubstitution(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            return CmsLinkManager.substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         } catch (CmsException ce) {
             // return default xml uri
         }
-        return LinkSubstitution.getLinkSubstitution(cms, CmsWorkplaceAction.C_XML_WORKPLACE_URI);
+        return CmsLinkManager.substituteLink(cms, CmsWorkplaceAction.C_XML_WORKPLACE_URI);
     }    
 
     /**

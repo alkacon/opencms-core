@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/08/03 09:42:42 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/08/06 16:32:48 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace;
 
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -41,7 +42,6 @@ import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
-import com.opencms.util.LinkSubstitution;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.lang.reflect.InvocationTargetException;
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
@@ -238,7 +238,7 @@ public abstract class CmsWorkplace {
         
         // check out the user information for a default view that might be stored there
         if (startSettings != null) {
-            settings.setCurrentView(LinkSubstitution.getLinkSubstitution(cms, (String)startSettings.get(I_CmsConstants.C_START_VIEW)));
+            settings.setCurrentView(CmsLinkManager.substituteLink(cms, (String)startSettings.get(I_CmsConstants.C_START_VIEW)));
         }
                   
         return settings;   
@@ -687,7 +687,7 @@ public abstract class CmsWorkplace {
     public String getExplorerFileListFullUri() {
         if (m_file_explorer_filelist != null) return m_file_explorer_filelist;
         synchronized (this) {
-            m_file_explorer_filelist = LinkSubstitution.getLinkSubstitution(getCms(), C_FILE_EXPLORER_FILELIST);            
+            m_file_explorer_filelist = CmsLinkManager.substituteLink(getCms(), C_FILE_EXPLORER_FILELIST);            
         }
         return m_file_explorer_filelist;
     }

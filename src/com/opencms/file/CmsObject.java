@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/04 15:59:09 $
-* Version: $Revision: 1.364 $
+* Date   : $Date: 2003/08/06 16:32:48 $
+* Version: $Revision: 1.365 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,17 +36,24 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.staticexport.*;
 import org.opencms.synchronize.CmsSynchronize;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsCoreSession;
+import com.opencms.core.CmsException;
+import com.opencms.core.CmsExportRequest;
+import com.opencms.core.CmsExportResponse;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.core.I_CmsResponse;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
-import com.opencms.util.LinkSubstitution;
 import com.opencms.util.Utils;
 
 import java.util.ArrayList;
@@ -72,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.364 $
+ * @version $Revision: 1.365 $
  */
 public class CmsObject {
 
@@ -154,13 +161,6 @@ public class CmsObject {
         } catch (java.lang.NoClassDefFoundError error) {
             // ignore this error - no substitution is needed here
         }
-    }
-    
-    /**
-     * Returns the properties for the static export.
-     */
-    public static CmsStaticExportProperties getStaticExportProperties() {
-        return OpenCms.getStaticExportProperties();
     }
     
     /**
@@ -912,7 +912,7 @@ public class CmsObject {
      *
      * @param link the cmsExportLink object to delete.
      */
-    public void deleteExportLink(CmsExportLink link) throws CmsException {
+    public void deleteExportLink(CmsStaticExportLink link) throws CmsException {
         m_driverManager.deleteExportLink(link);
     }
 
@@ -1576,34 +1576,17 @@ public class CmsObject {
     }
 
     /**
-     * Creates a static export in the filesystem. This method is used only
-     * on a slave system in a cluster. The Vector is generated in the static export
-     * on the master system (in the Vector allExportdLinks), so in this method the
-     * database must not be updated.
-     *
-     * @param linksToExport all links that where exported by the master OpenCms.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void exportStaticResources(Vector linksToExport) throws CmsException {
-
-        m_driverManager.exportStaticResources(this, m_context, linksToExport);
-    }
-
-    /**
      * Creates a static export in the filesystem
      *
      * @param startpoints the startpoints for the export.
      * @param projectResources
-     * @param allExportedLinks
      * @param changedResources
      * @param report the cmsReport to handle the log messages.
      *
      * @throws CmsException if operation was not successful.
      */
-    public void exportStaticResources(Vector startpoints, Vector projectResources, Vector allExportedLinks, CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
-
-        m_driverManager.exportStaticResources(this, m_context, startpoints, projectResources, allExportedLinks, changedResources, report);
+    public void exportStaticResources(Vector startpoints, Vector changedLinks, CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
+        m_driverManager.exportStaticResources(this, m_context, startpoints, changedLinks, changedResources, report);
     }
 
     /**
@@ -1986,16 +1969,6 @@ public class CmsObject {
      */
     public int getLimitedWorkplacePort() {
         return m_driverManager.getLimitedWorkplacePort();
-    }
-
-    /**
-     * Replaces the link according to the rules and registers it to the
-     * requestcontex if we are in export modus.
-     * @param link. The link to process.
-     * @return String The substituded link.
-     */
-    public String getLinkSubstitution(String link) {
-        return LinkSubstitution.getLinkSubstitution(this, link);
     }
 
     /**
@@ -2708,20 +2681,17 @@ public class CmsObject {
             clearcache();
 
             // do static export if the static-export is enabled in opencms.properties
-            if (getStaticExportProperties().isStaticExportEnabled()) {
+            if (A_OpenCms.getStaticExportProperties().isStaticExportEnabled()) {
                 try {
                     int oldId = m_context.currentProject().getId();
                     m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
 
                     // the return value for the search
-                    Vector linkChanges = new Vector();
-                    // the return value for cluster server to syncronize the export
-                    Vector allExportedLinks = new Vector();
+                    Vector changedLinks = new Vector();
 
-                    this.exportStaticResources(getStaticExportProperties().getStartPoints(), linkChanges, allExportedLinks, publishedResources, report);
+                    this.exportStaticResources(A_OpenCms.getStaticExportProperties().getStartPoints(), changedLinks, publishedResources, report);
                     m_context.setCurrentProject(oldId);
-                    Utils.getModulPublishMethods(this, linkChanges);
-                    this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_STATIC_EXPORT, allExportedLinks);
+                    Utils.getModulPublishMethods(this, changedLinks);
                 } catch (Exception ex) {
                     if (DEBUG > 0) {
                         System.err.println("Error while exporting static resources:");
@@ -2732,14 +2702,6 @@ public class CmsObject {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/0] Error while exporting static resources.");
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/0] Exception was: " + ex);
                     }
-                }
-            } else {
-                if ("false_ssl".equalsIgnoreCase(getStaticExportProperties().getStaticExportEnabledValue())) {
-                    // just generate the link rules, in case there were properties changed
-                    int oldId = m_context.currentProject().getId();
-                    m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-                    new CmsStaticExport(this, null, false, null, null, null, null);
-                    m_context.setCurrentProject(oldId);
                 }
             }
             success = true;
@@ -3040,7 +3002,7 @@ public class CmsObject {
      * @throws CmsException if the user has not the rights to read this resource,
      * or if it couldn't be read.
      */
-    public CmsExportLink readExportLink(String request) throws CmsException {
+    public CmsStaticExportLink readExportLink(String request) throws CmsException {
         return (m_driverManager.readExportLink(request));
     }
 
@@ -3054,7 +3016,7 @@ public class CmsObject {
      * @throws CmsException if the user has not the rights to read this resource,
      * or if it couldn't be read.
      */
-    public CmsExportLink readExportLinkHeader(String request) throws CmsException {
+    public CmsStaticExportLink readExportLinkHeader(String request) throws CmsException {
         return (m_driverManager.readExportLinkHeader(request));
     }
 
@@ -4196,7 +4158,7 @@ public class CmsObject {
      *
      * @throws CmsException if something goes wrong.
      */
-    public void writeExportLink(CmsExportLink link) throws CmsException {
+    public void writeExportLink(CmsStaticExportLink link) throws CmsException {
         m_driverManager.writeExportLink(link);
     }
 
@@ -4207,7 +4169,7 @@ public class CmsObject {
      *
      * @throws CmsException if something goes wrong.
      */
-    public void writeExportLinkProcessedState(CmsExportLink link) throws CmsException {
+    public void writeExportLinkProcessedState(CmsStaticExportLink link) throws CmsException {
         m_driverManager.writeExportLinkProcessedState(link);
     }
 

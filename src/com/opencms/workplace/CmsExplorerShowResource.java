@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerShowResource.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/08/06 16:32:48 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.staticexport.CmsLinkManager;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 
@@ -55,7 +57,7 @@ public class  CmsExplorerShowResource extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         String url = (String)parameters.get("url");
-        url = cms.getLinkSubstitution(url.substring(cms.getRequestContext().getRequest().getServletUrl().length()));
+        url = CmsLinkManager.substituteLink(cms, url.substring(cms.getRequestContext().getRequest().getServletUrl().length()));
         try {
             cms.getRequestContext().getResponse().sendRedirect(url);
         } catch(IOException exc) {

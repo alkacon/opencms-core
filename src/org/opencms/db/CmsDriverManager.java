@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/06 14:48:29 $
- * Version: $Revision: 1.140 $
+ * Date   : $Date: 2003/08/06 16:32:48 $
+ * Version: $Revision: 1.141 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.staticexport.*;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
@@ -76,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.140 $ $Date: 2003/08/06 14:48:29 $
+ * @version $Revision: 1.141 $ $Date: 2003/08/06 16:32:48 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1836,7 +1837,7 @@ public class CmsDriverManager extends Object {
      *
      * @param link the cmsExportLink object to delete.
      */
-    public void deleteExportLink(CmsExportLink link) throws CmsException {
+    public void deleteExportLink(CmsStaticExportLink link) throws CmsException {
         m_projectDriver.deleteExportLink(link);
     }
 
@@ -2456,27 +2457,6 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Creates a static export in the filesystem. This method is used only
-     * on a slave system in a cluster. The Vector is generated in the static export
-     * on the master system (in the Vector allExportdLinks), so in this method the
-     * database must not be updated.
-     *
-     * @param context the current request context
-     * @param cms the cms-object to use for the export.
-     * @param linksToExport all links that where exported by the master OpenCms.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public synchronized void exportStaticResources(CmsObject cms, CmsRequestContext context, Vector linksToExport) throws CmsException {
-
-        if (isAdmin(context) || isProjectManager(context) || isUser(context)) {
-            new CmsStaticExport(cms, linksToExport);
-        } else {
-            throw new CmsSecurityException("[" + getClass().getName() + "] exportStaticResources()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
-        }
-    }
-
-    /**
      * Creates a static export of a Cmsresource in the filesystem
      *
      * @param context the current request context
@@ -2486,10 +2466,9 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException if operation was not successful.
      */
-    public synchronized void exportStaticResources(CmsObject cms, CmsRequestContext context, Vector startpoints, Vector projectResources, Vector allExportedLinks, CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
-
+    public synchronized void exportStaticResources(CmsObject cms, CmsRequestContext context, Vector startpoints, Vector changedLinks, CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
         if (isAdmin(context) || isProjectManager(context) || isUser(context)) {
-            new CmsStaticExport(cms, startpoints, true, projectResources, allExportedLinks, changedResources, report);
+            new CmsStaticExport(cms, startpoints, true, changedLinks, changedResources, report);
         } else {
             throw new CmsSecurityException("[" + getClass().getName() + "] exportStaticResources()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
@@ -5063,7 +5042,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public CmsExportLink readExportLink(String request) throws CmsException {
+    public CmsStaticExportLink readExportLink(String request) throws CmsException {
         return m_projectDriver.readExportLink(request);
     }
 
@@ -5077,7 +5056,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public CmsExportLink readExportLinkHeader(String request) throws CmsException {
+    public CmsStaticExportLink readExportLinkHeader(String request) throws CmsException {
         return m_projectDriver.readExportLinkHeader(request);
     }
 
@@ -7778,7 +7757,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException if something goes wrong.
      */
-    public void writeExportLink(CmsExportLink link) throws CmsException {
+    public void writeExportLink(CmsStaticExportLink link) throws CmsException {
         m_projectDriver.writeExportLink(link);
     }
 
@@ -7789,7 +7768,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException if something goes wrong.
      */
-    public void writeExportLinkProcessedState(CmsExportLink link) throws CmsException {
+    public void writeExportLinkProcessedState(CmsStaticExportLink link) throws CmsException {
         m_projectDriver.writeExportLinkProcessedState(link);
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2003/08/04 11:20:06 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/08/06 16:32:48 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,12 +62,6 @@ public class CmsUri {
     private CmsElementDefinitionCollection m_elementDefinitions = null;
 
     /**
-     * Indicates if this uri object needs the https scheme.
-     */
-    private boolean m_https = false;
-
-
-    /**
      * Constructor.
      *
      * @param startingElement the Element to start the contentgenerating for this uri.
@@ -76,7 +70,7 @@ public class CmsUri {
      */
     public CmsUri(CmsElementDescriptor startingElement, CmsElementDefinition def,
         boolean https){
-        this(startingElement, new CmsElementDefinitionCollection(), https);
+        this(startingElement, new CmsElementDefinitionCollection());
         m_elementDefinitions.add(def);
     }
 
@@ -87,11 +81,9 @@ public class CmsUri {
      * @param readAccessGroup the Group that can read the uri.
      * @param definitions a vector of definitions for elements.
      */
-    public CmsUri(CmsElementDescriptor startingElement, CmsElementDefinitionCollection definitions,
-        boolean https) {
+    public CmsUri(CmsElementDescriptor startingElement, CmsElementDefinitionCollection definitions) {
         m_startingElement = startingElement;
         m_elementDefinitions = definitions;
-        m_https = https;
     }
 
     public byte[] callCanonicalRoot(CmsElementCache elementCache, CmsObject cms, Hashtable parameters) throws CmsException  {
@@ -216,12 +208,5 @@ public class CmsUri {
 //        // no way to read this sorry
 //        throw new CmsException(currentGroup.getName()+" has no read access. ",
 //                                CmsException.C_ACCESS_DENIED);
-    }
-
-    /**
-     *
-     */
-    public boolean isHttpsResource(){
-        return m_https;
     }
 }
