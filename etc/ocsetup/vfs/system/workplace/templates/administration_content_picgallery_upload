@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.picgalleries.upload"/><![CDATA[';
+top.help_url=']]><LABEL value="help.administration.imagegalleries.upload"/><![CDATA[';
 
 var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
