@@ -8,6 +8,13 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.40 Arakis - 27 November 2000
+
+! Added a generic backoffice for content-definitions.
+* Corrected an error in chown(). Now first you have to lock the resource.
+* Now only the admin ist able to create modules or to delete module-views.
+* Corrected a bug in the plsql-module for publishing.
+- Removed the unused com.opencms.web-package.
 
 OpenCms 4.1.39 Arakis - 21 November 2000
 
