@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/01 13:57:22 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2003/08/01 14:20:02 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.78 $ $Date: 2003/08/01 13:57:22 $
+ * @version $Revision: 1.79 $ $Date: 2003/08/01 14:20:02 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -250,7 +250,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         if (org.opencms.db.generic.CmsProjectDriver.C_USE_TARGET_DATE && resourceType == org.opencms.db.generic.CmsProjectDriver.C_RESTYPE_LINK_ID && resourceFlags > 0) {
             dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
         }
-
+        
         int newState = (structureState > resourceState) ? structureState : resourceState;
         
         return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectId, newState, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, linkCount);
@@ -319,8 +319,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         if (org.opencms.db.generic.CmsProjectDriver.C_USE_TARGET_DATE && resourceType == org.opencms.db.generic.CmsProjectDriver.C_RESTYPE_LINK_ID && resourceFlags > 0) {
             dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
-        }      
-
+        }
+        
         int newState = (structureState > resourceState) ? structureState : resourceState;
                      
         CmsResource newResource = new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resourceProjectId, newState, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, resourceSize, linkCount);
@@ -613,7 +613,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             0,
             user.getId(),
             contents,
-            contents.length,
+            contents.length, 
             1);
     
         return createFile(project, newFile, user.getId(), parentId, filename);          
@@ -3001,7 +3001,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(3,newname);
             stmt.setInt(4,state);
             stmt.setString(5,resource.getId().toString());
-            count = stmt.executeUpdate();            
+            count = stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
@@ -3734,7 +3734,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      */
     public void moveResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsResource destinationFolder, String resourceName) throws CmsException {
         Connection conn = null;
-        PreparedStatement stmt = null;        
+        PreparedStatement stmt = null;   
         try {
             conn = m_sqlManager.getConnection(currentProject);
             
@@ -3865,14 +3865,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setTimestamp(1, new Timestamp(starttime));
             stmt.setTimestamp(2, new Timestamp(endtime));
             res = stmt.executeQuery();
-            String lastResourcename = "";
+          
 
             while (res.next()) {
                 CmsResource resource = createCmsResourceFromResultSet(res, projectId);
-                if (!resource.getResourceName().equalsIgnoreCase(lastResourcename)) {
-                    result.add(resource);
-                }
-                lastResourcename = resource.getResourceName();
+                result.add(resource);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
