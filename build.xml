@@ -2,7 +2,7 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="6.0 alpha 1" />    
+    <property name="version.number"             		value="6.0 alpha 2" />    
     <property name="version.name"               		value="Caladan" />
     
 	<property name="app.name" 							value="opencms" />

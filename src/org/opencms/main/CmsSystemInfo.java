@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/10/24 08:48:46 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/10/25 14:27:55 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.main;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsFileUtil;
@@ -50,13 +51,13 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.3
  */
 public class CmsSystemInfo {
     
     /** Default encoding. */
-    private static final String C_DEFAULT_ENCODING = "UTF-8";
+    private static final String C_DEFAULT_ENCODING = CmsEncoder.C_UTF8_ENCODING;
 
     /** Static version name to use if version.properties can not be read. */
     private static final String C_DEFAULT_VERSION_NAME = "Caladan";

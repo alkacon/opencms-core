@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/10/24 08:48:46 $
- * Version: $Revision: 1.576 $
+ * Date   : $Date: 2004/10/25 14:27:54 $
+ * Version: $Revision: 1.577 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October xx, 2004
+OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 25, 2004
 ! Updated included libaries to their latest available release versions
 ! Split the CmsDriverManager into CmsSecurityManager and CmsDriverMAnager,
   for more efficient handling of permission checks during DB operations
@@ -28,6 +28,8 @@ OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October xx, 2004
 * Fixed issue with default XML default value creation not having an OpenCms context available
 ! Added support for MySQL 4.1 
 ! Added feature to set web application context name in web.xml (required e.g. for Jboss)
+! Explorer "History" dialog with version information has been rebuild in JSP
+! New "displayresource.jsp" replaced XML template based "show resource" file
 
 OpenCms 5.5.2 Caladan - October 22, 2004
 ! Locale handler for the workplace has been made configurable
