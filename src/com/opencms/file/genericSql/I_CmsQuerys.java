@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/07 17:17:20 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/06/08 08:48:24 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.15 $ $Date: 2000/06/07 17:17:20 $
+ * @version $Revision: 1.16 $ $Date: 2000/06/08 08:48:24 $
  */
 public interface I_CmsQuerys {
     
@@ -117,7 +117,6 @@ public interface I_CmsQuerys {
 	public static final String C_PROPERTYDEF_RESOURCE_TYPE = "RESOURCE_TYPE";
 	public static final String C_PROPERTYDEF_TYPE = "PROPERTYDEF_TYPE";
 
-	
 	// Constans for PropertyDef
 	public static final Integer C_PROPERTYDEF_MAXID_KEY = new Integer(300);	
 	public static final String C_PROPERTYDEF_MAXID = "SELECT MAX(PROPERTYDEF_ID) FROM " + C_DATABASE_PREFIX + "PROPERTYDEF";
@@ -126,6 +125,7 @@ public interface I_CmsQuerys {
 	public static final String C_PROPERTYDEF_READ = "Select * from " + C_DATABASE_PREFIX + "PROPERTYDEF where " + 
 												 C_PROPERTYDEF_NAME + " = ? and " +
 												 C_PROPERTYDEF_RESOURCE_TYPE + " = ? ";
+												 
 	public static final Integer C_PROPERTYDEF_READALL_A_KEY = new Integer(302);	
     public static final String C_PROPERTYDEF_READALL_A = "Select * from " + C_DATABASE_PREFIX + "PROPERTYDEF where " + 
 													  C_PROPERTYDEF_RESOURCE_TYPE + " = ? ";
@@ -142,7 +142,15 @@ public interface I_CmsQuerys {
 	public static final String C_PROPERTYDEF_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "PROPERTYDEF WHERE " + 
 												   C_PROPERTYDEF_ID + " = ? ";
 		
-    
+    public static final Integer C_PROPERTYDEF_UPDATE_KEY = new Integer(306);
+	public static final String C_PROPERTYDEF_UPDATE = "UPDATE " + C_DATABASE_PREFIX + "PROPERTYDEF SET " + 
+												   C_PROPERTYDEF_TYPE + " = ? WHERE " + 
+												   C_PROPERTYDEF_ID + " = ? ";
+	
+	// Constants for Properties table
+    public static final String C_PROPERTY_VALUE = "PROPERTY_VALUE";
+	public static final String C_PROPERTY_RESOURCE_ID = "RESOURCE_ID";
+
 	
 	// Constants for properties
 	public static final Integer C_PROPERTIES_MAXID_KEY = new Integer(350);	
@@ -152,7 +160,22 @@ public interface I_CmsQuerys {
 	public static final String C_PROPERTIES_READALL_COUNT = "SELECT count(*) FROM " + C_DATABASE_PREFIX + "PROPERTIES WHERE " +
 														   C_PROPERTYDEF_ID + " = ?";
 	
-	
+	public static final Integer C_PROPERTIES_READ_KEY = new Integer(352);	
+	public static final String C_PROPERTIES_READ = "SELECT " + C_DATABASE_PREFIX + "PROPERTIES.* FROM " + C_DATABASE_PREFIX + "PROPERTIES, " + C_DATABASE_PREFIX + "PROPERTYDEF " + 
+												  "WHERE " + C_DATABASE_PREFIX + "PROPERTIES.PROPERTYDEF_ID = " + C_DATABASE_PREFIX + "PROPERTYDEF.PROPERTYDEF_ID and " +
+												  C_DATABASE_PREFIX + "PROPERTIES.RESOURCE_ID = ? and " +
+												  C_DATABASE_PREFIX + "PROPERTYDEF.PROPERTYDEF_NAME = ? and " +
+												  C_DATABASE_PREFIX + "PROPERTYDEF.RESOURCE_TYPE = ?";
+
+	public static final Integer C_PROPERTIES_UPDATE_KEY = new Integer(353);	
+	public static final String C_PROPERTIES_UPDATE = "UPDATE " + C_DATABASE_PREFIX + "PROPERTIES SET " + 
+													C_PROPERTY_VALUE + " = ? WHERE " +
+													C_PROPERTY_RESOURCE_ID + " = ? and " +
+													C_PROPERTYDEF_ID + " = ? ";
+													
+	public static final Integer C_PROPERTIES_CREATE_KEY = new Integer(354);	
+	public static final String C_PROPERTIES_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROPERTIES VALUES(?,?,?,?)";
+
 	
 	
     // Constants for Projects table
