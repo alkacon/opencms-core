@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2002/10/16 10:43:50 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/11/07 19:33:08 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -108,12 +108,11 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
             templateDocument.setData(C_AUTHOR, "");
             templateDocument.setData(C_EMAIL, "");
             templateDocument.setData(C_MODULE_TYPE, "checked");
-
             //  set the current date:
             templateDocument.setData(C_DATE, dateFormat.format(new Date()));
         }else {
             if("OK".equals(step) || "Ok".equals(step)) {
-                String packetname = (String)parameters.get(C_PACKETNAME);
+                String packagename = (String)parameters.get(C_PACKETNAME);
                 String modulename = (String)parameters.get(C_MODULENAME);
                 String version = (String)parameters.get(C_VERSION);
                 String description = (String)parameters.get(C_DESCRIPTION);
@@ -125,13 +124,13 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                 String createDate = (String)parameters.get(C_DATE);
                 String moduleType = (String)parameters.get(C_MODULE_TYPE);
                 
-                boolean moduleExists = reg.moduleExists(packetname);
+                boolean moduleExists = reg.moduleExists(packagename);
                 int v = -1;
                 try {
                     v = Integer.parseInt(version);
                 }catch(Exception e) {
                 }
-                if((!checkName(packetname)) || (version == null) || ("".equals(version)) || moduleExists || (v < 0)) {
+                if((!checkName(packagename)) || (version == null) || ("".equals(version)) || moduleExists || (v < 0)) {
                     Hashtable sessionData = new Hashtable();
                     sessionData.put(C_MODULENAME, getStringValue(modulename));
                     sessionData.put(C_VERSION, getStringValue(version));
@@ -151,21 +150,19 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     }
                 }else {
                     tryToCreateFolder(cms, "/system/", "modules");
-
                     // create the module (first test if we are in a project including /system/
                     try {
-                        cms.createResource("/system/modules/", packetname, C_TYPE_FOLDER_NAME);
+                        cms.createResource(C_VFS_PATH_MODULES, packagename, C_TYPE_FOLDER_NAME);
                     }catch(CmsException e) {
                         if(e.getType() != e.C_FILE_EXISTS) {
-
-                            //couldn't create Module
+                            // couldn't create Module
                             templateDocument.setData("details", Utils.getStackTrace(e));
                             return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
                         }else {
                             try {
-                                cms.readFolder("/system/modules/" + packetname + "/");
+                                cms.readFolder(C_VFS_PATH_MODULES + packagename + "/");
                             }catch(CmsException ex) {
-                                // Folder exist but is deleted
+                                // folder exist but is deleted
                                 templateDocument.setData("details", "Sorry, you have to publish this Project and create a new one.\n" + Utils.getStackTrace(e));
                                 return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
                             }
@@ -177,25 +174,34 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     }catch(Exception exc) {
                         createDateLong = (new Date()).getTime();
                     }
-                    reg.createModule(packetname, getStringValue(modulename), getStringValue(description), getStringValue(author), createDateLong, v);
-                    reg.setModuleAuthorEmail(packetname, getStringValue(email));
-                    reg.setModuleMaintenanceEventClass(packetname, getStringValue(maintenance));
+                    reg.createModule(packagename, getStringValue(modulename), getStringValue(description), getStringValue(author), createDateLong, v);
+                    reg.setModuleAuthorEmail(packagename, getStringValue(email));
+                    reg.setModuleMaintenanceEventClass(packagename, getStringValue(maintenance));
                     
+                    boolean isSimpleModule = false;
                     if (moduleType!=null && moduleType.equals("checked")) {
-                        reg.setModuleType( packetname, CmsRegistry.C_MODULE_TYPE_SIMPLE );
-                    }
-                    else {
-                        reg.setModuleType( packetname, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
+                        reg.setModuleType( packagename, CmsRegistry.C_MODULE_TYPE_SIMPLE );
+                        isSimpleModule = true;
+                    } else {
+                        reg.setModuleType( packagename, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
                     }
 
+                    /*
+                    // Moduldemo folder is deprecated since 5.0 beta 2
                     tryToCreateFolder(cms, "/", "moduledemos");
                     tryToCreateFolder(cms, "/moduledemos/", packetname);
-
-                    String modulePath = "/system/modules/" + packetname + "/";
+                    */
+                    
+                    String modulePath = C_VFS_PATH_MODULES + packagename + "/";
+                    
+                    // as default dont export any module data                    
+                    cms.writeProperty(modulePath, C_PROPERTY_EXPORT, "false");
+                    
                     // create the class folder:
                     tryToCreateFolder(cms, modulePath, "classes");
+                    // create all package folders beneth class folder
                     Vector cFolders = new Vector();
-                    String workString = packetname;
+                    String workString = packagename;
                     while(workString.lastIndexOf('.') > -1) {
                         cFolders.addElement(workString.substring(workString.lastIndexOf('.') + 1));
                         workString = workString.substring(0, workString.lastIndexOf('.'));
@@ -205,28 +211,46 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     for(int i = cFolders.size() - 1;i >= 0;i--) {
                         tryToCreateFolder(cms, workString, (String)cFolders.elementAt(i));
                         workString = workString + (String)cFolders.elementAt(i) + "/";
-                    }
-
+                    }                    
+                    // create the lib folder, will get exportet to the "real" file system
                     tryToCreateFolder(cms, modulePath, "lib");
-                    tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_TEMPLATEDIR);
-
-                    tryToCreateFolder(cms, modulePath, "contenttemplates");
-                    tryToCreateFolder(cms, modulePath, "frametemplates");
-                    tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_DEFAULTBODIESDIR);
+                    // create the templates folder
+                    tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_VFS_DIR_TEMPLATES);
+                    // create the "default_bodies" folder 
+                    tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_VFS_DIR_DEFAULTBODIES);
+                    // crate "elements" folder
                     tryToCreateFolder(cms, modulePath, "elements");
-                    tryToCreateFolder(cms, modulePath, "language");
-                    tryToCreateFolder(cms, modulePath + "language/", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
-                    // tryToCreateFolder(cms, modulePath + "language/", "de");
-                    tryToCreateFolder(cms, modulePath, "doc");
-                    reg.setModuleDocumentPath(packetname, modulePath + "doc/index.html");
+
+                    if (isSimpleModule) {
+                        // simple module type 
+                        reg.setModuleDocumentPath(packagename, modulePath + "index.html");                        
+                    } else {
+                        // traditional module type, create more directories
+                        tryToCreateFolder(cms, modulePath, "contenttemplates");
+                        tryToCreateFolder(cms, modulePath, "frametemplates");
+                        tryToCreateFolder(cms, modulePath, "doc");
+                        reg.setModuleDocumentPath(packagename, modulePath + "doc/index.html");
+                    }
+                    // initialize if we need a 'locales' subdirectory in our new module
+                    boolean needsLocaleDir = !isSimpleModule;
+                                        
                     if("checked".equals(view)) {
-                        reg.setModuleView(packetname, packetname.replace('.', '_') + ".view", modulePath + "view/index.html");
+                        reg.setModuleView(packagename, packagename.replace('.', '_') + ".view", modulePath + "view/index.html");
                         tryToCreateFolder(cms, modulePath, "view");
+                        needsLocaleDir = true;
                     }
                     if("checked".equals(adminpoint)) {
                         tryToCreateFolder(cms, modulePath, "administration");
+                        // create "pics" folder (required for workplace extension images)
                         tryToCreateFolder(cms, modulePath, "pics");
+                        needsLocaleDir = true;
                     }
+                    if (needsLocaleDir) {
+                        // create "locales" folder (required for workplace extension resource files)
+                        tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_VFS_DIR_LOCALES);
+                        tryToCreateFolder(cms, modulePath + I_CmsWpConstants.C_VFS_DIR_LOCALES, I_CmsWpConstants.C_DEFAULT_LANGUAGE);
+                    }
+                    
                     try {
                         cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceAdministrationPath() + "module/index.html");
                     }catch(Exception e) {
@@ -296,7 +320,6 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
         try {
             cms.createResource(folder, newFolder, C_TYPE_FOLDER_NAME);
         }catch(Exception e) {
-
         }
     }
 }
