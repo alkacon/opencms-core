@@ -10,6 +10,9 @@
 <%
 	/* next page to be accessed */
 	String nextPage = "step_6_module_selection.jsp";
+	
+	/* previous page in the setup process */
+	String prevPage = "step_3_database_selection.jsp";
 
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);
@@ -59,7 +62,7 @@
 			}
 			else {
 				if (createDb || createTables) {
-                    nextPage = "step_5_database_creation.jsp";
+					nextPage = "step_5_database_creation.jsp";
 			  	}
 			}
 		}
@@ -82,7 +85,7 @@ OpenCms Setup Wizard - Create database & tables
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (setupOk)	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
+<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 350px;">
 <tr>
 	<td style="vertical-align: middle;">
 				<%
@@ -95,7 +98,7 @@ OpenCms Setup Wizard - Create database & tables
 								<td><img src="resources/warning.gif" border="0"></td>
 								<td>&nbsp;&nbsp;</td>
 								<td>You have not created the OpenCms database.<br>
-									<b>Warning:</b> You cannot import the workplace successfully without the database and tables!
+									You cannot import the workplace successfully without the database and tables!
 								</td>
 							</tr>
 						</table>
@@ -110,7 +113,7 @@ OpenCms Setup Wizard - Create database & tables
 								<tr>
 									<td><img src="resources/warning.gif" border="0"></td>
 									<td>&nbsp;&nbsp;</td>
-									<td><b>Warning:</b> An existing database has been detected. Drop it ?</td>
+									<td>An existing database has been detected. Drop it ?</td>
 								</tr>
 								<tr>
 									<td colspan="3">&nbsp;</td>
@@ -119,7 +122,7 @@ OpenCms Setup Wizard - Create database & tables
 									<td colspan="2">&nbsp;</td>
 									<td>
 										<input type="submit" name="dropDb" class="dialogbutton" style="margin-left: 0;" value="Yes">&nbsp;&nbsp;&nbsp;&nbsp;
-										<input type="button" value="No" onClick="history.go(-3);" class="dialogbutton">
+										<input type="button" value="No" onClick="location.href='step_3_database_selection.jsp';" class="dialogbutton">
 									</td>
 								</tr>
 							</table>
@@ -151,7 +154,7 @@ OpenCms Setup Wizard - Create database & tables
 										<td>&nbsp;&nbsp;</td>
 										<td style="width: 100%;">
 											<div style="width: 100%; height:70px; overflow: auto;">
-											<p style="margin-bottom: 4px;"><b>Failed:</b> Database could not be dropped!</p>
+											<p style="margin-bottom: 4px;">Database could not be dropped!</p>
 											<%
 											Vector errors = db.getErrors();
 											for (int i = 0; i < errors.size(); i++)	{
@@ -199,7 +202,7 @@ OpenCms Setup Wizard - Create database & tables
 										<td>&nbsp;&nbsp;</td>
 										<td style="width: 100%;">
 											<div style="width: 100%; height:70px; overflow: auto;">
-											<p style="margin-bottom: 4px;"><b>Failed:</b> Database could not be created!</p>
+											<p style="margin-bottom: 4px;">Database could not be created!</p>
 											<%
 											Vector errors = db.getErrors();
 											for (int i = 0; i < errors.size(); i++)	{
@@ -259,7 +262,7 @@ OpenCms Setup Wizard - Create database & tables
 										<td>&nbsp;&nbsp;</td>
 										<td style="width: 100%;">
 											<div style="width: 100%; height:70px; overflow: auto;">
-											<p style="margin-bottom: 4px;"><b>Failed:</b> Tables could not be created!</p>
+											<p style="margin-bottom: 4px;">Tables could not be created!</p>
 											<%
 											Vector errors = db.getErrors();
 											for (int i = 0; i < errors.size(); i++)	{
@@ -293,7 +296,7 @@ OpenCms Setup Wizard - Create database & tables
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.go(-2);">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
 <input name="btcontinue" type="submit" value="Continue &#062;&#062;" class="dialogbutton" disabled="disabled" id="btcontinue">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>

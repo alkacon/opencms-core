@@ -3,6 +3,10 @@
 <jsp:setProperty name="Bean" property="*" />
 <%
 	String nextPage = "step_7_save_properties.jsp";
+	
+	/* previous page in the setup process */
+	String prevPage = "step_3_database_selection.jsp";
+	
 	boolean isSetupOk = (Bean.getProperties() != null);
 	boolean isFormSubmitted = (request.getParameter("submit") != null);
 	
@@ -13,7 +17,7 @@
 	Map modules = Bean.getAvailableModules();
 	Map moduleDependencies = Bean.getModuleDependencies();
 	List dependencies = null;
-    List moduleNames = (List) new ArrayList(modules.keySet());
+	List moduleNames = (List) new ArrayList(modules.keySet());
 	Collections.sort(moduleNames);	
 	String moduleName = null;
 	String moduleNiceName = null;
@@ -26,6 +30,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
+<%= Bean.getHtmlPart("C_SCRIPT_HELP") %>
 <script type="text/javascript" language="JavaScript">
 <!--
 
@@ -219,7 +224,7 @@ function sortAvailableModules() {
 OpenCms Setup Wizard - Module selection
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
-<% if(isSetupOk)	{ %>
+<% if (isSetupOk) { %>
 <form method="get" class="nomargin" name="modules" onSubmit="sortAvailableModules();">
 <input type="hidden" name="installModules" value="">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
@@ -229,9 +234,10 @@ OpenCms Setup Wizard - Module selection
 <%= Bean.getHtmlPart("C_BLOCK_START", "Modules available for installation") %>
 
 	<div style="width:100%; height: 300px; overflow: auto;">
-	<table border="0" cellpadding="2">	
+	<table border="0" cellpadding="2">
 <%
-	for (int i=0;i<moduleNames.size();i++) {
+	String descriptions = "";
+	for (int i=0; i<moduleNames.size(); i++) {
 		moduleName = (String) moduleNames.get(i);
 		module = (Map) modules.get(moduleName);
 		moduleNiceName = (String) module.get("niceName");
@@ -239,11 +245,19 @@ OpenCms Setup Wizard - Module selection
 		moduleDescription = (String) module.get("description");
 %>
 		<tr>
-			<td>
-				<input type="checkbox" name="availableModules" value="<%= moduleName %>" checked onClick="checkDependencies('<%= moduleName %>')">
+			<td style="vertical-align: top;">
+				<input type="checkbox" name="availableModules" value="<%= moduleName %>" checked="checked" onClick="checkDependencies('<%= moduleName %>')">
 			</td>
-			<td width="450" align="left">
+			<td style="vertical-align: top; width: 100%; padding-top: 4px;">
 				<%= moduleNiceName %> (<%= moduleVersion %>)
+			</td>
+			<td style="vertical-align: top; text-align: right;">
+				<%
+					if (moduleDescription != null && !"".equals(moduleDescription)) {
+						out.print(Bean.getHtmlHelpIcon("" + i, ""));
+						descriptions += Bean.getHtmlPart("C_HELP_START", "" + i) + moduleDescription + Bean.getHtmlPart("C_HELP_END");
+					}
+				%>
 			</td>
 		</tr>
 <%
@@ -260,8 +274,10 @@ OpenCms Setup Wizard - Module selection
 
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
+<%= descriptions %>
+
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.back();">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>

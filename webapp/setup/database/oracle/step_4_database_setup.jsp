@@ -6,6 +6,7 @@
 	boolean isSetupOk = (Bean.getProperties() != null);
 	boolean isFormSubmitted =( (request.getParameter("submit") != null) && (conStr != null));
 	String nextPage = "../../step_5_database_creation.jsp";
+	String prevPage = "../../step_2_check_components.jsp";
 
 	if (isSetupOk) {
 		String createDb = request.getParameter("createDb");
@@ -67,32 +68,32 @@ OpenCms Setup Wizard
 <!--
 	function checkSubmit()	{
 		if(document.forms[0].dbCreateConStr.value == "")	{
-			alert("Please insert connection string");
+			alert("Please insert the Connection String");
 			document.forms[0].dbCreateConStr.focus();
 			return false;
 		}
 		else if (document.forms[0].dbWorkUser.value == "")	{
-			alert("Please insert user name");
+			alert("Please insert a User name");
 			document.forms[0].dbWorkUser.focus();
 			return false;
 		}
 		else if (document.forms[0].dbWorkPwd.value == "")	{
-			alert("Please insert password");
+			alert("Please insert a password");
 			document.forms[0].dbWorkPwd.focus();
 			return false;
 		}
 		else if (document.forms[0].createDb.value != "" && document.forms[0].dbDefaultTablespace.value == "") {
-			alert("Please insert name of default tablespace");
+			alert("Please insert the name of the Default tablespace");
 			document.forms[0].dbWorkPwd.focus();
 			return false;
 		}
 		else if (document.forms[0].createDb.value != "" && document.forms[0].dbIndexTablespace.value == "") {
-			alert("Please insert name of index tablespace");
+			alert("Please insert the name of the Index tablespace");
 			document.forms[0].dbWorkPwd.focus();
 			return false;
 		}
 		else if (document.forms[0].createDb.value != "" && document.forms[0].dbTemporaryTablespace.value == "") {
-			alert("Please insert name of temporary tablespace");
+			alert("Please insert the name of the Temporary tablespace");
 			document.forms[0].dbWorkPwd.focus();
 			return false;
 		}
@@ -216,7 +217,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 							<td>Create Database</td>
 							<td><input type="checkbox" name="createDb" value="true" checked> User</td>
 							<td><input type="checkbox" name="createTables" value="true" checked> Tables<input type="hidden" name="createTables" value="false"></td>
-							<td>&nbsp;</td>
+							<td><%= Bean.getHtmlHelpIcon("5", "../../") %></td>
 							<td>&nbsp;</td>
 						</tr>
 					</table>
@@ -227,7 +228,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.go(-2);">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='../../index.jsp';" style="margin-left: 50px;">
 </form>
@@ -254,6 +255,12 @@ The <b>Default</b> tablespace holds all data needed for OpenCms.<br><br>
 The <b>Index</b> tablespace can be the same as the default tablespace,
 but this may result in slower database performance.<br><br>
 The <b>Temporary</b> tablespace is needed from Oracle for temporary data.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "5") %>
+The setup wizard <b>creates</b> the Oracle user tablespace and the tables for OpenCms.<br>&nbsp;<br>
+<b>Attention</b>: Existing tablespaces will be overwritten!<br>&nbsp;<br>
+Uncheck this option if an already existing tablespace should be used.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <% } else	{ %>

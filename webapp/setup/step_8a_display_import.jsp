@@ -3,15 +3,18 @@
 
 
 <%
-    /* true if properties are initialized */
-    boolean setupOk = (Bean.getProperties() != null);
-    
-    if (!setupOk) {
-		Bean.initHtmlParts();
-    }
+	/* true if properties are initialized */
+	boolean setupOk = (Bean.getProperties() != null);
 
-    /* next page to be accessed */
-    String nextPage = "step_9_browser_configuration_notes.jsp";
+	if (!setupOk) {
+		Bean.initHtmlParts();
+	}
+
+	/* next page to be accessed */
+	String nextPage = "step_9_browser_configuration_notes.jsp";
+
+	/* previous page in the setup process */
+	String prevPage = "step_7_save_properties.jsp";
 
 
 %>
@@ -65,20 +68,20 @@ OpenCms Setup Wizard
 
 		/* if finished, you can go back */
 		function lastpage() {
-			if (finished)    {
-				history.back(-2);
+			if (finished) {
+				top.location.href="<%= prevPage %>";
 			}
 		}
-		
+
 		/* replaces info message */
 		function replaceInfo(msgString, imgSrc) {
 			var el = document.getElementById("statustxt");
 			var newTextNode = document.createTextNode(msgString);
- 			el.replaceChild(newTextNode, el.firstChild);
- 			el = document.getElementById("statusimg");
- 			el.src = "resources/" + imgSrc + ".gif";
+			el.replaceChild(newTextNode, el.firstChild);
+			el = document.getElementById("statusimg");
+			el.src = "resources/" + imgSrc + ".gif";
 		}
-		
+
 	</script>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -92,7 +95,7 @@ OpenCms Setup Wizard - Import workplace
 <tr>
 	<td style="vertical-align: middle;">
 		<%= Bean.getHtmlPart("C_BLOCK_START", "Status") %>
-		<table border="0" cellpadding="0" cellspacing="0">		
+		<table border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td><img src="resources/wait.gif" border="0" id="statusimg"></td>
 				<td>&nbsp;&nbsp;</td>
@@ -101,7 +104,7 @@ OpenCms Setup Wizard - Import workplace
 				</td>
 			</tr>
 		</table>
-		<%= Bean.getHtmlPart("C_BLOCK_END") %>	
+		<%= Bean.getHtmlPart("C_BLOCK_END") %>
 		<div class="dialogspacer" unselectable="on">&nbsp;</div>
 	</td>
 </tr>

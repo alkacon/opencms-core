@@ -1,18 +1,21 @@
 <% /* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
 
+<% /* Set all given Properties */%>
+<jsp:setProperty name="Bean" property="*" />
+
 <% /* Import packages */ %>
 <%@ page import="org.opencms.setup.*,java.util.*" %>
 
 <%
 
-    /* true if properties are initialized */
-    boolean setupOk = (Bean.getProperties()!=null);
-    
-    boolean importWp = false;
-    
-    if (setupOk) {
-   	    /* check params */
+	/* true if properties are initialized */
+	boolean setupOk = (Bean.getProperties()!=null);
+	
+	boolean importWp = false;
+	
+	if (setupOk) {
+		/* check params */
 		String param = request.getParameter("importWorkplace");
 		if (param != null) {
 			importWp = param.equals("true");
@@ -29,10 +32,13 @@
 		Utils.backupRegistry("registry.xml", "registry.ori");
 	} else {
 		Bean.initHtmlParts();
-    }
+	}
 
 	/* next page */
 	String nextPage = "step_9_browser_configuration_notes.jsp";
+	
+	/* previous page in the setup process */
+	String prevPage = "step_7_save_properties.jsp";
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Setup Wizard
@@ -75,7 +81,7 @@ OpenCms Setup Wizard - Import workplace
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.back();">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>

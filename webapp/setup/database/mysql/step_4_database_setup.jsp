@@ -6,7 +6,8 @@
 	String database = request.getParameter("db");
 	boolean isSetupOk = (Bean.getProperties() != null);
 	boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null) && (database != null));
-	String nextPage = "../../step_5_database_creation.jsp";	
+	String nextPage = "../../step_5_database_creation.jsp";
+	String prevPage = "../../step_2_check_components.jsp";
 
 	if (isSetupOk) {
 		String createDb = request.getParameter("createDb");
@@ -16,7 +17,7 @@
 
 		if(isFormSubmitted)	{
 			if(!conStr.endsWith("/"))conStr += "/";
-			   
+
 			String dbCreateUser = request.getParameter("dbCreateUser");
 			String dbWorkUser = request.getParameter("dbWorkUser");
 
@@ -54,12 +55,12 @@ OpenCms Setup Wizard
 <!--
 	function checkSubmit()	{
 		if(document.forms[0].dbCreateConStr.value == "")	{
-			alert("Please insert connection string");
+			alert("Please insert the Connection String");
 			document.forms[0].dbCreateConStr.focus();
 			return false;
 		}
 		else if (document.forms[0].db.value == "")	{
-			alert("Please insert database name");
+			alert("Please insert a Database name");
 			document.forms[0].db.focus();
 			return false;
 		}
@@ -114,6 +115,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 			<!-- --------------------------------------------------------- -->
 			</select>
 		</td>
+		<td><td><%= Bean.getHtmlHelpIcon("6", "../../") %></td></td>
 	</tr>
 </table>
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
@@ -160,8 +162,10 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 		<td><%= Bean.getHtmlHelpIcon("4", "../../") %></td>
 	</tr>
 	<tr>
-		<td colspan="4"><input type="checkbox" name="createDb" value="true" checked> Create database and tables 
+		<td>&nbsp;</td>
+		<td colspan="2"><input type="checkbox" name="createDb" value="true" checked> Create database and tables 
 		</td>
+		<td><%= Bean.getHtmlHelpIcon("5", "../../") %></td>
 	</tr>
 </table>
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
@@ -170,7 +174,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.go(-2);">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='../../index.jsp';" style="margin-left: 50px;">
 </form>
@@ -194,6 +198,24 @@ Enter the JDBC <b>Connection String</b> to your database.
 
 <%= Bean.getHtmlPart("C_HELP_START", "4") %>
 Enter the name of the MySQL <b>Database</b> which should be used by OpenCms.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "5") %>
+The setup wizard <b>creates</b> the MySQL database and the tables for OpenCms.<br>&nbsp;<br>
+<b>Attention</b>: Existing databases will be overwritten!<br>&nbsp;<br>
+Uncheck this option if an already existing database should be used.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "6") %>
+<b>MySQL configuration notes:</b><br>&nbsp;<br>
+MySQL limits the size of packets which can be stored in the database. 
+In order to increase the maximum file size for OpenCms, 
+you have to adjust this setting for MySQL.<br>&nbsp;<br>
+Locate the file <code>mysql.ini</code> (Windows systems) respectively <code>mysql.conf</code> (Unix systems) and add the line<br>
+<code>set-variable=<br>max_allowed_packet=8M</code><br>
+to increase the size e.g. to 8 MB.<br><br>
+MySQL <b>3.2.x</b> versions support packets up to 16 MB,
+MySQL versions <b>4.0.x</b> are only limited by the amount of available memory on the server.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <% } else	{ %>

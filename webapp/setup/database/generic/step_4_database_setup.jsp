@@ -6,6 +6,7 @@
 	boolean isSetupOk = (Bean.getProperties() != null);
 	boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null));
 	String nextPage = "../../step_5_database_creation.jsp";	
+	String prevPage = "../../step_2_check_components.jsp";
 	
 	if (isSetupOk)	{
 		String createDb = request.getParameter("createDb");
@@ -55,17 +56,17 @@ OpenCms Setup Wizard
 <!--
 	function checkSubmit()	{
 		if(document.forms[0].dbCreateConStr.value == "")	{
-			alert("Please insert connection string");
+			alert("Please insert the Connection String");
 			document.forms[0].dbCreateConStr.focus();
 			return false;
 		}
 		else if (document.forms[0].dbWorkUser.value == "")	{
-			alert("Please insert user name");
+			alert("Please insert a User name");
 			document.forms[0].dbWorkUser.focus();
 			return false;
 		}
 		else if (document.forms[0].dbWorkPwd.value == "")	{
-			alert("Please insert password");
+			alert("Please insert a Password");
 			document.forms[0].dbWorkPwd.focus();
 			return false;
 		}
@@ -75,7 +76,7 @@ OpenCms Setup Wizard
 	}
 
 	<%
-		if(isFormSubmitted)	{
+		if (isFormSubmitted)	{
 			out.println("location.href='"+nextPage+"';");
 		}
 	%>
@@ -174,8 +175,10 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 		<td><%= Bean.getHtmlHelpIcon("4", "../../") %></td>
 	</tr>
 	<tr>
-	<td colspan="4"><input type="checkbox" name="createTables" value="true" checked> Create database and tables<input type="hidden" name="createTables" value="false">
+		<td>&nbsp;</td>
+		<td colspan="2"><input type="checkbox" name="createTables" value="true" checked> Create database and tables<input type="hidden" name="createTables" value="false">
 		</td>
+		<td><%= Bean.getHtmlHelpIcon("5", "../../") %></td>
 	</tr>
 </table>
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
@@ -185,7 +188,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.go(-2);">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='../../index.jsp';" style="margin-left: 50px;">
 </form>
@@ -209,6 +212,12 @@ Enter the name of your Generic <b>Database Driver</b>.
 
 <%= Bean.getHtmlPart("C_HELP_START", "4") %>
 Enter the JDBC <b>Connection String</b> to your database.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "5") %>
+The setup wizard <b>creates</b> the database and the tables for OpenCms.<br>&nbsp;<br>
+<b>Attention</b>: Existing databases will be overwritten!<br>&nbsp;<br>
+Uncheck this option if an already existing database should be used.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <% } else { %>

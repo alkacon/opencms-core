@@ -32,6 +32,8 @@
 		text-decoration: none;
 	}
 	p {
+		margin-top: 12px;
+		margin-bottom: 6px;
 		text-align: justify;
 	}
 	ul {
@@ -45,10 +47,10 @@
 </head>
 
 <body>
-<div style="margin: 0 auto;">
-<table border="0" cellpadding="0" cellspacing="0" style="width: 570px;">
-<tr><td>
-<h1>OpenCms 5.0 Browser configuration</h1>
+<img src="resources/logo_opencms.gif" border="0" align="right" hspace="5">
+<h1>OpenCms Browser Configuration</h1>
+
+<h2>Configuration that applies to all browsers</h2>
 <p>
 The configuration instructions on this page apply when you set up a
 browser to access the backoffice part of OpenCms. This is the part
@@ -56,12 +58,11 @@ where you can edit pages, create new pages, manage users etc. In
 OpenCms this is called "the Workplace".
 </p>
 
-<h2>Configuration that applies to all browsers</h2>
 <p>
-The OpenCms Workplace is a large JavaScript application that also
+The OpenCms Workplace is a complex JavaScript application that also
 makes use of popup windows. Session management is done with cookies.
 </p><p>
-This means for a client browser that needs access to the workplace:
+This means for a client browser that needs access to the Workplace:
 </p>
 <ul>
 <li>Enable JavaScript</li>
@@ -69,54 +70,31 @@ This means for a client browser that needs access to the workplace:
 <li>Enable Cookies</li>
 </ul>
 
-<h2>Configuring Mozilla / Netscape Navigator 7.x Clients</h2>
 <p>
-A WYSIWYG editor is currently not available for Mozilla / Netscape
-Navigator clients. OpenCms switches automatically to an HTML text
-area in which the end user can edit the content as HTML source code.
+<i>Please note:</i> This configuration applies <i>only</i> for browsers that 
+access the OpenCms Workplace directly. For the site build with OpenCms,
+there are no restrictions on the browser, the requirements will 
+depend only on the templates / html you use.<br>&nbsp;
 </p>
 
-<h2>Optional installation of the advanced source code editor</h2>
+<h2>Using the OpenCms integrated editors</h2>
 <p>
-If you use MS Internet Explorer on Windows, there is an optional
-source code editor component available that offers some advanced
-features. The installation of this editor is only neccessary if you
-need a source code editor with functions like search and replace in
-the source code editing mode. If you do not install this optional
-component, you will work with a HTML textarea for source code editing.
-In this case, you do not have to change any extra browser settings. If
-you want to use the advanced editor, please follow the instructions
-provided below.
-</p><p>
-The source code editor is a component developed by AY Software and
-it’s called LeEdit OCX Control. You can download the shareware version
-of this control from the site: 
-<a href="http://www.aysoft.com/ledit.htm" target="_blank">http://www.aysoft.com/ledit.htm</a>.
-This control must be installed on all clients that need access to the source 
-code editor functionality. If you do not install this component,
-OpenCms will provide a HTML textarea for the source code input, whic 
-is less convenient but also usable in general.
-</p><p>
-In order to configure your Internet Explorer for the source code
-editor to work properly, open IEs "Internet options". Then do the
-following:
+The OpenCms Workplace offers a variety of editors.
+The most common editors are for editing Html in a WYSIWYG mode,
+and for editing source code of JSP, Html or Plain Text pages.
+The OpenCms Workplace will automatically detect the browser you use,
+which editors are available,
+and give you the best editor known to work with your browser.
 </p>
-<ul>
-<li>On the tab "Security", select "Trusted site zones" from the
-drop-down menu and click on "Add Sites" to add the URL (e.g.
-http://opencms.mycompany.com - ask your system administrator for the
-exact URL) of the zone’s OpenCms server. Deactivate the radio button
-"Require server verification (https:) for all sites in this zone".
-</li>
-<li>
-On the tab "Security", select "Trusted site zones" from the
-drop-down menu and click on "Settings". All control elements must be
-set to "Enable". A note on security: It is safe to use such controls
-with these settings since their use is allowed only for the "Trusted
-sites", and they remain disabled for all other web sites.
-</li>
-</ul>
-</td></tr></table>
-</div>
+<p>
+In case no WYSIWYG editor is available for your browser, you will
+be presented a simple text editor only.
+</p>
+<p>
+Please note that additional editors can be added as separate OpenCms modules.
+If you do not find a suitable editor for your browser, 
+check the module download section of <a href="http://www.opencms.org" target="_blank">http://www.opencms.org</a>.
+</p>
+
 </body>
 </html>
