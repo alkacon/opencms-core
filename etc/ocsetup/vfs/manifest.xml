@@ -5029,6 +5029,11 @@
             <access>383</access>
             <properties>
                 <property>
+                    <name>visiblemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsAdminHtmlGalleries.isProjectManager]]></value>
+                </property>
+                <property>
                     <name>activemethod</name>
                     <type>0</type>
                     <value><![CDATA[com.opencms.workplace.CmsAdminHtmlGalleries.isNotOnlineProject]]></value>
@@ -5959,7 +5964,7 @@
             <group>Users</group>
             <access>15</access>
             <properties/>
-        </file>	
+        </file> 
         <file>
             <source>system/workplace/administration/project/historyproperties/history_properties</source>
             <destination>system/workplace/administration/project/historyproperties/history_properties</destination>
