@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/12/12 19:01:47 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2002/12/17 19:44:28 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.40 $ $Date: 2002/12/12 19:01:47 $
+ * @version $Revision: 1.41 $ $Date: 2002/12/17 19:44:28 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -548,9 +548,11 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             if(folder.getState() != C_STATE_DELETED){
                 // check if this is a system-folder and if it should be included.
                 String export = folder.getAbsolutePath();
-                if( // new VFS, always export "/system/bodies/" OR
+                if( // new VFS, always export "/system/" OR
+                    (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.equalsIgnoreCase(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) ||
+                    // new VFS, always export "/system/bodies/" OR
                     (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) ||
-                    // new VFS, always export "/system/gallieries" OR
+                    // new VFS, always export "/system/galleries/" OR
                     (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith(I_CmsWpConstants.C_VFS_PATH_GALLERIES)) ||
                     // option "exclude system folder" selected AND
                     !(m_excludeSystem && 
