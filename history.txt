@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.22 Bela Tegeuse - 
+OpenCms 4.3.22 Bela Tegeuse - 3 July 2001
 ! The resource types are stored in the registry.xml now. Actions on resources are depending
   on the resourcetype, so there is a special class for each resource type that handles the
   actions. You have to get the new registry.xml and the new cmssetup.txt.
