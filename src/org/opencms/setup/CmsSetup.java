@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/19 17:23:17 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/20 15:26:21 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.io.SAXReader;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
@@ -195,19 +195,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         if (getProperties() == null) {
             return false;
         }
-
-        // check the maximum file size, set it to unlimited, if not valid 
-        String size = getFileMaxUploadSize();
-        if (size == null || "".equals(size)) {
-            setFileMaxUploadSize("-1");
-        } else {
-            try {
-                Integer.parseInt(size);
-            } catch (Exception e) {
-                setFileMaxUploadSize("-1");
-            }
-        }
-
         return true;
     }
 
@@ -663,42 +650,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     }
 
     /** 
-     * Sets the minimum connections to the given value 
-     * 
-     * @param minConn number of minimum connections
-     */
-    public void setMinConn(String minConn) {
-        setExtProperty("db.pool." + getPool() + ".maxIdle", minConn);
-    }
-
-    /** 
-     * Returns the min. connections.<p>
-     * 
-     * @return the min. connections
-     */
-    public String getMinConn() {
-        return getExtProperty("db.pool." + getPool() + ".maxIdle");
-    }
-
-    /** 
-     * Sets the maximum connections to the given value.<p>
-     * 
-     * @param maxConn maximum connection count
-     */
-    public void setMaxConn(String maxConn) {
-        setExtProperty("db.pool." + getPool() + ".maxActive", maxConn);
-    }
-
-    /** 
-     * Returns the max. connections.<p>
-     * 
-     * @return the max. connections
-     */
-    public String getMaxConn() {
-        return getExtProperty("db.pool." + getPool() + ".maxActive");
-    }
-
-    /** 
      * Sets the timeout to the given value.<p>
      * 
      * @param timeout the timeout to set
@@ -751,23 +702,29 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     public void setServerName(String name) {
         setExtProperty("server.name", name);
     }
-
+    
     /** 
-     * Set the maximum file upload size.<p>
+     * Return the OpenCms workplace site
      * 
-     * @param size the size to set
+     * @return the OpenCms workplace site
      */
-    public void setFileMaxUploadSize(String size) {
-        setExtProperty("workplace.file.maxuploadsize", size);
+    public String getWorkplaceSite() {
+        return getExtProperty("site.workplace");
     }
-
+    
     /** 
-     * Returns the maximum file upload size.<p>
+     * Set the OpenCms workplace site
      * 
-     * @return the maximum file upload size
+     * @param newSite the OpenCms workplace site
      */
-    public String getFileMaxUploadSize() {
-        return getExtProperty("workplace.file.maxuploadsize");
+    public void setWorkplaceSite(String newSite) {
+        String oldSite = getWorkplaceSite();
+        // get the site list
+        String siteList = getExtProperty("site.root.list");
+        // replace old site URL in site list with new site URL
+        siteList = CmsStringSubstitution.substitute(siteList, oldSite, newSite);
+        setExtProperty("site.root.list", siteList);
+        setExtProperty("site.workplace", newSite);
     }
 
     /**
@@ -863,24 +820,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     public void lockWizard() {
         setExtProperty("wizard.enabled", "false");
     }
-
-    /**
-     * Sets filename translation to enabled / disabled.<p>
-     * 
-     * @param value value to set (must be "true" or "false")
-     */
-    public void setFilenameTranslationEnabled(String value) {
-        setExtProperty("filename.translation.enabled", value);
-    }
-
-    /** 
-     * Returns "true" if filename translation is enabled.<p>
-     * 
-     * @return "true" if filename translation is enabled
-     */
-    public String getFilenameTranslationEnabled() {
-        return getExtProperty("filename.translation.enabled");
-    }
     
     /**
      * Returns the specified HTML part of the HTML property file to create the output.<p>
@@ -923,71 +862,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
             value = CmsStringSubstitution.substitute(value, "$replace$", id);
             return CmsStringSubstitution.substitute(value, "$path$", pathPrefix);
         }
-    }
-    
-    
-
-    /**
-     * Sets directory translation to enabled / disabled.<p>
-     * 
-     * @param value value to set (must be "true" or "false")
-     */    
-    public void setDirectoryTranslationEnabled(String value) {
-        setExtProperty("directory.translation.enabled", value);
-    }
-
-    /** 
-     * Returns "true" if directory translation is enabled.<p>
-     * 
-     * @return "true" if directory translation is enabled
-     */
-    public String getDirectoryTranslationEnabled() {
-        return getExtProperty("directory.translation.enabled");
-    }
-
-    /**
-     * Sets the directory default index files.<p>
-     * 
-     * This must be a comma separated list of files.<p>
-     *
-     * @param value the value to set
-     */
-    public void setDirectoryIndexFiles(String value) {
-        setExtProperty("directory.default.files", value);
-    }
-
-    /**
-     * Returns the directory default index files as a comma separated list.<p>
-     * 
-     * @return the directory default index files as a comma separated list
-     */
-    public String getDirectoryIndexFiles() {
-        Object value = null;
-        value = m_extProperties.get("directory.default.files");
-
-        if (value == null) {
-            // could be null...
-            return "";
-        }
-
-        if (value instanceof String) {
-            // ...a string...
-            return value.toString();
-        }
-
-        // ...or a vector!
-        Enumeration allIndexFiles = ((Vector)value).elements();
-        String indexFiles = "";
-
-        while (allIndexFiles.hasMoreElements()) {
-            indexFiles += (String)allIndexFiles.nextElement();
-
-            if (allIndexFiles.hasMoreElements()) {
-                indexFiles += ",";
-            }
-        }
-
-        return indexFiles;
     }
 
     /**
