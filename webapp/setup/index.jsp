@@ -1,5 +1,5 @@
 <%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
---%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
 // next page 
@@ -14,6 +14,7 @@ try {
 		session.invalidate();
 		response.sendRedirect("index.jsp");
 	}
+	
 	// Initialize the Bean 
 	Bean.init(pageContext, request);
 
