@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/23 08:03:02 $
- * Version: $Revision: 1.174 $
+ * Date   : $Date: 2001/07/23 10:03:26 $
+ * Version: $Revision: 1.175 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.174 $ $Date: 2001/07/23 08:03:02 $
+ * @version $Revision: 1.175 $ $Date: 2001/07/23 10:03:26 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -902,6 +902,10 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
  * has not the appropriate rights to create a new file.
  */
 protected CmsFile doCreateFile(String folder, String filename, byte[] contents, String type, Hashtable properties) throws CmsException {
+    // avoid null-pointer exceptions
+    if(properties == null) {
+        properties = new Hashtable();
+    }
 	CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, properties);
 /*
     //Linkmanagement

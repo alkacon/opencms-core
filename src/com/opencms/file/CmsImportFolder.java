@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
- * Date   : $Date: 2001/05/15 19:29:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2001/07/23 10:03:26 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2001/05/15 19:29:01 $
+ * @version $Revision: 1.8 $ $Date: 2001/07/23 10:03:26 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -98,11 +98,11 @@ public class CmsImportFolder implements I_CmsConstants {
 			m_cms.lockResource(m_importPath);
 
 			// import the resources
-            //if( m_zipStreamIn == null) {
+            if( m_zipStreamIn == null) {
 			    importResources(m_importResource, m_importPath);
-            //} else {
+            } else {
                 importZipResource(m_zipStreamIn, m_importPath, false);
-            //}
+            }
 
 			// all is done, unlock the resources
 			m_cms.unlockResource(m_importPath);
@@ -241,7 +241,7 @@ public class CmsImportFolder implements I_CmsConstants {
 				String type = getFileType( currentFile.getName() );
 				byte[] content = getFileBytes(currentFile);
 				// create the file
-				m_cms.createFile(importPath, currentFile.getName(), content, type);
+   				m_cms.createFile(importPath, currentFile.getName(), content, type);
 			}
 		}
 	}
