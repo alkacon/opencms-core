@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/16 13:31:51 $
- * Version: $Revision: 1.193 $
+ * Date   : $Date: 2000/11/16 13:42:44 $
+ * Version: $Revision: 1.194 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.193 $ $Date: 2000/11/16 13:31:51 $
+ * @version $Revision: 1.194 $ $Date: 2000/11/16 13:42:44 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -5553,8 +5553,8 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 		CmsProject project = readProject(currentUser, currentProject, id);
 
 		// check the security
-		if( isAdmin(currentUser, currentProject) || 
-			isManagerOfProject(currentUser, project) || 
+		if( (isAdmin(currentUser, currentProject) || 
+			isManagerOfProject(currentUser, project) ) &&
 			(project.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
 			
 			// unlock all resources in the project
