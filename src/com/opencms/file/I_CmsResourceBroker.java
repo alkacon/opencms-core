@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/02 13:00:59 $
-* Version: $Revision: 1.155 $
+* Date   : $Date: 2001/10/16 09:02:52 $
+* Version: $Revision: 1.156 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.155 $ $Date: 2001/10/02 13:00:59 $
+ * @version $Revision: 1.156 $ $Date: 2001/10/16 09:02:52 $
  *
  */
 
@@ -1247,12 +1247,13 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      *
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
+     * @param rootName The name of the root, e.g. /default/vfs
      *
      * @return subfolders A Vector with the complete folder-tree for this project.
      *
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject)
+    public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, String rootName)
         throws CmsException;
     /**
      * Returns all groups<P/>
