@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2001/11/21 10:58:33 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/11/21 11:28:31 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -154,7 +154,7 @@ final class CmsHtmlConverterTools {
         return "";
     }
 
-    protected String modifyParameter(String parameter) {
+    protected String modifyParameter(String parameter, String prefix) {
         try {
             URL myURL = new URL(parameter);
             parameter = myURL.getFile();
@@ -162,7 +162,12 @@ final class CmsHtmlConverterTools {
         catch (IOException e) {
             System.err.println("Error: " + e.toString());
         }
-        // Hier dann nach Teilstrings scannen...
+        // remove the servletprefix
+        if(prefix != null && !"".equals(prefix)){
+            if(parameter.startsWith(prefix)){
+                parameter = parameter.substring(prefix.length());
+            }
+        }
         return parameter;
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2001/11/21 10:58:33 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/11/21 11:28:31 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,6 +69,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     private CmsHtmlConverterObjectReplaceTags m_tagObject = new CmsHtmlConverterObjectReplaceTags();
     /** object stores data for replacing blocks */
     private CmsHtmlConverterObjectReplaceBlocks m_blockObject = new CmsHtmlConverterObjectReplaceBlocks();
+    // replacestring for the modifyParameter methode. Used for the html editor replacement
+    private String m_servletPrefix = null;
 
     /**
      * default constructor
@@ -95,6 +97,15 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     public CmsHtmlConverter(String tidyConfFileName, String confFile) {
         this.setTidyConfFile(tidyConfFileName);
         this.setConverterConfFile(confFile);
+    }
+
+    /**
+     * sets the prefix.
+     *
+     * @param prefix The servletprefix.
+     */
+    public void setServletPrefix(String prefix){
+        m_servletPrefix = prefix;
     }
 
     /**
@@ -427,7 +438,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                         valueParam = m_tools.scanNodeAttrs(node,m_tagObject.getParameter());
                         // HACK: only replace attribute value of parameter attribute!
                         if (m_tagObject.getReplaceParamAttr()) {
-                            valueParam = m_tools.modifyParameter(valueParam);
+                            valueParam = m_tools.modifyParameter(valueParam, m_servletPrefix);
                             tempReplaceString = m_tools.reconstructTag(tempReplaceString,node,m_tagObject.getParameter(),m_configuration.getQuotationmark());
                         }
                         tempReplaceString = m_tools.replaceString(tempReplaceString,"$parameter$",valueParam);
