@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
- * Date   : $Date: 2003/08/14 15:37:24 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/08/25 09:51:14 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * <code>sendBroadcastMessage()</code> method.
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -249,7 +249,7 @@ public class CmsCoreSession {
             value = (Hashtable)m_sessions.get(key);
             userentry.put(I_CmsConstants.C_SESSION_USERNAME, value.get(I_CmsConstants.C_SESSION_USERNAME));
             userentry.put(I_CmsConstants.C_SESSION_PROJECT, value.get(I_CmsConstants.C_SESSION_PROJECT));
-            userentry.put(I_CmsConstants.C_SESSION_CURRENTGROUP, value.get(I_CmsConstants.C_SESSION_CURRENTGROUP));
+            // userentry.put(I_CmsConstants.C_SESSION_CURRENTGROUP, value.get(I_CmsConstants.C_SESSION_CURRENTGROUP));
             userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean(((Hashtable)value.get(I_CmsConstants.C_SESSION_DATA)).containsKey(I_CmsConstants.C_SESSION_BROADCASTMESSAGE)));
 
             output.addElement(userentry);
