@@ -57,6 +57,10 @@
 								<td class=dialogtxt><input type="text" name="DOMAINNAME" class="textfeld3" size=31 maxlength=255 value="]]><PROCESS>new_site_domainname</PROCESS><![CDATA["> </td>
 							</tr>
 							<tr>
+								<td class=formular width=10%>]]><LABEL value="sitemanagement.label.fallbacksite" /><![CDATA[:</td>
+								<td class=dialogtxt>]]><SELECT class="textfeld" name="FALLBACKSITE" width="150" method="getSites" onchange=""/><![CDATA[</td>
+							</tr>
+							<tr>
 								<td class=formular width=10%>]]><LABEL value="sitemanagement.label.domain" /><![CDATA[:</td>
 								<td class=dialogtxt>]]><SELECT class="textfeld" name="DOMAIN" width="150" method="getDomains" onchange=""/><![CDATA[</td>
 							</tr>

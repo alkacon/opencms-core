@@ -20,6 +20,7 @@
 				<project>Project</project>
 				<suredeletingsite1>Are you sure that you want to delete the site </suredeletingsite1>
 				<suredeletingsite2>?</suredeletingsite2>
+				<fallbacksite>Parent site</fallbacksite>
 				
 			</label>
 			<error>
