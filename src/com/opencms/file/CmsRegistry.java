@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/03/25 08:52:21 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/04/22 07:01:04 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.73 $ $Date: 2003/03/25 08:52:21 $
+ * @version $Revision: 1.74 $ $Date: 2003/04/22 07:01:04 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -582,18 +582,19 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             Vector resources = new Vector();
                                 
             if (additionalResources!=null && !additionalResources.equals("")) {                            
-                // add each additonal folder plus its content folder under "content/bodys"
+                // add each additonal folder/resource
                 StringTokenizer additionalResourceTokens = null;
                 additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
                                        
                 while (additionalResourceTokens.hasMoreTokens()) {
                     String currentResource = additionalResourceTokens.nextToken().trim();
                     
-                    if (DEBUG>0) {
-                        System.err.println( "Adding resource: " + currentResource );
+                    if (! "-".equals(currentResource)) {
+                        if (DEBUG > 0) {
+                            System.err.println("Adding resource: " + currentResource);
+                        }                            
+                        resources.add( currentResource );
                     }
-                                            
-                    resources.add( currentResource );
                 }                       
             }          
             
