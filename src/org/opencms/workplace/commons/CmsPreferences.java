@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/02/26 13:53:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -76,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */
@@ -596,10 +595,7 @@ public class CmsPreferences extends CmsTabDialog {
                     
                     // create the table row for the current resource type
                     result.append("<tr>\n\t<td style=\"white-space: nowrap;\">");
-                    String localizedName = key("fileicon." + currentResourceType);
-                    if (localizedName.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
-                        localizedName = currentResourceType;
-                    }
+                    String localizedName = key("fileicon." + currentResourceType, currentResourceType);
                     result.append(localizedName);
                     result.append("</td>\n\t<td>");
                     result.append(buildSelect(htmlAttributes + currentResourceType + "\"", options, values, selectedIndex));
@@ -747,11 +743,7 @@ public class CmsPreferences extends CmsTabDialog {
                 visible = false;
             }
             if (visible) {
-                String localizedKey = key(viewKey);
-                if (localizedKey.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
-                    // no localized key found, show key name
-                    localizedKey = viewKey;
-                }
+                String localizedKey = key(viewKey, viewKey);
                 options.add(localizedKey);
                 values.add(viewUri);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/02/26 13:53:32 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -165,8 +165,8 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         }
         // calculate the key
         String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value.getElementName() + "." + C_HELP_POSTFIX;
-        String locValue = widgetDialog.key(locKey);
-        if (locValue.startsWith("???")) {
+        String locValue = widgetDialog.key(locKey, null);
+        if (locValue == null) {
             // there was no help message found for this key, so return a spacer cell
             return widgetDialog.buttonBarSpacer(16);
         } else {
@@ -204,8 +204,8 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         }
         // calculate the key
         String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value.getElementName() + "." + C_HELP_POSTFIX;
-        String locValue = widgetDialog.key(locKey);
-        if (locValue.startsWith("???")) {
+        String locValue = widgetDialog.key(locKey, null);
+        if (locValue == null) {
             // there was no help message found for this key, so return an empty string
             return "";
         } else {
@@ -259,11 +259,6 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         }
         // calculate the key
         String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value;
-        String locValue = widgetDialog.key(locKey);
-        if (locValue.startsWith("???")) {
-            // there was no value found for this key, so use the unlocalised message key
-            locValue = value;
-        }
-        return locValue;
+        return widgetDialog.key(locKey, value);
     }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2005/02/26 13:53:32 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -64,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * 
  * @since 5.1
  */
@@ -278,11 +277,7 @@ public class CmsFrameset extends CmsWorkplace {
             }
             if (visible) {
                 String loopLink = getJsp().link(viewUri);
-                String localizedKey = key(viewKey);
-                if (localizedKey.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
-                    // no localized key found, show key name
-                    localizedKey = viewKey;
-                }
+                String localizedKey = key(viewKey, viewKey);
                 options.add(localizedKey);
                 values.add(loopLink);
 

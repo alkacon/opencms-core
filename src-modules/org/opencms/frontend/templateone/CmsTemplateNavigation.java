@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/02/25 10:44:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/02/26 13:53:31 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.frontend.templateone;
 
 import org.opencms.file.CmsResource;
@@ -53,7 +54,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
-
 /**
  * Provides methods to build the different navigations for the OpenCms template one.<p>
  * 
@@ -73,74 +73,99 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
-    
+
     /** Request parameter name for the head navigation start folder. */
     public static final String C_PARAM_HEADNAV_FOLDER = "headnavfolder";
+    
     /** Request parameter name for the head navigation flag to use images on 1st level. */
     public static final String C_PARAM_HEADNAV_IMAGES = "headnavimages";
+    
     /** Request parameter name for the head navigation flag to mark the current top level folder. */
     public static final String C_PARAM_HEADNAV_MARKCURRENT = "headnavmarkcurrent";
+    
     /** Request parameter name for the head navigation flag to expand the submenus on click (true) or mouseover (false). */
     public static final String C_PARAM_HEADNAV_MENUCLICK = "headnavmenuclick";
+    
     /** Request parameter name for the head navigation sub menu depth. */
     public static final String C_PARAM_HEADNAV_MENUDEPTH = "headnavmenudepth";
+    
     /** Request parameter name for the current locale. */
     public static final String C_PARAM_LOCALE = "locale";
+    
     /** Request parameter name for the left navigation editable include element uri. */
     public static final String C_PARAM_NAVLEFT_ELEMENTURI = "navleftelementuri";
+    
     /** Request parameter name for the flag if the left navigation should display only the selected resources. */
     public static final String C_PARAM_NAVLEFT_SHOWSELECTED = "navleftselected";
+    
     /** Request parameter name for the flag if the left navigation tree should be displayed. */
     public static final String C_PARAM_NAVLEFT_SHOWTREE = "navleftshowtree";
+    
     /** Request parameter name for the current resource path. */
     public static final String C_PARAM_RESPATH = "respath";
+    
     /** Request parameter name for the flag if the head navigation menus should be shown. */
     public static final String C_PARAM_SHOWMENUS = "showmenus";
+    
     /** Request parameter name for the current start folder. */
     public static final String C_PARAM_STARTFOLDER = "startfolder";
-    
+
     /** Name of the property key to determine if the current element is shown in headnav. */
     public static final String C_PROPERTY_HEADNAV_USE = "style_head_nav_showitem";
-    
+
     /** Stores the path to the head navigation start folder. */
     private String m_headNavFolder;
+    
     /** The default behaviour to include items in head navigation menu if property <code>style_head_nav_showitem</code> is not set. */
     private boolean m_headNavItemDefaultValue;
+    
     /** Determines if the currently active top folder should be marked in the head navigation. */
     private boolean m_headNavMarkCurrent;
+    
     /** Determines if the submenus are expanded on click (true) or mouseover (false). */
     private boolean m_headNavMenuClick;
+    
     /** Stores the current locale value. */
     private String m_locale;
-    /** Stores the localized resource Strings. */
-    private CmsMessages m_messages;
+    
     /** The maximum depth of the sub menus in the head navigation. */
     private int m_menuDepth;
+    
+    /** Stores the localized resource Strings. */
+    private CmsMessages m_messages;
+    
     /** Stores the left navigation include element uri. */
     private String m_navLeftElementUri;
+    
     /** Flag if the left navigation should display only the selected resources. */
     private boolean m_navLeftShowSelected;
+    
     /** Flag if the left navigation tree should be displayed. */
     private boolean m_navLeftShowTree;
+    
     /** Stores the substituted path to the modules resources. */
     private String m_resPath;
+    
     /** Flag that determines if the head navigation 1st row should use images instead of text links. */
     private boolean m_showHeadNavImages;
+    
     /** Flag to determine if the DHTML menus (2nd level) of the head navigation should be shown. */
     private boolean m_showMenus;
+    
     /** Stores the path to the start folder for navigation and search. */
     private String m_startFolder;
-    
+
     /**
      * Empty constructor, required for every JavaBean.<p>
      */
     public CmsTemplateNavigation() {
+
         super();
     }
-    
+
     /**
      * Constructor, with parameters.<p>
      * 
@@ -151,10 +176,11 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @param res the JSP response 
      */
     public CmsTemplateNavigation(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         super();
         init(context, req, res);
     }
-    
+
     /**
      * Returns the html for the bread crumb navigation above the page content.<p>
      * 
@@ -165,6 +191,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @return the html for the bread crumb navigation above the page content
      */
     public String buildNavigationBreadCrumb(String styleClass) {
+
         StringBuffer result = new StringBuffer(512);
         // get start level of the displayed tree
         int startLevel = 1;
@@ -190,9 +217,9 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             String separator = "&gt;";
             result.append("<div class=\"");
             result.append(styleClass);
-            result.append("\">");           
+            result.append("\">");
             List navElements = getNavigation().getNavigationBreadCrumb(startLevel + 3, true);
-            for (int i=0; i<navElements.size(); i++) {
+            for (int i = 0; i < navElements.size(); i++) {
                 CmsJspNavElement nav = (CmsJspNavElement)navElements.get(i);
                 result.append("<a href=\"");
                 result.append(link(nav.getResourceName()));
@@ -205,7 +232,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                 result.append("&nbsp;");
                 result.append(nav.getNavText());
                 result.append("</a>\n");
-            }          
+            }
             if (currentPage.isInNavigation()) {
                 // show current page in navigation list
                 result.append("<a href=\"");
@@ -221,12 +248,11 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                 result.append("</a>\n");
             }
             result.append("</div>");
-            
-            
+
         }
         return result.toString();
     }
-    
+
     /**
      * Returns the html for the head navigation row.<p>
      * 
@@ -239,16 +265,16 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @return the html for the head navigation row
      */
     public String buildNavigationHead(String homeLabel, String styleLink, String styleSeparator) {
-        
+
         boolean firstItem = true;
-        StringBuffer result = new StringBuffer(1024);       
+        StringBuffer result = new StringBuffer(1024);
         result.append("<div class=\"bordermain ");
         result.append(styleLink);
         result.append("\">\n");
         result.append("\t<!-- Start Topnavigation -->\n");
-        
+
         List navElements = getNavigation().getNavigationForFolder(getHeadNavFolder());
-        if (! showHeadNavImages()) {
+        if (!showHeadNavImages()) {
             // create the "home" link at first position
             homeLabel = homeLabel.toUpperCase();
             result.append("<a class=\"");
@@ -265,12 +291,15 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             // create a table to allow vertical alignment of images
             result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         }
-        
+
         int count = -1;
         String showItemProperty;
-        for (int i=0; i<navElements.size(); i++) {
+        for (int i = 0; i < navElements.size(); i++) {
             CmsJspNavElement nav = (CmsJspNavElement)navElements.get(i);
-            showItemProperty = property(C_PROPERTY_HEADNAV_USE, nav.getResourceName(), getHeadNavItemDefaultStringValue());
+            showItemProperty = property(
+                C_PROPERTY_HEADNAV_USE,
+                nav.getResourceName(),
+                getHeadNavItemDefaultStringValue());
             boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
             if (nav.isFolderLink() && showItem) {
                 // create an entry for every folder
@@ -278,7 +307,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                 String navText = CmsEncoder.escapeXml(nav.getNavText().toUpperCase());
                 if (showHeadNavImages()) {
                     // build row with images
-                    if (! firstItem) {
+                    if (!firstItem) {
                         result.append("<td style= \"vertical-align: middle\">");
                         result.append("<span class=\"");
                         result.append(styleSeparator);
@@ -308,10 +337,10 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                     result.append("\" border=\"0\" alt=\"");
                     result.append(navText);
                     result.append("\">");
-                    result.append("</a></td>\n");  
-                } else { 
+                    result.append("</a></td>\n");
+                } else {
                     // build row with text links
-                    if (! firstItem) {
+                    if (!firstItem) {
                         result.append("<span class=\"");
                         result.append(styleSeparator);
                         result.append("\">|</span>\n");
@@ -340,22 +369,22 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                     result.append(link(nav.getResourceName()));
                     result.append("\">");
                     result.append(navText);
-                    result.append("</a>\n");  
+                    result.append("</a>\n");
                 }
                 firstItem = false;
             }
         }
-        
+
         if (showHeadNavImages()) {
             // close table
             result.append("</tr></table>");
         }
-        
+
         result.append("\t<!-- End Topnavigation -->\n");
         result.append("</div>\n");
         return result.toString();
     }
-    
+
     /**
      * Returns the html for the head navigation menus.<p>
      * 
@@ -366,9 +395,9 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @return the html for the head navigation menus
      */
     public String buildNavigationHeadMenus(String styleClass) {
-        
+
         CmsTemplateParts parts = null;
-        boolean cacheNavEnabled = ! getRequestContext().currentProject().isOnlineProject();
+        boolean cacheNavEnabled = !getRequestContext().currentProject().isOnlineProject();
         String cacheKey = null;
         if (cacheNavEnabled) {
             // cache naviagtion in offline project to avoid performance issues
@@ -391,30 +420,33 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                 return cachedNav;
             }
         }
-        
+
         StringBuffer result = new StringBuffer(4096);
-        
+
         if (showMenus()) {
             // only create navigation if the template is configured to show it
             List navElements = getNavigation().getNavigationForFolder(getHeadNavFolder());
-     
+
             int count = -1;
             String showItemProperty;
-            for (int i=0; i<navElements.size(); i++) {
+            for (int i = 0; i < navElements.size(); i++) {
                 CmsJspNavElement foldernav = (CmsJspNavElement)navElements.get(i);
-                showItemProperty = property(C_PROPERTY_HEADNAV_USE, foldernav.getResourceName(), getHeadNavItemDefaultStringValue());
+                showItemProperty = property(
+                    C_PROPERTY_HEADNAV_USE,
+                    foldernav.getResourceName(),
+                    getHeadNavItemDefaultStringValue());
                 boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
                 if (foldernav.isFolderLink() && showItem) {
                     // create a menu entry for every found folder
                     count++;
                     String subfolder = foldernav.getResourceName();
-                    
+
                     // get all navigation elements of the sub folder
                     List subNav = getNavigation().getNavigationForFolder(subfolder);
-                    result.append(getMenuNavigation(subNav, styleClass, "menu" + count, 1));   
+                    result.append(getMenuNavigation(subNav, styleClass, "menu" + count, 1));
                 }
             }
-            
+
             if (cacheNavEnabled) {
                 // cache the generated navigation submenu output
                 parts.setPart(cacheKey, result.toString());
@@ -422,14 +454,178 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         }
         return result.toString();
     }
-    
+
+    /**
+     * Returns the html for the left navigation tree.<p>
+     * 
+     * @return the html for the left navigation tree
+     */
+    public String buildNavigationLeft() {
+
+        StringBuffer result = new StringBuffer(2048);
+        if (showNavLeftTree()) {
+            // create navigation tree
+            result.append("<!-- Start navigation left -->\n");
+            result.append("\t<div style=\"line-height: 1px; font-size: 1px; display: block; height: 4px;\">&nbsp;</div>\n");
+
+            // get start and end level of the displayed tree
+            int startLevel = 1;
+            if (showNavLeftSelected()) {
+                // follow selection in head navigation
+                startLevel = CmsResource.getPathLevel(getHeadNavFolder());
+            } else {
+                // create default navigation
+                startLevel = CmsResource.getPathLevel(getStartFolder());
+            }
+            int endLevel = startLevel + 2;
+
+            // get requested uri
+            String uri = getRequestContext().getUri();
+
+            // get the navigation tree list
+            List navElements = getNavigation().getNavigationTreeForFolder(
+                getRequestContext().getUri(),
+                startLevel,
+                endLevel);
+            int oldLevel = -1;
+            for (int i = 0; i < navElements.size(); i++) {
+                CmsJspNavElement nav = (CmsJspNavElement)navElements.get(i);
+                // flag to determine if nav element is shown
+                boolean showElement = true;
+
+                // get resource name of navelement
+                String resName = nav.getResourceName();
+
+                // compute current level from 1 to 3
+                int level = nav.getNavTreeLevel() - (startLevel - 1);
+
+                // check if current navelement is active
+                String styleClass = "navleft";
+                if (uri.equals(resName) || (nav.isFolderLink() && isDefaultFile(resName, uri))) {
+                    styleClass += "active";
+                }
+
+                // check if current element is shown when left navigation follows head menu
+                if (showNavLeftSelected()) {
+                    if (level <= 1 && !uri.startsWith(resName)) {
+                        // do not show element, does not belong to selected area
+                        showElement = false;
+                    }
+                }
+
+                if (showElement) {
+                    // element is shown
+                    if (oldLevel != -1) {
+                        // manage level transitions
+                        if (level == oldLevel) {
+                            // same level, close only previous list item
+                            result.append("</li>\n");
+                        } else if (level < oldLevel) {
+                            // lower level transition, determine delta
+                            int delta = oldLevel - level;
+                            for (int k = 0; k < delta; k++) {
+                                // close sub list and list item
+                                result.append("</li>\n</ul></li>\n");
+                            }
+                        } else {
+                            // higher level transition, create new sub list
+                            result.append("<ul class=\"navleft\">\n");
+                        }
+                    } else {
+                        // initial list creation
+                        result.append("<ul class=\"navleft\">\n");
+                    }
+
+                    // create the navigation entry
+                    result.append("<li class=\"");
+                    result.append(styleClass);
+                    result.append("\"><a class=\"");
+                    result.append(styleClass);
+                    result.append("\" href=\"");
+                    result.append(link(resName));
+                    result.append("\" title=\"");
+                    result.append(nav.getNavText());
+                    result.append("\">");
+                    result.append(nav.getNavText());
+                    result.append("</a>");
+                    // set old level for next loop
+                    oldLevel = level;
+                }
+            }
+            for (int i = 0; i < oldLevel; i++) {
+                // close the remaining lists
+                result.append("</li></ul>\n");
+            }
+            result.append("<!-- End navigation left -->");
+        }
+        return result.toString();
+    }
+
+    /**
+     * Builds the html for the inclusion of the editable element under the left navigation tree.<p>
+     * 
+     * @throws IOException if writing the output fails
+     * @throws JspException if including the element fails
+     */
+    public void buildNavLeftIncludeElement() throws IOException, JspException {
+
+        JspWriter out = getJspContext().getOut();
+        if (showNavLeftElement()) {
+            out.print("\t<div style=\"line-height: 1px; font-size: 1px; display: block; height: 4px;\">&nbsp;</div>\n");
+            include(getNavLeftElementUri(), "text1", true);
+        } else if (!showNavLeftTree()) {
+            // none of the left navigation elements is shown, add a non breaking space to avoid html display errors
+            out.print("&nbsp;");
+        }
+    }
+
+    /**
+     * Returns the path to the head navigation start folder.<p>
+     * 
+     * @return the path to the head navigation start folder
+     */
+    public String getHeadNavFolder() {
+
+        return m_headNavFolder;
+    }
+
+    /**
+     * Returns if the currently active top level folder should be marked in the head navigation.<p>
+     * 
+     * @return true if the currently active top level folder should be marked in the head navigation, otherwise false
+     */
+    public boolean getHeadNavMarkCurrent() {
+
+        return m_headNavMarkCurrent;
+    }
+
+    /**
+     * Returns if the submenus are expanded on click (true) or mouseover (false).<p>
+     * 
+     * @return true if the submenus are expanded on click, otherwise false
+     */
+    public boolean getHeadNavMenuClick() {
+
+        return m_headNavMenuClick;
+    }
+
+    /**
+     * Returns the currently active locale.<p>
+     * 
+     * @return the locale
+     */
+    public String getLocale() {
+
+        return m_locale;
+    }
+
     /**
      * Returns the maximum depth of the head navigation sub menu structure.<p>
      * 
      * @return the maximum depth of the head navigation sub menu structure
      */
     public int getMenuDepth() {
-        
+
         return m_menuDepth;
     }
 
@@ -444,17 +640,17 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @return the HTML to generate menu entries
      */
     public StringBuffer getMenuNavigation(List curNav, String styleClass, String prefix, int currentDepth) {
-        
+
         StringBuffer result = new StringBuffer(64);
         String showItemProperty;
-        
+
         int navSize = curNav.size();
         if (navSize > 0) {
             // at least one navigation entry present, create menu
             Map subNav = new HashMap();
             boolean entryPresent = false;
             // loop through all nav entries
-            for (int i=0; i<navSize; i++) {
+            for (int i = 0; i < navSize; i++) {
                 CmsJspNavElement ne = (CmsJspNavElement)curNav.get(i);
                 String resName = ne.getResourceName();
                 showItemProperty = property(C_PROPERTY_HEADNAV_USE, resName, getHeadNavItemDefaultStringValue());
@@ -488,220 +684,70 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                         result.append(">");
                         result.append(ne.getNavText());
                         result.append("</a>");
-                    }   
+                    }
                 }
             }
             result.append("</div>\n");
-            
+
             StringBuffer openTag = new StringBuffer(8);
-            if (entryPresent) {                
-                openTag.append("<div class=\""); 
+            if (entryPresent) {
+                openTag.append("<div class=\"");
                 openTag.append(styleClass);
                 openTag.append("\" id=\"");
                 openTag.append(prefix);
                 openTag.append("\" onmouseover=\"menuMouseover(event);\">");
             } else {
-                openTag.append("<div style=\"visibility: hidden;\" id=\""); 
+                openTag.append("<div style=\"visibility: hidden;\" id=\"");
                 openTag.append(prefix);
                 openTag.append("\">");
             }
             result.insert(0, openTag);
-            
+
             // add the sub menus recursively from temporary Map
             Iterator i = subNav.keySet().iterator();
             while (i.hasNext()) {
                 String resName = (String)i.next();
                 List navEntries = (List)subNav.get(resName);
-                result.append(getMenuNavigation(navEntries, styleClass, prefix + "_" + resName.hashCode(), currentDepth + 1));
+                result.append(getMenuNavigation(
+                    navEntries,
+                    styleClass,
+                    prefix + "_" + resName.hashCode(),
+                    currentDepth + 1));
             }
         }
-        return result;    
+        return result;
     }
-    
-    /**
-     * Returns the html for the left navigation tree.<p>
-     * 
-     * @return the html for the left navigation tree
-     */
-    public String buildNavigationLeft() {
-        StringBuffer result = new StringBuffer(2048);
-        if (showNavLeftTree()) {
-            // create navigation tree
-            result.append("<!-- Start navigation left -->\n");
-            result.append("\t<div style=\"line-height: 1px; font-size: 1px; display: block; height: 4px;\">&nbsp;</div>\n");
-        
-            // get start and end level of the displayed tree
-            int startLevel = 1;
-            if (showNavLeftSelected()) {
-                // follow selection in head navigation
-                startLevel = CmsResource.getPathLevel(getHeadNavFolder());
-            } else {
-                // create default navigation
-                startLevel = CmsResource.getPathLevel(getStartFolder());
-            }
-            int endLevel = startLevel + 2;
-            
-            // get requested uri
-            String uri = getRequestContext().getUri();
-            
-            // get the navigation tree list
-            List navElements = getNavigation().getNavigationTreeForFolder(getRequestContext().getUri(), startLevel, endLevel);
-            int oldLevel = -1;
-            for (int i=0; i<navElements.size(); i++) {
-                CmsJspNavElement nav = (CmsJspNavElement)navElements.get(i);
-                // flag to determine if nav element is shown
-                boolean showElement = true;
-                
-                // get resource name of navelement
-                String resName = nav.getResourceName();
-                
-                // compute current level from 1 to 3
-                int level = nav.getNavTreeLevel() - (startLevel - 1);            
-                
-                // check if current navelement is active
-                String styleClass = "navleft";
-                if (uri.equals(resName) || (nav.isFolderLink() && isDefaultFile(resName, uri))) {
-                    styleClass += "active";
-                }
-                
-                // check if current element is shown when left navigation follows head menu
-                if (showNavLeftSelected()) {
-                    if (level <= 1 && ! uri.startsWith(resName)) {
-                        // do not show element, does not belong to selected area
-                        showElement = false;
-                    }
-                } 
-                
-                if (showElement) {
-                    // element is shown
-                    if (oldLevel != -1) {
-                        // manage level transitions
-                        if (level == oldLevel) {
-                            // same level, close only previous list item
-                            result.append("</li>\n");
-                        } else if (level < oldLevel) {
-                            // lower level transition, determine delta
-                            int delta = oldLevel - level;
-                            for (int k=0; k<delta; k++) {
-                                // close sub list and list item
-                                result.append("</li>\n</ul></li>\n");
-                            }
-                        } else {
-                            // higher level transition, create new sub list
-                            result.append("<ul class=\"navleft\">\n");
-                        }
-                    } else {
-                        // initial list creation
-                        result.append("<ul class=\"navleft\">\n");    
-                    }         
-                    
-                    // create the navigation entry
-                    result.append("<li class=\"");
-                    result.append(styleClass);
-                    result.append("\"><a class=\"");
-                    result.append(styleClass);
-                    result.append("\" href=\"");
-                    result.append(link(resName));
-                    result.append("\" title=\"");
-                    result.append(nav.getNavText());
-                    result.append("\">");
-                    result.append(nav.getNavText());
-                    result.append("</a>");
-                    // set old level for next loop
-                    oldLevel = level;
-                }
-            }
-            for (int i=0; i<oldLevel; i++) {
-                // close the remaining lists
-                result.append("</li></ul>\n");
-            }       
-            result.append("<!-- End navigation left -->");
-        }
-        return result.toString();
-    }
-    
-    /**
-     * Builds the html for the inclusion of the editable element under the left navigation tree.<p>
-     * 
-     * @throws IOException if writing the output fails
-     * @throws JspException if including the element fails
-     */
-    public void buildNavLeftIncludeElement() throws IOException, JspException {
-        JspWriter out = getJspContext().getOut();
-        if (showNavLeftElement()) {
-            out.print("\t<div style=\"line-height: 1px; font-size: 1px; display: block; height: 4px;\">&nbsp;</div>\n");
-            include(getNavLeftElementUri(), "text1", true);    
-        } else if (!showNavLeftTree()) {
-            // none of the left navigation elements is shown, add a non breaking space to avoid html display errors
-            out.print("&nbsp;");    
-        }
-    }
-    
-    /**
-     * Returns if the currently active top level folder should be marked in the head navigation.<p>
-     * 
-     * @return true if the currently active top level folder should be marked in the head navigation, otherwise false
-     */
-    public boolean getHeadNavMarkCurrent() {
-        
-        return m_headNavMarkCurrent;
-    }
-    
-    /**
-     * Returns if the submenus are expanded on click (true) or mouseover (false).<p>
-     * 
-     * @return true if the submenus are expanded on click, otherwise false
-     */
-    public boolean getHeadNavMenuClick() {
-        
-        return m_headNavMenuClick;
-    }
-    
-    /**
-     * Returns the path to the head navigation start folder.<p>
-     * 
-     * @return the path to the head navigation start folder
-     */
-    public String getHeadNavFolder() {
-        return m_headNavFolder;    
-    }
-    
-    /**
-     * Returns the currently active locale.<p>
-     * 
-     * @return the locale
-     */
-    public String getLocale() {
-        return m_locale;    
-    }
-    
+
     /**
      * Returns the URI of the page element to include on the left navigation.<p>
      * 
      * @return the URI of the page element to include on the left navigation
      */
     public String getNavLeftElementUri() {
-        return m_navLeftElementUri;    
+
+        return m_navLeftElementUri;
     }
-    
+
     /**
      * Returns the substituted path to the modules resource folder.<p>
      * 
      * @return the substituted path to the modules resource folder
      */
     public String getResourcePath() {
+
         return m_resPath;
     }
-    
+
     /**
      * Returns the start folder for navigation and search results.<p>
      * 
      * @return the start folder for navigation and search results
      */
     public String getStartFolder() {
+
         return m_startFolder;
     }
-    
+
     /**
      * Initialize this bean with the current page context, request and response.<p>
      * 
@@ -713,12 +759,13 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @param res the JSP response 
      */
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         // call initialization of super class
         super.init(context, req, res);
         // initialize members from request
         m_locale = req.getParameter(C_PARAM_LOCALE);
         if (m_locale == null) {
-            m_locale = property(I_CmsConstants.C_PROPERTY_LOCALE, "search", "en").toLowerCase();    
+            m_locale = property(I_CmsConstants.C_PROPERTY_LOCALE, "search", "en").toLowerCase();
         }
         m_headNavFolder = req.getParameter(C_PARAM_HEADNAV_FOLDER);
         m_showHeadNavImages = Boolean.valueOf(req.getParameter(C_PARAM_HEADNAV_IMAGES)).booleanValue();
@@ -733,7 +780,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         m_startFolder = req.getParameter(C_PARAM_STARTFOLDER);
         m_showMenus = Boolean.valueOf(req.getParameter(C_PARAM_SHOWMENUS)).booleanValue();
     }
-    
+
     /**
      * Gets the localized resource string for a given message key.<p>
      * 
@@ -745,87 +792,93 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @return the resource string for the given key 
      */
     public String key(String keyName) {
-        return messages().key(keyName);    
+
+        return messages().key(keyName);
     }
-    
+
     /**
      * Returns the initialized CmsMessages object to use on the JSP template.<p>
      * 
      * @return the initialized CmsMessages object
      */
     public CmsMessages messages() {
+
         if (m_messages == null) {
-            m_messages = getMessages(CmsTemplateBean.C_MESSAGE_BUNDLE, getLocale());    
+            m_messages = getMessages(CmsTemplateBean.C_MESSAGE_BUNDLE, getLocale());
         }
-        return m_messages;    
+        return m_messages;
     }
-    
+
     /**
      * Sets the default value of the property <code>style_head_nav_showitem</code> in case the property is not set.<p>
      * 
      * @param defaultValue if true, all resources without property value are included in head menu, if false, vice versa
      */
     public void setHeadNavItemDefaultValue(boolean defaultValue) {
-        
+
         m_headNavItemDefaultValue = defaultValue;
     }
-    
+
     /**
      * Returns if the head navigation should use images for the 1st navigation level.<p>
      * 
      * @return true if the head navigation should use images for the 1st navigation level, otherwise false
      */
     public boolean showHeadNavImages() {
-        
+
         return m_showHeadNavImages;
     }
-    
+
     /**
      * Returns if the second level navigation menus of the head navigation should be shown.<p>
      * 
      * @return true if the second level navigation menus of the head navigation should be shown
      */
     public boolean showMenus() {
+
         return m_showMenus;
     }
-    
+
     /**
      * Returns true if the left navigation include element should be shown.<p>
      * 
      * @return true if the left navigation include element should be shown
      */
     public boolean showNavLeftElement() {
-        return (getNavLeftElementUri() != null && !"none".equals(getNavLeftElementUri()));    
+
+        return (getNavLeftElementUri() != null && !CmsTemplateBean.C_PROPERTY_VALUE_NONE.equals(getNavLeftElementUri()));
     }
-    
+
     /**
      * Returns true if the left navigation follows the selection in the head navigation menu.<p>
      * 
      * @return true if the left navigation follows the selection in the head navigation menu
      */
     public boolean showNavLeftSelected() {
-        return m_navLeftShowSelected;    
+
+        return m_navLeftShowSelected;
     }
-    
+
     /**
      * Returns true if the left navigation tree should be displayed.<p>
      * 
      * @return true if the left navigation tree should be displayed
      */
     public boolean showNavLeftTree() {
-        return m_navLeftShowTree;  
+
+        return m_navLeftShowTree;
     }
-    
+
     /**
      * Returns the String representation of the default value for the property <code>style_head_nav_showitem</code>.<p>
      * 
      * @return the String representation of the default value for the property <code>style_head_nav_showitem</code>
      */
     private String getHeadNavItemDefaultStringValue() {
-    
+
         return "" + m_headNavItemDefaultValue;
     }
-    
+
     /**
      * Checks if a list of navigation entries contains at least one element which is shown in the head navigation.<p>
      * 
@@ -833,17 +886,20 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @return true if at least one element of the list should be shown in the head navigation
      */
     private boolean hasSubMenuEntries(List navEntries) {
-        
-        for (int i=navEntries.size() - 1; i>=0; i--) {
+
+        for (int i = navEntries.size() - 1; i >= 0; i--) {
             CmsJspNavElement nav = (CmsJspNavElement)navEntries.get(i);
-            String showItemProperty = property(C_PROPERTY_HEADNAV_USE, nav.getResourceName(), getHeadNavItemDefaultStringValue());
+            String showItemProperty = property(
+                C_PROPERTY_HEADNAV_USE,
+                nav.getResourceName(),
+                getHeadNavItemDefaultStringValue());
             if (Boolean.valueOf(showItemProperty).booleanValue()) {
                 return true;
             }
         }
         return false;
     }
-    
+
     /**
      * Determines if the current folder link in the left navigation is the same as the requested uri.<p>
      * 
@@ -854,16 +910,20 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @return true if the folder link is the same as the requested uri, otherwise false
      */
     private boolean isDefaultFile(String navPath, String fileUri) {
+
         String folderName = CmsResource.getFolderPath(fileUri);
         if (navPath.equals(folderName)) {
             String fileName = CmsResource.getName(fileUri);
             try {
                 // check if the "default-file" property was used on the folder
-                String defaultFileName = getCmsObject().readPropertyObject(folderName, I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false).getValue();
+                String defaultFileName = getCmsObject().readPropertyObject(
+                    folderName,
+                    I_CmsConstants.C_PROPERTY_DEFAULT_FILE,
+                    false).getValue();
                 if (defaultFileName != null && fileName.equals(defaultFileName)) {
                     // property was set and the requested file name matches the default file name
-                    return true;    
-                } 
+                    return true;
+                }
             } catch (CmsException e) {
                 // ignore exception, reading property failed
             }
@@ -871,14 +931,14 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             for (int i = 0; i < defaultFileNames.size(); i++) {
                 String currFileName = (String)defaultFileNames.get(i);
                 if (fileName.equals(currFileName)) {
-                    return true;    
+                    return true;
                 }
             }
-            
+
         }
-        
+
         // current uri does not match
         return false;
     }
-    
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/02/21 18:05:39 $
- * Version: $Revision: 1.607 $
+ * Date   : $Date: 2005/02/26 13:53:43 $
+ * Version: $Revision: 1.608 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,12 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March xx, 2005
+* Fixed SQL statement compatibility issue with MySQL 3.2.x
+* Fixed issues with Oracle 8.1.7
+! XML content editor now jumps to the last scroll position after element adding/removal
+- Optimized resource bundle / locale handling in the Workplace
 
 OpenCms 5.7.1 Corrin (aka 6.0 beta 1) - February 21, 2005
 ! Static export "file scrubbing" can now be customized implementing I_CmsStaticExportHandler

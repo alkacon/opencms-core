@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2005/02/26 13:53:31 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -616,7 +616,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     }
     
     /**
-     * Parses the JSP content for the special <code>&lt;%cms file="???" %&gt;</code> tag.<p>
+     * Parses the JSP content for the special <code>&lt;%cms file="..." %&gt;</code> tag.<p>
      * 
      * @param content the JSP content to parse
      * @param controller the current JSP controller
@@ -711,7 +711,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     }
     
     /**
-     * Parses the JSP content for the  <code>&lt;%page pageEncoding="???" %&gt;</code> tag
+     * Parses the JSP content for the  <code>&lt;%page pageEncoding="..." %&gt;</code> tag
      * and ensures that the JSP page encoding is set according to the OpenCms 
      * "content-encoding" property value of the JSP.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/02/26 13:53:32 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1
  */
@@ -221,12 +221,19 @@ public class CmsWorkplaceMessages {
     }
     
     /**
-     * Returns the language value of the requested label key.<p>
-     *
+     * Returns the localized resource string for a given message key,
+     * checking the workplace default resources and all module bundles.<p>
+     * 
+     * If the key was not found, <code>null</code> is returned.<p>
+     * 
      * @param keyName the key for the desired string 
      * @return the resource string for the given key 
      */
-    public String key(String keyName) {       
+    private String resolveKey(String keyName) {
+
+        int todo = 0;
+        // TODO: add a cache to avoid multiple iteration of module messages 
+        
         if (DEBUG > 2) {
             System.err.println("CmsWorkplaceMessages.key(): looking for " + keyName);
         }
@@ -258,6 +265,32 @@ public class CmsWorkplaceMessages {
         if (DEBUG > 1) {
             System.err.println("CmsWorkplaceMessages.key(): '" + keyName + "' also not found in module messages (this is not good)");
         }
+
+        // key was not found in "regular" bundle as well as module messages
+        return null;
+    }
+    
+    /**
+     * Returns the localized resource string for a given message key,
+     * checking the workplace default resources and all module bundles.<p>
+     * 
+     * If the key was not found, the return value is
+     * <code>"??? " + keyName + " ???"</code>.<p>
+     * 
+     * If the key starts with <code>"help."</code> and is not found,
+     * the value <code>"index.html"</code> is returned.<p>
+     * 
+     * @param keyName the key for the desired string 
+     * @return the resource string for the given key 
+     */
+    public String key(String keyName) {       
+        
+        String result = resolveKey(keyName);
+        if (result != null) {
+            // key was found in workplace bundle or module bundles
+            return result;
+        }
+        
         if (keyName.startsWith("help.")) {
             // online help might not have been installed or missing help key, return default page
             return "index.html";
@@ -271,5 +304,27 @@ public class CmsWorkplaceMessages {
             OpenCms.getLog(this).warn("Missing value for locale key: " + keyName);
         }        
         return CmsMessages.formatUnknownKey(keyName); 
+    }
+    
+    /**
+     * Returns the localized resource string for the given message key, 
+     * checking the workplace default resources and all module bundles.<p>
+     * 
+     * If the key was not found, the provided default value 
+     * is returned.<p>
+     * 
+     * @param keyName the key for the desired string 
+     * @param defaultValue the default value in case the key does not exist in the bundle
+     * @return the resource string for the given key it it exists, or the given default if not 
+     */    
+    public String key(String keyName, String defaultValue) {
+        
+        String result = resolveKey(keyName);
+        if (result != null) {
+            // key was found in workplace bundle or module bundles
+            return result;
+        } 
+        
+        return defaultValue;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/02/18 16:48:25 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2005/02/26 13:53:32 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.103 $
+ * @version $Revision: 1.104 $
  * 
  * @since 5.1
  */
@@ -389,7 +389,7 @@ public abstract class CmsWorkplace {
         settings.setProject(cms.getRequestContext().currentProject().getId());
 
         // initialize messages and also store them in settings
-        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(settings.getUserSettings().getLocale());
+        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(settings.getUserSettings().getLocale());
         settings.setMessages(messages);
 
         // switch to users preferred site      
@@ -1313,16 +1313,43 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Get a localized key value for the workplace.<p>
+     * Returns the localized resource string for a given message key,
+     * checking the workplace default resources and all module bundles.<p>
      * 
-     * @param keyName name of the key
-     * @return a localized key value
+     * If the key was not found, the return value is
+     * <code>"??? " + keyName + " ???"</code>.<p>
+     * 
+     * If the key starts with <code>"help."</code> and is not found,
+     * the value <code>"index.html"</code> is returned.<p>
+     * 
+     * @param keyName the key for the desired string 
+     * @return the resource string for the given key 
+     * 
+     * @see CmsWorkplaceMessages#key(String)
      */
     public String key(String keyName) {
 
         return m_settings.getMessages().key(keyName);
     }
-
+    
+    /**
+     * Returns the localized resource string for the given message key, 
+     * checking the workplace default resources and all module bundles.<p>
+     * 
+     * If the key was not found, the provided default value 
+     * is returned.<p>
+     * 
+     * @param keyName the key for the desired string 
+     * @param defaultValue the default value in case the key does not exist in the bundle
+     * @return the resource string for the given key it it exists, or the given default if not 
+     * 
+     * @see CmsWorkplaceMessages#key(String, String)
+     */  
+    public String key(String keyName, String defaultValue) {
+        
+        return m_settings.getMessages().key(keyName, defaultValue);
+    }
+    
     /**
      * Returns the empty String "" if the provided value is null, otherwise just returns 
      * the provided value.<p>
@@ -1530,9 +1557,9 @@ public abstract class CmsWorkplace {
      */
     public String shortKey(String keyName) {
 
-        String value = key(keyName + CmsMessages.C_KEY_SHORT_SUFFIX);
-        if (value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
-            // short key value not found, return default key value
+        String value = key(keyName + CmsMessages.C_KEY_SHORT_SUFFIX, null);
+        if (value == null) {
+            // short key value not found, return "long" key value
             return key(keyName);
         }
         return value;

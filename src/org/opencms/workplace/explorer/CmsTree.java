@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/02/26 13:53:31 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -126,7 +126,7 @@ public class CmsTree extends CmsWorkplace {
         // get the localized workplace messages
         // TODO: Why a new message object, can it not be obtained from session?
         Locale locale = cms.getRequestContext().getLocale();
-        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(locale);
+        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
         
         retValue.append("function initTreeResources() {\n");
         retValue.append("\tinitResources(\"");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsDefaultToolHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/02/26 13:53:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
@@ -64,7 +65,7 @@ import java.util.Map;
  * one icon path it should be a big one, which will be scaled to be used in the menu.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0
  */
 public class CmsDefaultToolHandler extends A_CmsToolHandler {
@@ -85,7 +86,7 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
         CmsJspNavElement navElem = CmsJspNavBuilder.getNavigationForResource(cms, resourcePath);
 
         String name = navElem.getNavText();
-        if (CmsStringUtil.isEmpty(name) || name.equals("??? NavText ???")) {
+        if (CmsMessages.isUnknownKey(name)) {
             name = navElem.getTitle();
         }
         if (CmsStringUtil.isEmpty(name)) {

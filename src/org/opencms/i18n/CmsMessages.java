@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/02/26 13:53:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.i18n;
 
 import org.opencms.util.CmsDateUtil;
@@ -49,35 +49,36 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.0 beta 2
  */
-public class CmsMessages extends Object {  
-        
-    /** Prefix / Suffix for unknown keys. */
-    public static final String C_UNKNOWN_KEY_EXTENSION = "???";
-    
+public class CmsMessages {
+
     /** The suffix of a "short" localized key name. */
     public static final String C_KEY_SHORT_SUFFIX = ".short";
-    
+
+    /** Prefix / Suffix for unknown keys. */
+    public static final String C_UNKNOWN_KEY_EXTENSION = "???";
+
     /** Full date / time format (this is more complete then LONG). */
     public static final int FULL = DateFormat.FULL;
-    
+
     /** Long date / time format. */
     public static final int LONG = DateFormat.LONG;
-    
+
     /** Medium date / time format. */
     public static final int MEDIUM = DateFormat.MEDIUM;
-    
+
     /** Short date / time format. */
     public static final int SHORT = DateFormat.SHORT;
-    
-    
-    // member variables
-    private ResourceBundle m_bundle; 
-    private Locale m_locale;    
-       
+
+    /** The resource bundle this message object was initialized with. */
+    private ResourceBundle m_bundle;
+
+    /** The locale to use for looking up the messages from the bundle. */
+    private Locale m_locale;
+
     /**
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
      * 
@@ -85,14 +86,15 @@ public class CmsMessages extends Object {
      * @param locale the m_locale to use, eg. "de", "en" etc.
      */
     public CmsMessages(String baseName, Locale locale) {
+
         try {
             m_locale = locale;
-            m_bundle = ResourceBundle.getBundle(baseName, m_locale);        
+            m_bundle = ResourceBundle.getBundle(baseName, m_locale);
         } catch (MissingResourceException e) {
             m_bundle = null;
         }
-    }  
-    
+    }
+
     /**
      * Constructor for the messages with a language string.<p>
      * 
@@ -105,7 +107,8 @@ public class CmsMessages extends Object {
      * @param language ISO language indentificator for the m_locale of the bundle
      */
     public CmsMessages(String baseName, String language) {
-        this(baseName, language, "", "");      
+
+        this(baseName, language, "", "");
     }
 
     /**
@@ -122,9 +125,10 @@ public class CmsMessages extends Object {
      * @param country ISO 2 letter country code for the m_locale of the bundle 
      */
     public CmsMessages(String baseName, String language, String country) {
-        this(baseName, language, country, "");              
+
+        this(baseName, language, country, "");
     }
-    
+
     /**
      * Constructor for the messages with language, country code and variant strings.<p>
      * 
@@ -139,27 +143,47 @@ public class CmsMessages extends Object {
      * @param language language indentificator for the m_locale of the bundle
      * @param country 2 letter country code for the m_locale of the bundle 
      * @param variant a vendor or browser-specific variant code
-     */    
+     */
     public CmsMessages(String baseName, String language, String country, String variant) {
+
         this(baseName, new Locale(language, country, variant));
     }
-    
+
     /**
      * Formats an unknown key.<p>
      * 
      * @param keyName the key to format
      * @return the formatted unknown key
+     * 
+     * @see #isUnknownKey(String)
      */
     public static String formatUnknownKey(String keyName) {
+
         StringBuffer buf = new StringBuffer(64);
         buf.append(C_UNKNOWN_KEY_EXTENSION);
         buf.append(" ");
         buf.append(keyName);
         buf.append(" ");
         buf.append(C_UNKNOWN_KEY_EXTENSION);
-        return buf.toString();        
+        return buf.toString();
     }
-    
+
+    /**
+     * Returns <code>true</code> if the provided value matches the scheme 
+     * <code>"??? " + keyName + " ???"</code>, that is the value appears to be an unknown key.<p>
+     * 
+     * Also returns <code>true</code> if the given value is <code>null</code>.<p>
+     * 
+     * @param value the value to check
+     * @return true if the value is matches the scheme for unknown keys
+     * 
+     * @see #formatUnknownKey(String)
+     */
+    public static boolean isUnknownKey(String value) {
+
+        return (value == null) || (value.startsWith(C_UNKNOWN_KEY_EXTENSION));
+    }
+
     /**
      * Returns a formated date String from a Date value,
      * the format being {@link CmsMessages#SHORT} and the locale
@@ -167,11 +191,12 @@ public class CmsMessages extends Object {
      * 
      * @param date the Date object to format as String
      * @return the formatted date 
-     */  
+     */
     public String getDate(Date date) {
+
         return CmsDateUtil.getDate(date, SHORT, m_locale);
     }
-    
+
     /**
      * Returns a formated date String from a Date value,
      * the formatting based on the provided option and the locale
@@ -180,9 +205,10 @@ public class CmsMessages extends Object {
      * @param date the Date object to format as String
      * @param format the format to use, see {@link CmsMessages} for possible values
      * @return the formatted date 
-     */      
+     */
     public String getDate(Date date, int format) {
-        return CmsDateUtil.getDate(date, format, m_locale);        
+
+        return CmsDateUtil.getDate(date, format, m_locale);
     }
 
     /**
@@ -192,11 +218,12 @@ public class CmsMessages extends Object {
      * 
      * @param time the time value to format as date
      * @return the formatted date 
-     */  
+     */
     public String getDate(long time) {
-        return CmsDateUtil.getDate(new Date(time), SHORT, m_locale);        
+
+        return CmsDateUtil.getDate(new Date(time), SHORT, m_locale);
     }
-    
+
     /**
      * Returns a formated date and time String from a Date value,
      * the format being {@link CmsMessages#SHORT} and the locale
@@ -204,11 +231,12 @@ public class CmsMessages extends Object {
      * 
      * @param date the Date object to format as String
      * @return the formatted date and time
-     */   
+     */
     public String getDateTime(Date date) {
+
         return CmsDateUtil.getDateTime(date, SHORT, m_locale);
     }
-    
+
     /**
      * Returns a formated date and time String from a Date value,
      * the formatting based on the provided option and the locale
@@ -217,11 +245,12 @@ public class CmsMessages extends Object {
      * @param date the Date object to format as String
      * @param format the format to use, see {@link CmsMessages} for possible values
      * @return the formatted date and time
-     */      
+     */
     public String getDateTime(Date date, int format) {
+
         return CmsDateUtil.getDateTime(date, format, m_locale);
-    }    
-    
+    }
+
     /**
      * Returns a formated date and time String from a timestamp value,
      * the format being {@link CmsMessages#SHORT} and the locale
@@ -229,11 +258,12 @@ public class CmsMessages extends Object {
      * 
      * @param time the time value to format as date
      * @return the formatted date and time
-     */  
+     */
     public String getDateTime(long time) {
-        return CmsDateUtil.getDateTime(new Date(time), SHORT, m_locale);        
+
+        return CmsDateUtil.getDateTime(new Date(time), SHORT, m_locale);
     }
-    
+
     /**
      * Directly calls the getString(String) method of the wrapped ResourceBundle.<p>
      * 
@@ -245,25 +275,27 @@ public class CmsMessages extends Object {
      * @return the resource string for the given key
      * @throws MissingResourceException in case the key is not found of the bundle is not initialized
      */
-    public String getString(String keyName) throws MissingResourceException {              
+    public String getString(String keyName) throws MissingResourceException {
+
         if (m_bundle != null) {
             return m_bundle.getString(keyName);
         } else {
             throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
         }
-    }       
-            
+    }
+
     /**
      * Checks if the bundle was properly initialized.
      * 
      * @return <code>true</code> if bundle was initialized, <code>false</code> otherwise
      */
     public boolean isInitialized() {
+
         return (m_bundle != null);
     }
-        
+
     /**
-     * Gets the localized resource string for a given message key.<p>
+     * Returns the localized resource string for a given message key.<p>
      * 
      * If the key was not found in the bundle, the return value is
      * <code>"??? " + keyName + " ???"</code>. This will also be returned 
@@ -272,12 +304,13 @@ public class CmsMessages extends Object {
      * @param keyName the key for the desired string 
      * @return the resource string for the given key 
      */
-    public String key(String keyName) {   
+    public String key(String keyName) {
+
         return key(keyName, false);
-    }    
+    }
 
     /**
-     * Gets the localized resource string for a given message key.<p>
+     * Returns the localized resource string for a given message key.<p>
      * 
      * If the key was not found in the bundle, the return value 
      * depends on the setting of the allowNull parameter. If set to false,
@@ -291,8 +324,9 @@ public class CmsMessages extends Object {
      * @param allowNull if true, 'null' is an allowed return value
      * @return the resource string for the given key 
      */
-    public String key(String keyName, boolean allowNull) {   
-        try {            
+    public String key(String keyName, boolean allowNull) {
+
+        try {
             if (m_bundle != null) {
                 return m_bundle.getString(keyName);
             }
@@ -303,5 +337,21 @@ public class CmsMessages extends Object {
             }
         }
         return formatUnknownKey(keyName);
+    }
+
+    /**
+     * Returns the localized resource string for a given message key.<p>
+     * 
+     * If the key was not found in the bundle, the provided default value 
+     * is returned.<p>
+     * 
+     * @param keyName the key for the desired string 
+     * @param defaultValue the default value in case the key does not exist in the bundle
+     * @return the resource string for the given key it it exists, or the given default if not 
+     */
+    public String key(String keyName, String defaultValue) {
+
+        String result = key(keyName, true);
+        return (result == null) ? defaultValue : result;
     }
 }

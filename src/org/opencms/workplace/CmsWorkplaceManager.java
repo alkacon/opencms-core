@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/02/26 13:53:32 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 5.3.1
  */
@@ -161,6 +161,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
     /** The configured workplace views. */
     private List m_views;
+    
+    /** The workplace localized messages (mapped to the locales). */
+    private Map m_messages;
 
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -187,6 +190,39 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_defaultUserSettings = new CmsDefaultUserSettings();
         m_defaultAccess = new CmsExplorerTypeAccess();
         m_galleries = new HashMap();
+        m_messages = new HashMap();
+    }
+    
+    /**
+     * Returns the workplace messages for the given locale.<p>
+     * 
+     * The workplace messages are a collection of resource bundles, one for the basic
+     * workplace, and (optionally) one for each initialized module.<p>
+     * 
+     * If possible in a workplace class, the method <code>{@link CmsWorkplaceSettings#getMessages()}</code> should be 
+     * used, since this gives a better performance. All classes that inherit from <code>{@link CmsWorkplace}</code> should use 
+     * <code>{@link CmsWorkplace#getSettings()}</code> to obtain a settings object.<p>
+     * 
+     * @param locale the locale to get the messages for
+     * @return the workplace messages for the given locale
+     * 
+     * @see CmsWorkplaceSettings#getMessages()
+     * @see CmsWorkplace#getSettings()
+     */
+    public CmsWorkplaceMessages getMessages(Locale locale) {
+
+        CmsWorkplaceMessages result = (CmsWorkplaceMessages)m_messages.get(locale);
+        if (result != null) {
+            // messages have already been read
+            return result;
+        }
+
+        // massages have not been read so far
+        synchronized (this) {
+            result = new CmsWorkplaceMessages(locale);
+            m_messages.put(locale, result);
+        }
+        return result;
     }
 
     /**

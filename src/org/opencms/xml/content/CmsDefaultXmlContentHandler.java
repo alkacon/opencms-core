@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/02/26 13:53:31 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -718,6 +718,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * @param locale the locale to get the key from
      * 
      * @return the resource string for the given key 
+     * 
+     * @see CmsMessages#formatUnknownKey(String)
+     * @see CmsMessages#isUnknownKey(String)
      */
     protected String key(String keyName, Locale locale) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLabel.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/02/26 13:53:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagLabel extends BodyTagSupport {
             
@@ -93,7 +93,7 @@ public class CmsJspTagLabel extends BodyTagSupport {
     public static String wpLabelTagAction(String label, ServletRequest req) {
 
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(controller.getCmsObject().getRequestContext().getLocale());
+        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(controller.getCmsObject().getRequestContext().getLocale());
         return messages.key(label);                    
     }
 

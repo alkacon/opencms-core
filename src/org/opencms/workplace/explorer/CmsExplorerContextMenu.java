@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/02/26 13:53:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Locale;
  * in the OpenCms configuration.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
@@ -117,7 +117,7 @@ public class CmsExplorerContextMenu {
         // try to get the stored entries from the Map
         String entries = (String)m_generatedScripts.get(locale);
         if (entries == null) { 
-            CmsWorkplaceMessages messages = new CmsWorkplaceMessages(locale);
+            CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
             // entries not yet in Map, so generate them
             StringBuffer result = new StringBuffer(3072);
             String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplace.C_PATH_WORKPLACE);  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/02/26 13:53:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.2
  */
 public interface I_CmsWidgetDialog {
@@ -146,11 +146,31 @@ public interface I_CmsWidgetDialog {
     CmsWorkplaceSettings getSettings();
     
     /**
-     * Get a localized key value for the workplace.<p>
+     * Returns the localized resource string for a given message key,
+     * checking the workplace default resources and all module bundles.<p>
      * 
-     * @param keyName name of the key
-     * @return a localized key value
+     * If the key was not found, the return value is
+     * <code>"??? " + keyName + " ???"</code>.<p>
+     * 
+     * @param keyName the key for the desired string 
+     * @return the resource string for the given key 
+     * 
+     * @see org.opencms.workplace.CmsWorkplaceMessages#key(String)
      */
     String key(String keyName);
     
+    /**
+     * Returns the localized resource string for the given message key, 
+     * checking the workplace default resources and all module bundles.<p>
+     * 
+     * If the key was not found, the provided default value 
+     * is returned.<p>
+     * 
+     * @param keyName the key for the desired string 
+     * @param defaultValue the default value in case the key does not exist in the bundle
+     * @return the resource string for the given key it it exists, or the given default if not 
+     * 
+     * @see org.opencms.workplace.CmsWorkplaceMessages#key(String, String)
+     */      
+    String key(String keyName, String defaultValue);    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/02/26 13:53:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.I_CmsConstants;
 
 import java.util.Map;
@@ -40,7 +41,7 @@ import java.util.Map;
  * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -281,7 +282,7 @@ public class CmsJspNavElement implements Comparable {
             // use "lazy initialiting"
             m_text = (String)m_properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT);
             if (m_text == null) {
-                m_text = "??? " + I_CmsConstants.C_PROPERTY_NAVTEXT + " ???";
+                m_text = CmsMessages.formatUnknownKey(I_CmsConstants.C_PROPERTY_NAVTEXT);
             }
         }
         return m_text;
