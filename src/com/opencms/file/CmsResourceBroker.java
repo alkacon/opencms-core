@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2000/01/24 09:42:48 $
+ * @version $Revision: 1.31 $ $Date: 2000/01/24 12:20:04 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -2532,6 +2532,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// check the access to the project
 		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
 			// no access to the project!
+			System.out.println("rb.accessRead().accessProject() failed");
 			return(false);
 		}
 		
@@ -2690,6 +2691,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
 		}
 		// the resource isn't accesible by the user.
+		System.out.println("rb.accessOwner() failed " + resource.getAbsolutePath());
 		return(false);
 	}
 
@@ -2717,6 +2719,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		// the resource isn't accesible by the user.
 
+		System.out.println("rb.accessGroup() failed "+ resource.getAbsolutePath());
 		return(false);
 
 	}
@@ -2738,6 +2741,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( (resource.getAccessFlags() & flags) == flags ) {
 			return( true );
 		} else {
+			System.out.println("rb.accessOther() failed " + resource.getAbsolutePath());
 			return( false );
 		}
 		
