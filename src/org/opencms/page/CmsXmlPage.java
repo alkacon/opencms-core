@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/05/03 07:23:53 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/05/03 11:47:39 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public class CmsXmlPage {
     
@@ -627,7 +627,7 @@ public class CmsXmlPage {
             validator.validate(m_document);                        
         } catch (SAXException e) {
             // there was an validation error, so throw an exception
-            throw new CmsXmlPageException("XML validation error " + e.getMessage(), CmsException.C_XML_CORRUPT_INTERNAL_STRUCTURE);
+            throw new CmsXmlPageException("XML validation error " + e.getMessage());
         } finally {
            // clean up some memory
            validator = null;

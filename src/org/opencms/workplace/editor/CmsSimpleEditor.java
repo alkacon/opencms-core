@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/05/03 07:26:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/05/03 11:47:39 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsFile;
-
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.page.CmsXmlPageException;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1.12
  */
@@ -189,10 +189,16 @@ public class CmsSimpleEditor extends CmsEditor {
                 decodedContent = new String(writtenFile.getContents());
             }
             setParamContent(encodeContent(decodedContent));            
+        } catch (CmsXmlPageException e) {
+            // reset the action parameter            
+            setParamAction("");                               
+            showErrorPage(this, e, "xml", C_PATH_EDITORS + "dialogs/confirm.html");
+            // save not successful, set cancel action 
+            setAction(ACTION_CANCEL);
+            return;
         } catch (CmsException e) {
             // reset the action parameter            
-            setParamAction("");
-            // show confirm dialog
+            setParamAction("");                               
             showErrorPage(this, e, "save", C_PATH_EDITORS + "dialogs/confirm.html");
             // save not successful, set cancel action 
             setAction(ACTION_CANCEL);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/05/03 07:26:51 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/05/03 11:47:39 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1.12
  */
@@ -554,6 +554,7 @@ public abstract class CmsEditor extends CmsDialog {
         } else {
             setParamErrorstack(null);
         }
+
         setParamTitle(key("error.title.editor" + key));
         setParamMessage(key("error.message.editor" + key));
         String reasonSuggestion = key("error.reason.editor" + key) + "<br>\n" + key("error.suggestion.editor" + key) + "\n";
