@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2003/09/19 15:33:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/09/22 10:57:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,6 @@
  
 package org.opencms.main;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -48,15 +45,12 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsLog implements Log {
 
     /** Initialization messages */
     public static final String CHANNEL_INIT = "org.opencms.init";    
-
-    /** Map that contains the different loggers */
-    private Map m_loggers;
     
     /** The path to the loggers configuration file */
     private String m_configFile;
@@ -74,7 +68,7 @@ public class CmsLog implements Log {
      * @return true if the log already has been initialitzed
      */
     protected boolean isInitialized() {
-        return (m_loggers != null) && (m_configFile != null); 
+        return (m_configFile != null); 
     }
     
     /**
@@ -85,7 +79,6 @@ public class CmsLog implements Log {
      */    
     protected void init(Configurations configuration, String configFile) {
         m_configFile = configFile;
-        m_loggers = new HashMap();
         // clean up previously initialized loggers
         LogFactory.releaseAll();
         try {
@@ -122,20 +115,11 @@ public class CmsLog implements Log {
      * @return the log for the selected object channel
      */
     protected Log getLogger(Object obj) {
-        String channel;
         if (obj instanceof String) {
-            channel = (String)obj;
+            return LogFactory.getLog((String)obj);
         } else {
-            channel = obj.getClass().getName();
+            return LogFactory.getLog(obj.getClass());
         }
-        Object log = m_loggers.get(channel);
-        if (log == null) {
-            synchronized (m_loggers) {
-                log = LogFactory.getLog(channel);
-                m_loggers.put(channel, log);
-            }
-        }
-        return (Log)log;
     }
 
     /**
