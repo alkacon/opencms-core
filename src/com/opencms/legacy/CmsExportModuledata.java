@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2004/02/22 19:14:26 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2004/02/27 15:56:15 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,12 +73,15 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/22 19:14:26 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/27 15:56:15 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
     /** Manifest tag: master */   
     public static String C_EXPORT_TAG_MASTER = "master";
+    
+    /** Manifest tag: master ID */   
+    public static String C_EXPORT_TAG_MASTER_ID = "master_id";    
 
     /** Manifest tag: access_flags */   
     public static String C_EXPORT_TAG_MASTER_ACCESSFLAGS = "access_flags";
@@ -437,7 +440,8 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
                 OpenCms.getLog(this).error("Unable to read group with id " + dataset.m_groupId, e);
             }
         }
-
+        
+        data.addElement(C_EXPORT_TAG_MASTER_ID).addText(dataset.m_masterId.toString());
         data.addElement(C_EXPORT_TAG_MASTER_USER).addText(ownerName);
         data.addElement(C_EXPORT_TAG_MASTER_GROUP).addText(groupName);
         data.addElement(C_EXPORT_TAG_MASTER_ACCESSFLAGS).addText(Integer.toString(dataset.m_accessFlags));

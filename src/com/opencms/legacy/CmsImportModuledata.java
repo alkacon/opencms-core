@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/02/26 16:14:30 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2004/02/27 15:56:15 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2004/02/26 16:14:30 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/27 15:56:15 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -171,7 +171,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // now get the moduledata for import
         List masterNodes;
-        Element currentElement;
+        Element currentMasterElement;
         String subid;
 
         try {
@@ -181,15 +181,15 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
 
             // walk through all files in manifest
             for (int i = 0; i < length; i++) {
-                currentElement = (Element)masterNodes.get(i);
+                currentMasterElement = (Element) masterNodes.get(i);
                 // get the subid of the modulemaster
-                subid = CmsImport.getChildElementTextValue(currentElement, CmsExportModuledata.C_EXPORT_TAG_MASTER_SUBID);
+                subid = CmsImport.getChildElementTextValue(currentMasterElement, CmsExportModuledata.C_EXPORT_TAG_MASTER_SUBID);
                 // check if there exists a module with this subid
                 String classname = (String)availableModules.get(subid);
                 if ((classname != null) && !("".equals(classname.trim()))) {
                     // import the dataset, the channelrelation and the media
                     m_report.print(" ( " + (i + 1) + " / " + length + " ) ", I_CmsReport.C_FORMAT_NOTE);
-                    importMaster(subid, classname, currentElement);
+                    importMaster(subid, classname, currentMasterElement);
                 }
             }
         } catch (Exception exc) {
@@ -202,45 +202,50 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * 
      * @param subId the subid of the module
      * @param classname the name of the module class
-     * @param currentElement the current element of the xml file
+     * @param masterElement the current element of the xml file
      * @throws CmsException in case something goes wrong
      */
-    private void importMaster(String subId, String classname, Element currentElement) throws CmsException {
-        // print out some information to the report
-        m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
-
+    private void importMaster(String subId, String classname, Element masterElement) throws CmsException {
         CmsMasterDataSet newDataset = new CmsMasterDataSet();
         Vector channelRelations = new Vector();
         Vector masterMedia = new Vector();
+        
+        m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
+
         // try to get the dataset
         try {
             int subIdInt = Integer.parseInt(subId);
-            newDataset = getMasterDataSet(subIdInt, currentElement);
+            newDataset = getMasterDataSet(subIdInt, masterElement);
         } catch (Exception e) {
             m_report.println(e);
             throw new CmsException("Cannot get dataset ", e);
         }
+        
         m_report.print("'" + CmsEncoder.escapeHtml(newDataset.m_title) + "' (" + classname + ")");
         m_report.print(m_report.key("report.dots"));
+
         // try to get the channelrelations
         try {
-            channelRelations = getMasterChannelRelation(currentElement);
+            channelRelations = getMasterChannelRelation(masterElement);
         } catch (Exception e) {
             m_report.println(e);
             throw new CmsException("Cannot get channelrelations ", e);
         }
+        
         // try to get the media
         try {
-            masterMedia = getMasterMedia(currentElement);
+            masterMedia = getMasterMedia(masterElement);
         } catch (Exception e) {
             m_report.println(e);
             throw new CmsException("Cannot get media ", e);
         }
+        
         // add the channels and media to the dataset
         newDataset.m_channelToAdd = channelRelations;
         newDataset.m_mediaToAdd = masterMedia;
         // create the new content definition
         CmsMasterContent newMaster = getContentDefinition(classname, new Class[] {CmsObject.class, CmsMasterDataSet.class }, new Object[] {m_cms, newDataset });
+        
         try {
             CmsUUID userId = newMaster.getOwner();
             CmsUUID groupId = newMaster.getGroupId();
@@ -253,6 +258,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             m_report.println(e);
             throw new CmsException("Cannot write master ", e);
         }
+        
         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 
@@ -260,33 +266,45 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * Gets the dataset for the master from the xml file.<p>
      * 
      * @param subId the subid of the module
-     * @param currentElement the current element of the xml file
+     * @param masterElement the current element of the xml file
      * @return the dataset with the imported information
      * @throws CmsException in case something goes wrong
      */
-    private CmsMasterDataSet getMasterDataSet(int subId, Element currentElement) throws CmsException {
-        String datasetfile, username, groupname, accessFlags, publicationDate, purgeDate, flags, feedId, feedReference, feedFilename, title;
-        // get the new dataset object
+    private CmsMasterDataSet getMasterDataSet(int subId, Element masterElement) throws CmsException {
+        String datasetfile = null, username = null, groupname = null, accessFlags = null, 
+            publicationDate = null, purgeDate = null, flags = null, feedId = null, 
+            feedReference = null, feedFilename = null, title = null, master_id = null;
         CmsMasterDataSet newDataset = new CmsMasterDataSet();
 
         // get the file with the dataset of the master
-        datasetfile = CmsImport.getChildElementTextValue(currentElement, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET);
+        datasetfile = ((Element) masterElement.selectNodes("./" + CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET).get(0)).getTextTrim();
+       
         Document datasetXml = CmsImport.getXmlDocument(getFileReader(datasetfile));
-        Element dataset = (Element) datasetXml.selectNodes("//" + CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET).get(0);
+        Element dataset = (Element) datasetXml.getRootElement().selectNodes("./" + CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET).get(0);
+        
         // get the information from the dataset and add it to the dataset
         // first add the subid
         newDataset.m_subId = subId;
-        newDataset.m_masterId = CmsUUID.getNullUUID();
+                
+        master_id = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_ID);
+        if (master_id != null) {
+            newDataset.m_masterId = new CmsUUID(master_id);
+        } else {
+            newDataset.m_masterId = CmsUUID.getNullUUID();
+        }
+        
         // get the id of the user or set the owner to the current user
         username = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_USER);
-        CmsUUID userId = m_cms.getRequestContext().currentUser().getId();
+        CmsUUID userId = null;
         try {
             if ((username != null) && !("".equals(username.trim()))) {
                 userId = m_cms.readUser(username).getId();
             }
         } catch (Exception e) {
             // userId will be current user
+            userId = m_cms.getRequestContext().currentUser().getId();
         }
+        
         newDataset.m_userId = userId;
         // get the id of the group or set the group to the current user        
         groupname = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_GROUP);
@@ -416,13 +434,13 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     /**
      * Gets the channel relations for the master from the xml file.<p>
      * 
-     * @param currentElement the current element of the xml file
+     * @param masterElement the current element of the xml file
      * @return vector containing the ids of all channels of the master
      */
-    private Vector getMasterChannelRelation(Element currentElement) {
+    private Vector getMasterChannelRelation(Element masterElement) {
         Vector channelRelations = new Vector();
         // get the channelnames of the master
-        List channelNodes = currentElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_CHANNELNAME);
+        List channelNodes = masterElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_CHANNELNAME);
 
         // walk through all channelrelations
         for (int j = 0; j < channelNodes.size(); j++) {
@@ -439,14 +457,14 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     /**
      * Gets the media of the master from the xml file.<p>
      * 
-     * @param currentElement The current element of the xml file
+     * @param masterElement The current element of the xml file
      * @return vector containing the media (CmsMasterMedia object) of the master
      * @throws CmsException in case something goes wrong
      */
-    private Vector getMasterMedia(Element currentElement) throws CmsException {
+    private Vector getMasterMedia(Element masterElement) throws CmsException {
         Vector masterMedia = new Vector();
         // get the mediafiles of the master
-        List mediaNodes = currentElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_MEDIA);
+        List mediaNodes = masterElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_MEDIA);
         // walk through all media
         for (int j = 0; j < mediaNodes.size(); j++) {
             // get the name of the file where the mediadata is stored
