@@ -50,15 +50,6 @@ createPropertydefinition xmlpage template
 createPropertydefinition xmlpage exportname
 createPropertydefinition xmlpage content-encoding
 createPropertydefinition xmlpage internal
-createPropertydefinition page Title
-createPropertydefinition page Description
-createPropertydefinition page Keywords
-createPropertydefinition page NavText
-createPropertydefinition page NavPos
-createPropertydefinition page export
-createPropertydefinition page exportname
-createPropertydefinition page content-encoding
-createPropertydefinition page internal
 createPropertydefinition link Title
 createPropertydefinition link Description
 createPropertydefinition link Keywords

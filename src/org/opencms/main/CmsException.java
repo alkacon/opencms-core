@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2004/02/13 17:13:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsException extends Exception {
 
@@ -85,7 +85,7 @@ public class CmsException extends Exception {
             "XML tag missing",
             "Wrong XML template class",
             "No XML template class",
-            "Error while loading template class",
+            "(code 28: moved to CmsLoaderException)",
             "OpenCms class loader error",
             "New password is too short",
             "(code 31: unused)",
@@ -125,9 +125,6 @@ public class CmsException extends Exception {
 
     /** Error code for error"Password too short" */
     public static final int C_INVALID_PASSWORD = 30;
-
-    /** Error code for loader errors */
-    public static final int C_LOADER_ERROR = 28;
 
     /** 
      * Error code for access denied exception for vfs resources

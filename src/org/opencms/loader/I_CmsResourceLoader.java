@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/18 15:27:26 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -109,7 +109,7 @@ public interface I_CmsResourceLoader {
      * on a page not already loded with a I_CmsResourceLoader.<p>
      *
      * @param cms the initialized CmsObject which provides user permissions
-     * @param file the requested OpenCms VFS resource
+     * @param resource the requested OpenCms VFS resource
      * @param req the servlet request
      * @param res the servlet response
      * 
@@ -119,7 +119,7 @@ public interface I_CmsResourceLoader {
      * 
      * @see #service(CmsObject, CmsResource, ServletRequest, ServletResponse)
      */
-    void load(CmsObject cms, CmsResource file, HttpServletRequest req, HttpServletResponse res) 
+    void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException, CmsException;
     
     /**
@@ -130,7 +130,7 @@ public interface I_CmsResourceLoader {
      * This is required for "on demand" exporting of resources.<p> 
      *
      * @param cms the initialized CmsObject which provides user permissions
-     * @param file the requested OpenCms VFS resource
+     * @param resource the requested OpenCms VFS resource
      * @param exportStream the stream to write the exported content to
      * @param req the servlet request
      * @param res the servlet response
@@ -139,7 +139,7 @@ public interface I_CmsResourceLoader {
      * @throws IOException might be thrown in the process of including the sub element
      * @throws CmsException in case something goes wrong
      */    
-    void export(CmsObject cms, CmsResource file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException, CmsException;
         
     /**
@@ -148,7 +148,7 @@ public interface I_CmsResourceLoader {
      * called as a sub-element from another I_CmsResourceLoader.<p>
      * 
      * @param cms used to access the OpenCms VFS
-     * @param file the reqested resource in the VFS
+     * @param resource the reqested resource in the VFS
      * @param req the servlet request
      * @param res the servlet response
      * 
@@ -158,7 +158,7 @@ public interface I_CmsResourceLoader {
      * 
      * @see org.opencms.flex.CmsFlexRequestDispatcher
      */   
-    void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) 
+    void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) 
     throws ServletException, IOException, CmsException;
      
     /**
@@ -170,7 +170,7 @@ public interface I_CmsResourceLoader {
      * that the content is handled or modified in a special way, or set special http headers.  
      * 
      * @param cms used to access the OpenCms VFS
-     * @param file the reqested resource in the VFS
+     * @param resource the reqested resource in the VFS
      * @param element the element in the file to display
      * @param locale the locale to display
      * @param req the servlet request
@@ -182,7 +182,7 @@ public interface I_CmsResourceLoader {
      * @throws IOException might be thrown by the servlet environment
      * @throws CmsException in case of errors acessing OpenCms functions
      */
-    byte[] dump(CmsObject cms, CmsResource file, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
+    byte[] dump(CmsObject cms, CmsResource resource, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
     throws  ServletException, IOException, CmsException;
     
     /**

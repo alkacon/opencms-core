@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/02/16 15:42:23 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,6 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.loader.CmsDumpLoader;
-import org.opencms.loader.CmsJspLoader;
-import org.opencms.loader.CmsPageLoader;
-import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -68,7 +64,7 @@ import org.apache.commons.collections.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -355,12 +351,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // check loader id for resource
         int loaderId = file.getLoaderId();
         I_CmsResourceLoader loader = OpenCms.getLoaderManager().getLoader(loaderId);
-        if ((loader == null) 
-            || ((loaderId != CmsDumpLoader.C_RESOURCE_LOADER_ID) 
-                        && (loaderId != CmsJspLoader.C_RESOURCE_LOADER_ID) 
-                        && (loaderId != CmsPageLoader.C_RESOURCE_LOADER_ID)
-                        && (loaderId != CmsXmlPageLoader.C_RESOURCE_LOADER_ID))) {
-            throw new CmsException("Unable to export VFS file " + vfsName + ", invalid loader id " + loaderId);
+        if ((loader == null) || (! loader.supportsStaticExport())) {
+            throw new CmsException("Unable to export VFS file " + vfsName + ", loader with id " + loaderId + " does not support static export");
         }
 
         // make sure all required parent folder exist

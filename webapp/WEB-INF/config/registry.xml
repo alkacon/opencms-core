@@ -3,13 +3,11 @@
 	<system>
 		<resourcetype>
 			<class>org.opencms.file.CmsResourceTypeFolder</class>
-			<class>org.opencms.file.CmsResourceTypePage</class>
 			<class>org.opencms.file.CmsResourceTypePointer</class>
 			<class>org.opencms.file.CmsResourceTypePlain</class>
 			<class>org.opencms.file.CmsResourceTypeXMLTemplate</class>
 			<class>org.opencms.file.CmsResourceTypeBinary</class>
 			<class>org.opencms.file.CmsResourceTypeImage</class>
-			<class>org.opencms.file.CmsResourceTypeCompatiblePlain</class>
 			<class>org.opencms.file.CmsResourceTypeJsp</class>
 			<class>org.opencms.file.CmsResourceTypeLink</class>
 			<class>org.opencms.file.CmsResourceTypeXmlPage</class>
@@ -19,7 +17,6 @@
 			<class>org.opencms.loader.CmsDumpLoader</class>
 			<class>org.opencms.loader.CmsPointerLoader</class>
 			<class>org.opencms.loader.CmsJspLoader</class>
-			<class>org.opencms.loader.CmsPageLoader</class>
 			<class>org.opencms.loader.CmsXmlPageLoader</class>
 		</resourceloader>
 		<importclasses>

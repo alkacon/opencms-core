@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/17 12:32:47 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexCache;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -66,6 +67,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.CmsRequestHttpServlet;
@@ -102,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.85 $
+ * @version $Revision: 1.86 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1573,15 +1575,16 @@ public final class OpenCmsCore {
      * @param res the current http response
      * @param cms the curren cms context
      * @param file the requested file
-     * @throws ServletException if some other things goes wrong
-     * @throws IOException if io things go wrong
+     * @throws ServletException if something goes wrong
+     * @throws IOException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
     protected void showResource(
         HttpServletRequest req, 
         HttpServletResponse res, 
         CmsObject cms, 
         CmsFile file
-    ) throws ServletException, IOException {
+    ) throws ServletException, IOException, CmsException {
         I_CmsResourceLoader loader = getLoaderManager().getLoader(file.getLoaderId());
         loader.load(cms, file, req, res);
     }
@@ -1708,7 +1711,6 @@ public final class OpenCmsCore {
      * @return String containing the HTML code of the error message.
      */
     private String createErrorBox(Throwable t, HttpServletRequest request, CmsObject cms) {
-        StringBuffer result = new StringBuffer(8192);
         // load the property file that contains the html fragments for the dialog
         Properties htmlProps = new Properties();
         try {
@@ -1719,56 +1721,70 @@ public final class OpenCmsCore {
             }
         }
         
-        // determine language of the browser to display localized messages
-        CmsAcceptLanguageHeaderParser headerParser = new CmsAcceptLanguageHeaderParser(request);
-        List locales = headerParser.getAcceptedLocales();
-        Locale locale;
-        if (locales != null && locales.size() > 0) {
-            // get first locale of accepted locales list
-            locale = (Locale)locales.get(0);
-        } else {
-            // no accepted locales found, use english locale for messages
-            locale = Locale.ENGLISH;
+        Locale locale = null;
+        
+        // check if this is a workplace user, if so use workplace loacale
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+            if (settings != null) {
+                locale = settings.getUserSettings().getLocale();
+            }
         }
+        
+        if (locale == null) {
+            // determine language of the browser to display localized messages
+            CmsAcceptLanguageHeaderParser headerParser = new CmsAcceptLanguageHeaderParser(request);
+            List locales = headerParser.getAcceptedLocales();
+            if (locales != null && locales.size() > 0) {
+                // get first locale of accepted locales list
+                locale = (Locale)locales.get(0);
+            } else {
+                // no accepted locales found, use english locale for messages
+                locale = Locale.ENGLISH;
+            }
+        }
+        
         // get localized message bundle
         CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.C_BUNDLE_NAME, locale);
-
-        // create the html for the output
-        result.append(htmlProps.getProperty("C_HTML_START"));
-        // the document title
-        result.append(messages.key("error.system.message"));
-        result.append(htmlProps.getProperty("C_HEAD_START"));
-        result.append(htmlProps.getProperty("C_STYLES"));
-        result.append(htmlProps.getProperty("C_JAVASCRIPT_ERROR"));
-        result.append(htmlProps.getProperty("C_HEAD_END"));
-        // the dialog header
-        result.append(messages.key("error.system.message"));
-        result.append(htmlProps.getProperty("C_CONTENT_START"));
-        result.append(htmlProps.getProperty("C_ERRORPART_1"));
-        // the error image
-        result.append(CmsWorkplace.getSkinUri(cms) + "explorer/report_error.gif");
-        result.append(htmlProps.getProperty("C_ERRORPART_2"));
-        // show error message, if present
-        if (t.getLocalizedMessage() != null) {
-            result.append("<p><b>" + CmsStringSubstitution.substitute(t.getLocalizedMessage(), "\n", "\n<br>") + "</b></p>");
+        
+        // try to get the exception root cause
+        Throwable cause = CmsFlexController.getThrowable(request);
+        if (cause == null) {
+            cause = t;
         }
-        // show system infos
-        result.append("<p>" + messages.key("error.system.resource") + ":<b> " + cms.getRequestContext().getRequest().getRequestedResource() + "</b><br>");
-        result.append(messages.key("error.system.version") + ":<b> " + this.getSystemInfo().getVersionName() + "</b><br>");
-        result.append(messages.key("error.system.context") + ":<b> " + this.getSystemInfo().getOpenCmsContext() + "</b></p>");
-        result.append(htmlProps.getProperty("C_ERRORPART_3"));
-        // detail button label
-        result.append(messages.key("button.detail"));
-        result.append(htmlProps.getProperty("C_ERRORPART_4"));
-        // exception details
-        result.append(CmsStringSubstitution.substitute(CmsException.getStackTraceAsString(t), "\n", "\n<br>"));
-        result.append(htmlProps.getProperty("C_ERRORPART_5"));
-        // close button label
-        result.append(messages.key("button.close"));
-        result.append(htmlProps.getProperty("C_ERRORPART_6"));
-        result.append(htmlProps.getProperty("C_CONTENT_END"));
-        result.append(htmlProps.getProperty("C_HTML_END"));
-        return result.toString();
+        
+        String errorHtml;
+        // construct the error page
+        errorHtml = htmlProps.getProperty("C_ERROR_DIALOG_START") 
+                    + htmlProps.getProperty("C_STYLES") 
+                    + htmlProps.getProperty("C_ERROR_DIALOG_END");
+        
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${title}", messages.key("error.system.message"));
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${encoding}", getSystemInfo().getDefaultEncoding());
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${warnimageuri}", CmsWorkplace.getSkinUri(cms) + "explorer/report_error.gif");
+        if (cause.getLocalizedMessage() != null) {
+            errorHtml = CmsStringSubstitution.substitute(errorHtml, "${message}", "<p><b>" + CmsStringSubstitution.substitute(cause.getLocalizedMessage(), "\n", "\n<br>") + "</b></p>");
+        } else {
+            errorHtml = CmsStringSubstitution.substitute(errorHtml, "${message}", "<p><b>" + CmsStringSubstitution.substitute(cause.toString(), "\n", "\n<br>") + "</b></p>");
+        }        
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${resource_key}", messages.key("error.system.resource"));
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${version_key}", messages.key("error.system.version"));
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${context_key}", messages.key("error.system.context"));
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${resource}", cms.getRequestContext().getUri());
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${version}", getSystemInfo().getVersionName());
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${context}", getSystemInfo().getOpenCmsContext());        
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${bt_close}", messages.key("button.close"));
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${bt_details}", messages.key("button.detail"));
+        
+        String exception = CmsException.getStackTraceAsString(cause);
+        exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
+        exception = CmsStringSubstitution.substitute(exception, "\r\n", "\\n");        
+        exception = CmsStringSubstitution.substitute(exception, "\n", "\\n");        
+        String details = "<html><body bgcolor='#fffff'><pre>" + exception + "</pre></body></html>"; 
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${details}", details);
+        
+        return errorHtml;
     }
 
     /**

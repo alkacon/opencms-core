@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/02/16 15:41:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -173,7 +173,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      * @throws IOException if something goes wrong
      * @throws ServletException if something goes wrong
      */
-    private void openErrorHandler(HttpServletRequest req, HttpServletResponse res, int errorCode) throws IOException, ServletException {
+    private void openErrorHandler(HttpServletRequest req, HttpServletResponse res, int errorCode) 
+    throws IOException, ServletException {
+        
         String handlerUri = "/system/handler/handle" + errorCode + ".html";
         CmsObject cms = null;            
         try {
@@ -194,7 +196,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             return;
         }
         OpenCmsCore.getInstance().setResponse(cms, file);
-        OpenCmsCore.getInstance().showResource(req, res, cms, file);
+        try {
+            OpenCmsCore.getInstance().showResource(req, res, cms, file);
+        } catch (CmsException e) {
+            throw new ServletException("Error showing error handler resource in " + errorCode + " URI handler for '" + handlerUri + "'", e);
+        }
     }
     
     /**
