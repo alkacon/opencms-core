@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/24 11:41:28 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/10/24 13:47:03 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1907,7 +1907,6 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getState throwed an exception: "+e.toString());
                 }
             }
-
             if(lockstate == C_UNKNOWN_ID){
                 if(state == C_STATE_UNCHANGED){
                     template.setData("backofficecontextmenue", "backofficenolock");
@@ -1916,10 +1915,12 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
                 } else {
                     template.setData("backofficecontextmenue", "backofficenolockchanged");
                 }
-            } else if (lockstate != cms.getRequestContext().currentUser().getId()){
-                template.setData("backofficecontextmenue", "backofficelock");
-            } else {
+            } else if (lockstate == cms.getRequestContext().currentUser().getId()){
                 template.setData("backofficecontextmenue", "backofficelockuser");
+            } else if (lockstate == C_NO_ACCESS){
+                template.setData("backofficecontextmenue", "backofficeonline");
+            } else {
+                template.setData("backofficecontextmenue", "backofficelock");
             }
         }
     }
