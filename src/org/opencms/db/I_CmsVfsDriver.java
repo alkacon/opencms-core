@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/28 16:29:42 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/07/29 09:34:14 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2003/07/28 16:29:42 $
+ * @version $Revision: 1.21 $ $Date: 2003/07/29 09:34:14 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -448,6 +448,6 @@ public interface I_CmsVfsDriver {
      * @param hardLink a hard-link resource, which will become a soft-link
      * @throws CmsException if something goes wrong
      */
-    void switchLinkType(CmsUser currentUser, CmsProject currentProject, CmsResource softLink, CmsResource hardLink) throws CmsException;
+    //void switchLinkType(CmsUser currentUser, CmsProject currentProject, CmsResource softLink, CmsResource hardLink) throws CmsException;
      
 }

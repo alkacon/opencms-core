@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/07/29 09:34:14 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -54,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.49 $ $Date: 2003/07/29 09:34:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -160,11 +162,25 @@ public class CmsEditor extends CmsWorkplaceDefault {
 
         // CmsFile object of the file to be edited
         CmsFile editFile = null;
+        CmsLock lock = null;
 
         // If there is a file parameter and no content, try to read the file.
         // If the user requested a "save file", also load the file.
         if(existsFileParam && (content == null || saveRequested)) {
             editFile = readFile(cms, file);
+            lock = cms.getLock(file);
+            
+            // block any editing immediately in case of insuffient locks
+            if (lock.isNullLock()) {
+                throw new CmsLockException("Resource is unlocked", CmsLockException.C_RESOURCE_UNLOCKED);
+            }
+            if (lock.getType() != CmsLock.C_TYPE_EXCLUSIVE || lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE) {
+                throw new CmsLockException("Insufficient lock to edit content of resource", CmsLockException.C_RESOURCE_LOCKED_NON_EXCLUSIVE);
+            }
+            if (!lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
+                throw new CmsLockException("Resource locked by another user", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
+            }
+            
             checkit = true;
 
             // Read file encoding from the property of the file 

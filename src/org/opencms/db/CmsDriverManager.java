@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/28 16:29:42 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2003/07/29 09:34:14 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.91 $ $Date: 2003/07/28 16:29:42 $
+ * @version $Revision: 1.92 $ $Date: 2003/07/29 09:34:14 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1241,7 +1241,7 @@ public class CmsDriverManager extends Object {
 
             // count locks
             //return m_vfsDriver.countLockedResources(project);
-            return m_lockDispatcher.countExclusiveLocks(project);
+            return m_lockDispatcher.countExclusiveLocksInProject(project);
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + id, CmsException.C_NO_ACCESS);
         }
@@ -7415,7 +7415,7 @@ public class CmsDriverManager extends Object {
         // check a few abort conditions first
         
         if (!forceUnlock && (currentLock.getType() == CmsLock.C_TYPE_SHARED_INHERITED || currentLock.getType() == CmsLock.C_TYPE_INHERITED)) {
-            throw new CmsLockException("Unlocking resources in locked folders is not allowed!", CmsLockException.C_RESOURCE_LOCKED_INDIRECT);
+            throw new CmsLockException("Unlocking resources in locked folders is not allowed!", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
         }
         
         resource = readFileHeader(context, resourcename);
@@ -7440,7 +7440,7 @@ public class CmsDriverManager extends Object {
         }
         
         if (!forceUnlock && currentLock.getType() == CmsLock.C_TYPE_INDIRECT_LOCKED) {
-            throw new CmsLockException("Unlocking resources in locked folders is not allowed!", CmsLockException.C_RESOURCE_LOCKED_INDIRECT);
+            throw new CmsLockException("Unlocking resources in locked folders is not allowed!", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
         }           
         
         // build a list with resources names that get unlocked    

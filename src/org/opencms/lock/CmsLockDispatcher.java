@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/29 08:18:57 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/29 09:34:14 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,15 +33,11 @@ package org.opencms.lock;
 
 import org.opencms.db.CmsDriverManager;
 
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
-import com.opencms.flex.CmsEvent;
-import com.opencms.flex.I_CmsEventListener;
 import com.opencms.flex.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -60,31 +56,25 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2003/07/29 08:18:57 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/29 09:34:14 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
  */
-public final class CmsLockDispatcher extends Object implements I_CmsEventListener {
+public final class CmsLockDispatcher extends Object {
 
     /** The shared lock dispatcher instance */
     private static CmsLockDispatcher sharedInstance;
 
     /** A map holding the exclusive CmsLocks */
-    private Map m_exclusiveLocks;
+    private transient Map m_exclusiveLocks;
 
     /**
      * Default constructor.<p>
-     * 
-     * Since this class is a singleton object, only the class itself is allowed to invoke its constructor.
      */
     private CmsLockDispatcher() {
         super();
-
         m_exclusiveLocks = Collections.synchronizedMap(new HashMap());
-
-        // add this class as an event listener to the Cms
-        A_OpenCms.addCmsEventListener(this);
     }
 
     /**
@@ -125,22 +115,6 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
                     i.remove();
                 }
             }
-        }
-    }
-
-    /**
-     * Handles Cms events.<p>
-     * 
-     * @param event the event which is handled
-     */
-    public void cmsEvent(CmsEvent event) {
-        switch (event.getType()) {
-            case I_CmsEventListener.EVENT_CLEAR_CACHES :
-                init(event.getCmsObject());
-                break;
-
-            default :
-                break;
         }
     }
 
@@ -223,7 +197,13 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         return null;
     }   
     
-    public int countExclusiveLocks(CmsProject project) {
+    /**
+     * Counts the exclusive locked resources in a specified project.<p>
+     * 
+     * @param project the project
+     * @return the number of exclusive locked resources in the specified project
+     */
+    public int countExclusiveLocksInProject(CmsProject project) {
         Iterator i = m_exclusiveLocks.values().iterator();
         CmsLock lock = null;
         int count = 0;
@@ -236,49 +216,6 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         }
 
         return count;
-    }
-
-    /**
-     * Initializes the the lock dispatcher by reading all directly locked resources from the database.<p>
-     * 
-     * @param cms the current user's Cms object 
-     * @return the number of directly locked resources
-     * @throws CmsException if something goes wrong
-     */
-    public int init(CmsObject cms) {
-        return 0;
-        
-        /*
-        List lockedResources = null;
-        Iterator i = null;
-        CmsResource currentResource = null;
-        String currentPath = null;
-        int count = 0;
-
-        m_exclusiveLocks.clear();
-
-        try {
-            lockedResources = cms.readLockedFileHeaders();
-            i = lockedResources.iterator();
-
-            while (i.hasNext()) {
-                currentResource = (CmsResource) i.next();
-                currentPath = currentResource.getFullResourceName();
-                addResource(currentPath, currentResource.isLockedBy(), currentResource.getProjectId());
-                count++;
-            }
-
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "[" + this.getClass().getName() + "] initialized, found " + count + " directly locked resources");
-            }
-        } catch (CmsException e) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] error initializing: " + e.toString());
-            }
-        }
-
-        return count;
-        */
     }
 
     /**

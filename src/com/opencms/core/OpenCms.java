@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/07/22 08:40:24 $
- * Version: $Revision: 1.148 $
+ * Date   : $Date: 2003/07/29 09:34:14 $
+ * Version: $Revision: 1.149 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
-import org.opencms.lock.CmsLockDispatcher;
 import org.opencms.site.CmsSiteManager;
 
 import com.opencms.boot.CmsBase;
@@ -90,7 +89,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.148 $
+ * @version $Revision: 1.149 $
  */
 public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -209,7 +208,6 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
             m_driverManager = CmsDriverManager.newInstance(conf);            
-            initLockDispatcher();
         } catch (Exception e) {
             if (C_LOGGING && isLogging(C_OPENCMS_CRITICAL))
                 log(C_OPENCMS_CRITICAL, ". Critical init error/3: " + e.getMessage());
@@ -622,31 +620,6 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
      */
     public CmsResourceTranslator getFileTranslator() {
         return m_fileTranslator;
-    }
-    
-    /**
-     * Initializers the lock dispatcher.<p>
-     * 
-     * To do so, all locked resources are read from the database.
-     * 
-     * @param cms
-     * @throws CmsException
-     */
-    private void initLockDispatcher() {
-        try {
-            // create a valid dummy CmsObject instance
-            CmsObject cms = new CmsObject();
-                        
-            initUser(cms, null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_VFS_DEFAULT, Integer.MAX_VALUE, null);
-            int count = CmsLockDispatcher.getInstance().init(cms);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT)) {
-                log(C_OPENCMS_INIT, ". LockDispatcher init  : ok, found " + count + " directly locked resources");
-            }
-        } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT)) {
-                log(C_OPENCMS_INIT, ". LockDispatcher init  : " + e.toString());
-            }
-        }
     }    
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2003/07/28 16:06:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/29 09:34:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,6 @@ package org.opencms.lock;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
-import java.io.Serializable;
-
 /**
  * Represents the lock state of a VFS resource.<p>
  * 
@@ -48,12 +46,12 @@ import java.io.Serializable;
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/07/28 16:06:00 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/29 09:34:14 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLockDispatcher
  */
-public class CmsLock extends Object implements Serializable, Cloneable {
+public class CmsLock extends Object implements Cloneable {
 
     public static final int C_TYPE_EXCLUSIVE = 4;
     public static final int C_TYPE_INHERITED = 3;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2003/07/24 15:56:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/29 09:34:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,24 +34,30 @@ package org.opencms.lock;
 import com.opencms.core.CmsException;
 
 /**
- * Signals that a particular action was invoked on a locked resource.<p>
+ * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/07/24 15:56:43 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/29 09:34:14 $
  * @since 5.1.4
  */
 public class CmsLockException extends CmsException {
     
     // the allowed type range for this exception is >=200 and <300
     
-    /** The resource is locked by the current user */
-    public static final int C_RESOURCE_LOCKED_BY_CURRENT_USER = 200;
+    /** A resource is unlocked, but a particular action requires the resource to be locked */
+    public static final int C_RESOURCE_UNLOCKED = 200;
     
-    /** The resource is locked by a user different from the current user */
-    public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 201;
+    /** A resource is locked by the current user, but a particular action requires that the resource is unlocked */
+    public static final int C_RESOURCE_LOCKED_BY_CURRENT_USER = 201;
     
-    /** Indirect locked resources can only be unlocked by unlocking the direct locked parent folder */
-    public static final int C_RESOURCE_LOCKED_INDIRECT = 202;
+    /** A resource is locked by a user different from the current user, but a particular action requires that the resource is locked by the current user */
+    public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 202;
+    
+    /** A resource has an inherited lock of a parent folder, but a particular action requires a non-inherited lock */
+    public static final int C_RESOURCE_LOCKED_INHERITED = 203;
+    
+    /** A resource has a non-exclusive lock, but a particular action requires an exclusive lock */
+    public static final int C_RESOURCE_LOCKED_NON_EXCLUSIVE = 204;
     
     /**
      * Default constructor for a CmsLockException.<p>
