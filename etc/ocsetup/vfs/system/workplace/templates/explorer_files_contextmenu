@@ -547,4 +547,8 @@
 </contextmenue>
 <!-- context menues for file not in project or in online project end -->
 
+<contextmenue name="backoffice">
+	<contextentry name="explorer.context.editarticle" href="javascript:doAction(DO_BOEDIT)"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_BODELETE)"/>
+</contextmenue>
 </WORKPLACE>
