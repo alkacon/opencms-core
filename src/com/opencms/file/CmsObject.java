@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.448 $
+* Date   : $Date: 2004/01/28 09:32:23 $
+* Version: $Revision: 1.449 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.file;
  
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
@@ -75,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.448 $
+ * @version $Revision: 1.449 $
  */
 public class CmsObject {
 
@@ -2455,51 +2456,62 @@ public class CmsObject {
     /**
      * Publishes the current project, printing messages to a shell report.<p>
      *
-     * @throws CmsException if something goes wrong
+     * @throws Exception if something goes wrong
      */
-    public void publishProject() throws CmsException {
+    public void publishProject() throws Exception {
         publishProject(new CmsShellReport());
     }
 
     /**
-     * Publishes the current project, printing messages to the specified report.<p>
+     * Publishes the current project.<p>
      *
-     * @param report the report
-     * @throws CmsException if something goes wrong
+     * @param report an instance of I_CmsReport to print messages
+     * @throws Exception if something goes wrong
      */
-    public void publishProject(I_CmsReport report) throws CmsException {
+    public void publishProject(I_CmsReport report) throws Exception {
         publishProject(report, null, false);
     }
 
     /**
-     * Publishes the current project, or direct publishes a specified resource.<p>
+     * Direct publishes a specified resource.<p>
      * 
      * To direct publish a resource, the type of the project has to be set to
-     * I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH before.
+     * {@link I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH} manually in the
+     * calling method before!<p>
      * 
-     * @param report the report
+     * @param report an instance of I_CmsReport to print messages
      * @param directPublishResource a CmsResource that gets directly published; or null if an entire project gets published
      * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get publish too, if this flag is true
-     * @throws CmsException if something goes wrong
+     * @throws Exception if something goes wrong
+     * @see #publishResource(String)
+     * @see #publishResource(String, boolean, I_CmsReport)
      */
-    public void publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings) throws CmsException {
+    public void publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings) throws Exception {
+        CmsPublishList publishList = getPublishList(directPublishResource, directPublishSiblings, report);
+        publishProject(report, publishList);
+    }
+    
+    /**
+     * 
+     * @param report an instance of I_CmsReport to print messages
+     * @param publishList a publish list
+     * @throws CmsException if something goes wrong
+     * @see #getPublishList(I_CmsReport)
+     * @see #getPublishList(CmsResource, boolean, I_CmsReport)
+     */
+    public void publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
         Vector changedResources = null;
         Vector changedModuleMasters = null;
         boolean success = false;
-        CmsUUID publishHistoryId = new CmsUUID();
-
+        //CmsUUID publishHistoryId = new CmsUUID();
         
         // TODO: check if useful/neccessary
         // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
         m_driverManager.clearcache();
 
         synchronized (m_driverManager) {            
-            try {
-                
-                List offlineFiles = m_driverManager.filterOfflineFiles(getRequestContext(), directPublishResource, directPublishSiblings, report);
-                // m_driverManager.getHtmlLinkValidator().validateResources(this, offlineFiles, report);                
-                                
-                m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource, directPublishSiblings);
+            try {                                
+                m_driverManager.publishProject(this, m_context, publishList, report);
 
                 if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
                     CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
@@ -2512,9 +2524,9 @@ public class CmsObject {
             } catch (Exception e) {
                 String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
                 String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(stamp1);
-                OpenCms.getLog(this).error(stamp2, e);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error(stamp1);
+                    OpenCms.getLog(this).error(stamp2, e);
                 }
             } finally {
                 if (!success) {
@@ -2532,21 +2544,21 @@ public class CmsObject {
                 // fire an event that a project has been published
                 Map eventData = (Map) new HashMap();
                 eventData.put("report", report);
-                eventData.put("publishHistoryId", publishHistoryId.toString());
+                eventData.put("publishHistoryId", publishList.getPublishHistoryId().toString());
                 eventData.put("context", m_context);
                 CmsEvent exportPointEvent = new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData, false);
                 OpenCms.fireCmsEvent(exportPointEvent);                 
             }
         }
-    }
+    }    
 
     /**
      * Publishes a single resource.<p>
      *
      * @param resourcename the name of the resource to be published
-     * @throws CmsException if something goes wrong
+     * @throws Exception if something goes wrong
      */
-    public void publishResource(String resourcename) throws CmsException {
+    public void publishResource(String resourcename) throws Exception {
         publishResource(resourcename, false, new CmsShellReport());
     }
 
@@ -2556,19 +2568,17 @@ public class CmsObject {
      * @param resourcename the name of the resource to be published
      * @param directPublishSiblings if true, all siblings of the resource are also published
      * @param report the report to write the progress information to
-     * @throws CmsException if something goes wrong
+     * @throws Exception if something goes wrong
      */
-    public void publishResource(String resourcename, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
-        int oldProjectType = m_context.currentProject().getType();
-        CmsResource resource = resource = readFileHeader(resourcename, true);
+    public void publishResource(String resourcename, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+        CmsResource resource = null;
         
         try {
-            m_context.currentProject().setType(I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH);
+            resource = readFileHeader(resourcename, true);
             publishProject(report, resource, directPublishSiblings);
         } catch (CmsException e) {
             throw e;
         } finally {
-            m_context.currentProject().setType(oldProjectType);
             OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", resource)));
         }
     }
@@ -4084,35 +4094,93 @@ public class CmsObject {
     }
     
     /**
-     * Validates the HTML links (hrefs and images) in all unpublished XML pages
-     * of the current project.<p>
+     * Validates the HTML links (hrefs and images) in all unpublished Cms files of the current 
+     * (offline) project, if the files resource types implement the interface 
+     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
+     * 
+     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
+     * implement this interface (and so, which file types get validated by the HTML link 
+     * validator).<p>
      * 
      * @param report an instance of I_CmsReport to print messages
+     * @return a map with lists of invalid links keyed by resource names
      * @throws Exception if something goes wrong
+     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
      */
-    public void validateHtmlLinks(I_CmsReport report) throws Exception {
-        m_driverManager.validateHtmlLinks(this, null, false, report);
+    public Map validateHtmlLinks(I_CmsReport report) throws Exception {
+        CmsPublishList publishList = m_driverManager.getPublishList(m_context, null, false, report);
+        return m_driverManager.validateHtmlLinks(this, publishList, report);    
     }
     
     /**
-     * Validates the HTML links (hrefs and images) in the unpublished XML page
-     * which will be directly published in the current project.<p>
+     * Validates the HTML links (hrefs and images) in the unpublished Cms file of the current 
+     * (offline) project, if the file's resource type implements the interface 
+     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
+     * 
+     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
+     * implement this interface (and so, which file types get validated by the HTML link 
+     * validator).<p>
      * 
      * @param directPublishResource the resource which will be directly published
      * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
      * @param report an instance of I_CmsReport to print messages
+     * @return a map with lists of invalid links keyed by resource names
+     * @throws Exception if something goes wrong
+     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
+     */
+    public Map validateHtmlLinks(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+        CmsPublishList publishList = null;
+        Map result = null;
+                   
+        publishList = m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
+        result = m_driverManager.validateHtmlLinks(this, publishList, report);
+        
+        return result;
+    }
+    
+    /**
+     * Validates the HTML links (hrefs and images) in the unpublished Cms files of the specified
+     * Cms publish list, if the files resource types implement the interface 
+     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
+     * 
+     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
+     * implement this interface (and so, which file types get validated by the HTML link 
+     * validator).<p>
+     * 
+     * @param publishList a Cms publish list
+     * @param report an instance of I_CmsReport to print messages
+     * @return a map with lists of invalid links keyed by resource names
+     * @throws Exception if something goes wrong
+     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
+     */    
+    public Map validateHtmlLinks(CmsPublishList publishList, I_CmsReport report) throws Exception {       
+        return m_driverManager.validateHtmlLinks(this, publishList, report);  
+    }
+    
+    /**
+     * Returns a publish list for the specified Cms resource to be published directly, plus 
+     * optionally it's siblings.<p>
+     * 
+     * @param directPublishResource the resource which will be directly published
+     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
+     * @param report an instance of I_CmsReport to print messages
+     * @return a publish list
      * @throws Exception if something goes wrong
      */
-    public void validateHtmlLinks(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
-        int oldProjectType = m_context.currentProject().getType();       
-        try {
-            m_context.currentProject().setType(I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH);
-            m_driverManager.validateHtmlLinks(this, directPublishResource, directPublishSiblings, report);
-        } catch (CmsException e) {
-            throw e;
-        } finally {
-            m_context.currentProject().setType(oldProjectType);
-        }       
+    public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+        return m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
     }
+    
+    /**
+     * Returns a publish list with all new/changed/deleted Cms resources of the current (offline)
+     * project that actually get published.<p>
+     * 
+     * @param report an instance of I_CmsReport to print messages
+     * @return a publish list
+     * @throws Exception if something goes wrong
+     */
+    public CmsPublishList getPublishList(I_CmsReport report) throws Exception {
+        return getPublishList(null, false, report);
+    }    
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/01/23 14:01:17 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/01/28 09:32:23 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,15 +30,17 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsResource;
-import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Utils;
-
+import org.opencms.db.CmsPublishList;
 import org.opencms.main.OpenCms;
 import org.opencms.threads.CmsHtmlLinkValidatorThread;
 import org.opencms.threads.CmsPublishThread;
+
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsResource;
+import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Utils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.12
  */
@@ -236,7 +238,7 @@ public class CmsPublishProject extends CmsReport {
      * 
      * @throws JspException if problems including sub-elements occur
      */
-    public void actionReport() throws JspException {
+    public void actionReport() throws JspException {        
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
@@ -253,7 +255,7 @@ public class CmsPublishProject extends CmsReport {
                 try {
                     CmsResource publishResource = null;
                     
-                    if ("true".equals(getParamDirectpublish())) {
+                    if ("true".equalsIgnoreCase(getParamDirectpublish())) {
                         // get the offline resource in direct publish mode
                         publishResource = getCms().readFileHeader(getParamResource());
                         // check if the resource is locked in direct publish mode                     
@@ -281,7 +283,7 @@ public class CmsPublishProject extends CmsReport {
                     }
                     
                     // start the link validation thread before publishing
-                    CmsHtmlLinkValidatorThread thread = new CmsHtmlLinkValidatorThread(getCms(), publishResource, "true".equals(getParamPublishsiblings()));
+                    CmsHtmlLinkValidatorThread thread = new CmsHtmlLinkValidatorThread(getCms(), publishResource, "true".equals(getParamPublishsiblings()), getSettings());
                     setParamAction(REPORT_BEGIN);
                     setParamThread(thread.getId().toString());
                     
@@ -426,22 +428,34 @@ public class CmsPublishProject extends CmsReport {
     private void startPublishThread() {
         // start different publish threads for direct publish and publish project  
         CmsPublishThread thread = null;
-        if ("true".equals(getParamDirectpublish())) {
-            // publish resource directly
-            thread = new CmsPublishThread(getCms(), getParamResource(), "true".equals(getParamPublishsiblings()));
+        CmsPublishList publishList = null;              
+
+        publishList = getSettings().getPublishList();
+        
+        if (publishList != null) {
+            thread = new CmsPublishThread(getCms(), publishList);
         } else {
-            try {
-                // switch to project which will be published
-                int projectId = Integer.parseInt(getParamProjectid());
-                getCms().getRequestContext().setCurrentProject(projectId);
-            } catch (Exception e) {
-                // ignore this exception
-            }  
-            thread = new CmsPublishThread(getCms());
+            // TODO check if the following code can be removed
+            
+            if ("true".equals(getParamDirectpublish())) {
+                // publish resource directly
+                thread = new CmsPublishThread(getCms(), getParamResource(), "true".equals(getParamPublishsiblings()));
+            } else {
+                try {
+                    // switch to project which will be published
+                    int projectId = Integer.parseInt(getParamProjectid());
+                    getCms().getRequestContext().setCurrentProject(projectId);
+                } catch (Exception e) {
+                    // ignore this exception
+                }
+                thread = new CmsPublishThread(getCms());
+            }
         }
+        
         // set the new thread id and flag that no thread is following
         setParamThread(thread.getId().toString());
         setParamThreadHasNext("false");
+        
         // start the publish thread
         thread.start();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2004/01/25 12:42:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/01/28 09:32:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.threads;
 
+import org.opencms.db.CmsPublishList;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
-import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 
 /**
@@ -43,13 +43,14 @@ import com.opencms.file.CmsObject;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
     
     private String m_resourceName;
     private boolean m_directPublishSiblings;
+    private CmsPublishList m_publishList;
 
     /**
      * Creates a Thread that publishes the current users project.<p>
@@ -58,6 +59,11 @@ public class CmsPublishThread extends A_CmsReportThread {
      */
     public CmsPublishThread(CmsObject cms) {
         super(cms, "OpenCms: Publishing of project " + cms.getRequestContext().currentProject().getName());
+        
+        m_resourceName = null;
+        m_directPublishSiblings = false;
+        m_publishList = null;
+        
         initHtmlReport();
     } 
     
@@ -70,10 +76,32 @@ public class CmsPublishThread extends A_CmsReportThread {
      */
     public CmsPublishThread(CmsObject cms, String resourceName, boolean directPublishSiblings) {
         super(cms, "OpenCms: Publishing of resource " + resourceName);
+        
         m_resourceName = resourceName;
         m_directPublishSiblings = directPublishSiblings;
+        m_publishList = null;
+        
         initHtmlReport();
     }  
+    
+    /**
+     * Creates a Thread that publishes the Cms resources contained in the specified Cms publish 
+     * list.<p>
+     * 
+     * @param cms the current OpenCms context object
+     * @param publishList a Cms publish list
+     * @see com.opencms.file.CmsObject#getPublishList(com.opencms.file.CmsResource, boolean, I_CmsReport)
+     * @see com.opencms.file.CmsObject#getPublishList(I_CmsReport)
+     */
+    public CmsPublishThread(CmsObject cms, CmsPublishList publishList) {
+        super(cms, "OpenCms: Publishing of resources in publish list");
+        
+        m_resourceName = null;
+        m_directPublishSiblings = false;
+        m_publishList = publishList;  
+        
+        initHtmlReport();
+    }
     
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
@@ -87,18 +115,26 @@ public class CmsPublishThread extends A_CmsReportThread {
      */
     public void run() {
         try {
-            if (m_resourceName != null) {
-                // "publish resource directly" case
+            if (m_publishList != null) {
                 getReport().println(getReport().key("report.publish_resource_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-                getCms().publishResource(m_resourceName, m_directPublishSiblings, getReport());
-                getReport().println(getReport().key("report.publish_resource_end"), I_CmsReport.C_FORMAT_HEADLINE);
+                getCms().publishProject(getReport(), m_publishList);
+                getReport().println(getReport().key("report.publish_resource_end"), I_CmsReport.C_FORMAT_HEADLINE);                
             } else {
-                // "publish current project" case
-                getReport().println(getReport().key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-                getCms().publishProject(getReport());
-                getReport().println(getReport().key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);                
+                // TODO check if the following code can be removed
+                
+                if (m_resourceName != null) {
+                    // "publish resource directly" case
+                    getReport().println(getReport().key("report.publish_resource_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                    getCms().publishResource(m_resourceName, m_directPublishSiblings, getReport());
+                    getReport().println(getReport().key("report.publish_resource_end"), I_CmsReport.C_FORMAT_HEADLINE);
+                } else {
+                    // "publish current project" case
+                    getReport().println(getReport().key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                    getCms().publishProject(getReport());
+                    getReport().println(getReport().key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
+                }
             }
-        } catch (CmsException e) {
+        } catch (Exception e) {
             getReport().println(e);
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error publishing project", e);

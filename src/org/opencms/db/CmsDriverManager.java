@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/25 12:42:45 $
- * Version: $Revision: 1.311 $
+ * Date   : $Date: 2004/01/28 09:32:23 $
+ * Version: $Revision: 1.312 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.311 $ $Date: 2004/01/25 12:42:45 $
+ * @version $Revision: 1.312 $ $Date: 2004/01/28 09:32:23 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5263,12 +5263,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param cms the current CmsObject
      * @param context the current request context
      * @param report a report object to provide the loggin messages
-     * @param publishHistoryId unique int ID to identify each publish task in the publish history
-     * @param directPublishResource a resource to be published directly
-     * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get published too, if this flag is true
+     * @param publishList a Cms publish list
      * @throws Exception if something goes wrong
+     * @see #getPublishList(CmsRequestContext, CmsResource, boolean, I_CmsReport)
      */
-    public synchronized void publishProject(CmsObject cms, CmsRequestContext context, I_CmsReport report, CmsUUID publishHistoryId, CmsResource directPublishResource, boolean directPublishSiblings) throws Exception {
+    public synchronized void publishProject(CmsObject cms, CmsRequestContext context, CmsPublishList publishList, I_CmsReport report) throws Exception {
         Vector changedResources = new Vector();
         Vector changedModuleMasters = new Vector();
         int publishProjectId = context.currentProject().getId();
@@ -5288,20 +5287,20 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 int maxVersions = cms.getRegistry().getMaximumBackupVersions();
 
                 // if we direct publish a file, check if all parent folders are already published
-                if (directPublishResource != null) {
-                    CmsUUID parentID = directPublishResource.getParentStructureId();
+                if (publishList.isDirectPublish()) {
+                    CmsUUID parentID = publishList.getDirectPublishParentStructureId();
                     try {
                         getVfsDriver().readFolder(I_CmsConstants.C_PROJECT_ONLINE_ID, parentID);
                     } catch (CmsException e) {
-                        report.println("Parent folder not published for resource " + directPublishResource.getName(), I_CmsReport.C_FORMAT_ERROR);
+                        report.println("Parent folder not published for resource " + publishList.getDirectPublishResourceName(), I_CmsReport.C_FORMAT_ERROR);
                         return;
                     }
                 }
 
-                m_projectDriver.publishProject(context, report, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), publishHistoryId, directPublishResource, directPublishSiblings, isHistoryEnabled(cms), tagId, maxVersions);
+                m_projectDriver.publishProject(context, report, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), publishList, isHistoryEnabled(cms), tagId, maxVersions);
 
                 // don't publish COS module data if a file/folder gets published directly
-                if (context.currentProject().getType() != I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH) {
+                if (!publishList.isDirectPublish()) {
                     // now publish the module masters
                     Vector publishModules = new Vector();
                     cms.getRegistry().getModulePublishables(publishModules, null);
@@ -5344,7 +5343,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     Iterator i = changedModuleMasters.iterator();
                     while (i.hasNext()) {
                         CmsPublishedResource currentCosResource = (CmsPublishedResource) i.next();
-                        m_projectDriver.writePublishHistory(context.currentProject(), publishHistoryId, tagId, currentCosResource.getContentDefinitionName(), currentCosResource.getMasterId(), currentCosResource.getType(), currentCosResource.getState());
+                        m_projectDriver.writePublishHistory(context.currentProject(), publishList.getPublishHistoryId(), tagId, currentCosResource.getContentDefinitionName(), currentCosResource.getMasterId(), currentCosResource.getType(), currentCosResource.getState());
                     }
                 }
             } catch (CmsException e) {
@@ -8765,28 +8764,30 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }   
     
     /**
-     * Filters all new/changed/deleted files from the current (offline) project that will be published actually.<p>
+     * Returns a Cms publish list object containing the Cms resources that actually get published.<p>
+     * 
+     * This list contains only file resources, no folders. Folders to be published are still 
+     * identified in the project driver's publishProject method.<p>
+     * 
+     * Case 1 (publish project): all new/changed/deleted Cms file resources in the current (offline)
+     * project are inspected whether they would get published or not.<p> 
+     * 
+     * Case 2 (direct publish a resource): a specified Cms file resource and optionally it's siblings 
+     * are inspected whether they get published.<p>
+     * 
+     * Please refer to the source code of this method for the rules on how to decide whether a
+     * new/changed/deleted Cms resource can be published or not.<p>
      * 
      * @param context the current request context
+     * @param directPublishResource a Cms resource to be published directly (in case 2), or null (in case 1)
+     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published (in case 2)
      * @param report an instance of I_CmsReport to print messages
-     * @return a List with all new/changed/deleted files from the current (offline) project that will be published actually
+     * @return a publish list with all new/changed/deleted files from the current (offline) project that will be published actually
      * @throws Exception if something goes wrong
-     */ 
-    public synchronized List filterOfflineFiles(CmsRequestContext context, I_CmsReport report) throws Exception {
-        return filterOfflineFiles(context, null, false, report);
-    }
-    
-    /**
-     * Filters all new/changed/deleted files from the current (offline) project that will be published actually.<p>
-     * 
-     * @param context the current request context
-     * @param directPublishResource a resource to be published directly, or null if all offline files in the current project should get filtered
-     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
-     * @param report an instance of I_CmsReport to print messages
-     * @return a List with all new/changed/deleted files from the current (offline) project that will be published actually
-     * @throws Exception if something goes wrong
+     * @see org.opencms.db.CmsPublishList
      */    
-    public synchronized List filterOfflineFiles(CmsRequestContext context, CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+    public synchronized CmsPublishList getPublishList(CmsRequestContext context, CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+        CmsPublishList publishList = null;
         List offlineFiles = null;
         List siblings = null;
         List projectResources = null;
@@ -8794,7 +8795,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         Iterator j = null;
         CmsResource currentSibling = null;
         CmsResource currentFileHeader = null;
-        boolean directPublishFile = context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null && directPublishResource.isFile();
+        boolean directPublish = false;
+        boolean directPublishFile = false;        
         boolean publishCurrentResource = false;
         String currentResourceName = null;
         String currentSiblingName = null;
@@ -8802,16 +8804,22 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         
         report.println(report.key("report.publish_prepare_files"), I_CmsReport.C_FORMAT_HEADLINE);
         report.print(report.key("report.publish_read_projectfiles") + report.key("report.dots"));        
+
+        directPublish = directPublishResource != null;
+        directPublishFile = directPublish && directPublishResource.isFile();         
         
         projectResources = readProjectResources(context.currentProject());
 
         if (directPublishFile) {
-            // a file gets published directly- add this resource to the unpublished offline file headers
+            // a file resource gets published directly
+            publishList = new CmsPublishList(directPublishResource, directPublishFile);
+            
+            // add this resource as a candidate to the unpublished offline file headers
             offlineFiles = (List) new ArrayList();
             offlineFiles.add(directPublishResource);
 
             if (directPublishSiblings) {
-                // add optionally all siblings of the direct published resource
+                // add optionally all siblings of the direct published resource as candidates
                 siblings = readSiblings(context, directPublishResource.getRootPath(), false, true);
 
                 i = siblings.iterator();
@@ -8828,11 +8836,19 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 }
             }
         } else {
-            // a project gets published- add all unpublished offline file headers
+            if (directPublish) {
+                // a folder resource gets published directly
+                publishList = new CmsPublishList(directPublishResource, directPublishFile);
+            } else {
+                // a project gets published directly
+                publishList = new CmsPublishList();
+            }
+            
+            // add all unpublished offline file headers as candidates
             offlineFiles = getVfsDriver().readFiles(context.currentProject().getId());
         }
 
-        // sort out files that will not be published
+        // sort out candidates that will not be published
         i = offlineFiles.iterator();
         while (i.hasNext()) {
             publishCurrentResource = false;
@@ -8843,48 +8859,42 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             currentLock = getLock(context, currentResourceName);
 
             switch (currentFileHeader.getState()) {
-                // the current resource is deleted
-                case I_CmsConstants.C_STATE_DELETED :
-                    // it is published, if it was changed to deleted in the current project
-                    String delProject = getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), currentFileHeader, currentFileHeader.getType());
-
-                    //if (directPublishResource != null && directPublishResource.isFile() && directPublishSiblings && !currentFileHeader.equals(directPublishResource)) {
-                    // siblings of a deleted file that gets published directly should be also
-                    // published, no matter in which project they have been deleted
-                    //publishCurrentResource = true;
-                    //} else {
-                    
-                    // a project gets published or a folder gets published directly
-                    if (delProject != null && delProject.equals("" + context.currentProject().getId())) {
-                        publishCurrentResource = true;
-                    } else {
-                        publishCurrentResource = false;
-                    }
-                    //}
-                    break;
-
-                    // the current resource is new   
-                case I_CmsConstants.C_STATE_NEW :
-                    // it is published, if it was created in the current project
-                    // or if it is a new sibling of another resource that is currently not changed in any project
-                    publishCurrentResource = currentFileHeader.getProjectLastModified() == context.currentProject().getId() || currentFileHeader.getProjectLastModified() == 0;
-                    break;
-
-                    // the current resource is changed
-                case I_CmsConstants.C_STATE_CHANGED :
-                    // it is published, if it was changed in the current project
-                    publishCurrentResource = currentFileHeader.getProjectLastModified() == context.currentProject().getId();
-                    break;
-
-                    // the current resource is unchanged
-                case I_CmsConstants.C_STATE_UNCHANGED :
-                default :
-                    // so it is not published
+            // the current resource is deleted
+            case I_CmsConstants.C_STATE_DELETED :
+                // it is published, if it was changed to deleted in the current project
+                String delProject = getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), currentFileHeader, currentFileHeader.getType());
+                
+                // a project gets published or a folder gets published directly
+                if (delProject != null && delProject.equals("" + context.currentProject().getId())) {
+                    publishCurrentResource = true;
+                } else {
                     publishCurrentResource = false;
-                    break;
+                }
+                //}
+                break;
+
+                // the current resource is new   
+            case I_CmsConstants.C_STATE_NEW :
+                // it is published, if it was created in the current project
+                // or if it is a new sibling of another resource that is currently not changed in any project
+                publishCurrentResource = currentFileHeader.getProjectLastModified() == context.currentProject().getId() || currentFileHeader.getProjectLastModified() == 0;
+                break;
+
+                // the current resource is changed
+            case I_CmsConstants.C_STATE_CHANGED :
+                // it is published, if it was changed in the current project
+                publishCurrentResource = currentFileHeader.getProjectLastModified() == context.currentProject().getId();
+                break;
+
+                // the current resource is unchanged
+            case I_CmsConstants.C_STATE_UNCHANGED :
+            default :
+                // so it is not published
+                publishCurrentResource = false;
+                break;
             }
 
-            if (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null) {
+            if (directPublish) {
                 if (directPublishResource.isFolder()) {
                     if (directPublishSiblings) {
 
@@ -8897,8 +8907,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                             // case of a "direct publish"
                             publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getRootPath());
                         } else {
-                            // the resource has some siblings, so check if they are inside the folder 
-                            // to publish
+                            // the resource has some siblings, so check if they are inside the 
+                            // folder to be published
                             siblings = readSiblings(context, currentResourceName, true, true);
                             j = siblings.iterator();
                             boolean siblingInside = false;
@@ -8943,7 +8953,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         report.println(report.key("report.publish_prepare_files_finished"), I_CmsReport.C_FORMAT_HEADLINE);        
 
-        return offlineFiles;
+        publishList.addAll(offlineFiles);
+        return publishList;        
     }
     
     /**
@@ -8957,18 +8968,17 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
     
     /**
-     * Validates the HTML links (hrefs and images) in the unpublished XML page
-     * which will be published in the current project.<p>
+     * Validates the Cms resources in a Cms publish list.<p>
      * 
      * @param cms the current user's Cms object
-     * @param directPublishResource the resource which will be directly published
-     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
+     * @param publishList a Cms publish list
      * @param report an instance of I_CmsReport to print messages
+     * @return a map with lists of invalid links keyed by resource names
      * @throws Exception if something goes wrong
+     * @see #getPublishList(CmsRequestContext, CmsResource, boolean, I_CmsReport)
      */
-    public void validateHtmlLinks(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
-        List offlineFiles = filterOfflineFiles(cms.getRequestContext(), directPublishResource, directPublishSiblings, report);
-        getHtmlLinkValidator().validateResources(cms, offlineFiles, report);                        
+    public Map validateHtmlLinks(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws Exception {
+        return getHtmlLinkValidator().validateResources(cms, publishList.getResourceList(), report);                        
     }
 
 }

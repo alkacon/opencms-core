@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.283 $
+* Date   : $Date: 2004/01/28 09:32:23 $
+* Version: $Revision: 1.284 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.283 $ $Date: 2004/01/25 12:42:45 $
+ * @version $Revision: 1.284 $ $Date: 2004/01/28 09:32:23 $
  */
 public interface I_CmsConstants {
 
@@ -220,11 +220,6 @@ public interface I_CmsConstants {
      * The project will be deleted after publishing
      */
     int C_PROJECT_TYPE_TEMPORARY = 1;
-
-    /**
-     * This constant defines a direct-publish project.<p>
-     */
-    int C_PROJECT_TYPE_DIRECT_PUBLISH = 3;
 
     /**
      * This constant defines a unlocked project.

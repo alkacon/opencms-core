@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/01/22 11:50:01 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/01/28 09:32:23 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.41 $ $Date: 2004/01/22 11:50:01 $
+ * @version $Revision: 1.42 $ $Date: 2004/01/28 09:32:23 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -249,15 +249,14 @@ public interface I_CmsProjectDriver {
      * @param context the current request context
      * @param report an I_CmsReport instance to print output messages
      * @param onlineProject the online project
-     * @param publishHistoryId unique int ID to identify each publish task in the publish history
-     * @param directPublishResource a CmsResource that gets directly published; or null if an entire project gets published
-     * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get published too, if this flag is true
+     * @param publishList a Cms publish list
      * @param backupEnabled true if published resources should be written to the Cms backup
      * @param backupTagId the backup tag ID
      * @param maxVersions maximum number of backup versions
      * @throws Exception if something goes wrong
+     * @see org.opencms.db.CmsDriverManager#getPublishList(CmsRequestContext, CmsResource, boolean, I_CmsReport)
      */
-    void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsUUID publishHistoryId, CmsResource directPublishResource, boolean directPublishSiblings, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
+    void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsPublishList publishList, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
 
     /**
      * Reads a project by task-id.<p>

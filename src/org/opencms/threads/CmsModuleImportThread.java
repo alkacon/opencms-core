@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleImportThread.java,v $
- * Date   : $Date: 2004/01/21 15:02:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/01/28 09:32:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
@@ -48,7 +47,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1.10
  */
 public class CmsModuleImportThread extends A_CmsReportThread {
@@ -133,7 +132,7 @@ public class CmsModuleImportThread extends A_CmsReportThread {
             if (DEBUG) {
                 System.err.println("CmsAdminModuleImportThread() finished");
             }
-        } catch (CmsException e) {
+        } catch (Exception e) {
             getReport().println(e);
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error importing module " + m_moduleName, e);
