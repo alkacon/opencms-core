@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: PdfParser.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/20 11:06:09 $
- *  $Revision: 1.1 $
+ *  $Date: 2002/02/26 14:02:46 $
+ *  $Revision: 1.2 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -45,7 +45,7 @@ import java.io.*;
 import java.util.List;
 
 
-public class PdfParser {
+public class PdfParser implements I_ContentParser{
 
     private InputStream in;
     private static final boolean debug=false;
@@ -373,10 +373,12 @@ public class PdfParser {
                 }
                 //System.out.println("new line");
             }
+
             //System.out.println("hello");
             break;
 
         }
+        replaceSpChars();
     }
     /**
      * Look for tokens.  This is not effiecent.
@@ -413,6 +415,7 @@ public class PdfParser {
 
         boolean end = false;
         int b = read();
+
         while (true) {
             // check to see if new line;
             if ((char)b == '>') {
@@ -512,8 +515,7 @@ public class PdfParser {
                     if (b == -1 ) {end = true; break;}
                     // look for end ')'
                     if ((char)b == ')') break;
-                    replaceSpChars(b, bis,tmp);
-                    //tmp.write(b);
+                    tmp.write(b);
                 }
             }
             if (end) break;
@@ -528,76 +530,103 @@ public class PdfParser {
     /**
      * To replace the german Sonderzeichen.
      */
-    private void replaceSpChars(int b, ByteArrayInputStream bis,ByteArrayOutputStream tmp){
-        if ((char)b == '\\'){
-            b = bis.read();
-            if ((char)b == '3') {
-                b = bis.read();
-                if ((char)b == '4') {
-                    b = bis.read();
-                    if ((char)b == '4') {
-                        tmp.write('a');
-                        b='e';
-                    }
-                }else if ((char)b == '7') {
-                    b = bis.read();
-                    if ((char)b == '4') {
-                        tmp.write('u');
-                        b='e';
-                    }
-                }else if ((char)b == '0') {
-                    b = bis.read();
-                    if ((char)b == '4') {
-                        tmp.write('A');
-                        b='e';
-                    }
-                }else if ((char)b == '2') {
-                    b = bis.read();
-                    if ((char)b == '6') {
-                        tmp.write('O');
-                        b='e';
-                    }
-                }else if ((char)b == '3') {
-                    b = bis.read();
-                    if ((char)b == '7') {
-                        b='ß';
-                    }else if ((char)b == '4') {
-                        tmp.write('U');
-                        b='e';
-                    }
-                }else if ((char)b == '6') {
-                    b = bis.read();
-                    if ((char)b == '6') {
-                        tmp.write('o');
-                        b='e';
-                    }
+    private void replaceSpChars(){
+
+        int index=0;
+        int length=contents.length();
+        boolean weiter;
+        while(true){
+            weiter=false;
+            if (index+4<length) {
+                index=contents.toString().indexOf("\\237");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"ue");
+                    weiter=true;
                 }
-            }else if ((char)b == '\\') {
-                b='\\';
-            }else if ((char)b == '2') {
-                b = bis.read();
-                if ((char)b == '2') {
-                    b = bis.read();
-                    if ((char)b == '3') {
-                        b='"';
-                    }
-                }else if ((char)b == '4') {
-                    b = bis.read();
-                    if ((char)b == '7') {
-                        b='§';
-                    }
-                }else if ((char)b == '0') {
-                    b = bis.read();
-                    if ((char)b == '0') {
-                        b='€';
-                    }else if ((char)b == '4') {
-                        b='"';
-                    }
+                index=contents.toString().indexOf("\\212");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"ae");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\232");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"oe");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\206");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"Ue");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\312");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4," ");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\320");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"-");
+                    weiter=true;
+                }/*
+                index=contents.toString().indexOf("\\237");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"Ae");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\237");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"Oe");
+                    weiter=true;
+                }*/
+                index=contents.toString().indexOf("\\321");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4," ");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\247");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"ss");
+                    weiter=true;
+                }
+                //next codeset
+                index=contents.toString().indexOf("\\344");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"ae");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\304");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"Ae");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\374");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"ue");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\334");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"Ue");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\366");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"oe");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\326");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"Oe");
+                    weiter=true;
+                }
+                index=contents.toString().indexOf("\\337");
+                if (index!=-1) {
+                    contents=contents.replace(index,index+4,"ss");
+                    weiter=true;
                 }
             }
-
+            if (!weiter) break;
         }
-        tmp.write(b);
     }
 
     /**

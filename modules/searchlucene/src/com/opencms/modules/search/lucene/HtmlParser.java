@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: HtmlParser.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/20 11:06:09 $
- *  $Revision: 1.1 $
+ *  $Date: 2002/02/26 14:02:46 $
+ *  $Revision: 1.2 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -32,8 +32,9 @@ package com.opencms.modules.search.lucene;
  * @version 1.0
  */
 import com.opencms.htmlconverter.*;
+import java.io.*;
 
-public class HtmlParser {
+public class HtmlParser implements I_ContentParser{
 
     // the debug flag
     private final boolean debug = false;
@@ -42,6 +43,7 @@ public class HtmlParser {
     private String m_keywords="";
     private String m_description="";
     private String m_content="";
+    private String m_completeContent="";
 
     private CmsHtmlConverter conv = null;
 
@@ -121,8 +123,9 @@ public class HtmlParser {
     public String getContents() {
         return m_content;
     }
+
     /**
-     * Parse Content. [24] 320:1
+     * Parse Content.
      */
     public String getDescription() {
         return m_description;
@@ -134,7 +137,7 @@ public class HtmlParser {
         return m_title;
     }
     /**
-     * Parse Content. [24] 320:1
+     * Parse Content.
      */
     public String getKeywords() {
         return m_keywords;
@@ -154,11 +157,41 @@ public class HtmlParser {
         return content;
     }
 
-    public void parse(String completeContent){
-        m_keywords=filterContent(completeContent, KEYWORD_CONF);
-        m_description=filterContent(completeContent, DESCRIPTION_CONF);
-        m_title=filterContent(completeContent, TITLE_CONF);
-        m_content=filterContent(completeContent, CONTENT_CONF);
+    public void parse(InputStream con){
+        m_completeContent=fetchHtmlContent(con);
+        m_keywords=filterContent(m_completeContent, KEYWORD_CONF);
+        m_description=filterContent(m_completeContent, DESCRIPTION_CONF);
+        m_title=filterContent(m_completeContent, TITLE_CONF);
+        m_content=filterContent(m_completeContent, CONTENT_CONF);
+    }
+    /**
+     *  Description of the Method
+     *
+     *@param  theUrl  Description of the Parameter
+     *@return         Description of the Return Value
+     */
+    private String fetchHtmlContent(InputStream con) {
+        int index = -1;
+        StringBuffer content = null;
+        DataInputStream input = null;
+        String line = null;
+
+        try {
+            input = new DataInputStream(con);
+            content = new StringBuffer();
+            while ((line = input.readLine()) != null) {
+                content = content.append(line);
+            }
+            input.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        if (debug) {
+            System.out.println("' done!");
+        }
+
+        return content.toString();
     }
 
 

@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: ControlLucene.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/20 11:06:09 $
- *  $Revision: 1.2 $
+ *  $Date: 2002/02/26 14:02:46 $
+ *  $Revision: 1.3 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -39,10 +39,12 @@ import javax.servlet.http.*;
 public class ControlLucene implements com.opencms.core.I_CmsConstants, com.opencms.modules.search.form.I_CmsSearchEngine {
     // the debug flag
     private final static boolean debug = false;
+    // for start as standalone application
     private static boolean mainStart = false;
+
     private String m_query;
-    private static String m_searchword = "Jar besitzt verschiedene Optionen um Archive zu erzeugen, sie auszupacken nd anzuschauen.";
-    private static String m_url = CmsBase.getAbsoluteWebPath("lucene/index");
+    private static String m_searchword = "Möglichkeiten";
+    private static String m_url = CmsBase.getAbsoluteWebPath("search/index");
     /**
      *  Description of the Field
      */
@@ -79,11 +81,15 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
 
     private static Vector C_INDEX_FILES = null;
 
+    private static boolean m_active=false;
+    private static boolean m_newIndex=false;
+
 
     /**
      *  Constructor for the ControlLucene object
      */
-    public ControlLucene() { }
+    public ControlLucene() {
+    }
 
 
     /**
@@ -265,12 +271,11 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                 }
             }
             m_configPath="D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/WEB-INF/config";
-            path ="D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/lucene/index";
+            path ="D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/"+m_url;
         } else {
             CmsRequestContext req = cms.getRequestContext();
             String linkPrefix = req.getRequest().getScheme() + "://"
                      + req.getRequest().getServerName() + ":" + req.getRequest().getServerPort();
-
             for(int i = 0; i < vfiles.size(); i++) {
                 link = (String) vfiles.elementAt(i);
                 bl = new StringBuffer(link);
@@ -278,9 +283,11 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                     System.out.println("link=" + link);
                 }
 
-                //every html-page should contain a ".htm"
+                //every html-page should contain a ".htm" or ".pdf" or be loaded from the docloader
                 if(!link.startsWith(cms.getRequestContext().getRequest().getServletUrl())
-                         && (link.indexOf(".htm") != -1 || link.indexOf(".pdf") != -1)) {
+                         && (link.indexOf(".htm") != -1
+                            || link.indexOf(".pdf") != -1
+                            || link.indexOf("internal/document") != -1)) {
                     if(link.startsWith("/")) {
                         files.addElement(linkPrefix + link);
                     }
@@ -299,6 +306,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                     System.out.println("thread gestartet");
                 }
                 IndexFiles indexfiles = new IndexFiles(path, files, m_configPath);
+                indexfiles.setNewIndex(m_newIndex);
                 indexfiles.start();
             }
         } catch(Exception ex) {
@@ -313,7 +321,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
      *@exception  Exception  Description of the Exception
      */
     public void createIndexDirectory() throws Exception {
-        if (mainStart) m_url ="D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/lucene/index";
+        if (mainStart) m_url ="D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/"+m_url;
         IndexDirectory.createIndexDirectory(m_url);
     }
 
@@ -325,8 +333,8 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
      */
     public void searchIndex() throws Exception {
         SearchLucene s = new SearchLucene();
-        if (mainStart) m_url ="D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/lucene/index";
-        showSearchResults(s.performSearch(m_url, m_searchword));
+        if (mainStart) m_url ="D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/"+m_url;
+        if (m_active ) showSearchResults(s.performSearch(m_url, m_searchword));
     }
 
 
@@ -459,19 +467,22 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
      */
     public static void main(String[] args) throws Exception {
         mainStart=true;
+        m_active=true;
         ControlLucene cl = new ControlLucene();
         C_INDEX_FILES = new Vector();
         //C_INDEX_FILES.add("http://localhost/lucineTest/Thinking_in_Java.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/Urlaubsantrag3_02.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/OpenCMS_de.pdf");
-        //C_INDEX_FILES.add("http://localhost/lucineTest/test2.pdf");
+        //C_INDEX_FILES.add("http://localhost/lucineTest/test4.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/Java_ist_auch_eine_Insel_20010426.PDF");
         //C_INDEX_FILES.add("http://localhost/lucineTest/XXVI.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/OpenCmsDoc300102.pdf");
+        C_INDEX_FILES.add("http://localhost/lucineTest/Java-17.pdf");
+
 
         //C_INDEX_FILES.add("http://www.dkv.com/ernaehrung_naehrstoffe.phtml?typ=content");
         //C_INDEX_FILES.add("http://www.dkv.com/medizin_krankheitsbild.phtml?typ=content");
-        C_INDEX_FILES.add("http://localhost:8080/opencms2/export/testseiten/warmwasser.html");
+        //C_INDEX_FILES.add("http://localhost:8080/opencms2/export/testseiten/warmwasser.html");
         //C_INDEX_FILES.add("http://intranet.ff.de/framfab/opencms/framfab/kantine/index.html");
         /*
          *  C_INDEX_FILES.add("http://www.dkv.com/gesundheit_gesundheitsserie.phtml?typ=content");
@@ -481,8 +492,8 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         /*
          *  "http://intranet.ff.de/framfab/opencms/bla.html"
          */
-        cl.publishLinks(new CmsObject(), C_INDEX_FILES);
-        //cl.searchIndex();
+        //cl.publishLinks(new CmsObject(), C_INDEX_FILES);
+        cl.searchIndex();
         //cl.createIndexDirectory();
     }
 
@@ -624,7 +635,22 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
      *@param  changedResources  Description of the Parameter
      */
     public static void publishLinks(CmsObject cms, Vector changedResources) {
-        createIndex(cms, m_url, changedResources);
+
+        try {
+            m_active=OpenCms.getRegistry().getModuleParameterBoolean("com.opencms.modules.search.lucene",
+                "active");
+            m_newIndex=OpenCms.getRegistry().getModuleParameterBoolean("com.opencms.modules.search.lucene",
+                "newIndex");
+        }
+        catch (Exception ex) {
+            m_active=true;
+            m_newIndex=false;
+        }
+        if (debug) {
+            System.out.println("m_active="+m_active);
+            System.out.println("m_newIndex="+m_newIndex);
+        }
+        if (m_active) createIndex(cms, m_url, changedResources);
     }
 
 }
