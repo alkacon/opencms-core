@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/06 15:34:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2001/02/19 12:58:03 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.20 $ $Date: 2001/02/06 15:34:33 $ *
+ * @version $Revision: 1.21 $ $Date: 2001/02/19 12:58:03 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -560,6 +560,143 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		}
 		return readUser(id);
 	}
+
+	/**
+	 * Adds a user to the database.
+	 *
+	 * @param name username
+	 * @param password user-password
+     * @param recoveryPassword user-recoveryPassword
+	 * @param description user-description
+	 * @param firstname user-firstname
+	 * @param lastname user-lastname
+	 * @param email user-email
+	 * @param lastlogin user-lastlogin
+	 * @param lastused user-lastused
+	 * @param flags user-flags
+	 * @param additionalInfos user-additional-infos
+	 * @param defaultGroup user-defaultGroup
+	 * @param address user-defauladdress
+	 * @param section user-section
+	 * @param type user-type
+	 *
+	 * @return the created user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */
+	public CmsUser addImportUser(String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+		//System.out.println("PL/SQL: addUser");
+		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+		int id = nextId(C_TABLE_USERS);
+		byte[] value = null;
+		PreparedStatement statement = null;
+		PreparedStatement statement2 = null;
+		PreparedStatement nextStatement = null;
+		Connection con = null;
+		ResultSet res = null;
+		try {
+			// serialize the hashtable
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			ObjectOutputStream oout = new ObjectOutputStream(bout);
+			oout.writeObject(additionalInfos);
+			oout.close();
+			value = bout.toByteArray();
+
+			// write data to database
+			// first insert the data without user_info
+			con = DriverManager.getConnection(m_poolName);
+			statement = con.prepareStatement(cq.C_PLSQL_USERSFORINSERT);
+			statement.setInt(1, id);
+			statement.setString(2, name);
+			// crypt the password with MD5
+			statement.setString(3, checkNull(password));
+			statement.setString(4, checkNull(recoveryPassword));
+			statement.setString(5, checkNull(description));
+			statement.setString(6, checkNull(firstname));
+			statement.setString(7, checkNull(lastname));
+			statement.setString(8, checkNull(email));
+			statement.setTimestamp(9, new Timestamp(lastlogin));
+			statement.setTimestamp(10, new Timestamp(lastused));
+			statement.setInt(11, flags);
+			//statement.setBytes(12,value);
+			statement.setInt(12, defaultGroup.getId());
+			statement.setString(13, checkNull(address));
+			statement.setString(14, checkNull(section));
+			statement.setInt(15, type);
+			statement.executeUpdate();
+			statement.close();
+			// now update user_info of the new user
+			statement2 = con.prepareStatement(cq.C_PLSQL_USERSFORUPDATE);
+			statement2.setInt(1, id);
+			con.setAutoCommit(false);
+			res = statement2.executeQuery();
+			while (res.next()) {
+				oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("USER_INFO");
+				ByteArrayInputStream instream = new ByteArrayInputStream(value);
+				OutputStream outstream = blob.getBinaryOutputStream();
+				byte[] chunk = new byte[blob.getChunkSize()];
+				int i = -1;
+				while ((i = instream.read(chunk)) != -1) {
+					outstream.write(chunk, 0, i);
+				}
+				instream.close();
+				outstream.close();
+			}
+			statement2.close();
+			res.close();
+			// for the oracle-driver commit or rollback must be executed manually
+			// because setAutoCommit = false in CmsDbPool.CmsDbPool
+			nextStatement = con.prepareStatement(cq.C_COMMIT);
+			nextStatement.execute();
+			nextStatement.close();
+			con.setAutoCommit(true);
+		} catch (SQLException e) {
+			throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+		} catch (IOException e) {
+			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+		} finally {
+			if (res != null) {
+				try {
+					res.close();
+				} catch (SQLException se) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc){
+				}
+			}
+			if (statement2 != null) {
+				try {
+					statement2.close();
+				} catch (SQLException exc){
+				}
+				try {
+					nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+					nextStatement.execute();
+				} catch (SQLException se) {
+				}
+			}
+			if (nextStatement != null) {
+				try {
+					nextStatement.close();
+				} catch (SQLException exc){
+				}
+			}
+			if (con != null) {
+				try {
+					con.setAutoCommit(true);
+				} catch (SQLException se) {
+				}
+				try {
+					con.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return readUser(id);
+	}
+
 	/**
 	 * Copies the file.
 	 *

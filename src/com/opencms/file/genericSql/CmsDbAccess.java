@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/09 12:32:03 $
- * Version: $Revision: 1.188 $
+ * Date   : $Date: 2001/02/19 12:58:20 $
+ * Version: $Revision: 1.189 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.188 $ $Date: 2001/02/09 12:32:03 $ *
+ * @version $Revision: 1.189 $ $Date: 2001/02/19 12:58:20 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -350,6 +350,95 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 			// crypt the password with MD5
 			statement.setString(3, digest(password));
 			statement.setString(4, digest(""));
+			statement.setString(5,checkNull(description));
+			statement.setString(6,checkNull(firstname));
+			statement.setString(7,checkNull(lastname));
+			statement.setString(8,checkNull(email));
+			statement.setTimestamp(9, new Timestamp(lastlogin));
+			statement.setTimestamp(10, new Timestamp(lastused));
+			statement.setInt(11,flags);
+			statement.setBytes(12,value);
+			statement.setInt(13,defaultGroup.getId());
+			statement.setString(14,checkNull(address));
+			statement.setString(15,checkNull(section));
+			statement.setInt(16,type);
+			statement.executeUpdate();
+		 }
+		catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
+		catch (IOException e){
+			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);
+		} finally {
+			// close all db-resources
+			if(statement != null) {
+				 try {
+					 statement.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(con != null) {
+				 try {
+					 con.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+		}
+		return readUser(id);
+	}
+
+	/**
+	 * Adds a user to the database.
+	 *
+	 * @param name username
+	 * @param password user-password
+     * @param recoveryPassword user-recoveryPassword
+	 * @param description user-description
+	 * @param firstname user-firstname
+	 * @param lastname user-lastname
+	 * @param email user-email
+	 * @param lastlogin user-lastlogin
+	 * @param lastused user-lastused
+	 * @param flags user-flags
+	 * @param additionalInfos user-additional-infos
+	 * @param defaultGroup user-defaultGroup
+	 * @param address user-defauladdress
+	 * @param section user-section
+	 * @param type user-type
+	 *
+	 * @return the created user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */
+	public CmsUser addImportUser(String name, String password, String recoveryPassword, String description,
+						  String firstname, String lastname, String email,
+						  long lastlogin, long lastused, int flags, Hashtable additionalInfos,
+						  CmsGroup defaultGroup, String address, String section, int type)
+		throws CmsException {
+		int id = nextId(C_TABLE_USERS);
+		byte[] value=null;
+
+		Connection con = null;
+		PreparedStatement statement = null;
+
+		try	{
+			// serialize the hashtable
+			ByteArrayOutputStream bout= new ByteArrayOutputStream();
+			ObjectOutputStream oout=new ObjectOutputStream(bout);
+			oout.writeObject(additionalInfos);
+			oout.close();
+			value=bout.toByteArray();
+
+			// write data to database
+			con = DriverManager.getConnection(m_poolName);
+
+			statement = con.prepareStatement(m_cq.C_USERS_ADD);
+
+			statement.setInt(1,id);
+			statement.setString(2,name);
+			statement.setString(3, checkNull(password));
+			statement.setString(4, checkNull(recoveryPassword));
 			statement.setString(5,checkNull(description));
 			statement.setString(6,checkNull(firstname));
 			statement.setString(7,checkNull(lastname));
