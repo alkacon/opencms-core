@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/06 17:10:51 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.editor;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -46,7 +45,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
 /**
@@ -55,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1.12
  */
@@ -82,12 +80,6 @@ public abstract class CmsEditor extends CmsDialog {
     /** Value for the action: an error occured */
     public static final int ACTION_SHOW_ERRORMESSAGE = 127;
     
-    /** Constant for Internet Explorer type browsers */
-    public static final String BROWSER_IE = "IE";
-
-    /** Constant for Netscape type browsers */
-    public static final String BROWSER_NS = "NS";
-    
     /** Stores the VFS editor path */
     public static final String C_PATH_EDITORS = C_PATH_WORKPLACE + "editors/";
 
@@ -111,9 +103,6 @@ public abstract class CmsEditor extends CmsDialog {
 
     /** Value for the action parameter: an error occured */
     public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
-       
-    /** Helper variable to store the clients browser type */
-    private String m_browserType = null;
     
     // some private members for parameter storage
     private String m_paramBackLink;
@@ -135,22 +124,6 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public CmsEditor(CmsJspActionElement jsp) {
         super(jsp);
-    }
-    
-    /**
-     * Returns the browser type currently used by the client.<p>
-     * 
-     * @param cms the CmsObject
-     * @return the brwoser type
-     */
-    public static String getBrowserType(CmsObject cms) {
-        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-        String browser = orgReq.getHeader("user-agent");
-        if (browser.indexOf("MSIE") > -1) {
-            return BROWSER_IE;
-        } else {
-            return BROWSER_NS;
-        }
     }
         
     /**
@@ -324,18 +297,6 @@ public abstract class CmsEditor extends CmsDialog {
         } catch (CmsException e) {
             // ignore this exception
         }
-    }
-    
-    /**
-     * Returns the browser type currently used by the client.<p>
-     * 
-     * @return the brwoser type
-     */
-    public String getBrowserType() {
-        if (m_browserType == null) {
-            m_browserType = getBrowserType(getCms());
-        }
-        return m_browserType; 
     }
     
     /**

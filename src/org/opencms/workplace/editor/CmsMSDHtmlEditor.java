@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/02/06 17:10:51 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.1.12
  */
@@ -81,8 +81,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
     protected String prepareContent(boolean save) {
         String content = getParamContent();
         int indexBodyStart = content.toLowerCase().indexOf("<body>");
-        boolean isBrowserNS = BROWSER_NS.equals(getBrowserType());
-        if ("edit".equals(getParamEditormode()) || isBrowserNS || save) {
+        if ("edit".equals(getParamEditormode()) || save) {
             // editor is in text mode or content should be saved
             if (indexBodyStart != -1) {
                 // cut tags which are unwanted for text editor
@@ -156,13 +155,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
             }
             names.addElement(s);
         }
-        int browserId;
-        String browser = getBrowserType();
-        if (BROWSER_IE.equals(browser)) {
-            browserId = 0;
-        } else {
-            browserId = 1;
-        }
+        int browserId = 0;
         int loop = 1;
         int allowedEditors = I_CmsWpConstants.C_SELECTBOX_EDITORVIEWS_ALLOWED[browserId];
         if ("script".equals(getParamBodyname())) {
