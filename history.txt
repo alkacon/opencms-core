@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.8  Gom Jabbar   - XX September 2001
+* Bugfix 1228: if a class is not found you now get a nice Exception.
+
 OpenCms 4.5.7  Gom Jabbar   - 11 September 2001
 * Now the templates will be displayed correct again in the html-editor.
 * When creating a project with folders that does not exist in the virtual file system
