@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2001/07/09 08:09:31 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/07/19 13:33:30 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2001/07/09 08:09:31 $
+ * @version $Revision: 1.22 $ $Date: 2001/07/19 13:33:30 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -68,11 +68,10 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
-
             // remove all session values
             session.removeValue(C_PARA_FILE);
-            session.removeValue(C_PARA_PROJECT);
             session.removeValue("lasturl");
+            session.removeValue("version");
         }
 
         // get the filename
@@ -82,14 +81,14 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         }
         filename = (String)session.getValue(C_PARA_FILE);
 
-        // get the project
-        String versionId = (String)parameters.get(C_PARA_PROJECT);
+        // get the version
+        String versionId = (String)parameters.get("versionid");
         Integer id = null;
         CmsBackupResource backupFile = null;
         String theFileName = "";
         if(versionId != null) {
             id = new Integer(Integer.parseInt(versionId));
-            session.putValue(C_PARA_PROJECT, id);
+            session.putValue("version", versionId);
             backupFile = (CmsBackupResource)cms.readFileHeaderForHist(filename, id.intValue());
             theFileName = backupFile.getName();
         }
@@ -107,6 +106,19 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
             String title = cms.readProperty(filename, C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
+            }
+            if(cms.getRequestContext().currentProject().getId() == C_PROJECT_ONLINE_ID){
+                // This is the online project, show the buttons close and show version only
+                xmlTemplateDocument.setData("BUTTONRESTORE",xmlTemplateDocument.getProcessedDataValue("DISABLERESTORE", this));
+            } else {
+                // This is an offline project, show all buttons if the resource is locked
+                CmsFile currentFile = (CmsFile)cms.readFileHeader(filename);
+                if (currentFile.isLocked()) {
+                    // show the button for restore the version
+                    xmlTemplateDocument.setData("BUTTONRESTORE",xmlTemplateDocument.getProcessedDataValue("ENABLERESTORE", this));
+                } else {
+                    xmlTemplateDocument.setData("BUTTONRESTORE",xmlTemplateDocument.getProcessedDataValue("DISABLERESTORE", this));
+                }
             }
             String editedBy = backupFile.getLastModifiedByName();
             xmlTemplateDocument.setData("TITLE", title);

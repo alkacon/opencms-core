@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRestoreResource.java,v $
-* Date   : $Date: 2001/07/17 07:13:59 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/07/19 13:33:30 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2001/07/17 07:13:59 $
+ * @version $Revision: 1.2 $ $Date: 2001/07/19 13:33:30 $
  */
 
 public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -62,7 +62,6 @@ public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpCo
             Hashtable parameters, String templateSelector) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-
         // the template to be displayed
         String template = null;
 
@@ -75,6 +74,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpCo
             session.removeValue("restore");
             session.removeValue("lasturl");
         }
+
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
         String restore = (String)parameters.get("restore");
@@ -87,13 +87,8 @@ public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpCo
             session.putValue(C_PARA_FILE, filename);
         }
         filename = (String)session.getValue(C_PARA_FILE);
-A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "get versionid "+(String)session.getValue("versionid"));
-        String versionid = (String)parameters.get("versionid");
-        if(versionid != null) {
-            session.putValue("versionid", versionid);
-        }
-        versionid = (String)session.getValue("versionid");
-A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "versionid: "+versionid+", filename: "+filename);
+
+        String version = (String)session.getValue("version");
         String action = (String)parameters.get("action");
 
         CmsResource file = null;
@@ -108,7 +103,7 @@ A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "versionid: "+versionid+", filename: "+
             if(action != null) {
                 // restore the resource
                 try{
-                    cms.restoreResource(Integer.parseInt(versionid),file.getAbsolutePath());
+                    cms.restoreResource(Integer.parseInt(version),file.getAbsolutePath());
                     session.removeValue(C_PARA_FILE);
                     template = "done";
                 } catch(CmsException e){
