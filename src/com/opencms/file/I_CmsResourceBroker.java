@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/08 08:11:04 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2000/06/08 09:54:22 $
+ * Version: $Revision: 1.77 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.76 $ $Date: 2000/06/08 08:11:04 $
+ * @version $Revision: 1.77 $ $Date: 2000/06/08 09:54:22 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -2631,44 +2631,7 @@ public interface I_CmsResourceBroker {
 	
 	// Methods working with database import and export
     
-    /**
-	 * exports database (files, groups, users) into a specified file
-	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
-	 * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
-	 * @param exportFile the name (absolute Path) for the XML file
-	 * @param exportPath the name (absolute Path) for the folder to export
-	 * @param exportType what to export:
-	 *			C_EXPORTUSERSFILES exports all
-	 *			C_EXPORTONLYUSERS  exports only users and groups
-	 *			C_EXPORTONLYFILES  exports only files
-	 * 
-	 * @exception throws exception
-	 * 
-	 */
-	public void exportDb(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, int exportType)
-		throws Exception;
-	
-	/**
-	 * imports a (files, groups, users) XML file into database
-	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
-	 * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
-	 * @param importPath the name (absolute Path) of folder in which should be imported
-	 * @param importFile the name (absolute Path) of the XML import file
-	 * 
-	 * @exception throws Exception
-	 * 
-	 */
-	public void importDb(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath)
-		throws Exception;
-    
+     
     /**
 	 * Imports a import-resource (folder or zipfile) to the cms.
 	 * 
