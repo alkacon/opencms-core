@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/12/22 17:31:21 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2001/01/02 16:46:01 $
+ * Version: $Revision: 1.45 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2000/12/22 17:31:21 $
+ * @version $Revision: 1.45 $ $Date: 2001/01/02 16:46:01 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
 	
@@ -490,7 +490,6 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 	public String getStylesheet(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
 			throws CmsException {
 
-			 
 		CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
 		
 		// Get the styles from the parameter hashtable        
@@ -511,7 +510,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 		} else {
 			styleNS = "";
 		}
-					
+
 		HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
 		String servletPath = orgReq.getServletPath() + "/";
 
@@ -522,7 +521,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 			return styleNS;
 		}
 		if(browser.indexOf("MSIE") >-1) {
-			return servletPath + styleIE;
+            return servletPath + styleIE;
 		} else {
 			return servletPath + styleNS;
 		}
@@ -932,7 +931,15 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 		// as parameter
 		// TODO: replace _ELEMENT_ by a constant
 		parameterHashtable.put("_ELEMENT_", tagcontent);
-				
+
+		// Try to get the result from the cache
+		if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {
+			subTemplateKey = subTemplate.getKey(cms, templateFilename, parameterHashtable, null);            
+			if(m_cache.has(subTemplateKey) && (! subTemplate.shouldReload(cms, templateFilename, tagcontent, parameterHashtable, null))) {
+				result = m_cache.get(subTemplateKey);
+			}        
+		}
+                
 		// OK. let's call the subtemplate
 		if(result == null) {
 			try {
@@ -957,18 +964,13 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 					}
 				}
 			}  
-		}     
-		
-		// Store the results in the template cache, if cacheable
-		if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {
-			subTemplateKey = subTemplate.getKey(cms, templateFilename, parameterHashtable, null);            
-			if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null) && m_cache.has(subTemplateKey)
-					&& (! subTemplate.shouldReload(cms, templateFilename, tagcontent, parameterHashtable, null))) {
-				result = m_cache.get(subTemplateKey);
-			}        
-			m_cache.put(subTemplateKey, result);
-		}
-
+		     		
+	    	// Store the results in the template cache, if cacheable
+	    	if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {
+	    		// we don't need to re-get the caching-key here since it already exists
+	    		m_cache.put(subTemplateKey, result);
+	    	}
+        }
 		return result;
 	}
 	/**
