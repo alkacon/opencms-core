@@ -18,7 +18,7 @@
 			<xsd:element name="File" type="OpenCmsVfsFile" />
 			<xsd:element name="Image" type="OpenCmsVfsFile" />
 			<xsd:element name="Download" type="OpenCmsVfsFile" />
-			<xsd:element name="Link" type="OpenCmsVfsFile" />
+			<xsd:element name="Link" type="OpenCmsString" />
 			<xsd:element name="HtmlSnippet" type="OpenCmsString" />
 			<xsd:element name="Color" type="OpenCmsColor" />
 			<xsd:element name="DateTime" type="OpenCmsDateTime" />
