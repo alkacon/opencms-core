@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/15 16:27:43 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/09/16 09:15:51 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.48 $ $Date: 2003/09/15 16:27:43 $
+ * @version $Revision: 1.49 $ $Date: 2003/09/16 09:15:51 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -83,7 +83,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#createCmsBackupResourceFromResultSet(java.sql.ResultSet, boolean)
      */
-    public CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res, boolean hasContent) throws SQLException, CmsException {
+    public CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException, CmsException {
         byte[] content = null;
 
         CmsUUID backupId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_BACKUP_ID")));
@@ -259,7 +259,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#getAllBackupProjects()
      */
-    public Vector getAllBackupProjects() throws CmsException {
+    public Vector readBackupProjects() throws CmsException {
         Vector projects = new Vector();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -309,7 +309,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#getBackupProjectTag(long)
      */
-    public int getBackupProjectTag(long maxdate) throws CmsException {
+    public int readBackupProjectTag(long maxdate) throws CmsException {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -367,7 +367,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#nextBackupVersionId()
      */
-    public int nextBackupTagId() {
+    public int readNextBackupTagId() {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -436,7 +436,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readAllBackupFileHeaders()
      */
-    public List readAllBackupFileHeaders() throws CmsException {
+    public List readBackupFileHeaders() throws CmsException {
         CmsBackupResource currentBackupResource = null;
         ResultSet res = null;
         List allHeaders = (List) new ArrayList();
@@ -449,7 +449,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_ALL_BACKUP");
             res = stmt.executeQuery();
             while (res.next()) {
-                currentBackupResource = createCmsBackupResourceFromResultSet(res, false);
+                currentBackupResource = createBackupResource(res, false);
                 // only add each structureIdxresourceId combination once
                 String key = currentBackupResource.getStructureId().toString() + currentBackupResource.getResourceId().toString();
                 if (!storage.contains(key)) {
@@ -472,7 +472,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readAllBackupFileHeaders(com.opencms.flex.util.CmsUUID)
      */
-    public List readAllBackupFileHeaders(CmsUUID structureId) throws CmsException {
+    public List readBackupFileHeaders(CmsUUID structureId) throws CmsException {
         CmsBackupResource currentBackupResource = null;
         ResultSet res = null;
         List allHeaders = (List) new ArrayList();
@@ -485,7 +485,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setString(1, structureId.toString());
             res = stmt.executeQuery();
             while (res.next()) {
-                currentBackupResource = createCmsBackupResourceFromResultSet(res, false);
+                currentBackupResource = createBackupResource(res, false);
                 allHeaders.add(currentBackupResource);
             }
         } catch (SQLException e) {
@@ -515,7 +515,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setInt(2, versionId);
             res = stmt.executeQuery();
             if (res.next()) {
-                file = createCmsBackupResourceFromResultSet(res, true);
+                file = createBackupResource(res, true);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -551,7 +551,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setInt(2, tagId);
             res = stmt.executeQuery();
             if (res.next()) {
-                file = createCmsBackupResourceFromResultSet(res, false);
+                file = createBackupResource(res, false);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -688,7 +688,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readMaxBackupVersion(com.opencms.flex.util.CmsUUID)
      */
-    public int readMaxBackupVersion(CmsUUID resourceId) throws CmsException {
+    public int readBackupMaxVersion(CmsUUID resourceId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -717,8 +717,15 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#writeBackupFileContent(com.opencms.flex.util.CmsUUID, com.opencms.flex.util.CmsUUID, byte[], int, int)
-     */
+    * Internal method to write the backup content.<p>
+    *  
+    * @param backupId the backup id
+    * @param fileId the id of the file
+    * @param fileContent the content of the file
+    * @param tagId the tag revision
+    * @param versionId the version revision
+    * @throws CmsException if something goes wrong
+    */
     public void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int tagId, int versionId) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -947,7 +954,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             writeBackupProperties(publishProject, resource, properties, backupPkId, tagId, versionId);
 
             // now check if there are old backup versions to delete
-            List existingBackups = readAllBackupFileHeaders(resource.getStructureId());
+            List existingBackups = readBackupFileHeaders(resource.getStructureId());
             if (existingBackups.size() > maxVersions) {
                 // delete redundant backups
                 deleteBackups(existingBackups, maxVersions);

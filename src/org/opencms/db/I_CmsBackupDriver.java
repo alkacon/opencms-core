@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/15 15:06:16 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/09/16 09:15:50 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,8 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2003/09/15 15:06:16 $
+ * @author Michael Emmerich (m.emmerich@alkacon.com) 
+ * @version $Revision: 1.23 $ $Date: 2003/09/16 09:15:50 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -70,7 +71,7 @@ public interface I_CmsBackupDriver {
      * @throws SQLException if a requested attribute was not found in the result set
      * @throws CmsException if something goes wrong
      */
-    CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res, boolean hasContent) throws SQLException, CmsException;
+    CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException, CmsException;
 
     /**
      * Deletes backup versions of a resource.<p>
@@ -101,24 +102,6 @@ public interface I_CmsBackupDriver {
     void destroy() throws Throwable;
 
     /**
-     * Returns all projects from the history.
-     *
-     * @return a Vector of projects
-     * @throws CmsException if an error occurs
-     */
-    Vector getAllBackupProjects() throws CmsException;
-
-    /**
-     * Gets the TagId of the first backup project after a given date.<p>
-     * 
-     * This method is used during the deletion process of older backup data. 
-     * @param maxdate the date to compare the backup projects with
-     * @return tag id of the first backup project after maxdate 
-     * @throws CmsException if something goes wrong
-     */
-    int getBackupProjectTag(long maxdate) throws CmsException;
-
-    /**
      * Initializes the SQL manager for this driver.<p>
      * 
      * To obtain JDBC connections from different pools, further 
@@ -130,30 +113,6 @@ public interface I_CmsBackupDriver {
      * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
      */
     org.opencms.db.generic.CmsSqlManager initQueries();
-
-    /**
-     * Gets the next available backup version ID for a resource.<p>
-     * 
-     * @return int the next available backup version ID
-     */
-    int nextBackupTagId();
-
-    /**
-     * Reads all backup file headers  excluding the file content.<p>.
-     *
-     * @return List with all backup file headers
-     * @throws CmsException if something goes wrong
-     */
-    List readAllBackupFileHeaders() throws CmsException;
-
-    /**
-     * Reads all backup file headers of a file excluding the file content.<p>.
-     *
-     * @param resourceId the id of the file to read
-     * @return List with all backup file headers
-     * @throws CmsException if something goes wrong
-     */
-    List readAllBackupFileHeaders(CmsUUID resourceId) throws CmsException;
 
     /**
      * Reads a backup file including the file content.<p>
@@ -176,6 +135,32 @@ public interface I_CmsBackupDriver {
     CmsBackupResource readBackupFileHeader(int tagId, CmsUUID resourceId) throws CmsException;
 
     /**
+     * Reads all backup file headers  excluding the file content.<p>.
+     *
+     * @return List with all backup file headers
+     * @throws CmsException if something goes wrong
+     */
+    List readBackupFileHeaders() throws CmsException;
+
+    /**
+     * Reads all backup file headers of a file excluding the file content.<p>.
+     *
+     * @param resourceId the id of the file to read
+     * @return List with all backup file headers
+     * @throws CmsException if something goes wrong
+     */
+    List readBackupFileHeaders(CmsUUID resourceId) throws CmsException;
+
+    /**
+     * Returns the max. current backup version of a resource.<p>
+     * 
+     * @param resourceId the resource ID of the resource
+     * @return Returns the max. current backup version of a resource.
+     * @throws CmsException if something goes wrong
+     */
+    int readBackupMaxVersion(CmsUUID resourceId) throws CmsException;
+
+    /**
      * Reads a backup project.<p>
      *
      * @param tagId the versionId of the project
@@ -194,6 +179,24 @@ public interface I_CmsBackupDriver {
     Vector readBackupProjectResources(int tagId) throws CmsException;
 
     /**
+     * Returns all projects from the history.
+     *
+     * @return a Vector of projects
+     * @throws CmsException if an error occurs
+     */
+    Vector readBackupProjects() throws CmsException;
+
+    /**
+     * Gets the TagId of the first backup project after a given date.<p>
+     * 
+     * This method is used during the deletion process of older backup data. 
+     * @param maxdate the date to compare the backup projects with
+     * @return tag id of the first backup project after maxdate 
+     * @throws CmsException if something goes wrong
+     */
+    int readBackupProjectTag(long maxdate) throws CmsException;
+
+    /**
      * Returns a list of all properties of a backup file or folder.<p>
      *
      * @param resource the resource to read the properties from
@@ -205,25 +208,11 @@ public interface I_CmsBackupDriver {
     HashMap readBackupProperties(CmsBackupResource resource) throws CmsException;
 
     /**
-     * Returns the max. current backup version of a resource.<p>
+     * Gets the next available backup version ID for a resource.<p>
      * 
-     * @param resourceId the resource ID of the resource
-     * @return Returns the max. current backup version of a resource.
-     * @throws CmsException if something goes wrong
+     * @return int the next available backup version ID
      */
-    int readMaxBackupVersion(CmsUUID resourceId) throws CmsException;
-
-    /**
-     * Internal method to write the backup content.<p>
-     *  
-     * @param backupId the backup id
-     * @param fileId the id of the file
-     * @param fileContent the content of the file
-     * @param tagId the tag revision
-     * @param versionId the version revision
-     * @throws CmsException if something goes wrong
-     */
-    void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int tagId, int versionId) throws CmsException;
+    int readNextBackupTagId();
 
     /**
      * Writes a project to the backup.<p>

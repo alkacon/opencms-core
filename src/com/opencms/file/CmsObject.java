@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/15 13:30:42 $
-* Version: $Revision: 1.406 $
+* Date   : $Date: 2003/09/16 09:15:50 $
+* Version: $Revision: 1.407 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.406 $
+ * @version $Revision: 1.407 $
  */
 public class CmsObject {
 
@@ -2274,10 +2274,11 @@ public class CmsObject {
     * Returns all users from a given type that start with a specified string<P/>
     *
     * @param type the type of the users.
-    * @param namestart The filter for the username
+    * @param namefilter The filter for the username
     * @return vector of all users of the given type in the Cms.
     *
     * @throws CmsException if operation was not successful.
+    * @deprecated
     */
     public Vector getUsers(int type, String namefilter) throws CmsException {
         return m_driverManager.getUsers(m_context, type, namefilter);
@@ -2295,7 +2296,7 @@ public class CmsObject {
      * @return the users.
      *
      * @throws CmsException if operation was not successful.
-     *
+     * @deprecated
      */
     public Vector getUsersByLastname(String Lastname, int UserType, int UserStatus, int wasLoggedIn, int nMax) throws CmsException {
 

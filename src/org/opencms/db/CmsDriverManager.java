@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/16 07:25:39 $
- * Version: $Revision: 1.219 $
+ * Date   : $Date: 2003/09/16 09:15:50 $
+ * Version: $Revision: 1.220 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.219 $ $Date: 2003/09/16 07:25:39 $
+ * @version $Revision: 1.220 $ $Date: 2003/09/16 09:15:50 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2001,9 +2001,9 @@ public class CmsDriverManager extends Object {
        if (isAdmin(context)) {
            // get all resources from the backup table
            // do only get one version per resource
-           List allBackupFiles=m_backupDriver.readAllBackupFileHeaders();
+           List allBackupFiles=m_backupDriver.readBackupFileHeaders();
            // get the tagId of the oldest Backupproject which will be kept in the database
-           int maxTag = m_backupDriver.getBackupProjectTag(timestamp);
+           int maxTag = m_backupDriver.readBackupProjectTag(timestamp);
            Iterator i=allBackupFiles.iterator();
        // TODO: work in progress, continue this code later           
 //System.err.println("[keep verions] "+versions);
@@ -2015,7 +2015,7 @@ public class CmsDriverManager extends Object {
                CmsBackupResource res=(CmsBackupResource)i.next();
                // now delete all versions of this resource that have more than the maximun number
                // of allowed versions and which are older then the maximum backup date
-              int resVersions=m_backupDriver.readMaxBackupVersion(res.getResourceId());
+              int resVersions=m_backupDriver.readBackupMaxVersion(res.getResourceId());
               int versionsToDelete=resVersions-versions;
 //if (resVersions>1) {                   
 //System.err.println("processing "+res.getPath());
@@ -2967,7 +2967,7 @@ public class CmsDriverManager extends Object {
      */
     public Vector getAllBackupProjects() throws CmsException {
         Vector projects = new Vector();
-        projects = m_backupDriver.getAllBackupProjects();
+        projects = m_backupDriver.readBackupProjects();
         return projects;
     }
 
@@ -3075,7 +3075,7 @@ public class CmsDriverManager extends Object {
      * @return int The new version id
      */
     public int getBackupTagId() {
-        return m_backupDriver.nextBackupTagId();
+        return m_backupDriver.readNextBackupTagId();
     }
 
     /**
@@ -5183,7 +5183,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, cmsFile, I_CmsConstants.C_READ_ACCESS);
 
         // access to all subfolders was granted - return the file-history.
-        return m_backupDriver.readAllBackupFileHeaders(cmsFile.getStructureId());
+        return m_backupDriver.readBackupFileHeaders(cmsFile.getStructureId());
     }
 
     /**
