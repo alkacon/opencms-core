@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
-* Date   : $Date: 2001/08/08 12:26:49 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/11/02 10:35:00 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * editing news.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2001/08/08 12:26:49 $
+ * @version $Revision: 1.19 $ $Date: 2002/11/02 10:35:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -98,9 +98,9 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
             //redirect to the needed headfile
             try{
                 cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                    +"administration_head_5.html");
+                    +"empty.html");
             } catch (IOException exc){
-                throw new CmsException("Could not redirect to administration_head_5.html", exc);
+                throw new CmsException("Could not redirect to empty.html", exc);
             }
         }
         // Finally start the processing
