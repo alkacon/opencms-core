@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringMapper.java,v $
- * Date   : $Date: 2005/01/13 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/01/20 08:49:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * A string mapper to resolve EL like strings in tag attributes of Cms JSP tags.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0 alpha 3
  */
 public class CmsStringMapper implements I_CmsStringMapper {
@@ -202,6 +202,10 @@ public class CmsStringMapper implements I_CmsStringMapper {
                 case 1:
                     // "filename"
                     value = m_resourceName;
+                    break;
+                case 2:
+                    // folder
+                    value = m_cms.getRequestContext().getFolderUri();
                     break;
                 default:
                     // return the key "as is"

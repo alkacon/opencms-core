@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/I_CmsStringMapper.java,v $
- * Date   : $Date: 2005/01/13 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/01/20 08:49:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.List;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 6.0 alpha 3
  * @see org.opencms.util.CmsStringUtil#substituteMacros(String, I_CmsStringMapper)
  * @see org.opencms.util.CmsStringUtil#substituteMacros(String, I_CmsStringMapper, boolean)
@@ -63,7 +63,7 @@ public interface I_CmsStringMapper {
     String C_KEY_REQUEST_PARAM = "param.";
 
     /** Identified for "magic" parameter commands. */
-    String[] C_VALUE_NAMES_ARRAY_OPENCMS = {"uri", "filename"};
+    String[] C_VALUE_NAMES_ARRAY_OPENCMS = {"uri", "filename", "folder"};
 
     /** The "magic" commands wrapped in a List. */
     List C_VALUE_NAMES_OPENCMS = Collections.unmodifiableList(Arrays.asList(C_VALUE_NAMES_ARRAY_OPENCMS));
