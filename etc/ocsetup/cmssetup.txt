@@ -17,6 +17,8 @@ createPropertydefinition NavPos compatiblePlain
 createPropertydefinition NavText folder
 createPropertydefinition NavPos folder
 createPropertydefinition Title folder
+createPropertydefinition Description folder
+createPropertydefinition Keywords folder
 createPropertydefinition Title pdfpage
 createPropertydefinition NavText pdfpage
 createPropertydefinition NavPos pdfpage
