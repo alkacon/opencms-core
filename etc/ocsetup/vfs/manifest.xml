@@ -2577,6 +2577,33 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_innoproject.gif</source>
+            <destination>pics/system/ic_innoproject.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/ic_inanotherproject.gif</source>
+            <destination>pics/system/ic_inanotherproject.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/ic_inthisproject.gif</source>
+            <destination>pics/system/ic_inthisproject.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>pics/system/ic_lockuser.gif</source>
             <destination>pics/system/ic_lockuser.gif</destination>
             <type>image</type>

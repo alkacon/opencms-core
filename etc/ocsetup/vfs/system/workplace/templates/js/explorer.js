@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/07/23 16:54:19 $
-  * Version: $Revision: 1.29 $
+  * Date   : $Date: 2001/07/23 18:40:15 $
+  * Version: $Revision: 1.30 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -989,7 +989,7 @@ function enableNewButton(showit){
      wo.writeln("<table cellpadding=1 cellspacing=1 border=0><tr>");
  
      wo.writeln("<td nowrap class=t width=20>&nbsp;</td>");
-     wo.writeln("<td nowrap class=t width=20>&nbsp;</td>");
+     wo.writeln("<td nowrap class=t width=20 colspan=2>&nbsp;</td>");
      if(vi.check_name)wo.writeln("<td nowrap class=t width=100>&nbsp;"+vr.descr[0]+"</td>");
  
      if(vi.check_title)wo.writeln("<td nowrap class=t width=100>&nbsp;"+vr.descr[1]+"</td>");
@@ -1038,6 +1038,26 @@ function enableNewButton(showit){
             wo.write("<img src='"+lockIcon+"' "+lockedBystring+" border=0 width=16 height=16></a>");
          }
         wo.write("</td>");
+        
+        wo.write("<td nowrap align=center>");
+         var projectIcon;
+         var projectAltText;
+         if(vi.liste[i].lockedInProjectId == vr.onlineProject){
+            projectIcon=vi.iconPath+'ic_innoproject.gif';
+            projectAltText = "";
+         } else if (vi.liste[i].lockedInProjectId == vi.liste[i].project) {
+            projectIcon=vi.iconPath+'ic_inthisproject.gif';         
+            projectAltText = vi.liste[i].lockedInProjectName;
+         } else {
+            projectIcon=vi.iconPath+'ic_inanotherproject.gif';         
+            projectAltText = vi.liste[i].lockedInProjectName;
+         }
+         
+         projectAltText += " lockedInProject " + vi.liste[i].lockedInProjectId + " is in Project " + vi.liste[i].project;
+         
+         wo.write("<img src='"+projectIcon+"' alt='"+projectAltText+"' border=0 width=16 height=16></a>");
+         wo.write("</td>");
+
  
          if(vi.check_name){
              if(vi.liste[i].type==0)wo.writeln("<td nowrap class="+ssclass+"><a href=javascript:top.openthisfolder('"+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>");
