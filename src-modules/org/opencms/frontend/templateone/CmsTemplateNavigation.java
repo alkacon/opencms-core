@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/02/26 13:53:31 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/03/14 12:28:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
 
@@ -307,13 +307,6 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                 String navText = CmsEncoder.escapeXml(nav.getNavText().toUpperCase());
                 if (showHeadNavImages()) {
                     // build row with images
-                    if (!firstItem) {
-                        result.append("<td style= \"vertical-align: middle\">");
-                        result.append("<span class=\"");
-                        result.append(styleSeparator);
-                        result.append("\">|</span>");
-                        result.append("</td>\n");
-                    }
                     result.append("<td style= \"vertical-align: middle\">");
                     result.append("<a");
                     if (showMenus()) {
