@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/16 09:56:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.17 $ $Date: 2003/09/16 09:56:47 $
+ * @version $Revision: 1.18 $ $Date: 2003/09/18 16:24:55 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -182,7 +182,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                     // first trim the blob to 0 bytes, otherwise there could be left some bytes
                     // of the old content
                     //trimStatement = conn.prepareStatement(m_sqlManager.get("C_TRIMBLOB"));
-                    trimStatement = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_TRIMBLOB"));
+                    trimStatement = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.readQuery("C_TRIMBLOB"));
                     trimStatement.setBlob(1, blobnew);
                     trimStatement.setInt(2, 0);
                     trimStatement.execute();
@@ -199,7 +199,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 // for the oracle-driver commit or rollback must be executed manually
                 // because setAutoCommit = false in CmsDbPool.CmsDbPool
                 //nextStatement = conn.prepareStatement(m_sqlManager.get("C_COMMIT"));
-                nextStatement = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_COMMIT"));
+                nextStatement = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.readQuery("C_COMMIT"));
                 nextStatement.execute();
                 nextStatement.close();
                 conn.setAutoCommit(true);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/18 14:50:34 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.58 $ $Date: 2003/09/18 14:50:34 $
+ * @version $Revision: 1.59 $ $Date: 2003/09/18 16:24:55 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -87,29 +87,29 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     public CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException, CmsException {
         byte[] content = null;
 
-        CmsUUID backupId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_BACKUP_ID")));
-        int versionId = res.getInt(m_sqlManager.get("C_RESOURCES_VERSION_ID"));
-        int tagId = res.getInt(m_sqlManager.get("C_RESOURCES_TAG_ID"));
-        CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_STRUCTURE_ID")));
-        CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_RESOURCE_ID")));
-        CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_PARENT_ID")));
-        String resourceName = res.getString(m_sqlManager.get("C_RESOURCES_RESOURCE_NAME"));
-        int resourceType = res.getInt(m_sqlManager.get("C_RESOURCES_RESOURCE_TYPE"));
-        int resourceFlags = res.getInt(m_sqlManager.get("C_RESOURCES_RESOURCE_FLAGS"));
-        int projectID = res.getInt(m_sqlManager.get("C_RESOURCES_PROJECT_ID"));
-        CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
-        int state = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
-        int loaderId = res.getInt(m_sqlManager.get("C_RESOURCES_LOADER_ID"));
-        long dateCreated = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
-        long dateLastModified = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-        int resourceSize = res.getInt(m_sqlManager.get("C_RESOURCES_SIZE"));
-        CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_LASTMODIFIED")));
-        String userLastModifiedName = res.getString(m_sqlManager.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
-        CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_CREATED")));
-        String userCreatedName = res.getString(m_sqlManager.get("C_RESOURCES_USER_CREATED_NAME"));
+        CmsUUID backupId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_BACKUP_ID")));
+        int versionId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION_ID"));
+        int tagId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_TAG_ID"));
+        CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
+        CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
+        CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_PARENT_ID")));
+        String resourceName = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_NAME"));
+        int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
+        int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
+        int projectID = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_ID"));
+        CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_FILE_ID")));
+        int state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
+        int loaderId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LOADER_ID"));
+        long dateCreated = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED")).getTime();
+        long dateLastModified = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+        int resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
+        CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
+        String userLastModifiedName = res.getString(m_sqlManager.readQuery("C_RESOURCES_LASTMODIFIED_BY_NAME"));
+        CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
+        String userCreatedName = res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED_NAME"));
 
         if (hasContent) {
-            content = m_sqlManager.getBytes(res, m_sqlManager.get("C_RESOURCES_FILE_CONTENT"));
+            content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
         } else {
             content = new byte[0];
         }
@@ -257,9 +257,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         String poolUrl = config.getString("db.backup.pool");
 
         m_sqlManager = this.initQueries();
-        m_sqlManager.setOfflinePoolUrl(poolUrl);
-        m_sqlManager.setOnlinePoolUrl(poolUrl);
-        m_sqlManager.setBackupPoolUrl(poolUrl);
+        m_sqlManager.setPoolUrlOffline(poolUrl);
+        m_sqlManager.setPoolUrlOnline(poolUrl);
+        m_sqlManager.setPoolUrlBackup(poolUrl);
 
         m_driverManager = driverManager;
 
@@ -573,15 +573,15 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                 project =
                     new CmsBackupProject(
                         res.getInt("TAG_ID"),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_ID")),
-                        res.getString(m_sqlManager.get("C_PROJECTS_PROJECT_NAME")),
-                        res.getString(m_sqlManager.get("C_PROJECTS_PROJECT_DESCRIPTION")),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_TASK_ID")),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_USER_ID"))),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_GROUP_ID"))),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_MANAGERGROUP_ID"))),
-                        CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_TYPE")),
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
+                        res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
+                        res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_TASK_ID")),
+                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
+                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
+                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
+                        CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_PROJECTS_PROJECT_CREATEDATE")),
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")),
                         CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
                         new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
                         res.getString("PROJECT_PUBLISHED_BY_NAME"),
@@ -733,7 +733,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setInt(4, resource.getTagId());
             result = stmt.executeQuery();
             while (result.next()) {
-                returnValue.put(result.getString(m_sqlManager.get("C_PROPERTYDEF_NAME")), result.getString(m_sqlManager.get("C_PROPERTY_VALUE")));
+                returnValue.put(result.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), result.getString(m_sqlManager.readQuery("C_PROPERTY_VALUE")));
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -879,7 +879,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                 } else {
                     // write the property into the db
                     stmt.setString(1, backupId.toString());
-                    stmt.setInt(2, m_sqlManager.nextId(m_sqlManager.get("C_TABLE_PROPERTIES_BACKUP")));
+                    stmt.setInt(2, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTIES_BACKUP")));
                     stmt.setInt(3, propdef.getId());
                     stmt.setString(4, resource.getResourceId().toString());
                     stmt.setString(5, resource.getRootPath());
@@ -915,6 +915,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
         String lastModifiedName = "";
         String createdName = "";
+        
         try {
             CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getUserLastModified());
             lastModifiedName = "[" + lastModified.getName() + "] " + lastModified.getFirstname() + " " + lastModified.getLastname();

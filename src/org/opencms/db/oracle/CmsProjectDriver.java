@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/15 16:27:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.8 $ $Date: 2003/09/15 16:27:43 $
+ * @version $Revision: 1.9 $ $Date: 2003/09/18 16:24:55 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -123,7 +123,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                 }
                 try {
                     //nextStmt = conn.prepareStatement(m_sqlManager.get("C_ROLLBACK"));
-                    nextStmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_ROLLBACK"));
+                    nextStmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.readQuery("C_ROLLBACK"));
                     nextStmt.execute();
                 } catch (SQLException exc) {
                     // nothing to do here

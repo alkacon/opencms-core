@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/09/17 18:08:33 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2003/09/17 18:08:33 $
+ * @version $Revision: 1.22 $ $Date: 2003/09/18 16:24:55 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -191,9 +191,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         String poolUrl = config.getString("db.workflow.pool");
 
         m_sqlManager = this.initQueries();
-        m_sqlManager.setOfflinePoolUrl(poolUrl);
-        m_sqlManager.setOnlinePoolUrl(poolUrl);
-        m_sqlManager.setBackupPoolUrl(poolUrl);
+        m_sqlManager.setPoolUrlOffline(poolUrl);
+        m_sqlManager.setPoolUrlOnline(poolUrl);
+        m_sqlManager.setPoolUrlBackup(poolUrl);
 
         m_driverManager = driverManager;
 
@@ -223,27 +223,27 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      * @throws SQLException if something goes wrong
      */
     protected final CmsTask internalCreateTask(ResultSet res) throws SQLException {
-        int autofinish = res.getInt(m_sqlManager.get("C_TASK_AUTOFINISH"));
-        java.sql.Timestamp endtime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_ENDTIME"));
-        int escalationtype = res.getInt(m_sqlManager.get("C_TASK_ESCALATIONTYPE"));
-        int id = res.getInt(m_sqlManager.get("C_TASK_ID"));
-        CmsUUID initiatoruser = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_INITIATORUSER")));
-        int milestone = res.getInt(m_sqlManager.get("C_TASK_MILESTONE"));
-        String name = res.getString(m_sqlManager.get("C_TASK_NAME"));
-        CmsUUID originaluser = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_ORIGINALUSER")));
-        CmsUUID agentuser = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_AGENTUSER")));
-        int parent = res.getInt(m_sqlManager.get("C_TASK_PARENT"));
-        int percentage = res.getInt(m_sqlManager.get("C_TASK_PERCENTAGE"));
-        String permission = res.getString(m_sqlManager.get("C_TASK_PERMISSION"));
-        int priority = res.getInt(m_sqlManager.get("C_TASK_PRIORITY"));
-        CmsUUID role = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_ROLE")));
-        int root = res.getInt(m_sqlManager.get("C_TASK_ROOT"));
-        java.sql.Timestamp starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_STARTTIME"));
-        int state = res.getInt(m_sqlManager.get("C_TASK_STATE"));
-        int tasktype = res.getInt(m_sqlManager.get("C_TASK_TASKTYPE"));
-        java.sql.Timestamp timeout = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_TIMEOUT"));
-        java.sql.Timestamp wakeuptime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_WAKEUPTIME"));
-        String htmllink = res.getString(m_sqlManager.get("C_TASK_HTMLLINK"));
+        int autofinish = res.getInt(m_sqlManager.readQuery("C_TASK_AUTOFINISH"));
+        java.sql.Timestamp endtime = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_TASK_ENDTIME"));
+        int escalationtype = res.getInt(m_sqlManager.readQuery("C_TASK_ESCALATIONTYPE"));
+        int id = res.getInt(m_sqlManager.readQuery("C_TASK_ID"));
+        CmsUUID initiatoruser = new CmsUUID(res.getString(m_sqlManager.readQuery("C_TASK_INITIATORUSER")));
+        int milestone = res.getInt(m_sqlManager.readQuery("C_TASK_MILESTONE"));
+        String name = res.getString(m_sqlManager.readQuery("C_TASK_NAME"));
+        CmsUUID originaluser = new CmsUUID(res.getString(m_sqlManager.readQuery("C_TASK_ORIGINALUSER")));
+        CmsUUID agentuser = new CmsUUID(res.getString(m_sqlManager.readQuery("C_TASK_AGENTUSER")));
+        int parent = res.getInt(m_sqlManager.readQuery("C_TASK_PARENT"));
+        int percentage = res.getInt(m_sqlManager.readQuery("C_TASK_PERCENTAGE"));
+        String permission = res.getString(m_sqlManager.readQuery("C_TASK_PERMISSION"));
+        int priority = res.getInt(m_sqlManager.readQuery("C_TASK_PRIORITY"));
+        CmsUUID role = new CmsUUID(res.getString(m_sqlManager.readQuery("C_TASK_ROLE")));
+        int root = res.getInt(m_sqlManager.readQuery("C_TASK_ROOT"));
+        java.sql.Timestamp starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_TASK_STARTTIME"));
+        int state = res.getInt(m_sqlManager.readQuery("C_TASK_STATE"));
+        int tasktype = res.getInt(m_sqlManager.readQuery("C_TASK_TASKTYPE"));
+        java.sql.Timestamp timeout = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_TASK_TIMEOUT"));
+        java.sql.Timestamp wakeuptime = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_TASK_WAKEUPTIME"));
+        String htmllink = res.getString(m_sqlManager.readQuery("C_TASK_HTMLLINK"));
 
         return new CmsTask(id, name, state, tasktype, root, parent, initiatoruser, role, agentuser, originaluser, starttime, wakeuptime, timeout, endtime, percentage, permission, priority, escalationtype, htmllink, milestone, autofinish);
     }
@@ -265,23 +265,23 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
 
         switch (tasktype) {
             case I_CmsConstants.C_TASKS_ALL :
-                result = result + m_sqlManager.get("C_TASK_ROOT") + "<>0";
+                result = result + m_sqlManager.readQuery("C_TASK_ROOT") + "<>0";
                 break;
 
             case I_CmsConstants.C_TASKS_OPEN :
-                result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
+                result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
                 break;
 
             case I_CmsConstants.C_TASKS_ACTIVE :
-                result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
+                result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
                 break;
 
             case I_CmsConstants.C_TASKS_DONE :
-                result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_ENDED;
+                result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_ENDED;
                 break;
 
             case I_CmsConstants.C_TASKS_NEW :
-                result = result + m_sqlManager.get("C_TASK_PERCENTAGE") + "='0' AND " + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
+                result = result + m_sqlManager.readQuery("C_TASK_PERCENTAGE") + "='0' AND " + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
                 break;
 
             default :
@@ -491,11 +491,11 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             stmt.setInt(1, id);
             res = stmt.executeQuery();
             if (res.next()) {
-                String comment = res.getString(m_sqlManager.get("C_LOG_COMMENT"));
-                id = res.getInt(m_sqlManager.get("C_LOG_ID"));
-                java.sql.Timestamp starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_LOG_STARTTIME"));
-                CmsUUID user = new CmsUUID(res.getString(m_sqlManager.get("C_LOG_USER")));
-                int type = res.getInt(m_sqlManager.get("C_LOG_TYPE"));
+                String comment = res.getString(m_sqlManager.readQuery("C_LOG_COMMENT"));
+                id = res.getInt(m_sqlManager.readQuery("C_LOG_ID"));
+                java.sql.Timestamp starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_LOG_STARTTIME"));
+                CmsUUID user = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LOG_USER")));
+                int type = res.getInt(m_sqlManager.readQuery("C_LOG_TYPE"));
 
                 tasklog = new CmsTaskLog(id, comment, user, starttime, type);
             }
@@ -532,11 +532,11 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             stmt.setInt(1, taskId);
             res = stmt.executeQuery();
             while (res.next()) {
-                comment = res.getString(m_sqlManager.get("C_TASKLOG_COMMENT"));
-                id = res.getInt(m_sqlManager.get("C_TASKLOG_ID"));
-                starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASKLOG_STARTTIME"));
-                user = new CmsUUID(res.getString(m_sqlManager.get("C_TASKLOG_USER")));
-                type = res.getInt(m_sqlManager.get("C_TASKLOG_TYPE"));
+                comment = res.getString(m_sqlManager.readQuery("C_TASKLOG_COMMENT"));
+                id = res.getInt(m_sqlManager.readQuery("C_TASKLOG_ID"));
+                starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_TASKLOG_STARTTIME"));
+                user = new CmsUUID(res.getString(m_sqlManager.readQuery("C_TASKLOG_USER")));
+                type = res.getInt(m_sqlManager.readQuery("C_TASKLOG_TYPE"));
                 tasklog = new CmsTaskLog(id, comment, user, starttime, type);
                 logs.addElement(tasklog);
             }
@@ -568,7 +568,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             stmt.setString(2, parname);
             res = stmt.executeQuery();
             if (res.next()) {
-                result = res.getString(m_sqlManager.get("C_PAR_VALUE"));
+                result = res.getString(m_sqlManager.readQuery("C_PAR_VALUE"));
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -591,12 +591,12 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
 
         // create the sql string depending on parameters
         // handle the project for the SQL String
-        String sqlstr = "SELECT * FROM " + m_sqlManager.get("C_TABLENAME_TASK") + " WHERE ";
+        String sqlstr = "SELECT * FROM " + m_sqlManager.readQuery("C_TABLENAME_TASK") + " WHERE ";
         if (project != null) {
-            sqlstr = sqlstr + m_sqlManager.get("C_TASK_ROOT") + "=" + project.getTaskId();
+            sqlstr = sqlstr + m_sqlManager.readQuery("C_TASK_ROOT") + "=" + project.getTaskId();
             first = false;
         } else {
-            sqlstr = sqlstr + m_sqlManager.get("C_TASK_ROOT") + "<> 0 AND " + m_sqlManager.get("C_TASK_PARENT") + "<> 0";
+            sqlstr = sqlstr + m_sqlManager.readQuery("C_TASK_ROOT") + "<> 0 AND " + m_sqlManager.readQuery("C_TASK_PARENT") + "<> 0";
             first = false;
         }
 
@@ -605,7 +605,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             if (!first) {
                 sqlstr = sqlstr + " AND ";
             }
-            sqlstr = sqlstr + m_sqlManager.get("C_TASK_AGENTUSER") + "='" + agent.getId() + "'";
+            sqlstr = sqlstr + m_sqlManager.readQuery("C_TASK_AGENTUSER") + "='" + agent.getId() + "'";
             first = false;
         }
 
@@ -614,7 +614,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             if (!first) {
                 sqlstr = sqlstr + " AND ";
             }
-            sqlstr = sqlstr + m_sqlManager.get("C_TASK_INITIATORUSER") + "='" + owner.getId() + "'";
+            sqlstr = sqlstr + m_sqlManager.readQuery("C_TASK_INITIATORUSER") + "='" + owner.getId() + "'";
             first = false;
         }
 
@@ -623,7 +623,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             if (!first) {
                 sqlstr = sqlstr + " AND ";
             }
-            sqlstr = sqlstr + m_sqlManager.get("C_TASK_ROLE") + "='" + role.getId() + "'";
+            sqlstr = sqlstr + m_sqlManager.readQuery("C_TASK_ROLE") + "='" + role.getId() + "'";
             first = false;
         }
 
@@ -795,7 +795,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
 
             if (res.next()) {
                 //Parameter exisits, so make an update
-                internalWriteTaskParameter(res.getInt(m_sqlManager.get("C_PAR_ID")), parvalue);
+                internalWriteTaskParameter(res.getInt(m_sqlManager.readQuery("C_PAR_ID")), parvalue);
             } else {
                 //Parameter is not exisiting, so make an insert
                 result = internalWriteTaskParameter(taskId, parname, parvalue);
@@ -828,7 +828,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
 
             if (res.next()) {
                 //Parameter exists, so make an update
-                internalWriteTaskType(res.getInt(m_sqlManager.get("C_PAR_ID")), autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
+                internalWriteTaskType(res.getInt(m_sqlManager.readQuery("C_PAR_ID")), autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
 
             } else {
                 //Parameter is not existing, so make an insert

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  */
 public class CmsProject implements Cloneable {
 
@@ -135,16 +135,16 @@ public class CmsProject implements Cloneable {
      */
     public CmsProject(ResultSet res, org.opencms.db.generic.CmsSqlManager sqlManager) throws SQLException {
         this(
-            res.getInt(sqlManager.get("C_PROJECTS_PROJECT_ID")),
-            res.getString(sqlManager.get("C_PROJECTS_PROJECT_NAME")),
-            res.getString(sqlManager.get("C_PROJECTS_PROJECT_DESCRIPTION")),
-            res.getInt(sqlManager.get("C_PROJECTS_TASK_ID")),
-            new CmsUUID(res.getString(sqlManager.get("C_PROJECTS_USER_ID"))),
-            new CmsUUID(res.getString(sqlManager.get("C_PROJECTS_GROUP_ID"))),
-            new CmsUUID(res.getString(sqlManager.get("C_PROJECTS_MANAGERGROUP_ID"))),
-            res.getInt(sqlManager.get("C_PROJECTS_PROJECT_FLAGS")),
-            CmsDbUtil.getTimestamp(res, sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
-            res.getInt(sqlManager.get("C_PROJECTS_PROJECT_TYPE"))
+            res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
+            res.getString(sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
+            res.getString(sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
+            res.getInt(sqlManager.readQuery("C_PROJECTS_TASK_ID")),
+            new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_USER_ID"))),
+            new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
+            new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
+            res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS")),
+            CmsDbUtil.getTimestamp(res, sqlManager.readQuery("C_PROJECTS_PROJECT_CREATEDATE")),
+            res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE"))
         );
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/17 12:05:48 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
 
 package org.opencms.db;
 
-import org.opencms.util.*;
+import org.opencms.db.generic.CmsSqlManager;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
@@ -53,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.59 $ $Date: 2003/09/17 12:05:48 $
+ * @version $Revision: 1.60 $ $Date: 2003/09/18 16:24:55 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -642,5 +643,12 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException;
+    
+    /**
+     * Returns the SqlManager of this driver.<p>
+     * 
+     * @return the SqlManager of this driver
+     */
+    CmsSqlManager getSqlManager();
 
 }

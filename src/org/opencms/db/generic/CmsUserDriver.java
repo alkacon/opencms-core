@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/18 07:44:15 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.34 $ $Date: 2003/09/18 07:44:15 $
+ * @version $Revision: 1.35 $ $Date: 2003/09/18 16:24:55 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -432,9 +432,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         String poolUrl = config.getString("db.user.pool");
 
         m_sqlManager = this.initQueries();
-        m_sqlManager.setOfflinePoolUrl(poolUrl);
-        m_sqlManager.setOnlinePoolUrl(poolUrl);
-        m_sqlManager.setBackupPoolUrl(poolUrl);
+        m_sqlManager.setPoolUrlOffline(poolUrl);
+        m_sqlManager.setPoolUrlOnline(poolUrl);
+        m_sqlManager.setPoolUrlBackup(poolUrl);
 
         m_driverManager = driverManager;
 
@@ -488,7 +488,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     private CmsAccessControlEntry internalCreateAce(ResultSet res) throws SQLException {
         // this method is final to allow the java compiler to inline this code!
 
-        return new CmsAccessControlEntry(new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_RESOURCE_ID"))), new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS")));
+        return new CmsAccessControlEntry(new CmsUUID(res.getString(m_sqlManager.readQuery("C_ACCESS_RESOURCE_ID"))), new CmsUUID(res.getString(m_sqlManager.readQuery("C_ACCESS_PRINCIPAL_ID"))), res.getInt(m_sqlManager.readQuery("C_ACCESS_ACCESS_ALLOWED")), res.getInt(m_sqlManager.readQuery("C_ACCESS_ACCESS_DENIED")), res.getInt(m_sqlManager.readQuery("C_ACCESS_ACCESS_FLAGS")));
     }
 
     /**
@@ -502,7 +502,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     private CmsAccessControlEntry internalCreateAce(ResultSet res, CmsUUID newId) throws SQLException {
         // this method is final to allow the java compiler to inline this code!
 
-        return new CmsAccessControlEntry(newId, new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS")));
+        return new CmsAccessControlEntry(newId, new CmsUUID(res.getString(m_sqlManager.readQuery("C_ACCESS_PRINCIPAL_ID"))), res.getInt(m_sqlManager.readQuery("C_ACCESS_ACCESS_ALLOWED")), res.getInt(m_sqlManager.readQuery("C_ACCESS_ACCESS_DENIED")), res.getInt(m_sqlManager.readQuery("C_ACCESS_ACCESS_FLAGS")));
     }
 
     /**
@@ -518,12 +518,12 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         CmsUUID groupId = null;
 
         if (hasGroupIdInResultSet) {
-            groupId = new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_GROUP_ID")));
+            groupId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID")));
         } else {
-            groupId = new CmsUUID(res.getString(m_sqlManager.get("C_USERS_USER_DEFAULT_GROUP_ID")));
+            groupId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_DEFAULT_GROUP_ID")));
         }
 
-        return new CmsGroup(groupId, new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.get("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.get("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.get("C_GROUPS_GROUP_FLAGS")));
+        return new CmsGroup(groupId, new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.readQuery("C_GROUPS_GROUP_FLAGS")));
     }
 
     /**
@@ -540,27 +540,27 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         // this method is final to allow the java compiler to inline this code!
 
         // deserialize the additional userinfo hash
-        byte[] value = m_sqlManager.getBytes(res, m_sqlManager.get("C_USERS_USER_INFO"));
+        byte[] value = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_USERS_USER_INFO"));
         ByteArrayInputStream bin = new ByteArrayInputStream(value);
         ObjectInputStream oin = new ObjectInputStream(bin);
         Hashtable info = (Hashtable)oin.readObject();
 
         return new CmsUser(
-            new CmsUUID(res.getString(m_sqlManager.get("C_USERS_USER_ID"))),
-            res.getString(m_sqlManager.get("C_USERS_USER_NAME")),
-            res.getString(m_sqlManager.get("C_USERS_USER_PASSWORD")),
-            res.getString(m_sqlManager.get("C_USERS_USER_RECOVERY_PASSWORD")),
-            res.getString(m_sqlManager.get("C_USERS_USER_DESCRIPTION")),
-            res.getString(m_sqlManager.get("C_USERS_USER_FIRSTNAME")),
-            res.getString(m_sqlManager.get("C_USERS_USER_LASTNAME")),
-            res.getString(m_sqlManager.get("C_USERS_USER_EMAIL")),
-            CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTLOGIN")).getTime(),
-            res.getInt(m_sqlManager.get("C_USERS_USER_FLAGS")),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID"))),
+            res.getString(m_sqlManager.readQuery("C_USERS_USER_NAME")),
+            res.getString(m_sqlManager.readQuery("C_USERS_USER_PASSWORD")),
+            res.getString(m_sqlManager.readQuery("C_USERS_USER_RECOVERY_PASSWORD")),
+            res.getString(m_sqlManager.readQuery("C_USERS_USER_DESCRIPTION")),
+            res.getString(m_sqlManager.readQuery("C_USERS_USER_FIRSTNAME")),
+            res.getString(m_sqlManager.readQuery("C_USERS_USER_LASTNAME")),
+            res.getString(m_sqlManager.readQuery("C_USERS_USER_EMAIL")),
+            CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_USERS_USER_LASTLOGIN")).getTime(),
+            res.getInt(m_sqlManager.readQuery("C_USERS_USER_FLAGS")),
             info,
             internalCreateGroup(res, hasGroupIdInResultSet),
-            res.getString(m_sqlManager.get("C_USERS_USER_ADDRESS")),
-            res.getString(m_sqlManager.get("C_USERS_USER_SECTION")),
-            res.getInt(m_sqlManager.get("C_USERS_USER_TYPE")));
+            res.getString(m_sqlManager.readQuery("C_USERS_USER_ADDRESS")),
+            res.getString(m_sqlManager.readQuery("C_USERS_USER_SECTION")),
+            res.getInt(m_sqlManager.readQuery("C_USERS_USER_TYPE")));
     }
 
     /**
@@ -718,7 +718,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
                 res = stmt.executeQuery();
                 // create new Cms group objects
                 while (res.next()) {
-                    group = new CmsGroup(new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_GROUP_ID"))), new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.get("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.get("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.get("C_GROUPS_GROUP_FLAGS")));
+                    group = new CmsGroup(new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID"))), new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.readQuery("C_GROUPS_GROUP_FLAGS")));
                     childs.addElement(group);
                 }
             }
@@ -1020,7 +1020,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         try {
             conn = m_sqlManager.getConnection();
             stmt = conn.createStatement();
-            res = stmt.executeQuery(m_sqlManager.get("C_USERS_GETUSERS_FILTER1") + type + m_sqlManager.get("C_USERS_GETUSERS_FILTER2") + namefilter + m_sqlManager.get("C_USERS_GETUSERS_FILTER3"));
+            res = stmt.executeQuery(m_sqlManager.readQuery("C_USERS_GETUSERS_FILTER1") + type + m_sqlManager.readQuery("C_USERS_GETUSERS_FILTER2") + namefilter + m_sqlManager.readQuery("C_USERS_GETUSERS_FILTER3"));
 
             // create new Cms user objects
             while (res.next()) {
@@ -1419,4 +1419,12 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#getSqlManager()
+     */
+    public CmsSqlManager getSqlManager() {
+        return m_sqlManager;
+    }
+    
 }

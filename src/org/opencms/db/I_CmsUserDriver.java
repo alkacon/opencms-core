@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/17 16:15:06 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 
 package org.opencms.db;
 
+import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.util.*;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
@@ -47,7 +48,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.25 $ $Date: 2003/09/17 16:15:06 $
+ * @version $Revision: 1.26 $ $Date: 2003/09/18 16:24:55 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -478,4 +479,12 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if something goes wrong
      */
     void writeUserType(CmsUUID userId, int userType) throws CmsException;
+    
+    /**
+     * Returns the SqlManager of this driver.<p>
+     * 
+     * @return the SqlManager of this driver
+     */
+    CmsSqlManager getSqlManager();    
+    
 }

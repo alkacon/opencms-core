@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/17 18:08:32 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.105 $ $Date: 2003/09/17 18:08:32 $
+ * @version $Revision: 1.106 $ $Date: 2003/09/18 16:24:55 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -108,7 +108,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     protected static String C_CONFIGURATIONS_POOL = "pool";
 
     /** Internal debugging flag.<p> */
-    private static final boolean C_DEBUG = true;
+    private static final boolean C_DEBUG = false;
 
     /**
      * The maximum amount of tables.
@@ -613,9 +613,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         String poolUrl = config.getString("db.project.pool");
 
         m_sqlManager = this.initQueries();
-        m_sqlManager.setOfflinePoolUrl(poolUrl);
-        m_sqlManager.setOnlinePoolUrl(poolUrl);
-        m_sqlManager.setBackupPoolUrl(poolUrl);
+        m_sqlManager.setPoolUrlOffline(poolUrl);
+        m_sqlManager.setPoolUrlOnline(poolUrl);
+        m_sqlManager.setPoolUrlBackup(poolUrl);
 
         m_driverManager = driverManager;
 
@@ -658,7 +658,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             res = stmt.executeQuery();
             // read the id
             if (res.next()) {
-                resourceId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_STRUCTURE_ID")));
+                resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -803,14 +803,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     throw e;
                 }
 
-                if (offlineFile.isLabeled() && !m_driverManager.hasLabeledLinks(context, context.currentProject(), offlineFile)) {
+                if (offlineFile.isLabeled() && !m_driverManager.hasLabeledLinks(context, offlineFile)) {
                     // update the resource flags to "unlabel" of the siblings of the offline resource
                     int flags = offlineFile.getFlags();
                     flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
                     offlineFile.setFlags(flags);
                 }
 
-                if (onlineFile.isLabeled() && !m_driverManager.hasLabeledLinks(context, onlineProject, onlineFile)) {
+                if (onlineFile.isLabeled() && !m_driverManager.hasLabeledLinks(context, onlineFile)) {
                     // update the resource flags to "unlabel" of the siblings of the online resource
                     int flags = onlineFile.getFlags();
                     flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
@@ -1636,7 +1636,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             // clear all caches to reclaim memory
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap(), false));
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
 
             // force a complete object finalization and garbage collection 
             System.runFinalization();
@@ -1696,13 +1696,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             CmsUUID current = CmsUUID.getNullUUID();
             CmsPageLinks links = null;
             while (res.next()) {
-                CmsUUID next = new CmsUUID(res.getString(m_sqlManager.get("C_LM_PAGE_ID")));
+                CmsUUID next = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LM_PAGE_ID")));
                 if (!next.equals(current)) {
                     if (links != null) {
                         result.add(links);
                     }
                     links = new CmsPageLinks(next);
-                    links.addLinkTarget(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
+                    links.addLinkTarget(res.getString(m_sqlManager.readQuery("C_LM_LINK_DEST")));
                     try {
                         links.setResourceName((m_driverManager.getVfsDriver().readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next, false)).getName());
                     } catch (CmsException e) {
@@ -1710,7 +1710,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
                     links.setOnline(true);
                 } else {
-                    links.addLinkTarget(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
+                    links.addLinkTarget(res.getString(m_sqlManager.readQuery("C_LM_LINK_DEST")));
                 }
                 current = next;
             }
@@ -1744,7 +1744,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_GET_ALL_LINKS");
             res = stmt.executeQuery();
             while (res.next()) {
-                retValue.add(res.getString(m_sqlManager.get("C_EXPORT_LINK")));
+                retValue.add(res.getString(m_sqlManager.readQuery("C_EXPORT_LINK")));
             }
             return retValue;
         } catch (SQLException e) {
@@ -1776,8 +1776,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_GET_ALL_DEPENDENCIES");
             res = stmt.executeQuery();
             while (res.next()) {
-                firstResult.add(res.getString(m_sqlManager.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
-                secondResult.add(res.getString(m_sqlManager.get("C_EXPORT_LINK")));
+                firstResult.add(res.getString(m_sqlManager.readQuery("C_EXPORT_DEPENDENCIES_RESOURCE")));
+                secondResult.add(res.getString(m_sqlManager.readQuery("C_EXPORT_LINK")));
             }
             // now we have all dependencies that are there. We can search now for
             // the ones we need
@@ -1832,7 +1832,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setString(1, pageId.toString());
             res = stmt.executeQuery();
             while (res.next()) {
-                result.add(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
+                result.add(res.getString(m_sqlManager.readQuery("C_LM_LINK_DEST")));
             }
             return result;
         } catch (SQLException e) {
@@ -1866,7 +1866,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setString(1, pageId.toString());
             res = stmt.executeQuery();
             while (res.next()) {
-                result.add(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
+                result.add(res.getString(m_sqlManager.readQuery("C_LM_LINK_DEST")));
             }
             return result;
         } catch (SQLException e) {
@@ -1962,16 +1962,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             if (res.next()) {
                 project =
                     new CmsProject(
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_ID")),
-                        res.getString(m_sqlManager.get("C_PROJECTS_PROJECT_NAME")),
-                        res.getString(m_sqlManager.get("C_PROJECTS_PROJECT_DESCRIPTION")),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_TASK_ID")),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_USER_ID"))),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_GROUP_ID"))),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_MANAGERGROUP_ID"))),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_FLAGS")),
-                        CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_TYPE")));
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
+                        res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
+                        res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_TASK_ID")),
+                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
+                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
+                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS")),
+                        CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_PROJECTS_PROJECT_CREATEDATE")),
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")));
             } else {
                 // project not found!
                 throw m_sqlManager.getCmsException(this, "project with ID " + id + " not found", CmsException.C_NOT_FOUND, null, true);
@@ -2010,11 +2010,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, projectid);
             res = stmt.executeQuery();
             while (res.next()) {
-                comment = res.getString(m_sqlManager.get("C_LOG_COMMENT"));
-                id = res.getInt(m_sqlManager.get("C_LOG_ID"));
-                starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_LOG_STARTTIME"));
-                user = new CmsUUID(res.getString(m_sqlManager.get("C_LOG_USER")));
-                type = res.getInt(m_sqlManager.get("C_LOG_TYPE"));
+                comment = res.getString(m_sqlManager.readQuery("C_LOG_COMMENT"));
+                id = res.getInt(m_sqlManager.readQuery("C_LOG_ID"));
+                starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_LOG_STARTTIME"));
+                user = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LOG_USER")));
+                type = res.getInt(m_sqlManager.readQuery("C_LOG_TYPE"));
 
                 tasklog = new CmsTaskLog(id, comment, user, starttime, type);
                 logs.addElement(tasklog);
@@ -2112,16 +2112,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (res.next()) {
                 projects.addElement(
                     new CmsProject(
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_ID")),
-                        res.getString(m_sqlManager.get("C_PROJECTS_PROJECT_NAME")),
-                        res.getString(m_sqlManager.get("C_PROJECTS_PROJECT_DESCRIPTION")),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_TASK_ID")),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_USER_ID"))),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_GROUP_ID"))),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_MANAGERGROUP_ID"))),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_FLAGS")),
-                        CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_TYPE"))));
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
+                        res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
+                        res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_TASK_ID")),
+                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
+                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
+                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS")),
+                        CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_PROJECTS_PROJECT_CREATEDATE")),
+                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE"))));
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, "getAllProjects(int)", CmsException.C_SQL_ERROR, exc, false);
@@ -2262,7 +2262,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         try {
             // TODO make the getConnection and getPreparedStatement calls project-ID dependent
             conn = m_sqlManager.getConnection();
-            String query = m_sqlManager.get("C_RESOURCES_PROJECTVIEW") + whereClause + orderClause;
+            String query = m_sqlManager.readQuery("C_RESOURCES_PROJECTVIEW") + whereClause + orderClause;
             stmt = m_sqlManager.getPreparedStatementForSql(conn, CmsSqlManager.replaceTableKey(I_CmsConstants.C_PROJECT_ONLINE_ID + 1, query));
 
             stmt.setInt(1, project);
@@ -2305,7 +2305,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setString(1, name);
             res = stmt.executeQuery();
             if (res.next()) {
-                value = m_sqlManager.getBytes(res, m_sqlManager.get("C_SYSTEMPROPERTY_VALUE"));
+                value = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_SYSTEMPROPERTY_VALUE"));
                 // now deserialize the object
                 ByteArrayInputStream bin = new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);

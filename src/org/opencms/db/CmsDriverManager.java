@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/18 15:42:00 $
- * Version: $Revision: 1.241 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.242 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.241 $ $Date: 2003/09/18 15:42:00 $
+ * @version $Revision: 1.242 $ $Date: 2003/09/18 16:24:55 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2219,7 +2219,7 @@ public class CmsDriverManager extends Object {
                     // remove the access control entries
                     m_userDriver.removeAccessControlEntries(context.currentProject(), currentResource.getResourceId());
                     // the resource doesn't exist online => remove the file
-                    if (currentResource.isLabeled() && !hasLabeledLinks(context, context.currentProject(), currentResource)) {
+                    if (currentResource.isLabeled() && !hasLabeledLinks(context, currentResource)) {
                         // update the resource flags to "unlabel" the other siblings
                         int flags = currentResource.getFlags();
                         flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
@@ -4137,12 +4137,11 @@ public class CmsDriverManager extends Object {
      * Checks if one of the resources VFS links (except the resource itself) resides in a "labeled" site folder.<p>
      *   
      * @param context the current request context
-     * @param project the project to check
      * @param resource the resource
      * @return true if the flag should be removed from the resource, otherwise false
      * @throws CmsException if something goes wrong
      */
-    public boolean hasLabeledLinks(CmsRequestContext context, CmsProject project, CmsResource resource) throws CmsException {
+    public boolean hasLabeledLinks(CmsRequestContext context, CmsResource resource) throws CmsException {
         boolean hasLinks = false;
         if (resource.isLabeled()) {
             // get the list of labeled site folders from the runtime property

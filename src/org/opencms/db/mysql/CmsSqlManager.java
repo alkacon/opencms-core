@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/18 16:24:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/09/12 10:01:54 $ 
+ * @version $Revision: 1.7 $ $Date: 2003/09/18 16:24:55 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -79,7 +79,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     /**
      * @see org.opencms.db.generic.CmsSqlManager#get(java.lang.String)
      */
-    public String get(String queryName) {
+    public String readQuery(String queryName) {
         if (c_queries == null) {
             c_queries = loadProperties(C_PROPERTY_FILENAME);
             precalculateQueries(c_queries);
@@ -87,7 +87,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         
         String value = c_queries.getProperty(queryName);
         if (value == null || "".equals(value)) {
-            value = super.get(queryName);
+            value = super.readQuery(queryName);
         }
         
         return value;
