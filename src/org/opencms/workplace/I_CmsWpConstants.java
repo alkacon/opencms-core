@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2004/02/13 14:13:57 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.util.Locale;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 14:13:57 $
  */
 
 public interface I_CmsWpConstants {
@@ -354,34 +354,47 @@ public interface I_CmsWpConstants {
 
     /** The filename to the modulelisttemplate */
     String C_MODULELIST_TEMPLATEFILE = "moduletemplate";
-
+    
+    /** The property files of the modulelisttemplate */
     String C_SESSION_MODULE_PROPFILES = "modulepropfiles";
 
+    /** The missing files of the modulelisttemplate */
     String C_SESSION_MODULE_MISSFILES = "modulemissfiles";
-
+    
+    /** The modules checksum */
     String C_SESSION_MODULE_CHECKSUM = "modulechecksum";
-
+    
+    /** The "module in use" flag */
     String C_SESSION_MODULE_INUSE = "moduleinuse";
 
+    /** The exclusions of the modulelisttemplate */
     String C_SESSION_MODULE_EXCLUSION = "moduleexclusion";
-
+    
+    /** The modules project files */
     String C_SESSION_MODULE_PROJECTFILES = "moduleprojectfiles";
-
+    
+    /** The step of module deletion */
     String C_SESSION_MODULE_DELETE_STEP = "moduledeletestep";
-
+    
+    /** The modules administration data */
     String C_SESSION_MODULE_ADMIN_DATA = "module_admin_data";
 
+    /** The modules administration property names */
     String C_SESSION_MODULE_ADMIN_PROP_NAMES = "module_admin_props_names";
-
+    
+    /** The modules administration property description */
     String C_SESSION_MODULE_ADMIN_PROP_DESCR = "module_admin_props_desr";
 
+    /** The modules administration property type */
     String C_SESSION_MODULE_ADMIN_PROP_TYP = "module_admin_props_typ";
-
+    
+    /** the modules administration property value */
     String C_SESSION_MODULE_ADMIN_PROP_VAL = "module_admin_props_value";
 
+    /** the modules packetname key */
     String C_MODULE_PACKETNAME = "packetname";
 
-    //** The filename to the filetypelist template */
+    /** The filename to the filetypelist template */
     String C_FILETYPELIST_TEMPLATEFILE = "filetypelisttemplate";
 
 
@@ -958,7 +971,8 @@ public interface I_CmsWpConstants {
     String[] C_SELECTBOX_EDITORVIEWS =  {
         "edithtml", "edit"
     };
-
+    
+    /** values for editor view select boxes */
     int[] C_SELECTBOX_EDITORVIEWS_ALLOWED =  {
         3, 2
     };
