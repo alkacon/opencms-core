@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/25 10:37:07 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2003/11/26 10:33:41 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -691,10 +691,10 @@ public final class OpenCmsCore {
     }    
     
     /**
-     * Returns a header for a given key this OpenCms has read from the opencms.properties
+     * Returns specific http headers for the static export.
+     * If the header <code>Cache-Control</code> is set, OpenCms will not use its default headers
      * 
-     * @param key a http header key, i.e. "Pragma"
-     * @return the value for this key from opencms.properties
+     * @return the list of http export headers from opencms.properties
      */
     protected List getExportHeaders() {
         return Collections.unmodifiableList(Arrays.asList(m_exportHeaders));
@@ -1592,8 +1592,16 @@ public final class OpenCmsCore {
         try {
             m_exportHeaders = configuration.getStringArray("staticexport.headers");
             for (int i = 0; i < m_exportHeaders.length; i++) {
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". Export headers       : " + m_exportHeaders[i]);
+                if (Utils.split(m_exportHeaders[i], ":").length == 2) {
+                    if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                        getLog(CmsLog.CHANNEL_INIT).info(". Export headers       : " + m_exportHeaders[i]);
+                    }
+                } else {
+                    if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                        getLog(CmsLog.CHANNEL_INIT).warn(". Export headers       : " + "invalid header: " + m_exportHeaders[i] + ", using default headers");
+                    }
+                    m_exportHeaders = null;
+                    break;
                 }
             }
         } catch (Exception e) {
