@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/06/05 09:51:33 $
-* Version: $Revision: 1.246 $
+* Date   : $Date: 2002/06/05 15:38:46 $
+* Version: $Revision: 1.247 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.246 $ $Date: 2002/06/05 09:51:33 $ *
+ * @version $Revision: 1.247 $ $Date: 2002/06/05 15:38:46 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -6208,6 +6208,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }else{
                     links.addLinkTarget(res.getString(m_cq.get("C_LM_LINK_DEST")));
                 }
+                current = next;
             }
             if(links != null){
                 result.add(links);
