@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagement.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/03/05 18:43:10 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -25,6 +25,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
 package com.opencms.workplace;
 
 import com.opencms.core.CmsException;
@@ -36,64 +37,54 @@ import com.opencms.report.A_CmsReportThread;
 import java.util.Hashtable;
 
 /**
- * Description:
+ * Workplace class for the Check Project / Check HTML Links backoffice item.
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
- * @version 1.0
+ * @version $Revision: 1.6 $
  */
-
 public class CmsAdminLinkmanagement extends CmsWorkplaceDefault implements I_CmsConstants{
 
-    private final String C_LINKCHECK_THREAD = "linkcheckthread";
-    private final String C_LM_TEXT = "adminLinkmanagemententryfortextsave";
+    private final String C_LINKCHECK_HTML_THREAD = "C_LINKCHECK_HTML_THREAD";
 
-    /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters.
-     *
-     * @see #getContent(CmsObject, String, String, Hashtable, String)
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 
         CmsXmlWpTemplateFile templateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String action = (String)parameters.get("action");
+        A_CmsReportThread doCheck = null;
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
 
+        String text = lang.getLanguageValue("linkmanagement.label.text1")
+                        + cms.getRequestContext().currentProject().getName()
+                        + lang.getLanguageValue("linkmanagement.label.text2");
+                        
         if("start".equals(action)){
-            // first call. Start the checking.
-            A_CmsReportThread doCheck = new CmsAdminLinkmanagementThread(cms, cms.getRequestContext().currentProject().getId());
+            // first call - start checking
+            doCheck = new CmsAdminLinkmanagementThread(cms, cms.getRequestContext().currentProject().getId());
             doCheck.start();
-            session.putValue(C_LINKCHECK_THREAD, doCheck);
-            // store the text in the Session
-            String text = lang.getLanguageValue("linkmanagement.label.text1")
-                            + cms.getRequestContext().currentProject().getName()
-                            + lang.getLanguageValue("linkmanagement.label.text2");
-            session.putValue(C_LM_TEXT, text);
+            session.putValue(C_LINKCHECK_HTML_THREAD, doCheck);
+
+            templateDocument.setData("text", text);            
             templateDocument.setData("data", "");
             templateDocument.setData("endMethod", "");
-            templateDocument.setData("text", text);
         }else if("working".equals(action)){
-            A_CmsReportThread doCheck = (CmsAdminLinkmanagementThread)session.getValue(C_LINKCHECK_THREAD);
-            //still working?
+            doCheck = (CmsAdminLinkmanagementThread)session.getValue(C_LINKCHECK_HTML_THREAD);
+            
             if(doCheck.isAlive()){
+                templateDocument.setData("text", text);                                
                 templateDocument.setData("endMethod", "");
-                templateDocument.setData("text", (String)session.getValue(C_LM_TEXT));
             }else{
-                templateDocument.setData("endMethod", templateDocument.getDataValue("endMethod"));
+                text += "<br>" + lang.getLanguageValue("linkmanagement.label.textende");                                                
+                
                 templateDocument.setData("autoUpdate","");
-                templateDocument.setData("text", (String)session.getValue(C_LM_TEXT)
-                        + "<br>" + lang.getLanguageValue("linkmanagement.label.textende"));
-                session.removeValue(C_LM_TEXT);
-                session.removeValue(C_LINKCHECK_THREAD);
+                templateDocument.setData("text", text);
+
+                session.removeValue(C_LINKCHECK_HTML_THREAD);
             }
             templateDocument.setData("data", doCheck.getReportUpdate());
         }
-        // Now load the template file and start the processing
+        // now load the template file and start the processing
         return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
     }
 }
