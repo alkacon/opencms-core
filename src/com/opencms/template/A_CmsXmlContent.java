@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/02/11 18:47:39 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/14 18:42:40 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -889,7 +889,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                 
         // create new XML Element to store the data
         Element newElement = m_content.createElement("DATA");
-        newElement.setAttribute("name", tag);
+        String attribute = tag;
+        int dotIndex = tag.lastIndexOf(".");
+        if(dotIndex != -1) {
+            attribute = attribute.substring(dotIndex + 1);
+        }                    
+        newElement.setAttribute("name", attribute);
         
         if(data == null || "".equals(data)) {
             // empty string or null are given.
@@ -910,7 +915,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @param tag Key for this datablock.
      * @param data DOM element node for this datablock.
      */
-
     protected void setData(String tag, Element data) {        
         // If we got a null data, give this request to setData(Strig, String)
         // to create a new text node.
@@ -928,7 +932,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                    
             if (! (m_blocks.containsKey(tag))) {
                 // This is a brand new datablock. It can be inserted directly.
-                m_blocks.put(tag, newElement);
+                //m_blocks.put(tag, newElement);
+                insertNewDatablock(tag, newElement);
             } else {        
                 // datablock existed before, so the childs of the old 
                 // one can be replaced.
@@ -952,7 +957,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             }
         } 
     }
-
+        
     /**
      * Remove a datablock from the internal hashtable and
      * from the XML document
@@ -1058,6 +1063,51 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
     }
 
+    /**
+     * Help method to walk through the DOM document tree.
+     * First it will be looked for children of the given node.
+     * If there are no children, the siblings and the siblings of our parents
+     * are examined. This will be done by calling treeWalkerWidth.
+     * @param n Node representing the actual position in the tree
+     * @return next node
+     */
+    protected Node treeWalker(Node n) {
+        Node nextnode = null;
+        
+        if(n.hasChildNodes()) {
+            // child has child notes itself
+            // process these first in the next loop
+            nextnode = n.getFirstChild();
+        } else {
+            // child has no subchild.
+            // so we take the next sibling
+            nextnode = treeWalkerWidth(n);
+        }    
+        return nextnode;
+    }        
+
+    /**
+     * Help method to walk through the DOM document tree by a
+     * width-first-order.
+     * @param n Node representing the actual position in the tree
+     * @return next node
+     */
+    protected Node treeWalkerWidth(Node n) {
+        Node nextnode = null;
+        Node parent = null;
+        
+            nextnode = n.getNextSibling();
+            parent = n.getParentNode();
+            while(nextnode == null && parent != null) {
+                // child has sibling
+                // last chance: we take our parent's sibling
+                // (or our grandparent's sibling...)
+                nextnode = parent.getNextSibling();
+                parent = parent.getParentNode();
+            }
+        return nextnode;
+    }        
+    
     /**
      * Help method that handles any occuring exception by writing
      * an error message to the OpenCms logfile and throwing a 
@@ -1342,49 +1392,90 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     }
 
     /**
-     * Help method to walk through the DOM document tree.
-     * First it will be looked for children of the given node.
-     * If there are no children, the siblings and the siblings of our parents
-     * are examined. This will be done by calling treeWalkerWidth.
-     * @param n Node representing the actual position in the tree
-     * @return next node
+     * Internal method for creating a new datablock.
+     * <P>
+     * This method is called by setData() if a new, not existing
+     * datablock must be created.
+     * <P>
+     * <B>Functionality:</B> If a non-hierarchical datablock is given,
+     * it is inserted at the end of the DOM document.
+     * If a hierarchical datablock is given, all possible parent
+     * names are checked in a backward oriented order. If a
+     * datablock with a name that equals a part of the hierarchy is
+     * found, the new datablock will be created as a (sub)child
+     * of this datablock. 
+     * 
+     * @param tag Key for this datablock.
+     * @param data DOM element node for this datablock.
      */
-    protected Node treeWalker(Node n) {
-        Node nextnode = null;
-        
-        if(n.hasChildNodes()) {
-            // child has child notes itself
-            // process these first in the next loop
-            nextnode = n.getFirstChild();
+    private void insertNewDatablock(String tag, Element data) {
+        // Check, if this is a simple datablock without hierarchy.
+        if(tag.indexOf(".") == -1) {
+            // Fine. We can insert the new Datablock at the of the document
+            m_content.getDocumentElement().appendChild(parser.importNode(m_content, data));
+            m_blocks.put(tag, parser.importNode(m_content, data));
         } else {
-            // child has no subchild.
-            // so we take the next sibling
-            nextnode = treeWalkerWidth(n);
-        }    
-        return nextnode;
-    }        
-
-    /**
-     * Help method to walk through the DOM document tree by a
-     * width-first-order.
-     * @param n Node representing the actual position in the tree
-     * @return next node
-     */
-    protected Node treeWalkerWidth(Node n) {
-        Node nextnode = null;
-        Node parent = null;
-        
-            nextnode = n.getNextSibling();
-            parent = n.getParentNode();
-            while(nextnode == null && parent != null) {
-                // child has sibling
-                // last chance: we take our parent's sibling
-                // (or our grandparent's sibling...)
-                nextnode = parent.getNextSibling();
-                parent = parent.getParentNode();
+            // This is a hierachical datablock tag. We have to search for
+            // an appropriate place to insert first.
+            boolean found = false;
+            String match = "." + tag;
+            String oldMatch = match;
+            int dotIndex = match.lastIndexOf(".");
+            Vector newBlocks = new Vector();
+            
+            while((!found) && (dotIndex != -1)) {
+                match = match.substring(0, dotIndex);
+                if(hasData(match.substring(1))) {
+                    found = true;
+                } else {
+                    dotIndex = match.lastIndexOf(".");
+                    newBlocks.addElement(match.substring(dotIndex + 1));
+                }
             }
-        return nextnode;
-    }        
+
+            // newBlocks now contains a (backward oriented) list
+            // of all datablocks that have to be created, before
+            // the new datablock named "tag" can be inserted.
+            String datablockPrefix = "";
+            if(found) {
+                datablockPrefix = match.substring(1) + ".";
+            }            
+            int numNewBlocks = newBlocks.size();
+            Element newElem = null;
+            Element lastElem = null;
+            for(int i=numNewBlocks-1; i>=0; i--) {
+                newElem = m_content.createElement("DATA");
+                newElem.setAttribute("name", (String)newBlocks.elementAt(i));
+                m_blocks.put(datablockPrefix + (String)newBlocks.elementAt(i), newElem);
+                if(lastElem != null) {
+                    lastElem.appendChild(newElem);
+                } else {
+                    lastElem = newElem;
+                }
+            }                
+            
+            // Now all required parent datablocks are created.
+            // Finally the given datablock can be inserted.
+            if(lastElem != null) {
+                lastElem.appendChild(parser.importNode(m_content, data));
+            } else {
+                lastElem = (Element)parser.importNode(m_content, data);
+            }
+            m_blocks.put(datablockPrefix + tag, parser.importNode(m_content, data));
+            
+            // lastElem now contains the hierarchical tree of all DATA tags to be
+            // inserted.
+            // If we have found an existing part of the hierarchy, get
+            // this part and append the tree. If no part was found, append the
+            // tree at the end of the document.
+            if(found) {
+                Element parent = (Element)m_blocks.get(match.substring(1));
+                parent.appendChild(lastElem);
+            } else {
+                m_content.getDocumentElement().appendChild(lastElem);
+            }                
+        }
+    }    
     
     /**
      * Reloads a previously cached parsed content.
