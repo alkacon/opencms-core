@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/08/08 14:08:33 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/10/20 07:47:32 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.34 $ $Date: 2000/08/08 14:08:33 $
+ * @version $Revision: 1.35 $ $Date: 2000/10/20 07:47:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -125,34 +125,32 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 		temporaryFilename = extendedTempFile;
 		return temporaryFilename;
 	}
-	public Integer getAvailableTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
-			throws CmsException {
-		CmsXmlWpConfigFile configFile = getConfigFile(cms);
-		String templatePath = configFile.getCommonTemplatePath();
-		Vector allTemplateFiles = cms.getFilesInFolder(templatePath);
-		
-		String currentTemplate = (String)parameters.get("template");
-		int currentTemplateIndex = 0;
-		
-		int numTemplates = allTemplateFiles.size();
-		for(int i=0; i<numTemplates; i++) {
-			CmsResource file = (CmsResource)allTemplateFiles.elementAt(i);
-			if(file.getState() != C_STATE_DELETED) {
-				// TODO: check, if this is needed: String filename = file.getName();
-				String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
-				if(title == null || "".equals(title)) {
-					title = file.getName();
-				}            
-				values.addElement(file.getAbsolutePath());
-				names.addElement(title);
-				if(currentTemplate.equals(file.getAbsolutePath()) 
-						|| currentTemplate.equals(file.getName())) {
-					currentTemplateIndex = i;
-				}
+public Integer getAvailableTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
+	CmsXmlWpConfigFile configFile = getConfigFile(cms);
+	String templatePath = configFile.getCommonTemplatePath();
+	Vector allTemplateFiles = cms.getFilesInFolder(templatePath);
+	String currentTemplate = (String) parameters.get("template");
+	int currentTemplateIndex = 0;
+	int currentIndex = 0;
+	int numTemplates = allTemplateFiles.size();
+	for (int i = 0; i < numTemplates; i++) {
+		CmsResource file = (CmsResource) allTemplateFiles.elementAt(i);
+		if (file.getState() != C_STATE_DELETED) {
+			// TODO: check, if this is needed: String filename = file.getName();
+			String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+			if (title == null || "".equals(title)) {
+				title = file.getName();
 			}
+			values.addElement(file.getAbsolutePath());
+			names.addElement(title);
+			if (currentTemplate.equals(file.getAbsolutePath()) || currentTemplate.equals(file.getName())) {
+				currentTemplateIndex = currentIndex;
+			}
+			currentIndex++;
 		}
-		return new Integer(currentTemplateIndex);
 	}
+	return new Integer(currentTemplateIndex);
+}
 	/**
 	 * Gets all views available in the workplace screen.
 	 * <P>
