@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsGroup.java,v $
- * Date   : $Date: 2000/06/06 13:50:11 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/07 09:38:32 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This class describes a Cms user group and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/06/06 13:50:11 $
+ * @version $Revision: 1.14 $ $Date: 2000/06/07 09:38:32 $
  */
  public class CmsGroup implements I_CmsConstants { 
     
@@ -240,7 +240,7 @@ import com.opencms.core.*;
 	 * 
 	 * @param id The parent-groupid
 	 */
-     void setParentId(int id) {
+     public void setParentId(int id) {
       m_parentId = id;
      }
 		

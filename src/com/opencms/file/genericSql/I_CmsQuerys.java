@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/07 09:11:44 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/06/07 09:38:32 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.9 $ $Date: 2000/06/07 09:11:44 $
+ * @version $Revision: 1.10 $ $Date: 2000/06/07 09:38:32 $
  */
 public interface I_CmsQuerys {
     
@@ -69,7 +69,7 @@ public interface I_CmsQuerys {
    
     public static final Integer C_GROUPS_GETALLGROUP_KEY = new Integer(206);
     public static final String C_GROUPS_GETALLGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS";
-    
+  
     
     // Constants for Systemproperties
     public static final String C_SYSTEMPROPERTY_VALUE="SYSTEMPROPERTY_VALUE";

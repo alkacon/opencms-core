@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 09:11:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/06/07 09:38:32 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.17 $ $Date: 2000/06/07 09:11:44 $ * 
+ * @version $Revision: 1.18 $ $Date: 2000/06/07 09:38:32 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -476,6 +476,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
       return groups;
      }
      
+   
+     
 	/**
 	 * Adds a user to the database.
 	 * 
@@ -714,7 +716,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_GROUPS_WRITEGROUP_KEY,C_GROUPS_WRITEGROUP);
 	    m_pool.initPreparedStatement(C_GROUPS_DELETEGROUP_KEY,C_GROUPS_DELETEGROUP);	
         m_pool.initPreparedStatement(C_GROUPS_GETALLGROUP_KEY,C_GROUPS_GETALLGROUP);
-        
+         
 		// init statements for users
 		m_pool.initPreparedStatement(C_USERS_MAXID_KEY,C_USERS_MAXID);
 		m_pool.initPreparedStatement(C_USERS_ADD_KEY,C_USERS_ADD);

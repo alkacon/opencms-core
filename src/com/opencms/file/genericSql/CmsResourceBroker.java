@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/07 09:11:44 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/07 09:38:32 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/06/07 09:11:44 $
+ * @version $Revision: 1.14 $ $Date: 2000/06/07 09:38:32 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1055,7 +1055,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */	
 	public boolean isAdmin(CmsUser currentUser, CmsProject currentProject) 
         throws CmsException {
-        return true;
+        return userInGroup(currentUser, currentProject,currentUser.getName(), C_GROUP_ADMIN);
     }
     
     /**
@@ -1073,7 +1073,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */	
 	public boolean isProjectManager(CmsUser currentUser, CmsProject currentProject) 
         throws CmsException {
-        return true;
+        return userInGroup(currentUser, currentProject,currentUser.getName(), C_GROUP_PROJECTLEADER);
     }
 
    	/**
@@ -1242,7 +1242,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String groupname)
         throws CmsException {
-        return true;
+         Vector groups = getGroupsOfUser(currentUser,currentProject,username);
+     	 CmsGroup group;
+		 for(int z = 0; z < groups.size(); z++) {
+        	 group = (CmsGroup) groups.elementAt(z);
+         	 if(groupname.equals(group.getName())) {
+				 return true;
+			 }
+		 }
+		 return false;
     }
 
 	/** 
@@ -1456,6 +1464,25 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void setParentGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String groupName, String parentGroupName)
         throws CmsException {
+        	
+		// Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			CmsGroup group = readGroup(currentUser, currentProject, groupName);
+			int parentGroupId = C_UNKNOWN_ID;
+			
+			// if the group exists, use its id, else set to unknown.
+			if( parentGroupName != null ) {
+				parentGroupId = readGroup(currentUser, currentProject, parentGroupName).getId();
+			}
+			
+			group.setParentId(parentGroupId);
+			
+			// write the changes to the cms
+			m_dbAccess.writeGroup(group);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + groupName, 
+				CmsException.C_NO_ACCESS);
+		}
     }
  
 
