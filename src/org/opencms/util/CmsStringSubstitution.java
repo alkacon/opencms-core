@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/18 10:50:42 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
@@ -91,6 +91,22 @@ public final class CmsStringSubstitution {
      */
     private CmsStringSubstitution() {
         // empty
+    }
+    
+    /**
+     * Escapes a String so it may be used in JavaScript String definitions.<p>
+     * 
+     * This method replaces line breaks, quotationmarks and \ characters.<p>
+     * 
+     * @param source the String to escape
+     * @return the escaped String
+     */
+    public static String escapeJavaScript(String source) {
+        source = CmsStringSubstitution.substitute(source, "\\", "\\\\");
+        source = CmsStringSubstitution.substitute(source, "\"", "\\\"");
+        source = CmsStringSubstitution.substitute(source, "\r\n", "\\n");        
+        source = CmsStringSubstitution.substitute(source, "\n", "\\n");
+        return source;
     }
         
     /**

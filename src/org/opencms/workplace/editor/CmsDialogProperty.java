@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/06/18 10:50:42 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,13 +36,11 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.CmsNewResourceXmlPage;
-import org.opencms.workplace.CmsPropertyAdvanced;
 import org.opencms.workplace.CmsPropertyCustom;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +51,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for the special xmlpage property dialog.<p> 
  * 
  * This is a special dialog that is used for xmlpages in the workplace and the editors.<p>
+ * Uses methods from the customized property dialog where possible.<p>
  * 
  * The following files use this class:
  * <ul>
@@ -60,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.3.0
  */
@@ -105,14 +104,6 @@ public class CmsDialogProperty extends CmsPropertyCustom {
             disabled = " disabled=\"disabled\"";
         }    
         
-        // get all used properties for the resource
-        Map activeProperties = null;
-        try {
-            activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
-        } catch (CmsException e) { 
-            // ignore this exception
-        }
-        
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
         retValue.append("\t<td class=\"textbold\">" + key("input.property") + "</td>\n");
@@ -130,11 +121,11 @@ public class CmsDialogProperty extends CmsPropertyCustom {
         retValue.append(buildTableRowEnd());
         
         // create the text property input rows
-        retValue.append(buildTextInput(editable, activeProperties));
+        retValue.append(buildTextInput(editable));
         
         // show navigation properties if enabled in explorer type settings
         if (showNavigation()) {
-            retValue.append(buildNavigationProperties(editable, activeProperties));
+            retValue.append(buildNavigationProperties(editable));
         }
         
         retValue.append("</table>");       
@@ -240,7 +231,6 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      * @throws CmsException if editing is not successful
      */
     protected boolean performEditOperation(HttpServletRequest request) throws CmsException {
-        Map activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
         boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
         try {
             if (useTempfileProject) {
@@ -253,7 +243,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
                 String curProperty = (String)i.next();
                 String paramValue = request.getParameter(PREFIX_VALUE + curProperty);
                 String oldValue = request.getParameter(PREFIX_HIDDEN + curProperty);
-                writeProperty(curProperty, paramValue, oldValue, activeProperties);
+                writeProperty(curProperty, paramValue, oldValue);
             }
                 
             // write special file properties
@@ -270,22 +260,22 @@ public class CmsDialogProperty extends CmsPropertyCustom {
                     if (!"-1".equals(paramValue)) {
                         // update the property only when it is different from "-1" (meaning no change)
                         oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVPOS);
-                        writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, paramValue, oldValue, activeProperties);
+                        writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, paramValue, oldValue);
                     }
                     paramValue = request.getParameter(PREFIX_VALUE + I_CmsConstants.C_PROPERTY_NAVTEXT);
                     oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVTEXT);
-                    writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, paramValue, oldValue, activeProperties);
+                    writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, paramValue, oldValue);
                 } else {
                     // navigation disabled, delete property values
-                    writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, null, null, activeProperties);
-                    writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, null, null, activeProperties);
+                    writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, null, null);
+                    writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, null, null);
                 }
             }
             
             // get the template parameter
             paramValue = request.getParameter(I_CmsConstants.C_PROPERTY_TEMPLATE);
             oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_TEMPLATE);
-            writeProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, paramValue, oldValue, activeProperties);
+            writeProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, paramValue, oldValue);
             if (paramValue != null && !paramValue.equals(oldValue)) {
                 // template has changed, refresh editor window
                 m_templateChanged = true;

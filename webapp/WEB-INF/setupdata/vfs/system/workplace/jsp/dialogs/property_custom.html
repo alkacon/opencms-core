@@ -179,13 +179,19 @@ function toggleNav() {
 }
 <% } %>
 
+// sets the form values, this function has to be called delayed because of display issues with large property values
+// use the setTimeout function in the onload attribute in the page <body> tag to set the form values
+function doSet() {
+<%= wp.buildSetFormValues() %>
+}
+
 //-->
 </script>
-<%= wp.bodyStart("dialog") %>
+<%= wp.bodyStart("dialog", "onload=\"window.setTimeout('doSet()',50);\"") %>
 
 <%= wp.dialogStart() %>
 
-<form id="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" id="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 

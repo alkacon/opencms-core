@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/06/18 10:45:11 $
- * Version: $Revision: 1.121 $
+ * Date   : $Date: 2004/06/18 10:50:42 $
+ * Version: $Revision: 1.122 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.121 $
+ * @version $Revision: 1.122 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1657,11 +1657,8 @@ public final class OpenCmsCore {
         } else {
             // stack trace available, show the "details" button
             errorHtml = CmsStringSubstitution.substitute(errorHtml, "${button_details}", htmlProps.getProperty("C_BUTTON_DETAILS"));
-            errorHtml = CmsStringSubstitution.substitute(errorHtml, "${bt_details}", messages.key("button.detail"));
-            exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
-            exception = CmsStringSubstitution.substitute(exception, "\"", "\\\"");
-            exception = CmsStringSubstitution.substitute(exception, "\r\n", "\\n");        
-            exception = CmsStringSubstitution.substitute(exception, "\n", "\\n");
+            errorHtml = CmsStringSubstitution.substitute(errorHtml, "${bt_details}", messages.key("button.detail"));    
+            exception = CmsStringSubstitution.escapeJavaScript(exception);
             exception = CmsStringSubstitution.substitute(exception, ">", "&gt;");
             exception = CmsStringSubstitution.substitute(exception, "<", "&lt;");
             details = "<html><body style='background-color: Window;'><pre>" + exception + "</pre></body></html>";
@@ -1927,7 +1924,7 @@ public final class OpenCmsCore {
                 }                
             } finally {
                 if (redirectURL == null) {
-                    redirectURL = servletPath + m_authenticationFormURI + "?requestedResource=" + req.getPathInfo();
+            redirectURL = servletPath + m_authenticationFormURI + "?requestedResource=" + req.getPathInfo();
                 }
             }
             

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/18 10:50:42 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringSubstitution;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -51,6 +53,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for the customized property dialog.<p> 
  * 
  * This is a special dialog that is used for the different resource types in the workplace.<p>
+ * For the xmlpage resource type, this class is extended in the editor subpackage.<p>
  * 
  * The following files use this class:
  * <ul>
@@ -58,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.3
  */
@@ -67,7 +70,13 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
     /** Value for the action: edit the properties. */
     public static final int ACTION_EDIT = 500;
     
+    /** Holds all active properties for the current resource. */
+    private Map m_activeProperties;
+    
+    /** Flag to determine if navigation properties are shown. */
     private boolean m_showNavigation;
+    
+    /** Helper object holding the information about the customized properties. */
     private CmsExplorerTypeSettings m_explorerTypeSettings;
     
     /**
@@ -128,14 +137,6 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         // check if the properties are editable
         boolean editable =  isEditable();
                 
-        // get all used properties for the resource
-        Map activeProperties = null;
-        try {
-            activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
-        } catch (CmsException e) { 
-            // ignore this exception
-        }
-        
         // create the column heads
         result.append("<table border=\"0\">\n");
         result.append("<tr>\n");
@@ -146,11 +147,11 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         result.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
         
         // create the text property input rows from explorer type settings
-        result.append(buildTextInput(editable, activeProperties));
+        result.append(buildTextInput(editable));
         
         // show navigation properties if enabled in explorer type settings
         if (showNavigation()) {
-            result.append(buildNavigationProperties(editable, activeProperties));
+            result.append(buildNavigationProperties(editable));
         }
         result.append("</table>");       
        
@@ -161,10 +162,9 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * Builds the HTML code for the special properties of an xmlpage resource.<p>
      * 
      * @param editable indicates if the properties are editable
-     * @param activeProperties Map of all active properties of the resource 
      * @return the HTML code for the special properties of a file resource
      */
-    protected StringBuffer buildNavigationProperties(boolean editable, Map activeProperties) {
+    protected StringBuffer buildNavigationProperties(boolean editable) {
         StringBuffer result = new StringBuffer(1024);
         
         // create "disabled" attribute if properties are not editable
@@ -176,7 +176,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         // create "add to navigation" checkbox
         result.append(buildTableRowStart(key("input.addtonav")));
         result.append("<input type=\"checkbox\" name=\"enablenav\" id=\"enablenav\" value=\"true\" onClick=\"toggleNav();\"");
-        if (activeProperties.containsKey(I_CmsConstants.C_PROPERTY_NAVTEXT) || activeProperties.containsKey(I_CmsConstants.C_PROPERTY_NAVPOS)) {
+        if (getActiveProperties().containsKey(I_CmsConstants.C_PROPERTY_NAVTEXT) || getActiveProperties().containsKey(I_CmsConstants.C_PROPERTY_NAVPOS)) {
             result.append(" checked=\"checked\"");
         }
         result.append(disabled + ">");
@@ -186,7 +186,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         result.append(buildTableRowEnd());
         
         // create NavText input row
-        result.append(buildPropertyEntry(activeProperties, I_CmsConstants.C_PROPERTY_NAVTEXT, key("input.navtitle"), editable));
+        result.append(buildPropertyEntry(I_CmsConstants.C_PROPERTY_NAVTEXT, key("input.navtitle"), editable));
         
         // create NavPos select box row
         result.append(buildTableRowStart(key("input.insert")));
@@ -215,13 +215,15 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
     /**
      * Builds the html for a single text input property row.<p>
      * 
-     * @param activeProperties Map of all active properties of the resource
+     * The html does not include the value of the created property,
+     * the values are set delayed (see buildSetFormValues() for details).<p>
+     * 
      * @param propertyName the name of the property
      * @param propertyTitle the nice name of the property
      * @param editable indicates if the properties are editable
      * @return the html for a single text input property row
      */
-    protected StringBuffer buildPropertyEntry(Map activeProperties, String propertyName, String propertyTitle, boolean editable) {
+    protected StringBuffer buildPropertyEntry(String propertyName, String propertyTitle, boolean editable) {
         StringBuffer result = new StringBuffer(256);
         // create "disabled" attribute if properties are not editable
         String disabled = "";
@@ -229,17 +231,16 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             disabled = " disabled=\"disabled\"";
         }
         result.append(buildTableRowStart(propertyTitle));
-        if (activeProperties.containsKey(propertyName)) {
-            // the property is used, so create text field with value, checkbox and hidden field
-            CmsProperty currentProperty = (CmsProperty)activeProperties.get(propertyName);
+        if (getActiveProperties().containsKey(propertyName)) {
+            // the property is used, so create text field with checkbox and hidden field
+            CmsProperty currentProperty = (CmsProperty)getActiveProperties().get(propertyName);
             String propValue = currentProperty.getValue();
             if (propValue != null) {
                 propValue = propValue.trim();   
             }
             propValue = CmsEncoder.escapeXml(propValue);
-            propertyName = CmsEncoder.escapeXml(propertyName);
-            result.append("<input type=\"text\" class=\"maxwidth\" value=\"");
-            result.append(propValue+"\" name=\"" + PREFIX_VALUE + propertyName + "\" id=\"" + PREFIX_VALUE + propertyName + "\"");
+            result.append("<input type=\"text\" class=\"maxwidth\"");
+            result.append(" name=\"" + PREFIX_VALUE + propertyName + "\" id=\"" + PREFIX_VALUE + propertyName + "\"");
             if (editable) {
                 result.append(" onKeyup=\"checkValue('" + propertyName + "');\"");
             }
@@ -261,6 +262,55 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         }
         result.append(buildTableRowEnd());
         return result;
+    }
+    
+    /**
+     * Builds the JavaScript to set the property form values delayed.<p>
+     * 
+     * The values of the properties are not inserted directly in the &lt;input&gt; tag,
+     * because there is a display issue when the property values are very long.
+     * This method creates JavaScript to set the property input field values delayed.
+     * On the JSP, the code which is created from this method has to be executed delayed after 
+     * the creation of the html form, e.g. in the &lt;body&gt; tag with the attribute
+     * onload="window.setTimeout('doSet()',50);".<p>
+     * 
+     * @return the JavaScript to set the property form values delayed
+     */
+    public String buildSetFormValues() {
+        StringBuffer result = new StringBuffer(1024);
+        Iterator i = getExplorerTypeSettings().getProperties().iterator();
+        // iterate over the customized properties
+        while (i.hasNext()) {
+            String curProperty = (String)i.next();
+            if (getActiveProperties().containsKey(curProperty)) {
+                CmsProperty property = (CmsProperty)getActiveProperties().get(curProperty);
+                String propValue = property.getValue();
+                if (propValue != null) {
+                    propValue = propValue.trim(); 
+                    propValue = CmsStringSubstitution.escapeJavaScript(propValue);
+                    // create the JS output for a single property
+                    result.append("\tdocument.getElementById(\"");    
+                    result.append(PREFIX_VALUE + curProperty + "\").value = \"");               
+                    result.append(propValue);
+                    result.append("\";\n");
+                }
+            }
+        }
+        // check if the navigation text property value has to be added
+        if (showNavigation() && getActiveProperties().containsKey(I_CmsConstants.C_PROPERTY_NAVTEXT)) {
+            CmsProperty property = (CmsProperty)getActiveProperties().get(I_CmsConstants.C_PROPERTY_NAVTEXT);
+            String propValue = property.getValue();
+            if (propValue != null) {
+                propValue = propValue.trim(); 
+                propValue = CmsStringSubstitution.escapeJavaScript(propValue);
+                // create the JS output for a single property
+                result.append("\tdocument.getElementById(\"");    
+                result.append(PREFIX_VALUE + I_CmsConstants.C_PROPERTY_NAVTEXT + "\").value = \"");               
+                result.append(propValue);
+                result.append("\";\n");
+            }    
+        }
+        return result.toString();
     }
     
     /**
@@ -291,16 +341,15 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * Builds the HTML for the common text input property values stored in the String array "PROPERTIES".<p>
      * 
      * @param editable indicates if the properties are editable
-     * @param activeProperties Map of all active properties of the resource
      * @return the HTML code for the common text input fields
      */
-    protected StringBuffer buildTextInput(boolean editable, Map activeProperties) {
+    protected StringBuffer buildTextInput(boolean editable) {
         StringBuffer result = new StringBuffer(256);        
         Iterator i = getExplorerTypeSettings().getProperties().iterator();
         // iterate over the properties
         while (i.hasNext()) {
             String curProperty = (String)i.next();
-            result.append(buildPropertyEntry(activeProperties, curProperty, curProperty, editable));
+            result.append(buildPropertyEntry(curProperty, curProperty, editable));
         }
         return result;
     }
@@ -403,7 +452,6 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * @throws CmsException if editing is not successful
      */
     protected boolean performEditOperation(HttpServletRequest request) throws CmsException {
-        Map activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
         boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
         try {
             if (useTempfileProject) {
@@ -416,7 +464,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 String curProperty = (String)i.next();
                 String paramValue = CmsEncoder.decode(request.getParameter(PREFIX_VALUE + curProperty));
                 String oldValue = request.getParameter(PREFIX_HIDDEN + curProperty);
-                writeProperty(curProperty, paramValue, oldValue, activeProperties);
+                writeProperty(curProperty, paramValue, oldValue);
             }
             
             // write the navigation properties if enabled
@@ -430,15 +478,15 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                     if (!"-1".equals(paramValue)) {
                         // update the property only when it is different from "-1" (meaning no change)
                         oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVPOS);
-                        writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, paramValue, oldValue, activeProperties);
+                        writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, paramValue, oldValue);
                     }
                     paramValue = request.getParameter(PREFIX_VALUE + I_CmsConstants.C_PROPERTY_NAVTEXT);
                     oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVTEXT);
-                    writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, paramValue, oldValue, activeProperties);
+                    writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, paramValue, oldValue);
                 } else {
                     // navigation disabled, delete property values
-                    writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, null, null, activeProperties);
-                    writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, null, null, activeProperties);
+                    writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, null, null);
+                    writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, null, null);
                 }                  
             }
         } finally {
@@ -458,12 +506,11 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * @param propName the name of the property
      * @param propValue the new value of the property
      * @param oldValue the old value of the property
-     * @param activeProperties all active properties of the resource
      * @throws CmsException if something goes wrong
      */
-    protected void writeProperty(String propName, String propValue, String oldValue, Map activeProperties) throws CmsException {
+    protected void writeProperty(String propName, String propValue, String oldValue) throws CmsException {
         // get the current property object
-        CmsProperty currentProperty = (CmsProperty)activeProperties.get(propName);
+        CmsProperty currentProperty = (CmsProperty)getActiveProperties().get(propName);
         if (currentProperty == null) {
             // new property, create new property object
             currentProperty = new CmsProperty();
@@ -478,7 +525,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         
         if (emptyParam) {
             // parameter is empty, check if the property has to be deleted
-            if (activeProperties.containsKey(propName)) {
+            if (getActiveProperties().containsKey(propName)) {
                 // lock resource if autolock is enabled
                 checkLock(getParamResource());
                 // determine the value to delete
@@ -539,6 +586,24 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      */
     public void setShowNavigation(boolean showNav) {
         m_showNavigation = showNav;
+    }
+    
+    /**
+     * Returns a map with CmsProperty object values keyed by property keys.<p>
+     * 
+     * @return a map with CmsProperty object values
+     */
+    protected Map getActiveProperties() {
+        // get all used properties for the resource
+        if (m_activeProperties == null) {
+        try {
+            m_activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
+        } catch (CmsException e) { 
+            // create an empty list
+            m_activeProperties = new HashMap();
+        }
+        }
+        return m_activeProperties;
     }
 
     /**

@@ -118,29 +118,45 @@ wp.setParamAction(wp.DIALOG_SAVE_EDIT);
 <script type="text/javascript">
 <!--
 
+// global members needed for delayed setting of field values when clicking a checkbox
+m_field = null;
+m_newValue = null;
+
 // called when using the checkbox, removes or adds content from/to input field
 function toggleDelete(propName, prefix, activeTab) {
 	var hiddenValue = document.getElementById(prefix+propName).value;
 	var checked = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName).checked;
 	var field = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName);
+	field.value = "";
 	if (checked == true) {
-		// box has been checked, get value from hidden field
-		field.value = hiddenValue;
+		// box has been checked, check style and get value from hidden field
 		if (activeTab == "<%= wp.key(wp.PANEL_STRUCTURE) %>" && field.className == "dialogmarkedfield") {
 			field.className = "maxwidth";
 		}
+		m_field = field;
+		m_newValue = hiddenValue;
+		// set the value delayed to avoid display issues
+		setTimeout("setValueDelayed()", 20);
 	} else {
 		// box has been unchecked 
 		var resValue = document.getElementById("<%= wp.PREFIX_RESOURCE %>"+propName).value;
 		if (activeTab == "<%= wp.key(wp.PANEL_STRUCTURE) %>" && resValue.length > 0) {
-			// in "sahred properties" form, show resource value if present
-			field.value = resValue;
+			// in "shared properties" form, show resource value if present			
 			field.className = "dialogmarkedfield";
+			m_field = field;
+			m_newValue = resValue;
+			// set the value delayed to avoid display issues
+			setTimeout("setValueDelayed()", 20);
 		} else {
 			// otherwise, clear input field
 			field.value = "";
 		}
 	}
+}
+
+// necessary to toggle the value delayed because of display issues wih long property values
+function setValueDelayed() {
+	m_field.value = m_newValue;
 }
 
 // checks the value of an input field and (de)activates the checkbox, if necessary
@@ -191,9 +207,15 @@ function definePropertyForm() {
 	document.main.submit();
 }
 
+// sets the form values, this function has to be called delayed because of display issues with large property values
+// use the setTimeout function in the onload attribute in the page <body> tag to set the form values
+function doSet() {
+<%= wp.buildSetFormValues() %>
+}
+
 //-->
 </script>
-<%= wp.bodyStart("dialog") %>
+<%= wp.bodyStart("dialog", "onload=\"window.setTimeout('doSet()',50);\"") %>
 
 <%= wp.dialogStart() %>
 
