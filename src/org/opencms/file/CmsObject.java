@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/14 09:11:14 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2004/12/14 13:30:18 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,8 +70,9 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -94,7 +95,7 @@ public class CmsObject {
     protected CmsSessionInfoManager m_sessionStorage;
 
     /**
-     * Connectes an OpenCms user context to a running database.<p>
+     * Connects an OpenCms user context to a running database.<p>
      * 
      * @param securityManager the security manager
      * @param context the request context that contains the user authentification
@@ -1140,12 +1141,10 @@ public class CmsObject {
      * @return <code>true</code> if the resource is available.
      *
      * @see #readResource(String)
-     * @see #availableResource(String, CmsResourceFilter)
-     *  
-     * @throws CmsException if something goes wrong
+     * @see #existsResource(String, CmsResourceFilter)
      */
-    public boolean availableResource(String resourcename) throws CmsException {
-        return availableResource(resourcename, CmsResourceFilter.DEFAULT);
+    public boolean existsResource(String resourcename) {
+        return existsResource(resourcename, CmsResourceFilter.DEFAULT);
     }
 
     /**
@@ -1167,11 +1166,9 @@ public class CmsObject {
      * 
      * @see #readResource(String)
      * @see #readResource(String, CmsResourceFilter)
-     *  
-     * @throws CmsException if something goes wrong
      */
-    public boolean availableResource(String resourcename, CmsResourceFilter filter) throws CmsException {
-        return m_securityManager.availableResource(
+    public boolean existsResource(String resourcename, CmsResourceFilter filter) {
+        return m_securityManager.existsResource(
             m_context,
             addSiteRoot(resourcename), 
             filter);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/14 09:11:15 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/12/14 13:30:18 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,9 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $
+ * @author Michael Moossen (m.mmoossen@alkacon.com)
+ * 
+ * @version $Revision: 1.22 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -3331,22 +3333,21 @@ public final class CmsSecurityManager {
      *
      * @return <code>true</code> if the resource is available.
      * 
-     * @see CmsObject#availableResource(String, CmsResourceFilter)
-     * @see CmsObject#availableResource(String)
-     *  
-     * @throws CmsException if something goes wrong
+     * @see CmsObject#existsResource(String, CmsResourceFilter)
+     * @see CmsObject#existsResource(String)
      */
-    public boolean availableResource(
+    public boolean existsResource(
         CmsRequestContext context,
         String resourcePath,
-        CmsResourceFilter filter) throws CmsException {
+        CmsResourceFilter filter) {
 
         boolean result = false;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context); 
         try {
-            result = availableResource(dbc, resourcePath, filter);
+            readResource(dbc, resourcePath, filter);
+            result = true;
         } catch (Exception e) {
-            dbc.report(null, null, e);
+            result = false;
         } finally {
             dbc.clear();
         }        
@@ -4753,50 +4754,6 @@ public final class CmsSecurityManager {
 
         // access was granted - return the resource
         return resource;
-    }    
-
-    /**
-     * Checks the availability of a resource from the OpenCms VFS, 
-     * using the specified resource filter.<p>
-     * 
-     * @param dbc the current database context
-     * @param resourcePath the name of the resource to read (full path)
-     * @param filter the resource filter to use while reading
-     *
-     * @return the resource that was read
-     *
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#readResource(String, CmsResourceFilter)
-     * @see CmsObject#readResource(String)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
-     */    
-    protected boolean availableResource(
-        CmsDbContext dbc,
-        String resourcePath,
-        CmsResourceFilter filter) throws CmsException {
-
-        // read the resource from the VFS
-        CmsResource resource = m_driverManager.availableResource(dbc, resourcePath, filter);
-      
-        // file not found
-        if (resource==null) {
-            return false;
-        }
-        
-        // file exists, now check permissions
-        boolean ret = true;
-        
-        // check if the user has read access to the resource
-        try {
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, true, filter);
-        }
-        catch (CmsException e) {
-            ret = false;
-        }
-
-        // access was granted
-        return ret;
     }    
 
     /**

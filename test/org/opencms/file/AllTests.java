@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/AllTests.java,v $
- * Date   : $Date: 2004/12/14 09:11:15 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/12/14 13:30:18 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.0
  */
@@ -63,11 +63,11 @@ public final class AllTests {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         TestSuite suite = new TestSuite("Tests for package org.opencms.file");
         //$JUnit-BEGIN$
-        suite.addTest(TestAvailable.suite());
         suite.addTest(TestChacc.suite());
         suite.addTest(TestCopy.suite());
         suite.addTest(TestChtype.suite());
         suite.addTest(TestCreateWriteResource.suite());
+        suite.addTest(TestExists.suite());
         suite.addTest(TestLock.suite());
         suite.addTest(TestMoveRename.suite());
         suite.addTest(TestPermissions.suite());

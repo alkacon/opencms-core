@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/12/14 09:11:15 $
- * Version: $Revision: 1.223 $
+ * Date   : $Date: 2004/12/14 13:30:18 $
+ * Version: $Revision: 1.224 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.223 $ $Date: 2004/12/14 09:11:15 $
+ * @version $Revision: 1.224 $ $Date: 2004/12/14 13:30:18 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1394,46 +1394,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException ex) {
             throw ex;
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        return resource;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#availableResource(org.opencms.db.CmsDbContext, int, java.lang.String, boolean)
-     */
-    public CmsResource availableResource(CmsDbContext dbc, int projectId, String path, boolean includeDeleted) throws CmsException {
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        CmsResource resource = null;
-        
-        try {
-            conn = m_sqlManager.getConnection(dbc, projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ");
-            stmt.setString(1, path);
-            
-            res = stmt.executeQuery();
-            if (res.next()) {
-                resource = createResource(res, projectId);
-                
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-
-                // check if this resource is marked as deleted
-                if ((resource.getState() == I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
-                    resource = null;
-                }
-            } else {
-                resource = null;
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
