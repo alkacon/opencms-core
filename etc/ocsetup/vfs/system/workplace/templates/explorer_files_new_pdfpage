@@ -12,7 +12,39 @@ function show_help()
 	return '2_2_2_2_3_7.html';
 }
 
+
+
+function checkforchars(whichform,which){
+
+var okay=true;
+
+	for(i=0;i<whichform.value.length;i++){
+	    if(whichform.value.charAt(i)=="%"){
+	 	   alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+		    okay=false;
+	    }
+	    if(whichform.value.charAt(i)=="#"){
+		    alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	   	    okay=false;
+   	    }
+	    if(whichform.value.charAt(i)=="&"){
+		    alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	   	    okay=false;
+	    }
+	}
+	
+	
+	if(okay){
+	if(which==1)location='explorer_files_new_pdfpage.html?step=1&newfile='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&template='+document.NEU.TEMPLATE.value;
+    if(which==2)location='explorer_files_new_pdfpage.html?step=1&newfile='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&template='+document.LINK.TEMPLATE.value+'&navtitle='+document.LINK.LINKNAME.value+'&navpos='+document.LINK.LINKPOS.value;	
+    }
+}
+
+
 function checkForName(){
+
+if(checkforchars(LINK.NEUNAME)==false)return false;
+
 	if(LINK.NEUNAME.value!="")NEU.WEITER.disabled=false;
 	else NEU.WEITER.disabled=false;
 }
@@ -83,7 +115,7 @@ function checkForName(){
 										<table cellspacing=0 cellpadding=5 width=100%>
 											<tr>
 												<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-												<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_pdfpage.html?step=1&newfile='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&template='+document.NEU.TEMPLATE.value;"></td>
+												<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="checkforchars(document.NEU.NEUNAME,1);"></td>
 												<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 											</tr>
 										</table>
@@ -148,7 +180,7 @@ function checkForName(){
 												<table cellspacing=0 cellpadding=5 width=100%>
 													<tr>
 														<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-														<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_pdfpage.html?step=1&newfile='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&template='+document.LINK.TEMPLATE.value+'&navtitle='+document.LINK.LINKNAME.value+'&navpos='+document.LINK.LINKPOS.value;"></td>
+														<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="checkforchars(document.LINK.NEUNAME,2);"></td>
 														<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 													</tr>
 												</table>

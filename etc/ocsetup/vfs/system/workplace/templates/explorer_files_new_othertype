@@ -17,8 +17,38 @@ function show_help()
 
 <script language=JavaScript>
 <!--
+
+
+
+
+
+function checkforchars(whichform){
+okay=true;
+	for(i=0;i<whichform.value.length;i++){
+	    if(whichform.value.charAt(i)=="%"){
+	    	alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	    	okay=false;
+	    }
+	    if(whichform.value.charAt(i)=="#"){
+		    alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	    	okay=false;
+	    }
+	    if(whichform.value.charAt(i)=="&"){
+		    alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	    	okay=false;
+	    }
+	}
+	
+	return okay;
+}
+
+
+
 function check_namefield()
 {
+
+if(checkforchars(document.NEU.NEUNAME)==false)return false;
+
 if(document.NEU.NEUNAME.value=="")
 	{
 		alert(']]><LABEL value="error.reason.namemissing" /><![CDATA[');
