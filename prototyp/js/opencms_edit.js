@@ -74,7 +74,7 @@ function getDimensions() {
 
 
 function displayCode() {
-  document.EDITTEXT.GUIApplet.setCode(code);
+  document.GUIApplet.setCode(code);
 }
 
 
@@ -84,7 +84,7 @@ function writeAppletTag()
   getDimensions();
   document.open();
   if (NS==true) 
-	document.write('<APPLET name="GUIApplet" CODE="GUIApplet" WIDTH="100%" WIDTH="'+ (windowWidth-40) +'" HEIGHT="86%" HEIGHT="'+ (windowHeight-40) +'" mayscript></APPLET>');
+	document.write('<APPLET name="GUIApplet" CODE="GUIApplet" WIDTH="100%" WIDTH="'+ windowWidth +'" HEIGHT="86%" HEIGHT="'+ windowHeight +'" mayscript></APPLET>');
   else if (IE==true)
   {
 	str = '<OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02 height=100% id=edit1 name=edit1 onfocus=setText(); width=100%><PARAM NAME="_Version" VALUE="131083"><PARAM NAME="_ExtentX" VALUE="22887"><PARAM NAME="_ExtentY" VALUE="7223"><PARAM NAME="_StockProps" VALUE="125"><PARAM NAME="Text" VALUE="Loading ....."><PARAM NAME="ForeColor" VALUE="0"><PARAM NAME="BackColor" VALUE="16777215"><PARAM NAME="BorderStyle" VALUE="1"><PARAM NAME="Enabled" VALUE="-1"><PARAM NAME="AutoIndent" VALUE="-1"><PARAM NAME="BackColorSelected" VALUE="8388608"><PARAM NAME="BookmarksMax" VALUE="16">';
