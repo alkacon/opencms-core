@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/01/25 16:41:12 $
-* Version: $Revision: 1.89 $
+* Date   : $Date: 2002/01/28 14:38:39 $
+* Version: $Revision: 1.90 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.89 $ $Date: 2002/01/25 16:41:12 $
+ * @version $Revision: 1.90 $ $Date: 2002/01/28 14:38:39 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -320,12 +320,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         cmsframe = (cmsframe == null ? "" : cmsframe);
         if(cmsframe.equals("plain")) {
             target = "";
-        }
-        else {
+        }else {
             if(tagcontent.equals("")) {
                 target = "target=_top";
-            }
-            else {
+            }else {
                 target = "target=" + tagcontent;
             }
         }
@@ -414,7 +412,26 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @exception CmsException
      */
     public Object getQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        String query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
+        String query = "";
+        if(cms.getMode() == cms.C_MODUS_EXPORT){
+            Enumeration parameters = cms.getRequestContext().getRequest().getParameterNames();
+            if(parameters == null){
+                return query;
+            }
+            StringBuffer paramQuery = new StringBuffer();
+            while(parameters.hasMoreElements()){
+                String name = (String)parameters.nextElement();
+                String value = (String)((Hashtable)userObject).get(name);
+                if(value != null && !"".equals(value)){
+                    paramQuery.append(name+"="+value+"&");
+                }
+            }
+            if(paramQuery.length() > 0){
+                query = paramQuery.substring(0,paramQuery.length()-1).toString();
+            }
+        }else{
+            query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
+        }
         if(query != null && !"".equals(query)) {
             query = "?" + query;
         }
@@ -774,13 +791,18 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
-     * /
-    public Object getUriWithParameter(CmsObject cms, Sring tagcontent, A_CmsXmlContnent doc, Object userObject) throws CsmException{
+     */
+    public Object getUriWithParameter(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException{
 
         String query = new String();
         // get the parameternames of the original request and get the values from the userObject
         try{
-            Enumeration parameters = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getParameterNames();
+            Enumeration parameters = null;
+            if(cms.getMode() == cms.C_MODUS_EXPORT){
+                parameters = cms.getRequestContext().getRequest().getParameterNames();
+            }else{
+                parameters = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getParameterNames();
+            }
             StringBuffer paramQuery = new StringBuffer();
             while(parameters.hasMoreElements()){
                 String name = (String)parameters.nextElement();

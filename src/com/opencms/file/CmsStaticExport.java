@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/01/25 16:41:12 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/01/28 14:38:39 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.11 $ $Date: 2002/01/25 16:41:12 $
+ * @version $Revision: 1.12 $ $Date: 2002/01/28 14:38:39 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -346,7 +346,8 @@ public class CmsStaticExport implements I_CmsConstants{
 
         try{
             // first lets create our request and response objects for the export
-            CmsExportRequest dReq = new CmsExportRequest();
+            CmsExportRequest dReq = new CmsExportRequest(m_cms.getRequestContext().getRequest().getWebAppUrl(),
+                                                    m_cms.getRequestContext().getRequest().getServletUrl());
             // test if there are parameters for the request
             int paraStart = link.indexOf("?");
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportRequest.java,v $
-* Date   : $Date: 2001/12/20 15:29:37 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/01/28 14:38:38 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,9 +45,24 @@ public class CmsExportRequest implements I_CmsRequest {
      */
     private Hashtable m_parameters = null;
 
+    /**
+     * We don't want to strore the original request, but we need this values.
+     */
+    private String m_webAppUrl="";
+    private String m_servletUrl="";
+
     public CmsExportRequest(HttpServletRequest req) {
+        try {
+            m_webAppUrl = req.getContextPath();
+        } catch(NoSuchMethodError err) {
+            // this is the old servlet-api without this method
+            // ignore this missing method and the context-path
+        }
+        m_servletUrl = m_webAppUrl + req.getServletPath();
     }
-    public CmsExportRequest() {
+    public CmsExportRequest(String webAppUrl, String servletUrl) {
+        m_webAppUrl = webAppUrl;
+        m_servletUrl = servletUrl;
     }
     public byte[] getFile(String name) {
         return null;
@@ -106,7 +121,7 @@ public class CmsExportRequest implements I_CmsRequest {
      * http://www.myserver.com/opencms
      */
     public String getWebAppUrl() {
-        throw new java.lang.UnsupportedOperationException("Method getWebAppUrl not supported in StaticExport.");
+        return m_webAppUrl;
     }
 
     /**
@@ -114,6 +129,6 @@ public class CmsExportRequest implements I_CmsRequest {
      * Web-Application.
      */
     public String getServletUrl() {
-        throw new java.lang.UnsupportedOperationException("Method getServletUrl not supported in StaticExport.");
+        return m_servletUrl;
     }
 }
