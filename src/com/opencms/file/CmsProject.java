@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
-* Date   : $Date: 2003/03/02 18:43:53 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/03/03 10:43:33 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.sql.Timestamp;
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.34 $ $Date: 2003/03/02 18:43:53 $
+ * @version $Revision: 1.35 $ $Date: 2003/03/03 10:43:33 $
  */
 public class CmsProject implements I_CmsConstants, Cloneable{
 
@@ -130,8 +130,9 @@ public class CmsProject implements I_CmsConstants, Cloneable{
     /**
      * Construct a new CmsProject that can be used to check if the provided id is the online project id.
      */
-    public CmsProject(int projectId) {
+    public CmsProject(int projectId, int flags) {
         m_id = projectId;
+        m_flags = flags;
     }
     
 /**

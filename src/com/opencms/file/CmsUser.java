@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
-* Date   : $Date: 2003/02/15 10:47:04 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/03/03 10:43:33 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2003/02/15 10:47:04 $
+ * @version $Revision: 1.32 $ $Date: 2003/03/03 10:43:33 $
  */
 
 public class CmsUser implements I_CmsConstants, Cloneable {
@@ -185,23 +185,20 @@ public class CmsUser implements I_CmsConstants, Cloneable {
                                   m_defaultGroup, new String(m_address), new String(m_section),m_type);
         return user;
     }
+    
     /**
-     * Compares the overgiven object with this object.
+     * Compares the given object with this user.<p>
      *
-     * @return true, if the object is identically else it returns false.
+     * @return true if the object is equal, false otherwise
      */
     public boolean equals(Object obj) {
-        boolean equal=false;
         // check if the object is a CmsUser object
-        if (obj instanceof CmsUser) {
-            // same ID than the current user?
-            if (((CmsUser)obj).getId() == m_id){
-                equal = true;
-            }
-        }
-        return equal;
+        if (! (obj instanceof CmsUser)) return false;
+        // same ID than the current user?
+        return (((CmsUser)obj).getId() == m_id); 
     }
-     /**
+
+    /**
      * Returns the complete Hashtable with additional information about the user. <BR/>
      * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
      *

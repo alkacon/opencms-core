@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/03/02 18:43:53 $
-* Version: $Revision: 1.259 $
+* Date   : $Date: 2003/03/03 10:43:33 $
+* Version: $Revision: 1.260 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.259 $
+ * @version $Revision: 1.260 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4016,7 +4016,7 @@ public void changeLockedInProject(int projectId, String resourcename) throws Cms
  * @param resourcename The name of the resource to change
  */
 protected void doChangeLockedInProject(int projectId, String resourcename) throws CmsException{
-    m_rb.changeLockedInProject(projectId, getSiteRoot(resourcename));
+    m_rb.changeLockedInProject(projectId, getSiteRoot(resourcename), m_context.currentUser());
 }
 
 /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/02 18:43:53 $
-* Version: $Revision: 1.194 $
+* Date   : $Date: 2003/03/03 10:43:32 $
+* Version: $Revision: 1.195 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.194 $ $Date: 2003/03/02 18:43:53 $
+ * @version $Revision: 1.195 $ $Date: 2003/03/03 10:43:32 $
  *
  */
 
@@ -3687,7 +3687,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param newProjectId The new project-id
      * @param resourcename The name of the resource to change
      */
-    public void changeLockedInProject(int projectId, String resourcename) throws CmsException;
+    public void changeLockedInProject(int projectId, String resourcename, CmsUser currentUser) throws CmsException;
 
     /**
      * Check if the history is enabled
