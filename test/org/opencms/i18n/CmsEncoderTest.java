@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/Attic/CmsEncoderTest.java,v $
- * Date   : $Date: 2004/05/25 10:12:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/08 08:47:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,5 +100,24 @@ public class CmsEncoderTest extends TestCase {
             String result = CmsEncoder.decodeHtmlEntities(source, encoding);
             assertEquals(result, dest);            
         }    
+    }
+    
+    /**
+     * @see CmsEncoder#lookupEncoding(String, String)
+     */
+    public void testLookupEncoding() {
+        assertEquals(CmsEncoder.lookupEncoding("UTF-8", null), "UTF-8");
+        assertEquals(CmsEncoder.lookupEncoding("utf-8", null), "UTF-8");
+        assertEquals(CmsEncoder.lookupEncoding("UTF8", null), "UTF-8");
+        assertEquals(CmsEncoder.lookupEncoding("utf8", null), "UTF-8");
+        assertEquals(CmsEncoder.lookupEncoding("ISO-8859-1", null), "ISO-8859-1");
+        assertEquals(CmsEncoder.lookupEncoding("iso-8859-1", null), "ISO-8859-1");
+        assertEquals(CmsEncoder.lookupEncoding("ISO8859-1", null), "ISO-8859-1");
+        assertEquals(CmsEncoder.lookupEncoding("iso8859-1", null), "ISO-8859-1");
+        assertEquals(CmsEncoder.lookupEncoding("ISO_8859-1", null), "ISO-8859-1");
+        assertEquals(CmsEncoder.lookupEncoding("iso_8859-1", null), "ISO-8859-1");
+        assertEquals(CmsEncoder.lookupEncoding("ISO_8859_1", null), "ISO-8859-1");
+        assertEquals(CmsEncoder.lookupEncoding("iso_8859_1", null), "ISO-8859-1");        
+        assertEquals(CmsEncoder.lookupEncoding("latin1", null), "ISO-8859-1");        
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2004/05/08 03:10:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/08 08:46:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import java.net.URLEncoder;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,18 +63,37 @@ import java.util.regex.Pattern;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
 public final class CmsEncoder {
-    
-    /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard */
-    public static final String C_UTF8_ENCODING = "UTF-8";
 
     /** The regex pattern to match HTML entities */
     private static final Pattern C_ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
+    
+    /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard */
+    public static final String C_UTF8_ENCODING = "UTF-8";
+        
+    /** A cache for encoding name lookup */
+    private static Map m_encodingCache = new HashMap(16);
 
     /**
      * Constructor
      */
     private CmsEncoder() {
         // empty
+    }
+    
+    /**
+     * Adjusts the given String by making sure all characters that can be displayed 
+     * in the given charset are contained as chars, whereas all other non-displayable
+     * characters are converted to HTML entities.<p> 
+     * 
+     * Just calls {@link #decodeHtmlEntities(String, String)} first and feeds the result
+     * to {@link #encodeHtmlEntities(String, String)}. <p>
+     *  
+     * @param input the input to adjust the HTML encoding for
+     * @param encoding the charset to encode the result with
+     * @return the input with the decoded/encoded HTML entities
+     */
+    public static final String adjustHtmlEncoding(String input, String encoding) {
+        return encodeHtmlEntities(decodeHtmlEntities(input, encoding), encoding);
     }
     
     /**
@@ -97,6 +118,43 @@ public final class CmsEncoder {
             // return value will be input value
         }
         return result;
+    }
+    
+    /**
+     * Creates a String out of a byte array with the specified encoding, falling back
+     * to the system default in case the encoding name is not valid.<p>
+     * 
+     * Use this method as a replacement for <code>new String(byte[], encoding)</code>
+     * to avoid possible encoding problems.<p>
+     * 
+     * @param bytes the bytes to decode 
+     * @param encoding the encoding scheme to use for decoding the bytes
+     * @return the bytes decoded to a String
+     */
+    public static final String createString(byte[] bytes, String encoding) {
+        if (encoding.intern() != OpenCms.getSystemInfo().getDefaultEncoding()) {
+            encoding = lookupEncoding(encoding, null);
+        }
+        if (encoding != null) {
+            try {
+                return new String(bytes, encoding);
+            } catch (UnsupportedEncodingException e) {
+                // this can _never_ happen since the charset was looked up first 
+            }
+        } else {
+            if (OpenCms.getLog(CmsEncoder.class).isWarnEnabled()) {
+                OpenCms.getLog(CmsEncoder.class).warn("Invalid encoding scheme '" + encoding + "' used, falling back to default");
+            }
+            encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+            try {
+                return new String(bytes, encoding);
+            } catch (UnsupportedEncodingException e) {
+                // this can also _never_ happen since the default encoding is always valid
+            }            
+        }
+        // this code is unreachable in pratice
+        OpenCms.getLog(CmsEncoder.class).error("Issues with encoding using scheme '" + encoding + "'");
+        return null;
     }
     
     /**
@@ -141,6 +199,42 @@ public final class CmsEncoder {
             // ignore
         }
         return source;     
+    }
+
+    /**
+     * Decodes HTML entity references like <code>&amp;#8364;</code> that are contained in the 
+     * String to a regulat character, but only if that character is contained in the given 
+     * encodings charset.<p> 
+     * 
+     * @param input the input to decode the HTML enties in
+     * @param encoding the charset to decode the input for
+     * @return the input with the decoded HTML entities
+     * @see #encodeHtmlEntities(String, String)
+     */
+    public static final String decodeHtmlEntities(String input, String encoding) {
+                
+        Matcher matcher = C_ENTITIY_PATTERN.matcher(input);        
+        StringBuffer result = new StringBuffer(input.length());
+        Charset charset = Charset.forName(encoding);
+        CharsetEncoder encoder = charset.newEncoder();
+        
+        while (matcher.find()) {            
+            String entity = matcher.group();
+            String value = entity.substring(2, entity.length()-1);
+            int c = Integer.valueOf(value).intValue();
+            if (c < 128) {
+                // first 128 chars are contained in almost every charset
+                entity = new String(new char[] {(char)c});                
+                // this is intendend as performance improvement since 
+                // the canEncode() operation appears quite CPU heavy
+            } else if (encoder.canEncode((char)c)) {
+                // encoder can endoce this char
+                entity = new String(new char[] {(char)c});                
+            }
+            matcher.appendReplacement(result, entity);
+        }
+        matcher.appendTail(result);        
+        return result.toString();
     }
     
     /**
@@ -226,58 +320,6 @@ public final class CmsEncoder {
         }
         return result.toString();
     }        
-    
-    /**
-     * Adjusts the given String by making sure all characters that can be displayed 
-     * in the given charset are contained as chars, whereas all other non-displayable
-     * characters are converted to HTML entities.<p> 
-     * 
-     * Just calls {@link #decodeHtmlEntities(String, String)} first and feeds the result
-     * to {@link #encodeHtmlEntities(String, String)}. <p>
-     *  
-     * @param input the input to adjust the HTML encoding for
-     * @param encoding the charset to encode the result with
-     * @return the input with the decoded/encoded HTML entities
-     */
-    public static final String adjustHtmlEncoding(String input, String encoding) {
-        return encodeHtmlEntities(decodeHtmlEntities(input, encoding), encoding);
-    }
-
-    /**
-     * Decodes HTML entity references like <code>&amp;#8364;</code> that are contained in the 
-     * String to a regulat character, but only if that character is contained in the given 
-     * encodings charset.<p> 
-     * 
-     * @param input the input to decode the HTML enties in
-     * @param encoding the charset to decode the input for
-     * @return the input with the decoded HTML entities
-     * @see #encodeHtmlEntities(String, String)
-     */
-    public static final String decodeHtmlEntities(String input, String encoding) {
-                
-        Matcher matcher = C_ENTITIY_PATTERN.matcher(input);        
-        StringBuffer result = new StringBuffer(input.length());
-        Charset charset = Charset.forName(encoding);
-        CharsetEncoder encoder = charset.newEncoder();
-        
-        while (matcher.find()) {            
-            String entity = matcher.group();
-            String value = entity.substring(2, entity.length()-1);
-            int c = Integer.valueOf(value).intValue();
-            if (c < 128) {
-                // first 128 chars are contained in almost every charset
-                entity = new String(new char[] {(char)c});                
-                // this is intendend as performance improvement since 
-                // the canEncode() operation appears quite CPU heavy
-            } else if (encoder.canEncode((char)c)) {
-                // encoder can endoce this char
-                entity = new String(new char[] {(char)c});                
-            }
-            matcher.appendReplacement(result, entity);
-        }
-        matcher.appendTail(result);        
-        return result.toString();
-    }
     
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
@@ -452,6 +494,41 @@ public final class CmsEncoder {
         }
         return new String(result);
     }   
+    
+    /**
+     * Checks if a given encoding name is actually supported, and if so
+     * resolves it to it's canonical name, if not it returns the given fallback 
+     * value.<p> 
+     * 
+     * Charsets have a set of aliases. For example, valid aliases for "UTF-8"
+     * are "UTF8", "utf-8" or "utf8". This method resolves any given valid charset name 
+     * to it's "canonical" form, so that simple String comparison can be used
+     * when checking charset names internally later.<p>
+     * 
+     * Please see <a href="http://www.iana.org/assignments/character-sets">http://www.iana.org/assignments/character-sets</a> 
+     * for a list of valid charset alias names.<p>
+     * 
+     * @param encoding the encoding to check and resolve
+     * @param fallback the fallback encoding scheme
+     * @return
+     */
+    public static String lookupEncoding(String encoding, String fallback) {
+        
+        String result = (String)m_encodingCache.get(encoding);
+        if (result != null) {
+            return result;
+        }
+        
+        try {
+            result = Charset.forName(encoding).name();
+            m_encodingCache.put(encoding, result);
+            return result;
+        } catch (Throwable t) {
+            // we will use the default value as fallback
+        }
+        
+        return fallback;
+    }
     
     /**
      * Re-decodes a String that has not been correctly decoded and thus has scrambled

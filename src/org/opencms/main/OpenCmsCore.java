@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/05/26 07:59:55 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2004/06/08 08:46:54 $
+ * Version: $Revision: 1.117 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.116 $
+ * @version $Revision: 1.117 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -962,10 +962,14 @@ public final class OpenCmsCore {
      * @throws Exception in case of problems initializing OpenCms, this is usually fatal 
      */
     protected synchronized void initConfiguration(ExtendedProperties configuration) throws Exception {
-        // this will initialize the encoding with the default
-        String defaultEncoding = getSystemInfo().getDefaultEncoding();
-        // check the opencms.properties for a different setting
-        defaultEncoding = configuration.getString("defaultContentEncoding", defaultEncoding);
+        // check the opencms.properties for the encoding setting
+        String setEncoding = configuration.getString("defaultContentEncoding", OpenCms.getSystemInfo().getDefaultEncoding());
+        String defaultEncoding = CmsEncoder.lookupEncoding(setEncoding, null);
+        if (defaultEncoding == null) {
+            String msg = "OpenCms startup failure: Configured encoding '" + setEncoding + "' not supported by the Java VM";
+            getLog(this).fatal(OpenCmsCore.C_MSG_CRITICAL_ERROR + "1: " + msg);
+            throw new Exception(msg);            
+        }
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms encoding     : " + defaultEncoding);
         }
@@ -978,24 +982,13 @@ public final class OpenCmsCore {
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info(". System file.encoding : " + systemEncoding);
         }
-        if (!defaultEncoding.equals(systemEncoding)) {
-            String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + "' not equal to OpenCms encoding '" + defaultEncoding + "'";
-            if (getLog(this).isFatalEnabled()) {
-                getLog(this).fatal(OpenCmsCore.C_MSG_CRITICAL_ERROR + "1: " + msg);
-            }
-            throw new Exception(msg);
-        }
-        try {
-            // check if the found encoding is supported 
-            // this will work with Java 1.4+ only
-            if (!java.nio.charset.Charset.isSupported(defaultEncoding)) {
-                defaultEncoding = getSystemInfo().getDefaultEncoding();
-            }
-        } catch (Throwable t) {
-            // will be thrown in Java < 1.4 (NoSuchMethodException etc.)
-            // in Java < 1.4 there is no easy way to check if encoding is supported,
-            // so you must make sure your setting in "opencms.properties" is correct.             
-        }
+//        if (!defaultEncoding.equals(systemEncoding)) {
+//            String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + "' not equal to OpenCms encoding '" + defaultEncoding + "'";
+//            if (getLog(this).isFatalEnabled()) {
+//                getLog(this).fatal(OpenCmsCore.C_MSG_CRITICAL_ERROR + "1: " + msg);
+//            }
+//            throw new Exception(msg);
+//        }
         getSystemInfo().setDefaultEncoding(defaultEncoding);
 
         // read server ethernet address (MAC) and init UUID generator

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/06/07 07:59:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/08 08:46:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,13 +51,13 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.3
  */
 public class CmsSystemInfo {
     
     /** Default encoding */
-    private static final String C_DEFAULT_ENCODING = "ISO-8859-1";
+    private static final String C_DEFAULT_ENCODING = "UTF-8";
 
     /** Static version name to use if version.properties can not be read */
     private static final String C_DEFAULT_VERSION_NAME = "Ix";
@@ -128,7 +128,7 @@ public class CmsSystemInfo {
         // init version onformation
         initVersion();
         // set default encoding (will be changed again later when properties have been read)
-        m_defaultEncoding = C_DEFAULT_ENCODING;
+        m_defaultEncoding = C_DEFAULT_ENCODING.intern();
     }
     
     /**
@@ -213,7 +213,7 @@ public class CmsSystemInfo {
      * 
      * The default is set in the "opencms.properties" file.
      * If this is not set in "opencms.properties" the default 
-     * is "ISO-8859-1".<p>
+     * is "UTF-8".<p>
      * 
      * @return the default encoding, e.g. "UTF-8" or "ISO-8859-1"
      */
@@ -463,7 +463,7 @@ public class CmsSystemInfo {
      * @param encoding the default encoding to set
      */
     protected void setDefaultEncoding(String encoding) {
-        m_defaultEncoding = encoding;
+        m_defaultEncoding = encoding.intern();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Encoding set to      : " + m_defaultEncoding);
         }        
