@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/23 12:51:45 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/23 16:47:39 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -84,6 +84,41 @@ import com.opencms.core.*;
          return readFile(project,filename);
      }
 	
+      /**
+	 * Creates a new file from an given CmsFile object and a new filename.
+     *
+	 * @param project The project in which the resource will be used.
+	 * @param file The file to be written to the Cms.
+	 * @param filename The complete nee name of the file (including pathinformation).
+	 * 
+	 * @return file The created file.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+    
+	 public CmsFile createFile(A_CmsProject project, CmsFile file,
+                                String filename)
+         throws CmsException {
+         
+         // create new file
+         File diskFile= new File(absoluteName(filename));
+         // check if this file is already existing
+         if (!diskFile.exists()){
+             try {
+                 // write the new file to disk
+                 OutputStream s = new FileOutputStream(diskFile);
+                 s.write(file.getContents());
+                 s.close();
+             } catch (Exception e) {
+               throw new CmsException(e.getMessage());
+             }
+         } else {
+             throw new CmsException(CmsException.C_FILE_EXISTS);
+         }
+         return readFile(project,filename);
+      
+     }
+     
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 

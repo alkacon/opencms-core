@@ -5,17 +5,34 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This interface describes the access to files and folders in the Cms.<BR/>
+ * This class is the main module to access files and folders in the Cms.<BR/>
+ * Depending on the URI of the requested dockument, it selects the database or filesystem
+ * access module which has access to the document.
  * 
  * All methods have package-visibility for security-reasons.
  * 
- * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 1999/12/23 16:47:39 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/23 16:47:39 $
  */
-interface I_CmsAccessFile {
+class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
+    /**
+     * Storage for all mountpoints
+     */
+    private Hashtable m_mountpointStorage=null;
 
+    
+    /**
+     * Constructor, creates a new CmsAccessFile module.
+     * 
+     * @param mountpointStorage Hashtable containing all mointpoints and references to 
+     * the appropriate access module.
+     */
+    public CmsAccessFile (Hashtable mountpointStorage) {
+        m_mountpointStorage=mountpointStorage;
+    }
+    
+    
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
      *
@@ -38,13 +55,18 @@ interface I_CmsAccessFile {
 	 public CmsFile createFile(A_CmsUser user, A_CmsProject project,
                                 String filename, int flags,
 								byte[] contents, A_CmsResourceType resourceType)
-        throws CmsException;
+        throws CmsException {
+        
+        return getFilesystem(filename).createFile(user,project,
+                                                  filename,flags,
+                                                  contents,resourceType);
+        }
 	
-     
-	/**
+     /**
 	 * Creates a new file from an given CmsFile object and a new filename.
      *
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
+	 * <b>This method is not available for the main CmsAccess File module.</b>
+	 * 
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param file The file to be written to the Cms.
@@ -57,9 +79,13 @@ interface I_CmsAccessFile {
     
 	 public CmsFile createFile(A_CmsProject project, CmsFile file,
                                 String filename)
-        throws CmsException;
+         throws CmsException {
+         
+         // this method is not available for the main CmsAccess File module.
+         
+         return null;
+     }
 	
-     
      
      
 	/**
@@ -73,7 +99,10 @@ interface I_CmsAccessFile {
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	 public CmsFile readFile(A_CmsProject project, String filename)
-		throws CmsException;
+         throws CmsException {
+    
+         return getFilesystem(filename).readFile(project,filename);
+     }
 	
 	/**
 	 * Reads a file header from the Cms.<BR/>
@@ -88,7 +117,10 @@ interface I_CmsAccessFile {
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
-		throws CmsException;
+         throws CmsException {
+         
+         return getFilesystem(filename).readFileHeader(project,filename);
+     }
 	
 	/**
 	 * Writes a file to the Cms.<BR/>
@@ -99,7 +131,10 @@ interface I_CmsAccessFile {
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 public void writeFile(A_CmsProject project, CmsFile file)
-		throws CmsException;
+         throws CmsException {
+         
+         getFilesystem(file.getAbsolutePath()).writeFile(project,file);
+     }
 	
 	/**
 	 * Writes the fileheader to the Cms.
@@ -111,7 +146,10 @@ interface I_CmsAccessFile {
 	 */	
 
 	 public void writeFileHeader(A_CmsProject project, CmsFile file)
-		throws CmsException;
+         throws CmsException {
+         
+         getFilesystem(file.getAbsolutePath()).writeFileHeader(project,file);
+     }
 
 	/**
 	 * Renames the file to the new name.
@@ -123,7 +161,22 @@ interface I_CmsAccessFile {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */		
 	 public void renameFile(A_CmsProject project, String oldname, String newname)
-		throws CmsException;
+         throws CmsException {
+         
+         // get the file systems for the old and new name.
+         I_CmsAccessFile oldFs=getFilesystem(oldname);
+         I_CmsAccessFile newFs=getFilesystem(newname);
+                
+         // if both filesystems are the same, use the rename method there
+        if (oldFs==newFs) {
+            oldFs.renameFile(project,oldname,newname);
+        } else {
+            // copy the file form the old filesystem to the new one
+            CmsFile file=oldFs.readFile(project,oldname);
+            CmsFile newFile=newFs.createFile(project,file,newname);
+            oldFs.deleteFile(project,oldname);
+        }
+     }
 	
 	/**
 	 * Deletes the file.
@@ -134,7 +187,9 @@ interface I_CmsAccessFile {
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 public void deleteFile(A_CmsProject project, String filename)
-		throws CmsException;
+         throws CmsException {
+         getFilesystem(filename).deleteFile(project,filename);
+     }
 	
 	/**
 	 * Copies the file.
@@ -146,7 +201,20 @@ interface I_CmsAccessFile {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 public void copyFile(A_CmsProject project, String source, String destination)
-		throws CmsException;
+         throws CmsException {
+           // get the file systems for the source and the destination.
+           I_CmsAccessFile sourceFs=getFilesystem(source);
+           I_CmsAccessFile destinationFs=getFilesystem(destination);
+                
+          // if both filesystems are the same, use the rename method there
+          if (sourceFs==destinationFs) {
+             sourceFs.copyFile(project,source,destination);
+        } else {
+            // copy the file form the source filesystem to the destination one
+            CmsFile file=sourceFs.readFile(project,source);
+            CmsFile newFile=destinationFs.createFile(project,file,destination);
+         }
+     }
 	
 	/**
 	 * Moves the file.
@@ -159,7 +227,9 @@ interface I_CmsAccessFile {
 	 */	
 	 public void moveFile(A_CmsProject project, String source, 
 				  String destination)
-		throws CmsException;
+         throws CmsException {
+           renameFile(project,source,destination);
+     }
 	 
 		
 	/**
@@ -177,7 +247,9 @@ interface I_CmsAccessFile {
 	 public CmsFolder createFolder(A_CmsUser user,
                                     A_CmsProject project, String foldername,
                                     int flags)
-        throws CmsException;
+         throws CmsException {
+         return getFilesystem(foldername).createFolder(user,project,foldername,flags);
+     }
 
 	/**
 	 * Reads a folder from the Cms.<BR/>
@@ -190,7 +262,10 @@ interface I_CmsAccessFile {
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	 public CmsFolder readFolder(A_CmsProject project, String foldername)
-		throws CmsException;
+         throws CmsException {
+         
+         return getFilesystem(foldername).readFolder(project,foldername);
+      }
 	
      /**
 	 * Writes a folder to the Cms.<BR/>
@@ -201,7 +276,10 @@ interface I_CmsAccessFile {
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 public void writeFolder(A_CmsProject project, CmsFolder folder)
-		throws CmsException;
+         throws CmsException {
+         
+         getFilesystem(folder.getAbsolutePath()).writeFolder(project,folder);
+     }
      
      
 	/**
@@ -220,7 +298,8 @@ interface I_CmsAccessFile {
 	 */		
 	public void renameFolder(A_CmsProject project, String oldname, 
 							   String newname, boolean force)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Deletes the folder.
@@ -236,7 +315,8 @@ interface I_CmsAccessFile {
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 public void deleteFolder(A_CmsProject project, String foldername, boolean force)
-		throws CmsException;
+         throws CmsException {
+     }
 	
 	/**
 	 * Copies a folder.
@@ -254,7 +334,8 @@ interface I_CmsAccessFile {
 	 */	
 	 public void copyFolder(A_CmsProject project, String source, String destination, 
 						    boolean force)
-		throws CmsException;
+         throws CmsException {
+     }
 	
 	/**
 	 * Moves a folder.
@@ -272,7 +353,8 @@ interface I_CmsAccessFile {
 	 */	
 	 public void moveFolder(A_CmsProject project, String source, 
 						   String destination, boolean force)
-		throws CmsException;
+         throws CmsException {
+     }
 
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
@@ -285,7 +367,10 @@ interface I_CmsAccessFile {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	 public Vector getSubFolders(A_CmsProject project, String foldername)
-		throws CmsException;
+         throws CmsException {
+         
+         return getFilesystem(foldername).getSubFolders(project,foldername);
+     }
 	
 	/**
 	 * Returns a Vector with all file headers of a folder.<BR/>
@@ -298,5 +383,51 @@ interface I_CmsAccessFile {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	 public Vector getFilesInFolder(A_CmsProject project, String foldername)
-		throws CmsException;
+         throws CmsException {
+         
+         return getFilesystem(foldername).getFilesInFolder(project,foldername);
+     }
+     
+     
+     /**
+      * Returns the  appropriate access module for a given file or folder.
+      * 
+      * @param name The name of the file or folder in the Cms.
+      * @return CmsAccessFile module that can access the file or folder.
+      */
+     private I_CmsAccessFile getFilesystem(String name)
+	{
+		String mountpoint=null;
+		String bestmountpoint = null;
+		String bestmatch=new String("");
+		I_CmsAccessFile accessFile=null;
+		
+        // calaculate the path to the file or folder
+		String path=null;
+		if (name.endsWith("/")) {
+			path=name;
+		} else {
+			path = name.substring(0,name.lastIndexOf("/")+1);
+		}
+		
+		// now check all available 
+		Enumeration e = m_mountpointStorage.keys();
+		while (e.hasMoreElements()) {
+		  mountpoint=(String)e.nextElement();
+          // is the path of the file covered by this mountpoint?
+		  if (path.indexOf(mountpoint) != -1) {
+            // is there a better mathch already existing?  
+			if (mountpoint.length() > bestmatch.length()) {
+                // the path must start with the moutpoint
+                if(path.startsWith(mountpoint)) {
+                    // set this mountpoint as the new bestmatch
+					bestmatch=mountpoint;
+				}
+			}
+		 } 
+		}
+	    accessFile = (I_CmsAccessFile)m_mountpointStorage.get(bestmatch);
+	  return  accessFile;
+	}
+	
 }

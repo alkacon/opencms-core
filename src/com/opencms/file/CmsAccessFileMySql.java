@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 1999/12/22 19:12:24 $
+ * @version $Revision: 1.7 $ $Date: 1999/12/23 16:47:39 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -20,6 +20,11 @@ import com.opencms.core.*;
     * This is the connection object to the database
     */
     private Connection m_Con  = null;
+    
+    /**
+    * This is the mountpoint of this filesystem module.
+    */
+    private CmsMountPoint m_mountpoint  = null;
     
      /**
      * SQL Command for writing a new resource. 
@@ -273,11 +278,14 @@ import com.opencms.core.*;
      * @exception CmsException Throws CmsException if connection fails.
      * 
      */
-    public CmsAccessFileMySql(String driver,String conUrl)	
+    public CmsAccessFileMySql(CmsMountPoint mountpoint)	
         throws CmsException, ClassNotFoundException {
-        Class.forName(driver);
-        initConnections(conUrl);
+        
+        m_mountpoint=mountpoint;
+        Class.forName(mountpoint.getDriver());
+        initConnections(mountpoint.getConnect());
         initStatements();
+        
     }
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
@@ -306,7 +314,7 @@ import com.opencms.core.*;
                synchronized ( m_statementResourceWrite) {
                 // write new resource to the database
                 //RESOURCE_NAME
-                m_statementResourceWrite.setString(1,filename);
+                m_statementResourceWrite.setString(1,absoluteName(filename));
                 //RESOURCE_TYPE
                 m_statementResourceWrite.setInt(2,resourceType.getResourceType());
                 //RESOURCE_FLAGS
@@ -337,7 +345,7 @@ import com.opencms.core.*;
                }
                synchronized (m_statementFileWrite) {
                 //RESOURCE_NAME
-                m_statementFileWrite.setString(1,filename);
+                m_statementFileWrite.setString(1,absoluteName(filename));
                 //PROJECT_ID
                 m_statementFileWrite.setInt(2,project.getId());
                 //FILE_CONTENT
@@ -351,6 +359,70 @@ import com.opencms.core.*;
          return readFile(project,filename);
      }
 	
+      /**
+	 * Creates a new file from an given CmsFile object and a new filename.
+     *
+	 * @param project The project in which the resource will be used.
+	 * @param file The file to be written to the Cms.
+	 * @param filename The complete nee name of the file (including pathinformation).
+	 * 
+	 * @return file The created file.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+      public CmsFile createFile(A_CmsProject project, CmsFile file,
+                                String filename)
+         throws CmsException {
+            try {   
+               synchronized ( m_statementResourceWrite) {
+                // write new resource to the database
+                //RESOURCE_NAME
+                m_statementResourceWrite.setString(1,absoluteName(filename));
+                //RESOURCE_TYPE
+                m_statementResourceWrite.setInt(2,file.getType());
+                //RESOURCE_FLAGS
+                m_statementResourceWrite.setInt(3,file.getFlags());
+                //USER_ID
+                m_statementResourceWrite.setInt(4,file.getOwnerId());
+                //GROUP_ID
+                m_statementResourceWrite.setInt(5,file.getGroupId());
+                //PROJECT_ID
+                m_statementResourceWrite.setInt(6,project.getId());
+                //ACCESS_FLAGS
+                m_statementResourceWrite.setInt(7,file.getAccessFlags());
+                //STATE
+                m_statementResourceWrite.setInt(8,C_STATE_CHANGED);
+                //LOCKED_BY
+                m_statementResourceWrite.setInt(9,file.isLockedBy());
+                //LAUNCHER_TYPE
+                m_statementResourceWrite.setInt(10,file.getLauncherType());
+                //LAUNCHER_CLASSNAME
+                m_statementResourceWrite.setString(11,file.getLauncherClassname());
+                //DATE_CREATED
+                m_statementResourceWrite.setLong(12,file.getDateCreated());
+                //DATE_LASTMODIFIED
+                m_statementResourceWrite.setLong(13,System.currentTimeMillis());
+                //SIZE
+                m_statementResourceWrite.setInt(14,file.getContents().length);
+                m_statementResourceWrite.executeUpdate();
+               }
+               synchronized (m_statementFileWrite) {
+                //RESOURCE_NAME
+                m_statementFileWrite.setString(1,absoluteName(filename));
+                //PROJECT_ID
+                m_statementFileWrite.setInt(2,project.getId());
+                //FILE_CONTENT
+                m_statementFileWrite.setBytes(3,file.getContents());
+                m_statementFileWrite.executeUpdate();
+                   
+               }
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
+         return readFile(project,filename);
+      }
+     
+     
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 
@@ -376,7 +448,7 @@ import com.opencms.core.*;
               if(file != null) {
                    // read the file content form the database
                    synchronized (m_statementFileRead) {
-                     m_statementFileRead.setString(1,filename);
+                     m_statementFileRead.setString(1,absoluteName(filename));
                      m_statementFileRead.setInt(2,project.getId());
                      res = m_statementFileRead.executeQuery();  
                    }
@@ -410,7 +482,7 @@ import com.opencms.core.*;
          try {  
               synchronized ( m_statementResourceRead) {
                    // read resource data from database
-                   m_statementResourceRead.setString(1,filename);
+                   m_statementResourceRead.setString(1,absoluteName(filename));
                    m_statementResourceRead.setInt(2,project.getId());
                    res = m_statementResourceRead.executeQuery();
                }
@@ -431,7 +503,9 @@ import com.opencms.core.*;
                                            res.getLong(C_DATE_LASTMODIFIED),
                                            new byte[0]
                                            );
-                   }
+               } else {
+                 throw new CmsException(CmsException.C_NOT_FOUND);  
+               }
  
          } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -458,7 +532,7 @@ import com.opencms.core.*;
                 //FILE_CONTENT
                 m_statementFileUpdate.setBytes(1,file.getContents());
                 // set query parameters
-                m_statementFileUpdate.setString(2,file.getAbsolutePath());
+                m_statementFileUpdate.setString(2,absoluteName(file.getAbsolutePath()));
                 m_statementFileUpdate.setInt(3,file.getProjectId());
                 m_statementFileUpdate.executeUpdate();
               }
@@ -507,7 +581,7 @@ import com.opencms.core.*;
                 m_statementResourceUpdate.setInt(11,file.getContents().length);
                 
                 // set query parameters
-                m_statementResourceUpdate.setString(12,file.getAbsolutePath());
+                m_statementResourceUpdate.setString(12,absoluteName(file.getAbsolutePath()));
                 m_statementResourceUpdate.setInt(13,file.getProjectId());
                 m_statementResourceUpdate.executeUpdate();
                 }
@@ -528,18 +602,18 @@ import com.opencms.core.*;
 	 public void renameFile(A_CmsProject project, String oldname, String newname)
          throws CmsException {
           try { 
-             // delete the resource
+             // rename the resource
               synchronized (m_statementResourceRename) {
-                m_statementResourceRename.setString(1,newname);
+                m_statementResourceRename.setString(1,absoluteName(newname));
                 m_statementResourceRename.setLong(2,System.currentTimeMillis());
-                m_statementResourceRename.setString(3,oldname);
+                m_statementResourceRename.setString(3,absoluteName(oldname));
                 m_statementResourceRename.setInt(4,project.getId());
                 m_statementResourceRename.executeQuery();  
               }
-             // delete the file content
+             // rename the file content
              synchronized (m_statementFileRename) {
-                m_statementFileRename.setString(1,newname);
-                m_statementFileRename.setString(2,oldname);
+                m_statementFileRename.setString(1,absoluteName(newname));
+                m_statementFileRename.setString(2,absoluteName(oldname));
                 m_statementFileRename.setInt(3,project.getId());
                 m_statementFileRename.executeQuery();  
               }
@@ -561,13 +635,13 @@ import com.opencms.core.*;
          try { 
              // delete the resource
               synchronized (m_statementResourceDelete) {
-                m_statementResourceDelete.setString(1,filename);
+                m_statementResourceDelete.setString(1,absoluteName(filename));
                 m_statementResourceDelete.setInt(2,project.getId());
                 m_statementResourceDelete.executeQuery();  
               }
              // delete the file content
              synchronized (m_statementFileDelete) {
-                m_statementFileDelete.setString(1,filename);
+                m_statementFileDelete.setString(1,absoluteName(filename));
                 m_statementFileDelete.setInt(2,project.getId());
                 m_statementFileDelete.executeQuery();  
               }
@@ -597,7 +671,7 @@ import com.opencms.core.*;
                synchronized (m_statementResourceWrite) {
                 // write new resource to the database
                 //RESOURCE_NAME
-                m_statementResourceWrite.setString(1,destination);
+                m_statementResourceWrite.setString(1,absoluteName(destination));
                 //RESOURCE_TYPE
                 m_statementResourceWrite.setInt(2,file.getType());
                 //RESOURCE_FLAGS
@@ -628,7 +702,7 @@ import com.opencms.core.*;
                }
                synchronized (m_statementFileWrite) {
                 //RESOURCE_NAME
-                m_statementFileWrite.setString(1,destination);
+                m_statementFileWrite.setString(1,absoluteName(destination));
                 //PROJECT_ID
                 m_statementFileWrite.setInt(2,project.getId());
                 //FILE_CONTENT
@@ -676,7 +750,7 @@ import com.opencms.core.*;
                synchronized ( m_statementResourceWrite) {
                 // write new resource to the database
                 //RESOURCE_NAME
-                m_statementResourceWrite.setString(1,foldername);
+                m_statementResourceWrite.setString(1,absoluteName(foldername));
                 //RESOURCE_TYPE
                 m_statementResourceWrite.setInt(2,C_TYPE_FOLDER);
                 //RESOURCE_FLAGS
@@ -730,7 +804,7 @@ import com.opencms.core.*;
          try {  
               synchronized ( m_statementResourceRead) {
                    // read resource data from database
-                   m_statementResourceRead.setString(1,foldername);
+                   m_statementResourceRead.setString(1,absoluteName(foldername));
                    m_statementResourceRead.setInt(2,project.getId());
                    res = m_statementResourceRead.executeQuery();
                }
@@ -748,7 +822,9 @@ import com.opencms.core.*;
                                                res.getLong(C_DATE_CREATED),
                                                res.getLong(C_DATE_LASTMODIFIED)
                                                );
-                   }
+                   }else {
+                 throw new CmsException(CmsException.C_NOT_FOUND);  
+               }
  
          } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -797,7 +873,7 @@ import com.opencms.core.*;
                 m_statementResourceUpdate.setInt(11,0);
                 
                 // set query parameters
-                m_statementResourceUpdate.setString(12,folder.getAbsolutePath());
+                m_statementResourceUpdate.setString(12,absoluteName(folder.getAbsolutePath()));
                 m_statementResourceUpdate.setInt(13,folder.getProjectId());
                 m_statementResourceUpdate.executeUpdate();
                 }
@@ -902,7 +978,7 @@ import com.opencms.core.*;
             //  get all subfolders
              Statement s = m_Con.createStatement();		
   
-             res =s.executeQuery(C_RESOURCE_GETSUBFOLDERS1+foldername
+             res =s.executeQuery(C_RESOURCE_GETSUBFOLDERS1+absoluteName(foldername)
                                 +C_RESOURCE_GETSUBFOLDERS2+project.getId()+
                                  C_RESOURCE_GETSUBFOLDERS3);
             // create new folder objects
@@ -948,7 +1024,7 @@ import com.opencms.core.*;
             //  get all subfolders
              Statement s = m_Con.createStatement();		
   
-             res =s.executeQuery(C_RESOURCE_GETFILESINFOLDER1+foldername
+             res =s.executeQuery(C_RESOURCE_GETFILESINFOLDER1+absoluteName(foldername)
                                 +C_RESOURCE_GETFILESINFOLDER2+project.getId()+
                                  C_RESOURCE_GETFILESINFOLDER3);
             // create new folder objects
@@ -1017,4 +1093,27 @@ import com.opencms.core.*;
          	throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
     }
+    
+    /**
+	 * Calculates the absolute path to a file mounted in this database.
+	 * 
+	 * @param filename Name of a file in the MhtCms system.
+	 * @return apsolute path of a the file in the disk filesystem.
+	 */
+	private String absoluteName(String filename){
+        
+               
+	   int pos=filename.indexOf(m_mountpoint.getMountpoint());
+	   int len=m_mountpoint.getMountpoint().length();
+	   String name=null;
+       
+       // extract the filename after the mountpoint.
+	   if (pos != -1) {
+		    name="/"+filename.substring(pos+len);
+	   } else {
+			name=filename;
+	   }
+ 
+	   return name;
+	}
 }
