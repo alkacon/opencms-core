@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/04/22 07:01:04 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2004/01/07 09:17:15 $
+* Version: $Revision: 1.74.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.74 $ $Date: 2003/04/22 07:01:04 $
+ * @version $Revision: 1.74.2.1 $ $Date: 2004/01/07 09:17:15 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -992,11 +992,8 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      * @return boolean the value for the parameter in the module.
      */
     public boolean getModuleParameterBoolean(String modulname, String parameter) {
-        if ("true".equals(getModuleParameter(modulname, parameter).toLowerCase())) {
-            return true;
-        } else {
-            return false;
-        }
+        String value = getModuleParameter(modulname, parameter);
+        return (value != null && "true".equalsIgnoreCase(value));
     }
 
     /**
