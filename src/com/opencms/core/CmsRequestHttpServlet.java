@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
- * Date   : $Date: 2000/04/18 14:38:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/19 12:55:18 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,8 @@ import javax.servlet.http.*;
  * the OpenCms document database.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/18 14:38:35 $  
+ * @author Alexander Lucas
+ * @version $Revision: 1.7 $ $Date: 2000/04/19 12:55:18 $  
  */
 public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
                                               I_CmsRequest { 
@@ -314,16 +315,20 @@ public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
     // Unfortunately some servlet environmets cannot handle multipart
     // requests AND URL parameters at the same time, we have to manage
     // the URL params ourself here. So try to read th URL parameters:
-
-    StringTokenizer st = new StringTokenizer(m_req.getQueryString(), "&");
-    while(st.hasMoreTokens()) {
-        String currToken = st.nextToken();
-        if(currToken != null && !"".equals(currToken)) {
-            int idx = currToken.indexOf("=");
-            if(idx > -1) {
-                String key = currToken.substring(0,idx);
-                String value = (idx < (currToken.length()-1))?currToken.substring(idx+1):"";
-                m_parameters.put(key, value);
+    String queryString = m_req.getQueryString();
+    if(queryString != null) {
+        StringTokenizer st = new StringTokenizer(m_req.getQueryString(), "&");
+        while(st.hasMoreTokens()) {
+            // Loop through all parameters
+            String currToken = st.nextToken();
+            if(currToken != null && !"".equals(currToken)) {
+                // look for the "=" character to divide parameter name and value
+                int idx = currToken.indexOf("=");
+                if(idx > -1) {
+                    String key = currToken.substring(0,idx);
+                    String value = (idx < (currToken.length()-1))?currToken.substring(idx+1):"";
+                    m_parameters.put(key, value);
+                }
             }
         }
     }
@@ -353,7 +358,6 @@ public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
     // Read the first line, should look like this:
     // content-disposition: form-data; name="field1"; filename="file1.txt"
     String line = in.readLine();
-    
     if (line == null) {
       // No parts left, we're done
       return true;
@@ -455,45 +459,81 @@ public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
                                  String boundary) throws IOException {
 	 	  
 	ByteArrayOutputStream out = new ByteArrayOutputStream(8 * 1024);
-	byte[] bbuf = new byte[100 * 1024]; 
-    int result;
-    String line;
-    long counter=0;
-	
-    // ServletInputStream.readLine() has the annoying habit of 
-    // adding a \r\n to the end of the last line.  
-    // Since we want a byte-for-byte transfer, we have to cut those chars.
-    boolean rnflag = false;
-	int l=0;
-	
-    while ((result = in.readLine(bbuf, 0, bbuf.length)) != -1) {
-      // Check for boundary
-	  l=l+result;
-	  counter++;
-      // quick pre-check
-      if (result > 2 && bbuf[0] == '-' && bbuf[1] == '-'){ 
-	    line = new String(bbuf, 0, result, "ISO-8859-1");
-        if (line.startsWith(boundary)) break;
-      }
-      // Are we supposed to write \r\n for the last iteration?
-      if (rnflag) {
-        out.write('\r'); out.write('\n');
-        rnflag = false;
-      }
-      // Write the buffer, postpone any ending \r\n
-      if (result >= 2 && bbuf[result - 2] == '\r' && 
-          bbuf[result - 1] == '\n') {
-            // skip the last 2 chars
-            out.write(bbuf, 0, result - 2); 
-            // make a note to write them on the next iteration
-            rnflag = true; 
-      } else {
-	     out.write(bbuf, 0, result);
-      }
-     }	
+    byte[] boundaryBytes = boundary.getBytes();
+    int[] lookaheadBuf = new int[boundary.length() + 3];
+    int[] newLineBuf = {-1, -1};
+    int matches = 0;
+    int matchingByte = new Byte(boundaryBytes[matches]).intValue();
+    
+    /* 
+    File parts of multipart request should not be read line by line.
+    Since some servlet environments touch and change the new line
+    character(s) when calling the ServletInputStream's <code>readLine</code>
+    this may cause problems with binary file uploads.
+    We decided to read this parts byte by byte here.
+    */
+    int read = in.read();
+    while(read > -1) {
+        if(read == matchingByte) {
+            // read byte is matching the next byte of the boundary
+            // we should not write to the output stream here.
+            lookaheadBuf[matches] = read;
+            matches++;
+            if(matches == boundary.length()) {
+                // The end of the Boundary has been reached.
+                // Now snip the following line feed.
+                read = in.read();
+                if(newLineBuf[1] == read) {
+                    // New line contains ONE single character.
+                    // Write the last byte of the buffer to the output stream.
+                    out.write(newLineBuf[0]);
+                } else {
+                    // new line contains TWO characters, possibly "\r\n"
+                    // The bytes in the buffer are not part of the file.
+                    // We even have to read one more byte.
+                    in.read();
+                }
+                break;                
+            }
+            matchingByte = new Byte(boundaryBytes[matches]).intValue();            
+        } else {
+            // read byte does not match the next byte of the boundary
+            // write the first buffer byte to the output stream
+            if(newLineBuf[0] != -1) {
+                out.write(newLineBuf[0]);
+            }
+            if(matches == 0) {
+                // this may be the most propably case.
+                newLineBuf[0] = newLineBuf[1];
+            } else {
+                // we have started to read the boundary.
+                // Unfortunately, this was NOT the real boundary.
+                // Fall back to normal read mode.
+                
+                // write the complete buffer to the output stream
+                if(newLineBuf[1] != -1) {
+                    out.write(newLineBuf[1]);                    
+                }
+                for(int i=0; i<matches; i++) {
+                    out.write(lookaheadBuf[i]);
+                }
+                
+                // reset boundary matching counter
+                matches = 0;
+                matchingByte = new Byte(boundaryBytes[matches]).intValue();
+                
+                // clear buffer
+                newLineBuf[0] = -1;
+            }
+            // put the last byte read into the buffer.
+            // it may be part of a line feed.
+            newLineBuf[1] = read;
+        }
+        
+        read = in.read(); 
+    }
     out.flush();
-   	//return new String(out.toString());	
-      return out.toByteArray();
+    return out.toByteArray();    
   }
 
   /**
