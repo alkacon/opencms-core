@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/03/09 16:45:29 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/03/13 15:41:23 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2000/03/09 16:45:29 $
+ * @version $Revision: 1.32 $ $Date: 2000/03/13 15:41:23 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -124,8 +124,7 @@ public class CmsShell implements I_CmsConstants {
 	 * Gives the usage-information to the user.
 	 */
 	private void usage() {
-		// TODO: correct this usage information!
-		System.out.println("Usage: java com.opencms.setup.CmsShell connectstring [init]");
+		System.out.println("Usage: java com.opencms.setup.CmsShell initializer-classname sqldriver-classname connectstring");
 	}
 	
 	/**
