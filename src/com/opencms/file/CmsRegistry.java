@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/02/01 19:14:46 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/02/01 20:41:06 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.61 $ $Date: 2003/02/01 19:14:46 $
+ * @version $Revision: 1.62 $ $Date: 2003/02/01 20:41:06 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -1809,7 +1809,7 @@ private void init() throws Exception {
     for (int i = 0; i < modules.getLength(); i++) {
         Element module = (Element) modules.item(i);
         String moduleName = module.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, ". Loading module       : " + moduleName);
         // store the shortcuts to the modules
         m_modules.put(moduleName, module);
     }
@@ -1835,8 +1835,7 @@ private void saveRegistry() throws CmsException {
         // reinit the modules-hashtable
         init();
     } catch (Exception exc) {
-        throw new CmsException("couldn't save registry",
-CmsException.C_REGISTRY_ERROR, exc);
+        throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);
     }
 }
 
