@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/03/15 14:32:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/03/16 10:02:32 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/03/15 14:32:15 $
+ * @version $Revision: 1.14 $ $Date: 2000/03/16 10:02:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -124,7 +124,35 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		
-		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		CmsXmlWpTemplateFile xmlTemplateDocument = 
+			(CmsXmlWpTemplateFile) getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		String paraAcceptation = "";
+		String paraAll = "";
+		String paraCompletion = "";
+		String paraDelivery = "";
+		
+		Hashtable taskSettings = (Hashtable) ((Hashtable) cms.getRequestContext().currentUser().getAdditionalInfo()) .get(C_ADDITIONAL_INFO_TASKSETTINGS);
+		if(taskSettings != null) {
+			// the tasksettings exists - use them
+			int messageAt = ((Integer)taskSettings.get(C_TASK_MESSAGES)).intValue();
+			if( (messageAt & C_TASK_MESSAGES_ACCEPTED) == C_TASK_MESSAGES_ACCEPTED) {
+				paraAcceptation = "checked";
+			}
+			if( (messageAt & C_TASK_MESSAGES_COMPLETED) == C_TASK_MESSAGES_COMPLETED) {
+				paraCompletion = "checked";
+			}
+			if( (messageAt & C_TASK_MESSAGES_FORWARDED) == C_TASK_MESSAGES_FORWARDED) {
+				paraDelivery = "checked";
+			}
+			if( (messageAt & C_TASK_MESSAGES_MEMBERS) == C_TASK_MESSAGES_MEMBERS) {
+				paraAll = "checked";
+			}
+		}
+
+		xmlTemplateDocument.setXmlData(C_TASKPARA_ACCEPTATION, paraAcceptation);
+		xmlTemplateDocument.setXmlData(C_TASKPARA_ALL, paraAll);
+		xmlTemplateDocument.setXmlData(C_TASKPARA_COMPLETION, paraCompletion);
+		xmlTemplateDocument.setXmlData(C_TASKPARA_DELIVERY, paraDelivery);
 
 		// are the constants read from the cms already?
 		if( C_ROLE == null ) {

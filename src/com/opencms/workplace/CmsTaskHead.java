@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
- * Date   : $Date: 2000/03/13 15:40:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/03/16 10:02:32 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/03/13 15:40:30 $
+ * @version $Revision: 1.8 $ $Date: 2000/03/16 10:02:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -87,6 +87,17 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
 		
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		
+		// is this the first-time, this page is viewed?
+		if( session.getValue(C_SESSION_TASK_ALLPROJECTS) == null ) {
+			// YES! read the relevant userproperties
+			Hashtable taskSettings = (Hashtable) ((Hashtable) cms.getRequestContext().currentUser().getAdditionalInfo()) .get(C_ADDITIONAL_INFO_TASKSETTINGS);
+			if(taskSettings != null) {
+				// the tasksettings exists - use them
+				session.putValue(C_SESSION_TASK_ALLPROJECTS, taskSettings.get(C_TASK_VIEW_ALL));
+				session.putValue(C_SESSION_TASK_FILTER, new String( (String) taskSettings.get(C_TASK_FILTER)));
+			}
+		}
 		
 		// is this the result of a submit?
 		if(parameters.get("filter") != null) {

@@ -114,22 +114,22 @@ iMaxOpts = iMaxOpts + 1;
 	</tr>
 	<tr>
 		<td class=dialogtxt colspan=5>
-			<INPUT type="checkbox" checked id="MSG_ACCEPTATION" name="MSG_ACCEPTATION" value="checked"> ]]><label value="task.label.messageat.acceptation"/><![CDATA[
+			<INPUT type="checkbox" ]]><PROCESS>acceptation</PROCESS><![CDATA[ id="MSG_ACCEPTATION" name="MSG_ACCEPTATION" value="checked"> ]]><label value="task.label.messageat.acceptation"/><![CDATA[
 		</td>
 	</tr>
 	<tr>
 		<td class=dialogtxt colspan=5>
-			<INPUT type="checkbox" checked id="MSG_DELIVERY" name="MSG_DELIVERY" value="checked"> ]]><label value="task.label.messageat.delivery"/><![CDATA[
+			<INPUT type="checkbox" ]]><PROCESS>delivery</PROCESS><![CDATA[ id="MSG_DELIVERY" name="MSG_DELIVERY" value="checked"> ]]><label value="task.label.messageat.delivery"/><![CDATA[
 		</td>
 	</tr>
 	<tr>
 		<td class=dialogtxt colspan=5>
-			<INPUT type="checkbox" checked id="MSG_COMPLETION" name="MSG_COMPLETION" value="checked"> ]]><label value="task.label.messageat.completion"/><![CDATA[
+			<INPUT type="checkbox" ]]><PROCESS>completion</PROCESS><![CDATA[ id="MSG_COMPLETION" name="MSG_COMPLETION" value="checked"> ]]><label value="task.label.messageat.completion"/><![CDATA[
 		</td>
 	</tr>
 	<tr>
 		<td class=dialogtxt colspan=5>
-			<INPUT type="checkbox" checked id="MSG_ALL" name="MSG_ALL" value="checked"> ]]><label value="task.label.messageat.all"/><![CDATA[
+			<INPUT type="checkbox" ]]><PROCESS>all</PROCESS><![CDATA[ id="MSG_ALL" name="MSG_ALL" value="checked"> ]]><label value="task.label.messageat.all"/><![CDATA[
 		</td>
 	</tr>
 	<!-- Ende Inhalt -->
