@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/11/06 10:55:38 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/11/06 15:09:31 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.flex;
 
 import org.opencms.cache.CmsLruCache;
-import org.opencms.cache.CmsLruHashMap;
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.I_CmsEventListener;
@@ -44,6 +43,8 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.collections.LRUMap;
 
 import source.org.apache.java.util.Configurations;
 
@@ -88,7 +89,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -170,8 +171,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         
         if (m_enabled) {
 
-            CmsLruHashMap hashMap;
-            this.m_resourceMap = Collections.synchronizedMap(hashMap = new CmsLruHashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE, maxKeys));     
+            LRUMap hashMap = new LRUMap(maxKeys);
+            this.m_resourceMap = java.util.Collections.synchronizedMap(hashMap);     
 
             if (OpenCms.getMemoryMonitor().enabled()) {
                 OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resourceMap", hashMap);    
@@ -861,7 +862,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.12 $ 
+     * @version $Revision: 1.13 $ 
      */
     class CmsFlexCacheVariation extends Object {    
         

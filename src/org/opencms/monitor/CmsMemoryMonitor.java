@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/05 17:45:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/06 15:09:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,23 +31,28 @@
 package org.opencms.monitor;
 
 import org.opencms.cache.CmsLruCache;
-import org.opencms.cache.CmsLruHashMap;
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.cron.I_CmsCronJob;
+import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.util.Utils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.LRUMap;
+
 /**
- * @version $Revision: 1.1 $ $Date: 2003/11/05 17:45:28 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/06 15:09:31 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsMemoryMonitor implements I_CmsCronJob {
@@ -57,6 +62,8 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     static boolean m_initialized = false;
     
     static int m_interval = -1;
+    
+    static int m_maxUsage = -1;
     
     static long m_lastRun = 0;
     
@@ -87,21 +94,65 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     /**
      * @see org.opencms.cron.I_CmsCronJob#launch(com.opencms.file.CmsObject, java.lang.String)
      */
-    public final String launch(CmsObject cms, String parameter) throws Exception {
+    public final String launch(CmsObject cms, String params) throws Exception {
     
         CmsMemoryMonitor mm = OpenCms.getMemoryMonitor();
         
-        if (parameter != null && parameter.startsWith("interval="))
-            m_interval = Integer.parseInt(parameter.substring(9));
+        if (params != null) {
             
+            String parameter[] = Utils.split(params, ",");
+            int pos;
+        
+            for (int i = 0; i < parameter.length; i++) {
+                
+                if ((pos = parameter[i].indexOf("interval=")) >= 0) {
+                    m_interval = Integer.parseInt(parameter[i].substring(pos+9));
+                    continue;
+                }
+                
+                if ((pos = parameter[i].indexOf("maxUsage=")) >= 0) {
+                    m_maxUsage = Integer.parseInt(parameter[i].substring(pos+9));
+                    continue;
+                }
+            }
+        }
+        
         if (m_initialized && (System.currentTimeMillis() - m_lastRun) > m_interval) {
             mm.logStatistics();
+            mm.checkMemory();
             m_lastRun = System.currentTimeMillis();
         }
         
         return "";    
     }   
      
+    /**
+     * Checks the memory used by monitored caches.<p>
+     * If the used memory exceeds a given percentage of the maximum memory,
+     * caches are cleared and a garbage collection is requested
+     */
+    private void checkMemory() {
+    
+        long freeMemory = Runtime.getRuntime().freeMemory();
+        long maxMemory = Runtime.getRuntime().maxMemory();    
+        long usage = (freeMemory * 100) / maxMemory;
+        
+        if (m_maxUsage > 0 && usage > m_maxUsage) {
+             
+            if (OpenCms.getLog(this).isWarnEnabled())
+                OpenCms.getLog(this).warn ("Memory usage of " + usage + "% exceeds max usage of " + m_maxUsage + "%, clearing caches");
+                   
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
+            System.gc();    
+
+            if (OpenCms.getLog(this).isWarnEnabled())
+                OpenCms.getLog(this).warn(""
+                    + "Memory max: ," + Runtime.getRuntime().maxMemory() / 1048576 + " ,"
+                    + "total: ," + Runtime.getRuntime().totalMemory() / 1048576 + " ,"
+                    + "free: ," + Runtime.getRuntime().freeMemory() / 1048576); 
+        }
+    }
+    
     /**
      * Logs the current memory statistics of the monitored objects.<p>
      */
@@ -111,7 +162,8 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             return;
         
         OpenCms.getLog(this).debug(", "
-            + "Memory total: ," + Runtime.getRuntime().totalMemory() / 1048576 + " ,"
+            + "Memory max: ," + Runtime.getRuntime().maxMemory() / 1048576 + " ,"
+            + "total: ," + Runtime.getRuntime().totalMemory() / 1048576 + " ,"
             + "free: ," + Runtime.getRuntime().freeMemory() / 1048576);    
                     
         for (Iterator keys = m_monitoredObjects.keySet().iterator(); keys.hasNext();) {
@@ -119,7 +171,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             String key = (String)keys.next();
             Object obj = m_monitoredObjects.get(key);
             
-            OpenCms.getLog(this).debug(",,,,, " 
+            OpenCms.getLog(this).debug(",,,,,,, " 
                 + "Monitored: ," + key + ", " 
                 + "Type: ," + obj.getClass().getName() + ", " + Integer.toHexString(obj.hashCode()) + ", "
                 + "Limit: ," + getLimit(obj) + ", "
@@ -143,8 +195,8 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         if (obj instanceof CmsLruCache)
             return Integer.toString(((CmsLruCache)obj).getMaxCacheCosts());
             
-        if (obj instanceof CmsLruHashMap)
-            return Integer.toString(((CmsLruHashMap)obj).getLruCache().getMaxCacheCosts());
+        if (obj instanceof LRUMap)
+            return Integer.toString(((LRUMap)obj).getMaximumSize());
             
         return "-";    
     }   
@@ -160,9 +212,6 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         
         if (obj instanceof CmsLruCache)
             return Integer.toString(((CmsLruCache)obj).size());
-        
-        if (obj instanceof CmsLruHashMap)
-            return Integer.toString(((CmsLruHashMap)obj).size());
            
         if (obj instanceof Map)
             return Integer.toString(((Map)obj).size());
@@ -287,10 +336,6 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         
         if (obj instanceof CmsLruCache)
             return Integer.toString(((CmsLruCache)obj).getObjectCosts());
-            
-         
-        if (obj instanceof CmsLruHashMap)
-            return Integer.toString(((CmsLruHashMap)obj).getLruCache().getObjectCosts());
                 
         return "-";
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/11/05 17:45:41 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/11/06 15:09:31 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.staticexport;
 
-import org.opencms.cache.CmsLruHashMap;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.CmsJspLoader;
@@ -67,12 +66,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.LRUMap;
+
 /**
  * Provides the functionaility to export resources from the OpenCms VFS
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -98,10 +99,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public static final String C_EXPORT_MARKER = "exporturi";
     
     /** Cache for the export uris */
-    private CmsLruHashMap m_cacheExportUris;
+    private LRUMap m_cacheExportUris;
     
     /** Cache for the online links */
-    private CmsLruHashMap m_cacheOnlineLinks;
+    private LRUMap m_cacheOnlineLinks;
     
     /** List of all resources that have the "exportname" property set */
     private Map m_exportnameResources;
@@ -135,8 +136,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_staticExportEnabled = false;
         m_exportPropertyDefault = true;
         
-        m_cacheOnlineLinks = new CmsLruHashMap(1024);
-        m_cacheExportUris = new CmsLruHashMap(1024);
+        m_cacheOnlineLinks = new LRUMap(1024);
+        m_cacheExportUris = new LRUMap(1024);
         
         if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheOnlineLinks", m_cacheOnlineLinks);

@@ -30,6 +30,7 @@
     <property name="opencms.inputlib.dbcp"        		location="${opencms.input.libs}/commons-dbcp.jar" />
     <property name="opencms.inputlib.pool"        		location="${opencms.input.libs}/commons-pool.jar" />    
     <property name="opencms.inputlib.logging"     		location="${opencms.input.libs}/commons-logging.jar" /> 
+    <property name="opencms.inputlib.collections"     	location="${opencms.input.libs}/commons-collections.jar" />
     <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j.jar" />
     <property name="opencms.inputlib.oracle"      		location="${opencms.input.externlibs}/ojdbc14.jar" /> 
  
@@ -57,7 +58,8 @@
                 <available file="${opencms.inputlib.tidy}"/>
                 <available file="${opencms.inputlib.uuid}"/>                
                 <available file="${opencms.inputlib.pool}"/> 
-                <available file="${opencms.inputlib.logging}"/> 
+                <available file="${opencms.inputlib.logging}"/>
+                <available file="${opencms.inputlib.collections}"/> 
                 <available file="${opencms.inputlib.dom4j}"/> 
                 <available file="${opencms.inputlib.dbcp}"/> 
             </and>
@@ -116,6 +118,7 @@ ${opencms.inputlib.tidy}
 ${opencms.inputlib.uuid}
 ${opencms.inputlib.pool}
 ${opencms.inputlib.logging}
+${opencms.inputlib.collections}
 ${opencms.inputlib.dom4j}
 ${opencms.inputlib.dbcp}
 
@@ -159,6 +162,7 @@ ${opencms.inputlib.dbcp}
                        ${opencms.inputlib.dbcp}:
                        ${opencms.inputlib.pool}:
                        ${opencms.inputlib.logging}:
+                       ${opencms.inputlib.collections}:
                        ${opencms.inputlib.dom4j}:
                        ${opencms.inputlib.uuid}"
             debug="on"
