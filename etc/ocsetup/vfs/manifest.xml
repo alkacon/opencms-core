@@ -2298,6 +2298,15 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_channel.gif</source>
+            <destination>pics/system/ic_channel.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>pics/system/ic_clock.gif</source>
             <destination>pics/system/ic_clock.gif</destination>
             <type>image</type>
@@ -4253,6 +4262,96 @@
                     <value><![CDATA[]]></value>
                 </property>
             </properties>
+        </file>
+        <file>
+            <destination>system/workplace/administration/channels</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[icon.channels]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_channel]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[23.0]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/channels/Backoffice.html</source>
+            <destination>system/workplace/administration/channels/Backoffice.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/channels/channel_backoffice</source>
+            <destination>system/workplace/administration/channels/channel_backoffice</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Backoffice]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/channels/EditBackoffice</source>
+            <destination>system/workplace/administration/channels/EditBackoffice</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Editor]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/channels/EditBackoffice.html</source>
+            <destination>system/workplace/administration/channels/EditBackoffice.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/channels/index</source>
+            <destination>system/workplace/administration/channels/index</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Projectmanager</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/channels/index.html</source>
+            <destination>system/workplace/administration/channels/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Projectmanager</group>
+            <access>15</access>
+            <properties/>
         </file>
         <file>
             <destination>system/workplace/administration/database</destination>
