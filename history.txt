@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/12/04 15:03:23 $
- * Version: $Revision: 1.418 $
+ * Date   : $Date: 2002/12/06 16:02:36 $
+ * Version: $Revision: 1.419 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next release)
+! Static export for JSP pages and JSP based templates added
 ! Help system will now look up if a directory for the current locale exists and display the "online help" button only in this case
 ! Preference panel for startup options will not display language selection if only one locale directory exists
 ! New "relativeroot" property tells the link substitution in the editor to generate relative URLs instead of absolute URLs

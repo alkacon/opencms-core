@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/11/17 16:42:56 $
-* Version: $Revision: 1.99 $
+* Date   : $Date: 2002/12/06 16:01:20 $
+* Version: $Revision: 1.100 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,20 +28,29 @@
 
 package com.opencms.core;
 
-import java.io.*;
-import java.util.*;
-
-import javax.servlet.ServletContext;
-
-import source.org.apache.java.io.*;
-import source.org.apache.java.util.*;
+import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.file.*;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRbManager;
+import com.opencms.file.CmsStaticExport;
+import com.opencms.file.I_CmsRegistry;
+import com.opencms.file.I_CmsResourceBroker;
+import com.opencms.flex.CmsJspLoader;
 import com.opencms.flex.util.CmsResourceTranslator;
-import com.opencms.boot.*;
-import com.opencms.util.*;
-import com.opencms.launcher.*;
-import com.opencms.template.cache.*;
+import com.opencms.launcher.CmsLauncherManager;
+import com.opencms.launcher.I_CmsLauncher;
+import com.opencms.template.cache.CmsElementCache;
+import com.opencms.util.Utils;
+
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import source.org.apache.java.util.Configurations;
 
 /**
  * This class is the main class of the OpenCms system,
@@ -69,7 +78,7 @@ import com.opencms.template.cache.*;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.99 $ $Date: 2002/11/17 16:42:56 $
+ * @version $Revision: 1.100 $ $Date: 2002/12/06 16:01:20 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -252,11 +261,17 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         }
         
         // read flex jsp export url property and save in runtime configuration
-        String flexExportUri = (String)conf.getString("flex.jsp.exporturl");
-        if ((null != flexExportUri) && (flexExportUri.endsWith(C_FOLDER_SEPERATOR))) {
-            flexExportUri = flexExportUri.substring(0, flexExportUri.length()-1);
+        String flexExportUrl = (String)conf.getString(CmsJspLoader.C_LOADER_JSPEXPORTURL, null);
+        if (null != flexExportUrl) {
+            // if JSP export URL is null it will be set in initStartupClasses()
+            if (flexExportUrl.endsWith(C_FOLDER_SEPERATOR)) {
+                flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length()-1);
+            }
+            setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT))
+                log(C_OPENCMS_INIT, "[OpenCms] setting JSP export URL to value from opencms.properties: " + flexExportUrl);
         }
-        setRuntimeProperty("flex.jsp.exporturl", flexExportUri);                
+
         
         // try to initialize directory translations
         try {
@@ -495,7 +510,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * This must be done only once per running OpenCms object instance.
      * Usually this will be done by the OpenCms servlet. 
      */
-    void initStartupClasses() throws CmsException {
+    void initStartupClasses(HttpServletRequest req, HttpServletResponse res) throws CmsException {
         if (isInitialized) return;
 
         // Set the initialized flag to true
@@ -503,9 +518,32 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] OpenCms init() starting.");
 
-        // finally, initialize 1 instance per class listed in the startup node
+        // check for the JSP export URL runtime property
+        String jspExportUrl = (String)getRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL);
+        if (jspExportUrl == null) {
+            StringBuffer url = new StringBuffer(256);
+            url.append(req.getScheme());
+            url.append("://");
+            url.append(req.getServerName());
+            url.append(":");
+            url.append(req.getServerPort());
+            url.append(req.getContextPath());
+            url.append(req.getServletPath());        
+            String flexExportUrl = new String(url);    
+            // check if the URL ends with a "/", this is not allowed
+            if (flexExportUrl.endsWith(C_FOLDER_SEPERATOR)) {
+                flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length()-1);
+            }
+            setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
+            CmsJspLoader.setJspExportUrl(flexExportUrl);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) 
+                log(C_OPENCMS_INIT, "[OpenCms] Setting JSP export URL to value from first request: " + flexExportUrl);
+        }
+        
+
+        // initialize 1 instance per class listed in the startup node
         try{
-            Hashtable startupNode = this.getRegistry().getSystemValues( "startup" );
+            Hashtable startupNode = getRegistry().getSystemValues( "startup" );
             if (startupNode!=null) {
                 for (int i=1;i<=startupNode.size();i++) {
                     String currentClass = (String)startupNode.get( "class" + i );
@@ -729,9 +767,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 
         // log with opencms-logger
         if(C_PREPROCESSOR_IS_LOGGING && isLogging(C_OPENCMS_INFO)) {
-            this.log(C_OPENCMS_INFO, cms.version());
+            log(C_OPENCMS_INFO, cms.version());
             for(int i = 0;i < copy.length;i++) {
-                this.log(C_OPENCMS_INFO, copy[i]);
+                log(C_OPENCMS_INFO, copy[i]);
             }
         }
     }   

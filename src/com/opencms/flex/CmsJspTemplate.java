@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2002/10/31 11:40:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/12/06 15:59:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,14 @@
 
 package com.opencms.flex;
 
-import java.util.*;
-import com.opencms.launcher.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.template.cache.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsLogChannels;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.template.CmsCacheDirectives;
+
+import java.util.Hashtable;
 
 /**
  * A simple dump class for JSPs which enables
@@ -45,7 +47,7 @@ import com.opencms.template.cache.*;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.0 beta 1
  * 
  */
@@ -76,10 +78,6 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
             A_OpenCms.log(C_FLEX_LOADER, "[CmsJspTemplate] Now loading contents of file " + jspFile);
         }
 
-        if (cms.getRequestContext().getRequest() instanceof com.opencms.core.CmsExportRequest) {
-            return ("+++ CmsJspTemplate.getContent(" + jspFile + "): Static export of JSP not supported! +++").getBytes();
-        }
-        
         byte[] s = null;
         try {
             CmsFile file = cms.readFile(jspFile);

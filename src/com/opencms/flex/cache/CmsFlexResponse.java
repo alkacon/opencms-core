@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
-* Date   : $Date: 2002/10/30 10:22:55 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/12/06 15:56:53 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.PrintWriter;
  * A wrapper class for a HttpServletRequest that controls the Flex cache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapper {
     
@@ -631,7 +631,7 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
     }
     
     /**
-     * Method overlodad from the standard javax.servlet.http.HttpServletRequest.
+     * Process the headers stored in the provided map and add them to the response.
      */
     public static void processHeaders(Map headers, HttpServletResponse res) {
         if (headers != null) {

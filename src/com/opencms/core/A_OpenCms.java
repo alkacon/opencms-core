@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2002/10/30 10:06:29 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/12/06 16:00:27 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,20 @@
 
 package com.opencms.core;
 
+import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
-import java.io.*;
-import java.util.*;
-import com.opencms.boot.*;
-import com.opencms.file.*;
-import com.opencms.template.cache.*;
-import source.org.apache.java.io.*;
-import source.org.apache.java.util.*;
-import com.opencms.flex.*;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.flex.CmsEvent;
+import com.opencms.flex.I_CmsEventListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
+import source.org.apache.java.util.Configurations;
 
 /**
  * Abstract class for the OpenCms "operating system" that provides 
@@ -49,7 +54,7 @@ import com.opencms.flex.*;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $ $Date: 2002/10/30 10:06:29 $
+ * @version $Revision: 1.27 $ $Date: 2002/12/06 16:00:27 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 

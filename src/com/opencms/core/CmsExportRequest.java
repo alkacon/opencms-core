@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportRequest.java,v $
-* Date   : $Date: 2002/12/04 18:24:29 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/12/06 16:00:50 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,17 @@
 
 package com.opencms.core;
 
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Implementation of the I_CmsRequest interface which is used to request pages
  * during a static export.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2002/12/04 18:24:29 $
+ * @version $Revision: 1.9 $ $Date: 2002/12/06 16:00:50 $
  */
 public class CmsExportRequest implements I_CmsRequest {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/11/17 16:42:56 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2002/12/06 16:02:05 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,17 +28,30 @@
 
 package com.opencms.core;
 
-import java.io.*;
-import java.util.*;
-import java.lang.reflect.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import source.org.apache.java.io.*;
-import source.org.apache.java.util.*;
+import com.opencms.boot.CmsBase;
+import com.opencms.boot.CmsMain;
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.boot.*;
-import com.opencms.file.*;
-import com.opencms.util.*;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.util.Utils;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import source.org.apache.java.util.Configurations;
+import source.org.apache.java.util.ExtendedProperties;
 
 /**
  * This the main servlet of the OpenCms system.<p>
@@ -65,7 +78,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.35 $ $Date: 2002/11/17 16:42:56 $
+ * @version $Revision: 1.36 $ $Date: 2002/12/06 16:02:05 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -258,7 +271,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, m_opencms.getFileTranslator());
         CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res, m_clusterurl);
         try {
-            m_opencms.initStartupClasses();
+            m_opencms.initStartupClasses(req, res);
             cms = initUser(cmsReq, cmsRes);
             // no redirect was done - deliver the ressource normally
             CmsFile file = m_opencms.initResource(cms);
@@ -385,13 +398,13 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                     res.setContentType("text/HTML");
 
                     //res.getWriter().print(createErrorBox(e));
-                    res.sendError(res.SC_NOT_FOUND);
+                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
                   }
                   break;
 
               case CmsException.C_SERVICE_UNAVAILABLE:
                   if(canWrite) {
-                    res.sendError(res.SC_SERVICE_UNAVAILABLE, e.toString());
+                    res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.toString());
                   }
                   break;
 
@@ -402,7 +415,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                         A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a http page with a https request. "+e.getMessage());
                     }
                     res.setContentType("text/HTML");
-                    res.sendError(res.SC_NOT_FOUND);
+                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
                   }
                   break;
 
@@ -413,7 +426,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                     }
                   if(canWrite) {
                     res.setContentType("text/HTML");
-                    res.sendError(res.SC_NOT_FOUND);
+                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
                   }
                   break;
 
