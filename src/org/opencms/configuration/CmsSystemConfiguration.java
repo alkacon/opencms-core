@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/10/14 08:17:18 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/10/15 15:06:32 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -369,7 +369,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_REMOTEADDR, "remoteAddr");
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT, "setContextInfo");        
         
-        // add generic parameter rules (used for jobs)
+        // add generic parameter rules (used for jobs, password handler)
         digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
         digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);         
@@ -384,6 +384,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // add password handler creation rule
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, A_CLASS, CmsConfigurationException.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER + "/" + N_PASSWORDENCODING, "inputEncoding");
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER + "/" + N_DIGESTTYPE, "digestType");
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, "setPasswordHandler");
