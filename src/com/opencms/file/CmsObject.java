@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/10/16 09:04:31 $
-* Version: $Revision: 1.193 $
+* Date   : $Date: 2001/10/16 13:54:48 $
+* Version: $Revision: 1.194 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.193 $ $Date: 2001/10/16 09:04:31 $
+ * @version $Revision: 1.194 $ $Date: 2001/10/16 13:54:48 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -106,7 +106,7 @@ public void acceptTask(int taskId) throws CmsException {
  */
 public boolean accessCreate(String resource) throws CmsException {
     try {
-        return m_rb.accessCreate(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resource);
+        return m_rb.accessCreate(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
     } catch (Exception exc) {
         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
     }
@@ -121,7 +121,7 @@ public boolean accessCreate(String resource) throws CmsException {
  */
 public boolean accessLock(String resource) throws CmsException {
     try {
-        return m_rb.accessLock(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resource);
+        return m_rb.accessLock(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
     } catch (Exception exc) {
         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
     }
@@ -147,7 +147,7 @@ public boolean accessProject(int projectId) throws CmsException {
  */
 public boolean accessRead(String resource) throws CmsException {
     try {
-        return m_rb.accessRead(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resource);
+        return m_rb.accessRead(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
     } catch (Exception exc) {
         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
     }
@@ -162,7 +162,7 @@ public boolean accessRead(String resource) throws CmsException {
  */
 public boolean accessWrite(String resource) throws CmsException {
     try {
-        return m_rb.accessWrite(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resource);
+        return m_rb.accessWrite(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
     } catch (Exception exc) {
         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
     }
@@ -375,7 +375,7 @@ public void chgrp(String filename, String newGroup, boolean chRekursive) throws 
  * @exception CmsException if operation was not successful.
  */
 protected void doChgrp(String filename, String newGroup) throws CmsException {
-    m_rb.chgrp(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename, newGroup);
+    m_rb.chgrp(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename), newGroup);
 }
 
 /**
@@ -461,7 +461,7 @@ public void chmod(String filename, int flags, boolean chRekursive) throws CmsExc
  * for this resource.
  */
 protected void doChmod(String filename, int flags) throws CmsException {
-    m_rb.chmod(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename, flags);
+    m_rb.chmod(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename), flags);
 }
 
 /**
@@ -544,7 +544,7 @@ public void chown(String filename, String newOwner, boolean chRekursive) throws 
  * @exception CmsException if operation was not successful.
  */
 protected void doChown(String filename, String newOwner) throws CmsException {
-    m_rb.chown(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename, newOwner);
+    m_rb.chown(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename), newOwner);
 }
 
 /**
@@ -598,7 +598,7 @@ public void chtype(String filename, String newType) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 protected void doChtype(String filename, String newType) throws CmsException {
-    m_rb.chtype(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename, newType);
+    m_rb.chtype(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename), newType);
 }
 
 /**
@@ -649,7 +649,7 @@ public void copyResource(String source, String destination, boolean keepFlags) t
  * has not the appropriate rights to copy the file.
  */
 protected void doCopyFile(String source, String destination) throws CmsException {
-    m_rb.copyFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+source, getSiteRoot()+destination);
+    m_rb.copyFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(source), getSiteRoot(destination));
 }
 
 /**
@@ -662,7 +662,7 @@ protected void doCopyFile(String source, String destination) throws CmsException
  * user has not the appropriate rights to copy the folder.
  */
 protected void doCopyFolder(String source, String destination) throws CmsException {
-    m_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+source, getSiteRoot()+destination);
+    m_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(source), getSiteRoot(destination));
 }
 
 /**
@@ -719,7 +719,7 @@ public void copyResourceToProject(String resource) throws CmsException {
      * @exception CmsException if operation was not successful.
  */
 protected void doCopyResourceToProject(String resource) throws CmsException {
-    m_rb.copyResourceToProject(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resource);
+    m_rb.copyResourceToProject(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
 }
 
 /**
@@ -846,7 +846,7 @@ public CmsResource createResource(String folder, String name, String type, Hasht
  */
 protected CmsFile doCreateFile(String folder, String filename, byte[] contents, String type) throws CmsException {
     CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(),
-                                   m_context.currentProject(), getSiteRoot()+folder, filename, contents,
+                                   m_context.currentProject(), getSiteRoot(folder), filename, contents,
                                    type, new Hashtable());
     return file;
 }
@@ -873,7 +873,7 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
         properties = new Hashtable();
     }
     CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(),
-                                   m_context.currentProject(), getSiteRoot()+folder, filename, contents,
+                                   m_context.currentProject(), getSiteRoot(folder), filename, contents,
                                    type, properties);
     return file;
 }
@@ -892,7 +892,7 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
  */
 protected CmsFolder doCreateFolder(String folder, String newFolderName) throws CmsException {
     CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(),
-                                            getSiteRoot()+folder, newFolderName, new Hashtable());
+                                            getSiteRoot(folder), newFolderName, new Hashtable());
     return cmsFolder;
 }
 
@@ -913,7 +913,7 @@ protected CmsFolder doCreateFolder(String folder, String newFolderName) throws C
  */
 protected CmsFolder doCreateFolder(String folder, String newFolderName, Hashtable properties) throws CmsException {
     CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(),
-                                            getSiteRoot()+folder, newFolderName, properties);
+                                            getSiteRoot(folder), newFolderName, properties);
 
     return cmsFolder;
 }
@@ -1053,7 +1053,7 @@ public CmsTask createTask(String agentName, String roleName, String taskname, St
  * @exception CmsException if operation was not successful.
  */
 public void deleteAllProperties(String resourcename) throws CmsException {
-    m_rb.deleteAllProperties(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resourcename);
+    m_rb.deleteAllProperties(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resourcename));
 }
 /**
  * Deletes a file.
@@ -1098,7 +1098,7 @@ public void deleteFolder(String foldername) throws CmsException {
  *
  */
 public void deleteEmptyFolder(String foldername) throws CmsException {
-    m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+foldername);
+    m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername));
 }
 
 /**
@@ -1124,7 +1124,7 @@ public void deleteResource(String filename) throws CmsException {
  * has not the appropriate rights to delete the file.
  */
 protected void doDeleteFile(String filename) throws CmsException {
-    m_rb.deleteFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename);
+    m_rb.deleteFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename));
 }
 
 /**
@@ -1139,7 +1139,7 @@ protected void doDeleteFile(String filename) throws CmsException {
  * has not the rights to delete this folder.
  */
 protected void doDeleteFolder(String foldername) throws CmsException {
-    m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+foldername);
+    m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername));
 }
 
 /**
@@ -1152,7 +1152,7 @@ protected void doDeleteFolder(String foldername) throws CmsException {
  */
 public void undeleteResource(String filename) throws CmsException {
     //read the file header including deleted
-    CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename, true);
+    CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename), true);
     I_CmsResourceType rt = getResourceType(res.getType());
     rt.undeleteResource(this, filename);
 }
@@ -1166,7 +1166,7 @@ public void undeleteResource(String filename) throws CmsException {
  * has not the appropriate rights to undelete the file.
  */
 protected void doUndeleteFile(String filename) throws CmsException {
-    m_rb.undeleteResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename);
+    m_rb.undeleteResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename));
 }
 
 /**
@@ -1181,7 +1181,7 @@ protected void doUndeleteFile(String filename) throws CmsException {
  * has not the rights to undelete this folder.
  */
 protected void doUndeleteFolder(String foldername) throws CmsException {
-    m_rb.undeleteResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+foldername);
+    m_rb.undeleteResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername));
 }
 
 /**
@@ -1215,7 +1215,7 @@ public void deleteProject(int id) throws CmsException {
  * @exception CmsException Throws if operation was not successful.
  */
 public void deleteProperty(String resourcename, String property) throws CmsException {
-    m_rb.deleteProperty(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resourcename, property);
+    m_rb.deleteProperty(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resourcename), property);
 }
 /**
  * Deletes the property-definition for a resource type.
@@ -1356,7 +1356,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 public void exportStaticResources(String exportTo, String res) throws CmsException {
 
     setCmsObjectForStaticExport(getRequestContext().currentProject().getId());
-    m_rb.exportStaticResources(exportTo, getSiteRoot()+res, getRequestContext().currentProject().getId(),
+    m_rb.exportStaticResources(exportTo, getSiteRoot(res), getRequestContext().currentProject().getId(),
                                 onlineProject().getId());
 }
 
@@ -1505,7 +1505,7 @@ public Vector getDirectGroupsOfUser(String username) throws CmsException {
  * @exception CmsException if the user has not hte appropriate rigths to access or read the resource.
  */
 public Vector getFilesInFolder(String foldername) throws CmsException {
-    return (m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+foldername, false));
+    return (m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername), false));
 }
 
 /**
@@ -1521,7 +1521,7 @@ public Vector getFilesInFolder(String foldername) throws CmsException {
  * @exception CmsException if the user has not hte appropriate rigths to access or read the resource.
  */
 public Vector getFilesInFolder(String foldername, boolean includeDeleted) throws CmsException {
-    return (m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+foldername, includeDeleted));
+    return (m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername), includeDeleted));
 }
 
 /**
@@ -1569,7 +1569,7 @@ public long getFileSystemFolderChanges() {
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     public Vector getFolderTree() throws CmsException {
-        return (m_rb.getFolderTree(m_context.currentUser(), m_context.currentProject(), getSiteRoot()));
+        return (m_rb.getFolderTree(m_context.currentUser(), m_context.currentProject(), getSiteRoot("")));
     }
 /**
  * Returns all groups in the Cms.
@@ -1620,7 +1620,7 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
      *          Admingroup for no Group.
      */
     public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
-        return m_rb.getReadingpermittedGroup(projectId, getSiteRoot()+resource);
+        return m_rb.getReadingpermittedGroup(projectId, getSiteRoot(resource));
     }
 
 /**
@@ -1661,7 +1661,7 @@ public CmsRequestContext getRequestContext() {
  * @exception CmsException  Throws CmsException if operation was not succesful.
  */
 public Vector getResourcesInFolder(String folder) throws CmsException {
-    return m_rb.getResourcesInFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+folder);
+    return m_rb.getResourcesInFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folder));
 }
 /**
  * Returns a I_CmsResourceType.
@@ -1697,7 +1697,7 @@ public I_CmsResourceType getResourceType(String resourceType) throws CmsExceptio
  * @exception CmsException if the user has not the rights to access or read the resource.
  */
 public Vector getSubFolders(String foldername) throws CmsException {
-    return (m_rb.getSubFolders(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+foldername, false));
+    return (m_rb.getSubFolders(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername), false));
 }
 
 /**
@@ -1711,7 +1711,7 @@ public Vector getSubFolders(String foldername) throws CmsException {
  * @exception CmsException if the user has not the rights to access or read the resource.
  */
 public Vector getSubFolders(String foldername, boolean includeDeleted) throws CmsException {
-    return (m_rb.getSubFolders(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+foldername, includeDeleted));
+    return (m_rb.getSubFolders(m_context.currentUser(), m_context.currentProject(), getSiteRoot(foldername), includeDeleted));
 }
 
 /**
@@ -1824,7 +1824,7 @@ public Vector getUsersByLastname(String Lastname,
 public void importFolder(String importFile, String importPath) throws CmsException {
     // import the resources
     clearcache();
-    m_rb.importFolder(m_context.currentUser(), m_context.currentProject(), importFile, getSiteRoot()+importPath, this);
+    m_rb.importFolder(m_context.currentUser(), m_context.currentProject(), importFile, getSiteRoot(importPath), this);
     clearcache();
 }
 
@@ -1946,7 +1946,7 @@ public CmsUser lockedBy(CmsResource resource) throws CmsException {
     * @exception CmsException if operation was not successful.
     */
 public CmsUser lockedBy(String resource) throws CmsException {
-    return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resource));
+    return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource)));
 }
 /**
  * Locks the given resource.
@@ -1996,7 +1996,7 @@ public void lockResource(String resource, boolean force) throws CmsException {
  * It will also be thrown, if there is a existing lock and force was set to false.
  */
 protected void doLockResource(String resource, boolean force) throws CmsException {
-    m_rb.lockResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resource, force);
+    m_rb.lockResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource), force);
 }
 
 /**
@@ -2073,7 +2073,7 @@ public void moveResource(String source, String destination) throws CmsException 
  * or if the file couldn't be moved.
  */
 protected void doMoveFile(String source, String destination) throws CmsException {
-    m_rb.moveFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+source, getSiteRoot()+destination);
+    m_rb.moveFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(source), getSiteRoot(destination));
 }
 
 /**
@@ -2208,7 +2208,7 @@ public CmsUser readAgent(CmsTask task) throws CmsException {
  * @deprecated For reading the file history use method readAllFileHeadersForHist
  */
 public Vector readAllFileHeaders(String filename) throws CmsException {
-    return (m_rb.readAllFileHeaders(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename));
+    return (m_rb.readAllFileHeaders(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename)));
 }
 
 /**
@@ -2226,7 +2226,7 @@ public Vector readAllFileHeaders(String filename) throws CmsException {
  * @exception CmsException  if operation was not successful.
  */
 public Vector readAllFileHeadersForHist(String filename) throws CmsException {
-    return (m_rb.readAllFileHeadersForHist(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename));
+    return (m_rb.readAllFileHeadersForHist(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename)));
 }
 
     /**
@@ -2250,7 +2250,7 @@ public Vector readAllFileHeadersForHist(String filename) throws CmsException {
  * @exception CmsException if operation was not succesful.
  */
 public Hashtable readAllProperties(String name) throws CmsException {
-    return (m_rb.readAllProperties(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+name));
+    return (m_rb.readAllProperties(m_context.currentUser(), m_context.currentProject(), getSiteRoot(name)));
 }
 
 /**
@@ -2336,7 +2336,7 @@ public String readExportPath() throws CmsException {
  * or if the file couldn't be read.
  */
 public CmsFile readFile(String filename) throws CmsException {
-    return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename));
+    return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename)));
 }
 /**
  * Reads a file from the Cms.
@@ -2350,7 +2350,7 @@ public CmsFile readFile(String filename) throws CmsException {
  * to read this resource, or if the file couldn't be read.
  */
 public CmsFile readFile(String folder, String filename) throws CmsException {
-    return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+folder + filename));
+    return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folder + filename)));
 }
 /**
  * Gets the known file extensions (=suffixes).
@@ -2376,7 +2376,7 @@ public Hashtable readFileExtensions() throws CmsException {
  * to read the file headers, or if the file headers couldn't be read.
  */
 public CmsResource readFileHeader(String filename) throws CmsException {
-    return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename));
+    return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename)));
 }
 
 /**
@@ -2393,7 +2393,7 @@ public CmsResource readFileHeader(String filename) throws CmsException {
  * to read the file headers, or if the file headers couldn't be read.
  */
 public CmsResource readFileHeader(String filename, int projectId) throws CmsException {
-    return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), projectId, getSiteRoot()+filename));
+    return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), projectId, getSiteRoot(filename)));
 }
 
 /**
@@ -2410,7 +2410,7 @@ public CmsResource readFileHeader(String filename, int projectId) throws CmsExce
  * to read the file header, or if the file header couldn't be read.
  */
 public CmsResource readFileHeader(String folder, String filename) throws CmsException {
-    return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+folder + filename));
+    return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folder + filename)));
 }
 
 /**
@@ -2427,7 +2427,7 @@ public CmsResource readFileHeader(String folder, String filename) throws CmsExce
  * to read the file headers, or if the file headers couldn't be read.
  */
 public CmsResource readFileHeaderForHist(String filename, int versionId) throws CmsException {
-    return (m_rb.readFileHeaderForHist(m_context.currentUser(), m_context.currentProject(), versionId, getSiteRoot()+filename));
+    return (m_rb.readFileHeaderForHist(m_context.currentUser(), m_context.currentProject(), versionId, getSiteRoot(filename)));
 }
 
 /**
@@ -2444,7 +2444,7 @@ public CmsResource readFileHeaderForHist(String filename, int versionId) throws 
  * to read the file, or if the file couldn't be read.
  */
 public CmsBackupResource readFileForHist(String filename, int versionId) throws CmsException {
-    return (m_rb.readFileForHist(m_context.currentUser(), m_context.currentProject(), versionId, getSiteRoot()+filename));
+    return (m_rb.readFileForHist(m_context.currentUser(), m_context.currentProject(), versionId, getSiteRoot(filename)));
 }
 /**
  * Reads all file headers of a project from the Cms.
@@ -2485,7 +2485,7 @@ public CmsFolder readFolder(String folder) throws CmsException {
  * to read this resource, or if the folder couldn't be read.
  */
 public CmsFolder readFolder(String folder, boolean includeDeleted) throws CmsException {
-    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+folder, includeDeleted));
+    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folder), includeDeleted));
 }
 
 /**
@@ -2501,7 +2501,7 @@ public CmsFolder readFolder(String folder, boolean includeDeleted) throws CmsExc
  * to read this resource, or if the folder couldn't be read.
  */
 public CmsFolder readFolder(String folder, String folderName) throws CmsException {
-    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+folder, folderName));
+    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folder), folderName));
 }
 /**
   * Reads all given tasks from a user for a project.
@@ -2706,7 +2706,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
  * @exception CmsException if operation was not successful
  */
 public String readProperty(String name, String property) throws CmsException {
-    return (m_rb.readProperty(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+name, property));
+    return (m_rb.readProperty(m_context.currentUser(), m_context.currentProject(), getSiteRoot(name), property));
 }
 /**
  * Reads the property-definition for the resource type.
@@ -2939,7 +2939,7 @@ public void renameResource(String oldname, String newname) throws CmsException {
  * to rename the file, or if the file couldn't be renamed.
  */
 protected void doRenameFile(String oldname, String newname) throws CmsException {
-    m_rb.renameFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+oldname, newname);
+    m_rb.renameFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(oldname), newname);
 }
 
     /**
@@ -2965,7 +2965,7 @@ protected void doRenameFile(String oldname, String newname) throws CmsException 
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     protected void doRestoreResource(int versionId, String filename) throws CmsException{
-        m_rb.restoreResource(m_context.currentUser(), m_context.currentProject(), versionId, getSiteRoot()+filename);
+        m_rb.restoreResource(m_context.currentUser(), m_context.currentProject(), versionId, getSiteRoot(filename));
     }
 
 /**
@@ -3128,7 +3128,7 @@ public void unlockResource(String resource) throws CmsException {
  */
 public void undoChanges(String filename) throws CmsException {
     //read the file header including deleted
-    CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+filename, true);
+    CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename), true);
     I_CmsResourceType rt = getResourceType(res.getType());
     rt.undoChanges(this, filename);
 }
@@ -3143,7 +3143,7 @@ public void undoChanges(String filename) throws CmsException {
  * to write this resource.
  */
 protected void doUndoChanges(String resource) throws CmsException {
-    m_rb.undoChanges(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resource);
+    m_rb.undoChanges(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
 }
 
 /**
@@ -3157,7 +3157,7 @@ protected void doUndoChanges(String resource) throws CmsException {
  * to unlock this resource.
  */
 protected void doUnlockResource(String resource) throws CmsException {
-    m_rb.unlockResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resource);
+    m_rb.unlockResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
 }
 
 /**
@@ -3256,7 +3256,7 @@ public void writeGroup(CmsGroup group) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void writeProperties(String name, Hashtable properties) throws CmsException {
-    m_rb.writeProperties(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+name, properties);
+    m_rb.writeProperties(m_context.currentUser(), m_context.currentProject(), getSiteRoot(name), properties);
 }
 /**
  * Writes a property for a file or folder.
@@ -3268,7 +3268,7 @@ public void writeProperties(String name, Hashtable properties) throws CmsExcepti
  * @exception CmsException if operation was not successful.
  */
 public void writeProperty(String name, String property, String value) throws CmsException {
-    m_rb.writeProperty(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+name, property, value);
+    m_rb.writeProperty(m_context.currentUser(), m_context.currentProject(), getSiteRoot(name), property, value);
 }
 /**
  * Writes the property-definition for the resource type.
@@ -3370,7 +3370,7 @@ public Vector getLoggedInUsers() throws CmsException {
  * @param resourcename The name of the resource to change
  */
 protected void changeLockedInProject(int projectId, String resourcename) throws CmsException{
-    CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot()+resourcename, true);
+    CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resourcename), true);
     I_CmsResourceType rt = getResourceType(res.getType());
     rt.changeLockedInProject(this, projectId, resourcename);
 }
@@ -3383,16 +3383,17 @@ protected void changeLockedInProject(int projectId, String resourcename) throws 
  * @param resourcename The name of the resource to change
  */
 protected void doChangeLockedInProject(int projectId, String resourcename) throws CmsException{
-    m_rb.changeLockedInProject(projectId, getSiteRoot()+resourcename);
+    m_rb.changeLockedInProject(projectId, getSiteRoot(resourcename));
 }
 
 /**
  * Returns the name of the current site root, e.g. /site_a/vfs
  *
- * @return String The name of the site root
+ * @param resourcename The name of the resource
+ * @return String The resourcename including its site root
  */
-public String getSiteRoot(){
-    return getRequestContext().getSiteRoot();
+public String getSiteRoot(String resourcename){
+    return getRequestContext().getSiteRoot(resourcename);
 }
 
 /**
@@ -3400,7 +3401,7 @@ public String getSiteRoot(){
  * of the virtual file system
  */
 public void setContextToVfs(){
-    getRequestContext().setContextToVfs();
+    getRequestContext().setContextTo(C_ROOTNAME_VFS);
 }
 
 /**
@@ -3408,6 +3409,15 @@ public void setContextToVfs(){
  * of the content objects system
  */
 public void setContextToCos(){
-    getRequestContext().setContextToCos();
+    getRequestContext().setContextTo(C_ROOTNAME_COS);
+}
+
+/**
+ * Sets the name of the current site root
+ *
+ * @param name The name of the context
+ */
+public void setContextTo(String name){
+    getRequestContext().setContextTo(name);
 }
 }

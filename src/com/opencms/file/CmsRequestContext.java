@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2001/10/16 09:01:15 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2001/10/16 13:54:48 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.40 $ $Date: 2001/10/16 09:01:15 $
+ * @version $Revision: 1.41 $ $Date: 2001/10/16 13:54:48 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -114,7 +114,7 @@ public class CmsRequestContext implements I_CmsConstants {
     public CmsFolder currentFolder() throws CmsException {
         // truncate the filename from the pathinformation
         String folderName = getUri().substring(0, getUri().lastIndexOf("/") + 1);
-        return (m_rb.readFolder(currentUser(), currentProject(), getSiteRoot()+folderName, ""));
+        return (m_rb.readFolder(currentUser(), currentProject(), getSiteRoot(folderName), ""));
     }
     /**
      * Returns the current group of the current user.
@@ -379,25 +379,18 @@ public class CmsRequestContext implements I_CmsConstants {
     /**
      * Returns the name of the current site root, e.g. /site_a/vfs
      *
-     * @return String The name of the site root
+     * @param resourcename
+     * @return String The resourcename with its site root
      */
-    public String getSiteRoot(){
-        return m_siteRoot;
+    public String getSiteRoot(String resourcename){
+        return m_siteRoot+resourcename;
     }
 
     /**
      * Sets the name of the current site root
      * of the virtual file system
      */
-    public void setContextToVfs(){
-        m_siteRoot = C_DEFAULT_SITE+C_ROOTNAME_VFS;
-    }
-
-    /**
-     * Sets the name of the current site root
-     * of the content objects system
-     */
-    public void setContextToCos(){
-        m_siteRoot = C_DEFAULT_SITE+C_ROOTNAME_COS;
+    public void setContextTo(String name){
+        m_siteRoot = C_DEFAULT_SITE+name;
     }
 }
