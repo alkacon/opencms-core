@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/02/18 13:00:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/21 12:55:31 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.8 $ $Date: 2000/02/18 13:00:38 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/21 12:55:31 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -91,6 +91,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 						//TODO: ErrorHandling
 					}
 				}
+                System.err.println("Unlock file "+filename);
                 cms.unlockResource(filename);
 				session.removeValue(C_PARA_FILE);
             }

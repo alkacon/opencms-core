@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/20 11:42:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/21 12:55:31 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/02/20 11:42:09 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/21 12:55:31 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -427,7 +427,11 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             newpos=max+1;
         }
         // now update all metainformations
-         for (int i=0;i<=max+2;i++) {
+        
+        // WARNING: THIS HAD TO BE DISABLED BECAUSE OF FILE-LOCK PROBLEMS
+        // New files are ALWAYS added at the end of the Nav !
+        // TODO: find a workaround to add files at any navpos
+        /* for (int i=0;i<=max+2;i++) {
                 String name=(String)storage.get(new Integer(i).toString());
                 int pos=i;
                 // add the new file
@@ -442,6 +446,9 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 if (name!= null) {
                     cms.writeMetainformation(name,C_METAINFO_NAVPOS,new Integer(pos).toString());
                 }
-            }
+            } */
+       
+        cms.writeMetainformation(newfile.getAbsolutePath(),C_METAINFO_NAVPOS,new Integer(max+1).toString());
+               
       }
 }

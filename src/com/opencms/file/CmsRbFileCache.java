@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/02/19 18:38:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/21 12:55:31 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/19 18:38:51 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/21 12:55:31 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -97,8 +97,10 @@ import com.opencms.core.*;
          // not found in cache, so get it from the database and add it to cache
          if (res == null) {
              res=m_accessFile.readFileHeader(project,filename);
-             m_filecache.put(key,res);
-         }
+             if (res.getLength()<C_MAXFILESIZE) {
+                   m_filecache.put(key,res);
+             }
+          }
          return res;
      }
     
