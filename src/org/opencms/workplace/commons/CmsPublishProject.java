@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/27 17:15:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
@@ -294,7 +294,7 @@ public class CmsPublishProject extends CmsReport {
                     // start the link validation thread before publishing
                     CmsHtmlLinkValidatorThread thread = new CmsHtmlLinkValidatorThread(getCms(), publishResource, "true".equals(getParamPublishsiblings()), getSettings());
                     setParamAction(REPORT_BEGIN);
-                    setParamThread(thread.getId().toString());
+                    setParamThread(thread.getUUID().toString());
                     
                     // set the flag that another thread is following
                     setParamThreadHasNext("true");
@@ -439,7 +439,7 @@ public class CmsPublishProject extends CmsReport {
         CmsPublishThread thread = new CmsPublishThread(getCms(), publishList);
         
         // set the new thread id and flag that no thread is following
-        setParamThread(thread.getId().toString());
+        setParamThread(thread.getUUID().toString());
         setParamThreadHasNext("false");
         
         // start the publish thread

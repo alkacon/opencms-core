@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/10/27 17:15:48 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * Provides a common Thread class for the reports.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public abstract class A_CmsReportThread extends Thread {
 
@@ -130,11 +130,11 @@ public abstract class A_CmsReportThread extends Thread {
     }
         
     /**
-     * Returns the id of this report thread.<p>
+     * Returns the OpenCms UUID of this report thread.<p>
      * 
-     * @return the id of this report thread
+     * @return the OpenCms UUID of this report thread
      */
-    public CmsUUID getId() {
+    public CmsUUID getUUID() {
         return m_id;
     }
     

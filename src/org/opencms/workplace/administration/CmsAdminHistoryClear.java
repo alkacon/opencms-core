@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/27 17:15:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -220,7 +220,7 @@ public class CmsAdminHistoryClear extends CmsReport {
                     params = getBackupParams();
                     CmsAdminHistoryClearThread thread = new CmsAdminHistoryClearThread(getCms(), params);
                     setParamAction(REPORT_BEGIN);
-                    setParamThread(thread.getId().toString());
+                    setParamThread(thread.getUUID().toString());
                     getJsp().include(C_FILE_REPORT_OUTPUT);  
                 } catch (CmsException e) {
                     // error setting history values, show error dialog

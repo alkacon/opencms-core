@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2004/06/14 14:25:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/27 17:15:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * @since 5.1.10
  */
 public class CmsThreadStore extends Thread {
@@ -78,7 +78,7 @@ public class CmsThreadStore extends Thread {
      * @param thread the Thread to add
      */
     public void addThread(A_CmsReportThread thread) {
-        m_threads.put(thread.getId(), thread);
+        m_threads.put(thread.getUUID(), thread);
         if (DEBUG) {
             dumpThreads();
         }
