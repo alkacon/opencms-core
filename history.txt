@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/10/22 13:20:25 $
- * Version: $Revision: 1.571 $
+ * Date   : $Date: 2004/10/22 13:21:05 $
+ * Version: $Revision: 1.572 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.5.2 Caladan (aka 6.0 xxx) - xxx, 2004
+OpenCms 5.5.2 Caladan - October 22, 2004
 ! Locale handler for the workplace has been made configurable
 * Fixed issue with translated module name not correctly written to log
 * Fixed issues with legacy master module permissions and history
