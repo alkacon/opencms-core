@@ -2,8 +2,8 @@ package com.opencms.launcher;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
- * Date   : $Date: 2000/08/08 14:08:28 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/12/05 10:59:53 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/08/08 14:08:28 $
+ * @version $Revision: 1.14 $ $Date: 2000/12/05 10:59:53 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher { 	
 		
@@ -94,6 +94,33 @@ public class CmsDumpLauncher extends A_CmsLauncher {
 		}
 				
 		Hashtable newParameters = new Hashtable();
+		I_CmsRequest req = cms.getRequestContext().getRequest();
+
+		// Now check URL parameters      
+		String datafor = req.getParameter("datafor");
+		if(datafor == null) {
+			datafor = "";
+		} else if(! "".equals(datafor)) {
+			datafor = datafor + ".";
+		}
+		
+		Enumeration urlParameterNames = req.getParameterNames();
+		while(urlParameterNames.hasMoreElements()) {
+			
+			String pname = (String)urlParameterNames.nextElement();
+			String paramValue = req.getParameter(pname);
+
+			if(paramValue!=null) {
+				if((! "datafor".equals(pname)) && (! "_clearcache".equals(pname))) {
+					newParameters.put(datafor + pname, paramValue);
+				}
+			} else {
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Empty URL parameter \"" + pname + "\" found.");
+				}
+			}
+		}
+		
 			
 		try {
 			result = this.callCanonicalRoot(cms, (com.opencms.template.I_CmsTemplate)tmpl, file, newParameters);
@@ -109,4 +136,4 @@ public class CmsDumpLauncher extends A_CmsLauncher {
 			writeBytesToResponse(cms, result);
 		}
 	}
-}  
+}
