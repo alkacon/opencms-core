@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/09/03 11:57:05 $
-* Version: $Revision: 1.334 $
+* Date   : $Date: 2002/10/09 14:41:52 $
+* Version: $Revision: 1.335 $
 
 *
 * This library is part of OpenCms -
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.334 $ $Date: 2002/09/03 11:57:05 $
+ * @version $Revision: 1.335 $ $Date: 2002/10/09 14:41:52 $
 
  *
  */
@@ -2734,10 +2734,10 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      *
      * @exception Throws CmsException if something goes wrong.
      */
-    public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, boolean exportUserdata, I_CmsReport report)
+    public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, boolean exportUserdata, long contentAge, I_CmsReport report)
         throws CmsException {
         if(isAdmin(currentUser, currentProject)) {
-            new CmsExport(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null, exportUserdata, report);
+            new CmsExport(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null, exportUserdata, contentAge, report);
         } else {
              throw new CmsException("[" + this.getClass().getName() + "] exportResources",
                  CmsException.C_NO_ACCESS);

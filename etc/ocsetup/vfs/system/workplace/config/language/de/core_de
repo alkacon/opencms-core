@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LANGUAGE>
         <name>Deutsch</name>
         <content-encoding>utf-8</content-encoding>
@@ -127,8 +127,10 @@
                 <import>Datenbank Import</import>
                 <importend>Datenbank Import beendet.</importend>
                 <exportend>Datenbank Export beendet.</exportend>
+                <contentage>Export nur von Dateien geändert seit</contentage>
             </label>
         </database>
+        
         <staticexport>
             <label>
                 <exportadd>Wollen Sie den Export mit diesen in den opencms.properties konfigurierten Daten starten?</exportadd>
@@ -225,6 +227,7 @@
                 <undochanges>Leider konnten die Änderungen nicht verworfen werden.</undochanges>
                 <unlock>Leider konnte die Datei nicht wieder freigegeben werden.</unlock>
                 <upload>Die Datei konnte nicht hochgeladen werden.</upload>
+                <contentage>Das eingegebene Datumsformat ist ungültig.\nBitte verwenden Sie das folgende Format: mm-tt-jjjj hh:mm:ss</contentage>
             </message>
             <reason>
                 <accessdenied>Sie haben keine Zugriffsrechte für die gewählte Aktion oder das Verzeichnis ist von einem anderen Nutzer gesperrt.</accessdenied>

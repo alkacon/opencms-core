@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseExportThread.java,v $
-* Date   : $Date: 2002/05/24 12:51:09 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/10/09 14:44:39 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,31 +62,33 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
 
     private boolean m_moduledataExport;
 
+    private long m_contentAge;
+
     // the object to send the information to the workplace.
     private CmsReport m_report;
 
     /**
-     * Insert the method's description here.
-     * Creation date: (13.09.00 09:52:24)
+     * Export the VFS (Virtual File System) resources.
      */
-
     public CmsAdminDatabaseExportThread(CmsObject cms, String fileName,
             String[] exportPaths, boolean excludeSystem, boolean excludeUnchanged,
-            boolean exportUserdata, I_CmsSession session) {
+            boolean exportUserdata, 
+            long contentAge,
+            I_CmsSession session) {
         m_cms = cms;
         m_exportPaths = exportPaths;
         m_fileName = fileName;
         m_excludeSystem = excludeSystem;
         m_excludeUnchanged = excludeUnchanged;
         m_exportUserdata = exportUserdata;
+        m_contentAge = contentAge;
         m_session = session;
         m_report = new CmsReport(new String[]{"<br>"});
         m_moduledataExport = false;
     }
 
     /**
-     * Insert the method's description here.
-     * Creation date: (13.09.00 09:52:24)
+     * Export the COS (Content Object Store) resources, ie. the module data
      */
 
     public CmsAdminDatabaseExportThread(CmsObject cms, String fileName,
@@ -108,7 +110,7 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
             if(m_moduledataExport){
                 m_cms.exportModuledata(m_fileName, m_exportPaths, m_exportModules);
             } else {
-                m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged, m_exportUserdata, m_report);
+                m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged, m_exportUserdata, m_contentAge, m_report);
             }
         }
         catch(CmsException e) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/08/21 11:32:46 $
-* Version: $Revision: 1.240 $
+* Date   : $Date: 2002/10/09 14:43:42 $
+* Version: $Revision: 1.241 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.240 $ $Date: 2002/08/21 11:32:46 $
+ * @version $Revision: 1.241 $ $Date: 2002/10/09 14:43:42 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1393,9 +1393,9 @@ public void exportResources(String exportFile, String[] exportPaths, boolean inc
  *
  * @exception CmsException if operation was not successful.
  */
-public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata, I_CmsReport report) throws CmsException {
+public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata, long contentAge, I_CmsReport report) throws CmsException {
     // export the resources
-    m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged, exportUserdata, report);
+    m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged, exportUserdata, contentAge, report);
 }
 /**
  * Exports cms-resources to a zip-file.
@@ -1409,7 +1409,7 @@ public void exportResources(String exportFile, String[] exportPaths, boolean inc
  */
 public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata) throws CmsException {
     // call the export with the standard report object.
-    exportResources(exportFile, exportPaths, includeSystem, excludeUnchanged, exportUserdata, new CmsShellReport());
+    exportResources(exportFile, exportPaths, includeSystem, excludeUnchanged, exportUserdata, 0, new CmsShellReport());
 }
 
 /**

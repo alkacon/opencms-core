@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/08/21 11:32:46 $
-* Version: $Revision: 1.184 $
+* Date   : $Date: 2002/10/09 14:42:34 $
+* Version: $Revision: 1.185 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.184 $ $Date: 2002/08/21 11:32:46 $
+ * @version $Revision: 1.185 $ $Date: 2002/10/09 14:42:34 $
  *
  */
 
@@ -1021,7 +1021,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
      *
      * @exception Throws CmsException if something goes wrong.
      */
-    public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata, I_CmsReport report)
+    public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata, long contentAge, I_CmsReport report)
         throws CmsException;
 
     /**

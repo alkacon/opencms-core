@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <nounchanged></nounchanged>
+<contentage>(not set)</contentage>
+<currenttime>(not set)</currenttime>
 <nounchangedbox><![CDATA[
                             <tr> 
                                 <td>&nbsp;</td>
@@ -19,6 +21,13 @@
                                 </td>
                             </tr>
 ]]></userdatabox>
+
+<contentagedata><![CDATA[
+                            <tr> 
+                                <td class=formular width=10%>]]><LABEL value="database.label.contentage"/><![CDATA[:</td>
+                                <td class=formular><input type="text" class="textfeld3" maxlength="30" name="contentageinput" value="12-31-1970 12:00:00" size="30" maxsize="30"><input type="hidden" name="contentage"></td>                                
+                            </tr>
+]]></contentagedata>
 
 <TEMPLATE>
 <![CDATA[
@@ -61,7 +70,17 @@ function checkFormData()
 {
     var result=true;
     var at_pos, entry, strLength;
+   	      
+    if(document.DBEXPORT.ALLRES.value.length < 1){
+        alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
+        return false;
+    }
     
+    if (! checkContentAge()) {
+        alert(']]><LABEL value="error.message.contentage" /><![CDATA[');
+    	return false
+   	}
+   	
     entry = document.DBEXPORT.VNAME.value;
     strLength=entry.length;
     if (strLength < 1){
@@ -69,6 +88,7 @@ function checkFormData()
         document.DBEXPORT.VNAME.focus;
         return false;
     }
+          
     for (i=0; i < strLength; i++) 
     {
         if (charList.indexOf(entry.charAt(i))==-1)
@@ -78,12 +98,27 @@ function checkFormData()
             return false;
         }
     }
-    if(document.DBEXPORT.ALLRES.value.length < 1){
-        alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
-        return false;
-    }
+        
     return result;
 }               
+
+function checkContentAge() {
+  var validdate = true;
+  var d = document.DBEXPORT.contentageinput.value;
+  d = d.replace(/^\s*(\b.*\b|)\s*$/, "$1");
+  if (d == "") {
+    document.DBEXPORT.contentage.value = "(none)"
+  } else {
+    d = new Date(d);
+    if (!isNaN(d)) { 
+      document.DBEXPORT.contentage.value = d.getTime();
+    } else {
+      validdate = false;
+    }
+  }
+  return validdate;
+}
+
 
 function deleteAnItem(theList,itemNo) {
 var n=theList.length;
@@ -187,6 +222,7 @@ function selectAll(theList) {
                             </tr>
                             ]]><PROCESS>userdata</PROCESS><![CDATA[
                             ]]><PROCESS>nounchanged</PROCESS><![CDATA[
+							]]><PROCESS>contentagedata</PROCESS><![CDATA[                            
                             <tr>
                                 <td class=formular width=10%>]]><LABEL value="database.label.filename"/><![CDATA[:</td>
                                 <td class=dialogtxt><input type="text" class="textfeld3" maxlength="30" name="filename" id="VNAME"></td> 
@@ -365,6 +401,11 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="initiate();">
+
+<!-- Content age data: 
+]]><process>contentage</process><![CDATA[ (Selected content age)
+]]><process>currenttime</process><![CDATA[ (Java system time)
+-->
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>

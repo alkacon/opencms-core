@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2002/06/03 08:08:32 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/10/09 14:44:09 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.26 $ $Date: 2002/06/03 08:08:32 $
+ * @version $Revision: 1.27 $ $Date: 2002/10/09 14:44:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -142,7 +142,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         String allResources = (String)parameters.get("ALLRES");
         String allModules = (String)parameters.get("ALLMOD");
         String step = (String)parameters.get("step");
-
+ 
         // here we show the report updates when the threads are allready running.
         // This is used for import (action=showResult) and for export (action=showExportResult).
         // TODO: the wait template is not used anymore. We can remove it. It is used for export moduledata!!!
@@ -232,6 +232,19 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                     }
                     exportPaths[i] = (String)resourceNames.elementAt(i);
                 }
+                
+                // Default content age is 0 (Unix 1970 time, this should export all resources)
+                long contentAge = 0;                
+                String contentAgePara = (String)parameters.get("contentage");
+                if (contentAgePara != null && (! "".equals(contentAgePara)) && (! "(none)".equals(contentAgePara))) {
+                    try {
+                        contentAge = Long.parseLong(contentAgePara);
+                    } catch (NumberFormatException numEx) {
+                        // In case a invalid number was returned, use 0 (ie. export all files)
+                        contentAge = 0;
+                    }
+                }
+                
                 boolean excludeSystem = false;
                 if(parameters.get("nosystem") != null) {
                     excludeSystem = true;
@@ -250,10 +263,12 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                     session.removeValue(C_SESSION_THREAD_ERROR);
                 }
                 Thread doExport = new CmsAdminDatabaseExportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
-                        + fileName, exportPaths, excludeSystem, excludeUnchanged, exportUserdata, session);
+                        + fileName, exportPaths, excludeSystem, excludeUnchanged, exportUserdata, contentAge, session);
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
                 xmlTemplateDocument.setData("time", "10");
+                xmlTemplateDocument.setData("contentage", "" + contentAge);
+                xmlTemplateDocument.setData("currenttime", "" + System.currentTimeMillis());
                 templateSelector = "showresult";
 
             } else if("exportmoduledata".equals(action)) {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LANGUAGE>
         <name>English</name>
         <content-encoding>utf-8</content-encoding>
@@ -127,6 +127,7 @@
                 <import>Import Database</import>
                 <importend>Import Database ready.</importend>
                 <exportend>Export Database ready.</exportend>
+                <contentage>Export only files changed after</contentage>
             </label>
         </database>
 
@@ -227,6 +228,7 @@
                 <undochanges>Sorry, the changes of the resource could not be undone</undochanges>
                 <unlock>Sorry, the file could not be locked.</unlock>
                 <upload>Sorry, the file could not be uploaded.</upload>
+                <contentage>The date format you have specified is invalid.\nPlease use the following format: mm-dd-yyyy hh:mm:ss (PM/AM)</contentage>
             </message>
             <reason>
                 <accessdenied>You either don't have the access rights fot the selected operation or the folder is locked.</accessdenied>
