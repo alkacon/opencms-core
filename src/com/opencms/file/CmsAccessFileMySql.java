@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/25 16:55:09 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/02/28 16:57:33 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2000/02/25 16:55:09 $
+ * @version $Revision: 1.35 $ $Date: 2000/02/28 16:57:33 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -141,7 +141,7 @@ import com.opencms.util.*;
      /**
      * SQL Command for reading all files of a project. 
      */   
-    private static final String C_PROJECT_READ_FILES= "SELECT " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME, "
+    /*private static final String C_PROJECT_READ_FILES= "SELECT " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME, "
                                                      +"RESOURCE_TYPE,"
                                                      +"RESOURCE_FLAGS,USER_ID,"
                                                      +"GROUP_ID,ACCESS_FLAGS,STATE,"
@@ -150,8 +150,22 @@ import com.opencms.util.*;
                                                      + C_DATABASE_PREFIX + "FILES.FILE_CONTENT FROM " + C_DATABASE_PREFIX + "RESOURCES," + C_DATABASE_PREFIX + "FILES "
                                                      +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME = " + C_DATABASE_PREFIX + "FILES.RESOURCE_NAME "
                                                      +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = " + C_DATABASE_PREFIX + "FILES.PROJECT_ID "
-                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ? ";
+                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ? "; */
                                                    
+    private static final String C_PROJECT_READ_FILES= "SELECT " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME, "
+                                                     +"RESOURCE_TYPE,"
+                                                     +"RESOURCE_FLAGS,USER_ID,"
+                                                     +"GROUP_ID,ACCESS_FLAGS,STATE,"
+                                                     +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
+                                                     +"DATE_CREATED,DATE_LASTMODIFIED,SIZE "
+                                                     +" FROM " + C_DATABASE_PREFIX + "RESOURCES "
+                                                  //   +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME = " + C_DATABASE_PREFIX + "FILES.RESOURCE_NAME "
+                                                  //   +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = " + C_DATABASE_PREFIX + "FILES.PROJECT_ID "
+                                                     +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ? "
+                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_TYPE <> "+C_TYPE_FOLDER;
+        
+                                                   
+    
     
     /**
      * SQL Command for reading all folders of a project. 
@@ -1379,31 +1393,34 @@ import com.opencms.util.*;
                                            res.getString(C_LAUNCHER_CLASSNAME),
                                            SqlHelper.getTimestamp(res,C_DATE_CREATED).getTime(),
                                            SqlHelper.getTimestamp(res,C_DATE_LASTMODIFIED).getTime(),
-                                           res.getBytes(C_FILE_CONTENT),
+                                           //res.getBytes(C_FILE_CONTENT),
+                                           new byte[0],
                                            res.getInt(C_SIZE)
                                            );
 
-             // trst if the file is a temp file. If so, do NOT publish it, but
-             // delete it.
-             if (file.getName().startsWith(C_TEMP_PREFIX)) {
+             // test if the file is a temp file. If so, do NOT publish it, but
+             // delete it.        
+            if (file.getName().startsWith(C_TEMP_PREFIX)) {
                  removeFile(project,file.getAbsolutePath());
+                 resources.addElement(file.getAbsolutePath()); 
              } else {
                 // check the state of the file
                 // new or changed files are copied to the online project, those files
                 // marked as deleted are deleted in the online project.
                 if ((file.getState()== C_STATE_CHANGED) || 
-                     (file.getState() == C_STATE_NEW)) {
+                    (file.getState() == C_STATE_NEW)) {
                     // delete an exitsing old file in the online project
                     removeFile(onlineProject,file.getAbsolutePath());
+                   // write the new file
+                    file=readFile(project,onlineProject,file.getAbsolutePath());
                     // HACK: remove a lock if nescessary. This is a temporary fix,
                     // this has to be done in the resource broker
                     file.setLocked(C_UNKNOWN_ID);
-                    // write the new file
                     createFile(onlineProject,onlineProject,file,file.getAbsolutePath());
                     resources.addElement(file.getAbsolutePath()); 
                  } else if (file.getState() == C_STATE_DELETED) {
-                      removeFile(onlineProject,file.getAbsolutePath());
-                      resources.addElement(file.getAbsolutePath()); 
+                    removeFile(onlineProject,file.getAbsolutePath());
+                    resources.addElement(file.getAbsolutePath()); 
                  }
              }
              

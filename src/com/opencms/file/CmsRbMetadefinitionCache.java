@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbMetadefinitionCache.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/28 16:57:34 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/28 16:57:34 $
  */
 
 public class CmsRbMetadefinitionCache extends CmsRbMetadefinition {
@@ -124,8 +124,8 @@ public class CmsRbMetadefinitionCache extends CmsRbMetadefinition {
 		throws CmsException {
         
         String key=resource.getProjectId()+resource.getAbsolutePath()+meta;
+  		m_accessMetadefinition.writeMetainformation(resource, meta, value);
         m_metacache.put(key,value);
-		m_accessMetadefinition.writeMetainformation(resource, meta, value);
 	}
 
 	/**
@@ -143,9 +143,90 @@ public class CmsRbMetadefinitionCache extends CmsRbMetadefinition {
 									 String path, int resourceType)
 		throws CmsException {
         String key=projectId+path+meta;
-        m_metacache.put(key,value);
-		m_accessMetadefinition.writeMetainformation(meta, value, projectId, 
+        m_accessMetadefinition.writeMetainformation(meta, value, projectId, 
 													path, resourceType);
+        m_metacache.put(key,value);
 	}
+    
+    	
+	/**
+	 * Deletes a Metainformation for a file or folder.
+	 * 
+	 * @param resource The resource of which the Metainformation has to be read.
+	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteMetainformation(A_CmsResource resource, String meta)
+		throws CmsException {
+        
+        String key=resource.getProjectId()+resource.getAbsolutePath()+meta;
+		m_accessMetadefinition.deleteMetainformation(resource, meta);
+        m_metacache.remove(key);
+	}
+	
+	/**
+	 * Deletes a Metainformation for a file or folder.
+	 * 
+	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteMetainformation(String meta, int projectId, String path, 
+									  int resourceType)
+		throws CmsException {
+        String key=projectId+path+meta;
+		m_accessMetadefinition.deleteMetainformation(meta, projectId, path, resourceType);
+        m_metacache.remove(key);
+	}
+   
+     /**
+	 * Writes a couple of Metainformation for a file or folder.
+	 * 
+	 * @param metainfos A Hashtable with Metadefinition- metainfo-pairs as strings.
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void writeMetainformations(Hashtable metainfos, int projectId, 
+									  String path, int resourceType)
+		throws CmsException {
+		m_accessMetadefinition.writeMetainformations(metainfos, projectId, 
+													 path, resourceType);
+        m_metacache.clear();
+	}
+    
+     /**
+	 * Deletes all Metainformation for a file or folder.
+	 * 
+	 * @param resource The resource of which the Metainformation has to be read.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteAllMetainformations(A_CmsResource resource)
+		throws CmsException {
+		m_accessMetadefinition.deleteAllMetainformations(resource);
+        m_metacache.clear();
+	}
+
+	 /**
+	 * Deletes all Metainformation for a file or folder.
+	 * 
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteAllMetainformations(int projectId, String path)
+		throws CmsException {
+		m_accessMetadefinition.deleteAllMetainformations(projectId, path);
+        m_metacache.clear();
+	}
+   
     
 }
