@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/06/16 13:38:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/04 10:02:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/16 13:38:31 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/04 10:02:14 $
  * @since 5.1
  */
 public class CmsDbPool extends Object {
@@ -129,6 +129,14 @@ public class CmsDbPool extends Object {
             testQuery = null;
         }
 
+        if (username == null) {
+            username = "";
+        }
+
+        if (password == null) {
+            password = "";
+        }
+
         // create an instance of the JDBC driver
         Class.forName(jdbcDriver).newInstance();
 
@@ -158,11 +166,12 @@ public class CmsDbPool extends Object {
         connectionPool.setMaxIdle(maxIdle);
         connectionPool.setMaxWait(maxWait);
         connectionPool.setWhenExhaustedAction(whenExhaustedAction);
-        
-        connectionPool.setTestOnBorrow(testOnBorrow && (testQuery != null));   
+
+        connectionPool.setTestOnBorrow(testOnBorrow && (testQuery != null));
         connectionPool.setTestWhileIdle(true);
 
         // initialize a connection factory to make the DriverManager taking connections from the pool
+        System.err.println("username: " + username + ", password: " + password);
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
 
         // initialize a keyed object pool to store PreparedStatements
