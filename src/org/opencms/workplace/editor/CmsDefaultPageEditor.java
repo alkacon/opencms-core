@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/05/21 15:18:54 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/05/24 14:39:38 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 5.1.12
  */
@@ -495,7 +496,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     protected void initContent() {
         // get the content from the temporary file        
         try {                                  
-            CmsXmlPage page = CmsXmlPage.read(getCms(), getCms().readFile(getParamTempfile()));
+            CmsXmlPage page = CmsXmlPage.read(getCms(), getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL));
             String elementData = page.getContent(getCms(), getParamElementname(), getElementLocale(), true);
             if (elementData != null) {
                 setParamContent(elementData);

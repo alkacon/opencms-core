@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRestoreResource.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/05/24 14:39:38 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -45,7 +46,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.23 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.24 $ $Date: 2004/05/24 14:39:38 $
  */
 
 public class CmsRestoreResource extends CmsWorkplaceDefault {
@@ -63,7 +64,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault {
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
-            Hashtable parameters, String templateSelector) throws CmsException {
+        Hashtable parameters, String templateSelector) throws CmsException {
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         // the template to be displayed
@@ -97,9 +98,9 @@ public class CmsRestoreResource extends CmsWorkplaceDefault {
 
         CmsResource file = null;
         if (filename.endsWith("/")) {
-            file = cms.readFolder(filename);
+            file = cms.readFolder(filename, CmsResourceFilter.IGNORE_EXPIRATION);
         } else {
-            file = cms.readFileHeader(filename);
+        	file = cms.readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION);
         }
         //check if the name parameter was included in the request
         // if not, the restoreresource page is shown for the first time

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/05/24 12:38:48 $
- * Version: $Revision: 1.359 $
+ * Date   : $Date: 2004/05/24 14:39:38 $
+ * Version: $Revision: 1.360 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.359 $ $Date: 2004/05/24 12:38:48 $
+ * @version $Revision: 1.360 $ $Date: 2004/05/24 14:39:38 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2184,7 +2184,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         try {
             // read the resource
-            resource = readFileHeader(context, resourceName);
+            resource = readFileHeader(context, resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
 
             // check the security
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
@@ -5409,7 +5409,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful
      */
     public CmsBackupResource readBackupFileHeader(CmsRequestContext context, int tagId, String filename) throws CmsException {
-        CmsResource cmsFile = readFileHeader(context, filename);
+        CmsResource cmsFile = readFileHeader(context, filename, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsBackupResource resource = null;
 
         try {
@@ -7076,7 +7076,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             // this is the onlineproject
             throw new CmsSecurityException("Can't write to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
-        CmsFile offlineFile = readFile(context, filename);
+        CmsFile offlineFile = readFile(context, filename, CmsResourceFilter.IGNORE_EXPIRATION);
         // check if the user has write access 
         checkPermissions(context, offlineFile, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
 
@@ -7584,7 +7584,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // cw/060104 we must also clear the permission cache
         m_permissionCache.clear();
 
-        CmsResource resource = readFileHeader(context, resourcename);
+        CmsResource resource = readFileHeader(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
 
         return oldLock;

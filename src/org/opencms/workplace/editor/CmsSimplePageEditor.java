@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/05/24 14:39:38 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.3.0
  */
@@ -82,7 +82,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         // Initialize a page object from the temporary file
         if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
             try {
-                m_file = getCms().readFile(this.getParamTempfile());
+                m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
                 m_page = CmsXmlPage.read(getCms(), m_file);
             } catch (CmsException e) {
                 // error during initialization

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/05/21 15:12:44 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2004/05/24 14:39:38 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.87 $ $Date: 2004/05/21 15:12:44 $
+ * @version $Revision: 1.88 $ $Date: 2004/05/24 14:39:38 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -104,6 +104,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         int loaderId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LOADER_ID"));
         long dateCreated = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+        long dateReleased = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_RELEASED"));
+        long dateExpired = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_EXPIRED"));           
         int resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
         String userLastModifiedName = res.getString(m_sqlManager.readQuery("C_RESOURCES_LASTMODIFIED_BY_NAME"));
@@ -135,8 +137,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             dateLastModified, 
             userLastModified, 
             userLastModifiedName, 
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT,
+            dateReleased,
+            dateExpired,
             resourceSize, 
             content);
     }
@@ -1132,8 +1134,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setString(3, resource.getResourceId().toString());
             stmt.setString(4, resource.getName());
             stmt.setInt(5, resource.getState());
-            stmt.setTimestamp(6, new Timestamp(resource.getDateReleased()));
-            stmt.setTimestamp(7, new Timestamp(resource.getDateExpired()));
+            stmt.setLong(6, resource.getDateReleased());
+            stmt.setLong(7, resource.getDateExpired());
             stmt.setInt(8, tagId);
             stmt.setInt(9, versionId);
             stmt.setString(10, backupPkId.toString());
