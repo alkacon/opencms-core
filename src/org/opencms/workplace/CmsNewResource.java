@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/16 11:46:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * The new resource entry dialog which displays the possible "new actions" for the current user.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
@@ -171,7 +171,7 @@ public class CmsNewResource extends CmsDialog {
      * 
      * @return the button row 
      */
-    public String dialogButtonRowNextCancel() {
+    public String dialogButtonsNextCancel() {
         return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[2]);
     }
     

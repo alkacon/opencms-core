@@ -12,6 +12,13 @@ org.opencms.search.*
 	
 switch (wp.getAction()) {
 
+case CmsAdminHistoryClear.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
 
 //////////////////// ACTION: other actions handled outside of this JSP
 case CmsDialog.ACTION_CONFIRMED:
@@ -43,14 +50,14 @@ function init() {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
-
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.key("messagebox.indexing1") %>
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonRowOkCancel("BLAH", "onclick='javascript:window.top.location.reload(true);'") %>
+<%= wp.dialogButtonsOkCancel() %>
 
 </form>
 
