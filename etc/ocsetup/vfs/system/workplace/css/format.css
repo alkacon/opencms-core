@@ -275,6 +275,13 @@ P.normal
     FONT-SIZE: 8px;
     TEXT-INDENT: 0px;
 }
+P.leftmargin
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8px;
+    TEXT-INDENT: 0px;
+    MARGIN-LEFT: 5px;
+}
 P.tab
 {
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
