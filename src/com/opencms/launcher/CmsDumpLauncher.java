@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/05/29 11:24:25 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,20 +47,25 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.7 $ $Date: 2000/05/29 11:24:25 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher { 	
         
     /**
- 	 * Starts generating the output.
- 	 * Calls the canonical root with the appropriate template class.
+ 	 * Unitary method to start generating the output.
+ 	 * Every launcher has to implement this method.
+ 	 * In it possibly the selected file will be analyzed, and the
+ 	 * Canonical Root will be called with the appropriate 
+ 	 * template class, template file and parameters. At least the 
+ 	 * canonical root's output must be written to the HttpServletResponse.
  	 * 
 	 * @param cms A_CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
 	 * @param startTemplateClass Name of the template class to start with.
+	 * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
 	 */	
-    protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException {
+	protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
         
         byte[] result = null;
 

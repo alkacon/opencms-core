@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
- * Date   : $Date: 2000/04/04 09:59:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/05/29 11:24:25 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,7 +59,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/04/04 09:59:44 $
+ * @version $Revision: 1.13 $ $Date: 2000/05/29 11:24:25 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
@@ -107,9 +107,10 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
 	 * @param cms A_CmsObject Object for accessing system resources.
 	 * @param file CmsFile Object with the selected resource to be shown.
 	 * @param startTemplateClass Name of the template class to start with.
+	 * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
      */
-    public void initlaunch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException {
+    public void initlaunch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
         
         // First some debugging output.
         if(C_DEBUG && A_OpenCms.isLogging()) {
@@ -152,7 +153,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
             m_lastFsCounterTemplate = currentFsCounter;
         }        
                 
-        launch(cms, file, startTemplateClass);
+        launch(cms, file, startTemplateClass, openCms);
     }
 
     /**
@@ -166,9 +167,10 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
 	 * @param cms A_CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
 	 * @param startTemplateClass Name of the template class to start with.
+	 * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
 	 */	
-	protected abstract void launch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException;
+	protected abstract void launch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException;
     
 	/**
 	 * Utility method used by the launcher implementation to give control

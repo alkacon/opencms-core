@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/I_CmsLauncher.java,v $
- * Date   : $Date: 2000/05/10 16:46:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/05/29 11:24:25 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * Classes for each customized launcher have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/05/10 16:46:29 $
+ * @version $Revision: 1.6 $ $Date: 2000/05/29 11:24:25 $
  */
 public interface I_CmsLauncher { 
     
@@ -55,9 +55,10 @@ public interface I_CmsLauncher {
 	 * @param cms A_CmsObject Object for accessing system resources.
 	 * @param file CmsFile Object with the selected resource to be shown.
 	 * @param startTemplateClass Name of the template class to start with.
+	 * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
 	 */
-    public void initlaunch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException;
+    public void initlaunch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException;
 	
     /**
      * Gets the ID that indicates the type of the launcher.

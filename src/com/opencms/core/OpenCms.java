@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/05/10 16:01:11 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/05/29 11:24:25 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.22 $ $Date: 2000/05/10 16:01:11 $  
+* @version $Revision: 1.23 $ $Date: 2000/05/29 11:24:25 $  
 * 
 * */
 
@@ -208,7 +208,7 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
      * @param file CmsFile object representing the selected file.
      * @exception CmsException
      */
-    void showResource(A_CmsObject cms, CmsFile file) throws CmsException { 
+    public void showResource(A_CmsObject cms, CmsFile file) throws CmsException { 
         int launcherId = file.getLauncherType();
         String startTemplateClass = file.getLauncherClassname();
         I_CmsLauncher launcher = m_launcherManager.getLauncher(launcherId);
@@ -220,7 +220,7 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
             }
             throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
         }
-        launcher.initlaunch(cms, file, startTemplateClass);
+        launcher.initlaunch(cms, file, startTemplateClass, this);
     }
         
     /**

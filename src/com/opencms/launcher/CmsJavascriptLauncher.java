@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsJavascriptLauncher.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/29 11:24:25 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.file.*;
  * Document the purpose of this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.3 $ $Date: 2000/05/29 11:24:25 $
  */
 class CmsJavascriptLauncher extends A_CmsLauncher {
 
@@ -50,9 +50,10 @@ class CmsJavascriptLauncher extends A_CmsLauncher {
 	 * @param cms A_CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
 	 * @param startTemplateClass Name of the template class to start with.
+	 * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
 	 */	
-    protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException {
+	protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
     }
     
     /**
