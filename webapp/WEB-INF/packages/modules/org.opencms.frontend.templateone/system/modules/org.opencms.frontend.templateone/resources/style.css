@@ -332,6 +332,10 @@ span.formerror { color: <%= headNavBg %>; font-weight: bold;}
 table.imprint {	width: 100%; }
 td.imprint { vertical-align: top; font-size: 9pt; }
 
+/* default styles for the online forms */
+input.onlineform, select.onlineform, textarea.onlineform { width: 300px; border: 1px solid <%= mainBorder %>;  }
+textarea.onlineform { height: 80px; }
+
 <%
 
 // get document styles for document management
