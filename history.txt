@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.13 Gom Jabbar   - 28 September 2001
+! Now webusers can be read from the CmsObject and the Shell with and without password..
+  
 OpenCms 4.5.12 Gom Jabbar   - 28 September 2001
 ! Now groups can be added to webusers, too. If the user can not be read as user for OpenCms, he is read
   as Webuser.
