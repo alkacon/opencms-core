@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2004/06/25 16:34:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.StringTokenizer;
  * <code>C_ACCESSFLAGS_GROUP</code> indicates that the principal is a group
  * </p>
  * 
- * @version $Revision: 1.11 $ $Date: 2004/06/25 16:34:49 $
+ * @version $Revision: 1.12 $ $Date: 2004/08/23 15:37:02 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {
@@ -65,7 +65,7 @@ public class CmsAccessControlEntry {
     /**
      * The permission set.
      */
-    private CmsPermissionSet m_permissions;
+    private CmsPermissionSetCustom m_permissions;
 
     /**
      * Id of the principal.
@@ -105,7 +105,7 @@ public class CmsAccessControlEntry {
 
         m_resource = resource;
         m_principal = principal;
-        m_permissions = permissions;
+        m_permissions = new CmsPermissionSetCustom(permissions);
         m_flags = flags;
     }
     
@@ -125,7 +125,7 @@ public class CmsAccessControlEntry {
 
         m_resource = resource;
         m_principal = principal;
-        m_permissions = new CmsPermissionSet(allowed, denied);
+        m_permissions = new CmsPermissionSetCustom(allowed, denied);
         m_flags = flags;
     }
 
@@ -175,7 +175,7 @@ public class CmsAccessControlEntry {
             }
         }
 
-        m_permissions = new CmsPermissionSet(permissionString.toString());
+        m_permissions = new CmsPermissionSetCustom(permissionString.toString());
     }
 
     /**

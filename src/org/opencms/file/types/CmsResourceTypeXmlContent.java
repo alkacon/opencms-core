@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,10 +38,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.xml.CmsXmlEntityResolver;
-import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -50,7 +50,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5
  */
@@ -149,7 +149,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
 
         // check if the user has write access and if resource is locked
         // done here so that all the XML operations are not performed if permissions not granted
-        driverManager.checkPermissions(cms.getRequestContext(), resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+        driverManager.checkPermissions(cms.getRequestContext(), resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         // read the xml page, use the encoding set in the property       
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, false);
         // validate the xml structure before writing the file         

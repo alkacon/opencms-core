@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2004/07/07 14:12:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.security.CmsPermissionSet;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +51,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implementation for an indexer indexing VFS Cms resources.<p>
  * 
- * @version $Revision: 1.13 $ $Date: 2004/07/07 14:12:30 $
+ * @version $Revision: 1.14 $ $Date: 2004/08/23 15:37:02 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -180,7 +180,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             path = cms.getRequestContext().removeSiteRoot(f.stringValue());
             resource = cms.readResource(path);
 
-            if (cms.hasPermissions(resource, I_CmsConstants.C_READ_ACCESS)) {
+            if (cms.hasPermissions(resource, CmsPermissionSet.ACCESS_READ)) {
 
                 result = new CmsVfsIndexResource(resource);
             }

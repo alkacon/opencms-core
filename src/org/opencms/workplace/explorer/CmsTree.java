@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -372,7 +372,7 @@ public class CmsTree extends CmsWorkplace {
                     getCms().getRequestContext().setSiteRoot(getSettings().getTreeSite(getTreeType()));
                     try {
                         // check presence of target folder
-                        getCms().readFolder(currentTargetFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                        getCms().readFolder(currentTargetFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                     } catch (CmsException e) {
                         // target folder not found, set it to "/"
                         if (OpenCms.getLog(this).isInfoEnabled()) {
@@ -387,7 +387,7 @@ public class CmsTree extends CmsWorkplace {
                 // read the selected folder
                 
                 try {
-                    folder = getCms().readFolder(currentTargetFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                    folder = getCms().readFolder(currentTargetFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 } catch (CmsException e) {
                     // return with error
                     return printError(e);
@@ -399,9 +399,9 @@ public class CmsTree extends CmsWorkplace {
                     // no (valid) start folder given, just load current folder        
                     try {             
                         if (includeFiles()) {                       
-                            resources.addAll(getCms().getResourcesInFolder(currentTargetFolder, CmsResourceFilter.IGNORE_EXPIRATION));
+                            resources.addAll(getCms().getResourcesInFolder(currentTargetFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                         } else {
-                            resources.addAll(getCms().getSubFolders(currentTargetFolder, CmsResourceFilter.IGNORE_EXPIRATION));
+                            resources.addAll(getCms().getSubFolders(currentTargetFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                         }              
                     } catch (CmsException e) {
                         // return with error
@@ -411,7 +411,7 @@ public class CmsTree extends CmsWorkplace {
                     // valid start folder given, load all folders between start and current folder
                     try {
                         if (includeFiles()) {
-                            resources.addAll(getCms().getResourcesInFolder(startFolder, CmsResourceFilter.IGNORE_EXPIRATION));
+                            resources.addAll(getCms().getResourcesInFolder(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                         } else {
                             resources.addAll(getCms().getSubFolders(startFolder));
                         }                     
@@ -419,9 +419,9 @@ public class CmsTree extends CmsWorkplace {
                         while (tok.hasMoreTokens()) {
                             startFolder += tok.nextToken() + "/";
                             if (includeFiles()) {
-                                resources.addAll(getCms().getResourcesInFolder(startFolder, CmsResourceFilter.IGNORE_EXPIRATION));
+                                resources.addAll(getCms().getResourcesInFolder(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                             } else {
-                                resources.addAll(getCms().getSubFolders(startFolder));
+                                resources.addAll(getCms().getSubFolders(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                             }                      
                         }                                             
                     } catch (CmsException e) {

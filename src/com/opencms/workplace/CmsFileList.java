@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.89 $
+* Date   : $Date: 2004/08/23 15:37:02 $
+* Version: $Revision: 1.90 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -65,7 +66,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.89 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.90 $ $Date: 2004/08/23 15:37:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -171,7 +172,7 @@ public class CmsFileList extends A_CmsWpElement {
 
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
 
-		return cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS);
+		return cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW);
 		
     }
 

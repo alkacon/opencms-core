@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -259,8 +259,8 @@ public class CmsChacc extends CmsDialog {
         if ((!getCms().getRequestContext().currentProject().isOnlineProject() 
             && getCms().isInsideCurrentProject(getParamResource()))
             && (getCms().isAdmin() 
-            || ((m_curPermissions.getAllowedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0 
-                && !((m_curPermissions.getDeniedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0)))) {
+            || ((m_curPermissions.getAllowedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0 
+                && !((m_curPermissions.getDeniedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0)))) {
             setEditable(true);
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/08/19 11:26:33 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.88 $
+ * @version $Revision: 1.89 $
  * 
  * @since 5.1
  */
@@ -293,7 +293,7 @@ public abstract class CmsWorkplace {
         try {
             // check access to the site
             res = cms.readResource("/");   
-            access = cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS);
+            access = cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW);
         } catch (CmsException e) {
             // error reading site root, in this case we will use a readable default
             if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {

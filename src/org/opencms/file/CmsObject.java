@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/08/20 11:44:14 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -781,7 +781,7 @@ public class CmsObject {
         
         return m_driverManager.readChildResources(
             m_context, 
-            readResource(resourcename, filter), 
+            readResource(resourcename, CmsResourceFilter.ALL), 
             filter, 
             true, 
             true);
@@ -825,7 +825,7 @@ public class CmsObject {
         
         return m_driverManager.readChildResources(
             m_context, 
-            readResource(resourcename, filter), 
+            readResource(resourcename, CmsResourceFilter.ALL), 
             filter, 
             false, 
             true);
@@ -868,7 +868,7 @@ public class CmsObject {
         
         return m_driverManager.readChildResources(
             m_context, 
-            readResource(resourcename, filter), 
+            readResource(resourcename, CmsResourceFilter.ALL), 
             filter, 
             true, 
             false);    
@@ -1114,15 +1114,17 @@ public class CmsObject {
     /**
      * Reads all resources below the given path matching the filter criteria.<p>
      * 
-     * @param parentPath the parent path or null
+     * @param resourcename the parent path to read the resources from
      * @param filter the filter
      * @return a list of CmsResource objects matching the filter criteria
      * @throws CmsException if something goes wrong
      */
-    public List readResources(String parentPath, CmsResourceFilter filter) throws CmsException {
+    public List readResources(String resourcename, CmsResourceFilter filter) throws CmsException {
         
-        return m_driverManager.readResources(m_context, 
-            addSiteRoot(parentPath), filter);
+        return m_driverManager.readResources(
+            m_context,
+            readResource(resourcename, CmsResourceFilter.ALL),
+            filter);
     }
 
     /**

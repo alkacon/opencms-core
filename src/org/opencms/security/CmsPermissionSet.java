@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2004/06/25 16:34:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,59 +31,76 @@
 
 package org.opencms.security;
 
-import org.opencms.main.I_CmsConstants;
-
 import java.util.HashMap;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 /**
- * A permission set contains both allowed and denied permissions as bitsets.<p>
+ * An immutable permission set that contains both allowed and denied permissions as bitsets.<p>
  * 
  * Currently supported permissions are:<ul>
- * <li><code>{@link I_CmsConstants#C_PERMISSION_READ}</code> (r) the right to read the contents of a resource</li>
- * <li><code>{@link I_CmsConstants#C_PERMISSION_WRITE}</code> (w) the right to write the contents of a resource</li>
- * <li><code>{@link I_CmsConstants#C_PERMISSION_VIEW}</code> (v) the right to see a resource in listings (workplace)</li>
- * <li><code>{@link I_CmsConstants#C_PERMISSION_CONTROL}</code> (c) the right to set permissions of a resource</li>
- * <li><code>{@link I_CmsConstants#C_PERMISSION_DIRECT_PUBLISH}</code> (d) the right direct publish a resource even without publish project permissions</li></ul><p>
+ * <li><code>{@link CmsPermissionSet#PERMISSION_READ}</code> (r) the right to read the contents of a resource</li>
+ * <li><code>{@link CmsPermissionSet#PERMISSION_WRITE}</code> (w) the right to write the contents of a resource</li>
+ * <li><code>{@link CmsPermissionSet#PERMISSION_VIEW}</code> (v) the right to see a resource in listings (workplace)</li>
+ * <li><code>{@link CmsPermissionSet#PERMISSION_CONTROL}</code> (c) the right to set permissions of a resource</li>
+ * <li><code>{@link CmsPermissionSet#PERMISSION_DIRECT_PUBLISH}</code> (d) the right direct publish a resource even without publish project permissions</li></ul><p>
  * 
- * @version $Revision: 1.16 $ $Date: 2004/06/25 16:34:49 $
+ * @version $Revision: 1.17 $ $Date: 2004/08/23 15:37:02 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
 
-    /**  HashMap of all available permissions. */
-    static HashMap m_permissions;
+    /** Permission set to check control access. */
+    public static final CmsPermissionSet ACCESS_CONTROL = new CmsPermissionSet(CmsPermissionSet.PERMISSION_CONTROL);
+
+    /** Permission set to check direct publish permissions. */
+    public static final CmsPermissionSet ACCESS_DIRECT_PUBLISH = new CmsPermissionSet(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
+
+    /** Permission set to check read access. */
+    public static final CmsPermissionSet ACCESS_READ = new CmsPermissionSet(CmsPermissionSet.PERMISSION_READ);
+
+    /** Permission set to check view access. */
+    public static final CmsPermissionSet ACCESS_VIEW = new CmsPermissionSet(CmsPermissionSet.PERMISSION_VIEW);
+
+    /** Permission set to check write access. */
+    public static final CmsPermissionSet ACCESS_WRITE = new CmsPermissionSet(CmsPermissionSet.PERMISSION_WRITE);
+
+    /** No permissions for a resource (used especially for denied permissions). */
+     public static final int PERMISSION_EMPTY  =  0;
+
+    /** The permission to read a resource. */
+    public static final int PERMISSION_READ = 1;
+
+    /** The permission to write a resource. */
+    public static final int PERMISSION_WRITE = 2;
+
+    /**  The permission to view a resource. */
+    public static final int PERMISSION_VIEW = 4;
+
+    /** The permission to control a resource. */
+    public static final int PERMISSION_CONTROL = 8;
+
+    /** The permission to direct publish a resource. */
+    public static final int PERMISSION_DIRECT_PUBLISH = 16;
+    
+    /** All allowed permissions for a resource. */
+    public static final int PERMISSION_FULL = 
+        CmsPermissionSet.PERMISSION_READ
+        + CmsPermissionSet.PERMISSION_WRITE
+        + CmsPermissionSet.PERMISSION_VIEW
+        + CmsPermissionSet.PERMISSION_CONTROL
+        + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH;
+    
+    /** HashMap of all available permissions. */
+    private static HashMap m_permissions;
 
     /** The set of allowed permissions. */
-    int m_allowed;
+    protected int m_allowed;
 
     /** The set of denied permissions. */
-    int m_denied;
+    protected int m_denied;
 
     /**
-     * Constructor to create an empty permission set.<p>
-     */
-    public CmsPermissionSet() {
-
-        m_allowed = 0;
-        m_denied = 0;
-    }
-    
-
-    /**
-     * Constructor to create a permission set with some preset allowed permissions.<p>
-     * 
-     * @param allowedPermissions bitset of allowed permissions
-     */
-    public CmsPermissionSet(int allowedPermissions) {
-
-        m_allowed = allowedPermissions;
-        m_denied = 0;
-    }
-
-    /**
-     * Constructor to create a permission set with some preset allowed and denied permissions.<p>
+     * Constructor to create a permission set with preset allowed and denied permissions.<p>
      * 
      * @param allowedPermissions the set of permissions to allow
      * @param deniedPermissions the set of permissions to deny
@@ -95,72 +112,22 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Constructor to create a permission set with preset allowed and denied permissions.<p>
-     * The permissions are read from a string representation of permissions 
-     * in the format {{+|-}{r|w|v|c|d}}*.
-     * 
-     * @param permissionString the string representation of allowed and denied permissions
+     * Constructor to create an empty permission set.<p>
      */
-    public CmsPermissionSet(String permissionString) {
+    protected CmsPermissionSet() {
 
-        StringTokenizer tok = new StringTokenizer(permissionString, "+-", true);
-        m_allowed = 0;
+        // noop
+    }
+
+    /**
+     * Constructor to create a permission set with preset allowed permissions.<p>
+     * 
+     * @param allowedPermissions bitset of allowed permissions
+     */
+    protected CmsPermissionSet(int allowedPermissions) {
+
+        m_allowed = allowedPermissions;
         m_denied = 0;
-
-        while (tok.hasMoreElements()) {
-            String prefix = tok.nextToken();
-            String suffix = tok.nextToken();
-            switch (suffix.charAt(0)) {
-                case 'R':
-                case 'r':
-                    if (prefix.charAt(0) == '+') {
-                        m_allowed |= I_CmsConstants.C_PERMISSION_READ;
-                    }
-                    if (prefix.charAt(0) == '-') {
-                        m_denied |= I_CmsConstants.C_PERMISSION_READ;
-                    }
-                    break;
-                case 'W':
-                case 'w':
-                    if (prefix.charAt(0) == '+') {
-                        m_allowed |= I_CmsConstants.C_PERMISSION_WRITE;
-                    }
-                    if (prefix.charAt(0) == '-') {
-                        m_denied |= I_CmsConstants.C_PERMISSION_WRITE;
-                    }
-                    break;
-                case 'V':
-                case 'v':
-                    if (prefix.charAt(0) == '+') {
-                        m_allowed |= I_CmsConstants.C_PERMISSION_VIEW;
-                    }
-                    if (prefix.charAt(0) == '-') {
-                        m_denied |= I_CmsConstants.C_PERMISSION_VIEW;
-                    }
-                    break;
-                case 'C':
-                case 'c':
-                    if (prefix.charAt(0) == '+') {
-                        m_allowed |= I_CmsConstants.C_PERMISSION_CONTROL;
-                    }
-                    if (prefix.charAt(0) == '-') {
-                        m_denied |= I_CmsConstants.C_PERMISSION_CONTROL;
-                    }
-                    break;
-                case 'D':
-                case 'd':
-                    if (prefix.charAt(0) == '+') {
-                        m_allowed |= I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH;
-                    }
-                    if (prefix.charAt(0) == '-') {
-                        m_denied |= I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH;
-                    }
-                    break;
-                default:
-                    // ignore
-                    break;
-            }
-        }
     }
 
     /**
@@ -193,75 +160,29 @@ public class CmsPermissionSet {
 
         if (m_permissions == null) {
             m_permissions = new HashMap();
-            m_permissions.put("security.permission.read", new Integer(I_CmsConstants.C_PERMISSION_READ));
-            m_permissions.put("security.permission.write", new Integer(I_CmsConstants.C_PERMISSION_WRITE));
-            m_permissions.put("security.permission.view", new Integer(I_CmsConstants.C_PERMISSION_VIEW));
-            m_permissions.put("security.permission.control", new Integer(I_CmsConstants.C_PERMISSION_CONTROL));
+            m_permissions.put("security.permission.read", new Integer(CmsPermissionSet.PERMISSION_READ));
+            m_permissions.put("security.permission.write", new Integer(CmsPermissionSet.PERMISSION_WRITE));
+            m_permissions.put("security.permission.view", new Integer(CmsPermissionSet.PERMISSION_VIEW));
+            m_permissions.put("security.permission.control", new Integer(CmsPermissionSet.PERMISSION_CONTROL));
             m_permissions.put("security.permission.direct_publish", new Integer(
-                I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH));
+                CmsPermissionSet.PERMISSION_DIRECT_PUBLISH));
         }
         return m_permissions;
     }
 
     /**
-     * Sets permissions from another permission set additionally both as allowed and denied permissions.<p>
-     * 
-     * @param permissionSet the set of permissions to set additionally.
-     */
-    public void addPermissions(CmsPermissionSet permissionSet) {
-
-        m_allowed |= permissionSet.m_allowed;
-        m_denied |= permissionSet.m_denied;
-    }
-
-    /**
-     * Sets permissions additionally both as allowed and denied permissions.<p>
-     * 
-     * @param allowedPermissions bitset of permissions to allow
-     * @param deniedPermissions  bitset of permissions to deny
-     */
-    public void addPermissions(int allowedPermissions, int deniedPermissions) {
-
-        m_allowed |= allowedPermissions;
-        m_denied |= deniedPermissions;
-    }
-
-    /**
-     * Returns a clone of this Objects instance.<p>
-     * 
-     * @return a clone of this instance
-     */
-    public Object clone() {
-
-        return new CmsPermissionSet(m_allowed, m_denied);
-    }
-
-    /**
-     * Sets permissions additionally as denied permissions.<p>
-     * 
-     * @param permissions bitset of permissions to deny
-     */
-    public void denyPermissions(int permissions) {
-
-        m_denied |= permissions;
-    }
-    
-    
-    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
+
         boolean equal = true;
-        CmsPermissionSet perm = (CmsPermissionSet) obj;
+        CmsPermissionSet perm = (CmsPermissionSet)obj;
         if ((perm.getAllowedPermissions() != m_allowed) || (perm.getDeniedPermissions() != m_denied)) {
             equal = false;
-        }       
+        }
         return equal;
     }
-    
-    
-    
-    
+
     /**
      * Returns the currently allowed permissions of ths permission set.<p>
      * 
@@ -302,31 +223,31 @@ public class CmsPermissionSet {
 
         StringBuffer p = new StringBuffer("");
 
-        if ((m_denied & I_CmsConstants.C_PERMISSION_READ) > 0) {
+        if ((m_denied & CmsPermissionSet.PERMISSION_READ) > 0) {
             p.append("-r");
         } else if (requiresReadPermission()) {
             p.append("+r");
         }
 
-        if ((m_denied & I_CmsConstants.C_PERMISSION_WRITE) > 0) {
+        if ((m_denied & CmsPermissionSet.PERMISSION_WRITE) > 0) {
             p.append("-w");
         } else if (requiresWritePermission()) {
             p.append("+w");
         }
 
-        if ((m_denied & I_CmsConstants.C_PERMISSION_VIEW) > 0) {
+        if ((m_denied & CmsPermissionSet.PERMISSION_VIEW) > 0) {
             p.append("-v");
         } else if (requiresViewPermission()) {
             p.append("+v");
         }
 
-        if ((m_denied & I_CmsConstants.C_PERMISSION_CONTROL) > 0) {
+        if ((m_denied & CmsPermissionSet.PERMISSION_CONTROL) > 0) {
             p.append("-c");
         } else if (requiresControlPermission()) {
             p.append("+c");
         }
 
-        if ((m_denied & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH) > 0) {
+        if ((m_denied & CmsPermissionSet.PERMISSION_DIRECT_PUBLISH) > 0) {
             p.append("-d");
         } else if (requiresDirectPublishPermission()) {
             p.append("+d");
@@ -336,90 +257,61 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Sets permissions additionally as allowed permissions.<p>
-     * 
-     * @param permissions bitset of permissions to allow
-     */
-    public void grantPermissions(int permissions) {
-
-        m_allowed |= permissions;
-    }
-
-    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
+
         return m_allowed * m_denied;
     }
-    
+
     /**
      * Returns true if control permissions (+c) are required by this permission set.<p>
      * 
      * @return true if control permissions (+c) are required by this permission set
-     */    
+     */
     public boolean requiresControlPermission() {
-        return 0 < (m_allowed & I_CmsConstants.C_PERMISSION_CONTROL);
+
+        return 0 < (m_allowed & CmsPermissionSet.PERMISSION_CONTROL);
     }
 
     /**
      * Returns true if direct publish permissions (+d) are required by this permission set.<p>
      * 
      * @return true if direct publish permissions (+d) are required by this permission set
-     */     
+     */
     public boolean requiresDirectPublishPermission() {
-        return 0 < (m_allowed & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH);
+
+        return 0 < (m_allowed & CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
     }
-    
+
     /**
      * Returns true if read permissions (+r) are required by this permission set.<p>
      * 
      * @return true if read permissions (+r) are required by this permission set
-     */    
+     */
     public boolean requiresReadPermission() {
-        return 0 < (m_allowed & I_CmsConstants.C_PERMISSION_READ);
+
+        return 0 < (m_allowed & CmsPermissionSet.PERMISSION_READ);
     }
-    
+
     /**
      * Returns true if view permissions (+v) are required by this permission set.<p>
      * 
      * @return true if view permissions (+v) are required by this permission set
-     */        
+     */
     public boolean requiresViewPermission() {
-        return 0 < (m_allowed & I_CmsConstants.C_PERMISSION_VIEW);
+
+        return 0 < (m_allowed & CmsPermissionSet.PERMISSION_VIEW);
     }
-    
+
     /**
      * Returns true if write permissions (+w) are required by this permission set.<p>
      * 
      * @return true if write permissions (+w) are required by this permission set
      */
     public boolean requiresWritePermission() {
-        return 0 < (m_allowed & I_CmsConstants.C_PERMISSION_WRITE);
-    }
 
-    /**
-     * Set permissions from another permission set both as allowed and denied permissions.<p>
-     * Permissions formerly set are overwritten.
-     * 
-     * @param permissionSet the set of permissions
-     */
-    public void setPermissions(CmsPermissionSet permissionSet) {
-
-        m_allowed = permissionSet.m_allowed;
-        m_denied = permissionSet.m_denied;
-    }
-
-    /**
-     * Sets permissions as allowed and denied permissions in the permission set.<p>
-     * Permissions formerly set are overwritten.
-     * 
-     * @param allowedPermissions bitset of permissions to allow
-     * @param deniedPermissions  bitset of permissions to deny
-     */
-    public void setPermissions(int allowedPermissions, int deniedPermissions) {
-
-        m_allowed = allowedPermissions;
-        m_denied = deniedPermissions;
+        return 0 < (m_allowed & CmsPermissionSet.PERMISSION_WRITE);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/08/11 16:54:24 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2004/08/23 15:37:02 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.A_CmsContentDefinition;
@@ -58,8 +59,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.63 $
- * $Date: 2004/08/11 16:54:24 $
+ * $Revision: 1.64 $
+ * $Date: 2004/08/23 15:37:02 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -578,7 +579,7 @@ public abstract class CmsMasterContent
                 return true;
             } else {
                 if ( !accessOther(I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE)
-                    && !accessOwner(m_cms, currentUser, I_CmsConstants.C_PERMISSION_VIEW)
+                    && !accessOwner(m_cms, currentUser, CmsPermissionSet.PERMISSION_VIEW)
                     && !accessGroup(m_cms, currentUser, I_CmsConstants.C_ACCESS_GROUP_VISIBLE)) {
                     return false;
                 } else {
@@ -976,7 +977,7 @@ public abstract class CmsMasterContent
                 if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
                     String folder = cms.getSitePath(resource);
                     Vector v = getAllSubChannelsOf(cms, folder);
-                    if (v.size() == 0 && cms.hasPermissions(resource, I_CmsConstants.C_VIEW_ACCESS)) {
+                    if (v.size() == 0 && cms.hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW)) {
                         allChannels.add(folder.substring(offset));
                     } else {
                         for (int j=0; j < v.size(); j++) {

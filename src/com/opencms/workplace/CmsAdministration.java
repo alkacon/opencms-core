@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/08/23 15:37:02 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -56,7 +57,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.54 $ $Date: 2004/07/08 15:21:06 $
+ * @version $Name:  $ $Revision: 1.55 $ $Date: 2004/08/23 15:37:02 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -431,6 +432,6 @@ public class CmsAdministration extends CmsWorkplaceDefault {
      */
 
     private boolean checkVisible(CmsObject cms, CmsResource resource) throws CmsException {
-    	return cms.hasPermissions(resource, C_VIEW_ACCESS);
+    	return cms.hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW);
     }
 }

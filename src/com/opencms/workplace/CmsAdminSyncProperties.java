@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2004/07/27 14:41:31 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/08/23 15:37:02 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -313,6 +314,6 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
      */
     private boolean isReadable(CmsObject cms, String resPath)  throws CmsException {
         CmsResource res = cms.readResource(resPath, CmsResourceFilter.IGNORE_EXPIRATION);
-        return cms.hasPermissions(res, C_READ_ACCESS);
+        return cms.hasPermissions(res, CmsPermissionSet.ACCESS_READ);
     }
 }

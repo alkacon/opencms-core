@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/08/17 07:06:19 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2004/08/23 15:37:02 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.A_CmsContentDefinition;
@@ -57,8 +58,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.80 $
- * $Date: 2004/08/17 07:06:19 $
+ * $Revision: 1.81 $
+ * $Date: 2004/08/23 15:37:02 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -718,7 +719,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_cms.getRequestContext().saveSiteRoot();
         m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
         try {
-            return m_cms.hasPermissions(m_channel, I_CmsConstants.C_READ_ACCESS); 
+            return m_cms.hasPermissions(m_channel, CmsPermissionSet.ACCESS_READ); 
             // TODO: remove this later
             // m_cms.accessRead();
         } catch(CmsException exc) {
@@ -738,7 +739,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
         try {
             // return m_cms.accessWrite(cms.readPath(m_channel));
-            return m_cms.hasPermissions(m_channel, I_CmsConstants.C_WRITE_ACCESS);
+            return m_cms.hasPermissions(m_channel, CmsPermissionSet.ACCESS_WRITE);
         } catch(CmsException exc) {
             // there was a cms-exception - no write-access!
             return false;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/08/11 16:55:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
@@ -47,7 +48,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsResourceTypeFolder extends A_CmsResourceType {
 
@@ -215,7 +216,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
         
         // check if the user has write access and if resource is locked
         // done here since copy is ok without lock, but delete is not
-        driverManager.checkPermissions(cms.getRequestContext(), resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.IGNORE_EXPIRATION);
+        driverManager.checkPermissions(cms.getRequestContext(), resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
         
         copyResource(
             cms, 

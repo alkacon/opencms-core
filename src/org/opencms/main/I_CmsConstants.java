@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/08/20 11:44:20 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,14 @@ package org.opencms.main;
 
 import org.opencms.security.CmsPermissionSet;
 
+
 /**
  * This interface is a pool for constants in OpenCms.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public interface I_CmsConstants {
 
@@ -235,13 +236,6 @@ public interface I_CmsConstants {
      */
     int C_PROJECT_TYPE_TEMPORARY = 1;
 
-    /**
-    /**
-     * The permission to direct publish a resource, even if the current user is not member of the
-     * projectmanagers group.
-     */
-    int C_PERMISSION_DIRECT_PUBLISH = 16;     
-    
     /** 
      * This constant defines a unlocked project.
      * Resources may be changed in this project.
@@ -273,69 +267,6 @@ public interface I_CmsConstants {
      * (filesystem resources).
      */
     int C_UNKNOWN_ID = -1;
-
-    /**
-     * The permission to read a resource.
-     */
-    int C_PERMISSION_READ = 1;
-
-    /**
-     * The permission to write a resource.
-     */
-    int C_PERMISSION_WRITE = 2;
-
-    /**
-     * The permission to view a resource.
-     */
-    int C_PERMISSION_VIEW = 4;
-
-    /**
-     * The permission to control a resource.
-     */
-    int C_PERMISSION_CONTROL = 8;
-
-    /**
-     * All allowed permissions for a resource.
-     */
-     int C_PERMISSION_FULL = I_CmsConstants.C_PERMISSION_VIEW + I_CmsConstants.C_PERMISSION_READ
-            + I_CmsConstants.C_PERMISSION_WRITE +  I_CmsConstants.C_PERMISSION_CONTROL;
-
-    /**
-     * No permissions for a resource (used especially for deniedPermissions).
-     */
-     int C_PERMISSION_EMPTY  =  0;
-
-    /**
-    /**
-     * Permission set to check direct publish permissions, even if the the current user is not
-     * member of the projectmanagers group.
-     */
-    CmsPermissionSet C_DIRECT_PUBLISH = new CmsPermissionSet(C_PERMISSION_DIRECT_PUBLISH);     
-    
-    /**
-     * Permission set to check read access.
-     */
-    CmsPermissionSet C_READ_ACCESS = new CmsPermissionSet(C_PERMISSION_READ);
-
-    /**
-     * Permission set to check write access.
-     */
-    CmsPermissionSet C_WRITE_ACCESS = new CmsPermissionSet(C_PERMISSION_WRITE);
-
-    /**
-     * Permission set to check view access.
-     */
-    CmsPermissionSet C_VIEW_ACCESS = new CmsPermissionSet(C_PERMISSION_VIEW);
-
-    /**
-     * Permission set to check control access.
-     */
-    CmsPermissionSet C_CONTROL_ACCESS = new CmsPermissionSet(C_PERMISSION_CONTROL);
-
-    /**
-     * Permission set to check read and/or view access.
-     */
-    CmsPermissionSet C_READ_OR_VIEW_ACCESS = new CmsPermissionSet(C_PERMISSION_READ | C_PERMISSION_VIEW);
 
     /**
      * Group may read this resource.
@@ -375,22 +306,22 @@ public interface I_CmsConstants {
     /**
      * All may read this resource.
      */
-    int C_ACCESS_READ = C_PERMISSION_READ + C_ACCESS_PUBLIC_READ;
+    int C_ACCESS_READ = CmsPermissionSet.PERMISSION_READ + C_ACCESS_PUBLIC_READ;
     
     /**
      * All may write this resource.
      */
-    int C_ACCESS_WRITE = C_PERMISSION_WRITE + C_ACCESS_GROUP_WRITE + C_ACCESS_PUBLIC_WRITE;
+    int C_ACCESS_WRITE = CmsPermissionSet.PERMISSION_WRITE + C_ACCESS_GROUP_WRITE + C_ACCESS_PUBLIC_WRITE;
 
     /**
      * All may view this resource.
      */
-    int C_ACCESS_VISIBLE = C_PERMISSION_VIEW + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_VISIBLE;
+    int C_ACCESS_VISIBLE = CmsPermissionSet.PERMISSION_VIEW + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_VISIBLE;
 
     /**
      * Owner has full access to this resource.
      */
-    int C_ACCESS_OWNER = C_PERMISSION_READ + C_PERMISSION_WRITE + C_PERMISSION_VIEW;
+    int C_ACCESS_OWNER = CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE + CmsPermissionSet.PERMISSION_VIEW;
 
     /**
      * Group has full access to this resource.
@@ -405,7 +336,7 @@ public interface I_CmsConstants {
     /**
      * The default-flags for a new resource.
      */
-    int C_ACCESS_DEFAULT_FLAGS = C_PERMISSION_READ + C_PERMISSION_WRITE + C_PERMISSION_VIEW + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE;
+    int C_ACCESS_DEFAULT_FLAGS = CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE + CmsPermissionSet.PERMISSION_VIEW + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE;
     // + C_ACCESS_GROUP_READ
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -237,7 +237,7 @@ public class TestChacc extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();     
         echo("Testing chacc on a file and a group");
-        chaccFileGroup(this, cms, "/index.html", cms.readGroup("Users"), new CmsPermissionSet(I_CmsConstants.C_ACCESS_READ, I_CmsConstants.C_ACCESS_WRITE), I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);   
+        chaccFileGroup(this, cms, "/index.html", cms.readGroup("Users"), CmsPermissionSet.ACCESS_READ, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);   
     }  
     
     /**
@@ -249,7 +249,7 @@ public class TestChacc extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();     
         echo("Testing chacc on a file and a user");
-        chaccFileUser(this, cms, "/folder1/index.html", cms.readUser("Guest"), new CmsPermissionSet(I_CmsConstants.C_ACCESS_WRITE, I_CmsConstants.C_ACCESS_READ), 0);   
+        chaccFileUser(this, cms, "/folder1/index.html", cms.readUser("Guest"), CmsPermissionSet.ACCESS_WRITE, 0);   
     }  
     
     /**
@@ -261,7 +261,7 @@ public class TestChacc extends OpenCmsTestCase {
         //TODO: This test is not working correctly so far!
         CmsObject cms = getCmsObject();     
         echo("Testing chacc on a folder and a group");
-        chaccFolderGroup(this, cms, "/folder2/", cms.readGroup("Guests"), new CmsPermissionSet(I_CmsConstants.C_ACCESS_WRITE, I_CmsConstants.C_ACCESS_READ), I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);   
+        chaccFolderGroup(this, cms, "/folder2/", cms.readGroup("Guests"), CmsPermissionSet.ACCESS_READ, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);   
     }  
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/20 11:43:57 $
- * Version: $Revision: 1.411 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.412 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPasswordValidation;
 import org.opencms.security.I_CmsPrincipal;
@@ -74,7 +75,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.411 $ $Date: 2004/08/20 11:43:57 $
+ * @version $Revision: 1.412 $ $Date: 2004/08/23 15:37:02 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -593,10 +594,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // check the permissions
             if (currentResource == null) {
                 // resource does not exist - check parent folder
-                checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS, false, CmsResourceFilter.IGNORE_EXPIRATION);
+                checkPermissions(context, parentFolder, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.IGNORE_EXPIRATION);
             } else {
                 // resource already exists - check existing resource              
-                checkPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS, !importCase, CmsResourceFilter.ALL);
+                checkPermissions(context, currentResource, CmsPermissionSet.ACCESS_WRITE, !importCase, CmsResourceFilter.ALL);
             }
             
             // extract the name (without path)
@@ -969,7 +970,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
             
             // check the permissions
-            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.IGNORE_EXPIRATION);     
+            checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);     
 
             // write the property
             m_vfsDriver.writePropertyObject(context.currentProject(), resource, property);
@@ -1020,7 +1021,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         try {
 
             // check the permissions
-            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.IGNORE_EXPIRATION);
+            checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
 
             // write the properties
             internalWritePropertyObjects(context, resource, properties);
@@ -1100,7 +1101,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void lockResource(CmsRequestContext context, CmsResource resource, int mode) throws CmsException {
 
         // check if the user has write access to the resource
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, false, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
 
         // update the resource cache
         clearResourceCache();
@@ -1158,7 +1159,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void unlockResource(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         // check if the user has write access to the resource
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
 
         // update the resource cache
         clearResourceCache();
@@ -1248,7 +1249,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void changeLastModifiedProjectId(CmsRequestContext context, CmsResource resource) throws CmsException {
         
         // check the access permissions
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
 
         // update the project id of a modified resource as "modified inside the current project"
         m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), resource);
@@ -1279,16 +1280,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public List readChildResources(CmsRequestContext context, CmsResource resource, CmsResourceFilter filter, boolean getFolders, boolean getFiles) throws CmsException {
                 
         // check the access permissions
-        checkPermissions(context, resource, I_CmsConstants.C_READ_ACCESS, true, filter);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
 
-        if ((!filter.isValid(context, resource))) {
-            // the parent folder was found, but it is invalid according to the selected filter
-            // child resources are not available
-            return Collections.EMPTY_LIST;
-        }
-        
-        String folderName = resource.getRootPath();
-        
         // try to get the sub resources from the cache
         String cacheKey;
         if (getFolders && getFiles) {
@@ -1298,13 +1291,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         } else {
             cacheKey = CmsCacheKey.C_CACHE_KEY_SUBFILES;
         }
-        cacheKey = getCacheKey(context.currentUser().getName() + cacheKey + filter.getCacheId(), context.currentProject(), folderName);
+        cacheKey = getCacheKey(context.currentUser().getName() + cacheKey + filter.getCacheId(), context.currentProject(), resource.getRootPath());
         List subResources = (List)m_resourceListCache.get(cacheKey);        
 
         if (subResources != null && subResources.size() > 0) {
             // the parent folder is not deleted, and the sub resources were cached, no further operations required
-            // we must however still filter the cached results for release/expiration date
-            return setFullResourceNames(context, subResources, filter);
+            // we must however still apply the result filter and update the context dates
+            return updateContextDates(context, subResources, filter);
         }
 
         // read the result form the database
@@ -1312,7 +1305,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         
         for (int i=0; i<subResources.size(); i++) {
             CmsResource currentResource = (CmsResource)subResources.get(i);
-            int perms = hasPermissions(context, currentResource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, true, filter);
+            int perms = hasPermissions(context, currentResource, CmsPermissionSet.ACCESS_READ, true, filter);
             if (PERM_DENIED == perms) {
                 subResources.remove(i--);
             }              
@@ -1321,10 +1314,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // cache the sub resources
         m_resourceListCache.put(cacheKey, subResources);
 
-        // filter the result to remove resources outside release / expiration time window
-        // the setting of resource names aboce is NOR redundant, since the loop above
-        // is much more efficient than reading the path again
-        return setFullResourceNames(context, subResources, filter);
+        // apply the result filter and update the context dates
+        return updateContextDates(context, subResources, filter);
     }    
         
     /**
@@ -1379,7 +1370,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void writeResource(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         // check if the user has write access 
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
 
         // access was granted - write the resource
         resource.setUserLastModified(context.currentUser().getId());
@@ -1423,7 +1414,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void deleteResource(CmsRequestContext context, CmsResource resource, int siblingMode) throws CmsException {
 
         // check if the user has write access and if resource is locked 
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
         
         // upgrade a potential inherited, non-shared lock into a common lock
         CmsLock currentLock = getLock(context, resource.getRootPath());
@@ -1475,7 +1466,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             CmsResource currentResource = (CmsResource)resources.get(i);
             
             // try to delete/remove the resource only if the user has write access to the resource            
-            if (PERM_ALLOWED != hasPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL)) {
+            if (PERM_ALLOWED != hasPermissions(context, currentResource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL)) {
 
                 // no write access to sibling - must keep ACE (see below)
                 allSiblingsRemoved = false;                     
@@ -1621,7 +1612,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void undoChanges(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         // check if the user has write access
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
 
         if (resource.getState() == I_CmsConstants.C_STATE_NEW) {
             // undo changes is impossible on a new resource
@@ -1768,7 +1759,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void touch(CmsRequestContext context, CmsResource resource, long dateLastModified, long dateReleased, long dateExpired) throws CmsException {
         
         //  check if the user has write access
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.IGNORE_EXPIRATION);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
         
         // perform the touch operation
         internalTouch(context, resource, dateLastModified, dateReleased, dateExpired);
@@ -1836,7 +1827,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void restoreResource(CmsRequestContext context, CmsResource resource, int tag) throws CmsException {
 
         // check if the user has write access 
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
 
         int state = I_CmsConstants.C_STATE_CHANGED;
         CmsBackupResource backupFile = readBackupFile(context, tag, resource.getRootPath());
@@ -1905,7 +1896,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void replaceResource(CmsRequestContext context, CmsResource resource, int type, byte[] content, List properties) throws CmsException {
 
         // check if the user has write access 
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
 
         // replace the existing with the new file content
         m_vfsDriver.replaceResource(
@@ -1961,7 +1952,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsFile writeFile(CmsRequestContext context, CmsFile resource) throws CmsException {
 
         // check if the user has write access 
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
 
         resource.setUserLastModified(context.currentUser().getId());
         
@@ -2028,7 +2019,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // checking the filter is less cost intensive then checking the cache,
         // this is why basic filter results are not cached
-        String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(String.valueOf(filter.includeInvisible()), context, resource, requiredPermissions);
+        String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(String.valueOf(filter.requireVisible()), context, resource, requiredPermissions);
         Integer cacheResult = (Integer)m_permissionCache.get(cacheKey);
         if (cacheResult != null) {
             return cacheResult.intValue();
@@ -2038,7 +2029,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // if this is the onlineproject, write is rejected 
         if (context.currentProject().isOnlineProject()) {
-            denied |= I_CmsConstants.C_PERMISSION_WRITE;
+            denied |= CmsPermissionSet.PERMISSION_WRITE;
         }
 
         // check if the current user is admin
@@ -2047,7 +2038,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // if the resource type is jsp
         // write is only allowed for administrators
         if (!isAdmin && (resource.getTypeId() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) {
-            denied |= I_CmsConstants.C_PERMISSION_WRITE;
+            denied |= CmsPermissionSet.PERMISSION_WRITE;
         }
         
         // check lock status 
@@ -2064,31 +2055,36 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
         }   
         
-        CmsPermissionSet permissions;        
+        CmsPermissionSetCustom permissions;        
         if (isAdmin) {
             // if the current user is administrator, anything is allowed
-            permissions = new CmsPermissionSet(~0);
+            permissions = new CmsPermissionSetCustom(~0);
         } else {
             // otherwise, get the permissions from the access control list
             permissions = getPermissions(context, resource, context.currentUser());
         }
         
+        // revoke the denied permissions
         permissions.denyPermissions(denied);
-
-        // check if the view permission can be ignored 
-        if (filter.includeInvisible()) {
-            // view permissions can be ignored
-            if ((permissions.getPermissions() & I_CmsConstants.C_PERMISSION_VIEW) == 0) {
-                // no view permissions are granted
+        
+        if ((permissions.getPermissions() & CmsPermissionSet.PERMISSION_VIEW) == 0) {
+            // resource "invisible" flag is set for this user
+            if (filter.requireVisible()) {
+                // filter requires visible permission - extend required permission set
+                requiredPermissions = new CmsPermissionSet(
+                    requiredPermissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_VIEW,
+                    requiredPermissions.getDeniedPermissions());
+            } else {
+                // view permissions can be ignored by filter
                 permissions.setPermissions(
                     // modify permissions so that view is allowed
-                    permissions.getAllowedPermissions() | I_CmsConstants.C_PERMISSION_VIEW,
-                    permissions.getDeniedPermissions() & ~I_CmsConstants.C_PERMISSION_VIEW);
+                    permissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_VIEW,
+                    permissions.getDeniedPermissions() & ~CmsPermissionSet.PERMISSION_VIEW);                
             }
-        }            
+        }
         
         Integer result;
-        if ((requiredPermissions.getPermissions() & (permissions.getPermissions())) > 0) {
+        if ((requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions()) {
             result = PERM_ALLOWED_INTEGER;
         } else {
             result = PERM_DENIED_INTEGER;
@@ -2184,7 +2180,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void copyAccessControlEntries(CmsRequestContext context, CmsResource source, CmsResource destination) throws CmsException {
 
         // check the permissions
-        checkPermissions(context, destination, I_CmsConstants.C_CONTROL_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, destination, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
 
         // perform the copy operation
         internalCopyAccessControlEntries(context, source, destination);
@@ -2247,7 +2243,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry ace) throws CmsException {
 
         // check the permissions
-        checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
  
         // write the new ace
         m_userDriver.writeAccessControlEntry(context.currentProject(), ace);
@@ -2277,7 +2273,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void removeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsUUID principal) throws CmsException {
 
         // check the permissions
-        checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
  
         // remove the ace
         m_userDriver.removeAccessControlEntry(
@@ -2435,7 +2431,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsPermissionSet getPermissions(CmsRequestContext context, CmsResource resource, CmsUser user) throws CmsException {
+    public CmsPermissionSetCustom getPermissions(CmsRequestContext context, CmsResource resource, CmsUser user) throws CmsException {
 
         CmsAccessControlList acList = getAccessControlList(context, resource, false);
         return acList.getPermissions(user, getGroupsOfUser(context, user.getName()));
@@ -2465,13 +2461,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             filter.includeDeleted());
         
         // check if the user has read access to the resource
-        int perms = hasPermissions(context, resource, I_CmsConstants.C_READ_ACCESS, true, filter);
+        int perms = hasPermissions(context, resource, CmsPermissionSet.ACCESS_READ, true, filter);
         if (perms != PERM_DENIED) {
             // context dates need to be updated even if filter was applied
             updateContextDates(context, resource);
         }
         // now apply permissions
-        checkPermissions(context, resource, I_CmsConstants.C_READ_ACCESS, perms);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_READ, perms);
 
         if (resource.isFolder() && !(resource instanceof CmsFolder)) {
             // upgrade to folder object type if required 
@@ -2483,66 +2479,48 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }        
 
     /**
-     * Reads all resources below the given parentPath matching the filter criteria.<p>
+     * Reads all resources below the given parent matching the filter criteria.<p>
      * 
      * @param context the current request context
-     * @param parentPath the path to the parent resource or null 
+     * @param parent the parent to read the resources from
      * @param filter the filter criteria to apply
      * @return a list with resources below parentPath matchin the filter criteria
      *  
      * @throws CmsException if something goes wrong
      */
-    public List readResources(CmsRequestContext context, String parentPath, CmsResourceFilter filter) throws CmsException {
-
-        String path = null;
-        
-        // check parent if neccessary
-        if (parentPath != null) {
-            CmsResource parent = m_vfsDriver.readFileHeader(
-                context.currentProject().getId(), 
-                parentPath, 
-                filter.includeDeleted());
+    public List readResources(CmsRequestContext context, CmsResource parent, CmsResourceFilter filter) throws CmsException {
             
-            // check the access permissions
-            checkPermissions(context, parent, I_CmsConstants.C_READ_ACCESS, true, filter);
+        // check the access permissions
+        checkPermissions(context, parent, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
 
-            if ((!filter.isValid(context, parent))) {
-                // the parent folder was found, but it is invalid according to the selected filter
-                // child resources are not available
-                return Collections.EMPTY_LIST;
-            }
-        
-            path = parent.getRootPath();
-        }
-        
         // try to get the sub resources from the cache
-        String cacheKey = getCacheKey(context.currentUser().getName() + filter.getCacheId(), context.currentProject(), path);
+        String cacheKey = getCacheKey(context.currentUser().getName() + filter.getCacheId(), context.currentProject(), parent.getRootPath());
         List subResources = (List)m_resourceListCache.get(cacheKey);        
 
         if (subResources != null && subResources.size() > 0) {
             // the parent folder is not deleted, and the sub resources were cached, no further operations required
-            // we must however still filter the cached results for release/expiration date
-            return setFullResourceNames(context, subResources, filter);
+            // we must however still apply the result filter and update the context dates
+            return updateContextDates(context, subResources, filter);
         }
 
         // read the result form the database
         subResources = m_vfsDriver.readResources(
             context.currentProject().getId(), 
-            path, 
+            parent.getRootPath(), 
             filter.getType(), 
             filter.getState(), 
             filter.getModifiedAfter(), 
             filter.getModifiedBefore(), 
             I_CmsConstants.C_READMODE_INCLUDE_TREE
-            | (((filter.getMode() & CmsResourceFilter.C_FILTER_REQUIRE_CHILDS) > 0) ? I_CmsConstants.C_READMODE_EXCLUDE_TREE : 0)
-            | (((filter.getMode() & CmsResourceFilter.C_FILTER_EXCLUDE_TYPE) > 0) ? I_CmsConstants.C_READMODE_EXCLUDE_TYPE : 0) 
-            | (((filter.getMode() & CmsResourceFilter.C_FILTER_EXCLUDE_STATE) > 0) ? I_CmsConstants.C_READMODE_EXCLUDE_STATE : 0)
+//            | (((filter.getMode() & CmsResourceFilter.C_FILTER_REQUIRE_CHILDS) > 0) ? I_CmsConstants.C_READMODE_EXCLUDE_TREE : 0)
+//            | (((filter.getMode() & CmsResourceFilter.C_FILTER_EXCLUDE_TYPE) > 0) ? I_CmsConstants.C_READMODE_EXCLUDE_TYPE : 0) 
+//            | (((filter.getMode() & CmsResourceFilter.C_FILTER_EXCLUDE_STATE) > 0) ? I_CmsConstants.C_READMODE_EXCLUDE_STATE : 0)
         );
         
         for (int i=0; i<subResources.size(); i++) {
             CmsResource currentResource = (CmsResource)subResources.get(i);
-            int perms = hasPermissions(context, currentResource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, true, filter);
-            if (PERM_DENIED == perms) {
+            int perms = hasPermissions(context, currentResource, CmsPermissionSet.ACCESS_READ, true, filter);
+            if (perms != PERM_ALLOWED) {
                 subResources.remove(i--);
             }              
         }
@@ -2550,10 +2528,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // cache the sub resources
         m_resourceListCache.put(cacheKey, subResources);
 
-        // filter the result to remove resources outside release / expiration time window
-        // the setting of resource names aboce is NOR redundant, since the loop above
-        // is much more efficient than reading the path again
-        return setFullResourceNames(context, subResources, filter);
+        // apply the result filter and update the context dates
+        return updateContextDates(context, subResources, filter);
     }
     
     /**
@@ -2615,7 +2591,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             if (PERM_ALLOWED == hasPermissions(
                 context,
                 currentResource,
-                I_CmsConstants.C_READ_ACCESS,
+                CmsPermissionSet.ACCESS_READ,
                 true,
                 CmsResourceFilter.ALL)) {
                 
@@ -2628,7 +2604,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         resources = null;
 
         // set the full resource names
-        setFullResourceNames(context, result);
+        updateContextDates(context, result);
         // sort the result
         Collections.sort(result);
 
@@ -2793,7 +2769,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public void importAccessControlEntries(CmsRequestContext context, CmsResource resource, Vector acEntries) throws CmsException {
 
-        checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
 
         m_userDriver.removeAccessControlEntries(context.currentProject(), resource.getResourceId());
 
@@ -3556,7 +3532,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             resource = readResource(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
 
             // check the security
-            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
+            checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
 
             // delete the property values
             if (resource.getSiblingCount() > 1) {
@@ -4752,7 +4728,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @throws CmsException if operation was not successful
      */
     public List getResourcesWithPropertyDefinition(CmsRequestContext context, String propertyDefinition) throws CmsException {
-        List result = setFullResourceNames(context, m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition));
+        List result = updateContextDates(context, m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition));
         return result;
     }
 
@@ -5110,7 +5086,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             boolean isOutside = false;
             // check if one of the other vfs links lies in a labeled site folder
             List siblings = m_vfsDriver.readSiblings(context.currentProject(), resource, false);
-            setFullResourceNames(context, siblings);
+            updateContextDates(context, siblings);
             Iterator i = siblings.iterator();
             while (i.hasNext() && (!isInside || !isOutside)) {
                 CmsResource currentResource = (CmsResource)i.next();
@@ -5576,7 +5552,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (publishList.isDirectPublish()) {
             directPublishResource = readResource(context, publishList.getDirectPublishResourceName(), CmsResourceFilter.ALL);
             // or he has the explicit permission to direct publish a resource
-            hasPublishPermissions |= (PERM_ALLOWED == hasPermissions(context, directPublishResource, I_CmsConstants.C_DIRECT_PUBLISH, true, CmsResourceFilter.ALL));
+            hasPublishPermissions |= (PERM_ALLOWED == hasPermissions(context, directPublishResource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, true, CmsResourceFilter.ALL));
         }
         
         // and the current project must be different from the online project
@@ -5704,7 +5680,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsResource cmsFile = readResource(context, filename, CmsResourceFilter.ALL);
 
         // check if the user has read access
-        checkPermissions(context, cmsFile, I_CmsConstants.C_READ_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, cmsFile, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
 
         // access to all subfolders was granted - return the file-history (newest version first)
         List backupFileHeaders = m_backupDriver.readBackupFileHeaders(cmsFile.getRootPath());
@@ -5713,7 +5689,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             Collections.reverse(backupFileHeaders);
         }
         
-        return setFullResourceNames(context, backupFileHeaders);
+        return updateContextDates(context, backupFileHeaders);
     }
 
     /**
@@ -5726,7 +5702,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public List readAllProjectResources(CmsRequestContext context, int projectId) throws CmsException {
         CmsProject project = m_projectDriver.readProject(projectId);
-        List result = setFullResourceNames(context, m_projectDriver.readProjectResources(project));
+        List result = updateContextDates(context, m_projectDriver.readProjectResources(project));
         return result;
     }
 
@@ -5979,7 +5955,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         for (int i = 0, n = resources.size(); i < n; i++) {
             CmsFile res = (CmsFile)resources.get(i);
             
-            if (PERM_ALLOWED == hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, true, CmsResourceFilter.ALL)) {
+            if (PERM_ALLOWED == hasPermissions(context, res, CmsPermissionSet.ACCESS_VIEW, true, CmsResourceFilter.ALL)) {
                 updateContextDates(context, res);
                 result.add(res);
             }
@@ -6013,12 +5989,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // check if the user has read access to the folder
-        int perms = hasPermissions(context, folder, I_CmsConstants.C_READ_ACCESS, true, filter);
+        int perms = hasPermissions(context, folder, CmsPermissionSet.ACCESS_READ, true, filter);
         if (perms != PERM_DENIED) {
             // context dates need to be updated even if filter was applied
             updateContextDates(context, folder);
         }
-        checkPermissions(context, folder, I_CmsConstants.C_READ_ACCESS, perms);    
+        checkPermissions(context, folder, CmsPermissionSet.ACCESS_READ, perms);    
 
         // access was granted - return the folder.
         if (!filter.isValid(context, folder)) {
@@ -6299,7 +6275,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsResource resource = readResource(context, resourceName, CmsResourceFilter.ALL);
 
         // check the security
-        checkPermissions(context, resource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
 
         // check if search mode is enabled
         search = search && (siteRoot != null);
@@ -6376,7 +6352,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsResource resource = readResource(context, resourceName, CmsResourceFilter.ALL);
         
         // check the permissions
-        checkPermissions(context, resource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, true, CmsResourceFilter.ALL);
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
 
         // check if search mode is enabled
         search = search && (siteRoot != null);
@@ -6460,7 +6436,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource currentResource = (CmsResource)i.next();
-            if (PERM_ALLOWED == hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, true, CmsResourceFilter.ALL)) {
+            if (PERM_ALLOWED == hasPermissions(context, currentResource, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL)) {
                 if (onlyLocked) {
                     // check if resource is locked
                     CmsLock lock = getLock(context, currentResource);
@@ -6502,7 +6478,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // moreover the user has read permission for the content through
         // the selected sibling anyway
         
-        return setFullResourceNames(context, siblings, filter);
+        return updateContextDates(context, siblings, filter);
     }
     
     
@@ -6866,14 +6842,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Adds the full resourcename to each resource in a list of CmsResources.<p>
+     * Updates the context dates with each resource in a list of CmsResources.<p>
      * 
      * @param context the current request context
      * @param resourceList a list of CmsResources
+     * 
      * @return the original list of CmsResources with the full resource name set 
-     * @throws CmsException if something goes wrong
      */
-    public List setFullResourceNames(CmsRequestContext context, List resourceList) throws CmsException {
+    public List updateContextDates(CmsRequestContext context, List resourceList) {
         
         for (int i=0; i<resourceList.size(); i++) {
             CmsResource res = (CmsResource)resourceList.get(i);
@@ -6884,22 +6860,22 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Adds the full resourcename to each resource in a list of CmsResources,
+     * Updates the context dates with each resource in a list of CmsResources,
      * also applies the selected resource filter to all resources in the list.<p>
      *
      * @param context the current request context
      * @param resourceList a list of CmsResources
      * @param filter the resource filter to use
+     * 
      * @return fltered list of CmsResources with the full resource name set 
-     * @throws CmsException if something goes wrong
      */
-    public List setFullResourceNames(CmsRequestContext context, List resourceList, CmsResourceFilter filter) throws CmsException {
+    private List updateContextDates(CmsRequestContext context, List resourceList, CmsResourceFilter filter) {
         
         if (CmsResourceFilter.ALL == filter) {
             if (resourceList instanceof ArrayList) {
-                return (List)((ArrayList)(setFullResourceNames(context, resourceList))).clone();
+                return (List)((ArrayList)(updateContextDates(context, resourceList))).clone();
             } else {
-                return new ArrayList(setFullResourceNames(context, resourceList));
+                return new ArrayList(updateContextDates(context, resourceList));
             }
         }
         
@@ -7142,7 +7118,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
                 try {
                     List resources = readAllSubResourcesInDfs(context, currentExportPoint, -1);
-                    setFullResourceNames(context, resources);
+                    updateContextDates(context, resources);
 
                     Iterator j = resources.iterator();
                     while (j.hasNext()) {
@@ -7762,7 +7738,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // ckeck if the parent id of the resource is within the folder tree            
             if (storage.contains(res.getParentStructureId())) {
                 //this resource is inside the folder tree
-                if (PERM_ALLOWED == hasPermissions(context, res, I_CmsConstants.C_READ_ACCESS, false, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                if (PERM_ALLOWED == hasPermissions(context, res, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.IGNORE_EXPIRATION)) {
                     // this is a valid resouce, add it to the result list
                     result.add(res);
                     updateContextDates(context, res);
@@ -7921,5 +7897,4 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             info.updateFromResource(resource);
         }
     }
-                    }
-
+}

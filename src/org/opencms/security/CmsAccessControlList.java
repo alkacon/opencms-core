@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/08/23 15:37:02 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * is called in each operation. This method acts as access guard and matches the required permissions for the operation
  * against the allowed and denied permissions defined for the user or groups of this user.</p>
  * 
- * @version $Revision: 1.12 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.13 $ $Date: 2004/08/23 15:37:02 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -84,7 +84,7 @@ public class CmsAccessControlList {
 
         while (i.hasNext()) {
             Object key = i.next();
-            acl.m_permissions.put(key, ((CmsPermissionSet)m_permissions.get(key)).clone());
+            acl.m_permissions.put(key, ((CmsPermissionSetCustom)m_permissions.get(key)).clone());
         }
 
         return acl;
@@ -97,9 +97,9 @@ public class CmsAccessControlList {
      */
     public void add(CmsAccessControlEntry entry) {
 
-        CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(entry.getPrincipal());
+        CmsPermissionSetCustom permissions = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
         if (permissions == null) {
-            permissions = new CmsPermissionSet();
+            permissions = new CmsPermissionSetCustom();
         }
         permissions.addPermissions(entry.getPermissions());
         m_permissions.put(entry.getPrincipal(), permissions);
@@ -112,9 +112,9 @@ public class CmsAccessControlList {
      */
     public void setAllowedPermissions(CmsAccessControlEntry entry) {
 
-        CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(entry.getPrincipal());
+        CmsPermissionSetCustom permissions = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
         if (permissions == null) {
-            permissions = new CmsPermissionSet();
+            permissions = new CmsPermissionSetCustom();
         }
         permissions.setPermissions(entry.getAllowedPermissions(), 0);
         m_permissions.put(entry.getPrincipal(), permissions);
@@ -127,11 +127,12 @@ public class CmsAccessControlList {
      */
     public void setDeniedPermissions(CmsAccessControlEntry entry) {
 
-        CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(entry.getPrincipal());
+        CmsPermissionSetCustom permissions = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
         if (permissions == null) {
-            permissions = new CmsPermissionSet();
+            permissions = new CmsPermissionSetCustom();
         }
         permissions.setPermissions(0, entry.getDeniedPermissions());
+        m_permissions.put(entry.getPrincipal(), permissions);        
     }
 
     /**
@@ -141,8 +142,8 @@ public class CmsAccessControlList {
      * 
      * @return the current permissions of this single principal
      */
-    public CmsPermissionSet getPermissions(I_CmsPrincipal principal) {
-        return (CmsPermissionSet)m_permissions.get(principal.getId());
+    public CmsPermissionSetCustom getPermissions(I_CmsPrincipal principal) {
+        return (CmsPermissionSetCustom)m_permissions.get(principal.getId());
     }
 
     /**
@@ -153,9 +154,9 @@ public class CmsAccessControlList {
      * 
      * @return the summarized permission set of the user
      */
-    public CmsPermissionSet getPermissions(CmsUser user, Vector groups) {
+    public CmsPermissionSetCustom getPermissions(CmsUser user, Vector groups) {
 
-        CmsPermissionSet sum = new CmsPermissionSet();
+        CmsPermissionSetCustom sum = new CmsPermissionSetCustom();
         ListIterator pIterator = null;
         if (groups != null) {
             pIterator = groups.listIterator();

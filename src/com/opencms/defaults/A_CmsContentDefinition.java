@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2004/07/08 15:21:14 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/08/23 15:37:02 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.defaults;
 
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.master.CmsPlausibilizationException;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -293,7 +294,7 @@ protected boolean hasReadAccess(CmsObject cms) throws CmsException {
     CmsUser currentUser = cms.getRequestContext().currentUser();
 
     if (!accessOther(I_CmsConstants.C_ACCESS_PUBLIC_READ)
-        && !accessOwner(cms, currentUser, I_CmsConstants.C_PERMISSION_READ)
+        && !accessOwner(cms, currentUser, CmsPermissionSet.PERMISSION_READ)
         && !accessGroup(cms, currentUser, I_CmsConstants.C_ACCESS_GROUP_READ)) {
         return false;
     }
@@ -318,7 +319,7 @@ public boolean hasWriteAccess(CmsObject cms) throws CmsException {
 
     // check the rights for the current resource
     if (!(accessOther(I_CmsConstants.C_ACCESS_PUBLIC_WRITE)
-            || accessOwner(cms, currentUser, I_CmsConstants.C_PERMISSION_WRITE)
+            || accessOwner(cms, currentUser, CmsPermissionSet.PERMISSION_WRITE)
             || accessGroup(cms, currentUser, I_CmsConstants.C_ACCESS_GROUP_WRITE))) {
         // no write access to this resource!
         return false;
