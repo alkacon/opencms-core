@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/02/17 16:16:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/19 10:16:50 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/02/17 16:16:32 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/19 10:16:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -198,9 +198,9 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @exception CmsException
      */
     public CmsXmlWpConfigFile getConfigFile(A_CmsObject cms) throws CmsException {
-        if(m_configFile == null) {
+        //if(m_configFile == null) {
             m_configFile = new CmsXmlWpConfigFile(cms);
-        }
+        //}
         return m_configFile;
     }
     
