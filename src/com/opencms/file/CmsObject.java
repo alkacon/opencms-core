@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/26 15:11:51 $
-* Version: $Revision: 1.419 $
+* Date   : $Date: 2003/09/29 08:33:45 $
+* Version: $Revision: 1.420 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.419 $
+ * @version $Revision: 1.420 $
  */
 public class CmsObject {
 
@@ -264,7 +264,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser addUser(String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
-        return (m_driverManager.addUser(this, m_context, name, password, group, description, additionalInfos, flags));
+        return (m_driverManager.addUser(m_context, name, password, group, description, additionalInfos));
     }
 
     /**
@@ -300,7 +300,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
-        return (m_driverManager.addWebUser(this, m_context, name, password, group, description, additionalInfos, flags));
+        return (m_driverManager.addWebUser(name, password, group, description, additionalInfos));
     }
 
     /**
@@ -323,7 +323,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser addWebUser(String name, String password, String group, String additionalGroup, String description, Hashtable additionalInfos, int flags) throws CmsException {
-        CmsUser newWebUser = m_driverManager.addWebUser(this, m_context, name, password, group, additionalGroup, description, additionalInfos, flags);
+        CmsUser newWebUser = m_driverManager.addWebUser(name, password, group, additionalGroup, description, additionalInfos);
         return newWebUser;
     }
 
@@ -765,7 +765,7 @@ public class CmsObject {
       * @throws CmsException if operation was not successful.
       */
     public CmsTask createProject(String projectname, int projectType, String roleName, long timeout, int priority) throws CmsException {
-        return m_driverManager.createProject(m_context, projectname, projectType, roleName, timeout, priority);
+        return m_driverManager.createProject(m_context, projectname, roleName, timeout, priority);
     }
 
     /**
@@ -867,7 +867,7 @@ public class CmsObject {
       * @throws CmsException if operation was not successful.
       */
     public CmsTask createTask(String agentName, String roleName, String taskname, String taskcomment, long timeout, int priority) throws CmsException {
-        return (m_driverManager.createTask(m_context, agentName, roleName, taskname, taskcomment, timeout, priority));
+        return (m_driverManager.createTask(m_context, agentName, roleName, taskname, timeout, priority));
     }
 
     /**
@@ -905,7 +905,7 @@ public class CmsObject {
      * @param the number of versions per file which should kept in the system.
      */
     public void deleteBackups(long timestamp, int versions) throws CmsException {
-       m_driverManager.deleteBackups(this, m_context, timestamp, versions);
+       m_driverManager.deleteBackups(m_context, timestamp, versions);
     }
 
     /**
@@ -1063,7 +1063,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void deleteWebUser(CmsUUID userId) throws CmsException {
-        m_driverManager.deleteWebUser(m_context, userId);
+        m_driverManager.deleteWebUser(userId);
     }
 
     /**
@@ -1085,7 +1085,7 @@ public class CmsObject {
     	 * @throws CmsException if something goes wrong
      */
     protected void doChangeLockedInProject(int projectId, String resourcename) throws CmsException {
-        m_driverManager.changeLockedInProject(m_context, projectId, addSiteRoot(resourcename));
+        m_driverManager.changeLockedInProject(m_context, addSiteRoot(resourcename));
     }
 
     /**
@@ -1144,7 +1144,7 @@ public class CmsObject {
      * user has not the appropriate rights to copy the folder.
      */
     protected void doCopyFolder(String source, String destination, boolean lockCopy, boolean preserveTimestamps) throws CmsException {
-        m_driverManager.copyFolder(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy, false, preserveTimestamps);
+        m_driverManager.copyFolder(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy, preserveTimestamps);
     }
 
     /**
@@ -1481,7 +1481,7 @@ public class CmsObject {
     * @throws CmsException  Throws CmsException if operation was not succesful.
     */
     protected void doWriteResource(String resourcename, Map properties, String username, int resourceType, byte[] filecontent) throws CmsException {
-        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), properties, username, resourceType, filecontent);
+        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), properties, filecontent);
     }
 
     /**
@@ -2005,7 +2005,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsGroup getParent(String groupname) throws CmsException {
-        return (m_driverManager.getParent(m_context, groupname));
+        return (m_driverManager.getParent(groupname));
     }
 
     /**
@@ -2219,7 +2219,7 @@ public class CmsObject {
       * @throws CmsException if operation was not successful.
       */
     public String getTaskPar(int taskid, String parname) throws CmsException {
-        return (m_driverManager.getTaskPar(m_context, taskid, parname));
+        return (m_driverManager.getTaskPar(taskid, parname));
     }
 
     /**
@@ -2546,7 +2546,7 @@ public class CmsObject {
      */    
     public String loginUser(String username, String password, String remoteAddress) throws CmsException {
         // login the user
-        CmsUser newUser = m_driverManager.loginUser(m_context, username, password, remoteAddress);
+        CmsUser newUser = m_driverManager.loginUser(username, password, remoteAddress);
         // init the new user
         init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         // fire a login event
@@ -2566,7 +2566,7 @@ public class CmsObject {
      */
     public String loginWebUser(String username, String password) throws CmsException {
         // login the user
-        CmsUser newUser = m_driverManager.loginWebUser(m_context, username, password, m_context.getRemoteAddress());
+        CmsUser newUser = m_driverManager.loginWebUser(username, password, m_context.getRemoteAddress());
         // init the new user
         init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         // return the user-name
@@ -2848,7 +2848,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser readAgent(CmsTask task) throws CmsException {
-        return (m_driverManager.readAgent(m_context, task));
+        return (m_driverManager.readAgent(task));
     }
 
     /**
@@ -2970,7 +2970,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsBackupProject readBackupProject(int tagId) throws CmsException {
-        return (m_driverManager.readBackupProject(m_context.currentUser(), m_context.currentProject(), tagId));
+        return (m_driverManager.readBackupProject(tagId));
     }
 
     /**
@@ -3100,7 +3100,7 @@ public class CmsObject {
      * to read the file headers, or if the file headers couldn't be read.
      */
     public CmsResource readFileHeader(String filename, int projectId, boolean includeDeleted) throws CmsException {
-        return (m_driverManager.readFileHeaderInProject(m_context, projectId, addSiteRoot(filename), includeDeleted));
+        return (m_driverManager.readFileHeaderInProject(projectId, addSiteRoot(filename), includeDeleted));
     }
 
     /**
@@ -3190,7 +3190,7 @@ public class CmsObject {
       * @throws CmsException if operation was not successful.
       */
     public Vector readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readGivenTasks(m_context, projectId, ownerName, taskType, orderBy, sort));
+        return (m_driverManager.readGivenTasks(projectId, ownerName, taskType, orderBy, sort));
     }
 
     /**
@@ -3201,7 +3201,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsGroup readGroup(CmsProject project) throws CmsException {
-        return (m_driverManager.readGroup(m_context, project));
+        return (m_driverManager.readGroup(project));
     }
 
     /**
@@ -3212,7 +3212,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsGroup readGroup(CmsResource resource) throws CmsException {
-        return (m_driverManager.readGroup(m_context, resource));
+        throw new CmsException("readGroup implementation removed");
     }
 
     /**
@@ -3224,7 +3224,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsGroup readGroup(CmsTask task) throws CmsException {
-        return (m_driverManager.readGroup(m_context, task));
+        return (m_driverManager.readGroup(task));
     }
 
     /**
@@ -3248,7 +3248,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsGroup readGroup(String groupName) throws CmsException {
-        return (m_driverManager.readGroup(m_context, groupName));
+        return (m_driverManager.readGroup(groupName));
     }
 
     /**
@@ -3317,7 +3317,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
-        return (m_driverManager.readOriginalAgent(m_context, task));
+        return (m_driverManager.readOriginalAgent(task));
     }
     /**
      * Reads the owner of a project from the Cms.
@@ -3327,7 +3327,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser readOwner(CmsProject project) throws CmsException {
-        return (m_driverManager.readOwner(m_context, project));
+        return (m_driverManager.readOwner(project));
     }
 
     /**
@@ -3338,7 +3338,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser readOwner(CmsResource resource) throws CmsException {
-        return (m_driverManager.readOwner(m_context, resource));
+        throw new CmsException("readOwner implementation removed");
     }
 
     /**
@@ -3350,7 +3350,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser readOwner(CmsTask task) throws CmsException {
-        return (m_driverManager.readOwner(m_context, task));
+        return (m_driverManager.readOwner(task));
     }
 
     /**
@@ -3361,7 +3361,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser readOwner(CmsTaskLog log) throws CmsException {
-        return (m_driverManager.readOwner(m_context, log));
+        return (m_driverManager.readOwner(log));
     }
     
     /**
@@ -3389,7 +3389,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(CmsResource res) throws CmsException {
-        return (m_driverManager.readProject(m_context.currentUser(), m_context.currentProject(), res));
+        return m_driverManager.readProject(res.getProjectLastModified());
     }
 
     /**
@@ -3400,7 +3400,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(CmsTask task) throws CmsException {
-        return (m_driverManager.readProject(m_context, task));
+        return (m_driverManager.readProject(task));
     }
 
     /**
@@ -3411,7 +3411,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(int id) throws CmsException {
-        return (m_driverManager.readProject(m_context, id));
+        return (m_driverManager.readProject(id));
     }
 
     /**
@@ -3422,7 +3422,7 @@ public class CmsObject {
       * @throws CmsException if operation was not successful.
       */
     public Vector readProjectLogs(int projectId) throws CmsException {
-        return m_driverManager.readProjectLogs(m_context.currentUser(), m_context.currentProject(), projectId);
+        return m_driverManager.readProjectLogs(projectId);
     }
 
     /**
@@ -3529,7 +3529,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsTask readTask(int id) throws CmsException {
-        return (m_driverManager.readTask(m_context.currentUser(), m_context.currentProject(), id));
+        return (m_driverManager.readTask(id));
     }
 
     /**
@@ -3540,7 +3540,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTaskLogs(int taskid) throws CmsException {
-        return m_driverManager.readTaskLogs(m_context.currentUser(), m_context.currentProject(), taskid);
+        return m_driverManager.readTaskLogs(taskid);
     }
 
     /**
@@ -3568,7 +3568,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readTasksForRole(m_context, projectId, roleName, tasktype, orderBy, sort));
+        return (m_driverManager.readTasksForRole(projectId, roleName, tasktype, orderBy, sort));
     }
 
     /**
@@ -3582,7 +3582,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readTasksForUser(m_context, projectId, userName, tasktype, orderBy, sort));
+        return (m_driverManager.readTasksForUser(projectId, userName, tasktype, orderBy, sort));
     }
 
     /**
@@ -3690,7 +3690,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successfull.
      */
     public void recoverPassword(String username, String recoveryPassword, String newPassword) throws CmsException {
-        m_driverManager.recoverPassword(this, m_context, username, recoveryPassword, newPassword);
+        m_driverManager.recoverPassword(username, recoveryPassword, newPassword);
     }
 
     /**
@@ -3877,7 +3877,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void setPassword(String username, String newPassword) throws CmsException {
-        m_driverManager.setPassword(this, m_context, username, newPassword);
+        m_driverManager.setPassword(m_context, username, newPassword);
     }
 
     /**
@@ -3890,7 +3890,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
-        m_driverManager.setPassword(this, m_context, username, oldPassword, newPassword);
+        m_driverManager.setPassword(username, oldPassword, newPassword);
     }
 
     /**
@@ -3915,7 +3915,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void setRecoveryPassword(String username, String oldPassword, String newPassword) throws CmsException {
-        m_driverManager.setRecoveryPassword(this, m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
+        m_driverManager.setRecoveryPassword(username, oldPassword, newPassword);
     }
 
     /**
@@ -3930,7 +3930,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void setTaskPar(int taskid, String parname, String parvalue) throws CmsException {
-        m_driverManager.setTaskPar(m_context, taskid, parname, parvalue);
+        m_driverManager.setTaskPar(taskid, parname, parvalue);
     }
 
     /**
@@ -4243,7 +4243,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void writeWebUser(CmsUser user) throws CmsException {
-        m_driverManager.writeWebUser(m_context, user);
+        m_driverManager.writeWebUser(user);
     }
     
     /**
@@ -4287,7 +4287,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readProjectResources(CmsProject project) throws CmsException {
-        return m_driverManager.readProjectResources(m_context, project);
+        return m_driverManager.readProjectResources(project);
     }
         
     /**

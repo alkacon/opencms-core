@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/09/26 16:00:00 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2003/09/29 08:33:45 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.103 $
+ * @version $Revision: 1.104 $
  */
 public class CmsRequestContext {
 
@@ -653,7 +653,7 @@ public class CmsRequestContext {
      */
     public CmsProject setCurrentProject(int projectId) throws CmsException {
         CmsProject newProject =
-            m_driverManager.readProject(this, projectId);
+            m_driverManager.readProject(projectId);
         if (newProject != null) {
             m_currentProject = newProject;
         }
