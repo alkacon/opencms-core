@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/20 17:25:30 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/12/21 10:16:36 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -450,6 +450,8 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);           
         try {
+            // check the access permissions
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
             m_driverManager.changeLock(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, "Error changing lock of resource " + resource.getRootPath(), e);
@@ -2385,7 +2387,7 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
             m_driverManager.lockResource(dbc, resource, mode);
         } catch (Exception e) {
-            dbc.report(null, "Error deleting resource " + resource.getRootPath(), e);
+            dbc.report(null, "Error locking resource " + resource.getRootPath(), e);
         } finally {
             dbc.clear();
         }
