@@ -107,6 +107,9 @@ HTMLArea.Config = function () {
 	// URL-s
 	this.imgURL = "images/";
 	this.popupURL = "popups/";
+	
+	// autofocus option to avoid jumping in long forms containing multiple htmlareas
+	this.autoFocus = true;
 
 	/** CUSTOMIZING THE TOOLBAR
 	 * -------------------------
@@ -775,8 +778,10 @@ HTMLArea.prototype.generate = function () {
 			// (above).
 			doc.body.contentEditable = true;
 		}
-
-		editor.focusEditor();
+		
+		if (editor.config.autoFocus) {
+			editor.focusEditor();
+		}
 		// intercept some events; for updating the toolbar & keyboard handlers
 		HTMLArea._addEvents
 			(doc, ["keydown", "keypress", "mousedown", "mouseup", "drag"],
@@ -846,7 +851,9 @@ HTMLArea.prototype.setMode = function(mode) {
 		return false;
 	}
 	this._editMode = mode;
-	this.focusEditor();
+	if (this.config.autoFocus) {
+		this.focusEditor();
+	}
 };
 
 HTMLArea.prototype.setFullHTML = function(html) {
@@ -1277,35 +1284,37 @@ HTMLArea.prototype.insertNodeAtSelection = function(toBeInserted) {
 // Returns the deepest node that contains both endpoints of the selection.
 HTMLArea.prototype.getParentElement = function() {
 	var sel = this._getSelection();
-	var range = this._createRange(sel);
-	if (HTMLArea.is_ie) {
-		switch (sel.type) {
-		    case "Text":
-		    case "None":
-			// It seems that even for selection of type "None",
-			// there _is_ a parent element and it's value is not
-			// only correct, but very important to us.  MSIE is
-			// certainly the buggiest browser in the world and I
-			// wonder, God, how can Earth stand it?
-			return range.parentElement();
-		    case "Control":
-			return range.item(0);
-		    default:
-			return this._doc.body;
+	try {
+		var range = this._createRange(sel);
+		if (HTMLArea.is_ie) {
+			switch (sel.type) {
+			    case "Text":
+			    case "None":
+				// It seems that even for selection of type "None",
+				// there _is_ a parent element and it's value is not
+				// only correct, but very important to us.  MSIE is
+				// certainly the buggiest browser in the world and I
+				// wonder, God, how can Earth stand it?
+				return range.parentElement();
+			    case "Control":
+				return range.item(0);
+			    default:
+				return this._doc.body;
+			}
+		} else {
+			var p = range.commonAncestorContainer;
+			if (!range.collapsed && range.startContainer == range.endContainer &&
+			    range.startOffset - range.endOffset <= 1 && range.startContainer.hasChildNodes())
+				p = range.startContainer.childNodes[range.startOffset];
+			/*
+			alert(range.startContainer + ":" + range.startOffset + "\n" +
+			      range.endContainer + ":" + range.endOffset);
+			*/
+			while (p.nodeType == 3) {
+				p = p.parentNode;
+			}
+			return p;
 		}
-	} else try {
-		var p = range.commonAncestorContainer;
-		if (!range.collapsed && range.startContainer == range.endContainer &&
-		    range.startOffset - range.endOffset <= 1 && range.startContainer.hasChildNodes())
-			p = range.startContainer.childNodes[range.startOffset];
-		/*
-		alert(range.startContainer + ":" + range.startOffset + "\n" +
-		      range.endContainer + ":" + range.endOffset);
-		*/
-		while (p.nodeType == 3) {
-			p = p.parentNode;
-		}
-		return p;
 	} catch (e) {
 		return null;
 	}
@@ -1325,7 +1334,9 @@ HTMLArea.prototype.getAllAncestors = function() {
 
 // Selects the contents inside the given node
 HTMLArea.prototype.selectNodeContents = function(node, pos) {
-	this.focusEditor();
+	if (this.config.autoFocus) {
+		this.focusEditor();
+	}
 	this.forceRedraw();
 	var range;
 	var collapsed = (typeof pos != "undefined");
@@ -1539,7 +1550,9 @@ HTMLArea.prototype._insertTable = function() {
 // el is reference to the SELECT object
 // txt is the name of the select field, as in config.toolbar
 HTMLArea.prototype._comboSelected = function(el, txt) {
-	this.focusEditor();
+	if (this.config.autoFocus) {
+		this.focusEditor();
+	}
 	var value = el.options[el.selectedIndex].value;
 	switch (txt) {
 	    case "fontname":
@@ -1563,7 +1576,9 @@ HTMLArea.prototype._comboSelected = function(el, txt) {
 // our own implementation)
 HTMLArea.prototype.execCommand = function(cmdID, UI, param) {
 	var editor = this;	// for nested functions
-	this.focusEditor();
+	if (this.config.autoFocus) {
+		this.focusEditor();
+	}
 	cmdID = cmdID.toLowerCase();
 	switch (cmdID) {
 	    case "htmlmode" : this.setMode(); break;
@@ -1850,9 +1865,13 @@ HTMLArea.prototype._getSelection = function() {
 // returns a range for the current selection
 HTMLArea.prototype._createRange = function(sel) {
 	if (HTMLArea.is_ie) {
-		return sel.createRange();
+		try {
+			return sel.createRange();
+		} catch (e) {}
 	} else {
-		this.focusEditor();
+		if (this.config.autoFocus) {
+			this.focusEditor();
+		}
 		if (typeof sel != "undefined") {
 			try {
 				return sel.getRangeAt(0);

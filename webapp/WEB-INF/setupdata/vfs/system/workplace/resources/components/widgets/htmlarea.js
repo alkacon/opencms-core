@@ -59,6 +59,9 @@ function initHtmlAreas() {
 
 	// kill MS Word formatting on paste
 	config.killWordOnPaste = true;
+	
+	// set autofocus to false to avoid jumping to last htmlarea
+	config.autoFocus = false;
 
 	var tas = document.getElementsByTagName("textarea");
 	for (var i=0; i<tas.length; i++) {

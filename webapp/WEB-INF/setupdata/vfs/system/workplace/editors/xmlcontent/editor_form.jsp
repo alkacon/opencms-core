@@ -144,7 +144,7 @@ function confirmExit() {
 function init() {
 	checkElementLanguage("<%= wp.getParamElementlanguage() %>");
 <%= wp.getXmlEditorInitCalls() %>
-	setTimeout("window.blur();scrollForm();", 50);
+	setTimeout("scrollForm();", 50);
 }
 
 function exitEditor() {
