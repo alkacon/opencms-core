@@ -32,7 +32,7 @@ create table CMS_GROUPUSERS             (GROUP_ID int not null,
                                          key(GROUP_ID),
                                          key(USER_ID));
 
-create table CMS_PROJECTS               (PROJECT_ID int not null auto_increment, 
+create table CMS_PROJECTS               (PROJECT_ID int not null, 
                                          USER_ID int not null,
                                          GROUP_ID int not null, 
 										 MANAGERGROUP_ID int not null,
@@ -44,6 +44,7 @@ create table CMS_PROJECTS               (PROJECT_ID int not null auto_increment,
 										 PROJECT_PUBLISHDATE datetime,
 										 PROJECT_PUBLISHED_BY int not null,
 										 PROJECT_COUNT_LOCKED_RESOURCES int not null,
+										 PROJECT_TYPE int not null,
                                          primary key(PROJECT_ID), unique(PROJECT_NAME, PROJECT_CREATEDATE));
 
 create table CMS_METADEF                (METADEF_ID int not null auto_increment, 

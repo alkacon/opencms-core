@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 12:35:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/06 13:53:42 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,9 +45,59 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.4 $ $Date: 2000/06/06 12:35:27 $ * 
+ * @version $Revision: 1.5 $ $Date: 2000/06/06 13:53:42 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants {
+	
+	/**
+	 * The maximum amount of tables.
+	 */
+	private static int C_MAX_TABLES = 9;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_SYSTEMPROPERTIES = 0;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_GROUPS = 1;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_GROUPUSERS = 2;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_USERS = 3;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_PROJECTS = 4;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_RESOURCES = 5;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_FILES = 6;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_PROPERTYDEF = 7;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_PROPERTIES = 8;
 	
 	/**
 	 * Constant to get property from configurations.
@@ -83,6 +133,11 @@ public class CmsDbAccess implements I_CmsConstants {
 	 * The prepared-statement-pool.
 	 */
 	private CmsPreparedStatementPool m_pool = null;
+	
+	/**
+	 * A array containing all max-ids for the tables.
+	 */
+	private int[] m_maxIds;
 	
 	/**
      * Instanciates the access-module and sets up all required modules and connections.
@@ -150,6 +205,12 @@ public class CmsDbAccess implements I_CmsConstants {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] all statements initialized in the pool");
 		}
 		
+		// now init the max-ids for key generation
+		initMaxIdValues();
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] max-ids initialized");
+		}
+		
 		// have we to fill the default resource like root and guest?
 		if(fillDefaults) {
 			// YES!
@@ -176,5 +237,26 @@ public class CmsDbAccess implements I_CmsConstants {
 	private void fillDefaults() 
 		throws CmsException {
 		// TODO: init all default-resources
+	}
+	
+	/**
+	 * Private method to init the max-id values.
+	 */
+	private void initMaxIdValues() {
+		m_maxIds = new int[C_MAX_TABLES];
+		
+		// TODO: add correct values here
+	}
+	
+	/**
+	 * Private method to get the next id for a table.
+	 * This method is synchronized, to generate unique id's.
+	 * 
+	 * @param key A key for the table to get the max-id from.
+	 * @return next-id The next possible id for this table.
+	 */
+	private synchronized int nextId(int key) {
+		// increment the id-value and return it.
+		return( ++m_maxIds[key] );
 	}
 }
