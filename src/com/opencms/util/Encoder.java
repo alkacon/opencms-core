@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/11/27 19:08:50 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -39,31 +39,31 @@ import javax.servlet.http.*;
  * The Encoder provies static methods to decode and encode data. <br>
  * The de- and encoding uses the same coding mechanism as JavaScript, special characters are
  * replaxed with <code>%hex</code> where hex is a two digit hex number.
- * 
+ *
  * @author Michael Emmerich
  */
 
 public class Encoder {
-    
+
     /**
      * Constructor
      */
-    
+
     public Encoder() {
-        
+
     }
-    
+
     /**
      * Encodes a textstring that is compatible with the JavaScript escape function
      * @param Source The textstring to be encoded.
      * @return The JavaScript escaped string.
      */
-    
+
     public static String escape(String source) {
         StringBuffer ret = new StringBuffer();
-        
-        // URLEncode the text string. This produces a very similar encoding to JavaSscript        
-        
+
+        // URLEncode the text string. This produces a very similar encoding to JavaSscript
+
         // encoding, except the blank which is not encoded into a %20.
         String enc = URLEncoder.encode(source);
         StringTokenizer t = new StringTokenizer(enc, "+");
@@ -75,21 +75,21 @@ public class Encoder {
         }
         return ret.toString();
     }
-    
+
     /**
      * Encodes a textstring that is compatible with the JavaScript escape function.
      * Muliple blanks are encoded _multiply _with %20
      * @param Source The textstring to be encoded.
      * @return The JavaScript escaped string.
      */
-    
+
     public static String escapeWBlanks(String source) {
         if(source == null) {
             return null;
         }
         StringBuffer ret = new StringBuffer();
-        
-        // URLEncode the text string. This produces a very similar encoding to JavaSscript                
+
+        // URLEncode the text string. This produces a very similar encoding to JavaSscript
         // encoding, except the blank which is not encoded into a %20.
         String enc = URLEncoder.encode(source);
         for(int z = 0;z < enc.length();z++) {
@@ -102,7 +102,7 @@ public class Encoder {
         }
         return ret.toString();
     }
-    
+
     /**
      * Escapes a string so it may be printed as text content or attribute
      * value. Non printable characters are escaped using character references.
@@ -112,7 +112,7 @@ public class Encoder {
      * @param source The string to escape
      * @return The escaped string
      */
-    
+
     public static String escapeXml(String source) {
         StringBuffer result;
         int i;
@@ -131,40 +131,43 @@ public class Encoder {
         }
         return result.toString();
     }
-    
+
     /**
      * Encodes special XML characters into the equivalent character references.
      *
      * @param ch The character to encode
      * @return The encoded character as string
      */
-    
+
     protected static String getEntityRef(char ch) {
-        
+
         // These four entities have to be escaped by default.
         switch(ch) {
         case '<':
             return "lt";
-        
+
         case '>':
             return "gt";
-        
+
         case '&':
             return "amp";
-        
+
         case '"':
             return "quot";
         }
         return null;
     }
-    
+
     /**
      * Decodes a textstring that is compatible with the JavaScript unescape function.
      * @param Source The textstring to be decoded.
      * @return The JavaScript unescaped string.
      */
-    
+
     public static String unescape(String source) {
+        if(source == null){
+            return null;
+        }
         StringBuffer unescaped = new StringBuffer();
         String token = "";
         String hex = "";
@@ -172,28 +175,28 @@ public class Encoder {
         Byte bytecode;
         byte bytestorage[] = new byte[1];
         String stringcode;
-        
+
         // the flag signals if the character conversion should be skipped.
         boolean flag = false;
-        
+
         // check if the escaped string starts with an escaped character
         if(!source.startsWith("%")) {
             flag = true;
         }
-        
+
         // convert all %hex in the texttring
         StringTokenizer t = new StringTokenizer(source, "%");
         while(t.hasMoreTokens()) {
             token = t.nextToken();
-            
+
             // skip conversion if token is only one character
             if(token.length() < 2) {
                 flag = true;
             }
             if(!flag) {
-                
-                // get the real character from the hex code and append it to the already converted                
-                
+
+                // get the real character from the hex code and append it to the already converted
+
                 // result
                 hex = token.substring(0, 2);
                 token = token.substring(2);
@@ -211,7 +214,7 @@ public class Encoder {
                 unescaped.append(token);
             }
             else {
-                
+
                 // only add the token to the result, do not convert it
                 flag = false;
                 unescaped.append(token);

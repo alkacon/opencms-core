@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/11/27 13:22:42 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/11/27 19:08:50 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -2834,7 +2834,6 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         if(!((previewButton == null) || (previewButton.equals("")))){
             session.putValue("weShallDisplayThePreviewButton", previewButton +"?id="+cd.getUniqueId(cms));
         }
-
 
       // check if there was an error found in the input form
       if (!error.equals("")) {

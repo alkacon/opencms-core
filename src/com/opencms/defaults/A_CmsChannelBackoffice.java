@@ -167,6 +167,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
 	        media_name=(media_name!=null?media_name.trim():"");
 	        // get the alt_text
 	        String media_title = (String) parameters.get("media_alt_text");
+            // media_title = com.opencms.util.Encoder.unescape(media_title);
 	        media_title=(media_title!=null?media_title.trim():"");
 	        // get the pos
 	        String pos = (String) parameters.get("pos");
@@ -308,7 +309,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
 	            //fill the template
 	            templateFile.setData("media_name",selectedmediaCD.getName());
 	            templateFile.setData("posEdit",pos);
-	            templateFile.setData("media_alt_text",selectedmediaCD.getTitle());
+	            templateFile.setData("media_alt_text", com.opencms.util.Encoder.escape(selectedmediaCD.getTitle()));
 	            templateFile.setData("media_file",templateFile.getProcessedDataValue("media_edit",this));
 	        }else{
 	            //put the media_position in session
