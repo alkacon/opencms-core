@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/03/29 10:39:54 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/04/05 05:44:50 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 
 import java.io.ByteArrayInputStream;
@@ -52,7 +51,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -282,14 +281,13 @@ public class CmsLinkProcessor {
 
         if (link.isInternal()) {
 
-            CmsSite site = null;
-            
             // if we have a local link, leave it unchanged
-            if (link.getUri().startsWith("#")) {
+            if (link.getUri().charAt(0) == '#') {
                 return link.getUri();
             }
+            
             // we are in the opencms root site but not in edit mode - use link as stored
-            if (!m_processEditorLinks && "".equals(m_cms.getRequestContext().getSiteRoot())) {
+            if (!m_processEditorLinks && (m_cms.getRequestContext().getSiteRoot().length() == 0)) {
                 return OpenCms.getLinkManager().substituteLink(m_cms, link.getUri());    
             }
 
@@ -299,21 +297,18 @@ public class CmsLinkProcessor {
             String siteRoot = link.getSiteRoot();
             if (siteRoot == null) {
                 return OpenCms.getLinkManager().substituteLink(m_cms, link.getUri());
-            } else {
-                site = CmsSiteManager.getSite(siteRoot);
             }
-
             
             // check if the link has to be returned as relative or absolute link
-            if (m_cms.getRequestContext().getSiteRoot().equals(siteRoot) /* || m_processEditorLinks */) {
+            if (m_cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
                 // if we are in the desired site, relative links are generated
                 return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());
             } else {
                 // otherwise, links are generated as absolute links
-                return site.getUrl() + OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());
+                return CmsSiteManager.getSite(siteRoot).getUrl() 
+                    + OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());
             }
-        } else {
-            
+        } else {            
             // don't touch external links
             return link.getUri();
         }
