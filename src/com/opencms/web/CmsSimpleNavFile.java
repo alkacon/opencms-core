@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsSimpleNavFile.java,v $
- * Date   : $Date: 2000/02/17 18:41:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/22 10:38:24 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,18 +30,19 @@ package com.opencms.web;
 
 import com.opencms.file.*;
 import com.opencms.core.*;
-import com.opencms.template.*; 
+import com.opencms.template.*;
+import com.opencms.examples.*;
 
 import java.util.*;
 
 
 /**
- * Sample content definition for news articles.
+ * Content definition for minfact CeBIT navigation definition file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/02/17 18:41:16 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/22 10:38:24 $
  */
- public class CmsSimpleNavFile extends CmsXmlTemplateFile {
+ public class CmsSimpleNavFile extends CmsExampleNavFile {
 
     /**
      * Default constructor.
@@ -75,25 +76,76 @@ import java.util.*;
     }
     
     /**
-     * Gets the expected tagname for the XML documents of this content type
-     * @return Expected XML tagname.
-     */
-    public String getXmlDocumentTagName() {
-        return "XMLNAVTEMPLATE";
-    }
-
-    /**
      * Gets a description of this content type.
      * @return Content type description.
      */
     public String getContentDescription() {
-        return "OpenCms navigation template";
+        return "OpenCms navigation template for mindfact CeBIT nav";
     }
+
+    /**
+     * Gets a navigation entry for a starndard section (folder).
+     * The given link and title will be used to display the entry.
+     * This method makes use of the special XML tags
+     * <code>&lt;STARTSEQ&gt;</code>, <code>&lt;MIDDLESEQ&gt;</code> and <code>&lt;ENDSEQ&gt;</code> tag
+     * inside the <code>&lt;SECTION&gt;</code> tag of the template file to 
+     * determine the start, middle and end HTML sequence of each section entry.
+     * 
+     * @param link URL that should be ued for the link.
+     * @param title Title for this link
+     * @exception CmsException
+     */
+    public String getOtherSectionNavEntry(String link, String title) throws CmsException {
+        // Not used in this navigation
+        return "";
+    }
+
+    /**
+     * Gets a navigation entry for the current section (folder).
+     * The given link and title will be used to display the entry.
+     * This method makes use of the special XML tags
+     * <code>&lt;STARTSEQ&gt;</code>, <code>&lt;MIDDLESEQ&gt;</code> and <code>&lt;ENDSEQ&gt;</code> tag
+     * inside the <code>&lt;SECTION&gt;</code> tag of the template file to 
+     * determine the start, middle and end HTML sequence of each section entry.
+     * 
+     * @param link URL that should be ued for the link.
+     * @param title Title for this link
+     * @exception CmsException
+     */
+    public String getCurrentSectionNavEntry(String link, String title) throws CmsException {
+        // Not used in this navigation
+        return "";
+    }    
             
+    /**
+     * Gets a navigation entry for a standard page entry.
+     * The given link and title will be used to display the entry.
+     * This method makes use of the special XML tags
+     * <code>&lt;STARTSEQ&gt;</code>, <code>&lt;MIDDLESEQ&gt;</code> and <code>&lt;ENDSEQ&gt;</code> tag
+     * inside the <code>&lt;PAGE&gt;</code> tag of the template file to 
+     * determine the start, middle and end HTML sequence of each page entry.
+     * 
+     * @param link URL that should be ued for the link.
+     * @param title Title for this link
+     * @exception CmsException
+     */
     public String getOtherNavEntry(String link, String title) throws CmsException {
         return getDataValue("startseq") + link + getDataValue("middleseq") + title + getDataValue("endseq") + "\n";
     }
     
+    /**
+     * Gets a navigation entry for the currenty displayed page.
+     * This entry will not be displayed as link but only as 
+     * written text.
+     * The given title will be used to display the entry.
+     * This method makes use of the special XML tags
+     * <code>&lt;STARTSEQ&gt;</code>, <code>&lt;MIDDLESEQ&gt;</code> and <code>&lt;ENDSEQ&gt;</code> tag
+     * inside the <code>&lt;CURRENTPAGE&gt;</code> tag of the template file to 
+     * determine the start, middle and end HTML sequence of this entry.
+     * 
+     * @param title Title for this entry.
+     * @exception CmsException
+     */
     public String getCurrentNavEntry(String title) throws CmsException {
         return getDataValue("startseqcurr") + title + getDataValue("endseqcurr") + "\n";
     }    
