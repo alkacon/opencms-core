@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImport.java,v $
-* Date   : $Date: 2001/09/06 06:53:33 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/09/06 13:21:44 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ public class CmsAdminModuleImport extends Thread implements I_CmsConstants {
         try {
 
             // create a Project to import the module.
-            CmsProject project = m_cms.createProject("ImportModule", "A System generated Project to import The Module " + m_moduleName, C_GROUP_ADMIN, C_GROUP_ADMIN, ""+C_PROJECT_TYPE_TEMPORARY);
+            CmsProject project = m_cms.createProject("ImportModule", "A System generated Project to import The Module " + m_moduleName, C_GROUP_ADMIN, C_GROUP_ADMIN, C_PROJECT_TYPE_TEMPORARY);
             reqCont.setCurrentProject(project.getId());
 
             at = "copyResourcesToProject: ";

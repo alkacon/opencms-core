@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
-* Date   : $Date: 2001/09/06 06:53:33 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/09/06 13:21:44 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ public class CmsAdminModuleDeleteThread extends Thread implements I_CmsConstants
         try {
 
             // create a Project to delete the module.
-            CmsProject project = m_cms.createProject("DeleteModule", "A System generated Project to delete The Module " + m_moduleName, C_GROUP_ADMIN, C_GROUP_ADMIN, ""+C_PROJECT_TYPE_TEMPORARY);
+            CmsProject project = m_cms.createProject("DeleteModule", "A System generated Project to delete The Module " + m_moduleName, C_GROUP_ADMIN, C_GROUP_ADMIN, C_PROJECT_TYPE_TEMPORARY);
             reqCont.setCurrentProject(project.getId());
 
             at = "copyResourceToProject: ";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2001/09/06 13:21:44 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.53 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.54 $ $Date: 2001/09/06 13:21:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -355,7 +355,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
                 // finally create the project
                 CmsProject project = cms.createProject(newName, newDescription, newGroup,
-                        newManagerGroup, projectType);
+                        newManagerGroup, Integer.parseInt(projectType));
                 // change the current project
                 reqCont.setCurrentProject(project.getId());
                 templateSelector = "wait";
