@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/21 08:55:47 $
- * Version: $Revision: 1.215 $
+ * Date   : $Date: 2001/01/02 09:44:47 $
+ * Version: $Revision: 1.216 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.215 $ $Date: 2000/12/21 08:55:47 $
+ * @version $Revision: 1.216 $ $Date: 2001/01/02 09:44:47 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -606,12 +606,13 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 		throws CmsException {
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
+			name = name.trim();
+			validName(name, false);
 			// check the lenght of the groupname
 			if(name.length() > 1) {
 				return( m_dbAccess.createGroup(name, description, flags, parent) );
 			} else {
-				throw new CmsException("[" + this.getClass().getName() + "] " + name, 
-					CmsException.C_BAD_NAME);
+				throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
 			}
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + name, 
@@ -703,6 +704,10 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 		throws CmsException {
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
+			// no space before or after the name
+			name = name.trim();
+			// check the username
+			validName(name, false);
 			// check the password minimumsize
 			if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
 				CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
@@ -795,7 +800,10 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 					         String group, String description, 
 					         Hashtable additionalInfos, int flags)
 		throws CmsException {
-	 
+		// no space before or after the name
+		name = name.trim();
+		// check the username
+		validName(name, false);
 	     // check the password minimumsize
 		if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
 				CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
@@ -911,7 +919,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 		// has the user write-access? and is he owner or admin?
 		if( accessWrite(currentUser, currentProject, resource) &&
 			( (resource.getOwnerId() == currentUser.getId()) || 
-			  isAdmin(currentUser, currentProject))) {
+			  isAdmin(currentUser, currentProject))) {  
 		    CmsGroup group = readGroup(currentUser, currentProject, newGroup);
 			resource.setGroupId(group.getId());
 			// write-acces  was granted - write the file.
@@ -1712,6 +1720,10 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
 		throws CmsException {
 		// check the security
 		if( isAdmin(currentUser, currentProject) ) {
+			// no space before or after the name
+			name = name.trim();
+			// check the name
+			validName(name, true);
 			m_propertyDefVectorCache.clear();			
 			return( m_dbAccess.createPropertydefinition(name, 
 													    getResourceType(currentUser, 
@@ -5895,6 +5907,44 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 			}
 		}
 	}
+/**
+ * Checks ii characters in a String are allowed for names
+ * 
+ * @param name String to check
+ * 
+ * @exception throws a exception, if the check fails.
+ */
+protected void validName(String name, boolean blank) throws CmsException {
+	if (name == null || name.length() == 0 || name.trim().length() == 0) {
+		throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+	}
+	// throw exception if no blanks are allowed
+	if (!blank) {
+		int l = name.length();
+		for (int i = 0; i < l; i++) {
+			char c = name.charAt(i);
+			if (c == ' ') {
+				throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+			}
+		}
+	}
+
+	/*
+	for (int i=0; i<l; i++) {
+	char c = name.charAt(i);
+	if ( 
+	((c < 'a') || (c > 'z')) &&
+	((c < '0') || (c > '9')) &&
+	((c < 'A') || (c > 'Z')) &&
+	(c != '-') && (c != '.') &&
+	(c != '|') && (c != '_') &&	(c != '~')
+	) {
+	throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+	CmsException.C_BAD_NAME);
+	}
+	}
+	*/
+}
 	/**
 	 * Writes the export-path for the system.
 	 * This path is used for db-export and db-import.
