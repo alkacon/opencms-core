@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2003/08/08 12:21:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/12 10:09:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,13 +45,13 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $ $Date: 2003/08/08 12:21:06 $
+ * @version $Revision: 1.3 $ $Date: 2003/08/12 10:09:53 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
     
     /** Matching group names for group name translation */
-    private Map groupTranslations;
+    private Map m_groupTranslations;
 
     // member variables    
     private String m_groupAdministrators;
@@ -62,7 +62,7 @@ public class CmsDefaultUsers {
     private String m_userGuest;
 
     /** Matching user names for user name translation */  
-    private Map userTranslations;
+    private Map m_userTranslations;
       
     /**
      * Public constructor with individual names.<p>
@@ -120,6 +120,7 @@ public class CmsDefaultUsers {
      * 
      * @param conf the OpenCms configuration
      * @return the initialized default user configuration 
+     * @throws Exception if something goes wrong
      */
     public static CmsDefaultUsers initialize(Configurations conf) throws Exception {
         CmsDefaultUsers defaultUsers = null;
@@ -229,7 +230,7 @@ public class CmsDefaultUsers {
      * translated to "ocusers", and the default name for the admin user "Admin"
      * is translated to "ocadmin".<p>
      * 
-     * @param names array of name translations
+     * @param translations array of name translations
      */
     private void setNameTranslations(String[] translations) {
         if ((translations == null) || (translations.length == 0)) return;
@@ -246,20 +247,20 @@ public class CmsDefaultUsers {
             if (valid && ucmatch.startsWith(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_GROUP)) {
                 String name1 = match.substring(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_GROUP.length(), pos);
                 String name2 = match.substring(pos+1);      
-                if (groupTranslations == null) {
-                    groupTranslations = new HashMap();
+                if (m_groupTranslations == null) {
+                    m_groupTranslations = new HashMap();
                 } 
-                groupTranslations.put(name1, name2);  
+                m_groupTranslations.put(name1, name2);  
                 if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Name translation     : group " + name1 + " to " + name2);
                 }                
             } else if (valid && ucmatch.startsWith(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER)) {
                 String name1 = match.substring(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER.length(), pos);
                 String name2 = match.substring(pos+1);      
-                if (userTranslations == null) {
-                    userTranslations = new HashMap();
+                if (m_userTranslations == null) {
+                    m_userTranslations = new HashMap();
                 } 
-                userTranslations.put(name1, name2);      
+                m_userTranslations.put(name1, name2);      
                 if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Name translation     : user " + name1 + " to " + name2);
                 }                             
@@ -280,8 +281,8 @@ public class CmsDefaultUsers {
      * @return the translated name for the given group name
      */
     public String translateGroup(String name) {
-        if (groupTranslations == null) return name;
-        String match = (String)groupTranslations.get(name);
+        if (m_groupTranslations == null) return name;
+        String match = (String)m_groupTranslations.get(name);
         if (match != null) {
             return match;
         } else {
@@ -298,8 +299,8 @@ public class CmsDefaultUsers {
      * @return the translated name for the given user name
      */
     public String translateUser(String name) {
-        if (userTranslations == null) return name;
-        String match = (String)userTranslations.get(name);
+        if (m_userTranslations == null) return name;
+        String match = (String)m_userTranslations.get(name);
         if (match != null) {
             return match;
         } else {
