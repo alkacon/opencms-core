@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2004/07/06 08:39:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/07 14:12:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.search;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
 import org.opencms.search.documents.I_CmsDocumentFactory;
@@ -46,223 +44,112 @@ import org.apache.lucene.document.Field;
 /**
  * Contains the data of a single item in a search result.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2004/07/06 08:39:39 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.10 $ $Date: 2004/07/07 14:12:30 $
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
-public class CmsSearchResult implements I_CmsMemoryMonitorable {
-
-    /** The document found. */
-    private Document m_document;
-
-    /** The index. */
-    private CmsSearchIndex m_index;
-
-    /** The query. */
-    private String m_query;
-
-    /** The resource found. */
-    private A_CmsIndexResource m_resource;
+public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
 
     /** The score of this search result. */
-    private int m_score;
+    protected int m_score;
+
+    /** The creation date of this search result. */
+    protected Date m_dateCreated;
+
+    /** The last modification date of this search result. */
+    protected Date m_dateLastModified;
+
+    /** The resource path of this search result. */
+    protected String m_path;
+
+    /** The title of this search result. */
+    protected String m_title;
+
+    /** The description of this search result. */
+    protected String m_description;
+
+    /** The key words of this search result. */
+    protected String m_keyWords;
+
+    /** The excerpt of this search result. */
+    protected String m_excerpt;
 
     /**
-     * Constructor to create a new, single search result entry.<p>
+     * Creates a new search result.<p>
      * 
-     * @param index the search index
-     * @param query the query
-     * @param res the resource found
-     * @param doc the document found
-     * @param score the search score
+     * @param score the score of this search result
+     * @param luceneDocument the Lucene document to extract fields from such as description, title, key words etc. pp.
+     * @param excerpt the excerpt of the search result's content
      */
-    protected CmsSearchResult(CmsSearchIndex index, String query, A_CmsIndexResource res, Document doc, int score) {
+    protected CmsSearchResult(int score, Document luceneDocument, String excerpt) {
 
-        m_index = index;
-        m_query = query;
-        m_resource = res;
-        m_document = doc;
+        Field f = null;
+
         m_score = score;
-    }
+        m_excerpt = excerpt;
 
-    /**
-     * Gets the description.<p>
-     * 
-     * @return the description
-     */
-    public String getDescription() {
-
-        Field f = m_document.getField(I_CmsDocumentFactory.DOC_DESCRIPTION);
-        if (f != null) {
-            return f.stringValue();
+        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DESCRIPTION)) != null) {
+            m_description = f.stringValue();
+        } else {
+            m_description = null;
         }
 
-        return null;
+        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_KEYWORDS)) != null) {
+            m_keyWords = f.stringValue();
+        } else {
+            m_keyWords = null;
+        }
+
+        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_TITLE)) != null) {
+            m_title = f.stringValue();
+        } else {
+            m_title = null;
+        }
+
+        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_PATH)) != null) {
+            m_path = f.stringValue();
+        } else {
+            m_path = null;
+        }
+
+        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DATE_CREATED)) != null) {
+            m_dateCreated = DateField.stringToDate(f.stringValue());
+        } else {
+            m_dateCreated = null;
+        }
+
+        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED)) != null) {
+            m_dateLastModified = DateField.stringToDate(f.stringValue());
+        } else {
+            m_dateLastModified = null;
+        }
+
     }
 
     /**
-     * Gets the excerpt.<p>
-     * 
-     * @return the excerpt
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public String getExcerpt() {
+    public int compareTo(Object object) {
+
+        if (object == null || !(object instanceof CmsSearchResult)) {
+            return 0;
+        }
 
         try {
-            return m_index.getExcerpt(this);
-        } catch (Exception exc) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                String message = "Could not generate excerpt for query ["
-                    + m_query
-                    + "], and resource "
-                    + m_resource
-                    + ":";
-                OpenCms.getLog(this).error(message, exc);
+            int score = ((CmsSearchResult)object).getScore();
+
+            if (m_score < score) {
+                return -1;
             }
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the index.<p>
-     * 
-     * @return the index
-     */
-    public CmsSearchIndex getIndex() {
-
-        return m_index;
-    }
-
-    /**
-     * Gets the keywords.<p>
-     * 
-     * @return the keywords
-     */
-    public String getKeywords() {
-
-        Field f = m_document.getField(I_CmsDocumentFactory.DOC_KEYWORDS);
-        if (f != null) {
-            return f.stringValue();
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the query.<p>
-     * 
-     * @return the query
-     */
-    public String getQuery() {
-
-        return m_query;
-    }
-
-    /**
-     * Gets the content.<p>
-     * 
-     * @return the content
-     */
-    public String getRawContent() {
-
-        Field f = m_document.getField(I_CmsDocumentFactory.DOC_CONTENT);
-        String rawContent = null;
-
-        if (f.isStored()) {
-            rawContent = f.stringValue();
-        } else {
-            try {
-                rawContent = m_index.getIndexManager().getDocumentFactory(m_resource).getRawContent(
-                    m_resource,
-                    m_index.getLocale());
-            } catch (CmsException exc) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Could not generate raw content", exc);
-                }
+            
+            if (m_score > score) {
+                return 1;
             }
+        } catch (Exception e) {
+            // noop
         }
 
-        return rawContent;
-    }
-
-    /**
-     * Gets the resource.<p>
-     * 
-     * @return the CmsResource
-     */
-    public Object getResource() {
-
-        return m_resource;
-    }
-
-    /**
-     * Gets the score.<p>
-     * 
-     * @return the score
-     */
-    public int getScore() {
-
-        return m_score;
-    }
-
-    /**
-     * Gets the title.<p>
-     * 
-     * @return the title
-     */
-    public String getTitle() {
-
-        Field f = m_document.getField(I_CmsDocumentFactory.DOC_TITLE);
-        if (f != null) {
-            return f.stringValue();
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the creation date.<p>
-     * 
-     * @return the creation date
-     */
-    public Date getDateCreated() {
-
-        Field f = m_document.getField(I_CmsDocumentFactory.DOC_DATE_CREATED);
-        if (f != null) {
-            return DateField.stringToDate(f.stringValue());
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the last modification date.<p>
-     * 
-     * @return the last modification date
-     */
-    public Date getDateLastModified() {
-
-        Field f = m_document.getField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED);
-        if (f != null) {
-            return DateField.stringToDate(f.stringValue());
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the access path.<p>
-     * 
-     * @return the access path
-     */
-    public String getPath() {
-
-        Field f = m_document.getField(I_CmsDocumentFactory.DOC_PATH);
-        if (f != null) {
-            return f.stringValue();
-        }
-
-        return null;
+        return 0;
     }
 
     /**
@@ -271,18 +158,116 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable {
     public int getMemorySize() {
 
         int result = 8;
-        if (m_resource != null) {
-            result += CmsMemoryMonitor.getMemorySize(m_resource);
+
+        if (m_dateCreated != null) {
+            result += CmsMemoryMonitor.getMemorySize(m_dateCreated);
         }
-        if (m_query != null) {
-            result += CmsMemoryMonitor.getMemorySize(m_query);
+
+        if (m_dateLastModified != null) {
+            result += CmsMemoryMonitor.getMemorySize(m_dateLastModified);
         }
-        if (m_document != null) {
-            result += 1024 * 10; // 10 kb average size 
+
+        if (m_path != null) {
+            result += CmsMemoryMonitor.getMemorySize(m_path);
         }
-        if (m_index != null) {
-            result += 1024;
+
+        if (m_title != null) {
+            result += CmsMemoryMonitor.getMemorySize(m_title);
         }
+
+        if (m_description != null) {
+            result += CmsMemoryMonitor.getMemorySize(m_description);
+        }
+
+        if (m_keyWords != null) {
+            result += CmsMemoryMonitor.getMemorySize(m_keyWords);
+        }
+
+        if (m_excerpt != null) {
+            result += CmsMemoryMonitor.getMemorySize(m_excerpt);
+        }
+
         return result;
     }
+    
+    /**
+     * Returns the date created.<p>
+     *
+     * @return the date created
+     */
+    public Date getDateCreated() {
+
+        return m_dateCreated;
+    }
+    
+    /**
+     * Returns the date last modified.<p>
+     *
+     * @return the date last modified
+     */
+    public Date getDateLastModified() {
+
+        return m_dateLastModified;
+    }
+    
+    /**
+     * Returns the description.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
+    }
+    
+    /**
+     * Returns the excerpt.<p>
+     *
+     * @return the excerpt
+     */
+    public String getExcerpt() {
+
+        return m_excerpt;
+    }
+    
+    /**
+     * Returns the key words.<p>
+     *
+     * @return the key words
+     */
+    public String getKeywords() {
+
+        return m_keyWords;
+    }
+    
+    /**
+     * Returns the path.<p>
+     *
+     * @return the path
+     */
+    public String getPath() {
+
+        return m_path;
+    }
+    
+    /**
+     * Returns the score.<p>
+     *
+     * @return the score
+     */
+    public int getScore() {
+
+        return m_score;
+    }
+    
+    /**
+     * Returns the title.<p>
+     *
+     * @return the title
+     */
+    public String getTitle() {
+
+        return m_title;
+    }
+    
 }

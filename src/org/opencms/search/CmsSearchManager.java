@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/07/07 11:20:33 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/07/07 14:12:30 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.21 $ $Date: 2004/07/07 11:20:33 $
+ * @version $Revision: 1.22 $ $Date: 2004/07/07 14:12:30 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -97,6 +97,15 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
 
     /** Configured index sources. */
     private Map m_indexSources;
+    
+    /** The max. char. length of the excerpt in the search result. */
+    private int m_maxExcerptLength;
+    
+    /** 
+     * The package/class name of the class to highlight the search terms in the excerpt of a search result.
+     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.
+     */
+    private String m_highlighter;
 
     /**
      * Initializes the search manager.<p>
@@ -721,5 +730,57 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
 
         return (CmsSearchDocumentType)m_documentTypeConfigs.get(name);
     }
+    
+    /**
+     * Returns the package/class name of the highlighter.<p>
+     * 
+     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.<p>
+     * 
+     * @return the package/class name of the highlighter
+     */
+    public String getHighlighter() {
 
+        return m_highlighter;
+    }
+    
+    /**
+     * Returns the max. excerpt length.<p>
+     *
+     * @return the max excerpt length
+     */
+    public int getMaxExcerptLength() {
+
+        return m_maxExcerptLength;
+    }
+    
+    /**
+     * Sets the package/class name of the highlighter.<p>
+     *
+     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.<p>
+     *
+     * @param highlighter the package/class name of the highlighter
+     */
+    public void setHighlighter(String highlighter) {
+
+        m_highlighter = highlighter;
+    }
+    
+    /**
+     * Sets the max. excerpt length.<p>
+     *
+     * @param maxExcerptLength the max. excerpt length to set
+     */
+    public void setMaxExcerptLength(String maxExcerptLength) {
+
+        try {
+            m_maxExcerptLength = Integer.parseInt(maxExcerptLength);
+        } catch (Exception e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error parsing max. excerpt length " + maxExcerptLength, e);
+            }
+            
+            m_maxExcerptLength = 1024;
+        }
+    }
+    
 }

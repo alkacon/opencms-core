@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2004/07/02 16:05:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/07 14:12:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.dom4j.Element;
  * Lucene search configuration class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3.5
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
@@ -90,6 +90,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
     private static final String N_INDEXER = "indexer";
     private static final String N_RESOURCES = "resources";   
     private static final String C_XPATH_SEARCH = "*/" + N_SEARCH;
+    private static final String N_EXCERPT = "excerpt";
+    private static final String N_HIGHLIGHTER = "highlighter";
     
     /**
      * Public constructor, will be called by configuration manager.<p> 
@@ -125,7 +127,13 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod(C_XPATH_SEARCH + "/" + N_DIRECTORY, "setDirectory", 0);
         
         // timeout rule
-        digester.addCallMethod(C_XPATH_SEARCH + "/" + N_TIMEOUT, "setTimeout", 0);        
+        digester.addCallMethod(C_XPATH_SEARCH + "/" + N_TIMEOUT, "setTimeout", 0);
+        
+        // rule for the max. char. lenght of the search result excerpt
+        digester.addCallMethod(C_XPATH_SEARCH + "/" + N_EXCERPT, "setMaxExcerptLength", 0);
+        
+        // rule for the highlighter to highlight the search terms in the excerpt of the search result
+        digester.addCallMethod(C_XPATH_SEARCH + "/" + N_HIGHLIGHTER, "setHighlighter", 0);        
         
         // document type rule
         xPath = C_XPATH_SEARCH + "/" + N_DOCUMENTTYPES + "/" + N_DOCUMENTTYPE;

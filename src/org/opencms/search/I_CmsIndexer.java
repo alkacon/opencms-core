@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2004/07/06 08:39:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/07/07 14:12:30 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Interface for an indexer indexing Cms resources.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2004/07/06 08:39:39 $
+ * @version $Revision: 1.6 $ $Date: 2004/07/07 14:12:30 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
@@ -78,19 +78,17 @@ public interface I_CmsIndexer {
     /**
      * Returns an index resource for a specified Lucene search result document.<p>
      * 
-     * Implementations of this method have to check permissions and if the resource
-     * is a sub-resource of a given search root folder.<p>
+     * Implementations of this method have to if the current user has read permissions
+     * on the Cms resource represented by the Lucene document.<p>
      * 
-     * If these checks fail, implementation must return null as a result.<p>
+     * If this check fails, the implementation must return null as a result.<p>
      * 
      * @param cms the current user's CmsObject
-     * @param searchRoot only resource that are sub-resource of the search root are included in the search result
      * @param doc the Lucene search result document
-     * 
      * @return a new index resource
      * @throws CmsException if something goes wrong
      * @see A_CmsIndexResource
      */
-    A_CmsIndexResource getIndexResource(CmsObject cms, String searchRoot, Document doc) throws CmsException;
+    A_CmsIndexResource getIndexResource(CmsObject cms, Document doc) throws CmsException;
 
 }

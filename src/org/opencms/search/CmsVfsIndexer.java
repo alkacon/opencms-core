@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2004/07/06 08:39:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/07/07 14:12:30 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implementation for an indexer indexing VFS Cms resources.<p>
  * 
- * @version $Revision: 1.12 $ $Date: 2004/07/06 08:39:39 $
+ * @version $Revision: 1.13 $ $Date: 2004/07/07 14:12:30 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -166,9 +166,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#getIndexResource(org.opencms.file.CmsObject, java.lang.String, org.apache.lucene.document.Document)
+     * @see org.opencms.search.I_CmsIndexer#getIndexResource(org.opencms.file.CmsObject, org.apache.lucene.document.Document)
      */
-    public A_CmsIndexResource getIndexResource(CmsObject cms, String searchRoot, Document doc) throws CmsException {
+    public A_CmsIndexResource getIndexResource(CmsObject cms, Document doc) throws CmsException {
 
         Field f = null;
         String path = null;
@@ -180,8 +180,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             path = cms.getRequestContext().removeSiteRoot(f.stringValue());
             resource = cms.readResource(path);
 
-            if (cms.hasPermissions(resource, I_CmsConstants.C_READ_ACCESS)
-                && resource.getRootPath().startsWith(searchRoot)) {
+            if (cms.hasPermissions(resource, I_CmsConstants.C_READ_ACCESS)) {
 
                 result = new CmsVfsIndexResource(resource);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/07/05 15:37:34 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/07/07 14:12:30 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.11 $ $Date: 2004/07/05 15:37:34 $
+ * @version $Revision: 1.12 $ $Date: 2004/07/07 14:12:30 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -278,9 +278,9 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     }
     
     /**
-     * @see org.opencms.search.I_CmsIndexer#getIndexResource(CmsObject, String, org.apache.lucene.document.Document)
+     * @see org.opencms.search.I_CmsIndexer#getIndexResource(CmsObject, org.apache.lucene.document.Document)
      */
-    public A_CmsIndexResource getIndexResource(CmsObject cms, String searchRoot, Document doc) throws CmsException {
+    public A_CmsIndexResource getIndexResource(CmsObject cms, Document doc) throws CmsException {
 
         Field f = null;
         String channel = null;

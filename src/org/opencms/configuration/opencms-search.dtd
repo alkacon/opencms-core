@@ -10,6 +10,8 @@
 	cache,
 	directory,
 	timeout,
+	excerpt,
+	highlighter,
 	documenttypes,
 	analyzers,
 	indexes,
@@ -30,6 +32,17 @@
 # Timeout in milliseconds to abandon indexing threads.
 -->
 <!ELEMENT timeout (#PCDATA)>
+
+<!--
+# The max. char. length of the excerpt in the search results.
+-->
+<!ELEMENT excerpt (#PCDATA)>
+
+<!--
+# A class implementing org.opencms.search.documents.I_TermHighlighter
+# to highlight the search terms in the excerpt.
+-->
+<!ELEMENT highlighter (#PCDATA)>
 
 <!ELEMENT documenttypes (documenttype+)>
 
