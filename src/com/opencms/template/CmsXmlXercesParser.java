@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/17 18:39:58 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/17 18:39:58 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
     
@@ -98,7 +98,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
      * @param out Writer to print to.
      */
     public void getXmlText(Document doc, Writer out) {
-        OutputFormat of = new OutputFormat(doc, OutputFormat.DEFAULT_ENCODING, false);
+        OutputFormat of = new OutputFormat(doc, OutputFormat.DEFAULT_ENCODING, true);
         
         Printer printer = Printer.makePrinter(out, of);
         try {
