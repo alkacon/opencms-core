@@ -189,16 +189,21 @@ function dU(doc, pages, actpage) {
 	last_id = -1;
 	vi.locklength = 0;
 	vi.doc = doc;
-	if ((mode == "projectview") || (mode == "galleryview")) {
-		win = new windowStore(window.body.document, window.body.admin_head.document, null, window.body.admin_content.document);
-	} else {
-		win = new windowStore(window.body.document, window.body.explorer_head.document, null, window.body.explorer_body.explorer_files.document);
-	}
+	updateWindowStore();
 	openfolderMethod="openFolder";
 	showCols(vr.viewcfg);
 	printList(doc);
 	if (mode == "explorerview") {
 		displayHead(win.head, pages, actpage);
+	}
+}
+
+
+function updateWindowStore() {
+	if ((mode == "projectview") || (mode == "galleryview")) {
+		win = new windowStore(window.body.document, window.body.admin_head.document, null, window.body.admin_content.document);
+	} else {
+		win = new windowStore(window.body.document, window.body.explorer_head.document, null, window.body.explorer_body.explorer_files.document);
 	}
 }
 
@@ -1216,18 +1221,25 @@ function closeTreeWin() {
 
 
 function setFormValue(filename) {
+	// target form where the link is to be pasted to
 	var curForm;
+	// the document of the target form
 	var curDoc;
+	// update the window store	
+	updateWindowStore();
+	
 	if (treeDoc != null) {
 		curDoc = treeDoc;
 	} else {
 		curDoc = win.files;
 	}
+	
 	if (treeForm != null) {
 		curForm = curDoc.forms[treeForm];
 	} else {
 		curForm = curDoc.forms[0];
 	}
+		
 	if (curForm.elements[treeField]) {
 		curForm.elements[treeField].value = filename;
 	} else if (curForm.folder) {
@@ -1235,6 +1247,7 @@ function setFormValue(filename) {
 	} else if (curForm.target) {
 		curForm.target.value = filename;
 	}
+	
 	// this calls the fillValues() function in the explorer window, if present
 	if (window.body.explorer_body && window.body.explorer_body.explorer_files) {
 		var filesDoc = window.body.explorer_body.explorer_files;
@@ -1242,6 +1255,7 @@ function setFormValue(filename) {
 			filesDoc.fillValues(filename);
 		}
 	}
+	
 	// this fills the parameter from the hidden field to the select box
 	if (window.body.admin_content) {
 		if (treeField == "tempChannel") {
