@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/10/15 14:26:51 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
      * @exception CmsException
      */
     public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters, String methodParameter) throws CmsException  {
-        byte[] result = null;
+        String result = null;
 
         // get our own cache directives
         A_CmsCacheDirectives cd = getCacheDirectives();
@@ -116,7 +116,7 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
                 variant = getVariant(cacheKey);
             }
             if(variant != null){
-                result = (byte[])variant.get(0);
+                result = (String)variant.get(0);
             }
         }
         if(variant == null){
@@ -161,16 +161,15 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             if(methodResult != null){
                 if(methodResult instanceof String){
                     //Gridnine AB Aug 7, 2002
-                    try {
-                    result = ((String)methodResult).getBytes(
-                        cms.getRequestContext().getEncoding());
+                   	result = (String)methodResult;
+                }else if(methodResult instanceof byte[]){
+                	try {
+	                    result = new String((byte[])methodResult, cms.getRequestContext().getEncoding());
                     } catch (UnsupportedEncodingException uee) {
                         throw new CmsException(CmsException.C_LAUNCH_ERROR, uee);
                     }
-                }else if(methodResult instanceof byte[]){
-                    result = (byte[])methodResult;
                 }else if(methodResult instanceof Integer){
-                    result = ((Integer)methodResult).toString().getBytes();
+                    result = ((Integer)methodResult).toString();
                 }else if(methodResult instanceof CmsProcessedString){
                     // result stays null but we have to write to the variant cache
                     variant = new CmsElementVariant();
@@ -184,13 +183,13 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             if((result != null)&&(cacheKey != null)&&(cd.isInternalCacheable())){
                 variant = new CmsElementVariant();
                 //Gridnine AB Aug 5, 2002
-                variant.add(result, cms.getRequestContext().getEncoding());
+                variant.add(result);
                 addVariant(cacheKey, variant);
             }
         }
         if(streamable) {
             try {
-                cms.getRequestContext().getResponse().getOutputStream().write(result);
+                cms.getRequestContext().getResponse().getOutputStream().write(result.getBytes(cms.getRequestContext().getEncoding()));
             } catch(Exception e) {
                 if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, this.toString() + " Error while streaming!");
@@ -198,7 +197,11 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             }
             result = null;
         }
-        return result;
+        try {
+	        return result.getBytes(cms.getRequestContext().getEncoding());
+        } catch (UnsupportedEncodingException uee) {
+            throw new CmsException(CmsException.C_LAUNCH_ERROR, uee);
+        }
     }
 
     /**
