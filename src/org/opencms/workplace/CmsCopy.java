@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/08/01 09:55:34 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/08/01 14:49:56 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -62,6 +62,7 @@ public class CmsCopy extends CmsDialog {
     public static final String PARAM_KEEPRIGHTS = "keeprights";    
 
     private String m_paramTarget;
+    private String m_paramCopymode;
     private String m_paramKeeprights;    
     
     /**
@@ -122,7 +123,25 @@ public class CmsCopy extends CmsDialog {
      */
     public void setParamKeeprights(String value) {
         m_paramKeeprights = value;
-    }    
+    } 
+    
+    /**
+     * Returns the value of the copymode parameter.<p>
+     * 
+     * @return the value of the copymode parameter
+     */
+    public String getParamCopymode() {
+        return m_paramCopymode;   
+    }
+    
+    /**
+     * Sets the value of the copymode parameter.<p>
+     * 
+     * @param value the value of the copymode parameter
+     */
+    public void setParamCopymode(String value) {
+        m_paramCopymode = value;
+    }
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
@@ -144,7 +163,43 @@ public class CmsCopy extends CmsDialog {
             // build title for copy dialog     
             setParamTitle(key("title.copy") + ": " + CmsResource.getName(getParamResource()));
         }      
-    } 
+    }
+    
+    /**
+     * Builds the input radio buttons to select between preserving links or creating new resources when copying.<p>
+     * 
+     * @return the HTML code for the radio buttons
+     */
+    public String buildRadioCopyMode() {
+        StringBuffer retValue = new StringBuffer(256);
+        
+        // check if the current resource is a folder
+        boolean isFolder = false;
+        try {
+            CmsResource curRes = getCms().readFileHeader(getParamResource());
+            if (curRes.isFolder()) {
+                isFolder = true;        
+            }
+        } catch (CmsException e) { }
+        
+        if (isFolder) {
+            // for folders, show an additional option "preserve links" and mark it as default
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_PRESERVE_LINK + "\" checked=\"checked\"> ");
+            retValue.append(getSettings().getMessages().key("messagebox.option.folder.preserve.copy") + "<br>\n");
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\"> ");
+            retValue.append(getSettings().getMessages().key("messagebox.option.folder.asnewresource.copy") + "<br>\n");       
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_LINK + "\"> ");
+            retValue.append(getSettings().getMessages().key("messagebox.option.folder.aslink.copy") + "<br>\n");
+        } else {
+            // for files, mark "copy as new" as default
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\" checked=\"checked\"> ");
+            retValue.append(getSettings().getMessages().key("messagebox.option.file.asnewresource.copy") + "<br>\n");       
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_LINK + "\"> ");
+            retValue.append(getSettings().getMessages().key("messagebox.option.file.aslink.copy") + "<br>\n");
+        }
+        
+        return retValue.toString();
+    }
 
     /**
      * Performs the copy action, will be called by the JSP page.<p>
@@ -183,7 +238,7 @@ public class CmsCopy extends CmsDialog {
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
             }
         }
-    }
+    } 
     
     /**
      * Performs the resource copying.<p>
@@ -199,6 +254,12 @@ public class CmsCopy extends CmsDialog {
             // return false, this will trigger the "please wait" screen
             return false;
         }
+        
+        // get the copy mode from request parameter
+        int copyMode = I_CmsConstants.C_COPY_PRESERVE_LINK;
+        try {
+            copyMode = Integer.parseInt(getParamCopymode());
+        } catch (Exception e) { }
 
         // calculate the target name
         String target = getParamTarget();
@@ -228,7 +289,7 @@ public class CmsCopy extends CmsDialog {
         }            
         
         // copy the resource       
-        getCms().copyResource(getParamResource(), target, "true".equals(getParamKeeprights()), true,I_CmsConstants.C_COPY_PRESERVE_LINK);
+        getCms().copyResource(getParamResource(), target, "true".equals(getParamKeeprights()), true, copyMode);
         return true;
     }
 }
