@@ -7,7 +7,7 @@
     value at the commandline.
     Set it like this: ant all -Dversion.number=4.3.28 -->
 
-    <property name="version.name"               value="Tleilax"/>
+    <property name="version.name"               value="Ecaz"/>
     <property name="app.name"                   value="opencms"/>
     <property name="zip.home"                   value="../zip"/>
     <property name="pdf.home"                   value="../pdf"/>

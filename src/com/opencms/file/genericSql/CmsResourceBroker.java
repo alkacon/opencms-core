@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/02/14 14:30:48 $
-* Version: $Revision: 1.309 $
+* Date   : $Date: 2002/03/13 11:24:23 $
+* Version: $Revision: 1.310 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.309 $ $Date: 2002/02/14 14:30:48 $
+ * @version $Revision: 1.310 $ $Date: 2002/03/13 11:24:23 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -100,6 +100,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     * The Registry
     */
     protected I_CmsRegistry m_registry = null;
+
+    /**
+     * The portnumber the workplace access is limited to.
+     */
+    protected int m_limitedWorkplacePort = -1;
 
     /**
      *  Define the caches
@@ -3938,6 +3943,9 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         // Store the configuration.
         m_configuration = config;
 
+        // store the limited workplace port
+        m_limitedWorkplacePort = config.getInteger("workplace.limited.port", -1);
+
         if (config.getString("history.enabled", "true").toLowerCase().equals("false")) {
             m_enableHistory = false;
         }
@@ -7679,4 +7687,16 @@ protected void validName(String name, boolean blank) throws CmsException {
         }
         return firstTag;
     }
+
+    /**
+     * This is the port the workplace access is limited to. With the opencms.properties
+     * the access to the workplace can be limited to a user defined port. With this
+     * feature a firewall can block all outside requests to this port with the result
+     * the workplace is only available in the local net segment.
+     * @returns the portnumber or -1 if no port is set.
+     */
+    public int getLimitedWorkplacePort() {
+        return m_limitedWorkplacePort;
+    }
+
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2001/09/05 13:40:47 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2002/03/13 11:24:23 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2001/09/05 13:40:47 $
+ * @version $Revision: 1.43 $ $Date: 2002/03/13 11:24:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -547,17 +547,37 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 
     protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        String lasturl = getLastUrl(cms, parameters);
-        // Since we are in the workplace, no browser caching is allowed here.
-        // Set all caching information to "no-cache".
-        // Don't bother about the internal caching here! Workplace users should be forced
-        // to reload the workplace pages at every request.
-        //HTTP 1.1
-        cms.getRequestContext().getResponse().setHeader("Cache-Control", "no-cache");
-        //HTTP 1.0
-        cms.getRequestContext().getResponse().setHeader("Pragma", "no-cache");
-        ((CmsXmlWpTemplateFile)xmlTemplateDocument).setData("lasturl", lasturl);
-        return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+
+        // checks if the access was with the correct port. If not it sends a not found error
+        if( checkPort(cms) ) {
+            String lasturl = getLastUrl(cms, parameters);
+            // Since we are in the workplace, no browser caching is allowed here.
+            // Set all caching information to "no-cache".
+            // Don't bother about the internal caching here! Workplace users should be forced
+            // to reload the workplace pages at every request.
+            //HTTP 1.1
+            cms.getRequestContext().getResponse().setHeader("Cache-Control", "no-cache");
+            //HTTP 1.0
+            cms.getRequestContext().getResponse().setHeader("Pragma", "no-cache");
+            ((CmsXmlWpTemplateFile)xmlTemplateDocument).setData("lasturl", lasturl);
+            return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+        } else {
+            throw new CmsException("No access to the workplace with this port", CmsException.C_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Checks, if the request is running on the correct port. With the opencms.properties
+     * the access to the workplace can be limitted to a user defined port. With this
+     * feature a firewall can block all outside requests to this port with the result
+     * the workplace is only available in the local net segment.
+     * @param cms the CmsObject to check the port with.
+     */
+    protected boolean checkPort(CmsObject cms) {
+        int portnumber = cms.getRequestContext().getRequest().getServerPort();
+        int limitedPort = cms.getLimitedWorkplacePort();
+        return ( (limitedPort == -1) ||
+                 ( limitedPort == portnumber) );
     }
 
     /**

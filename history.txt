@@ -9,6 +9,12 @@ Legend:
 - General comment
 
 OpenCms 4.7.0 Ecaz - ?? March 2001
+! workplace limited port
+  This is the port the workplace access is limited to. With the opencms.properties
+  the access to the workplace can be limited to a user defined port. With this
+  feature a firewall can block all outside requests to this port with the result
+  the workplace is only available in the local net segment.
+  Default = -1 (no limit).
 - Change in Task Emails: Now in all subjects the initator or receiver appears. This is for
   Mails to all members of a role. A role member can see if the task is directly for him 
   without have a look into the taskmanagement in OpenCms.

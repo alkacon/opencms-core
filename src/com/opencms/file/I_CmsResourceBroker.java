@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/02/14 14:36:31 $
-* Version: $Revision: 1.170 $
+* Date   : $Date: 2002/03/13 11:24:23 $
+* Version: $Revision: 1.171 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.170 $ $Date: 2002/02/14 14:36:31 $
+ * @version $Revision: 1.171 $ $Date: 2002/03/13 11:24:23 $
  *
  */
 
@@ -3530,5 +3530,12 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      */
     public String digest(String value);
 
-
+    /**
+     * This is the port the workplace access is limited to. With the opencms.properties
+     * the access to the workplace can be limited to a user defined port. With this
+     * feature a firewall can block all outside requests to this port with the result
+     * the workplace is only available in the local net segment.
+     * @returns the portnumber or -1 if no port is set.
+     */
+    public int getLimitedWorkplacePort();
 }

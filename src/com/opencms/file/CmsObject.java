@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/03/07 15:51:27 $
-* Version: $Revision: 1.221 $
+* Date   : $Date: 2002/03/13 11:24:22 $
+* Version: $Revision: 1.222 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.221 $ $Date: 2002/03/07 15:51:27 $
+ * @version $Revision: 1.222 $ $Date: 2002/03/13 11:24:22 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3836,6 +3836,17 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      */
     public String digest(String value) {
         return m_rb.digest(value);
+    }
+
+    /**
+     * This is the port the workplace access is limited to. With the opencms.properties
+     * the access to the workplace can be limited to a user defined port. With this
+     * feature a firewall can block all outside requests to this port with the result
+     * the workplace is only available in the local net segment.
+     * @returns the portnumber or -1 if no port is set.
+     */
+    public int getLimitedWorkplacePort() {
+        return m_rb.getLimitedWorkplacePort();
     }
 
 }
