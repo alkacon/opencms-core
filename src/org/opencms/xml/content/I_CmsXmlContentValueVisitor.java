@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentValueVisitor.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/07 16:53:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,10 +42,10 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.4
  */
-interface I_CmsXmlContentValueVisitor {
+public interface I_CmsXmlContentValueVisitor {
 
     /**
      * Visits the given value.<p>

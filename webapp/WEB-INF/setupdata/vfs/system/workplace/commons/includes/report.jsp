@@ -112,7 +112,7 @@ function continueReport() {
 // -->
 </script>
 
-<%= wp.bodyStart("empty", "style=\"background-color:Menu;\" onLoad=\"init();\"") %><%= wp.bodyEnd() %>
+<%= wp.bodyStart("empty", "style=\"background-color:ThreeDFace;\" onLoad=\"init();\"") %><%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %><%
 
 break;

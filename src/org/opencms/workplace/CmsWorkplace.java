@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/11/03 14:55:56 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2004/12/07 16:53:59 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.91 $
+ * @version $Revision: 1.92 $
  * 
  * @since 5.1
  */
@@ -516,7 +516,7 @@ public abstract class CmsWorkplace {
             anchorStart = "<a href=\"#\" onclick=\"";
         }
       
-        result.append("<td>");      
+        result.append("<td style=\"vertical-align: top;\">");      
         switch (type) {     
             case 1:
             // image and text

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/12/02 09:07:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/07 16:53:59 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -78,7 +78,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         I_CmsWidgetDialog widgetDialog,
         I_CmsXmlContentValue value) {
 
-        return getHelpText(widgetDialog, value.getDocument().getContentDefinition(), value.getElementName());
+        return getHelpText(widgetDialog, value.getContentDefinition(), value.getElementName());
     }
 
     /**
@@ -123,8 +123,8 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
 
         StringBuffer result = new StringBuffer(128);
         result.append(value.getTypeName());
-        result.append(".");
-        result.append(value.getElementName());
+        result.append(".");       
+        result.append(value.getPath());
         result.append(".");
         result.append(value.getIndex());
         return result.toString();

@@ -13,7 +13,7 @@ input, select, option, textarea {
 /* Button - Normal style (inactive) */
 span.norm {
 	display: block;
-	border: 1px solid ThreeDLightShadow;
+	border: 1px solid ThreeDFace;
 }
 
 /* Button - Hover style */
@@ -37,7 +37,7 @@ span.push {
 /* Button - Disabled style */
 span.disabled {
 	display: block;
-	border: 1px solid Menu;
+	border: 1px solid ThreeDFace;
 	color: GrayText;
 }
 
@@ -115,7 +115,7 @@ a.button {
 /* ########## Dialog styles ########## */
 
 body.report {
-	background-color: Menu;
+	background-color: Window;
 }
 
 body.dialog {
@@ -123,12 +123,12 @@ body.dialog {
 	font-size: 11px;
 	padding: 0;
 	margin: 0;
-	background-color: Menu;
+	background-color: ThreeDFace;
 }
 
 body.dialogpopup {
 	margin: 0 auto;
-	background-color: Menu;
+	background-color: ThreeDFace;
 }
 
 /* outer table of complete dialog window */
@@ -139,7 +139,7 @@ table.dialog {
 /* inner table of complete dialog window */
 table.dialogbox {
 	width: 100%;
-	background-color: Menu;
+	background-color: ThreeDFace;
 }
 
 /* headline of dialog window */
@@ -200,7 +200,7 @@ span.dialogblockhead {
 	position:absolute;
 	top: -7px;
 	left: 5px;
-	background-color: Menu;
+	background-color: ThreeDFace;
 	padding: 0 3px;
 	white-space: nowrap;
 }

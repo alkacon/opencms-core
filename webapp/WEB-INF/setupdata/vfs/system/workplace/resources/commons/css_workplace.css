@@ -39,7 +39,7 @@ body.buttons-foot {
 /* Button - Normal style (inactive) */
 span.norm {
 	display: block;
-	border: 1px solid ThreeDLightShadow;
+	border: 1px solid ThreeDFace;
 }
 
 /* Button - Hover style */
@@ -63,7 +63,7 @@ span.push {
 /* Button - Disabled style */
 span.disabled {
 	display: block;
-	border: 1px solid Menu;
+	border: 1px solid ThreeDFace;
 	color: GrayText;
 }
 
@@ -141,7 +141,7 @@ a.button {
 /* ########## Dialog styles ########## */
 
 body.report {
-	background-color: Menu;
+	background-color: Window;
 }
 
 body.dialogadmin {
@@ -162,7 +162,7 @@ body.dialog {
 
 body.dialogpopup {
 	margin: 0 auto;
-	background-color: Menu;
+	background-color: ThreeDFace;
 }
 
 /* outer table of complete dialog window */
@@ -250,7 +250,7 @@ span.dialogblockhead {
 	position:absolute;
 	top: -7px;
 	left: 5px;
-	background-color: Menu;
+	background-color: ThreeDFace;
 	padding: 0 3px;
 	white-space: nowrap;
 }
@@ -467,6 +467,11 @@ span.tabactive {
 	width:100%; 
 }
 
+.xmlTableNested { 
+	width:100%;
+	border: 2px outset ThreeDHighlight;
+}
+
 .xmlTd    { 
 	width: 100%; 
 	height: 22px; 
@@ -474,7 +479,14 @@ span.tabactive {
 
 .xmlTdDisabled {
 	font-style: italic; 
-	border: 1px dotted ThreeDShadow;
+	border-right: 1px dotted ThreeDShadow;
+}
+
+.xmlTdErrorHeader {
+	font-size: 14px;
+	font-weight: bold;
+	color: #B40000;
+	text-align: center;
 }
 
 .xmlTdError {

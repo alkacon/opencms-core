@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2004/12/06 13:20:39 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/12/07 16:53:59 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,15 @@ package org.opencms.workplace.xmlwidgets;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -48,7 +50,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
@@ -84,47 +86,10 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         result.append("function initStringFields() {\n");
 
         Locale locale = widgetDialog.getElementLocale();
+        // call init method with outer content definition
+        result.append(getDialogInitMethod(document.getContentDefinition(), cms, document, locale, ""));
 
-        List typeSequence = document.getContentDefinition().getTypeSequence();
-        Iterator i = typeSequence.iterator();
-        while (i.hasNext()) {
-
-            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
-            String name = type.getElementName();
-            int count = document.getIndexCount(name, locale);
-
-            for (int j = 0; j < count; j++) {
-
-                I_CmsXmlContentValue value2 = document.getValue(name, locale, j);
-                I_CmsXmlWidget widget = document.getContentDefinition().getContentHandler().getWidget(
-                    value2);
-
-                if (this.equals(widget)) {
-                    // add init methods for all elements that use the String widget
-
-                    try {
-                        I_CmsXmlContentValue contentValue = document.getValue(name, locale, j);
-
-                        String id = getParameterName(contentValue);
-                        String currValue = contentValue.getStringValue(cms);
-                        currValue = CmsStringUtil.escapeJavaScript(currValue.trim());
-                        result.append("\tdocument.forms[\"EDITOR\"].elements[\"");
-                        result.append(id);
-                        result.append("\"].value = \"");
-                        result.append(currValue);
-                        result.append("\";\n");
-                    } catch (CmsXmlException e) {
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("Error accessing XML content node '" + name + "'", e);
-                        }
-                    }
-                }
-            }
-
-        }
-        
         result.append("\tstringsInserted = true;\n");
-
         result.append("}\n");
         return result.toString();
     }
@@ -148,6 +113,69 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         result.append("\">");
         result.append("</td>");
 
+        return result.toString();
+    }
+    
+    /**
+     * Recursive method that generates the javascript String initialization commands.<p>
+     * 
+     * @param contentDefinition the xml content definition
+     * @param cms the CmsObject to access the API
+     * @param document the document to check
+     * @param locale the current Locale
+     * @param pathPrefix the xpath prefix to use
+     * @return the javascript String initizialization commands
+     * @throws CmsXmlException if something goes wrong
+     */
+    private String getDialogInitMethod(CmsXmlContentDefinition contentDefinition, CmsObject cms, I_CmsXmlDocument document, Locale locale, String pathPrefix) throws CmsXmlException {
+        
+        StringBuffer result = new StringBuffer(8);
+              
+        Iterator i = contentDefinition.getTypeSequence().iterator();
+        while (i.hasNext()) {
+
+            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
+            String name = pathPrefix + type.getElementName();
+            int count = document.getIndexCount(name, locale);
+
+            for (int j = 0; j < count; j++) {
+                
+                I_CmsXmlContentValue value = document.getValue(name, locale, j);
+                
+                if (! type.isSimpleType()) {
+                    // this is a nested type, recurse into it
+                    CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)type;
+                    // create the xpath
+                    StringBuffer xPath = new StringBuffer(pathPrefix.length() + 16);
+                    xPath.append(pathPrefix);
+                    xPath.append(CmsXmlUtils.createXpathElement(type.getElementName(), value.getIndex() + 1));
+                    xPath.append("/");
+                    result.append(getDialogInitMethod(nestedSchema.getNestedContentDefinition(), cms, document, locale, xPath.toString()));
+                } else {
+                    // simple type, get the widget of it
+                    I_CmsXmlWidget widget = contentDefinition.getContentHandler().getWidget(value);
+    
+                    if (this.equals(widget)) {
+                        // add init methods for all elements that use the String widget   
+                        try {    
+                            String id = getParameterName(value);
+                            String currValue = value.getStringValue(cms);
+                            currValue = CmsStringUtil.escapeJavaScript(currValue.trim());
+                            result.append("\tdocument.forms[\"EDITOR\"].elements[\"");
+                            result.append(id);
+                            result.append("\"].value = \"");
+                            result.append(currValue);
+                            result.append("\";\n");
+                        } catch (CmsXmlException e) {
+                            if (OpenCms.getLog(this).isErrorEnabled()) {
+                                OpenCms.getLog(this).error("Error accessing XML content node '" + name + "'", e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+          
         return result.toString();
     }
 }

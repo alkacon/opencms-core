@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/12/07 16:53:59 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -140,8 +140,10 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                 // an example for this is the HTML value that does link replacement                
                 String name = (String)j.next();
                 I_CmsXmlContentValue value = getValue(name, locale);
-                String content = value.getStringValue(cms);
-                value.setStringValue(cms, content);
+                if (value.isSimpleType()) {
+                    String content = value.getStringValue(cms);
+                    value.setStringValue(cms, content);
+                }
             }
         }
 

@@ -18,6 +18,7 @@ int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 	
 switch (wp.getAction()) {
 
+case CmsXmlContentEditor.ACTION_CANCEL:
 case CmsXmlContentEditor.ACTION_SHOW_ERRORMESSAGE:
 //////////////////// ACTION: display the common error dialog
 	// do nothing here, only prevent editor content from being displayed!
