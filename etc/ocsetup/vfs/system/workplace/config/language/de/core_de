@@ -115,7 +115,7 @@
 		
 		<error>		
 			<message>
-			 <accessdenied>Leider konnte auf die Resource nicht zugegriffen werden.</accessdenied>
+				<accessdenied>Leider konnte auf die Resource nicht zugegriffen werden.</accessdenied>
 				<badcharacter>Unerlaubtes Zeichen in Eingabefeld: </badcharacter>
 				<chgrp>Leider konnte die Gruppe nicht geändert werden.</chgrp>
 				<chmod>Leider konnte die Berechtigung nicht geändert werden.</chmod>
@@ -129,6 +129,7 @@
 				<deleteuser> Leider konnte der Benutzer nicht gelöscht werden.</deleteuser>
 				<deleteextension>Die Dateierweiterung konnte leider nicht gelöscht werden.</deleteextension>
 				<deletegroup>Leider konnte die Gruppe nicht gelöscht werden.</deletegroup>
+				<foldercreate>Leider konnte das Verzeichnis nicht angelegt werden.</foldercreate>
 				<downbrowser>Sie können den Downloadbrowser noch nicht benutzen.</downbrowser>
 				<gallerynoright>Die neue Galerie konnte leider nicht angelegt werden.</gallerynoright>
 				<changeuser>Leider konnten die Benutzerdaten nicht geändert werden.</changeuser>
@@ -176,6 +177,10 @@
 				<downbrowser>Der Ordner für die Downloadgalerien existiert noch nicht.</downbrowser>
 				<downnogallery>Es existiert noch keine Downloadgalerie.</downnogallery>
 				<extinuse>Diese Endung ist bereits einem Dateitypen zugewiesen.</extinuse>
+				<extNav1>Das ausgewählte Hauptlogo ist keine gültige Image-Datei oder der Pfad existiert nicht.</extNav1>
+				<extNav2>Um einen Link in der stat. Navigation hinzuzufügen,  sind ein Linktext und ein gültiger Pfad erforderlich.</extNav2>
+				<extNav3>Die Farbauswahl ist nicht im Format #00000000 bis #FFFFFFFF angegeben.</extNav3>
+				<foldercreate>Eventuell existiert schon ein Ordner mit diesem Namen.</foldercreate>
 				<gallerynoright>Sie haben in diesem Projekt keine Berechtigung die Galerie anzulegen</gallerynoright>
 				<lock>Entweder haben Sie nicht die Zugriffsrechte diese Datei zu sperren, oder die Körperdatei wurde von einer anderen Steuerdatei gesperrt.</lock>
 				<lockchange>Die Datei ist noch von einem anderen Benutzer geöffnet.</lockchange>
@@ -266,6 +271,7 @@
 				<database>Datenbank Export/Import</database>
 				<downbrowser>Downloadgalerie öffnen</downbrowser> 
 				<downgallery>Neue Bildergalerie anlegen</downgallery>
+				<foldercreate>Neues Verzeichnis anlegen</foldercreate>
 				<lock>Datei sperren</lock>
 				<lockchange>Datei Sperrung übernehmen</lockchange>
 				<login>Anmeldungsfehler</login>
@@ -281,7 +287,7 @@
 				<syncfolder>Ordner synchronisieren</syncfolder>
 				<syncproperties>Einstellungen für die Synchronisation</syncproperties>
 				<unlock>Datei frei geben</unlock>
-			 <upload>Datei hochladen</upload>
+				<upload>Datei hochladen</upload>
 			</title>	
 		</error>
 		

@@ -129,6 +129,7 @@
 				<deleteextension>Sorry, the file extension could not be deleted.</deleteextension>
 				<deletegroup>Sorry, the group could not be deleted.</deletegroup>
 				<downbrowser>Sorry, you can't use the download browser.</downbrowser>
+				<foldercreate>Sorry, the new folder could not be created.</foldercreate>
 				<gallerynoright>Sorry, the new gallery could not be created.</gallerynoright>
 				<changeuser>Sorry, the user data could not be changed.</changeuser>
 				<adduser> Sorry, the user could not be created.</adduser>
@@ -175,6 +176,10 @@
 				<downbrowser>The folder for the download galleries doesn't exist.</downbrowser> 
 				<downnogallery>There is no download gallery yet.</downnogallery> 
 				<extinuse>This extension has already been assigned to a resource type.</extinuse>
+				<extNav1>You dont habe chosen a valid mainlogo.</extNav1>
+				<extNav2>If you need a link in stat. navigation, you have to fill out both fields.</extNav2>
+				<extNav3>The format for coulors is #000000 to #FFFFFF.</extNav3>
+				<foldercreate>Possible this folder already exist.</foldercreate>
 				<gallerynoright>You don't have the rights to create this new galery in this project.</gallerynoright>
 				<lock>Either you don't have the needed permissions, or the contents of this file are locked by someone else.</lock>
 				<lockchange>The file is locked by another user.</lockchange>
@@ -265,6 +270,7 @@
 				<database>Database Import/Export</database>
 				<downbrowser>DownloadBrowser</downbrowser>
 				<downgallery>Creating new Download Gallery</downgallery>
+				<foldercreate>Create Folder</foldercreate>
 				<lock>Lock File</lock>
 				<lockchange>Steal Lock</lockchange>
 				<login>Login Error</login>
