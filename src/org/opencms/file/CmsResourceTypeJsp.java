@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2004/06/09 16:52:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,20 +46,20 @@ import org.apache.commons.collections.ExtendedProperties;
  * file properties are attached to new JSPs.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
     
-    /** The configuration parameter for "default JSP encoding" */
+    /** The configuration parameter for "default JSP encoding". */
     public static final String C_CONFIGURATION_JSP_ENCODING = "default.encoding"; 
 
-    /** The type id of this resource */
+    /** The type id of this resource type. */
     public static final int C_RESOURCE_TYPE_ID = 8;
     
-    /** The name of this resource */
+    /** The name of this resource type. */
     public static final String C_RESOURCE_TYPE_NAME = "jsp";
     
-    /** The default encoding to use when creating new JSP pages */
+    /** The default encoding to use when creating new JSP pages. */
     private String m_defaultEncoding;
     
     /**

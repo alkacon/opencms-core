@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestContextInfo.java,v $
- * Date   : $Date: 2004/06/06 09:13:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,14 +43,14 @@ import org.opencms.file.CmsResource;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexRequestContextInfo {
      
-    /** The currently calculated "expires" date for this request context */
+    /** The currently calculated "expires" date for this request context .*/
     private long m_dateExpires;
     
-    /** The currently calculated "last modified" date for this request context  */
+    /** The currently calculated "last modified" date for this request context.  */
     private long m_dateLastModified;   
     
     /**

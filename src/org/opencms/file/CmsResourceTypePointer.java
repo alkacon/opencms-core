@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2004/06/10 19:35:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,17 +38,17 @@ import org.opencms.main.CmsException;
 import java.util.List;
 
 /**
- * Implementation of a resource type for external links
+ * Implementation of a resource type for external links.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
-    /** The type id of this resource */
+    /** The type id of this resource type. */
     public static final int C_RESOURCE_TYPE_ID = 99;
 
-    /** The name of this resource */
+    /** The name of this resource type. */
     public static final String C_RESOURCE_TYPE_NAME = "pointer";
 
     /**

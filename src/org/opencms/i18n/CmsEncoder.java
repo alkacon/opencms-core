@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2004/06/13 23:33:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,13 +64,13 @@ import java.util.regex.Pattern;
  */
 public final class CmsEncoder {
 
-    /** The regex pattern to match HTML entities */
+    /** The regex pattern to match HTML entities. */
     private static final Pattern C_ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
     
-    /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard */
+    /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard. */
     public static final String C_UTF8_ENCODING = "UTF-8";
         
-    /** A cache for encoding name lookup */
+    /** A cache for encoding name lookup. */
     private static Map m_encodingCache = new HashMap(16);
 
     /**

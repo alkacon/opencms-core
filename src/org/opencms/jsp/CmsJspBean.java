@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2004/02/27 14:29:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,28 +56,28 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3
  */
 public class CmsJspBean {
 
-    /** JSP page context */
+    /** JSP page context. */
     private PageContext m_context;    
     
-    /** OpenCms core CmsObject */
+    /** OpenCms core CmsObject. */
     private CmsFlexController m_controller;
     
-    /** Flag to indicate that this bean was properly initialized */
+    /** Flag to indicate that this bean was properly initialized. */
     private boolean m_isNotInitialized;    
     
-    /** Flag to indicate if we want default or custom Exception handling */
+    /** Flag to indicate if we want default or custom Exception handling. */
     private boolean m_isSupressingExceptions;
     
-    /** OpenCms JSP request */
+    /** OpenCms JSP request. */
     private HttpServletRequest m_request;
 
-    /** OpenCms JSP response */
+    /** OpenCms JSP response. */
     private HttpServletResponse m_response;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2004/06/13 23:38:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,14 +40,14 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsException extends Exception {
 
-    /** Error code for bad name exception */
+    /** Error code for bad name exception. */
     public static final int C_BAD_NAME = 3;
 
-    /** Error code for ClassLoader errors */
+    /** Error code for ClassLoader errors. */
     public static final int C_CLASSLOADER_ERROR = 29;
 
 
@@ -99,118 +99,118 @@ public class CmsException extends Exception {
             "Error in Flex cache",
             "Error in Flex loader" };
 
-    /** Error code for file exists exception */
+    /** Error code for file exists exception. */
     public static final int C_FILE_EXISTS = 12;
 
-    /** Error code filesystem error */
+    /** Error code filesystem error. */
     public static final int C_FILESYSTEM_ERROR = 14;
 
-    /** Error code for Flex cache */
+    /** Error code for Flex cache. */
     public static final int C_FLEX_CACHE = 39;
 
-    /** Error code for Flex loader */
+    /** Error code for Flex loader. */
     public static final int C_FLEX_LOADER = 40;
 
-    /** Error code for group not empty exception */
+    /** Error code for group not empty exception. */
     public static final int C_GROUP_NOT_EMPTY = 9;
 
-    /** Error code for HTTP sreaming error */
+    /** Error code for HTTP streaming error. */
     public static final int C_HTTPS_PAGE_ERROR = 37;
 
-    /** Error code for HTTP sreaming error */
+    /** Error code for HTTPS streaming error. */
     public static final int C_HTTPS_REQUEST_ERROR = 38;
 
-    /** Error code internal file */
+    /** Error code internal file. */
     public static final int C_INTERNAL_FILE = 15;
 
-    /** Error code for error"Password too short" */
+    /** Error code for error "Password too short". */
     public static final int C_INVALID_PASSWORD = 30;
 
     /** 
-     * Error code for access denied exception for vfs resources
+     * Error code for access denied exception for vfs resources.
      * @deprecated use a {@link org.opencms.security.CmsSecurityException} instead
      */    
     public static final int C_NO_ACCESS = 1;
 
-    /** Error code for no default group exception */
+    /** Error code for no default group exception. */
     public static final int C_NO_DEFAULT_GROUP = 11;
 
-    /** Error code for no group exception */
+    /** Error code for no group exception. */
     public static final int C_NO_GROUP = 8;
 
-    /** Error code for no user exception */
+    /** Error code for no user exception. */
     public static final int C_NO_USER = 10;
 
-    /** Error code for no admin exception */
+    /** Error code for no admin exception. */
     public static final int C_NOT_ADMIN = 6;
 
-    /** Error code for not empty exception */
+    /** Error code for not empty exception. */
     public static final int C_NOT_EMPTY = 5;
 
-    /** Error code for not found exception */
+    /** Error code for not found exception. */
     public static final int C_NOT_FOUND = 2;
 
-    /** Error code for RB-INIT-ERRORS */
+    /** Error code for RB-INIT-ERRORS. */
     public static final int C_RB_INIT_ERROR = 33;
 
-    /** Error code for Registry exception */
+    /** Error code for Registry exception. */
     public static final int C_REGISTRY_ERROR = 34;
 
-    /** Error code for accessing a deleted resource */
+    /** Error code for accessing a deleted resource. */
     public static final int C_RESOURCE_DELETED = 32;
 
-    /** Error code for serialization exception */
+    /** Error code for serialization exception. */
     public static final int C_SERIALIZATION = 7;
 
-    /** Error code service unavailable */
+    /** Error code service unavailable. */
     public static final int C_SERVICE_UNAVAILABLE = 17;
 
-    /** Error code for sql exception */
+    /** Error code for sql exception. */
     public static final int C_SQL_ERROR = 4;
 
-    /** Error code for unknown exception */
+    /** Error code for unknown exception. */
     public static final int C_UNKNOWN_EXCEPTION = 0;
 
-    /** Error code for corrupt internal structure */
+    /** Error code for corrupt internal structure. */
     public static final int C_XML_CORRUPT_INTERNAL_STRUCTURE = 19;
 
-    /** Error code for XML process method not found */
+    /** Error code for XML process method not found. */
     public static final int C_XML_NO_PROCESS_METHOD = 24;
 
-    /** Error code for no XML template class */
+    /** Error code for no XML template class. */
     public static final int C_XML_NO_TEMPLATE_CLASS = 27;
 
-    /** Error code for XML user method not found */
+    /** Error code for XML user method not found. */
     public static final int C_XML_NO_USER_METHOD = 23;
 
-    /** Error code for XML parsing error */
+    /** Error code for XML parsing error. */
     public static final int C_XML_PARSING_ERROR = 21;
 
-    /** Error code for XML processing error */
+    /** Error code for XML processing error. */
     public static final int C_XML_PROCESS_ERROR = 22;
 
-    /** Error code for missing XML tag */
+    /** Error code for missing XML tag. */
     public static final int C_XML_TAG_MISSING = 25;
 
-    /** Error code for unknown XML datablocks */
+    /** Error code for unknown XML datablocks. */
     public static final int C_XML_UNKNOWN_DATA = 18;
 
-    /** Error code for wrong XML content type */
+    /** Error code for wrong XML content type. */
     public static final int C_XML_WRONG_CONTENT_TYPE = 20;
 
-    /** Error code for wrong XML template class */
+    /** Error code for wrong XML template class. */
     public static final int C_XML_WRONG_TEMPLATE_CLASS = 26;
 
-    /** A string message describing the CmsEception */
+    /** A string message describing the CmsEception. */
     protected String m_message = "NO MESSAGE";
 
-    /** Stores a forwared exception */
+    /** Stores a forwarded exception. */
     protected Throwable m_rootCause;
 
-    /** Stores the error code of the CmsException */
+    /** Stores the error code of the CmsException. */
     protected int m_type;
 
-    /** Flag to set processing of a saved forwared root exception */
+    /** Flag to set processing of a saved forwared root exception. */
     protected boolean m_useRootCause;
 
     /**
@@ -221,7 +221,7 @@ public class CmsException extends Exception {
     }
 
     /**
-     * Contructs a CmsException with the provided error code, 
+     * Constructs a CmsException with the provided error code, 
      * the error codes used should be the constants from the CmsEception class or subclass.<p>
      *
      * @param type exception error code
@@ -231,7 +231,7 @@ public class CmsException extends Exception {
     }
 
     /**
-     * Contructs a CmsException with the provided error code and
+     * Constructs a CmsException with the provided error code and
      * a given root cause.<p>
      * 
      * The error codes used should be the constants from the CmsEception class or subclass.<p>

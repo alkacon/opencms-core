@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionBindingListener.java,v $
- * Date   : $Date: 2004/06/13 23:38:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,14 +44,14 @@ import javax.servlet.http.HttpSessionBindingListener;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsSessionBindingListener implements HttpSessionBindingListener {
     
-    /** String to identify the notif session attribute in the session */
+    /** String to identify the notify session attribute in the session. */
     public static final String C_NOTIFY_ATTRIBUTE = "__OpenCmsServletNotify";
     
-    /** The id to which this listener is bound */
+    /** The id to which this listener is bound. */
     private String m_id;
     
     /**

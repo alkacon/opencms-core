@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/04/28 22:21:34 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,16 +72,16 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.0 beta 2
  */
 public class CmsJspActionElement extends CmsJspBean {
     
-    /** JSP navigation builder */
-    private CmsJspNavBuilder m_navigation = null;    
+    /** JSP navigation builder. */
+    private CmsJspNavBuilder m_navigation;    
         
-    /** Error message in case bean was not properly initialized */
+    /** Error message in case bean was not properly initialized. */
     public static final String C_NOT_INITIALIZED = "+++ CmsJspActionElement not initialized +++";
     
     /**

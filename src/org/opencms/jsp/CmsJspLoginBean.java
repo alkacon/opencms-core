@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2004/05/03 07:21:13 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,13 +54,13 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3
  */
 public class CmsJspLoginBean extends CmsJspActionElement {
     
-    /** Flag to indicate if a login was successful */
+    /** Flag to indicate if a login was successful. */
     private CmsException m_loginException;
     
     /**

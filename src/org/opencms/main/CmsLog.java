@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2004/04/13 15:30:57 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,14 +45,14 @@ import org.apache.log4j.PropertyConfigurator;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsLog implements Log {
 
-    /** Initialization messages */
+    /** Initialization messages. */
     public static final String CHANNEL_INIT = "org.opencms.init";    
     
-    /** The path to the loggers configuration file */
+    /** The path to the loggers configuration file. */
     private String m_configFile;
     
     /**

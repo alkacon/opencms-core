@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2004/06/06 10:34:49 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,41 +69,41 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
     
-    /** Initial size for lists */
+    /** Initial size for lists. */
     public static final int C_INITIAL_CAPACITY_LISTS = 10;
     
-    /** Debug switch */
+    /** Debug switch. */
     private static final int DEBUG = 0;
     
-    /** The CacheEntry's size in bytes */
+    /** The CacheEntry's size in bytes. */
     private int m_byteSize;
     
-    /** Indicates if this cache entry is completed */
+    /** Indicates if this cache entry is completed. */
     private boolean m_completed;      
     
-    /** The "expires" date for this Flex cache entry */
+    /** The "expires" date for this Flex cache entry. */
     private long m_dateExpires;
     
-    /** The "last modified" date for this Flex cache entry */
+    /** The "last modified" date for this Flex cache entry. */
     private long m_dateLastModified;   
   
-    /** The list of items for this resource */
+    /** The list of items for this resource. */
     private List m_elements;
     
-    /** A Map of cached headers for this resource */
+    /** A Map of cached headers for this resource. */
     private Map m_headers;
     
-    /** Pointer to the next cache entry in the LRU cache */
+    /** Pointer to the next cache entry in the LRU cache. */
     private I_CmsLruCacheObject m_next;
     
     /** Pointer to the previous cache entry in the LRU cache. */
     private I_CmsLruCacheObject m_previous;
   
-    /** A redirection target (if redirection is set) */
+    /** A redirection target (if redirection is set). */
     private String m_redirectTarget;
     
     /** The key under which this cache entry is stored in the variation map. */

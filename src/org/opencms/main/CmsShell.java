@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/05/27 16:22:19 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -375,28 +375,28 @@ public class CmsShell {
         }        
     }
 
-    /** The OpenCms context object */
+    /** The OpenCms context object. */
     private CmsObject m_cms;
 
-    /** All shell callable objects */   
+    /** All shell callable objects. */   
     private List m_commandObjects;
 
-    /** If set to true, all commands are echoed */
+    /** If set to true, all commands are echoed. */
     private boolean m_echo;
 
-    /** Indicates if the 'exit' command has been called */
+    /** Indicates if the 'exit' command has been called. */
     private boolean m_exitCalled;
 
-    /** The OpenCms system object */
+    /** The OpenCms system object. */
     private OpenCmsCore m_opencms;
 
-    /** The shell prompt format */
+    /** The shell prompt format. */
     private String m_prompt;
     
-    /** Internal shell command object */
+    /** Internal shell command object. */
     private I_CmsShellCommands m_shellCommands;
     
-    /** Additional shell command object */
+    /** Additional shell commands object. */
     private I_CmsShellCommands m_additionaShellCommands;
 
     /**

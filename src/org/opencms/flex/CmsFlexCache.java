@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/06/06 09:13:22 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -102,10 +102,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public class CmsFlexCacheVariation extends Object {    
         
-        /** The key belonging to the resource */
+        /** The key belonging to the resource. */
         public CmsFlexCacheKey m_key;
         
-        /** Maps variations to CmsFlexCacheEntries */
+        /** Maps variations to CmsFlexCacheEntries. */
         public Map m_map;
                 
         /**
@@ -164,58 +164,58 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }        
     }
     
-    /** Suffix to append to online cache entries */
+    /** Suffix to append to online cache entries. */
     public static final String C_CACHE_OFFLINESUFFIX = " [offline]";
  
-    /** Suffix to append to online cache entries */
+    /** Suffix to append to online cache entries. */
     public static final String C_CACHE_ONLINESUFFIX = " [online]";
     
-    /** Suffix to append to workplace cache entries */
+    /** Suffix to append to workplace cache entries. */
     public static final String C_CACHE_WORKPLACESUFFIX = " [workplace]";
     
-    /** Trigger for clearcache event: Clear complete cache */
+    /** Trigger for clearcache event: Clear complete cache. */
     public static final int C_CLEAR_ALL = 0;
 
-    /** Trigger for clearcache event: Clear only entries */
+    /** Trigger for clearcache event: Clear only entries. */
     public static final int C_CLEAR_ENTRIES = 1;
     
-    /** Trigger for clearcache event: Clear complete offine cache */    
+    /** Trigger for clearcache event: Clear complete offine cache. */    
     public static final int C_CLEAR_OFFLINE_ALL = 4;
     
-    /** Trigger for clearcache event: Clear only offline entries */   
+    /** Trigger for clearcache event: Clear only offline entries. */   
     public static final int C_CLEAR_OFFLINE_ENTRIES = 5;
 
-    /** Trigger for clearcache event: Clear complete online cache */
+    /** Trigger for clearcache event: Clear complete online cache. */
     public static final int C_CLEAR_ONLINE_ALL = 2;
     
-    /** Trigger for clearcache event: Clear only online entries */    
+    /** Trigger for clearcache event: Clear only online entries. */    
     public static final int C_CLEAR_ONLINE_ENTRIES = 3;
     
-    /** Trigger for clearcache event: Clear all workplace entries */    
+    /** Trigger for clearcache event: Clear all workplace entries. */    
     public static final int C_CLEAR_WORKPLACE_ALL = 6;
     
-    /** Initial Cache size, this should be a power of 2 because of the Java collections implementation */
+    /** Initial cache size, this should be a power of 2 because of the Java collections implementation. */
     public static final int C_INITIAL_CAPACITY_CACHE = 512;
     
-    /** Initial size for variation lists, should be a power of 2 */
+    /** Initial size for variation lists, should be a power of 2. */
     public static final int C_INITIAL_CAPACITY_VARIATIONS = 8;
     
-    /** Name of FlexCache runtime property */
+    /** Name of FlexCache runtime property. */
     public static final String C_LOADER_CACHENAME = "flex.cache";
     
-    /** Debug switch */
+    /** Debug switch. */
     private static final int DEBUG = 0;
     
-    /** Indicates if offline resources should be cached or not */
+    /** Indicates if offline resources should be cached or not. */
     private boolean m_cacheOffline;
     
-    /** Indicates if the cache is enabled or not */
+    /** Indicates if the cache is enabled or not. */
     private boolean m_enabled;
     
-    /** Hashmap to store the Entries for fast lookup */
+    /** Hashmap to store the entries for fast lookup. */
     private Map m_keyCache;
     
-    /** Counter for the size */
+    /** Counter for the size. */
     private int m_size;
         
     /** The LRU cache to organize the cached entries. */

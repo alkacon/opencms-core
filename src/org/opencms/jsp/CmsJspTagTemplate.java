@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/06/10 19:35:48 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,20 +51,20 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
-    /** Name of element */
+    /** Name of element. */
     private String m_element;
     
-    /** List of elements for element check */
+    /** List of elements for element check. */
     private String m_elementlist;
     
-    /** Condition for element check */
+    /** Condition for element check. */
     private boolean m_checkall;
     
-    /** Condition for negative element check */
+    /** Condition for negative element check. */
     private boolean m_checknone;
     
     /**

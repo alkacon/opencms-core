@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/13 23:33:38 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,19 +76,19 @@ import org.dom4j.Node;
  */
 public class CmsImportVersion2 extends A_CmsImport {
     
-    /** The version number of this import implementation.<p> */
+    /** The version number of this import implementation. */
     private static final int C_IMPORT_VERSION = 2;
 
-    /** Web application names for conversion support */
+    /** Web application names for conversion support. */
     protected List m_webAppNames;
 
-    /** Old webapp URL for import conversion */
+    /** Old webapp URL for import conversion. */
     protected String m_webappUrl;
     
-    /** folder storage for page file and body coversion */
+    /** folder storage for page file and body conversion. */
     private List m_folderStorage;
 
-    /** page file storage for page file and body coversion */
+    /** page file storage for page file and body co.version. */
     private List m_pageStorage;
     
     /**

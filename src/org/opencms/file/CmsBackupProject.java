@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,32 +43,32 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsBackupProject extends CmsProject implements Cloneable {
 
-    /** The publishing date of this project */
+    /** The publishing date of this project. */
     private long m_datePublished;
 
-    /** The name of the managergroup */
+    /** The name of the manager group. */
     private String m_nameGroupManagers;
 
-    /** The name of the group */
+    /** The name of the user group. */
     private String m_nameGroupUsers;
 
-    /** The name, firstname and lastname of the project owner */
+    /** The name, firstname and lastname of the project owner. */
     private String m_nameOwner;
 
-    /** The name, firstname and lastname of the user who has published the project */
+    /** The name, firstname and lastname of the user who has published the project. */
     private String m_namePublisher;
 
-    /** The resources of the project */
+    /** The resources belonging to the project. */
     private Vector m_projectResources;
 
-    /** The user id of the publisher */
+    /** The user id of the publisher. */
     private CmsUUID m_userPublished;
 
-    /** The version id of the published project */
+    /** The version id of the published project. */
     private int m_versionId;
 
     /**

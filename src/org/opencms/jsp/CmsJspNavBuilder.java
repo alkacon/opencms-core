@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2004/06/06 10:35:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * {@link org.opencms.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  * 
@@ -54,9 +54,9 @@ import java.util.List;
 public class CmsJspNavBuilder {
     
     // Member variables
-    private CmsObject m_cms = null;
-    private String m_requestUri = null;
-    private String m_requestUriFolder = null;
+    private CmsObject m_cms;
+    private String m_requestUri;
+    private String m_requestUriFolder;
 
     /**
      * Empty constructor, so that this bean can be initialized from a JSP.<p> 
@@ -605,11 +605,11 @@ public class CmsJspNavBuilder {
      */
     private static class ResourceTitleContainer implements Comparable {
 
-        /** The resource */      
-        protected CmsResource m_res = null;
+        /** The resource. */      
+        protected CmsResource m_res;
         
-        /** The title of the resource */
-        protected String m_title = null;
+        /** The title of the resource. */
+        protected String m_title;
 
         /**
          * @param cms context provider for the current request

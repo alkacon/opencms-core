@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/06/06 09:13:44 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,41 +62,41 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2004/06/06 09:13:44 $
+ * @version $Revision: 1.12 $ $Date: 2004/06/14 14:25:57 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
 public class CmsImportExportManager extends Object {
 
-    /** Boolean flag whether imported pages should be converted into XML pages.<p> */
+    /** Boolean flag whether imported pages should be converted into XML pages. */
     private boolean m_convertToXmlPage;
 
-    /** List of property keys that should be removed from imported resources.<p> */
+    /** List of property keys that should be removed from imported resources. */
     private List m_ignoredProperties;
 
-    /** List of immutable resources that should remain unchanged when resources are imported.<p> */
+    /** List of immutable resources that should remain unchanged when resources are imported. */
     private List m_immutableResources;
 
-    /** The initialized import/export handlers.<p> */
+    /** The initialized import/export handlers. */
     private List m_importExportHandlers;    
     
-    /** Import princial group translations */
+    /** Import princial group translations. */
     private Map m_importGroupTranslations;
     
-    /** Import princial user translations */
+    /** Import princial user translations. */
     private Map m_importUserTranslations;    
     
-    /** The configured import versions class names */
+    /** The configured import versions class names. */
     private List m_importVersionClasses;     
 
-    /** Boolean flag whether colliding resources should be overwritten during the import.<p> */
+    /** Boolean flag whether colliding resources should be overwritten during the import. */
     private boolean m_overwriteCollidingResources;
 
-    /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps.<p> */
+    /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps. */
     private String m_webAppUrl;
     
     /**
-     * Creates a new instance for the import/export manager, will be called by the import/export configuration manager.<p>
+     * Creates a new instance for the import/export manager, will be called by the import/export configuration manager.
      */
     public CmsImportExportManager() {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/06/09 16:13:04 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,26 +58,26 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
     
-    /** Runtime property name for locale handler */
+    /** Runtime property name for locale handler. */
     public static final String C_LOCALE_HANDLER = "class_locale_handler";
 
-    /** The set of available locale names */
+    /** The set of available locale names. */
     private List m_availableLocales;
     
-    /** The default locale, this is the first configured locale */
+    /** The default locale, this is the first configured locale. */
     private Locale m_defaultLocale;
     
-    /** The default locale names (must be a subset of the available locale names) */
+    /** The default locale names (must be a subset of the available locale names). */
     private List m_defaultLocales;    
     
-    /** The configured locale handler */
+    /** The configured locale handler. */
     private I_CmsLocaleHandler m_localeHandler;
     
-    /** A cache for accelerated locale lookup, this should never get so large to require a "real" cache */
+    /** A cache for accelerated locale lookup, this should never get so large to require a "real" cache. */
     // must initialize this or some test cases won't run
     private static Map m_localeCache = new LRUMap();
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,60 +44,61 @@ import java.util.Hashtable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
-    /** A storage for additional user information */
+    /** A storage for additional user information. */
     private Hashtable m_additionalInfo;
 
-    /** The address of this user */
+    /** The address of this user. */
     private String m_address;
 
-    /** The default group of this user */
+    /** The default group of this user. */
     private CmsGroup m_defaultGroup;
 
-    /** The default group ID of this user */
+    /** The default group id of this user. */
     private CmsUUID m_defaultGroupId;
 
-    /** The description of the user */
+    /** The description of the user. */
     private String m_description;
 
-    /**  The email of the user */
+    /**  The email of the user. */
     private String m_email;
 
-    /** The firstname of this user */
+    /** The first name of this user. */
     private String m_firstname;
 
-    /** The flags of the user */
+    /** The flags of the user. */
     private int m_flags;
 
-    /** The Id of this user */
+    /** The id of this user. */
     private CmsUUID m_id;
 
-    /** The last login of this user */
+    /** The last login date of this user. */
     private long m_lastlogin;
 
-    /** The lastname of this user */
+    /** The last name of this user. */
     private String m_lastname;
 
-    /** The unique user name of this user */
+    /** The unique user name of this user. */
     private String m_name;
 
-    /** The password of this user */
+    /** The password of this user. */
     private String m_password;
 
-    /** The recovery password of the user */
+    /** The recovery password of the user. */
     private String m_recoveryPassword;
 
-    /** The section of the user */
+    /** The section of the user. */
     private String m_section;
     
-    /** Boolean flag whether the last-login timestamp of this user was modified.<p> */
+    /** Boolean flag whether the last-login timestamp of this user was modified. */
     private boolean m_isTouched;    
 
     /**
      * Defines if the user is a webuser or a systemuser.<p>
+     * 
      * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
      * C_USER_TYPE_WEBUSER for webuser.
      */

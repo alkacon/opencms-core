@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2004/05/24 17:07:58 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,53 +50,53 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
     
-    /** Attribute name used for checking if _flex request parameters have already been processed */
+    /** Attribute name used for checking if _flex request parameters have already been processed. */
     public static final String C_ATTRIBUTE_PROCESSED = "__com.opencms.flex.cache.CmsFlexRequest";
     
-    /** Request parameter for FlexCache commands */
+    /** Request parameter for FlexCache commands. */
     public static final String C_PARAMETER_FLEX = "_flex";
     
-    /** Debug flag */
+    /** Debug flag. */
     private static final boolean DEBUG = false;
     
-    /** Flag to decide if this request can be cached or not */
+    /** Flag to decide if this request can be cached or not. */
     private boolean m_canCache;
     
-    /** The CmsFlexController for this request */
+    /** The CmsFlexController for this request. */
     private CmsFlexController m_controller;
     
-    /** Flag to force a JSP recompile */
+    /** Flag to force a JSP recompile. */
     private boolean m_doRecompile; 
         
-    /** Set of all include calls (to prevent an endless inclusion loop) */
+    /** Set of all include calls (to prevent an endless inclusion loop). */
     private Set m_includeCalls;    
     
-    /** Flag to check if this request is in the online project or not */
+    /** Flag to check if this request is in the online project or not. */
     private boolean m_isOnline;
     
-    /** Flag to indicate if this is a workplace resource */    
+    /** Flag to indicate if this is a workplace resource. */    
     private boolean m_isWorkplaceResource;
     
-    /** The CmsFlexCacheKey for this request */
+    /** The CmsFlexCacheKey for this request. */
     private CmsFlexCacheKey m_key;
     
-    /** Map of parameters from the original request */
+    /** Map of parameters from the original request. */
     private Map m_parameters;
     
-    /** Stores the request URI after it was once calculated */
+    /** Stores the request URI after it was once calculated. */
     private String m_requestUri;
     
-    /** Stores the request URL after it was once calculated */
+    /** Stores the request URL after it was once calculated. */
     private StringBuffer m_requestUrl;
            
-    /** The requested resources element URI in the OpenCms VFS */    
+    /** The requested resources element URI in the OpenCms VFS. */    
     private String m_elementUri;
     
-    /** The site root of the requested resource */
+    /** The site root of the requested resource. */
     private String m_elementUriSiteRoot;
             
     /**

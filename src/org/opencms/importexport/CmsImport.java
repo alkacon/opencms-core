@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/06/13 23:33:38 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/06/14 14:25:58 $
+* Version: $Revision: 1.20 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,38 +71,38 @@ import org.dom4j.io.SAXReader;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.19 $ $Date: 2004/06/13 23:33:38 $
+ * @version $Revision: 1.20 $ $Date: 2004/06/14 14:25:58 $
  */
 public class CmsImport implements Serializable {
     
-    /** The algorithm for the message digest */
+    /** The algorithm for the message digest. */
     public static final String C_IMPORT_DIGEST = "MD5";
     
-    /** Stores all import interface implementations */
+    /** Stores all import interface implementations .*/
     protected List m_importImplementations;
 
-    /** The cms contect to do the operations on the VFS/COS with */
+    /** The cms context to do the operations on the VFS/COS with. */
     protected CmsObject m_cms;
 
-    /** The xml manifest-file */
+    /** The xml manifest-file. */
     protected Document m_docXml;
 
-    /** The object to report the log messages */
+    /** The object to report the log messages. */
     protected I_CmsReport m_report;
 
-    /** The import-resource (folder) to load resources from */
+    /** The import-resource (folder) to load resources from. */
     protected File m_importResource;
 
-    /**  The import-resource (zip) to load resources from */
+    /**  The import-resource (zip) to load resources from. */
     protected ZipFile m_importZip;
 
-    /** Indicates if module data is being imported */
+    /** Indicates if module data is being imported. */
     protected boolean m_importingChannelData;
 
-    /** The import-file to load resources from */
+    /** The import-file to load resources from. */
     protected String m_importFile;
 
-    /** The import-path to write resources into the cms */
+    /** The import-path to write resources into the cms. */
     protected String m_importPath;
 
     /**
@@ -117,7 +117,7 @@ public class CmsImport implements Serializable {
     protected int m_importVersion;
 
 
-    /** Digest for taking a fingerprint of the files */
+    /** Digest for taking a fingerprint of the files. */
     protected MessageDigest m_digest;
 
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/04/10 23:11:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,11 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
-    /** A cms obbject that has been initialized with Admin permissions */
+    /** A cms object that has been initialized with Admin permissions. */
     private CmsObject m_adminCmsObject;
     
     /**

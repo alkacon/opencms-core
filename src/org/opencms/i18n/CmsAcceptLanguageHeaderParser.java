@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2004/06/13 23:33:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,26 +102,26 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Daniel Rall (dlr@collab.net)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsAcceptLanguageHeaderParser implements Iterator {
 
-    /** A constant for the HTTP <code>Accept-Language</code> header */
+    /** A constant for the HTTP <code>Accept-Language</code> header. */
     public static final String ACCEPT_LANGUAGE = "Accept-Language";
     
-    /** Separates elements of the <code>Accept-Language</code> HTTP header */
+    /** Separates elements of the <code>Accept-Language</code> HTTP header. */
     private static final String LOCALE_SEPARATOR = ",";
 
-    /** Separates m_locale from m_quality within elements */
+    /** Separates m_locale from m_quality within elements. */
     private static final char QUALITY_SEPARATOR = ';';
 
-    /** The default m_quality value for an <code>AcceptLanguage</code> object */
+    /** The default m_quality value for an <code>AcceptLanguage</code> object. */
     protected static final Float DEFAULT_QUALITY = new Float(1.0f);
 
-    /** The parsed <code>Accept-Language</code> headers */
+    /** The parsed <code>Accept-Language</code> headers. */
     private List m_acceptLanguage = new ArrayList(3);
     
-    /** The parsed locales */
+    /** The parsed locales. */
     private List m_locales;
     
     /**
@@ -233,10 +233,10 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
      */
     private class AcceptLanguage implements Comparable {
 
-        /** The language and country */
+        /** The language and country. */
         Locale m_locale;
 
-        /**  The m_quality of our m_locale (as values approach <code>1.0</code>, they indicate increased user preference) */
+        /**  The m_quality of our m_locale (as values approach <code>1.0</code>, they indicate increased user preference). */
         Float m_quality = DEFAULT_QUALITY;
 
         /**

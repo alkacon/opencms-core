@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXMLTemplate.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,16 +43,16 @@ import java.util.List;
  * Describes the resource type "XMLTemplate".
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsResourceTypeXMLTemplate extends A_CmsResourceType {
 
     private int warning = 0;
     
-    /** The type id of this resource */
+    /** The type id of this resource type. */
     public static final int C_RESOURCE_TYPE_ID = 4;
     
-    /** The name of this resource */
+    /** The name of this resource type. */
     public static final String C_RESOURCE_TYPE_NAME = "XMLTemplate";
     
     /**

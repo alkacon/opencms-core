@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2004/06/06 09:13:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,64 +56,64 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsFlexCacheKey {
     
-    /** Debugging flag */
+    /** Debugging flag. */
     private static final boolean DEBUG = false;
     
-    /** Marker to identify use of certain String key members (m_uri, m_ip) */
+    /** Marker to identify use of certain String key members (m_uri, m_ip). */
     private static final String IS_USED = "/ /";
 
-    /** The list of keywords of the Flex cache language */
+    /** The list of keywords of the Flex cache language. */
     private static final List m_cacheCmds = Arrays.asList(new String[] {
         "always", "never", "uri", "user", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true", "ip", "element", "locale", "encoding"});
     //   0         1        2      3       4         5            6          7                8          9        10       11             12      13    14         15        16
 
-    /** Cache key variable: Determines if this resource can be cached alwys, never or under certain conditions. -1 = never, 0=check, 1=always */
+    /** Cache key variable: Determines if this resource can be cached alwys, never or under certain conditions. -1 = never, 0=check, 1=always. */
     private int m_always; 
     
-    /** Cache key variable: The requested element */
+    /** Cache key variable: The requested element. */
     private String m_element;
     
-    /** Cache key variable: The requested encoding */    
+    /** Cache key variable: The requested encoding. */    
     private String m_encoding;
     
-    /** Cache key variable: The ip address of the request */
+    /** Cache key variable: The ip address of the request. */
     private String m_ip; 
     
-    /** Cache key variable: The requested locale */
+    /** Cache key variable: The requested locale. */
     private String m_locale;
     
-    /** Cache key variable: List of "blocking" parameters */
+    /** Cache key variable: List of "blocking" parameters. */
     private Set m_noparams;
 
-    /** Cache key variable: List of parameters */
+    /** Cache key variable: List of parameters. */
     private Map m_params;
     
-    /** Flag raised in case a key parse error occured */
+    /** Flag raised in case a key parse error occured. */
     private boolean m_parseError;
     
-    /** Cache key variable: The request TCP/IP port */
+    /** Cache key variable: The request TCP/IP port. */
     private Set m_ports;
     
-    /** Cache key variable: Determines if the resource sould be always cleared at publish time */
+    /** Cache key variable: Determines if the resource should be always cleared at publish time. */
     private boolean m_publish;
 
     /** The OpenCms resource that this key is used for. */    
     protected String m_resource;
     
-    /** Cache key variable: Distinguishes request schemes (http, https etc.) */
+    /** Cache key variable: Distinguishes request schemes (http, https etc.). */
     private Set m_schemes;
     
-    /** Cache key variable: Timeout of the resource */
+    /** Cache key variable: timeout of the resource. */
     protected long m_timeout;
     
-    /** Cache key variable: The uri of the original request */
+    /** Cache key variable: the uri of the original request. */
     private String m_uri;
     
-    /** Cache key variable: The user id */
+    /** Cache key variable: the user id. */
     private String m_user;
             
     /** The cache behaviour description for the resource. */    

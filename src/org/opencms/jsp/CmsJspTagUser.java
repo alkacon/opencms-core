@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,14 +44,14 @@ import javax.servlet.ServletRequest;
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
     
     // internal member variables
-    private String m_property = null;
+    private String m_property;
     
-    /** static array of the possible user properties */
+    /** Static array of the possible user properties. */
     private static final String[] m_userProperties =
         {
             "name",
@@ -67,7 +67,7 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
             "defaultgroup",
             "otherstuff" };
 
-    /** array list for fast lookup */
+    /** Array list for fast lookup. */
     private static final java.util.List m_userProperty =
         java.util.Arrays.asList(m_userProperties);
         

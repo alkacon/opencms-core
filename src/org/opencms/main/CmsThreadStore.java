@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,18 +47,18 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * @since 5.1.10
  */
 public class CmsThreadStore extends Thread {
     
-    /** Debug flag */
+    /** Debug flag. */
     private static final boolean DEBUG = false;
     
-    /** A map to store all system Thread in */
+    /** A map to store all system Threads in. */
     private Map m_threads;
     
-    /** Indicates that this thread store is alive */
+    /** Indicates that this thread store is alive. */
     private boolean m_alive;
     
     /**

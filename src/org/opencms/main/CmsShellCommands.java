@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,14 +68,14 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
-    /** The OpenCms context object */
+    /** The OpenCms context object. */
     private CmsObject m_cms;
     
-    /** The Cms shell object */
+    /** The Cms shell object. */
     private CmsShell m_shell;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,38 +48,38 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsProject implements Cloneable {
 
-    /** The creation date of this project */
+    /** The creation date of this project. */
     private long m_dateCreated;
 
-    /** The description of this project */
+    /** The description of this project. */
     private String m_description;
 
-    /** The state of this project */
+    /** The state of this project. */
     private int m_flags;
 
-    /** The manager group id of this project */
+    /** The manager group id of this project. */
     private CmsUUID m_groupManagersId;
 
-    /** The id of the user group of this project */
+    /** The id of the user group of this project. */
     private CmsUUID m_groupUsersId;
 
-    /** The id of this project */
+    /** The id of this project. */
     private int m_id;
 
-    /** The name of this project */
+    /** The name of this project. */
     private String m_name;
 
-    /** The id of this projects owner */
+    /** The id of this projects owner. */
     private CmsUUID m_ownerId;
     
-    /** The task id of this project */
+    /** The task id of this project. */
     private int m_taskId;
 
-    /** The type of this project */
+    /** The type of this project. */
     private int m_type;
 
     /**

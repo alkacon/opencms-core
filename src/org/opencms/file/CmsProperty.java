@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2004/06/04 10:48:52 $
+ * @version $Revision: 1.15 $ $Date: 2004/06/14 14:25:57 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -606,7 +606,6 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      *  
      * @param object the other object to be compared
      * @return if the argument is a property object, returns zero if the key of the argument is equal to the key of this property object, a value less than zero if the key of this property object is lexicographically less than the key of the argument, or a value greater than zero if the key of this property object is lexicographically greater than the key of the argument 
-     * @throws ClassCastException if the argument is not a property
      */
     public int compareTo(Object object) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,25 +40,25 @@ import java.util.Map;
  * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsJspNavElement implements Comparable {
     
-    /** Property constant for <code>"locale"</code> */
+    /** Property constant for <code>"locale"</code>. */
     public static final String C_PROPERTY_LOCALE = "locale";    
-    /** Property constant for <code>"NavImage"</code> */
+    /** Property constant for <code>"NavImage"</code>. */
     public static final String C_PROPERTY_NAVIMAGE = "NavImage";    
-    /** Property constant for <code>"NavInfo"</code> */
+    /** Property constant for <code>"NavInfo"</code>. */
     public static final String C_PROPERTY_NAVINFO = "NavInfo";    
     
     // Member variables for get / set methods:
-    private String m_resource = null;
-    private String m_fileName = null;
-    private String m_text = null;
-    private Map m_properties = null;
+    private String m_resource;
+    private String m_fileName;
+    private String m_text;
+    private Map m_properties;
     private float m_position;
     private int m_navTreeLevel = Integer.MIN_VALUE;
-    private Boolean m_hasNav = null;
+    private Boolean m_hasNav;
 
     /**
      * Empty constructor required for every JavaBean, does nothing.<p>
@@ -259,7 +259,7 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the name of the parent folder of the resource of this nav element,<p>
+     * Returns the name of the parent folder of the resource of this nav element.<p>
      * 
      * @return the name of the parent folder of the resource of this nav element
      */

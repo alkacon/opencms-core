@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/14 14:25:58 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,14 +48,14 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2004/02/13 13:41:46 $
+ * @version $Revision: 1.18 $ $Date: 2004/06/14 14:25:58 $
  * @since 5.1.4
  * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
  */
 public class CmsLock extends Object implements Cloneable {
 
-    /** The shared Null lock object */
+    /** The shared null lock object. */
     private static final CmsLock C_NULL_LOCK = new CmsLock("", CmsUUID.getNullUUID(), I_CmsConstants.C_UNKNOWN_ID, CmsLock.C_TYPE_UNLOCKED);
 
     /** 
@@ -104,19 +104,19 @@ public class CmsLock extends Object implements Cloneable {
      */
     public static final int C_MODE_COMMON =0;
 
-    /** The ID of the project where the resource is locked */
+    /** The ID of the project where the resource is locked. */
     private int m_projectId;
 
-    /** The name of the locked resource */
+    /** The name of the locked resource. */
     private String m_resourceName;
 
-    /** Saves how the resource is locked */
+    /** Saves how the resource is locked. */
     private int m_type;
 
-    /** The ID of the user who locked the resource */
+    /** The ID of the user who locked the resource. */
     private CmsUUID m_userId;
     
-    /** Flag to indicate if the lock is a temporary lock */
+    /** Flag to indicate if the lock is a temporary lock. */
     private int m_mode;
 
     /**

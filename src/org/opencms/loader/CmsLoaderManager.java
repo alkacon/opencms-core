@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/04/05 16:12:53 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,21 +60,21 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.1
  */
 public class CmsLoaderManager {
     
-    /** The default mimetype */
+    /** The default mimetype. */
     private static final String C_DEFAULT_MIMETYPE = "text/html";
     
-    /** Contains all loader extensions to the include process */
+    /** Contains all loader extensions to the include process. */
     private List m_includeExtensions;
 
-    /** All initialized resource loaders, mapped to their ID */
+    /** All initialized resource loaders, mapped to their ID. */
     private I_CmsResourceLoader[] m_loaders;
     
-    /** The OpenCms map of configured mime types */
+    /** The OpenCms map of configured mime types. */
     private Map m_mimeTypes;    
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/06/13 23:38:58 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,72 +51,72 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.3
  */
 public class CmsSystemInfo {
     
-    /** Default encoding */
+    /** Default encoding. */
     private static final String C_DEFAULT_ENCODING = "UTF-8";
 
-    /** Static version name to use if version.properties can not be read */
+    /** Static version name to use if version.properties can not be read. */
     private static final String C_DEFAULT_VERSION_NAME = "Ix";
 
-    /** Static version number to use if version.properties can not be read */
+    /** Static version number to use if version.properties can not be read. */
     private static final String C_DEFAULT_VERSION_NUMBER = "5.3.x";
     
-    /** The abolute path to the "opencms.properties" configuration file (in the "real" file system) */
+    /** The abolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
     
-    /** The web application context path */
+    /** The web application context path. */
     private String m_contextPath;
     
-    /** Default encoding, can be overwritten in "opencms.properties" */
+    /** Default encoding, can be overwritten in "opencms.properties". */
     private String m_defaultEncoding;    
     
-    /** The default web application (usually "ROOT") */
+    /** The default web application (usually "ROOT"). */
     private String m_defaultWebApplicationName;
 
-    /** The  abolute path to the OpenCms log file (in the "real" file system) */
+    /** The  abolute path to the OpenCms log file (in the "real" file system). */
     private String m_logFileRfsPath;
     
-    /** The settings for the internal OpenCms email service */
+    /** The settings for the internal OpenCms email service. */
     private CmsMailSettings m_mailSettings;
     
-    /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code> */
+    /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code>. */
     private String m_openCmsContext;
     
-    /** The name of the OpenCms server */
+    /** The name of the OpenCms server. */
     private String m_serverName;
     
-    /** The servlet path for the OpenCms servlet */
+    /** The servlet path for the OpenCms servlet. */
     private String m_servletPath;
     
-    /** The startup time of this OpenCms instance */
+    /** The startup time of this OpenCms instance. */
     private long m_startupTime;
     
-    /** The settings for the synchronization */
+    /** The settings for the synchronization. */
     private CmsSynchronizeSettings m_synchronizeSettings;
     
-    /** Indicates if the version history is enabled */
+    /** Indicates if the version history is enabled. */
     private boolean m_versionHistoryEnabled;
     
-    /** The maximum number of entries in the version history (per resource) */
+    /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
     
-    /** The version name (including version number) of this OpenCms installation */
+    /** The version name (including version number) of this OpenCms installation. */
     private String m_versionName;
 
-    /** The version number of this OpenCms installation */
+    /** The version number of this OpenCms installation. */
     private String m_versionNumber;
     
-    /** The web application name */
+    /** The web application name. */
     private String m_webApplicationName;
     
-    /** The OpenCms web application servlet container folder path (in the "real" file system) */
+    /** The OpenCms web application servlet container folder path (in the "real" file system). */
     private String m_webApplicationRfsPath;
     
-    /** The OpenCms web application "WEB-INF" path (in the "real" file system) */
+    /** The OpenCms web application "WEB-INF" path (in the "real" file system). */
     private String m_webInfRfsPath;
     
     /**

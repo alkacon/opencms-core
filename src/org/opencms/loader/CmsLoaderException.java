@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsLoaderException.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,15 +37,15 @@ import org.opencms.main.CmsException;
  * Signals exceptions occuring during the resource loading process.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsLoaderException extends CmsException {
 
-    /** Generic error code for loader errors */
+    /** Generic error code for loader errors. */
     public static final int C_LOADER_GENERIC_ERROR = 28; 
     
-    /** Non-template loader called through template loader facade */
+    /** Non-template loader called through template loader facade. */
     public static final int C_LOADER_NOT_TEMPLATE_ENABLED = 300;
         
     /**

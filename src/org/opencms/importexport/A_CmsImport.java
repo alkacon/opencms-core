@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,43 +72,43 @@ import org.dom4j.Element;
 
 public abstract class A_CmsImport implements I_CmsImport {
 
-    /** The algorithm for the message digest */
+    /** The algorithm for the message digest. */
     public static final String C_IMPORT_DIGEST = "MD5";
     
-    /** The id of the legacy resource type "page" */
+    /** The id of the legacy resource type "page". */
     public static final int C_RESOURCE_TYPE_PAGE_ID = 1;
     
-    /** The name of the legacy resource type "page" */
+    /** The name of the legacy resource type "page". */
     public static final String C_RESOURCE_TYPE_PAGE_NAME = "page";
     
-    /** The id of the legacy resource type "link" */
+    /** The id of the legacy resource type "link". */
     public static final int C_RESOURCE_TYPE_LINK_ID = 2;
     
-    /** The name of the legacy resource type "link" */
+    /** The name of the legacy resource type "link". */
     public static final String C_RESOURCE_TYPE_LINK_NAME = "link";
     
-    /** The id of the legacy resource type "newpage" */
+    /** The id of the legacy resource type "newpage". */
     public static final int C_RESOURCE_TYPE_NEWPAGE_ID = 9;
     
-    /** The name of the legacy resource type "newpage" */
+    /** The name of the legacy resource type "newpage". */
     public static final String C_RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
     
-    /** Debug flag to show debug output */
+    /** Debug flag to show debug output. */
     protected static final int DEBUG = 0;
 
-    /** Access control entries for a single resource */
+    /** Access control entries for a single resource. */
     private Vector m_acEntriesToCreate;
 
-    /** The cms contect to do the operations on the VFS/COS with */
+    /** The cms context to do the operations on the VFS/COS with. */
     protected CmsObject m_cms;
 
-    /** Digest for taking a fingerprint of the files */
+    /** Digest for taking a fingerprint of the files. */
     protected MessageDigest m_digest;
 
-    /** The xml manifest-file */
+    /** The xml manifest-file. */
     protected Document m_docXml;
 
-    /** Groups to create during import are stored here */
+    /** Groups to create during import are stored here. */
     protected Stack m_groupsToCreate;
 
     /**
@@ -117,28 +117,28 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     protected List m_importedPages;
 
-    /** Indicates if module data is being imported */
+    /** Indicates if module data is being imported. */
     protected boolean m_importingChannelData;
 
-    /** The import-path to write resources into the cms */
+    /** The import-path to write resources into the cms. */
     protected String m_importPath;
 
-    /** The import-resource (folder) to load resources from */
+    /** The import-resource (folder) to load resources from. */
     protected File m_importResource;
 
-    /** flag for conversion to xml pages */
+    /** Flag for conversion to xml pages. */
     protected boolean m_convertToXmlPage;
 
-    /**  The import-resource (zip) to load resources from */
+    /** The import-resource (zip) to load resources from. */
     protected ZipFile m_importZip;
 
-    /** Storage for all pointer properties which must be converted into links */
+    /** Storage for all pointer properties which must be converted into links. */
     protected HashMap m_linkPropertyStorage;
 
-    /** Storage for all pointers which must be converted into links */
+    /** Storage for all pointers which must be converted into links. */
     protected HashMap m_linkStorage;
 
-    /** The object to report the log messages */
+    /** The object to report the log messages. */
     protected I_CmsReport m_report;
 
     /**

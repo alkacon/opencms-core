@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/14 14:25:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,29 +37,29 @@ import org.opencms.main.CmsException;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2004/02/13 13:41:46 $
+ * @version $Revision: 1.9 $ $Date: 2004/06/14 14:25:58 $
  * @since 5.1.4
  */
 public class CmsLockException extends CmsException {
     
     // the allowed type range for this exception is >=200 and <300
     
-    /** A resource is locked, but a particular action requires the resource to be unlocked */
+    /** A resource is locked, but a particular action requires the resource to be unlocked. */
     public static final int C_RESOURCE_LOCKED = 200;
     
-    /** A resource is locked by the current user, but a particular action requires that the resource is unlocked */
+    /** A resource is locked by the current user, but a particular action requires that the resource is unlocked. */
     public static final int C_RESOURCE_LOCKED_BY_CURRENT_USER = 202;
     
-    /** A resource is locked by a user different from the current user, but a particular action requires that the resource is locked by the current user */
+    /** A resource is locked by a user different from the current user, but a particular action requires that the resource is locked by the current user. */
     public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 203;
     
-    /** A resource has an inherited lock of a parent folder, but a particular action requires a non-inherited lock */
+    /** A resource has an inherited lock of a parent folder, but a particular action requires a non-inherited lock. */
     public static final int C_RESOURCE_LOCKED_INHERITED = 204;
     
-    /** A resource has a non-exclusive lock, but a particular action requires an exclusive lock */
+    /** A resource has a non-exclusive lock, but a particular action requires an exclusive lock. */
     public static final int C_RESOURCE_LOCKED_NON_EXCLUSIVE = 205;
     
-    /** A resource is unlocked, but a particular action requires the resource to be locked */
+    /** A resource is unlocked, but a particular action requires the resource to be locked. */
     public static final int C_RESOURCE_UNLOCKED = 201;
     
     /**

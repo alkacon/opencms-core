@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/06/11 19:20:03 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,14 +69,14 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
-    /** Handler prefix */
+    /** Handler prefix. */
     private static final String C_HANDLE = "/handle";
     
-    /** Handler implementation names */
+    /** Handler implementation names. */
     private static final String[] C_HANDLER_NAMES = {"404", "500"};
 
     /**

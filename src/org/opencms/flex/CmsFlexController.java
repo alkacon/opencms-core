@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2004/06/08 16:05:36 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,47 +49,47 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsFlexController {
     
-    /** Constant for the controller request attribute name */
+    /** Constant for the controller request attribute name. */
     public static final String ATTRIBUTE_NAME = "__com.opencms.flex.cache.CmsFlexController";
     
-    /** The CmsFlexCache where the result will be cached in, required for the dispatcher */    
+    /** The CmsFlexCache where the result will be cached in, required for the dispatcher. */    
     private CmsFlexCache m_cache;   
 
-    /** The wrapped CmsObject provides JSP with access to the core system */
+    /** The wrapped CmsObject provides JSP with access to the core system. */
     private CmsObject m_cmsObject;
     
-    /** List of wrapped RequestContext info object */
+    /** List of wrapped RequestContext info object. */
     private List m_flexContextInfoList;
 
-    /** List of wrapped CmsFlexRequests */
+    /** List of wrapped CmsFlexRequests. */
     private List m_flexRequestList;
     
-    /** List of wrapped CmsFlexResponses */
+    /** List of wrapped CmsFlexResponses. */
     private List m_flexResponseList;
         
-    /** Wrapped top request */
+    /** Wrapped top request. */
     private HttpServletRequest m_req;
     
-    /** Wrapped top response */     
+    /** Wrapped top response. */     
     private HttpServletResponse m_res;    
 
-    /** The CmsResource that was initialized by the original request, required for URI actions */    
+    /** The CmsResource that was initialized by the original request, required for URI actions. */    
     private CmsResource m_resource;   
     
-    /** Indicates if the respose should be streamed */
+    /** Indicates if the respose should be streamed. */
     private boolean m_streaming;
     
-    /** Exception that was caught during inclusion of sub elements */
+    /** Exception that was caught during inclusion of sub elements. */
     private Throwable m_throwable;
     
-    /** URI of a VFS resource that caused the exception */
+    /** URI of a VFS resource that caused the exception. */
     private String m_throwableResourceUri;
     
-    /** Indicates if the request is the top request */
+    /** Indicates if the request is the top request. */
     private boolean m_top;
     
     /**

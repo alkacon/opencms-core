@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/06/13 23:38:13 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,44 +98,44 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
  */
 public class CmsJspLoader implements I_CmsResourceLoader {
 
-    /** Encoding to write JSP files to disk (<code>ISO-8859-1</code>) */
+    /** Encoding to write JSP files to disk (<code>ISO-8859-1</code>). */
     public static final String C_DEFAULT_JSP_ENCODING = "ISO-8859-1";
 
-    /** Special JSP directive tag start (<code>%&gt;</code>)*/
+    /** Special JSP directive tag start (<code>%&gt;</code>). */
     public static final String C_DIRECTIVE_END = "%>";
 
-    /** Special JSP directive tag start (<code>&lt;%@</code>)*/
+    /** Special JSP directive tag start (<code>&lt;%&#0040;</code>). */
     public static final String C_DIRECTIVE_START = "<%@";
 
-    /** Extension for JSP managed by OpenCms (<code>.jsp</code>) */
+    /** Extension for JSP managed by OpenCms (<code>.jsp</code>). */
     public static final String C_JSP_EXTENSION = ".jsp";
 
-    /** The id of this loader */
+    /** The id of this loader. */
     public static final int C_RESOURCE_LOADER_ID = 6;
 
     /** Flag for debugging output. Set to 9 for maximum verbosity. */
     private static final int DEBUG = 0;
 
-    /** The directory to store the generated JSP pages in (absolute path) */
+    /** The directory to store the generated JSP pages in (absolute path). */
     private static String m_jspRepository;
 
-    /** The directory to store the generated JSP pages in (relative path in web application */
+    /** The directory to store the generated JSP pages in (relative path in web application). */
     private static String m_jspWebAppRepository;
 
-    /** The CmsFlexCache used to store generated cache entries in */
+    /** The CmsFlexCache used to store generated cache entries in. */
     private CmsFlexCache m_cache;
 
-    /** The resource loader configuration */
+    /** The resource loader configuration. */
     private ExtendedProperties m_configuration;
 
-    /** Flag to indicate if error pages are mared a "commited" */
+    /** Flag to indicate if error pages are marked as "commited". */
     // TODO: This is a hack, investigate this issue with different runtime environments
     private boolean m_errorPagesAreNotCommited; // default false should work for Tomcat > 4.1
 

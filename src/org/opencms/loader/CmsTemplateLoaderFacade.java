@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsTemplateLoaderFacade.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,18 +44,18 @@ import org.opencms.file.CmsResource;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsTemplateLoaderFacade {
 
-    /** The resource loader */
+    /** The resource loader. */
     private I_CmsResourceLoader m_loader;
     
-    /** The resource requested by the user */
+    /** The resource requested by the user. */
     private CmsResource m_resource;
     
-    /** The template file attached to the resource */
+    /** The template file attached to the resource. */
     private CmsResource m_template;
     
     /**

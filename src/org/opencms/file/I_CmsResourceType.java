@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     void copyResourceToProject(CmsObject cms, String resourcename) throws CmsException;
 
     /**
-     * Moves a resource to the lost and found folder
+     * Moves a resource to the lost and found folder.<p>
      *
      * @param cms the current cms object
      * @param resourcename the complete path of the sourcefile

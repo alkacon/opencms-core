@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsPropertydefinition.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,20 +36,20 @@ package org.opencms.file;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsPropertydefinition implements Cloneable, Comparable {
 
-    /** The null property definition object.<p> */
+    /** The null property definition object. */
     private static final CmsPropertydefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertydefinition(-1, "", -1);
 
-    /** The id of this Propertydefinition */
+    /** The id of this property definition. */
     private int m_id;
     
-    /** The name of this property definition */
-    private String m_name = null;
+    /** The name of this property definition. */
+    private String m_name;
 
-    /** The mapping type for this property definition */
+    /** The mapping type for this property definition. */
     private int m_mappingType;
 
     /**

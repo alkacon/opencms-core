@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeBinary.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,14 +42,14 @@ import java.util.List;
  * Describes the resource type "binary".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsResourceTypeBinary extends A_CmsResourceType {
 
-    /** The type id of this resource */
+    /** The type id of this resource type. */
     public static final int C_RESOURCE_TYPE_ID = 5;
     
-    /** The name of this resource */
+    /** The name of this resource type. */
     public static final String C_RESOURCE_TYPE_NAME = "binary";
     
     /**

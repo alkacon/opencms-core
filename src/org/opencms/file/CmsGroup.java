@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,23 +41,23 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsGroup implements I_CmsPrincipal {
 
-    /** The description of the group */
+    /** The description of the group. */
     private String m_description;
 
-    /** The flags of the group */
+    /** The flags of the group. */
     private int m_flags;
 
-    /** The id of the group */
+    /** The id of the group. */
     private CmsUUID m_id;
 
-    /** The name of the group */
+    /** The name of the group. */
     private String m_name;
 
-    /** The parent id of the group */
+    /** The parent id of the group. */
     private CmsUUID m_parentId;
 
     /**
@@ -182,7 +182,7 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
-     * Returns true if this group is enabled as a role for tasks group
+     * Returns true if this group is enabled as a role for tasks group.<p>
      * 
      * @return true if this group is enabled as a role for tasks group 
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/05/21 15:14:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,50 +44,50 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsRequestContext {
 
-    /** A map for storing (optional) request context attributes */
+    /** A map for storing (optional) request context attributes. */
     private HashMap m_attributeMap; 
 
-    /** The current project */
+    /** The current project. */
     private CmsProject m_currentProject;
     
-    /** Directroy name translator */
+    /** Directory name translator. */
     private CmsResourceTranslator m_directoryTranslator;
     
-    /** Current encoding */
+    /** Current encoding. */
     private String m_encoding;
 
-    /** Flag to indicate that this request is event controlled */
+    /** Flag to indicate that this request is event controlled. */
     private boolean m_eventControlled;
 
-    /** File name translator */
+    /** File name translator. */
     private CmsResourceTranslator m_fileTranslator;
 
-    /** The locale for this request */
+    /** The locale for this request. */
     private Locale m_locale;
     
-    /** The remote ip address */
+    /** The remote ip address. */
     private String m_remoteAddr;
     
-    /** Used to save / restore a site root */
+    /** Used to save / restore a site root .*/
     private String m_savedSiteRoot;
 
-    /** The name of the root, e.g. /site_a/vfs */
+    /** The name of the root, e.g. /site_a/vfs. */
     private String m_siteRoot;
     
-    /** Flag to indicate that this context should not update the user session */
+    /** Flag to indicate that this context should not update the user session. */
     private boolean m_updateSession;
 
-    /** The URI for getUri() in case it is "overwritten"  */
-    private String m_uri = null;
+    /** The URI for getUri() in case it is "overwritten".  */
+    private String m_uri;
 
-    /** The current user */
+    /** The current user. */
     private CmsUser m_user;
     
-    /** The current request time */
+    /** The current request time. */
     private long m_requestTime;
     
     /**
@@ -238,7 +238,7 @@ public class CmsRequestContext {
     }
 
     /**
-     * Returns the current content encoding to be used in HTTP response
+     * Returns the current content encoding to be used in HTTP response.<p>
      * 
      * @return the encoding
      */
@@ -259,9 +259,9 @@ public class CmsRequestContext {
     }    
         
    /**
-    * Gets the name of the parent folder of the requested file
+    * Gets the name of the parent folder of the requested file.<p>
     *
-    * @return the requested filename.
+    * @return the name of the parent folder of the requested file
     */
     public String getFolderUri() {
         return getUri().substring(0, getUri().lastIndexOf("/") + 1);
@@ -353,7 +353,7 @@ public class CmsRequestContext {
      *
      * @throws RuntimeException in case there is no site root saved
      */
-    public synchronized void restoreSiteRoot() {
+    public synchronized void restoreSiteRoot() throws RuntimeException {
         if (m_savedSiteRoot == null) {
             throw new RuntimeException("Saved siteroot empty!");
         }
@@ -366,7 +366,7 @@ public class CmsRequestContext {
      *
      * @throws RuntimeException in case there is already a site root saved
      */
-    public synchronized void saveSiteRoot() {
+    public synchronized void saveSiteRoot() throws RuntimeException {
         if (m_savedSiteRoot != null) {
             throw new RuntimeException("Saved siteroot not empty: " + m_savedSiteRoot);
         }
@@ -400,7 +400,7 @@ public class CmsRequestContext {
     }    
 
     /**
-     * Sets the current content encoding to be used in HTTP response
+     * Sets the current content encoding to be used in HTTP response.<p>
      * 
      * @param encoding the encoding
      */

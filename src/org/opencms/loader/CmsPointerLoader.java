@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2004/06/13 23:38:13 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,17 +53,17 @@ import org.apache.commons.collections.ExtendedProperties;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
     /**
-     * The html-code for returning the export file for external links
+     * The html-code for returning the export file for external links.
      */
     private static String C_EXPORT_PREFIX = "<html>\n<head>\n<meta http-equiv="+'"'+"refresh"+'"'+" content="+'"'+"0; url=";
     private static String C_EXPORT_SUFFIX = '"'+">\n</head>\n<body></body>\n</html>";
     
-    /** The id of this loader */
+    /** The id of this loader. */
     public static final int C_RESOURCE_LOADER_ID = 4;    
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/06/13 23:38:58 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.120 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,117 +103,117 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.119 $
+ * @version $Revision: 1.120 $
  * @since 5.1
  */
 public final class OpenCmsCore {
 
-    /** Prefix for error messages for initialization errors */
+    /** Prefix for error messages for initialization errors. */
     private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";
     
-    /** Name of the property file containing HTML fragments for setup wizard and error dialog */
+    /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
     public static final String C_FILE_HTML_MESSAGES = "org/opencms/main/htmlmsg.properties";
 
-    /** Prefix for a critical init error */
+    /** Prefix for a critical init error. */
     public static final String C_MSG_CRITICAL_ERROR = "Critical init error/";
 
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
 
-    /** The session manager */
+    /** The session manager. */
     private static OpenCmsSessionManager m_sessionManager;
 
-    /** URI of the authentication form (read from properties) in case of form based authentication */
+    /** URI of the authentication form (read from properties) in case of form based authentication. */
     private String m_authenticationFormURI;
     
-    /** The configuration manager that contains the information from the XML configuration */
+    /** The configuration manager that contains the information from the XML configuration. */
     private CmsConfigurationManager m_configurationManager;
 
-    /** The cron table to use with the scheduler */
+    /** The cron table to use with the scheduler. */
     private CmsCronTable m_cronTable;
 
-    /** Array of configured default file names (for faster access) */
+    /** Array of configured default file names (for faster access). */
     private String[] m_defaultFilenames;
 
-    /** The default user and group names */
+    /** The default user and group names. */
     private CmsDefaultUsers m_defaultUsers;
 
-    /** Directory translator, used to translate all access to resources */
+    /** Directory translator, used to translate all accesses to resources. */
     private CmsResourceTranslator m_directoryTranslator;
 
-    /** The driver manager to access the database */
+    /** The driver manager to access the database. */
     private CmsDriverManager m_driverManager;
 
-    /** List to save the event listeners in */
+    /** List to save the event listeners in. */
     private Map m_eventListeners;
 
-    /** The set of configured export points */
+    /** The set of configured export points. */
     private Set m_exportPoints;
 
-    /** Filename translator, used only for the creation of new files */
+    /** Filename translator, used only for the creation of new files. */
     private CmsResourceTranslator m_fileTranslator;
 
-    /** The site manager contains information about the Cms import/export */
+    /** The site manager contains information about the Cms import/export. */
     private CmsImportExportManager m_importExportManager;
 
-    /** The link manager to resolve links in &lt;link&gt; tags */
+    /** The link manager to resolve links in &lt;link&gt; tags. */
     private CmsLinkManager m_linkManager;
 
-    /** The loader manager used for loading individual resources */
+    /** The loader manager used for loading individual resources. */
     private CmsLoaderManager m_loaderManager;
 
-    /** The locale manager used for obtaining the current locale */
+    /** The locale manager used for obtaining the current locale. */
     private CmsLocaleManager m_localeManager;
 
-    /** The lock manager used for the locking mechanism  */
+    /** The lock manager used for the locking mechanism. */
     private CmsLockManager m_lockManager;
 
-    /** The OpenCms log to write all log messages to */
+    /** The OpenCms log to write all log messages to. */
     private CmsLog m_log;
 
-    /** The memory monitor for collection memory statistics */
+    /** The memory monitor for collection memory statistics. */
     private CmsMemoryMonitor m_memoryMonitor;
 
-    /** The name of the class used to validate a new password */
+    /** The name of the class used to validate a new password. */
     private String m_passwordValidatingClass;
 
-    /** Map of request handlers */
+    /** Map of request handlers. */
     private Map m_requestHandlers;
 
-    /** Member variable to store instances to modify resources */
+    /** Member variable to store instances to modify resources. */
     private List m_resourceInitHandlers;
 
-    /** The runlevel of this OpenCmsCore object instance */
+    /** The runlevel of this OpenCmsCore object instance. */
     private int m_runLevel;
 
-    /** A Map for the storage of various runtime properties */
+    /** A Map for the storage of various runtime properties. */
     private Map m_runtimeProperties;
 
-    /**  The cron scheduler to schedule the cronjobs */
+    /**  The cron scheduler to schedule the cronjobs. */
     private CmsCronScheduler m_scheduler;
 
-    /** The search manager provides indexing and searching */
+    /** The search manager provides indexing and searching. */
     private CmsSearchManager m_searchManager;
 
-    /** The session info storage for all active users */
+    /** The session info storage for all active users. */
     private CmsSessionInfoManager m_sessionInfoManager;
 
-    /** The site manager contains information about all configured sites */
+    /** The site manager contains information about all configured sites. */
     private CmsSiteManager m_siteManager;
     
-    /** The static export manager */
+    /** The static export manager. */
     private CmsStaticExportManager m_staticExportManager;
 
-    /** The system information container for "read only" system settings */
+    /** The system information container for "read only" system settings. */
     private CmsSystemInfo m_systemInfo;
 
-    /** The Thread store */
+    /** The thread store. */
     private CmsThreadStore m_threadStore;
 
-    /** Flag to indicate if basic or form based authentication is used */
+    /** Flag to indicate if basic or form based authentication is used. */
     private boolean m_useBasicAuthentication;
 
-    /** The workplace manager contains information about the global workplace settings */
+    /** The workplace manager contains information about the global workplace settings. */
     private CmsWorkplaceManager m_workplaceManager;
     
     /**

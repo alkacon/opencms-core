@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,10 +44,10 @@ import java.util.List;
  */
 public class CmsResourceTypePlain extends A_CmsResourceType {
         
-    /** The type id of this resource */
+    /** The type id of this resource type. */
     public static final int C_RESOURCE_TYPE_ID = 3;
     
-    /** The name of this resource */
+    /** The name of this resource type. */
     public static final String C_RESOURCE_TYPE_NAME = "plain";
     
     /**

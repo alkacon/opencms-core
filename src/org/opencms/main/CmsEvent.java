@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEvent.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 14:25:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,23 +40,23 @@ import org.opencms.file.CmsObject;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsEventListener
  */
 public class CmsEvent extends java.util.EventObject {
     
-    /** The CmsObject on which this event occurred */
+    /** The CmsObject on which this event occurred. */
     private CmsObject m_cms;
 
-    /** The event data associated with this event */
+    /** The event data associated with this event. */
     private java.util.Map m_data;
 
-    /** The event type this instance represents */
+    /** The event type this instance represents. */
     private Integer m_type;
     
-    /** Boolean whether this event should be clustered */
+    /** Boolean whether this event should be clustered. */
     private boolean m_isClusterEvent;
 
     /**

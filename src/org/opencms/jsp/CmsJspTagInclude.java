@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/05/21 15:17:35 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,22 +55,22 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
     // Attribute member variables
-    private String m_target = null;
-    private String m_suffix = null;
-    private String m_property = null;    
-    private String m_attribute = null;    
-    private String m_element = null;
-    private boolean m_editable = false;
+    private String m_target;
+    private String m_suffix;
+    private String m_property;    
+    private String m_attribute;    
+    private String m_element;
+    private boolean m_editable;
     
-    /** Hashmap to save paramters to the include in */
-    private HashMap m_parameterMap = null;
+    /** Hashmap to save parameters to the include in. */
+    private HashMap m_parameterMap;
         
-    /** Debugging on / off */
+    /** Debugging on / off. */
     private static final boolean DEBUG = false;
     
     /**
@@ -94,7 +94,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     }
 
     /**
-     * Sets the file, same aus using <code>setPage()</code>
+     * Sets the file, same as using <code>setPage()</code>.<p>
      * 
      * @param file the file to set
      * @see #setPage(String)

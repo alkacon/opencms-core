@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2004/06/10 19:37:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,28 +49,28 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.0 beta 2
  */
 public class CmsMessages extends Object {  
         
-    /** Prefix / Suffix for unknown keys */
+    /** Prefix / Suffix for unknown keys. */
     public static final String C_UNKNOWN_KEY_EXTENSION = "???";
     
-    /** The suffix of a "short" localized key name */
+    /** The suffix of a "short" localized key name. */
     public static final String C_KEY_SHORT_SUFFIX = ".short";
     
-    /** Full date / time format (this is more complete then LONG) */
+    /** Full date / time format (this is more complete then LONG). */
     public static final int FULL = DateFormat.FULL;
     
-    /** Long date / time format */
+    /** Long date / time format. */
     public static final int LONG = DateFormat.LONG;
     
-    /** Medium date / time format */
+    /** Medium date / time format. */
     public static final int MEDIUM = DateFormat.MEDIUM;
     
-    /** Short date / time format */
+    /** Short date / time format. */
     public static final int SHORT = DateFormat.SHORT;
     
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsI18nInfo.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,10 +40,10 @@ import java.util.Locale;
  */
 public class CmsI18nInfo {
     
-    /** The locale to use */
+    /** The locale to use. */
     private String m_encoding;
     
-    /** The encoding to use */
+    /** The encoding to use. */
     private Locale m_locale;
     
     /**

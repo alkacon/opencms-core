@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/06/08 15:14:00 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,59 +76,59 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
-    /** Id to identify that the version is not important */
+    /** Id to identify that the version is not important .*/
     public static final int C_ANY_VERSION = -1;
 
-    /** Declaration of an empty module in the registry */
+    /** Declaration of an empty module in the registry. */
     private static final String[] C_EMPTY_MODULE = {"<module><type>", "</type><name>", "</name><nicename>", "</nicename><version>", "</version><description><![CDATA[ ", "]]></description><author>", "</author><email/><creationdate>", "</creationdate>", "<view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>"};
 
-    /** Event marker to identify a module deletion */
+    /** Event marker to identify a module deletion. */
     private static final String C_EVENT_METHOD_NAME_DELETE = "moduleWasDeleted";
 
-    /** Event marker to identify a module parameter update */
+    /** Event marker to identify a module parameter update. */
     private static final String C_EVENT_METHOD_NAME_UPDATE_PARAMETER = "moduleParameterWasUpdated";
 
-    /** Event marker to identify a module upload */
+    /** Event marker to identify a module upload. */
     private static final String C_EVENT_METHOD_NAME_UPLOAD = "moduleWasUploaded";
 
-    /** XML to create an export point */
+    /** XML to create an export point. */
     private static final String[] C_EXPORTPOINT = {"<exportpoint><source>", "</source><destination>", "</destination></exportpoint>"};
 
-    /** The name of the folder to extend the exportpath */
+    /** The name of the folder to extend the export path. */
     public static final String C_MODULE_PATH = "modules/";
 
-    /** Type identificator for "simple" (5.0 style) modules */
+    /** Type identificator for "simple" (>=5.0 style) modules. */
     public static final String C_MODULE_TYPE_SIMPLE = "simple";
 
-    /** Type identificator for "traditional" modules */
+    /** Type identificator for "traditional" modules. */
     public static final String C_MODULE_TYPE_TRADITIONAL = "traditional";
 
-    /** Debug flag, set to 9 for maximum vebosity */
+    /** Debug flag, set to 9 for maximum verbosity. */
     private static final int DEBUG = 0;
 
-    /** The OpenCms contect object to get access to the system with the context of the current user */
-    private CmsObject m_cms = null;
+    /** The OpenCms context object to get access to the system with the context of the current user. */
+    private CmsObject m_cms;
 
-    /** The date format to use */
+    /** The date format to use. */
     private SimpleDateFormat m_dateFormat = new java.text.SimpleDateFormat("MM.dd.yyyy");
 
-    /** A message digest to check the resource codes */
+    /** A message digest to check the resource codes. */
     private MessageDigest m_digest;
 
-    /** A hashtable with all exportpoints and paths */
+    /** A hashtable with all exportpoints and paths. */
     private Set m_exportpoints;
 
-    /** A hashtable with shortcuts into the dom-structure for each module */
+    /** A hashtable with shortcuts into the dom-structure for each module. */
     private Hashtable m_modules = new Hashtable();
 
-    /** The filename for this registry */
+    /** The filename for this registry. */
     private String m_regFileName;
 
-    /** The xml-document representing this registry */
+    /** The xml-document representing this registry. */
     private Document m_xmlReg;
     
     private int warning = 0;
@@ -1368,15 +1368,6 @@ public class CmsRegistry extends A_CmsXmlContent {
     }
 
     /**
-     * Returns a list of all configured synchronize modification classes.<p>
-     *
-     * @return a list of all configured synchronize modification classes
-     */
-    private List getSynchronizeModifications() {
-        return getSystemSubNodesClasses("synchronizemodifications");
-    }
-
-    /**
      * Return the XML "system" node Element from the registry for further
      * processing in another class.
      * @return the system node.
@@ -1424,32 +1415,6 @@ public class CmsRegistry extends A_CmsXmlContent {
             // no returnvalues
             if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info("Error getting registry node " + node, e);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns a list of all node values classes below a given system node.<p>
-     * 
-     * @param node the system node to get all values below.
-     * @return list of class instances
-     */
-    private List getSystemSubNodesClasses(String node) {
-        List result = new ArrayList();
-        // get all class names form the registry
-        Iterator i = getSystemSubNodes(node).iterator();
-        while (i.hasNext()) {
-            String classname = (String)i.next();
-            try {
-                result.add(Class.forName(classname).newInstance());
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(". CmsSyncModification init : " + classname + " instanciated");
-                }
-            } catch (Exception e1) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(". CmsSyncModification init : non-critical error" + e1.toString());
-                }
             }
         }
         return result;
@@ -1580,8 +1545,9 @@ public class CmsRegistry extends A_CmsXmlContent {
     }
  
     /**
-     * Gets the expected tagname for the XML documents of this content type
-     * @return Expected XML tagname.
+     * Gets the expected tagname for the XML documents of this content type.<p>
+     * 
+     * @return Expected XML tagname
      */
     public String getXmlDocumentTagName() {
         return "registry";

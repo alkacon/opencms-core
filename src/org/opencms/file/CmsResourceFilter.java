@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2004/06/06 09:13:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.main.I_CmsConstants;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3.5
  */
 public final class CmsResourceFilter {
@@ -98,16 +98,16 @@ public final class CmsResourceFilter {
      */
     public static CmsResourceFilter ONLY_VISIBLE = new CmsResourceFilter(true, true, false);
     
-    /** The cache id for this filter */
+    /** The cache id for this filter. */
     private String m_cacheId;
     
-    /** Flag for filtering deleted resources */
+    /** Flag for filtering deleted resources. */
     private boolean m_includeDeleted;
     
-    /** Flag to filter resources with the visible permission */
+    /** Flag to filter resources with the visible permission. */
     private boolean m_includeInvisible;
     
-    /** Flag for filtering resources before relase date and after expiration date */
+    /** Flag for filtering resources before relase date and after expiration date. */
     private boolean m_includeUnreleased;
     
     
@@ -132,9 +132,9 @@ public final class CmsResourceFilter {
         m_includeInvisible = includeInvisible;
         
         m_cacheId = String.valueOf(
-            (m_includeDeleted?1:0) +
-            (m_includeUnreleased?2:0) +
-            (m_includeInvisible?4:0)
+            (m_includeDeleted?1:0) 
+            + (m_includeUnreleased?2:0) 
+            + (m_includeInvisible?4:0)
         );
     }
     

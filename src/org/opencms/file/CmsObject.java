@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/13 23:33:05 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 public class CmsObject {
 
@@ -334,7 +334,7 @@ public class CmsObject {
     }
 
     /**
-     * Changes the type of the user
+     * Changes the type of the user.<p>
      *
      * @param userId The id of the user to change
      * @param userType The new type of the user
@@ -345,7 +345,7 @@ public class CmsObject {
     }
 
     /**
-     * Changes the type of the user to webusertype
+     * Changes the type of the user.<p>
      *
      * @param username The name of the user to change
      * @param userType The new type of the user
@@ -1269,12 +1269,11 @@ public class CmsObject {
     }
 
     /**
-     * Restores a file in the current project with a version in the backup
+     * Restores a file in the current project with a version in the backup.<p>
      *
      * @param tagId The tag id of the resource
      * @param filename The name of the file to restore
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful.
      */
     protected void doRestoreResource(int tagId, String filename) throws CmsException {
         m_driverManager.restoreResource(m_context, tagId, addSiteRoot(filename));
@@ -1335,9 +1334,9 @@ public class CmsObject {
     }
 
     /**
-     * Unlocks a resource.
-     * <br>
-     * A user can unlock a resource, so other users may lock this file.
+     * Unlocks a resource.<p>
+     * 
+     * A user can unlock a resource, so other users may lock this file.<p>
      *
      * @param resource the complete path to the resource to be unlocked.
      *
@@ -1400,7 +1399,7 @@ public class CmsObject {
       }
 
     /**
-     * Exports a resource.
+     * Exports a resource.<p>
      * 
      * @param file the resource to export
      * @return the resource that was exported
@@ -1424,7 +1423,7 @@ public class CmsObject {
     }
     
     /**
-     * Fires a CmsEvent
+     * Fires a CmsEvent.<p>
      *
      * @param type The type of the event
      * @param data A data object that contains data used by the event listeners
@@ -1434,7 +1433,7 @@ public class CmsObject {
     }
 
     /**
-     * Forwards a task to a new user.
+     * Forwards a task to a new user.<p>
      *
      * @param taskid the id of the task which will be forwarded.
      * @param newRoleName the new group for the task.
@@ -1447,7 +1446,7 @@ public class CmsObject {
     }
 
     /**
-     * Returns the vector of access control entries of a resource.
+     * Returns the vector of access control entries of a resource.<p>
      * 
      * @param resourceName the name of the resource.
      * @return a vector of access control entries
@@ -1458,7 +1457,7 @@ public class CmsObject {
     }
 
     /**
-     * Returns the vector of access control entries of a resource.
+     * Returns the vector of access control entries of a resource.<p>
      * 
      * @param resourceName the name of the resource.
      * @param getInherited true, if inherited access control entries should be returned, too
@@ -1471,7 +1470,7 @@ public class CmsObject {
     }
 
     /**
-     * Returns the access control list (summarized access control entries) of a given resource.
+     * Returns the access control list (summarized access control entries) of a given resource.<p>
      * 
      * @param resourceName the name of the resource
      * @return the access control list of the resource
@@ -1482,7 +1481,7 @@ public class CmsObject {
     }
 
     /**
-     * Returns the access control list (summarized access control entries) of a given resource.
+     * Returns the access control list (summarized access control entries) of a given resource.<p>
      * 
      * @param resourceName the name of the resource
      * @param inheritedOnly if set, the non-inherited entries are skipped
@@ -1495,7 +1494,7 @@ public class CmsObject {
     }
 
     /**
-     * Returns all projects, which the current user can access.
+     * Returns all projects which the current user can access.<p>
      *
      * @return a Vector of objects of type <code>CmsProject</code>.
      *
@@ -1506,7 +1505,7 @@ public class CmsObject {
     }
 
     /**
-    * Returns a Vector with all projects from history
+    * Returns a Vector with all projects from history.<p>
     *
     * @return Vector with all projects from history.
     *
@@ -1518,7 +1517,7 @@ public class CmsObject {
 
     /**
      * Returns all projects which are owned by the current user or which are manageable
-     * for the group of the user.
+     * for the group of the user.<p>
      *
      * @return a Vector of objects of type <code>CmsProject</code>.
      *
@@ -1547,7 +1546,7 @@ public class CmsObject {
     }
 
     /**
-     * Get the next version id for the published backup resources
+     * Get the next version id for the published backup resources.<p>
      *
      * @return int The new version id
      */
@@ -1556,7 +1555,7 @@ public class CmsObject {
     }
 
     /**
-     * Returns all child groups of a group.
+     * Returns all child groups of a group.<p>
      *
      * @param groupname the name of the group.
      * @return groups a Vector of all child groups or null.
@@ -1567,9 +1566,9 @@ public class CmsObject {
     }
 
     /**
-     * Returns all child groups of a group.
-     * <br>
-     * This method also returns all sub-child groups of the current group.
+     * Returns all child groups of a group.<p>
+     * 
+     * This method also returns all sub-child groups of the current group.<p>
      *
      * @param groupname the name of the group.
      * @return groups a Vector of all child groups or null.
@@ -1580,15 +1579,16 @@ public class CmsObject {
     }
 
     /**
-     * Gets the configurations of the properties-file.
-     * @return the configurations of the properties-file.
+     * Gets the configurations of the OpenCms properties file.<p>
+     * 
+     * @return the configurations of the properties file.
      */
     public ExtendedProperties getConfigurations() {
         return m_driverManager.getConfigurations();
     }
 
     /**
-     * Gets all groups to which a given user directly belongs.
+     * Gets all groups to which a given user directly belongs.<p>
      *
      * @param username the name of the user to get all groups for.
      * @return a Vector of all groups of a user.
@@ -1679,8 +1679,9 @@ public class CmsObject {
     }     
 
     /**
-     * Returns a list of all currently logged in users.
-     * This method is only allowed for administrators.
+     * Returns a list of all currently logged in users.<p>
+     * 
+     * This method is can only be executed by administrators.<p>
      * 
      * @return a vector of users that are currently logged in
      * @throws CmsException if something goes wrong
@@ -1698,7 +1699,7 @@ public class CmsObject {
     }
 
     /**
-     * Returns the parent group of a group.
+     * Returns the parent group of a group.<p>
      *
      * @param groupname the name of the group.
      * @return group the parent group or null.
@@ -1709,7 +1710,7 @@ public class CmsObject {
     }
 
     /**
-     * Returns the set set of permissions of the current user for a given resource. 
+     * Returns the set of permissions of the current user for a given resource.<p>
      * 
      * @param resourceName the name of the resource
      * @return the set of the permissions of the current user
@@ -1724,7 +1725,7 @@ public class CmsObject {
     }
 
     /**
-     * Returns the set set of permissions of a given user for a given resource.
+     * Returns the set of permissions of a given user for a given resource.<p>
      * 
      * @param resourceName the name of the resource
      * @param userName the name of the user
@@ -1747,9 +1748,9 @@ public class CmsObject {
     }
 
     /**
-     * Returns the current request-context.
+     * Returns the current request context.<p>
      *
-     * @return the current request-context.
+     * @return the current request context.
      */
     public CmsRequestContext getRequestContext() {
         return (m_context);
@@ -1788,15 +1789,13 @@ public class CmsObject {
     }
 
     /**
-      * Returns a Vector with all resources of the given type that have set the given property.
+      * Returns a Vector with all resources of the given type that have set the given property.<p>
       *
       * <B>Security:</B>
-      * All users are granted.
+      * All users are granted.<p>
       *
       * @param propertyDefinition the name of the propertydefinition to check.
-      *
       * @return Vector with all resources.
-      *
       * @throws CmsException if operation was not succesful.
       */
     public Vector getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
@@ -1807,7 +1806,7 @@ public class CmsObject {
      * Returns a List with the complete sub tree of a given folder that have set the given property.<p>
      *
      * <B>Security:</B>
-     * All users are granted.
+     * All users are granted.<p>
      *
      * @param folder the folder to get the subresources from
      * @param propertyDefinition the name of the propertydefinition to check
@@ -1823,11 +1822,10 @@ public class CmsObject {
      * Returns a List with resources that have set the given property.<p>
      *
      * <B>Security:</B>
-     * All users are granted.
+     * All users are granted.<p>
      *
      * @param propertyDefinition the name of the propertydefinition to check
      * @return List with all resources
-     *
      * @throws CmsException if operation was not succesful
      */
     public List getResourcesWithProperty(String propertyDefinition) throws CmsException {
@@ -1835,10 +1833,10 @@ public class CmsObject {
     }
 
     /**
-      * Returns a Vector with all resources of the given type that have set the given property to the given value.
+      * Returns a Vector with all resources of the given type that have set the given property to the given value.<p>
       *
       * <B>Security:</B>
-      * All users are granted.
+      * All users are granted.<p>
       *
       * @param propertyDefinition the name of the propertydefinition to check.
       * @param propertyValue the value of the property for the resource.
@@ -1906,25 +1904,22 @@ public class CmsObject {
     }
 
     /**
-      * Get a parameter value for a task.
-      *
-      * @param taskid the id of the task.
-      * @param parname the name of the parameter.
-      * @return the parameter value.
-      *
-      * @throws CmsException if operation was not successful.
-      */
+     * Gets a parameter value for a task.<p>
+     *
+     * @param taskid the id of the task.
+     * @param parname the name of the parameter.
+     * @return the parameter value.
+     * @throws CmsException if operation was not successful.
+     */
     public String getTaskPar(int taskid, String parname) throws CmsException {
         return (m_driverManager.getTaskPar(taskid, parname));
     }
 
     /**
-     * Get the template task id fo a given taskname.
+     * Get the template task id fo a given taskname.<p>
      *
      * @param taskname the name of the task.
-     *
      * @return the id of the task template.
-     *
      * @throws CmsException if operation was not successful.
      */
     public int getTaskType(String taskname) throws CmsException {
@@ -1932,10 +1927,9 @@ public class CmsObject {
     }
 
     /**
-     * Returns all users in the Cms.
+     * Returns all users.<p>
      *
-     * @return a Vector of all users in the Cms.
-     *
+     * @return a Vector of all users.
      * @throws CmsException if operation was not successful.
      */
     public Vector getUsers() throws CmsException {
@@ -1943,12 +1937,10 @@ public class CmsObject {
     }
 
     /**
-     * Returns all users of the given type in the Cms.
+     * Returns all users of the given type.<p>
      *
      * @param type the type of the users.
-     *
-     * @return vector of all users of the given type in the Cms.
-     *
+     * @return vector of all users of the given type.
      * @throws CmsException if operation was not successful.
      */
     public Vector getUsers(int type) throws CmsException {
@@ -1956,11 +1948,11 @@ public class CmsObject {
     }
 
     /**
-    * Returns all users from a given type that start with a specified string<P/>
+    * Returns all users from a given type that start with a specified string.<p>
     *
     * @param type the type of the users.
     * @param namefilter The filter for the username
-    * @return vector of all users of the given type in the Cms.
+    * @return vector of all users of the given type with the specified string.
     *
     * @throws CmsException if operation was not successful.
     * @deprecated
@@ -1970,22 +1962,20 @@ public class CmsObject {
     }
 
     /**
-     * Gets all users with a certain Lastname.
+     * Gets all users with a certain last name.<p>
      *
-     * @param Lastname      the start of the users lastname
+     * @param lastname      the start of the users lastname
      * @param UserType      webuser or systemuser
      * @param UserStatus    enabled, disabled
      * @param wasLoggedIn   was the user ever locked in?
      * @param nMax          max number of results
-     *
-     * @return the users.
-     *
-     * @throws CmsException if operation was not successful.
+     * @return the users with the specified last name
+     * @throws CmsException if operation was not successful
      * @deprecated
      */
-    public Vector getUsersByLastname(String Lastname, int UserType, int UserStatus, int wasLoggedIn, int nMax) throws CmsException {
+    public Vector getUsersByLastname(String lastname, int UserType, int UserStatus, int wasLoggedIn, int nMax) throws CmsException {
 
-        return m_driverManager.getUsersByLastname(m_context, Lastname, UserType, UserStatus, wasLoggedIn, nMax);
+        return m_driverManager.getUsersByLastname(m_context, lastname, UserType, UserStatus, wasLoggedIn, nMax);
     }
 
     /**
@@ -2001,7 +1991,7 @@ public class CmsObject {
     }
     
     /**
-     * Checks if the current user has required permissions to access a given resource.
+     * Checks if the current user has required permissions to access a given resource.<p>
      * 
      * @param resource the resource that will be accessed
      * @param requiredPermissions the set of required permissions
@@ -2013,7 +2003,7 @@ public class CmsObject {
     }
     
     /**
-     * Checks if the current user has required permissions to access a given resource.
+     * Checks if the current user has required permissions to access a given resource.<p>
      * 
      * @param resource the resource that will be accessed
      * @param requiredPermissions the set of required permissions
@@ -2026,11 +2016,10 @@ public class CmsObject {
     }
     
     /**
-     * Imports a import-resource (folder or zipfile) to the cms.
+     * Imports an import-resource (folder or zipfile).<p>
      *
      * @param importFile the name (absolute Path) of the import resource (zipfile or folder).
      * @param importPath the name (absolute Path) of the folder in which should be imported.
-     *
      * @throws CmsException if operation was not successful.
      */
     public void importFolder(String importFile, String importPath) throws CmsException {
@@ -2062,7 +2051,7 @@ public class CmsObject {
     }
 
     /**
-     * Checks, if the users current group is the admin-group.
+     * Checks, if the users current group is the admin-group.<p>
      *
      *
      * @return <code>true</code>, if the users current group is the admin-group; <code>false</code> otherwise.
@@ -2301,7 +2290,7 @@ public class CmsObject {
 
 
     /**
-     * Moves a resource to the lost and found folder
+     * Moves a resource to the lost and found folder.<p>
      *
      * @param source the complete path of the sourcefile.
      * @return location of the moved resource
@@ -2491,12 +2480,11 @@ public class CmsObject {
     }
 
     /**
-     * select all projectResources from an given project
+     * Select all project resources from a given project.<p>
      *
-     * @param projectId id of the project in which the resource is used.
+     * @param projectId id of the project in which the resource is used
      * @return vector of all resources belonging to the given project
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not succesful
      */
     public Vector readAllProjectResources(int projectId) throws CmsException {
         return m_driverManager.readAllProjectResources(m_context, projectId);
@@ -3273,12 +3261,11 @@ public class CmsObject {
     }
 
     /**
-     * Restores a file in the current project with a version in the backup
+     * Restores a file in the current project with a version in the backup.<p>
      *
      * @param tagId The tag id of the resource
      * @param filename The name of the file to restore
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public void restoreResource(int tagId, String filename) throws CmsException {
         getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).restoreResource(this, tagId, filename);
@@ -3335,7 +3322,7 @@ public class CmsObject {
     }
 
     /**
-     * Sets the name of the current site root of the content objects system
+     * Sets the name of the current site root of the content objects system.<p>
      */
     public void setContextToCos() {
         getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
@@ -3518,14 +3505,14 @@ public class CmsObject {
      * @param groupname the name of the group to test.
      * @return <code>true</code>, if the user is in the group; <code>else</code> false otherwise.
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public boolean userInGroup(String username, String groupname) throws CmsException {
         return (m_driverManager.userInGroup(m_context, username, groupname));
     }
 
     /**
-     * Writes access control entries for a given resource
+     * Writes access control entries for a given resource.<p>
      * 
      * @param resource the resource to attach the control entries to
      * @param acEntries a vector of access control entries

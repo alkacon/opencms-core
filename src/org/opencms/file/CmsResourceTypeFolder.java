@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/06/05 10:10:11 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,20 +52,20 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
-    /** Flag for support of old duplicate "/system/bodies/" folder */
+    /** Flag for support of old duplicate "/system/bodies/" folder. */
     public static final boolean C_BODY_MIRROR = false;
 
-    /** The type id of this resource */
+    /** The type id of this resource. */
     public static final int C_RESOURCE_TYPE_ID = 0;
 
-    /** The name of this resource */
+    /** The name of this resource type. */
     public static final String C_RESOURCE_TYPE_NAME = "folder";
 
-    /** Internal debug flag */
+    /** Internal debug flag. */
     private static final int DEBUG = 0;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2004/06/13 23:33:15 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.opencms.util.CmsDateUtil;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -69,10 +69,10 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      */    
     private class CmsServletOutputStream extends ServletOutputStream {
         
-        /** The optional output stream to write to */
+        /** The optional output stream to write to. */
         private ServletOutputStream m_servletStream;
 
-        /** The internal steam buffer */
+        /** The internal stream buffer. */
         private ByteArrayOutputStream m_stream;
 
         /**
@@ -170,73 +170,73 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         }
     }    
     
-    /** The cache delimiter char */
+    /** The cache delimiter char. */
     public static final char C_FLEX_CACHE_DELIMITER = (char)0;
     
-    /** Static string to indicate a header is "set" in the header maps */
+    /** Static string to indicate a header is "set" in the header maps. */
     public static final String C_SETHEADER = "[setHeader]";
                 
-    /** Flag for debugging output */
+    /** Flag for debugging output. */
     private static final boolean DEBUG = false;
     
-    /** Map to save response headers belonging to a single include call in */
+    /** Map to save response headers belonging to a single include call in .*/
     private Map m_bufferHeaders;
 
-    /** String to hold a buffered redirect target */
+    /** String to hold a buffered redirect target. */
     private String m_bufferRedirect;        
     
-    /** Byte array used for "cached leafs" optimization */
+    /** Byte array used for "cached leafs" optimization. */
     private byte[] m_cacheBytes;
     
-    /** The cached entry that is constructed from this response */
+    /** The cached entry that is constructed from this response. */
     private CmsFlexCacheEntry m_cachedEntry;
 
-    /** Indicates if caching is required, will always be true if m_writeOnlyToBuffer is true */
+    /** Indicates if caching is required, will always be true if m_writeOnlyToBuffer is true. */
     private boolean m_cachingRequired;       
     
-    /** The CmsFlexController for this response */
+    /** The CmsFlexController for this response. */
     private CmsFlexController m_controller;
     
-    /** The encoding to use for the response */
+    /** The encoding to use for the response. */
     private String m_encoding;
 
-    /** Map to save all response headers (including sub-elements) in */
+    /** Map to save all response headers (including sub-elements) in. */
     private Map m_headers;
     
-    /** A list of include calls that origin from this page, i.e. these are sub elements of this element */
+    /** A list of include calls that origin from this page, i.e. these are sub elements of this element. */
     private List m_includeList;
     
-    /** A list of parameters that belong to the include calls */
+    /** A list of parameters that belong to the include calls. */
     private List m_includeListParameters;
     
-    /** Indicates if this element is currently in include mode, i.e. processing a sub-element */
+    /** Indicates if this element is currently in include mode, i.e. processing a sub-element. */
     private boolean m_includeMode;
     
-    /** A list of results from the inclusions, needed because of JSP buffering */
+    /** A list of results from the inclusions, needed because of JSP buffering. */
     private List m_includeResults;
     
-    /** Flag to indicate if this is the top level element or an included sub - element */ 
+    /** Flag to indicate if this is the top level element or an included sub - element. */ 
     private boolean m_isTopElement;     
     
-    /** The CmsFlexCacheKey for this response */
+    /** The CmsFlexCacheKey for this response. */
     private CmsFlexCacheKey m_key;
     
-    /** A special wrapper class for a ServletOutputStream */
+    /** A special wrapper class for a ServletOutputStream. */
     private CmsFlexResponse.CmsServletOutputStream m_out;
     
-    /** Indicates that parent stream is writing only in the buffer */
+    /** Indicates that parent stream is writing only in the buffer. */
     private boolean m_parentWritesOnlyToBuffer;
     
-    /** The wrapped ServletResponse */
+    /** The wrapped ServletResponse. */
     private HttpServletResponse m_res;    
 
-    /** Indicates if this response is suspended (probably because of a redirect) */
+    /** Indicates if this response is suspended (probably because of a redirect). */
     private boolean m_suspended;
     
-    /** Indicates that the OutputStream m_out should write ONLY in the buffer */
+    /** Indicates that the OutputStream m_out should write ONLY in the buffer. */
     private boolean m_writeOnlyToBuffer;
         
-    /** A printwriter that writes in the m_out stream */
+    /** A printwriter that writes in the m_out stream. */
     private java.io.PrintWriter m_writer;
     
     /**

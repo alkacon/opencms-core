@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/06/13 23:33:15 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/06/14 14:25:57 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,14 +59,14 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
     
     /** Internal DEBUG flag. Set to 9 for maximum verbosity. */
     private static final int DEBUG = 0;    
     
-    /** The external target that will be included by the RequestDispatcher, needed if this is not a dispatcher to a cms resource */    
+    /** The external target that will be included by the RequestDispatcher, needed if this is not a dispatcher to a cms resource. */    
     private String m_extTarget;
         
     /** The "real" RequestDispatcher, used when a true include (to the file system) is needed. */    

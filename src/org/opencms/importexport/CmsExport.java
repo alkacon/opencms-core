@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/06/07 12:44:05 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/06/14 14:25:58 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,62 +83,62 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.36 $ $Date: 2004/06/07 12:44:05 $
+ * @version $Revision: 1.37 $ $Date: 2004/06/14 14:25:58 $
  */
 public class CmsExport implements Serializable {
 
-    /** Manifest tag: channels */
+    /** Manifest tag: channels. */
     public static String C_EXPORT_TAG_CHANNELS = "channels";
     
-    /** Manifest tag: files */
+    /** Manifest tag: files. */
     public static String C_EXPORT_TAG_FILES = "files";
 
-    /** The CmsObject to do the operations */
+    /** The CmsObject to do the operations. */
     private CmsObject m_cms;
 
-    /** Max file age of contents to export */
+    /** Max file age of contents to export. */
     private long m_contentAge;
 
-    /** Indicates if the system should be included to the export */
+    /** Indicates if the system should be included to the export. */
     private boolean m_excludeSystem;
 
-    /** Indicated if the unchanged resources should be included to the export */
+    /** Indicates if the unchanged resources should be included to the export .*/
     private boolean m_excludeUnchanged;
     
-    /** Counter for the export */
+    /** Counter for the export. */
     private int m_exportCount;
 
-    /** The channelid and the resourceobject of the exported channels */
+    /** The channelid and the resourceobject of the exported channels. */
     private Set m_exportedChannelIds;
 
-    /** Set of all exported pages, required for later page body file export */
+    /** Set of all exported pages, required for later page body file export. */
     private Set m_exportedPageFiles;
 
-    /** Set of all exported files, required for later page body file export */
+    /** Set of all exported files, required for later page body file export. */
     private Set m_exportedResources;
 
-    /** The export ZIP file to store resources in */
+    /** The export ZIP file to store resources in. */
     private String m_exportFileName;
 
-    /** Indicates if module data is exported */
+    /** Indicates if module data is exported. */
     private boolean m_exportingCosData;
 
-    /** Indicates if the user data and group data should be included to the export */
+    /** Indicates if the user data and group data should be included to the export. */
     private boolean m_exportUserdata;
 
-    /** The export ZIP stream to write resources to */
+    /** The export ZIP stream to write resources to. */
     private ZipOutputStream m_exportZipStream;
 
-    /** The top level file node where all resources are appended to */
+    /** The top level file node where all resources are appended to. */
     private Element m_fileNode;
 
-    /** The report for the log messages */
+    /** The report for the log messages. */
     private I_CmsReport m_report;
 
-    /** The SAX writer to write the output to */
+    /** The SAX writer to write the output to. */
     private SAXWriter m_saxWriter;
 
-    /** Cache for previously added super folders */
+    /** Cache for previously added super folders. */
     private Vector m_superFolders;
 
     /**
