@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/10/22 15:53:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/22 12:04:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -61,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -83,7 +82,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public static final String PARAM_OLDELEMENTNAME = "oldelementname";
     
     private String m_paramElementname;
-    private String m_paramOldelementname; 
+    private String m_paramOldelementname;
+    
+    private List m_elementList;
       
     /**
      * Public constructor.<p>
@@ -286,21 +287,21 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @return the html for the element name selectbox
      */
     public String buildSelectElementName(String attributes) {
-
-        List elementList = CmsDialogElements.computeElements(getCms(), m_page, getParamTempfile(), getElementLocale());
+        
+        // get the active page elements
+        List elementList = getElementList();
 
         int counter = 0;
         int currentIndex = -1; 
-        Iterator i = elementList.iterator();
         List options = new ArrayList(elementList.size());
         List values = new ArrayList(elementList.size());
         String elementName = getParamElementname();
         if (CmsStringUtil.isEmpty(elementName)) {
             elementName = getParamOldelementname();
         }     
-        while (i.hasNext()) {
+        for (int i=0; i<elementList.size(); i++) {
             // get the current list element
-            CmsDialogElement element = (CmsDialogElement)i.next();
+            CmsDialogElement element = (CmsDialogElement)elementList.get(i);
 
             if (CmsStringUtil.isNotEmpty(elementName) && elementName.equals(element.getName())) {
                 // current element is the displayed one, mark it as selected
@@ -363,14 +364,27 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         return m_paramElementname;
     }
 
-   /**
-    * Returns the old element name.<p>
-    * 
-    * @return the old element name
-    */
-   public String getParamOldelementname() {
-       return m_paramOldelementname;
-   }
+    /**
+     * Returns the old element name.<p>
+     * 
+     * @return the old element name
+     */
+    public String getParamOldelementname() {
+        return m_paramOldelementname;
+    }
+    
+    /**
+     * Returns the list of active elements of the page.<p>
+     * 
+     * @return the list of active elements of the page
+     */
+    protected List getElementList() {
+        
+        if (m_elementList == null) {
+            m_elementList = CmsDialogElements.computeElements(getCms(), m_page, getParamTempfile(), getElementLocale());    
+        }
+        return m_elementList;
+    }
     
     /**
      * Initializes the body element language for the first call of the editor.<p>
@@ -420,16 +434,38 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @param elementName the name of the element to initialize or null, if default element should be used
      */
     protected void initBodyElementName(String elementName) { 
+        
         if (elementName == null || (m_page.hasValue(elementName, getElementLocale()) && !m_page.isEnabled(elementName, getElementLocale()))) {                  
-            // elementName not specified or given element is disabled, set to default element
-            List elements = m_page.getNames(getElementLocale());
+            // elementName not specified or given element is disabled, determine default element
+            List allElements = m_page.getNames(getElementLocale());
+            int elementCount = allElements.size();
+            List elements = new ArrayList(elementCount);           
+            for (int i=0; i<elementCount; i++) {
+                // filter disabled elements
+                if (m_page.isEnabled((String)allElements.get(i), getElementLocale())) {
+                    elements.add(allElements.get(i));    
+                }
+            }
+                       
+            // get the active page elements
+            List elementList = getElementList();            
+            for (int i=0; i< elementList.size(); i++) {
+                CmsDialogElement checkElement = (CmsDialogElement)elementList.get(i);
+                if (elements.contains(checkElement.getName())) {
+                    // get the first active element from the element list
+                    setParamElementname(checkElement.getName());
+                    return;
+                }
+            }   
+            
+            // no matching active element found
             if (elements.contains(I_CmsConstants.C_XML_BODY_ELEMENT)) {
-                // default element present
+                // default legacy element present, use it
                 setParamElementname(I_CmsConstants.C_XML_BODY_ELEMENT);
             } else {
-                // get first element from element list
+                // use the first element from the element list 
                 setParamElementname((String)elements.get(0));
-            }
+            }         
         } else {
             // elementName specified and element is enabled or not present, set to elementName
             setParamElementname(elementName);

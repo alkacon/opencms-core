@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/22 12:04:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.0
  */
@@ -186,7 +186,12 @@ public class CmsDialogElements extends CmsDialog {
                         mandatory = true;
                         currentElement = currentElement.substring(0, currentElement.length() - 1);
                     }
-                                        
+                    
+                    if (currentElement.indexOf("[") == -1) {
+                        // appends the index parameter in square brackets to the given name
+                        currentElement += "[0]";
+                    }
+                    
                     CmsDialogElement element = new CmsDialogElement(currentElement, niceName, mandatory, true, false);
                     if (result.contains(element)) {
                         element.setExisting(true);
