@@ -13,7 +13,8 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/01/12 12:33:33 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.9 $ $Date: 2000/01/13 12:13:39 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -24,14 +25,14 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	private I_CmsResourceBroker m_rb;
 	
 	/**
-	 * The current http-request.
+	 * The current CmsRequest.
 	 */
-	private HttpServletRequest m_req;
+	private I_CmsRequest m_req;
 	
 	/**
-	 * The current http-response.
+	 * The current CmsResponse.
 	 */
-	private HttpServletResponse m_resp;
+	private I_CmsResponse m_resp;
 	
 	/**
 	 * The current user.
@@ -51,13 +52,13 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	/**
 	 * Initializes this RequestContext.
 	 * 
-	 * @param req the HttpServletRequest.
-	 * @param resp the HttpServletResponse.
+	 * @param req the CmsRequest.
+	 * @param resp the CmsResponse.
 	 * @param user The current user for this request.
 	 * @param currentGroup The current group for this request.
 	 * @param currentProject The current project for this request.
 	 */
-	void init(I_CmsResourceBroker rb, HttpServletRequest req, HttpServletResponse resp, 
+	void init(I_CmsResourceBroker rb, I_CmsRequest req, I_CmsResponse resp, 
 			  String user, String currentGroup, String currentProject) 
 		throws CmsException {
 		m_rb = rb;
@@ -82,30 +83,13 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 */
 	public String getUri() {
 		if( m_req != null ) {
-			return( translatePath(m_req.getPathInfo()) );
+			return( m_req.getRequestedResource() );
 		} else {
 			return( C_ROOT );
 		}
 	}
 	
-	/**
-	 * Returns the url for this CmsObject.
-	 * 
-	 * @return the url for this CmsObject.
-	 */
-	public String getUrl() {
-		return("Unknown");	// TODO: implement this!
-	}
 	
-	/**
-	 * Returns the host for this CmsObject.
-	 * 
-	 * @return the host for this CmsObject.
-	 */
-	public String getHost() {
-		return("Unknown");	// TODO: implement this!
-	}
-
 	/**
 	 * Returns the current folder object.
 	 * 
@@ -125,20 +109,11 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	}
 	
 	/**
-	 * Returns the default group of the current user.
-	 * 
-	 * @return the default group of the current user.
-	 */
-	public A_CmsGroup userDefaultGroup() {
-		return(m_user.getDefaultGroup());
-	}
-	
-	/**
 	 * Returns the current group of the current user.
 	 * 
 	 * @return the current group of the current user.
 	 */
-	public A_CmsGroup userCurrentGroup() {
+	public A_CmsGroup currentGroup() {
 		return(m_currentGroup);
 	}
 
@@ -147,7 +122,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void setUserCurrentGroup(String groupname) 
+	public void setCurrentGroup(String groupname) 
 		throws CmsException {
 		
 		// is the user in that group?
@@ -193,7 +168,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * 
 	 * @return the current project for the user.
 	 */
-	public A_CmsProject getCurrentProject() {
+	public A_CmsProject currentProject() {
 		return m_currentProject;
 	}
 
@@ -213,31 +188,13 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 		}
 		return( m_currentProject );
 	}
-
-	/**
-	 * Gets the current valid session associated with this request, if create 
-	 * is false or, if necessary, creates a new session for the request, if 
-	 * create is true.
-	 * 
-	 * @param create decides if a new session should be created, if needed.
-	 * 
-	 * @return the session associated with this request or null if create 
-	 * was false and no valid session is associated with this request. 
-	 */
-	public HttpSession getSession(boolean create) {
-		if( m_req != null ) {
-			return( m_req.getSession(create) );
-		} else {
-			return null; // no request available!
-		}
-	}
 	
 	/**
 	 * Gets the current request, if availaible.
 	 * 
 	 * @return the current request, if availaible.
 	 */
-	public HttpServletRequest getRequest() {
+	public I_CmsRequest getRequest() {
 		return( m_req );
 	}
 
@@ -246,7 +203,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * 
 	 * @return the current response, if availaible.
 	 */
-	public HttpServletResponse getResponse() {
+	public I_CmsResponse getResponse() {
 		return( m_resp );
 	}
 

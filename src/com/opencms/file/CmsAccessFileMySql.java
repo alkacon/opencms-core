@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/01/13 09:45:49 $
+ * @version $Revision: 1.15 $ $Date: 2000/01/13 12:13:39 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -1211,10 +1211,7 @@ import com.opencms.core.*;
                                                res.getLong(C_DATE_CREATED),
                                                res.getLong(C_DATE_LASTMODIFIED)
                                                );
-               // check if this folder is marked as deleted
-               if (folder.getState() != C_STATE_DELETED) {
-                folders.addElement(folder);
-               }
+             
              }
 
          } catch (SQLException e){
@@ -1264,10 +1261,7 @@ import com.opencms.core.*;
                                            new byte[0],
                                            res.getInt(C_SIZE)
                                            );
-               // check if this file is marked as deleted
-               if (file.getState() != C_STATE_DELETED) {
-                     files.addElement(file);
-               }
+                     
              }
 
          } catch (SQLException e){

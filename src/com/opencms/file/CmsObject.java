@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2000/01/12 16:35:08 $ 
+ * @version $Revision: 1.20 $ $Date: 2000/01/13 12:13:39 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -45,13 +45,13 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	/**
 	 * Initialises the CmsObject for each request.
 	 * 
-	 * @param req the HttpServletRequest.
-	 * @param resp the HttpServletResponse.
+	 * @param req the CmsRequest.
+	 * @param resp the CmsResponse.
 	 * @param user The current user for this request.
 	 * @param currentGroup The current group for this request.
 	 * @param currentProject The current project for this request.
 	 */
-	public void init(HttpServletRequest req, HttpServletResponse resp, 
+	public void init(I_CmsRequest req, I_CmsResponse resp, 
 					 String user, String currentGroup, String currentProject ) 
 		throws CmsException {
 		m_context = new CmsRequestContext();
@@ -85,7 +85,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public A_CmsUser anonymousUser() 
 		throws CmsException {
 		return( c_rb.anonymousUser(m_context.currentUser(), 
-								   m_context.getCurrentProject()) );
+								   m_context.currentProject()) );
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public A_CmsProject onlineProject() 
 		throws CmsException {
 		return( c_rb.onlineProject(m_context.currentUser(), 
-								   m_context.getCurrentProject()) );
+								   m_context.currentProject()) );
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public Hashtable getAllResourceTypes() 
 		throws CmsException { 
 		return( c_rb.getAllResourceTypes(m_context.currentUser(), 
-										 m_context.getCurrentProject()) );
+										 m_context.currentProject()) );
 	}
 	
 	/**
@@ -125,7 +125,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public A_CmsResourceType getResourceType(String resourceType) 
 		throws CmsException {
 		return( c_rb.getResourceType(m_context.currentUser(), 
-									 m_context.getCurrentProject(), resourceType) );
+									 m_context.currentProject(), resourceType) );
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 											 String launcherClass) 
 		throws CmsException {
 		return( c_rb.addResourceType(m_context.currentUser(), 
-									 m_context.getCurrentProject(), resourceType,
+									 m_context.currentProject(), resourceType,
 									 launcherType, launcherClass) );
 	}
 	
@@ -160,7 +160,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public boolean accessProject(String projectname) 
 		throws CmsException {
 		return( c_rb.accessProject(m_context.currentUser(), 
-								   m_context.getCurrentProject(), projectname) );
+								   m_context.currentProject(), projectname) );
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public A_CmsProject readProject(String name)
 		throws CmsException { 
 		return( c_rb.readProject(m_context.currentUser(), 
-								 m_context.getCurrentProject(), name) );
+								 m_context.currentProject(), name) );
 	}
 	
 	/**
@@ -190,7 +190,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 									   String groupname, int flags)
 		 throws CmsException {
 		 return( c_rb.createProject(m_context.currentUser(), 
-									m_context.getCurrentProject(), name, description, 
+									m_context.currentProject(), name, description, 
 									groupname, flags ) );
 	 }
 	
@@ -214,7 +214,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public Vector getAllAccessibleProjects() 
 		throws CmsException {
 		 return( c_rb.getAllAccessibleProjects(m_context.currentUser(), 
-									m_context.getCurrentProject()) );
+									m_context.currentProject()) );
 	}
 	
 	/**
@@ -271,7 +271,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 							  byte[] contents, String type)
 		throws CmsException { 
 		return( c_rb.createFile(m_context.currentUser(), 
-								m_context.getCurrentProject(), 
+								m_context.currentProject(), 
 								folder, filename, contents, type, 
 								new Hashtable() ) );
 	}
@@ -306,7 +306,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 							  Hashtable metainfos)
 		throws CmsException { 
 		return( c_rb.createFile(m_context.currentUser(), 
-								m_context.getCurrentProject(), 
+								m_context.currentProject(), 
 								folder, filename, contents, type, 
 								metainfos ) );
 	}
@@ -326,7 +326,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public CmsFile readFile(String folder, String filename)
 		throws CmsException { 
 		return( c_rb.readFile(m_context.currentUser(), 
-							  m_context.getCurrentProject(), 
+							  m_context.currentProject(), 
 							  folder + filename ) );
 	}
 	
@@ -344,7 +344,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public CmsFile readFile(String filename)
 		throws CmsException { 
 		return( c_rb.readFile(m_context.currentUser(), 
-							  m_context.getCurrentProject(), 
+							  m_context.currentProject(), 
 							  filename ) );
 	}
 	
@@ -547,7 +547,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
     public void copyResourceToProject(String resource)
 		throws CmsException {
 		c_rb.copyResourceToProject(m_context.currentUser(), 
-								   m_context.getCurrentProject(), resource );
+								   m_context.currentProject(), resource );
 	}
 	
 	/**
@@ -574,7 +574,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public CmsFolder createFolder(String folder, String newFolderName)
 		throws CmsException { 
 		return( c_rb.createFolder(m_context.currentUser(), 
-								  m_context.getCurrentProject(), folder, 
+								  m_context.currentProject(), folder, 
 								  newFolderName, new Hashtable() ) );
 	}
 	
@@ -601,7 +601,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 								  Hashtable metainfos)
 		throws CmsException { 
 		return( c_rb.createFolder(m_context.currentUser(), 
-								  m_context.getCurrentProject(), folder, 
+								  m_context.currentProject(), folder, 
 								  newFolderName, metainfos ) );
 	}
 
@@ -621,7 +621,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public CmsFolder readFolder(String folder, String folderName)
 		throws CmsException { 
 		return( c_rb.readFolder(m_context.currentUser(), 
-								m_context.getCurrentProject(), folder, folderName ) );
+								m_context.currentProject(), folder, folderName ) );
 	}
 	
 	/**
@@ -675,7 +675,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void deleteFolder(String foldername)
 		throws CmsException { 
-		c_rb.deleteFolder(m_context.currentUser(), m_context.getCurrentProject(), 
+		c_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), 
 						  foldername );
 	}
 	
@@ -738,7 +738,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public Vector getSubFolders(String foldername)
 		throws CmsException { 
 		return( c_rb.getSubFolders(m_context.currentUser(), 
-								   m_context.getCurrentProject(), foldername ) );
+								   m_context.currentProject(), foldername ) );
 	}	
 	
 	/**
@@ -860,7 +860,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public void lockResource(String resource, boolean force)
 		throws CmsException { 
 		c_rb.lockResource(m_context.currentUser(), 
-					  m_context.getCurrentProject(), resource, force );
+					  m_context.currentProject(), resource, force );
 	}
 	
 	/**
@@ -877,7 +877,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public void unlockResource(String resource)
 		throws CmsException { 
 		c_rb.unlockResource(m_context.currentUser(), 
-					  m_context.getCurrentProject(), resource);
+					  m_context.currentProject(), resource);
 	}
 	
 	/**
@@ -911,7 +911,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public String readMetainformation(String name, String meta)
 		throws CmsException { 
 		return( c_rb.readMetainformation(m_context.currentUser(), 
-										 m_context.getCurrentProject(), 
+										 m_context.currentProject(), 
 										 name, meta) );
 	}
 
@@ -926,7 +926,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void writeMetainformation(String name, String meta, String value)
 		throws CmsException { 
-		c_rb.writeMetainformation(m_context.currentUser(),m_context.getCurrentProject(), 
+		c_rb.writeMetainformation(m_context.currentUser(),m_context.currentProject(), 
 								  name, meta, value);
 	}
 
@@ -940,7 +940,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void writeMetainformations(String name, Hashtable metainfos)
 		throws CmsException { 
-		c_rb.writeMetainformations(m_context.currentUser(),m_context.getCurrentProject(), 
+		c_rb.writeMetainformations(m_context.currentUser(),m_context.currentProject(), 
 								  name, metainfos);
 	}
 
@@ -956,7 +956,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public Hashtable readAllMetainformations(String name)
 		throws CmsException { 
 		return( c_rb.readAllMetainformations(m_context.currentUser(), 
-											 m_context.getCurrentProject(), 
+											 m_context.currentProject(), 
 											 name) );
 	}
 	
@@ -970,7 +970,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public void deleteAllMetainformations(String resourcename)
 		throws CmsException { 
 		c_rb.deleteAllMetainformations(m_context.currentUser(), 
-									   m_context.getCurrentProject(), 
+									   m_context.currentProject(), 
 									   resourcename);
 	}
 
@@ -985,7 +985,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public void deleteMetainformation(String resourcename, String meta)
 		throws CmsException { 
 		c_rb.deleteMetainformation(m_context.currentUser(), 
-								   m_context.getCurrentProject(), 
+								   m_context.currentProject(), 
 								   resourcename, meta);
 	}
 
@@ -998,7 +998,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public Vector getUsers() 
 		throws CmsException { 
-		return( c_rb.getUsers(m_context.currentUser(), m_context.getCurrentProject()) );
+		return( c_rb.getUsers(m_context.currentUser(), m_context.currentProject()) );
 	}
 
 	/**
@@ -1010,7 +1010,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public Vector getGroups() 
 		throws CmsException { 
-		return( c_rb.getGroups(m_context.currentUser(), m_context.getCurrentProject()) );
+		return( c_rb.getGroups(m_context.currentUser(), m_context.currentProject()) );
 	}
 	
     /**
@@ -1022,7 +1022,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public Vector getChild(String groupname)
         throws CmsException {
-		return( c_rb.getChild(m_context.currentUser(), m_context.getCurrentProject(), 
+		return( c_rb.getChild(m_context.currentUser(), m_context.currentProject(), 
 							  groupname ) );
 	}
 
@@ -1038,7 +1038,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public A_CmsUser readUser(String username) 
 		throws CmsException { 
 		return( c_rb.readUser(m_context.currentUser(), 
-							  m_context.getCurrentProject(), 
+							  m_context.currentProject(), 
 							  username) );
 	}
 	
@@ -1054,7 +1054,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public A_CmsUser readUser(String username, String password) 
 		throws CmsException { 
-        return( c_rb.readUser(m_context.currentUser(), m_context.getCurrentProject(),
+        return( c_rb.readUser(m_context.currentUser(), m_context.currentProject(),
 							  username, password) );
 	}	
 
@@ -1094,7 +1094,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void setPassword(String username, String newPassword)
 		throws CmsException {
-		c_rb.setPassword(m_context.currentUser(), m_context.getCurrentProject(), 
+		c_rb.setPassword(m_context.currentUser(), m_context.currentProject(), 
 						 username, newPassword );
 	}
 	
@@ -1121,7 +1121,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 							 String description, Hashtable additionalInfos, int flags)
 		throws CmsException { 
 		
-		return( c_rb.addUser(m_context.currentUser(), m_context.getCurrentProject(),
+		return( c_rb.addUser(m_context.currentUser(), m_context.currentProject(),
 							  name, password, group, description, additionalInfos, 
 							  flags) );
 
@@ -1138,7 +1138,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void deleteUser(String username)
 		throws CmsException { 
-		c_rb.deleteUser(m_context.currentUser(), m_context.getCurrentProject(), username);
+		c_rb.deleteUser(m_context.currentUser(), m_context.currentProject(), username);
 	}
 	
 	/**
@@ -1152,7 +1152,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void writeUser(A_CmsUser user)
 		throws CmsException { 
-		c_rb.writeUser(m_context.currentUser(), m_context.getCurrentProject(), user );
+		c_rb.writeUser(m_context.currentUser(), m_context.currentProject(), user );
 	}
 	
 	/**
@@ -1166,7 +1166,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public Vector getUsersOfGroup(String groupname)
 		throws CmsException { 
 		return( c_rb.getUsersOfGroup(m_context.currentUser(), 
-									 m_context.getCurrentProject(), groupname ));
+									 m_context.currentProject(), groupname ));
 	}
 	
 	/**
@@ -1180,7 +1180,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public Vector getGroupsOfUser(String username)
 		throws CmsException { 
 		return( c_rb.getGroupsOfUser(m_context.currentUser(), 
-									 m_context.getCurrentProject(), username ));
+									 m_context.currentProject(), username ));
 	}
 	
 	/**
@@ -1194,7 +1194,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public boolean userInGroup(String username, String groupname)
 		throws CmsException { 
-		return( c_rb.userInGroup(m_context.currentUser(), m_context.getCurrentProject(), 
+		return( c_rb.userInGroup(m_context.currentUser(), m_context.currentProject(), 
 								 username, groupname));
 	}
 
@@ -1208,7 +1208,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public A_CmsGroup readGroup(String groupname) 
 		throws CmsException { 
-		return( c_rb.readGroup(m_context.currentUser(), m_context.getCurrentProject(), 
+		return( c_rb.readGroup(m_context.currentUser(), m_context.currentProject(), 
 							   groupname));
 	}	
 	
@@ -1229,7 +1229,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public A_CmsGroup addGroup(String name, String description, int flags, String parent)
 		throws CmsException { 
-		return( c_rb.addGroup(m_context.currentUser(), m_context.getCurrentProject(),
+		return( c_rb.addGroup(m_context.currentUser(), m_context.currentProject(),
 							  name, description, flags, parent) );
 
 	}
@@ -1242,7 +1242,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void writeGroup(A_CmsGroup group)
 		throws CmsException {
-		c_rb.writeGroup(m_context.currentUser(), m_context.getCurrentProject(),
+		c_rb.writeGroup(m_context.currentUser(), m_context.currentProject(),
 						group);
 	}
 
@@ -1256,7 +1256,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void deleteGroup(String delgroup)
 		throws CmsException { 
-		c_rb.deleteGroup(m_context.currentUser(), m_context.getCurrentProject(), 
+		c_rb.deleteGroup(m_context.currentUser(), m_context.currentProject(), 
 						 delgroup);
 	}
 	
@@ -1271,7 +1271,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void addUserToGroup(String username, String groupname)
 		throws CmsException { 
-		c_rb.addUserToGroup(m_context.currentUser(), m_context.getCurrentProject(), 
+		c_rb.addUserToGroup(m_context.currentUser(), m_context.currentProject(), 
 							username, groupname );
 	}
 			   
@@ -1286,7 +1286,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void removeUserFromGroup(String username, String groupname)
 		throws CmsException { 
-		c_rb.removeUserFromGroup(m_context.currentUser(), m_context.getCurrentProject(), 
+		c_rb.removeUserFromGroup(m_context.currentUser(), m_context.currentProject(), 
 								 username, groupname );
 	}
 	
@@ -1304,7 +1304,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public Vector readAllMetadefinitions(String resourcetype)
 		throws CmsException {
 		return( c_rb.readAllMetadefinitions(m_context.currentUser(), 
-											m_context.getCurrentProject(), 
+											m_context.currentProject(), 
 											resourcetype ) );
 	}
 	
@@ -1323,7 +1323,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public Vector readAllMetadefinitions(String resourcetype, int type)
 		throws CmsException {
 		return( c_rb.readAllMetadefinitions(m_context.currentUser(), 
-											m_context.getCurrentProject(), 
+											m_context.currentProject(), 
 											resourcetype, type ) );
 	}
 	
@@ -1340,7 +1340,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 													int type)
 		throws CmsException {
 		return( c_rb.createMetadefinition(m_context.currentUser(), 
-										  m_context.getCurrentProject(), 
+										  m_context.currentProject(), 
 										  name,
 										  resourcetype,
 										  type) );
@@ -1359,7 +1359,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 												  String resourcetype)
 		throws CmsException { 
 		return( c_rb.readMetadefinition(m_context.currentUser(), 
-										m_context.getCurrentProject(), 
+										m_context.currentProject(), 
 										name,
 										resourcetype) );
 	}
@@ -1374,7 +1374,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition definition)
 		throws  CmsException { 
 		return( c_rb.writeMetadefinition(m_context.currentUser(), 
-										 m_context.getCurrentProject(), 
+										 m_context.currentProject(), 
 										 definition) );
 	}
 	
@@ -1389,7 +1389,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public void deleteMetadefinition(String name, String resourcetype)
 		throws CmsException { 
 		c_rb.deleteMetadefinition(m_context.currentUser(), 
-								  m_context.getCurrentProject(), 
+								  m_context.currentProject(), 
 								  name, resourcetype);
 	}
 
@@ -1444,7 +1444,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public void addMountPoint(String mountpoint, String driver, String connect,
 							  String name)
 		throws CmsException {
-		c_rb.addMountPoint(m_context.currentUser(), m_context.getCurrentProject(),
+		c_rb.addMountPoint(m_context.currentUser(), m_context.currentProject(),
 						   mountpoint, driver, connect, name);
 	}
 
@@ -1459,7 +1459,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public A_CmsMountPoint readMountPoint(String mountpoint )
 		throws CmsException {
 		return( c_rb.readMountPoint(m_context.currentUser(), 
-									m_context.getCurrentProject(),
+									m_context.currentProject(),
 									mountpoint) );
 	}
 	
@@ -1471,7 +1471,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void deleteMountPoint(String mountpoint )
 		throws CmsException {
-		c_rb.deleteMountPoint(m_context.currentUser(), m_context.getCurrentProject(),
+		c_rb.deleteMountPoint(m_context.currentUser(), m_context.currentProject(),
 							  mountpoint);
 	}
 
@@ -1484,7 +1484,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public Hashtable getAllMountPoints()
 		throws CmsException {
 		return( c_rb.getAllMountPoints(m_context.currentUser(), 
-									   m_context.getCurrentProject()) );
+									   m_context.currentProject()) );
 	}
 
 	/**
@@ -1500,7 +1500,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 							 String filename)
 		 throws CmsException {
 		 return( c_rb.readFile(m_context.currentUser(), 
-							   m_context.getCurrentProject(), filename ) );
+							   m_context.currentProject(), filename ) );
 	 }
 
 	/**

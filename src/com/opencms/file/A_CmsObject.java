@@ -15,7 +15,8 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2000/01/12 16:35:08 $ 
+ * @author Michael Emmerich
+ * @version $Revision: 1.24 $ $Date: 2000/01/13 12:13:39 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -33,13 +34,13 @@ public abstract class A_CmsObject {
 	/**
 	 * Initialises the CmsObject for each request.
 	 * 
-	 * @param req the HttpServletRequest.
-	 * @param resp the HttpServletResponse.
+	 * @param req the CmsRequest.
+	 * @param resp the CmsResponse.
 	 * @param user The current user for this request.
 	 * @param currentGroup The current group for this request.
 	 * @param currentProject The current project for this request.
 	 */
-	abstract public void init(HttpServletRequest req, HttpServletResponse resp, 
+	abstract public void init(I_CmsRequest req, I_CmsResponse resp, 
 							  String user, String currentGroup, String currentProject )
 		throws CmsException;
 	

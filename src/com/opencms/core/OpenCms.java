@@ -19,7 +19,7 @@ import com.opencms.file.*;
 * <p>
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.5 $ $Date: 2000/01/12 16:38:14 $  
+* @version $Revision: 1.6 $ $Date: 2000/01/13 12:13:39 $  
 * 
 */
 
@@ -69,10 +69,10 @@ class OpenCms implements I_CmsConstants
         // this method still contains debug information
         
         CmsFile file=null;
-         
+ 
         //read the requested file
         file =cms.readFile(cms.getRequestContext().currentUser(),
-                           cms.getRequestContext().getCurrentProject(),
+                           cms.getRequestContext().currentProject(),
                            cms.getRequestContext().getUri());
         if (file != null) {
         // test if this file is only available for internal access operations

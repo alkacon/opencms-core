@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.3 $ $Date: 2000/01/12 16:38:14 $  
+* @version $Revision: 1.4 $ $Date: 2000/01/13 12:13:39 $  
 * 
 */
 
@@ -132,7 +132,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         res.setContentType("text/html");
         PrintWriter out=res.getWriter();
         
-        CmsRequestHttpServlet cmsreq=new CmsRequestHttpServlet(req);
+        CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
+        CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(res);
         
         out.println("<html>");
         out.println("<body><h1>Hallo Mindfact</h1>");
@@ -140,22 +141,23 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         out.println("<br>"+req.getServletPath());
         out.println("<br>"+req.getPathInfo());
         
-        Enumeration en=cmsreq.getParameterNames();
+        Enumeration en=cmsReq.getParameterNames();
         while (en.hasMoreElements()) {
             out.println("<br>"+en.nextElement()); 
         }
       
-        try {
-            CmsObject cms=initUser(req,res);
+       try {
+            CmsObject cms=initUser(cmsReq,cmsRes);
             out.println("<br>"+cms.getRequestContext().currentUser());
+            out.println("<br>"+cms.getRequestContext().getUri());
             CmsFile file=m_opencms.initResource(cms);
             out.println("<br><br><h2>"+file+"</h2>");
             out.println("<br><br><h2>"+new String(file.getContents())+"</h2>");
-            out.println("<br><br>");
+            out.println("<br><br>"); 
         } catch (CmsException e) {
             out.println("<br>"+e.toString());
             errorHandling(req,res,e);
-        }
+        } 
         
     }
 	
@@ -179,7 +181,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
 	     if ((type != null) && type.startsWith("multipart/form-data")){
 		    req = new CmsMultipartRequest(req);
 		 } 
-         CmsObject cms=initUser(req,res);
+         
+         CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
+         CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(res);
+         
+         CmsObject cms=initUser(cmsReq,cmsRes);
 	}
     
     /**
@@ -203,7 +209,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
 	 * @return The CmsObject
 	 * @exception IOException Thrown if user autherization fails.
      */
-    private CmsObject initUser(HttpServletRequest req, HttpServletResponse res)
+    private CmsObject initUser(I_CmsRequest cmsReq, I_CmsResponse cmsRes)
       throws IOException{    
         
         HttpSession session;
@@ -211,11 +217,15 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         String group=null;
         String project=null;
         
+        // get the original ServletRequest and response
+        HttpServletRequest req=(HttpServletRequest)cmsReq.getOriginalRequest();
+        HttpServletResponse res=(HttpServletResponse)cmsRes.getOriginalResponse();
+        
         CmsObject cms=new CmsObject();
         
         //set up the default Cms object
         try {
-            cms.init(req,res,C_USER_GUEST,C_GROUP_GUEST, C_PROJECT_ONLINE);
+            cms.init(cmsReq,cmsRes,C_USER_GUEST,C_GROUP_GUEST, C_PROJECT_ONLINE);
      
             if (req.getParameter("LOGIN") != null) {
                 // hack
@@ -234,7 +244,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                 if (user != null) {
                     group=m_sessionStorage.getCurrentGroup(session.getId());
                     project=m_sessionStorage.getCurrentProject(session.getId());
-                    cms.init(req,res,user,group,project);
+                    cms.init(cmsReq,cmsRes,user,group,project);
                 } else {
                             
                     // there was either no session returned or this session was not 
@@ -263,7 +273,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                             user=cms.loginUser(username,password); 
                             // check if the user is authenticated
                             if (user != null) {
-                                cms.init(req,res,user,C_GROUP_GUEST, C_PROJECT_ONLINE);
+                                cms.init(cmsReq,cmsRes,user,C_GROUP_GUEST, C_PROJECT_ONLINE);
                             } else {
                                // authentification failed, so display a login screen
                                requestAuthorization(req, res);
@@ -282,6 +292,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
             errorHandling(req,res,e);
        }
         return cms;
+        
+ 
     }
 
   
@@ -318,7 +330,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                 break;
             // file not found - display 404 error.
             case CmsException.C_NOT_FOUND:
-                res.sendError(res.SC_NOT_FOUND);
+                res.getWriter().print(e.toString());
+                //res.sendError(res.SC_NOT_FOUND);
                 break;
             default:
                 res.getWriter().print(e.toString());
