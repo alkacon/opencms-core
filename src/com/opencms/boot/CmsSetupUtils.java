@@ -181,9 +181,10 @@ public class CmsSetupUtils {
      */
     public boolean dropDatabase(String DbDriver, String DbConStr, String DbUser,
             String DbPwd, String resourceBroker, Hashtable replacer) {
+        Connection con = null;
         try {
             Class.forName(DbDriver);
-            Connection con = DriverManager.getConnection(DbConStr,DbUser,DbPwd);
+            con = DriverManager.getConnection(DbConStr,DbUser,DbPwd);
 
             String file = getScript(resourceBroker+".dropdb");
             m_errors.clear();
@@ -206,6 +207,13 @@ public class CmsSetupUtils {
             e.printStackTrace();
             return false;
         }
+        finally {
+            try {
+                con.close();
+            } catch(Exception exc) {
+                // ignore the exception. The connection is closed already
+            }
+        }
     }
 
 
@@ -222,8 +230,7 @@ public class CmsSetupUtils {
     public boolean createDatabase(String DbDriver, String DbConStr,
             String DbUser, String DbPwd, String resourceBroker, Hashtable replacer) {
 
-        Connection con;
-
+        Connection con = null;
         try   {
             Class.forName(DbDriver);
             con = DriverManager.getConnection(DbConStr,DbUser,DbPwd);
@@ -250,6 +257,13 @@ public class CmsSetupUtils {
             e.printStackTrace();
             return false;
         }
+        finally {
+            try {
+                con.close();
+            } catch(Exception exc) {
+                // ignore the exception. The connection is closed already
+            }
+        }
     }
 
 
@@ -265,7 +279,7 @@ public class CmsSetupUtils {
     public boolean createTables(String DbDriver, String DbConStr,
             String DbUser, String DbPwd, String resourceBroker) {
 
-        Connection con;
+        Connection con = null;
 
         try   {
             Class.forName(DbDriver);
@@ -292,6 +306,13 @@ public class CmsSetupUtils {
             m_errors.addElement(e.toString() + "\n");
             e.printStackTrace();
             return false;
+        }
+        finally {
+            try {
+                con.close();
+            } catch(Exception exc) {
+                // ignore the exception. The connection is closed already
+            }
         }
     }
 
