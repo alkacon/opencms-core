@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/02/21 17:11:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,12 @@ package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypePlain;
-
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -58,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editor.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.1
  */
@@ -155,22 +153,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
             // set the error stack parameter, if present
             wp.setParamErrorstack(t.toString());
         }
-        
-        // create the link for the error dialog "Close" button
-        boolean directEdit = "true".equals(jsp.getRequest().getParameter("directedit"));
-        String backLink = jsp.getRequest().getParameter("backlink");
-        if (directEdit) {
-            if (backLink == null || "".equals(backLink)) {
-                // no backlink parameter found, get resource parameter
-                backLink = jsp.getRequest().getParameter(I_CmsWpConstants.C_PARA_RESOURCE);
-            }
-        } else {
-            // we are in workplace mode, so show the workplace
-            backLink = CmsWorkplace.C_PATH_WORKPLACE + "top_fs.html";
-        }
-        backLink = jsp.link(backLink);
-        wp.setParamOkFunctions("top.location.href=\"" + backLink + "\";");
-        
+        // store initialized editor class as request attribute
         jsp.getRequest().setAttribute(CmsWorkplace.C_SESSION_WORKPLACE_CLASS, wp);
         try {
             jsp.include(CmsWorkplace.C_FILE_DIALOG_SCREEN_ERROR);

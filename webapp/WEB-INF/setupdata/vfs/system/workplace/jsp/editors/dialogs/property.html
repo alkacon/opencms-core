@@ -13,7 +13,8 @@ case CmsDialogProperty.ACTION_CLOSEPOPUP_SAVE:
 
 	wp.actionEdit(request);
 	if (wp.hasTemplateChanged()) {
-		additionalScript = "window.opener.buttonAction(1);";
+		// add script to refresh editor content when template has changed
+		additionalScript = "function closeAction() {\n\tthis.refreshOpener = true;\n}\nvar closeObj = new closeAction();\nif (window.opener.popupCloseAction) {\nwindow.opener.popupCloseAction(closeObj);\n}";
 	}
 
 
@@ -43,6 +44,7 @@ case CmsDialogProperty.ACTION_SAVE_EDIT:
 //////////////////// ACTION: save edited properties for the current resource type
 
 wp.actionEdit(request);
+wp.actionCloseDialog();
 
 break;
 
@@ -156,13 +158,12 @@ function toggleNav() {
 
 //-->
 </script>
-<%= wp.dialogScriptSubmit() %>
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
@@ -170,7 +171,7 @@ function toggleNav() {
 
 <%= wp.dialogContentEnd() %>
 
-<%= wp.dialogButtonRowOkCancelAdvanced(null, null, "value=\""+wp.key("button.advanced")+"\" onclick=\"submitAdvanced();\"") %>
+<%= wp.dialogButtonsOkCancelAdvanced(null, null, "value=\""+wp.key("button.advanced")+"\" onclick=\"submitAdvanced();\"") %>
 </form>
 
 <%= wp.dialogEnd() %>

@@ -7,6 +7,14 @@
 	
 switch (wp.getAction()) {
 
+case CmsAdminHistoryClear.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
 case CmsAdminHistoryClear.ACTION_SAVE_EDIT:
 case CmsDialog.ACTION_REPORT_BEGIN:
 case CmsDialog.ACTION_REPORT_UPDATE:
@@ -46,13 +54,14 @@ function disallowDate(date) {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="history" class="nomargin" action="<%= wp.getDialogUri() %>" method="post">
+<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.buildClearForm() %>
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonRowOkCancel() %>
+<%= wp.dialogButtonsOkCancel() %>
 
 </form>
 

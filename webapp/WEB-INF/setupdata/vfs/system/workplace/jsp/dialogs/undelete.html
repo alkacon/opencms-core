@@ -7,6 +7,14 @@
 	
 switch (wp.getAction()) {
 
+case CmsUndelete.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
 case CmsUndelete.ACTION_UNDELETE:
 case CmsUndelete.ACTION_WAIT:
 
@@ -15,6 +23,8 @@ case CmsUndelete.ACTION_WAIT:
 	wp.actionUndelete();
 
 break;
+
+
 case CmsUndelete.ACTION_DEFAULT:
 default:
 
@@ -27,14 +37,14 @@ default:
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
-
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.key("messagebox.undelete") %>
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonRowOkCancel() %>
+<%= wp.dialogButtonsOkCancel() %>
 
 </form>
 

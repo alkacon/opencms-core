@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/03/12 17:01:39 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 5.1.12
  */
@@ -157,16 +157,15 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             // editor is in direct edit mode
             if (!"".equals(getParamBacklink())) {
                 // set link to the specified back link target
-                setParamOkLink(getParamBacklink());
+                setParamCloseLink(getJsp().link(getParamBacklink()));
             } else {
                 // set link to the edited resource
-                setParamOkLink(getParamResource());
+                setParamCloseLink(getJsp().link(getParamResource()));
             }
-            // set the okfunctions parameter to load the common close dialog jsp (to disable history back jump)
-            setParamOkFunctions("var x=null;");
             // save initialized instance of this class in request attribute for included sub-elements
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            closeDialog();
+            // load the common JSP close dialog
+            getJsp().include(C_FILE_DIALOG_CLOSE);
         } else {
             // redirect to the workplace explorer view 
             getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/02/26 11:35:35 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1.12
  */
@@ -244,7 +244,7 @@ public class CmsPublishProject extends CmsReport {
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
             case ACTION_REPORT_END:
-                closeDialog();
+                actionCloseDialog();
                 break;
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);   
@@ -341,6 +341,8 @@ public class CmsPublishProject extends CmsReport {
                 // ends the publish thread
                 setAction(ACTION_REPORT_END);
             }
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+            setAction(ACTION_CANCEL);
         } else {                        
             setAction(ACTION_DEFAULT);
             // set parameters depending on publishing type
@@ -355,9 +357,6 @@ public class CmsPublishProject extends CmsReport {
                 // determine the project id and name for publishing
                 computePublishProject(); 
                 // determine target to close the report
-                if (getParamOkLink() == null) {
-                    setParamOkFunctions("window.top.location.reload(true);");
-                }
             }
         }                 
     }

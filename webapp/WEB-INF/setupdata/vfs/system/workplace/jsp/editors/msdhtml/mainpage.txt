@@ -205,6 +205,14 @@ function checkPopup() {
 		focusCount = 0;
 	}
 }
+
+function popupCloseAction(closeObj) {
+	if (closeObj.refreshOpener && closeObj.refreshOpener == true) {
+		buttonAction(1);
+	} else if (closeObj.elemName) {
+		changeElement(closeObj.elemName, closeObj.elemLocale);
+	}
+}
 </script>
 
 <%
@@ -303,7 +311,6 @@ if (options.showElement("selector.elements")) {
 
 <form style="display:none" name="PROPERTIES" action="../dialogs/property.html" target="dialogPropertyWindow" method="post">
 <input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamTempfile() %>">
-<input type="hidden" name="<%= wp.PARAM_OKFUNCTIONS %>" value="window.close();">
 <input type="hidden" name="usetempfileproject" value="true">
 <input type="hidden" name="<%= wp.PARAM_ISPOPUP %>" value="true">
 </form>

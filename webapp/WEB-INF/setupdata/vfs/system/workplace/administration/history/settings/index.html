@@ -7,6 +7,14 @@
 	
 switch (wp.getAction()) {
 
+case CmsAdminHistorySettings.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
 case CmsAdminHistorySettings.ACTION_SAVE_EDIT:
 //////////////////// ACTION: save edited history settings
 
@@ -29,12 +37,13 @@ wp.setParamAction(wp.DIALOG_SAVE_EDIT);
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="history" class="nomargin" action="<%= wp.getDialogUri() %>" method="post">
+<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 <%= wp.buildSettingsForm() %>
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonRowOkCancel() %>
+<%= wp.dialogButtonsOkCancel() %>
 
 </form>
 
@@ -42,6 +51,10 @@ wp.setParamAction(wp.DIALOG_SAVE_EDIT);
 
 <script type="text/javascript">
 <!--
+
+function isDigit() {
+	return ((event.keyCode >= 48) && (event.keyCode <= 57)) 
+}
 
 function checkEnabled() {
 	var isEnabled = document.getElementById("enabled").checked;

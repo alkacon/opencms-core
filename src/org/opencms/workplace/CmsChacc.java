@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1
  */
@@ -71,15 +71,11 @@ public class CmsChacc extends CmsDialog {
     /** The dialog type */
     public static final String DIALOG_TYPE = "chacc";
     
-    /** Request parameter value for the action: set the permissions */
-    public static final String DIALOG_SET = "set";
     /** Request parameter value for the action: delete the permissions */
     public static final String DIALOG_DELETE = "delete";
     /** Request parameter value for the action: add an access control entry */
     public static final String DIALOG_ADDACE = "addace";
     
-    /** Value for the action: set the permissions */
-    public static final int ACTION_SET = 100;
     /** Value for the action: delete the permissions */
     public static final int ACTION_DELETE = 200;
     /** Value for the action: add an access control entry */
@@ -203,12 +199,15 @@ public class CmsChacc extends CmsDialog {
             setAction(ACTION_DELETE);
         } else if (DIALOG_ADDACE.equals(getParamAction())) {
             setAction(ACTION_ADDACE);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+            setAction(ACTION_CANCEL);
         } else {                        
             setAction(ACTION_DEFAULT);
+            // build the title for chacc dialog     
+            setParamTitle(key("title.chmod") + ": " + CmsResource.getName(getParamResource()));
         }
         
-        // build the title for chacc dialog     
-        setParamTitle(key("title.chmod") + ": " + CmsResource.getName(getParamResource()));              
+                      
     }
     
     /**

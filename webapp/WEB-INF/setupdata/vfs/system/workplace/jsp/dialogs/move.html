@@ -7,6 +7,14 @@
 	
 switch (wp.getAction()) {
 
+case CmsMove.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
 case CmsMove.ACTION_MOVE:
 case CmsMove.ACTION_CONFIRMED:		
 case CmsMove.ACTION_WAIT:
@@ -16,6 +24,8 @@ case CmsMove.ACTION_WAIT:
 	wp.actionMove();
 
 break;
+
+
 case CmsMove.ACTION_DEFAULT:
 default:
 
@@ -33,9 +43,9 @@ default:
 
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
-
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <table border="0" width="100%">
 <tr>
@@ -46,7 +56,7 @@ default:
 </table>
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonRowOkCancel() %>
+<%= wp.dialogButtonsOkCancel() %>
 
 </form>
 

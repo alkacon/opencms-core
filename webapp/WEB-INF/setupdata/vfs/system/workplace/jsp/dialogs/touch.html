@@ -7,6 +7,14 @@
 	
 switch (wp.getAction()) {
 
+case CmsTouch.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
 case CmsTouch.ACTION_TOUCH:	
 case CmsTouch.ACTION_WAIT:
 
@@ -32,8 +40,9 @@ default:
 <%@ include file="common/resourceinfo.txt" %>
 <%= wp.dialogSpacer() %>
 
-<form name="touch" class="nomargin" action="<%= wp.getDialogUri() %>" method="post">
+<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <table border="0">
 <tr>
@@ -46,9 +55,8 @@ default:
 
 <%= wp.dialogContentEnd() %>
 
-<%= wp.dialogButtonRowStart() %>
-<%= wp.dialogButtonRowOkCancel() %>
-<%= wp.dialogButtonRowEnd() %>
+<%= wp.dialogButtonsOkCancel() %>
+
 </form>
 
 <%= wp.dialogEnd() %>

@@ -3,15 +3,14 @@
 	// get workplace class from request attribute
 	CmsDialog wp =  CmsDialog.initCmsDialog(pageContext, request, response);
 	
-	boolean link = (wp.getParamOkLink() != null);
+	boolean link = (wp.getParamCloseLink() != null);
 
 %><%= wp.htmlStart() %>
 <script type="text/javascript">
 <!--
-<%= wp.getParamOkFunctions() %>
 <%
 	if (link) {
-		%>this.location.href = "<%= wp.getJsp().link(wp.getParamOkLink()) %>";<%
+		%>this.location.href = "<%= wp.getParamCloseLink() %>";<%
 	}
 %>
 //-->

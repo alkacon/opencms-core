@@ -71,13 +71,12 @@ function checkName() {
 }
 //-->
 </script>
-<%= wp.dialogScriptSubmit() %>
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= wp.DIALOG_OK %>', form);">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onSubmit="return submitAction('<%= wp.DIALOG_OK %>', 'main');">
 
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
@@ -97,7 +96,7 @@ function checkName() {
 
 <%= wp.dialogContentEnd() %>
 <% wp.setParamAction(wp.DIALOG_SHOW_DEFAULT); %>
-<%= wp.dialogButtonRowOkCancel("disabled=\"disabled\"", "onclick=\"location.href='" + wp.getDialogUri() + "?" + wp.paramsAsRequest() + "';\"") %>
+<%= wp.dialogButtonsOkCancel("disabled=\"disabled\"", "onclick=\"location.href='" + wp.getDialogUri() + "?" + wp.paramsAsRequest() + "';\"") %>
 </form>
 
 <%= wp.dialogEnd() %>
@@ -142,9 +141,9 @@ function definePropertyForm() {
 	document.main.<%= wp.PARAM_ACTION %>.value = "<%= wp.DIALOG_SHOW_DEFINE %>";
 	document.main.submit();
 }
+
 //-->
 </script>
-<%= wp.dialogScriptSubmit() %>
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
@@ -153,7 +152,7 @@ function definePropertyForm() {
 <%@ include file="common/resourceinfo.txt" %>
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= wp.DIALOG_OK %>', form);">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 

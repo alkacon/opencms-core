@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2004/03/01 16:07:57 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1
  */
@@ -166,6 +166,8 @@ public class CmsCopy extends CmsDialog {
             setAction(ACTION_CONFIRMED);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
             setAction(ACTION_WAIT);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+            setAction(ACTION_CANCEL);
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for copy dialog     
@@ -256,7 +258,7 @@ public class CmsCopy extends CmsDialog {
                     folderList.add(target);
                     getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);              
                 }
-                getJsp().include(C_FILE_EXPLORER_FILELIST); 
+                actionCloseDialog(); 
             } else  {
                 // "false" returned, display "please wait" screen
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);

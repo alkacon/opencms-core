@@ -7,6 +7,14 @@
 	
 switch (wp.getAction()) {
 
+case CmsUndoChanges.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
 case CmsUndoChanges.ACTION_UNDOCHANGES:
 
 //////////////////// ACTION: main undo changes action
@@ -14,6 +22,8 @@ case CmsUndoChanges.ACTION_UNDOCHANGES:
 	wp.actionUndoChanges();
 
 break;
+
+
 case CmsUndoChanges.ACTION_DEFAULT:
 default:
 
@@ -38,17 +48,17 @@ default:
 
 <%= wp.key("messagebox.undochanges4") %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
-
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonRowOkCancel() %>
+
+<%= wp.dialogButtonsOkCancel() %>
 
 </form>
 
 <%= wp.dialogEnd() %>
-
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
 <%

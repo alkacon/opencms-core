@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/03/12 17:03:42 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,14 @@
 package org.opencms.workplace;
 
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 5.1
  */
@@ -113,6 +116,8 @@ public class CmsDialog extends CmsWorkplace {
     
     /** Request parameter name for the action */
     public static final String PARAM_ACTION = "action";
+    /** Request parameter name for the closelink */
+    public static final String PARAM_CLOSELINK = "closelink";
     /** Request parameter name for the file */
     public static final String PARAM_FILE = "file";
     /** Request parameter name for the frame name */
@@ -133,24 +138,19 @@ public class CmsDialog extends CmsWorkplace {
     public static final String PARAM_THREAD_HASNEXT = "threadhasnext";
     /** Request parameter name for the lock */
     public static final String PARAM_LOCK = "lock";
-    /** Request parameter name for the ok link */
-    public static final String PARAM_OKLINK = "oklink";
-    /** Request parameter name for the ok javascript functions */
-    public static final String PARAM_OKFUNCTIONS = "okfunctions";
     /** Request parameter name for the "is popup" flag */
     public static final String PARAM_ISPOPUP = "ispopup";
     /** Request parameter name for the resource */
     public static final String PARAM_RESOURCE = I_CmsWpConstants.C_PARA_RESOURCE;
 
     private String m_paramAction;
+    private String m_paramCloseLink;
     private String m_paramResource;
     private String m_paramDialogtype;
     private String m_paramErrorstack;
     private String m_paramFrameName;
     private String m_paramMessage;
     private String m_paramTitle;
-    private String m_paramOklink;
-    private String m_paramOkfunctions;
     private String m_paramIspopup;
 
     private int m_action;  
@@ -254,6 +254,29 @@ public class CmsDialog extends CmsWorkplace {
      */
     public void setParamAction(String value) {
         m_paramAction = value;
+    }
+    
+    /**
+     * Returns the value of the closelink parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * @return the value of the closelink parameter
+     */    
+    public String getParamCloseLink() {
+        if (m_paramCloseLink != null && !"null".equals(m_paramCloseLink)) {
+            return m_paramCloseLink;
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Sets the value of the closelink parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamCloseLink(String value) {
+        m_paramCloseLink = value;
     }
 
     /**
@@ -446,54 +469,6 @@ public class CmsDialog extends CmsWorkplace {
     }
     
     /**
-     * Returns the oklink parameter.<p>
-     * 
-     * Use this parameter to define the target of the "ok" button when closing the dialog.<p>
-     * 
-     * @return the oklink parameter
-     */
-    public String getParamOkLink() {
-        if (m_paramOklink != null && !"null".equals(m_paramOklink)) {
-            return m_paramOklink;
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-     * Sets the oklink parameter.<p>
-     * 
-     * @param value the oklink parameter value
-     */
-    public void setParamOkLink(String value) {
-        m_paramOklink = value;
-    }
-    
-    /**
-     * Returns the okfunctions parameter.<p>
-     * 
-     * Use this parameter to define javascript functions to execute when closing the dialog.<p>
-     * 
-     * @return the okfunctions parameter
-     */
-    public String getParamOkFunctions() {
-        if (m_paramOkfunctions != null && !"null".equals(m_paramOkfunctions)) {
-            return m_paramOkfunctions;
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-     * Sets the okfunctions parameter.<p>
-     * 
-     * @param value the okfunctions parameter value
-     */
-    public void setParamOkFunctions(String value) {
-        m_paramOkfunctions = value;
-    }
-    
-    /**
      * Returns the ispopup parameter.<p>
      * 
      * Use this parameter to indicate that the dialog is shown in a popup window.<p>
@@ -526,30 +501,6 @@ public class CmsDialog extends CmsWorkplace {
     /**
      * Used to close the current JSP dialog.<p>
      * 
-     * The closing procedure of the dialog depends on the presence of the two
-     * request parameters "oklink" and "okfunctions", if not present, the explorer
-     * file list is included when pressing the "ok" button.<p>
-     * 
-     * <b>Important:</b> Be sure to store an instance of your dialog class in the session!<p>
-     * 
-     * @throws JspException if including an element fails
-     */
-    public void closeDialog() throws JspException {
-        if (getParamOkLink() == null && getParamOkFunctions() == null) {
-            getJsp().include(C_FILE_EXPLORER_FILELIST);
-        } else {
-            if (getParamOkFunctions() == null) {
-                getJsp().include(getParamOkLink());
-            } else {
-                getJsp().include(C_FILE_DIALOG_CLOSE);
-            }
-            
-        }
-    }
-    
-    /**
-     * Used to close the current JSP dialog.<p>
-     * 
      * This method tries to include the URI stored in the workplace settings.
      * This URI is determined by the frame name, which has to be set 
      * in the framename parameter.<p>
@@ -557,61 +508,47 @@ public class CmsDialog extends CmsWorkplace {
      * @throws JspException if including an element fails
      */
     public void actionCloseDialog() throws JspException {
-        if (getParamFramename() != null) {
+        // create a map with empty "resource" parameter to avoid changing the folder when returning to explorer file list
+        Map params = new HashMap();
+        params.put(PARAM_RESOURCE, "");
+        if (getParamCloseLink() != null) {
+            // close link parameter present, redirect to it...
+            try {
+                getJsp().getResponse().sendRedirect(getParamCloseLink());
+            } catch (IOException e) {
+                // error redirecting, include explorer file list
+                getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
+            }
+        } else if (getParamFramename() != null) {
             // framename parameter found, get URI
             String frameUri = (String)getSettings().getFrameUris().get(getParamFramename());
             if (frameUri != null) {
                 // URI found, include it
                 if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                    // remove context path from URI before inclusion
                     frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                }    
-                getJsp().include(frameUri);
+                }
+                if (frameUri.endsWith("administration_content_top.html")) {
+                    // TODO: remove this workaround for legacy backoffice
+                    try {
+                        // redirect to administration body frame with "sender" parameter
+                        getJsp().getResponse().sendRedirect(getJsp().link(frameUri) + "?sender=/system/workplace/administration/");
+                    } catch (IOException e) {
+                        params.put("sender", "/system/workplace/administration/");
+                        getJsp().include(frameUri, null, params);
+                    }
+                } else {
+                    // include the found frame URI
+                    getJsp().include(frameUri, null, params);
+                }
             } else {
                 // no URI found, include the explorer file list
-                getJsp().include(C_FILE_EXPLORER_FILELIST);
+                getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
             }
         } else {
             // no framename parameter found, include the explorer file list
-            getJsp().include(C_FILE_EXPLORER_FILELIST);
+            getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
         }       
-    }
-    
-    /**
-     * Returns the default action for a "cancel" button.<p>
-     * 
-     * Always use this value, do not write anything directly in the html page.<p>
-     * 
-     * @return the default action for a "cancel" button
-     */
-    public String buttonActionCancel() {
-        if (getSettings().isViewAdministration()) {
-            // in administration view, link to specified back link
-            return "onclick=\"location.href='"+ getJsp().link(getAdministrationBackLink()) + "';\"";
-        } else {
-            // in explorer view, check presence of link request parameters
-            if (getParamOkLink() == null && getParamOkFunctions() == null) {
-                // no link parameters present, link to explorer file list 
-                return "onclick=\"location.href='" + getExplorerFileListFullUri() + "';\"";
-            } else {
-                // at least one link parameter is present, link to common close dialog page
-                String link = getJsp().link(C_FILE_DIALOG_CLOSE);
-                boolean firstParam = true;
-                // append the parameters to the link
-                if (getParamOkLink() != null) {
-                    link += "?" + PARAM_OKLINK + "=" + CmsEncoder.encode(getParamOkLink());
-                    firstParam = false;
-                }
-                if (getParamOkFunctions() != null) {
-                    if (firstParam) {
-                        link += "?";
-                    } else {
-                        link += "&";
-                    }
-                    link += PARAM_OKFUNCTIONS + "=" + CmsEncoder.encode(getParamOkFunctions());
-                }
-                return "onclick=\"location.href='" + link + "';\"";
-            }
-        }
     }
     
     /**
@@ -622,17 +559,6 @@ public class CmsDialog extends CmsWorkplace {
     protected String getAdministrationBackLink() {
         return I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_content_top.html" + "?sender=" + CmsResource.getParentFolder(getJsp().getRequestContext().getFolderUri());
     }
-
-    /**
-     * Returns the default action for a "close" button.<p>
-     * 
-     * Always use this value, do not write anything directly in the html page.<p>
-     * 
-     * @return the default action for a "close" button
-     */    
-    public String buttonActionClose() {
-        return buttonActionCancel();
-    }  
 
     /**
      * Returns the start html for the outer dialog window border.<p>
@@ -858,31 +784,12 @@ public class CmsDialog extends CmsWorkplace {
      * @param attributes array of Strings for additional button attributes
      * @return the html for the button row under the dialog content area, including buttons
      */
-    public String dialogButtonRow(int[] buttons, String[] attributes) {
-        StringBuffer result = new StringBuffer(256);
-        result.append(dialogButtonRow(HTML_START));
-        for (int i=0; i<buttons.length; i++)  {
-            dialogButtonRowHtml(result, buttons[i], attributes[i]);
-        }        
-        
-        result.append(dialogButtonRow(HTML_END));        
-        return result.toString();
-    }
-    
-    /**
-     * Builds the html for the button row under the dialog content area, including buttons.<p>
-     * 
-     * @param buttons array of constants of which buttons to include in the row
-     * @param attributes array of Strings for additional button attributes
-     * @return the html for the button row under the dialog content area, including buttons
-     */
     public String dialogButtons(int[] buttons, String[] attributes) {
         StringBuffer result = new StringBuffer(256);
         result.append(dialogButtonRow(HTML_START));
         for (int i=0; i<buttons.length; i++)  {
             dialogButtonsHtml(result, buttons[i], attributes[i]);
         }        
-        
         result.append(dialogButtonRow(HTML_END));        
         return result.toString();
     }
@@ -982,88 +889,61 @@ public class CmsDialog extends CmsWorkplace {
     }
     
     /**
-     * Renders the HTML for a single input button of a specified type.<p>
+     * Builds a button row with a single "ok" button.<p>
      * 
-     * @param result a string buffer where the rendered HTML gets appended to
-     * @param button a integer key to identify the button
-     * @param attribute an optional string with possible tag attributes, or null
+     * @return the button row 
      */
-    protected void dialogButtonRowHtml(StringBuffer result, int button, String attribute) {
-        attribute = appendDelimiter(attribute);
-        
-        switch (button) {
-            case BUTTON_OK:
-            result.append("<input name=\"ok\" type=\"submit\" value=\"");
-            result.append(key("button.ok"));
-            result.append("\" class=\"dialogbutton\"");
-            result.append(attribute);
-            result.append(">\n");
-            break;
-        case BUTTON_OK_NO_SUBMIT:
-            result.append("<input name=\"ok\" type=\"button\" value=\"");
-            result.append(key("button.ok"));
-            result.append("\" class=\"dialogbutton\"");
-            result.append(attribute);
-            result.append(">\n");
-            break;
-        case BUTTON_CANCEL:
-            result.append("<input name=\"cancel\" type=\"button\" value=\"");
-            result.append(key("button.cancel")+"\"");
-            if (attribute.toLowerCase().indexOf("onclick") == -1) {
-                result.append(" ");
-                result.append(buttonActionCancel());
-            }
-            result.append(" class=\"dialogbutton\"");
-            result.append(attribute);
-            result.append(">\n");
-            break;
-        case BUTTON_CLOSE:
-            result.append("<input name=\"close\" type=\"button\" value=\"");
-            result.append(key("button.close")+"\"");
-            if (attribute.toLowerCase().indexOf("onclick") == -1) {
-                result.append(" ");
-                result.append(buttonActionClose());
-            }
-            result.append(" class=\"dialogbutton\"");
-            result.append(attribute);
-            result.append(">\n");
-            break;
-        case BUTTON_ADVANCED:
-            result.append("<input name=\"advanced\" type=\"button\" value=\"");
-            result.append(key("button.advanced")+"\"");
-            result.append(" class=\"dialogbutton\"");
-            result.append(attribute);
-            result.append(">\n");
-            break;
-        case BUTTON_SET:
-            result.append("<input name=\"set\" type=\"button\" value=\"");
-            result.append(key("button.submit")+"\"");
-            result.append(" class=\"dialogbutton\"");
-            result.append(attribute);
-            result.append(">\n");
-            break;
-        case BUTTON_DETAILS:
-            result.append("<input name=\"details\" type=\"button\" value=\"");
-            result.append(key("button.detail")+"\"");
-            result.append(" class=\"dialogbutton\"");
-            result.append(attribute);
-            result.append(">\n");
-            break;
-        default:
-            // not a valid button code, just insert a warning in the HTML
-            result.append("<!-- invalid button code: ");
-            result.append(button);
-            result.append(" -->\n");
-        }
+    public String dialogButtonsOk() {
+        return dialogButtons(new int[] {BUTTON_OK}, new String[1]);
     }
-        
+    
+    /**
+     * Builds a button row with a single "ok" button.<p>
+     * 
+     * @param okAttribute additional attributes for the "ok" button
+     * @return the button row 
+     */
+    public String dialogButtonsOk(String okAttribute) {
+        return dialogButtons(new int[] {BUTTON_OK}, new String[] {okAttribute});
+    }
+    
+    /**
+     * Builds a button row with a single "close" button.<p>
+     * 
+     * @return the button row 
+     */    
+    public String dialogButtonsClose() {
+        return dialogButtons(new int[] {BUTTON_CLOSE}, new String[1]);
+    }
+    
+    /**
+     * Builds a button row with a single "close" button.<p>
+     * 
+     * @param closeAttribute additional attributes for the "close" button
+     * @return the button row 
+     */    
+    public String dialogButtonsClose(String closeAttribute) {
+        return dialogButtons(new int[] {BUTTON_CLOSE}, new String[] {closeAttribute});
+    }
+    
+    /**
+     * Builds a button row with a "close" and a "details" button.<p>
+     * 
+     * @param closeAttribute additional attributes for the "close" button
+     * @param detailsAttribute additional attributes for the "details" button
+     * @return the button row 
+     */    
+    public String dialogButtonsCloseDetails(String closeAttribute, String detailsAttribute) {
+        return dialogButtons(new int[] {BUTTON_CLOSE, BUTTON_DETAILS}, new String[] {closeAttribute, detailsAttribute});
+    }
+    
     /**
      * Builds a button row with an "ok" and a "cancel" button.<p>
      * 
      * @return the button row 
      */
-    public String dialogButtonRowOkCancel() {
-        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]);
+    public String dialogButtonsOkCancel() {
+        return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]);
     }
     
     /**
@@ -1073,20 +953,8 @@ public class CmsDialog extends CmsWorkplace {
      * @param cancelAttributes additional attributes for the "cancel" button
      * @return the button row 
      */
-    public String dialogButtonRowOkCancel(String okAttributes, String cancelAttributes) {
-        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[] {okAttributes, cancelAttributes});
-    }
-    
-    /**
-     * Builds a button row with an "ok", a "cancel" and an "advanced" button.<p>
-     * 
-     * @param okAttributes additional attributes for the "ok" button
-     * @param cancelAttributes additional attributes for the "cancel" button
-     * @param advancedAttributes additional attributes for the "advanced" button
-     * @return the button row 
-     */
-    public String dialogButtonRowOkCancelAdvanced(String okAttributes, String cancelAttributes, String advancedAttributes) {
-        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_ADVANCED}, new String[] {okAttributes, cancelAttributes, advancedAttributes});
+    public String dialogButtonsOkCancel(String okAttributes, String cancelAttributes) {
+        return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[] {okAttributes, cancelAttributes});
     }
     
     /**
@@ -1114,93 +982,25 @@ public class CmsDialog extends CmsWorkplace {
     }
     
     /**
-     * Builds a button row with a "set", an "ok", and a "cancel" button.<p>
-     * 
-     * @param setAttributes additional attributes for the "set" button
-     * @param okAttributes additional attributes for the "ok" button
-     * @param cancelAttributes additional attributes for the "cancel" button
-     * @return the button row 
-     */
-    public String dialogButtonRowSetOkCancel(String setAttributes, String okAttributes, String cancelAttributes) {
-        return dialogButtonRow(new int[] {BUTTON_SET, BUTTON_OK, BUTTON_CANCEL}, new String[] {setAttributes, okAttributes, cancelAttributes});
-    }
-
-    /**
-     * Builds a button row with a single "cancel" button.<p>
-     * 
-     * @return the button row 
-     */
-    public String dialogButtonRowCancel() {
-        return dialogButtonRow(new int[] {BUTTON_CANCEL}, new String[1]);
-    }
-
-    /**
-     * Builds a button row with a single "ok" button.<p>
-     * 
-     * @return the button row 
-     */
-    public String dialogButtonRowOk() {
-        return dialogButtonRow(new int[] {BUTTON_OK}, new String[1]);
-    }
-    
-    /**
-     * Builds a button row with a single "ok" button.<p>
-     * 
-     * @param okAttribute additional attributes for the "ok" button
-     * @return the button row 
-     */
-    public String dialogButtonRowOk(String okAttribute) {
-        return dialogButtonRow(new int[] {BUTTON_OK}, new String[] {okAttribute});
-    }
-    
-    /**
-     * Builds a button row with a single "close" button.<p>
-     * 
-     * @return the button row 
-     */    
-    public String dialogButtonRowClose() {
-        return dialogButtonRow(new int[] {BUTTON_CLOSE}, new String[1]);
-    }
-    
-    /**
-     * Builds a button row with a single "close" button.<p>
-     * 
-     * @param closeAttribute additional attributes for the "close" button
-     * @return the button row 
-     */    
-    public String dialogButtonRowClose(String closeAttribute) {
-        return dialogButtonRow(new int[] {BUTTON_CLOSE}, new String[] {closeAttribute});
-    }
-    
-    /**
-     * Builds a button row with a "close" and a "details" button.<p>
-     * 
-     * @param closeAttribute additional attributes for the "close" button
-     * @param detailsAttribute additional attributes for the "details" button
-     * @return the button row 
-     */    
-    public String dialogButtonRowCloseDetails(String closeAttribute, String detailsAttribute) {
-        return dialogButtonRow(new int[] {BUTTON_CLOSE, BUTTON_DETAILS}, new String[] {closeAttribute, detailsAttribute});
-    }
-    
-    /**
      * Builds the standard javascript for submitting the dialog.<p>
      * 
      * @return the standard javascript for submitting the dialog
      */
     public String dialogScriptSubmit() {
         StringBuffer result = new StringBuffer(512);
-        result.append("<script type=\"text/javascript\">\n");
-        result.append("function submitAction(actionValue, theForm) {\n");
+        result.append("function submitAction(actionValue, theForm, formName) {\n");
+        result.append("\tif (theForm == null) {\n");
+        result.append("\t\ttheForm = document.forms[formName];\n");
+        result.append("\t}\n");        
         result.append("\ttheForm." + PARAM_FRAMENAME + ".value = window.name;\n");
         result.append("\tif (actionValue == \"" + DIALOG_OK + "\") {\n");
-        result.append("\t\ttheForm.submit();\n");
+        result.append("\t\treturn true;\n");
         result.append("\t} else {\n");
         result.append("\t\ttheForm." + PARAM_ACTION + ".value = \"" + DIALOG_CANCEL + "\";\n");
         result.append("\t\ttheForm.submit();\n");
+        result.append("\t\treturn false;\n");
         result.append("\t}\n");
         result.append("}\n");
-        result.append("</script>\n");
         return result.toString();        
     }
         
@@ -1359,7 +1159,7 @@ public class CmsDialog extends CmsWorkplace {
     public String pageHtml(int segment, String helpUrl) {        
         return pageHtml(segment, helpUrl, null);
     }
-
+    
     /**
      * Builds the start html of the page, including setting of DOCTYPE and 
      * inserting a header with the content-type.<p>
@@ -1383,11 +1183,14 @@ public class CmsDialog extends CmsWorkplace {
                 result.append(getSkinUri());
                 result.append("files/explorer.js\"></script>\n");
             }
-            if (helpUrl != null) {                result.append("<script type=\"text/javascript\">\n");
-                result.append("top.head.helpUrl='");
-                result.append(helpUrl);
-                result.append("';\n</script>\n");
+            result.append("<script type=\"text/javascript\">\n");
+            result.append(dialogScriptSubmit());
+            if (helpUrl != null) {          
+                result.append("top.head.helpUrl=\"");
+                result.append(helpUrl + "\";\n");
+               
             }
+            result.append("</script>\n");
             return result.toString();
         } else {
             return super.pageHtml(segment, null);

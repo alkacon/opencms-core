@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/03/12 17:03:42 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 5.1
  */
@@ -257,9 +257,9 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     }
     
     /**
-     * @see org.opencms.workplace.CmsDialog#dialogButtonRowHtml(java.lang.StringBuffer, int, java.lang.String)
+     * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
      */
-    protected void dialogButtonRowHtml(StringBuffer result, int button, String attribute) {
+    protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
         attribute = appendDelimiter(attribute);
 
         switch (button) {

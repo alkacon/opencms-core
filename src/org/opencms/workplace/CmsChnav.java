@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -153,7 +153,9 @@ public class CmsChnav extends CmsDialog {
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
         if (DIALOG_TYPE.equals(getParamAction())) {
-            setAction(ACTION_CHNAV);                            
+            setAction(ACTION_CHNAV);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+            setAction(ACTION_CANCEL);
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for chnav dialog     
@@ -222,8 +224,8 @@ public class CmsChnav extends CmsDialog {
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         
         }
-        // chnav operation was successful, return to explorer filelist
-        getJsp().include(C_FILE_EXPLORER_FILELIST);
+        // chnav operation was successful, return to workplace
+        actionCloseDialog();
     }
     
     /**

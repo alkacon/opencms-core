@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/02/16 12:05:58 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,9 @@
  */
 package org.opencms.workplace.editor;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -37,10 +40,6 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
-
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,7 +49,6 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -62,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.0
  */
@@ -98,6 +96,9 @@ public class CmsDialogElements extends CmsDialog {
     private String m_paramDeleteElementContent;
     private String m_paramTempFile;
     
+    /** Stores the element to change to after an element update operation */
+    private String m_changeElement;
+    
     /**
      * Public constructor.<p>
      * 
@@ -105,6 +106,7 @@ public class CmsDialogElements extends CmsDialog {
      */
     public CmsDialogElements(CmsJspActionElement jsp) {
         super(jsp);
+        m_changeElement = "";
     }
     
     /**
@@ -116,6 +118,7 @@ public class CmsDialogElements extends CmsDialog {
      */
     public CmsDialogElements(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
+        m_changeElement = "";
     } 
     
     /**
@@ -188,10 +191,8 @@ public class CmsDialogElements extends CmsDialog {
     
     /**
      * Updates the enabled/diabled status of all elements of the current page.<p>
-     * 
-     * @throws JspException if problems including sub-elements occur
      */
-    public void actionUpdateElements() throws JspException {
+    public void actionUpdateElements() {
         try {
             List elementList = computeElements();
             if (elementList == null) {
@@ -200,7 +201,7 @@ public class CmsDialogElements extends CmsDialog {
             CmsFile file = getCms().readFile(this.getParamTempfile());
             CmsXmlPage page = CmsXmlPage.read(getCms(), file);
             boolean foundMandatory = false;
-            String changeElement = "";
+            m_changeElement = "";
             Iterator i = elementList.iterator();
             while (i.hasNext()) {
                 // get the current list element
@@ -215,7 +216,7 @@ public class CmsDialogElements extends CmsDialog {
                     }
                     page.setEnabled(elementName, getElementLocale(), true);
                     if (isMandatory && !foundMandatory) {
-                        changeElement = elementName;
+                        m_changeElement = elementName;
                         foundMandatory = true;
                     }
                 } else {
@@ -229,19 +230,12 @@ public class CmsDialogElements extends CmsDialog {
             getCms().writeFile(page.write(file));
             // set the javascript functions which should be executed
             if (page.isEnabled(getParamElementname(), getElementLocale())) {
-                changeElement = getParamElementname();
+                m_changeElement = getParamElementname();
             } else if (!foundMandatory) {
-                changeElement = ((String[])elementList.get(0))[0];
-            }
-            setParamOkFunctions("window.opener.changeElement(\"" + changeElement + "\", \"" + getElementLocale() + "\");window.close();");
-                       
-            // save initialized instance of this class in request attribute for included sub-elements
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            // if no exception is caused update operation was successful
-            closeDialog();
+                m_changeElement = ((String[])elementList.get(0))[0];
+            }                       
         } catch (CmsException e) {
             // show error dialog
-            setParamOkFunctions("window.close();");
             setParamErrorstack(e.getStackTraceAsString());
             setParamMessage(key("error.message.editor.elements"));
             String reason = key("error.reason.editor.elements") + "<br>\n" + key("error.suggestion.editor.elements") + "\n";
@@ -339,6 +333,15 @@ public class CmsDialogElements extends CmsDialog {
             m_elementList = computeElements(getCms(), getParamTempfile());
         }
         return m_elementList;
+    }
+    
+    /**
+     * Returns the element name that has to be changed.<p>
+     * 
+     * @return the element name that has to be changed
+     */
+    public String getChangeElement() {
+        return m_changeElement;
     }
     
     /**

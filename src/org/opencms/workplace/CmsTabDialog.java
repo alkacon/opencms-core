@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2004/03/12 17:03:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
@@ -295,15 +295,34 @@ public abstract class CmsTabDialog extends CmsDialog {
      * @param helpUrl the key for the online help to include on the page
      * @return the start html of the page
      */
-    public String htmlStart(String helpUrl) {
-        StringBuffer result = new StringBuffer(pageHtml(HTML_START, helpUrl));
-        result.append("<script type=\"text/javascript\">\n<!--\n");
+    public String htmlStart(String helpUrl) { 
+        String stylesheet = null;
+        if ("true".equals(getParamIsPopup())) {
+            stylesheet = "files/css_popup.css";
+        }
+        StringBuffer result = new StringBuffer(super.pageHtmlStyle(HTML_START, null, stylesheet));
+        if (getSettings().isViewExplorer()) {
+            result.append("<script type=\"text/javascript\" src=\"");
+            result.append(getSkinUri());
+            result.append("files/explorer.js\"></script>\n");
+        }
+        result.append("<script type=\"text/javascript\">\n");
+        if (helpUrl != null) {          
+            result.append("top.head.helpUrl=\"");
+            result.append(helpUrl + "\";\n");
+            
+        }
+        // js to switch the dialog tabs
         result.append("function openTab(tabValue) {\n");
         result.append("\tdocument.forms[0]." + PARAM_TAB + ".value = tabValue;\n");
         result.append("\tdocument.forms[0]." + PARAM_ACTION + ".value = \"" + DIALOG_SWITCHTAB + "\";\n");
         result.append("\tdocument.forms[0].submit();\n");
         result.append("}\n");
-        result.append("function submitAction(actionValue, theForm) {\n");
+        // js for the button actions, overwrites CmsDialog.dialogScriptSubmit() js method
+        result.append("function submitAction(actionValue, theForm, formName) {\n");
+        result.append("\tif (theForm == null) {\n");
+        result.append("\t\ttheForm = document.forms[formName];\n");
+        result.append("\t}\n");        
         result.append("\ttheForm." + PARAM_FRAMENAME + ".value = window.name;\n");
         result.append("\tif (actionValue == \"" + DIALOG_SET + "\") {\n");
         result.append("\t\ttheForm." + PARAM_ACTION + ".value = \"" + DIALOG_SET + "\";\n");
@@ -311,6 +330,7 @@ public abstract class CmsTabDialog extends CmsDialog {
         result.append("\t\ttheForm." + PARAM_ACTION + ".value = \"" + DIALOG_CANCEL + "\";\n");
         result.append("\t}\n");
         result.append("\ttheForm.submit();\n");
+        result.append("\treturn false;\n");
         result.append("}\n");
         result.append("//-->\n</script>\n");
         return result.toString();

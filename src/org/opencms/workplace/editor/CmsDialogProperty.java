@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/03/12 17:03:42 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.3.0
  */
@@ -111,9 +111,7 @@ public class CmsDialogProperty extends CmsProperty {
             // save the changes only if resource is properly locked
             if (isEditable()) {
                 performEditOperation(request);    
-            }  
-            // return to the workplace
-            actionCloseDialog();         
+            }    
         } catch (CmsException e) {
             // error defining property, show error dialog
             setParamErrorstack(e.getStackTraceAsString());

@@ -7,6 +7,14 @@
 	
 switch (wp.getAction()) {
 
+case CmsPublishProject.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
 //////////////////// ACTION: other actions handled outside of this JSP
 case CmsPublishProject.ACTION_CONFIRMED:
 case CmsPublishProject.ACTION_REPORT_BEGIN:
@@ -16,6 +24,8 @@ case CmsPublishProject.ACTION_REPORT_END:
 	wp.actionReport();
 
 break;
+
+
 //////////////////// ACTION: show unlock confirmation dialog
 case CmsPublishProject.ACTION_UNLOCK_CONFIRMATION:
 
@@ -28,13 +38,14 @@ case CmsPublishProject.ACTION_UNLOCK_CONFIRMATION:
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.key("messagebox.message1.lockedinfolder") %>
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonRowOkCancel() %>
+<%= wp.dialogButtonsOkCancel() %>
 
 </form>
 
@@ -57,8 +68,9 @@ default:
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <table border="0" cellpadding="2" cellspacing="0">
 <tr>
@@ -77,7 +89,7 @@ default:
 </table>
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonRowOkCancel() %>
+<%= wp.dialogButtonsOkCancel() %>
 
 </form>
 

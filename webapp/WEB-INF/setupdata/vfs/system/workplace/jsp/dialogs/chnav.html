@@ -7,6 +7,14 @@
 	
 switch (wp.getAction()) {
 
+case CmsChnav.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
 case CmsChnav.ACTION_CHNAV:
 
 //////////////////// ACTION: main change navigation action (with optional confirm / wait screen)
@@ -14,6 +22,8 @@ case CmsChnav.ACTION_CHNAV:
 	wp.actionChangeNav();
 
 break;
+
+
 case CmsChnav.ACTION_DEFAULT:
 default:
 
@@ -25,8 +35,9 @@ default:
 <%= wp.bodyStart("dialog") %>
 <%= wp.dialogStart() %>
 
-<form name="changenav" class="nomargin" action="<%= wp.getDialogUri() %>" method="post">
+<form name="changenav" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'changenav');">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
@@ -46,7 +57,7 @@ default:
 
 <%= wp.dialogContentEnd() %>
 
-<%= wp.dialogButtonRowOkCancel() %>
+<%= wp.dialogButtonsOkCancel() %>
 </form>
 
 <%= wp.dialogEnd() %>

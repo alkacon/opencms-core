@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2004/02/25 10:28:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.10
  */
@@ -307,6 +307,9 @@ public class CmsReport extends CmsDialog {
                 result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
                 result.append(getSkinUri());
                 result.append("files/css_workplace.css\">\n");
+                result.append("<script type=\"text/javascript\">\n");
+                result.append(dialogScriptSubmit());
+                result.append("</script>\n");
             }
             return result.toString();
         } else {
@@ -346,13 +349,13 @@ public class CmsReport extends CmsDialog {
      * @param detailsAttrs optional attributes for the details button
      * @return the button row
      */
-    public String dialogButtonRowContinue(String okAttrs, String cancelAttrs, String detailsAttrs) {
-        if (detailsAttrs == null || "".equals(detailsAttrs)) {
+    public String dialogButtonsContinue(String okAttrs, String cancelAttrs, String detailsAttrs) {
+        if (detailsAttrs == null || "".equals(detailsAttrs.trim())) {
             detailsAttrs = "";
         } else {
             detailsAttrs += " ";
         }
-        return dialogButtonRow(new int[] {BUTTON_OK_NO_SUBMIT, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {okAttrs, cancelAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
+        return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {okAttrs, cancelAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
     }
     
     /**
@@ -365,18 +368,18 @@ public class CmsReport extends CmsDialog {
      * @param detailsAttrs optional attributes for the details button
      * @return the button row
      */
-    public String dialogButtonRowOkCancelDetails(String okAttrs, String cancelAttrs, String detailsAttrs) {
+    public String dialogButtonsOkCancelDetails(String okAttrs, String cancelAttrs, String detailsAttrs) {
         
-        if (detailsAttrs == null || "".equals(detailsAttrs)) {
+        if (detailsAttrs == null || "".equals(detailsAttrs.trim())) {
             detailsAttrs = "";
         } else {
             detailsAttrs += " ";
         }
         
         if ("true".equals(getParamThreadHasNext()) && !"".equals(getParamReportContinueKey())) {
-            return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {okAttrs, cancelAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
+            return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {okAttrs, cancelAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
         }
-        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_DETAILS}, new String[] {okAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
+        return dialogButtons(new int[] {BUTTON_OK, BUTTON_DETAILS}, new String[] {okAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
     }
     
 }

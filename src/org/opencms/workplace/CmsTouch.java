@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -153,6 +153,8 @@ public class CmsTouch extends CmsDialog {
             setAction(ACTION_TOUCH);                            
         } else if (DIALOG_WAIT.equals(getParamAction())) {
             setAction(ACTION_WAIT);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+            setAction(ACTION_CANCEL);
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for touch dialog     
@@ -211,7 +213,7 @@ public class CmsTouch extends CmsDialog {
         try {
             if (performTouchOperation())  {
                 // if no exception is caused and "true" is returned the touch operation was successful          
-                getJsp().include(C_FILE_EXPLORER_FILELIST);
+                actionCloseDialog();
             } else  {
                 // "false" returned, display "please wait" screen
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);

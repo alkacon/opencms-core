@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2004/03/08 12:32:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,12 +30,9 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.file.CmsRegistry;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-
-import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -97,6 +94,8 @@ public class CmsAdminHistorySettings extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
             setAction(ACTION_SAVE_EDIT);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+            setAction(ACTION_CANCEL);
         } else { 
             // set the default action               
             setAction(ACTION_DEFAULT); 
@@ -141,7 +140,7 @@ public class CmsAdminHistorySettings extends CmsDialog {
         if (maxVersions != -1) {
             retValue.append(maxVersions);
         }
-        retValue.append("\"></td>\n");
+        retValue.append("\" onkeypress=\"event.returnValue=isDigit();\"></td>\n");
         retValue.append("</tr>\n");
         retValue.append("</table>\n");
         retValue.append("</div>\n");
@@ -161,15 +160,13 @@ public class CmsAdminHistorySettings extends CmsDialog {
         try {
             performEditOperation(request);
             // set the request parameters before returning to the overview
-            sendCmsRedirect(getAdministrationBackLink());              
+            actionCloseDialog();              
         } catch (CmsException e) {
             // error setting history values, show error dialog
             setParamMessage(key("error.message.historysettings"));
             setParamErrorstack(e.getStackTraceAsString());
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-        } catch (IOException exc) {
-          getJsp().include(C_FILE_EXPLORER_FILELIST);
         }
     }
     

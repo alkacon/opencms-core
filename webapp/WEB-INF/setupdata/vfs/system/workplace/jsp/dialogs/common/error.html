@@ -10,16 +10,16 @@
 var init = false;
 
 function toggleElement(id) {
-	var element = document.getElementById(id);
-	var cl = element.className;
+	var el = document.getElementById(id);
+	var cl = el.className;
 	if (cl == "hide") {
-		element.className = "show";
+		el.className = "show";
 		if (! init) {
 			init = true;
-			setTimeout("initTrace()", 0);
+			setTimeout("initTrace();", 0);
 		}
 	} else {
-		element.className = "hide";
+		el.className = "hide";
 	}
 }
 
@@ -27,6 +27,14 @@ function initTrace() {
 	trace.document.open();
 	trace.document.write("<%= wp.getFormattedErrorstack() %>");
 	trace.document.close();
+}
+
+function closeErrorDialog(actionValue, theForm) {
+	if (history.length < 1) {
+		submitAction(actionValue, theForm);
+	} else { 
+		history.back();
+	}
 }
 </script>
 
@@ -53,17 +61,19 @@ function initTrace() {
 
 <%= wp.dialogContentEnd() %>
 
-<form name="close" action="" class="nomargin">
+<form name="close" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<% wp.setParamAction(CmsDialog.DIALOG_CANCEL); %>
+<%= wp.paramsAsHidden() %>
 <%
 	if (wp.getParamErrorstack() == null || "".equals(wp.getParamErrorstack())) {
 %>
-<%= wp.dialogButtonRowClose() %>
+<%= wp.dialogButtonsClose("onclick=\"closeErrorDialog('" + CmsDialog.DIALOG_CANCEL + "', form);\"") %>
 <%	} else { %>
-<%= wp.dialogButtonRowCloseDetails(null, "onClick=\"toggleElement('errorStack');\"") %>
+<%= wp.dialogButtonsCloseDetails("onclick=\"closeErrorDialog('" + CmsDialog.DIALOG_CANCEL + "', form);\"", "onclick=\"toggleElement('errordetails');\"") %>
 <%	} %>
 </form>
 
-<div id="errorStack" class="hide">
+<div name="errordetails" id="errordetails" class="hide">
 <div style="margin: 10px; ">
 <iframe name="trace" id="trace" src="about:blank" style="width:100%; height:400px; margin: 0; padding: 0;"></iframe>
 </div>

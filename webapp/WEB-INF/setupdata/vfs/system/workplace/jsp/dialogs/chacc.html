@@ -6,23 +6,39 @@
 	// initialize the workplace class
 	CmsChacc wp = new CmsChacc(pageContext, request, response);
 	wp.init();
+	boolean displayForm = true;
 
 // perform the users submitted action: create, delete or modify ace
 switch (wp.getAction()) {
+
+
+case CmsChacc.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+	displayForm = false;
+
+break;
+
 
 case CmsChacc.ACTION_SET:
 	wp.actionModifyAce(request);
 break;
 
+
 case CmsChacc.ACTION_DELETE:
 	wp.actionRemoveAce();
 break;
+
 
 case CmsChacc.ACTION_ADDACE:
 	wp.actionAddAce();
 break;
 
 }
+
+
+if (displayForm) {
 	
 %>
 <%= wp.htmlStart() %>
@@ -82,8 +98,16 @@ function toggleDetail(id) {
 
 <%= wp.dialogContentEnd() %>
 
-<%= wp.dialogButtonRowClose() %>
+<form name="buttons" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= CmsDialog.DIALOG_CANCEL %>">
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<%= wp.dialogButtonsClose() %>
+</form>
 
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
+
+<%
+}
+%>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2004/02/25 13:19:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsSecurityException;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -55,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
@@ -82,6 +79,12 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
     public static final int TYPE_LOCKCHANGE = 2;
     /** Type of the operation which is performed: unlock resource */
     public static final int TYPE_UNLOCK = 3;
+    
+    /** Request parameter value for the action: submit form withou user interaction */
+    public static final String DIALOG_SUBMIT_NOCONFIRMATION = "submitnoconfirmation";
+    
+    /** Value for the action: confirmed */
+    public static final int ACTION_SUBMIT_NOCONFIRMATION = 200;
     
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -142,6 +145,8 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
         // set the action for the JSP switch 
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+            setAction(ACTION_CANCEL);
         } else {
             switch (getDialogAction(getCms())) {
             case TYPE_LOCK:
@@ -163,7 +168,7 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
                 setAction(ACTION_DEFAULT);
             } else {
                 // lock/unlock resource without confirmation
-                setAction(ACTION_CONFIRMED);
+                setAction(ACTION_SUBMIT_NOCONFIRMATION);
             }
         }                 
     }
@@ -195,11 +200,7 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
             default:               
                 getCms().unlockResource(resName, false);
             }
-            // create a map with an empty "resource" parameter to avoid changing the folder when returning to explorer file list
-            Map params = new HashMap();
-            params.put(I_CmsWpConstants.C_PARA_RESOURCE, "");
-            // if no exception is caused operation was successful
-            getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
+            actionCloseDialog();
         } catch (CmsException e) {
             // exception occured, show error dialog
             setParamErrorstack(e.getStackTraceAsString());

@@ -12,9 +12,9 @@
 <%= wp.getParamMessage() %>
 <%= wp.dialogContentEnd() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>       
-<%= wp.dialogButtonRowOkCancel() %>
+<%= wp.dialogButtonsOkCancel() %>
 </form>
 
 <%= wp.dialogEnd() %>  

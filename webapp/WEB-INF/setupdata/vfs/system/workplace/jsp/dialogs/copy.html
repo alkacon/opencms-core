@@ -7,6 +7,14 @@
 	
 switch (wp.getAction()) {
 
+case CmsCopy.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
 case CmsCopy.ACTION_COPY:
 case CmsCopy.ACTION_CONFIRMED:		
 case CmsCopy.ACTION_WAIT:
@@ -16,6 +24,8 @@ case CmsCopy.ACTION_WAIT:
 	wp.actionCopy();
 
 break;
+
+
 case CmsCopy.ACTION_DEFAULT:
 default:
 
@@ -31,9 +41,10 @@ default:
 
 <%@ include file="common/resourceinfo.txt" %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.dialogSpacer() %>
 <%= wp.buildRadioCopyMode() %>
@@ -45,15 +56,15 @@ default:
 	<td class="maxwidth"><input name="<%= wp.PARAM_TARGET %>" type="text" value="" class="maxwidth"></td>
 	<td><input name="selectfolder" type="button" value="<%= wp.key("button.search") %>" onClick="top.openTreeWin('copy');" class="dialogbutton" style="width: 60px;">
 </tr>
-<!--
+<%--
 <tr>
 	<td colspan="2" style="white-space: nowrap;" unselectable="on"><input name="<%= wp.PARAM_KEEPRIGHTS %>" type="checkbox" value="true">&nbsp;<%= wp.key("input.keeprights") %></td>    
 </tr>
-//-->
+--%>
 </table>
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonRowOkCancel() %>
+<%= wp.dialogButtonsOkCancel() %>
 
 </form>
 

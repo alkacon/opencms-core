@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/03/12 17:03:42 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 5.1
  */
@@ -794,8 +794,7 @@ public abstract class CmsWorkplace {
             result.append("</head>\n<body unselectable=\"on\"");
             if (getSettings().isViewAdministration()) {
                 if (className == null || "dialog".equals(className)) {
-                    result.append(" class=\"dialogadmin\"");
-                    className = null;
+                    className = "dialogadmin";
                 }
                 if (parameters == null) {               
                     result.append(" onLoad=\"window.top.body.admin_head.location.href='" + getJsp().link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_head.html") + "';\"");
@@ -806,7 +805,7 @@ public abstract class CmsWorkplace {
                 result.append(className);
                 result.append("\"");
             }
-            if (parameters != null) {
+            if (parameters != null && !"".equals(parameters)) {
                 result.append(" ");
                 result.append(parameters);
             }

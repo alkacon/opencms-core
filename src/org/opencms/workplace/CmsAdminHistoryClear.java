@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2004/03/08 12:32:41 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/03/16 11:19:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.threads.CmsAdminHistoryClearThread;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -106,6 +105,8 @@ public class CmsAdminHistoryClear extends CmsReport {
             setAction(ACTION_REPORT_BEGIN);
         } else if (REPORT_END.equals(getParamAction())) {
             setAction(ACTION_REPORT_END);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+            setAction(ACTION_CANCEL);
         } else { 
             // set the default action               
             setAction(ACTION_DEFAULT); 
@@ -207,12 +208,8 @@ public class CmsAdminHistoryClear extends CmsReport {
                 getJsp().include(C_FILE_REPORT_OUTPUT);  
                 break;
             case ACTION_REPORT_END:
-                try {
-                    sendCmsRedirect(getAdministrationBackLink());
-                    break;
-                } catch (IOException e) {
-                    // ignore
-                }
+                    actionCloseDialog();
+                    break;                
             case ACTION_REPORT_BEGIN:
             case ACTION_SAVE_EDIT:
             default:
