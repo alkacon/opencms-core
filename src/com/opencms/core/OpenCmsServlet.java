@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/09/18 15:57:26 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2000/09/25 10:50:08 $
+ * Version: $Revision: 1.57 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.56 $ $Date: 2000/09/18 15:57:26 $  
+* @version $Revision: 1.57 $ $Date: 2000/09/25 10:50:08 $  
 * 
 * */
 
@@ -647,12 +647,13 @@ private CmsObject initMultisite(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throw
 
 		m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
 		//get the called URL.
-
+		
+	CmsSite site = null;
 		StringBuffer requestUrl = HttpUtils.getRequestURL(req);
 		try
 		{
-			CmsSite site = cms.getSiteFromUrl(requestUrl);
-			System.out.println(site);
+			site = cms.getSiteFromUrl(requestUrl);
+			//System.out.println("OpenCmsServlet.initMultiSite(): " + requestUrl);
 			m_opencms.initUser(cms, cmsReq, cmsRes, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
 		}
 		catch (CmsException ce)
@@ -734,6 +735,7 @@ private CmsObject initMultisite(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throw
 				group = m_sessionStorage.getCurrentGroup(session.getId());
 				project = m_sessionStorage.getCurrentProject(session.getId());
 				m_opencms.initUser(cms, cmsReq, cmsRes, user, group, project.intValue());
+				//m_opencms.initUser(cms, cmsReq, cmsRes, user, group, site.getOnlineProjectId());
 			}
 		}
 		else
