@@ -50,11 +50,11 @@
 						<table border=0 cellspacing=4 width=100% height=200px>
 							<tr>
 								<td class=formular width=10%>]]><LABEL value="sitemanagement.label.sitename" /><![CDATA[:</td>
-								<td class=dialogtxt><input type="text" name="NAME" class="textfeld3" size=31 maxlength=16 value="]]><PROCESS>edit_site_name</PROCESS><![CDATA["> </td>
+								<td class=dialogtxt><input type="text" name="NAME" class="textfeld3" size=31 maxlength=255 value="]]><PROCESS>edit_site_name</PROCESS><![CDATA["> </td>
 							</tr>
 							<tr>
 								<td class=formular width=10%>]]><LABEL value="sitemanagement.label.domainname" /><![CDATA[:</td>
-								<td class=dialogtxt><input type="text" name="DOMAINNAME" class="textfeld3" size=31 maxlength=16 value="]]><PROCESS>edit_site_domainname</PROCESS><![CDATA["> </td>
+								<td class=dialogtxt><input type="text" name="DOMAINNAME" class="textfeld3" size=31 maxlength=255 value="]]><PROCESS>edit_site_domainname</PROCESS><![CDATA["> </td>
 							</tr>
 							<tr>
 								<td class=formular width=10%>]]><LABEL value="sitemanagement.label.domain" /><![CDATA[:</td>
