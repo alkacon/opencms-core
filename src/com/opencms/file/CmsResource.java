@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/15 13:53:47 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/07/16 08:38:03 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.60 $ $Date: 2003/07/15 13:53:47 $
+ * @version $Revision: 1.61 $ $Date: 2003/07/16 08:38:03 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -87,16 +87,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
       */
      private int m_projectId;
 
-      /**
-      * The owner  of this resource.
-      */
-     private CmsUUID m_userId;
-
-     /**
-      * The group  of this resource.
-      */
-     private CmsUUID m_groupId;
-
      /**
       * The access flags of this resource.
       */
@@ -112,13 +102,15 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
       */
      private long m_dateLastModified;
      
-      /** Boolean flag whether the timestamp of this resource was modified by a touch command. */
-      private boolean m_isTouched;
+     /** 
+      * Boolean flag whether the timestamp of this resource was modified by a touch command. 
+      */
+     private boolean m_isTouched;
 
-      /**
+     /**
       * The size of the file content.
       */
-      protected int m_size;
+     protected int m_size;
 
       /**
       * The state of this resource. <br>
@@ -150,12 +142,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      /**
       * The id of the user who created this resource
       */
-     private CmsUUID m_resourceCreatedByUserId;
+     private CmsUUID m_createdByUser;
      
      /**
       * The UserId of the user who modified this resource last.
       */
-     private CmsUUID m_resourceLastModifiedByUserId;
+     private CmsUUID m_lastModifiedByUser;
 
      /**
       * The projectId of the project where the resource was locked or modified in
@@ -165,80 +157,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      /** The VFS link type {C_VFS_LINK_TYPE_MASTER|C_VFS_LINK_TYPE_SLAVE} */
      private int m_vfsLinkType;
     
-     /**
-      * Constructor, creates a new CmsRecource object.<p>
-      *
-      * @param structureId the structure id of the resource
-      * @param resourceId the resource id of the resource
-      * @param parentId the id of the parent resource in the structure table
-      * @param fileId the file content id of the resource 
-      * @param resourceName the name (including complete path) of the resouce
-      * @param resourceType the type of the resource
-      * @param resourceFlags the flags of the resource
-      * @param userId the id of the user of this resource
-      * @param groupId the id of the group of this resource
-      * @param projectId the project id this resource belongs to
-      * @param accessFlags the access flags of this resource
-      * @param state the state of this resource
-      * @param lockedByUserId the user id of the user who has locked this resource
-      * @param launcherType the launcher that is require to process this recource
-      * @param launcherClassname the name of the Java class invoked by the launcher
-      * @param dateCreated the creation date of this resource
-      * @param dateLastModified the date of the last modification of the resource
-      * @param resourceLastModifiedByUserId the user who changed the file
-      * @param size the file content size of the resource
-      * @param lockedInProject id of the project the resource was last modified in
-      * @deprecated user/group is not valid any longer
-      */
-    public CmsResource(
-        CmsUUID structureId, 
-        CmsUUID resourceId, 
-        CmsUUID parentId, 
-        CmsUUID fileId, 
-        String resourceName, 
-        int resourceType, 
-        int resourceFlags, 
-        CmsUUID userId, 
-        CmsUUID groupId, 
-        int projectId,
-        int accessFlags, 
-        int state, 
-        CmsUUID lockedByUserId, 
-        int launcherType, 
-        String launcherClassname, 
-        long dateCreated, 
-        long dateLastModified, 
-        CmsUUID resourceLastModifiedByUserId, 
-        int size, 
-        int lockedInProject,
-        int vfsLinkType
-    ) {
-        m_structureId = structureId;
-        m_resourceId = resourceId;
-        m_parentId = parentId;
-        m_fileId = fileId;
-        m_resourceName=resourceName;
-        m_resourceType=resourceType;
-        m_resourceFlags=resourceFlags;
-        m_userId=userId;
-        m_groupId=groupId;
-        m_projectId=projectId;
-        m_accessFlags=accessFlags;
-        m_launcherType=launcherType;
-        m_launcherClassname=launcherClassname;
-        m_state=state;
-        m_lockedByUserId=lockedByUserId;
-        m_dateCreated=dateCreated;
-        m_dateLastModified=dateLastModified;
-        m_resourceLastModifiedByUserId = resourceLastModifiedByUserId;
-        m_size=size;
-        m_lockedInProject=lockedInProject;
-        m_isTouched = false;
-        m_vfsLinkType = vfsLinkType;
-        
-        m_fullResourceName = null;
-     }
-
     /**
      * Constructor, creates a new CmsRecource object.<p>
      *
@@ -249,20 +167,19 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param resourceName the name (including complete path) of the resouce
      * @param resourceType the type of the resource
      * @param resourceFlags the flags of the resource
-     * @param userId the id of the user of this resource
-     * @param groupId the id of the group of this resource
      * @param projectId the project id this resource belongs to
      * @param accessFlags the access flags of this resource
      * @param state the state of this resource
-     * @param lockedByUserId the user id of the user who has locked this resource
+     * @param lockedByUser the user id of the user who has locked this resource
      * @param launcherType the launcher that is require to process this recource
      * @param launcherClassname the name of the Java class invoked by the launcher
      * @param dateCreated the creation date of this resource
-     * @param resourceCreatedByUserId the user who created this resource
+     * @param createdByUser the user who created this resource
      * @param dateLastModified the date of the last modification of the resource
-     * @param resourceLastModifiedByUserId the user who changed the file
+     * @param lastModifiedByUser the user who changed the file
      * @param size the file content size of the resource
      * @param lockedInProject id of the project the resource was last modified in
+     * @param vfsLinkType the link type
      */
    public CmsResource(
        CmsUUID structureId, 
@@ -275,13 +192,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
        int projectId,
        int accessFlags, 
        int state, 
-       CmsUUID lockedByUserId, 
+       CmsUUID lockedByUser, 
        int launcherType, 
        String launcherClassname, 
        long dateCreated, 
-       CmsUUID resourceCreatedByUserId,
+       CmsUUID createdByUser,
        long dateLastModified, 
-       CmsUUID resourceLastModifiedByUserId, 
+       CmsUUID lastModifiedByUser, 
        int size, 
        int lockedInProject,
        int vfsLinkType
@@ -293,18 +210,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
        m_resourceName=resourceName;
        m_resourceType=resourceType;
        m_resourceFlags=resourceFlags;
-       // m_userId=userId;
-       // m_groupId=groupId;
        m_projectId=projectId;
        m_accessFlags=accessFlags;
        m_launcherType=launcherType;
        m_launcherClassname=launcherClassname;
        m_state=state;
-       m_lockedByUserId=lockedByUserId;
+       m_lockedByUserId=lockedByUser;
        m_dateCreated=dateCreated;
-       m_resourceCreatedByUserId = resourceCreatedByUserId;
+       m_createdByUser = createdByUser;
        m_dateLastModified=dateLastModified;
-       m_resourceLastModifiedByUserId = resourceLastModifiedByUserId;
+       m_lastModifiedByUser = lastModifiedByUser;
        m_size=size;
        m_lockedInProject=lockedInProject;
        m_isTouched = false;
@@ -317,14 +232,27 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new CmsResource(m_structureId, m_resourceId,m_parentId,
-                               m_fileId, m_resourceName, m_resourceType,
-                               m_resourceFlags, /* m_userId, m_groupId, */
-                               m_projectId, m_accessFlags, m_state,
-                               m_lockedByUserId, m_launcherType,
-                               m_launcherClassname, m_dateCreated, m_resourceCreatedByUserId, 
-                               m_dateLastModified,m_resourceLastModifiedByUserId, 
-                               m_size, m_lockedInProject, m_vfsLinkType);
+        return new CmsResource(
+            m_structureId,
+            m_resourceId,
+            m_parentId,
+            m_fileId,
+            m_resourceName,
+            m_resourceType,
+            m_resourceFlags,
+            m_projectId,
+            m_accessFlags,
+            m_state,
+            m_lockedByUserId,
+            m_launcherType,
+            m_launcherClassname,
+            m_dateCreated,
+            m_createdByUser,
+            m_dateLastModified,
+            m_lastModifiedByUser,
+            m_size,
+            m_lockedInProject,
+            m_vfsLinkType);
     }
     
     /**
@@ -474,7 +402,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * 
      * @param time the date to set
       */
-     public void setDateLastModified( long time ) {
+     public void setDateLastModified(long time) {
         m_isTouched = true;
         m_dateLastModified = time;
      }
@@ -484,7 +412,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      *
      * @return the ID of the file content database entry
      */
-     public CmsUUID getFileId(){
+     public CmsUUID getFileId() {
         return m_fileId;
      }
      
@@ -496,15 +424,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
       public int getFlags() {
          return m_resourceFlags;
       }
-    /**
-     * Returns the group id of this resource.<p>
-     *
-     * @return the group id of this resource
-     * @deprecated group is not longer used
-     */
-     public CmsUUID getGroupId() {
-         return  m_groupId;
-     }
      
     /**
      * Gets the launcher class name of this resource.<p>
@@ -530,16 +449,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      public int getLength() {
         return m_size;
      }
-     
-    /**
-     * Returns the userid of the resource owner.<p>
-     *
-     * @return the userid of the resource owner
-     * @deprecated owner is not longer used
-     */
-    public CmsUUID getOwnerId() {
-         return m_userId;
-    }
       
     /**
      * Returns the absolute parent folder name of a resource.<p>
@@ -630,7 +539,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         if (level >= 0) {
             // Walk down from the root folder /
             while ((count < level) && (pos > -1)) {
-                count ++;
+                count++;
                 pos = resource.indexOf('/', pos+1);
             }
         } else {
@@ -694,7 +603,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      *
      * @return the id of the resource database entry
      */
-     public CmsUUID getResourceId(){
+     public CmsUUID getResourceId() {
         return m_resourceId;
      }
      
@@ -712,16 +621,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * 
      * @return the user id
      */
-    public CmsUUID getResourceCreatedBy() {
-         return m_resourceCreatedByUserId;
+    public CmsUUID getUserCreated() {
+         return m_createdByUser;
      }
     /**
      * Returns the user id of the user who made the last change on this resource.<p>
      *
      * @return the user id of the user who made the last change<p>
      */
-     public CmsUUID getResourceLastModifiedBy(){
-        return m_resourceLastModifiedByUserId;
+     public CmsUUID getUserLastModified() {
+        return m_lastModifiedByUser;
      }
     /**
      * Returns the state of this resource.<p>
@@ -755,7 +664,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param project the project which this resources is checked against
      * @return true if this resource is in the project, false otherwise
       */
-     public boolean inProject(CmsProject project){
+     public boolean inProject(CmsProject project) {
         return project.getId() == getProjectId();
      }
     /**
@@ -788,7 +697,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      *
      * @param flags the access flags to set
      */
-      public void setAccessFlags(int flags){
+      public void setAccessFlags(int flags) {
           m_accessFlags=flags;
       }
     /**
@@ -804,18 +713,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      *
      * @param flags the flags to set
      */
-      void setFlags(int flags){
+      void setFlags(int flags) {
           m_resourceFlags=flags;
       }
-    /**
-     * Sets the group id of this resource.<p>
-     *
-     * @param group the group id to set
-     * @deprecated group not longer used
-     */
-    public void setGroupId(CmsUUID group) {
-        m_groupId = group;
-      }
+
      /**
      * Sets the launcher class name of this resource.<p>
      *
@@ -829,7 +730,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      *
      * @param type the launcher type to set
      */
-     public void setLauncherType(int type){
+     public void setLauncherType(int type) {
          m_launcherType=type;
      }
     /**
@@ -842,9 +743,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
       }
       
     /**
-     * Sets the the user id that locked this resource.<p>
+     * Sets the parent of this resource.<p>
      *
-     * @param user the user id to set
+     * @param parent the id of the parent resource
      */
     public void setParentId(CmsUUID parent) {
         m_parentId = parent;
@@ -855,16 +756,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * 
      * @param resourceCreatedByUserId user id
      */
-    void setResourceCreatedBy(CmsUUID resourceCreatedByUserId){
-        m_resourceCreatedByUserId = resourceCreatedByUserId;
+    void setResourceCreatedBy(CmsUUID resourceCreatedByUserId) {
+        m_createdByUser = resourceCreatedByUserId;
     }
     /**
      * Sets the user id of the user who changed this resource.<p>
      *
      * @param resourceLastModifiedByUserId the user id of the user who changed the resource
      */
-    void setResourceLastModifiedBy(CmsUUID resourceLastModifiedByUserId){
-        m_resourceLastModifiedByUserId = resourceLastModifiedByUserId;
+    void setResourceLastModifiedBy(CmsUUID resourceLastModifiedByUserId) {
+        m_lastModifiedByUser = resourceLastModifiedByUserId;
     }
     
     /**
@@ -872,8 +773,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      *
      * @param state the state to set
      */
-	public void setState(int state) {
-    	m_state=state;
+    public void setState(int state) {
+        m_state=state;
     }
       
     /**
@@ -882,18 +783,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param type the type to set
      */
     public void setType(int type) {
-    	m_resourceType=type;
+        m_resourceType=type;
     }
-     
-    /**
-     * Sets the user id of this resource.<p>
-     *
-     * @param user a user id
-     * @deprecated user (owner) not longer used
-     */
-    public void setUserId(CmsUUID user) {
-        m_userId = user;
-      }
 
     /**
      * Sets the project id of this resource.<p>
@@ -927,10 +818,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         output.append(m_parentId);
         output.append(" , Project=");
         output.append(m_projectId);
-        output.append(" , User=");
-        output.append(m_userId);
-        output.append(" , Group=");
-        output.append(m_groupId);
         output.append(" : Resource-type=");
         output.append(getType());
         output.append(" : Locked=");
@@ -942,14 +829,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         return output.toString();
     }  
       
-	/**
+    /**
      * Returns true if this resource was touched.<p>
      * 
      * @return boolean true if this resource was touched
-	 */
-	public boolean isTouched() {
-		return m_isTouched;
-	}
+     */
+    public boolean isTouched() {
+        return m_isTouched;
+    }
     
     /**
      * Encapsulates which id of this resource is used to handle ACE's for resources/files/folders.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2003/07/15 13:53:47 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/16 08:38:03 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,93 +36,94 @@ import java.io.Serializable;
  * Describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2003/07/15 13:53:47 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/16 08:38:03 $
  */
 public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
 
-     /**
-      * Constructor, creates a new CmsFolder object.
-      *
-      * @param resourceId The database Id.
-      * @param parentId The database Id of the parent folder.
-      * @param fileId The id of the content.
-      * @param resourceName The name (including complete path) of the resouce.
-      * @param resourceType The type of this resource.
-      * @param rescourceFlags The flags of thei resource.
-      * @param userId The id of the user of this resource.
-      * @param groupId The id of the group of this resource.
-      * @param projectId The project id this resource belongs to.
-      * @param accessFlags The access flags of this resource.
-      * @param state The state of this resource.
-      * @param lockedBy The user id of the user who has locked this resource.
-      * @param dateCreated The creation date of this resource.
-      * @param dateLastModified The date of the last modification of the resource.
-      * @param resourceLastModifiedBy The user who changed the file.
-      * @deprecated user/group not valid any longer
-      */
-     public CmsFolder(CmsUUID structureId, CmsUUID resourceId,CmsUUID parentId,
-                        CmsUUID fileId, String resourceName, int resourceType,
-                        int resourceFlags, CmsUUID userId, CmsUUID groupId,
-                        int projectId, int accessFlags, int state,
-                        CmsUUID lockedByUserId, long dateCreated
-                        ,long dateLastModified, CmsUUID resourceLastModifiedByUserId, int lockedInProject){
-
-        // TODO VFS links: refactor all upper methods to support the VFS link type param
-        super(structureId, resourceId,parentId,fileId,
-              resourceName,resourceType,
-              resourceFlags,userId,groupId,
-              projectId,accessFlags,state,
-              lockedByUserId,I_CmsConstants.C_UNKNOWN_LAUNCHER_ID,
-              I_CmsConstants.C_UNKNOWN_LAUNCHER,dateCreated,
-              dateLastModified,resourceLastModifiedByUserId, -1, lockedInProject, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
-   }
-   
    /**
-    * Constructor, creates a new CmsFolder object.
+    * Constructor, creates a new CmsFolder object.<p>
     *
-    * @param resourceId The database Id.
-    * @param parentId The database Id of the parent folder.
-    * @param fileId The id of the content.
-    * @param resourceName The name (including complete path) of the resouce.
-    * @param resourceType The type of this resource.
-    * @param rescourceFlags The flags of thei resource.
-    * @param projectId The project id this resource belongs to.
-    * @param accessFlags The access flags of this resource.
-    * @param state The state of this resource.
-    * @param lockedBy The user id of the user who has locked this resource.
-    * @param dateCreated The creation date of this resource.
-    * @param resourceCreatedByUserId the user who created the file
-    * @param dateLastModified The date of the last modification of the resource.
-    * @param resourceLastModifiedByUserId The user who changed the file.
+    * @param structureId the id of the structure record
+    * @param resourceId the database Id
+    * @param parentId the database Id of the parent folder
+    * @param fileId the id of the content
+    * @param resourceName the name (including complete path) of the resouce
+    * @param resourceType the type of this resource
+    * @param resourceFlags the flags of the resource
+    * @param projectId the project id this resource belongs to
+    * @param accessFlags the access flags of this resource
+    * @param state the state of this resource
+    * @param lockedByUser the user id of the user who has locked this resource
+    * @param dateCreated the creation date of this resource
+    * @param createdByUser the user who created the file
+    * @param dateLastModified the date of the last modification of the resource
+    * @param lastModifiedByUser the user who changed the file
+    * @param lockedInProject the id of the project the resource is locked in
     */
-   public CmsFolder(CmsUUID structureId, CmsUUID resourceId,CmsUUID parentId,
-                      CmsUUID fileId, String resourceName, int resourceType,
-                      int resourceFlags,
-                      int projectId, int accessFlags, int state,
-                      CmsUUID lockedByUserId, long dateCreated, CmsUUID resourceCreatedByUserId,
-                      long dateLastModified, CmsUUID resourceLastModifiedByUserId, int lockedInProject){
-
-      // TODO VFS links: refactor all upper methods to support the VFS link type param
-      super(structureId, resourceId,parentId,fileId,
-            resourceName,resourceType,
+    public CmsFolder(
+        CmsUUID structureId,
+        CmsUUID resourceId,
+        CmsUUID parentId,
+        CmsUUID fileId,
+        String resourceName,
+        int resourceType,
+        int resourceFlags,
+        int projectId,
+        int accessFlags,
+        int state,
+        CmsUUID lockedByUser,
+        long dateCreated,
+        CmsUUID createdByUser,
+        long dateLastModified,
+        CmsUUID lastModifiedByUser,
+        int lockedInProject
+    ) {
+    
+        // TODO VFS links: refactor all upper methods to support the VFS link type param
+        super(
+            structureId,
+            resourceId,
+            parentId,
+            fileId,
+            resourceName,
+            resourceType,
             resourceFlags,
-            projectId,accessFlags,state,
-            lockedByUserId,I_CmsConstants.C_UNKNOWN_LAUNCHER_ID,
-            I_CmsConstants.C_UNKNOWN_LAUNCHER,dateCreated,resourceCreatedByUserId,
-            dateLastModified,resourceLastModifiedByUserId, -1, lockedInProject, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
- }
+            projectId,
+            accessFlags,
+            state,
+            lockedByUser,
+            I_CmsConstants.C_UNKNOWN_LAUNCHER_ID,
+            I_CmsConstants.C_UNKNOWN_LAUNCHER,
+            dateCreated,
+            createdByUser,
+            dateLastModified,
+            lastModifiedByUser,
+            -1,
+            lockedInProject,
+            I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+    }
  
     /**
     * Clones the CmsFolder by creating a new CmsFolder.
     * @return Cloned CmsFolder.
     */
     public Object clone() {
-        return new CmsFolder(this.getId(), this.getResourceId(), this.getParentId(),
-                             this.getFileId(),new String(this.getResourceName()),
-                             this.getType(), this.getFlags(), /* this.getOwnerId(), */
-                             /* this.getGroupId(), */this.getProjectId(),
-                             this.getAccessFlags(),this.getState(),this.isLockedBy(),
-                             this.getDateCreated(), this.getResourceCreatedBy(), this.getDateLastModified(),
-                             this.getResourceLastModifiedBy(), this.getLockedInProject());
+        return new CmsFolder(
+            this.getId(),
+            this.getResourceId(),
+            this.getParentId(),
+            this.getFileId(),
+            new String(this.getResourceName()),
+            this.getType(),
+            this.getFlags(),
+            this.getProjectId(),
+            this.getAccessFlags(),
+            this.getState(),
+            this.isLockedBy(),
+            this.getDateCreated(),
+            this.getUserCreated(),
+            this.getDateLastModified(),
+            this.getUserLastModified(),
+            this.getLockedInProject());
     }
 }

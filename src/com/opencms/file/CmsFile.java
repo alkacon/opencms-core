@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/07/15 13:53:47 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/07/16 08:38:03 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2003/07/15 13:53:47 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/16 08:38:03 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -45,114 +45,113 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      */
     private byte[] m_fileContent;
 
-     /**
-      * Constructor, creates a new CmsFile object.
-      *
-      * @param resourceId The database Id.
-      * @param parentId The database Id of the parent folder.
-      * @param fileId The id of the content.
-      * @param resourceName The name (including complete path) of the resouce.
-      * @param resourceType The type of this resource.
-      * @param rescourceFlags The flags of thei resource.
-      * @param userId The id of the user of this resource.
-      * @param groupId The id of the group of this resource.
-      * @param projectId The project id this resource belongs to.
-      * @param accessFlags The access flags of this resource.
-      * @param state The state of this resource.
-      * @param lockedBy The user id of the user who has locked this resource.
-      * @param launcherType The launcher that is require to process this recource.
-      * @param launcherClassname The name of the Java class invoked by the launcher.
-      * @param dateCreated The creation date of this resource.
-      * @param dateLastModified The date of the last modification of the resource.
-      * @param fileContent Then content of the file.
-      * @param resourceLastModifiedBy The user who changed the file.
-      * @param size The size of the file content.
-      * @deprecated user/group not valid any longer
-      */
-     public CmsFile(CmsUUID structureId, CmsUUID resourceId, CmsUUID parentId,
-                        CmsUUID fileId, String resourceName, int resourceType,
-                        int resourceFlags, CmsUUID userId, CmsUUID groupId,
-                        int projectId, int accessFlags, int state,
-                        CmsUUID lockedByUserId, int launcherType,
-                        String launcherClassname, long dateCreated,
-                        long dateLastModified,
-                        CmsUUID resourceLastModifiedByUserId,byte[] fileContent, int size, int lockedInProject, int vfsLinkType){
-
-        // create the CmsResource.
-        super(structureId, resourceId, parentId,
-              fileId,resourceName,resourceType,
-              resourceFlags,userId,groupId,
-              projectId,accessFlags,state,
-              lockedByUserId,launcherType,
-              launcherClassname,dateCreated,
-              dateLastModified,resourceLastModifiedByUserId, size, lockedInProject, vfsLinkType);
-
-        // set content and size.
-        m_fileContent=fileContent;
-
-   }
-
    /**
-    * Constructor, creates a new CmsFile object.
+    * Constructor, creates a new CmsFile object.<p>
     *
-    * @param resourceId The database Id.
-    * @param parentId The database Id of the parent folder.
-    * @param fileId The id of the content.
-    * @param resourceName The name (including complete path) of the resouce.
-    * @param resourceType The type of this resource.
-    * @param rescourceFlags The flags of thei resource.
-    * @param projectId The project id this resource belongs to.
-    * @param accessFlags The access flags of this resource.
-    * @param state The state of this resource.
-    * @param lockedBy The user id of the user who has locked this resource.
-    * @param launcherType The launcher that is require to process this recource.
-    * @param launcherClassname The name of the Java class invoked by the launcher.
-    * @param dateCreated The creation date of this resource.
-    * @param dateLastModified The date of the last modification of the resource.
-    * @param fileContent Then content of the file.
-    * @param resourceLastModifiedBy The user who changed the file.
-    * @param size The size of the file content.
+    * @param structureId the id of the structure record
+    * @param resourceId the id of the resource record
+    * @param parentId the id of the parent folder
+    * @param fileId the id of the content
+    * @param resourceName the name (including complete path) of the resouce
+    * @param resourceType the type of this resource
+    * @param resourceFlags the flags of this resource
+    * @param projectId the project id this resource belongs to.
+    * @param accessFlags the access flags of this resource
+    * @param state the state of this resource
+    * @param lockedByUser the user id of the user who has locked this resource
+    * @param launcherType the launcher that is used to process this recource
+    * @param launcherClassname the name of the java class invoked by the launcher
+    * @param dateCreated the creation date of this resource
+    * @param createdByUser the id of the user who created this resource
+    * @param dateLastModified the date of the last modification of the resource
+    * @param lastModifiedByUser the id of the user who did the last modification
+    * @param fileContent the content of the file
+    * @param size the size of the file content
+    * @param lockedInProject the id of the project the resource is locked in
+    * @param vfsLinkType the link type
     */
-   public CmsFile(CmsUUID structureId, CmsUUID resourceId, CmsUUID parentId,
-                      CmsUUID fileId, String resourceName, int resourceType,
-                      int resourceFlags,
-                      int projectId, int accessFlags, int state,
-                      CmsUUID lockedByUserId, int launcherType,
-                      String launcherClassname, long dateCreated, CmsUUID resourceCreatedByUserId,
-                      long dateLastModified,
-                      CmsUUID resourceLastModifiedByUserId,byte[] fileContent, int size, int lockedInProject, int vfsLinkType){
-
-      // create the CmsResource.
-      super(structureId, resourceId, parentId,
-            fileId,resourceName,resourceType,
-            resourceFlags,
-            projectId,accessFlags,state,
-            lockedByUserId,launcherType,
-            launcherClassname,dateCreated,resourceCreatedByUserId,
-            dateLastModified,resourceLastModifiedByUserId, size, lockedInProject, vfsLinkType);
-
-      // set content and size.
-      m_fileContent=fileContent;
-
- }
+    public CmsFile(
+        CmsUUID structureId,
+        CmsUUID resourceId,
+        CmsUUID parentId,
+        CmsUUID fileId,
+        String resourceName,
+        int resourceType,
+        int resourceFlags,
+        int projectId,
+        int accessFlags,
+        int state,
+        CmsUUID lockedByUser,
+        int launcherType,
+        String launcherClassname,
+        long dateCreated,
+        CmsUUID createdByUser,
+        long dateLastModified,
+        CmsUUID lastModifiedByUser,
+        byte[] fileContent,
+        int size,
+        int lockedInProject,
+        int vfsLinkType
+    ) {
+        // create the CmsResource.
+        super(
+            structureId, 
+            resourceId, 
+            parentId, 
+            fileId, 
+            resourceName, 
+            resourceType, 
+            resourceFlags, 
+            projectId, 
+            accessFlags, 
+            state, 
+            lockedByUser, 
+            launcherType, 
+            launcherClassname, 
+            dateCreated, 
+            createdByUser, 
+            dateLastModified, 
+            lastModifiedByUser, 
+            size, 
+            lockedInProject, 
+            vfsLinkType);
+    
+        // set content and size.
+        m_fileContent = fileContent;
+    }
  
     /**
     * Clones the CmsFile by creating a new CmsFolder.
     * @return Cloned CmsFile.
     */
     public Object clone() {
-        byte[] newContent = new byte[ this.getContents().length ];
+        byte[] newContent = new byte[this.getContents().length];
         System.arraycopy(getContents(), 0, newContent, 0, getContents().length);
 
-        return new CmsFile(this.getId(), this.getResourceId(), this.getParentId(),
-                             this.getFileId(),new String(this.getResourceName()),
-                             this.getType(), this.getFlags(), /* this.getOwnerId(), */
-                             /* this.getGroupId(), */this.getProjectId(),
-                             this.getAccessFlags(),this.getState(), this.isLockedBy(),
-                             this.getLauncherType(), new String(this.getLauncherClassname()),
-                             this.getDateCreated(),this.getResourceCreatedBy(),this.getDateLastModified(),
-                             this.getResourceLastModifiedBy(), newContent, this.getLength(), this.getLockedInProject(), this.getVfsLinkType());
+        return new CmsFile(
+            this.getId(),
+            this.getResourceId(),
+            this.getParentId(),
+            this.getFileId(),
+            new String(this.getResourceName()),
+            this.getType(),
+            this.getFlags(),
+            this.getProjectId(),
+            this.getAccessFlags(),
+            this.getState(),
+            this.isLockedBy(),
+            this.getLauncherType(),
+            new String(this.getLauncherClassname()),
+            this.getDateCreated(),
+            this.getUserCreated(),
+            this.getDateLastModified(),
+            this.getUserLastModified(),
+            newContent,
+            this.getLength(),
+            this.getLockedInProject(),
+            this.getVfsLinkType());
     }
+    
     /**
      * Gets the content of this file.
      *
@@ -165,9 +164,9 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * Gets the file-extension.
      *
      * @return the file extension. If this file has no extension, it returns
-     * a empty string ("").
+     * a empty string ("")
      */
-    public String getExtension(){
+    public String getExtension() {
         String name=null;
         String extension="";
         int dot;
@@ -176,7 +175,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         // check if this file has an extension.
         dot=name.lastIndexOf(".");
         if (dot> 0) {
-            extension=name.substring(dot,name.length());
+            extension=name.substring(dot, name.length());
         }
         return extension;
     }
@@ -187,7 +186,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      */
     public void setContents(byte[] value) {
         m_fileContent=value;
-        if (m_fileContent.length >0 ) {
+        if (m_fileContent.length >0) {
             m_size=m_fileContent.length;
         }
     }
