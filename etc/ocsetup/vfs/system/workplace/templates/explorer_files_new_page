@@ -56,12 +56,24 @@ function checkIt(wasdenn){
 			alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
 			allesok=false;
 		}
-		if(allesok)location='explorer_files_new_page.html?step=1&newfile='+
-			formu.NEUNAME.value+
-			'&title='+formu.NEUTITEL.value+
-			'&template='+simpleEscape(formu.TEMPLATE.value)+
-			'&navtitle='+simpleEscape(formu.LINKNAME.value)+
-			'&navpos='+ formu.LINKPOS.value;
+		if(allesok){
+			if(ie){
+				location='explorer_files_new_page.html?step=1&newfile='+
+					formu.NEUNAME.value+
+					'&title='+formu.NEUTITEL.value+
+					'&template='+simpleEscape(formu.TEMPLATE.value)+
+					'&navtitle='+simpleEscape(formu.LINKNAME.value)+
+					'&navpos='+ formu.LINKPOS.value;
+			}
+			if(ns){
+				location='explorer_files_new_page.html?step=1&newfile='+
+					formu.NEUNAME.value+
+					'&title='+formu.NEUTITEL.value+
+					'&template='+simpleEscape(formu.TEMPLATE.options[formu.TEMPLATE.selectedIndex].value)+
+					'&navtitle='+simpleEscape(formu.LINKNAME.value)+
+					'&navpos='+ formu.LINKPOS.value;
+			}	
+		}
 	}
 
 	if(wasdenn==2){
@@ -76,7 +88,10 @@ function checkIt(wasdenn){
 			alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
 			allesok=false;
 		}
-		if(allesok)location='explorer_files_new_page.html?step=1&newfile='+formu.NEUNAME.value+'&title='+formu.NEUTITEL.value+'&template='+simpleEscape(formu.TEMPLATE.value);
+		if(allesok){
+			if(ie)location='explorer_files_new_page.html?step=1&newfile='+formu.NEUNAME.value+'&title='+formu.NEUTITEL.value+'&template='+simpleEscape(formu.TEMPLATE.value);
+			if(ns)location='explorer_files_new_page.html?step=1&newfile='+formu.NEUNAME.value+'&title='+formu.NEUTITEL.value+'&template='+simpleEscape(formu.TEMPLATE.options[formu.TEMPLATE.selectedIndex].value);
+		}
 	}
 }
 
