@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/08/27 08:57:22 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/10/18 18:10:21 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * Base class for all OpenCms resources.<p>
@@ -44,9 +45,48 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
+
+    /**
+     * Implements a comparator for the release date of 2 resources.<p>
+     * 
+     * If the release date of a resource is not set, the
+     * creation date is used instead.<p>
+     */
+    public static final Comparator C_DATE_RELEASED_COMPARATOR = new Comparator() {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(Object o1, Object o2) {
+
+            if (!(o1 instanceof CmsResource)) {
+                return 0;
+            }
+            if (!(o2 instanceof CmsResource)) {
+                return 0;
+            }
+
+            CmsResource r1 = (CmsResource)o1;
+            CmsResource r2 = (CmsResource)o2;
+
+            long date1 = r1.getDateReleased();
+            if (date1 == CmsResource.DATE_RELEASED_DEFAULT) {
+                // use creation date if release date is not set
+                date1 = r1.getDateCreated();
+            }
+
+            long date2 = r2.getDateReleased();
+            if (date2 == CmsResource.DATE_RELEASED_DEFAULT) {
+                // use creation date if release date is not set
+                date2 = r2.getDateCreated();
+            }
+
+            return (int)(date1 - date2);
+        }
+    };
 
     /** The default expiration date of a resource (which is: never expires). */
     public static final long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;

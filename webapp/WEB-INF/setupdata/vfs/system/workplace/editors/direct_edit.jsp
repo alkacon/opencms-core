@@ -44,7 +44,7 @@ String deleteLink = cms.link("/system/workplace/commons/delete.jsp");
 String editId = "directedit";
 
 if (editTarget != null) {
-	editId += "_" + editTarget.substring(editTarget.lastIndexOf("/")+1);
+	editId += "_" + editTarget.replace('/', '_');
 }
 if (editElement != null) {
 	editId += "_" + editElement;

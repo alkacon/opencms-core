@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2004/10/18 13:57:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/18 18:10:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,14 +53,11 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
 
-    /** The link for creation of a new element, specified by the selected filter. */
-    private String m_directEditCreateLink;
-    
     /** The CmsObject for the current user. */
     private CmsObject m_cms;
 
@@ -70,11 +67,17 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     /** The FlexController for the current request. */
     private CmsFlexController m_controller;
 
+    /** The link for creation of a new element, specified by the selected filter. */
+    private String m_directEditCreateLink;
+
+    /** The "direct edit" options to use for the 2nd to the last element. */
+    private String m_directEditFollowOptions;
+
+    /** Indicates if the last element was ediable (including user permissions etc.). */
+    private String m_directEditPermissions;
+
     /** The editable flag. */
     private boolean m_editable;
-    
-    /** Indicates if the last element was ediable (including user permissions etc.). */
-    private String m_directEditPermissions;    
 
     /** The file name to load the current content value from. */
     private String m_file;
@@ -83,7 +86,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     private String m_filter;
 
     /** The list of filtered content items. */
-    private List m_filterContentList;
+    private List m_filterResult;
 
     /** Refenence to the currently selected locale. */
     private Locale m_locale;
@@ -100,18 +103,18 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             // last element was direct editable, close it
             CmsJspTagEditable.includeDirectEditElement(
                 pageContext,
-                I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_END, 
-                m_file, 
-                null, 
-                null, 
+                I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_END,
+                m_file,
+                null,
+                null,
                 m_directEditPermissions,
-                null);            
+                null);
             m_directEditPermissions = null;
         }
-        
+
         // check if there are more files to iterate
-        if (m_filterContentList.size() > 0) {
-            
+        if (m_filterResult.size() > 0) {
+
             // there are more files available...
             try {
                 doLoadNextFile();
@@ -119,23 +122,24 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
                 m_controller.setThrowable(e, m_file);
                 throw new JspException(e);
             }
-            
+
             // check "direct edit" support
             if (m_editable) {
+
                 m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
-                    pageContext, 
-                    I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START, 
-                    m_file, 
-                    null, 
-                    CmsJspTagEditable.createEditOptions(true, true, false),  
+                    pageContext,
+                    I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START,
+                    m_file,
+                    null,
+                    m_directEditFollowOptions,
                     null,
                     m_directEditCreateLink);
-            }             
-            
+            }
+
             // another loop is required
             return EVAL_BODY_AGAIN;
         }
-        
+
         // no more files are available, so skip the body and finish the loop
         return SKIP_BODY;
     }
@@ -152,7 +156,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         // try to read and initialize the XML content
         CmsFile file = m_cms.readFile(m_file);
-        m_content = CmsXmlContentFactory.unmarshal(m_cms, file);        
+        m_content = CmsXmlContentFactory.unmarshal(m_cms, file);
     }
 
     /**
@@ -178,7 +182,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         try {
             // execute the filter
-            m_filterContentList = filter.getFilterResults(m_cms, filterName, param);
+            m_filterResult = filter.getFilterResults(m_cms, filterName, param);
             if (filter.getCreateLink(m_cms, filterName, param) != null) {
                 // use "create link" only if filter supports it
                 m_directEditCreateLink = CmsEncoder.encode(getFilter() + "|" + getParam());
@@ -188,28 +192,33 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             m_controller.setThrowable(e, m_cms.getRequestContext().getUri());
             throw new JspException(e);
         }
-        
-        // check options for first element
-        String directEditOptions;
-        if (m_directEditCreateLink != null) {
-            // if create link is not null, show "edit", "delete" and "new" button for first element
-            directEditOptions = CmsJspTagEditable.createEditOptions(true, true, true);
-        } else {
-            // if create link is null, show onle "edit" button for first element
-            directEditOptions = CmsJspTagEditable.createEditOptions(true, false, false);
-        }
-        
+
         // check "direct edit" support
         if (m_editable) {
+
+            // check options for first element
+            String directEditOptions;
+            if (m_directEditCreateLink != null) {
+                // if create link is not null, show "edit", "delete" and "new" button for first element
+                directEditOptions = CmsJspTagEditable.createEditOptions(true, true, true);
+                // show "edit" and "delete" button for 2nd to last element
+                m_directEditFollowOptions = CmsJspTagEditable.createEditOptions(true, true, false);
+            } else {
+                // if create link is null, show only "edit" button for first element
+                directEditOptions = CmsJspTagEditable.createEditOptions(true, false, false);
+                // also show only the "edit" button for 2nd to last element
+                m_directEditFollowOptions = directEditOptions;
+            }
+
             m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
-                pageContext, 
-                I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START, 
-                m_file, 
-                null, 
+                pageContext,
+                I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START,
+                m_file,
+                null,
                 directEditOptions,
                 null,
                 m_directEditCreateLink);
-        }        
+        }
 
         return EVAL_BODY_INCLUDE;
     }
@@ -295,7 +304,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         return m_locale;
     }
-    
+
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
@@ -304,12 +313,14 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         super.release();
         m_file = null;
         m_filter = null;
-        m_filterContentList = null;
+        m_filterResult = null;
         m_param = null;
         m_cms = null;
         m_controller = null;
-        m_editable = false;    
+        m_editable = false;
         m_directEditPermissions = null;
+        m_directEditCreateLink = null;
+        m_directEditFollowOptions = null;
     }
 
     /**
@@ -388,8 +399,8 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      */
     private String getNextFilname() {
 
-        if ((m_filterContentList != null) && (m_filterContentList.size() > 0)) {
-            return (String)m_filterContentList.remove(0);
+        if ((m_filterResult != null) && (m_filterResult.size() > 0)) {
+            return (String)m_filterResult.remove(0);
         }
         return null;
     }
