@@ -57,6 +57,7 @@ var treeFootHtml =
 var tree = null;
 var vr = null;
 
+var nodeListToLoad = null;
 
 function initResources(encoding, workplacePath, skinPath, contextPath) {
 	vr = new resourceObject(encoding, contextPath, workplacePath, skinPath);
@@ -81,6 +82,12 @@ function nodeObject(name, type, id, parentId, grey, open){
 	this.grey = grey;
 	this.open = open;
 	this.childs = null;
+}
+
+
+function nodeToLoad(id, name) {
+	this.id = id;
+	this.name = name;
 }
 
 
@@ -524,17 +531,19 @@ function doActionInsertSelected(doc, nodeId) {
 }
 
 
-// called if a new folder is loaded from the explorer file list
-function updateCurrentFolder(doc, folderName, reloadCurrent) {
+// called if a new folder is loded from the explorer file list
+function updateCurrentFolder(doc, folderName) {
 	if ((folderName != "/") && (folderName.charAt(folderName.length-1) == '/')) {
 			folderName = folderName.substring(0, folderName.length-1);
 	}
 	var nodeId = getNodeIdByName(folderName);
+	var nodeName = null;
+	var params = null;
 	if (nodeId != null) {
 		// node was already loaded, update it
-		if (vr.actDirId != nodeId || reloadCurrent) {
+		if (vr.actDirId != nodeId) {
 			setCurrentFolder(nodeId);
-			loadNode(doc, nodeId, null, "&rootloaded=true");
+			params = "&rootloaded=true";
 		}
 	} else {
 		// node not loaded (or invalid), check last node that is loaded
@@ -550,33 +559,63 @@ function updateCurrentFolder(doc, folderName, reloadCurrent) {
 			lastKnownId = getNodeIdByName(lastKnown);
 			known = (lastKnownId != null);
 		}
-		loadNode(doc, lastKnownId, folderName, "&lastknown=" + lastKnown);
+		nodeId = lastKnownId;
+		nodeName = folderName;
+		params = "&lastknown=" + lastKnown;
+	}
+	if (params != null) {
+		addNodeToLoad(nodeId, nodeName);
+		loadNodeList(doc, params);
 	}
 }
 
-
-// called if a +/- is clicked in the tree, or from updateCurrentFolder
-function loadNode(doc, nodeId, nodeName, params) {
+function addNodeToLoad(nodeId, nodeName) {
 	if (nodeName == null) {
 		nodeName = getNodeNameById(nodeId);
 	}
+	if (nodeName.charAt(nodeName.length-1) != '/') {
+		nodeName += "/";
+	}
+	node = new nodeToLoad(nodeId, nodeName);	
+	if (nodeListToLoad == null) {
+		nodeListToLoad = new Array();
+	}
+	nodeListToLoad[nodeListToLoad.length] = node;
+}
+
+function loadNodeList(doc, params) {
+	if (nodeListToLoad.length <= 0) {
+		return;
+	}	
 	if (params == null) {
 		params = "";
 	}
     	if (includeFiles()) {
     		params += "&includefiles=true"
     	}
-   	 if (getTreeType() != null) {
+   	if (getTreeType() != null) {
     		params += "&type=" + getTreeType();
-    	}
-	if (tree.nodes[nodeId].childs != null) {
-		setNoChilds(nodeId);
-	}
-	if (nodeName.charAt(nodeName.length-1) != '/') {
-		nodeName += "/";
-	}
-	var target = "tree_files.html?resource=" + nodeName + params;
-	tree_files.location.href = vr.contextPath + vr.workplacePath + target;
+    	}    	
+	var nodeNames = "";
+	for (i=0; i < nodeListToLoad.length; i++) {
+		node = nodeListToLoad[i];
+		if ((node.id != null) && (tree.nodes[node.id].childs != null)) {
+			setNoChilds(node.id);
+		}		
+		nodeNames += node.name;	
+		if (i < nodeListToLoad.length-1) {
+			nodeNames += "|";
+		}
+	}		
+	nodeListToLoad = null;
+	var target = "tree_files.html?resource=" + nodeNames + params;
+	tree_files.location.href = vr.contextPath + vr.workplacePath + target;	
+}
+
+// called if a +/- is clicked in the tree, or from updateCurrentFolder
+function loadNode(doc, nodeId, nodeName, params) {
+	addNodeToLoad(nodeId, nodeName);
+	loadNodeList(doc, params);
 }
 
 
