@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/11 22:16:18 $
- * Version: $Revision: 1.173 $
+ * Date   : $Date: 2000/10/11 22:43:41 $
+ * Version: $Revision: 1.174 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.173 $ $Date: 2000/10/11 22:16:18 $
+ * @version $Revision: 1.174 $ $Date: 2000/10/11 22:43:41 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4257,24 +4257,7 @@ public CmsSite newSite(String name, String description, int category, int langua
  */
 public CmsSite newSite(String name, String description, int category, int language, int country, String url, String user, String group, CmsUser currentUser, CmsProject currentProject) throws CmsException
 {
-	if (isAdmin(currentUser, currentProject))
-	{
-		CmsProject newOnlineProject = createProject(currentUser, currentProject, name, description + " project", user, group);
-		CmsSite newSite = m_dbAccess.newSiteRecord(name, description, category, language, country, newOnlineProject.getId());
-		int newSiteId = newSite.getId();
-		m_dbAccess.newSiteProjectsRecord(newSiteId, newOnlineProject.getId());
-		m_dbAccess.newSiteUrlRecord(url, newSiteId, url);
-		//
-		CmsFolder rootFolder = m_dbAccess.createFolder(currentUser, newOnlineProject, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
-		//rootFolder.setGroupId(users.getId());
-		//m_dbAccess.writeFolder(online, rootFolder, false);
-		//
-		return newSite;
-	}
-	else
-	{
-		throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
-	}
+  return newSite(name, description, category, language, country, url, user, group, currentUser, currentProject, onlineProject(currentUser,currentProject).getId());
 }
 /**
  * Creates a new Cms_Site_Project record in the DB.
