@@ -360,6 +360,7 @@
             <datatypes>Dateityp- verwaltung</datatypes>
             <downloadgallery>Downloadgalerien<![CDATA[<br>]]>verwalten</downloadgallery>
             <export>Export</export>
+			<exportmoduledata>Export Moduldaten</exportmoduledata>
             <groups>Gruppe</groups>
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>

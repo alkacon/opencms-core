@@ -361,6 +361,7 @@
             <datatypes>Resource type- management</datatypes>
             <downloadgallery>Download galleries<![CDATA[<br>]]>management</downloadgallery>
             <export>Export</export>
+			<exportmoduledata>Export Moduldata</exportmoduledata>
             <groups>Edit Groups</groups> 
             <imagelist>image list</imagelist>
             <import>Import</import>
