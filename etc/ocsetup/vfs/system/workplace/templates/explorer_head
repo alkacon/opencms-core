@@ -4,7 +4,7 @@
 <TEMPLATE>
 <![CDATA[
 <html>
-<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
@@ -48,7 +48,7 @@
 <TEMPLATE name="viewfile">
 <![CDATA[
 <html>
-<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT>

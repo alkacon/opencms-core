@@ -11,7 +11,7 @@ top.help_url='FunkButtonNeu/index.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -40,7 +40,8 @@ top.help_url='FunkButtonNeu/index.html';
                         <script language="JavaScript">
                             for(i=0;i<top.vi.resource.length;i++) {
                                 res = top.vi.resource[i];
-                                if(res.createLink != "") {
+                                if ((res != null) && (res != undefined) && (res.createLink != undefined)) {
+                                if (res.createLink != "") {
                                     document.write("<tr><td align=middle width=5%><INPUT type=radio id=R_NEU name=R_NEU value='");
                                     document.write(res.createLink);
                                     document.write("' ");
@@ -52,6 +53,7 @@ top.help_url='FunkButtonNeu/index.html';
                                     document.write("' border=0 width=16 heigth=16></td><td align=left>");
                                     document.write(res.nicename);
                                     document.write("</td></tr>");
+                                }
                                 }
                             }
                         </script>

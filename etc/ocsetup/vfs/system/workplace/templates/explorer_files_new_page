@@ -98,7 +98,7 @@
         var temp3=document.getElementById("newKeyWords"+from).value;
         var temp4=document.getElementById("newDescription"+from).value;
         var temp5=document.getElementById("useTemplate"+from).selectedIndex;
-		var temp6=document.getElementById("defaultBody"+from).selectedIndex;
+        var temp6=document.getElementById("defaultBody"+from).selectedIndex;
 
 
         document.getElementById("name"+to).value=temp1;
@@ -106,7 +106,7 @@
         document.getElementById("newKeyWords"+to).value=temp3;
         document.getElementById("newDescription"+to).value=temp4;
         document.getElementById("useTemplate"+to).selectedIndex=temp5;
-		document.getElementById("defaultBody"+to).selectedIndex=temp6;
+        document.getElementById("defaultBody"+to).selectedIndex=temp6;
 
     }
 
@@ -377,7 +377,7 @@
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -649,7 +649,7 @@ function closeAllWindows(){
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -689,7 +689,7 @@ function closeAllWindows(){
     <![CDATA[
     <HTML>
     <head>
-    <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
     <title>OpenCms</title>
     <link rel=stylesheet type="text/css" href="../css/format.css">
     <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>

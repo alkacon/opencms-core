@@ -9,12 +9,12 @@
 <!--
 function show_help()
 {
-	return '2_1_2_2.html';
+    return '2_1_2_2.html';
 }
 //-->
 </script>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>opencms</title>
 
