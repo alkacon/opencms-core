@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungSmall.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/21 14:21:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/21 16:26:35 $
+ * Version: $Revision: 1.4 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,7 +42,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/02/21 14:21:14 $
+ * @version $Name:  $ $Revision: 1.4 $ $Date: 2000/02/21 16:26:35 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
@@ -515,7 +515,7 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 			secretkey = createSecret();
 			System.out.println(secretkey);
 			
-			String recname = (String)formData.get(C_HASH_FIRSTNAME) + " " +(String)formData.get(C_HASH_SURNAME);
+			String recname = (String)formData.get(C_HASH_SURNAME);
 			String recstreet = (String)formData.get(C_HASH_STREET);
 			String recpostalcode = (String)formData.get(C_HASH_PLZ);
 			String reccity = (String)formData.get(C_HASH_CITY);
@@ -563,7 +563,7 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 			int tasktyperef = cms.getTaskType("StartApplication");
 			int followingtasktyperef = cms.getTaskType("CheckApplication");
 			
-			String projname = "Bewerbung als " + recjob;
+			String projname = "Bewerbung auf der CeBIT ";
 			String taskname = "Bewerbung von " + recname;
 			
 			String taskcomment = "Emailadresse: " + recemail + "<BR>\n";
