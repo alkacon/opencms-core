@@ -71,6 +71,7 @@
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_image" action="doEditHTML(42);" alt="image"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_imagelist" action="doEditHTML(43);" alt="imagelist"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_download" action="doEditHTML(44);" alt="downloadlist"/><![CDATA[</td>
 				
 		<td class=menu width="100%">&nbsp;</td>
 	</tr>
