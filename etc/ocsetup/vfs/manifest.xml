@@ -113,15 +113,6 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung.html</source>
-            <destination>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
             <source>content/bodys/system/workplace/help/de/Administration/DateiTyp.html</source>
             <destination>content/bodys/system/workplace/help/de/Administration/DateiTyp.html</destination>
             <type>plain</type>
@@ -149,8 +140,70 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/Administration/module.html</source>
-            <destination>content/bodys/system/workplace/help/de/Administration/module.html</destination>
+            <destination>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/Benutzer.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/Benutzer.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/BenutzerBearbeiten.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/BenutzerBearbeiten.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/BenutzerNeu.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/BenutzerNeu.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/Gruppe.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/Gruppe.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/GruppeBearbeiten.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/GruppeBearbeiten.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/GruppeNeu.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/GruppeNeu.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/index.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/Benutzerverwaltung/index.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -166,8 +219,35 @@
             <properties/>
         </file>
         <file>
+            <source>content/bodys/system/workplace/help/de/Administration/bildergallerien/Bilderhochladen.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/bildergallerien/Bilderhochladen.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/bildergallerien/Bilderliste.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/bildergallerien/Bilderliste.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
             <source>content/bodys/system/workplace/help/de/Administration/bildergallerien/index.html</source>
             <destination>content/bodys/system/workplace/help/de/Administration/bildergallerien/index.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/bildergallerien/neueGalerie.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/bildergallerien/neueGalerie.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -227,8 +307,8 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/Administration/downloadgallerien/downloadVerwalten.html</source>
-            <destination>content/bodys/system/workplace/help/de/Administration/downloadgallerien/downloadVerwalten.html</destination>
+            <source>content/bodys/system/workplace/help/de/Administration/downloadgallerien/Downloadliste.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/downloadgallerien/Downloadliste.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -254,6 +334,32 @@
             <properties/>
         </file>
         <file>
+            <destination>content/bodys/system/workplace/help/de/Administration/Modulverwaltung</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/Modulverwaltung/index.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/Modulverwaltung/index.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/Modulverwaltung/Modulneu.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/Modulverwaltung/Modulneu.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
             <destination>content/bodys/system/workplace/help/de/Administration/projektverwaltung</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -271,8 +377,26 @@
             <properties/>
         </file>
         <file>
+            <source>content/bodys/system/workplace/help/de/Administration/projektverwaltung/ProjaktuellDetails.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/projektverwaltung/ProjaktuellDetails.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
             <source>content/bodys/system/workplace/help/de/Administration/projektverwaltung/Projektaktuell.html</source>
             <destination>content/bodys/system/workplace/help/de/Administration/projektverwaltung/Projektaktuell.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Administration/projektverwaltung/projektbearbeiten.html</source>
+            <destination>content/bodys/system/workplace/help/de/Administration/projektverwaltung/projektbearbeiten.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -297,24 +421,6 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/aufgabeabhaken.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/aufgabeabhaken.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/aufgabeannehmen.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/aufgabeannehmen.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
             <source>content/bodys/system/workplace/help/de/Aufgaben/aufgabebearbeiten.html</source>
             <destination>content/bodys/system/workplace/help/de/Aufgaben/aufgabebearbeiten.html</destination>
             <type>plain</type>
@@ -333,107 +439,8 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/aufgabenverwalten.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/aufgabenverwalten.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/aufgabereaktivieren.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/aufgabereaktivieren.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/aufgabeuebernehmen.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/aufgabeuebernehmen.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/aufgabeweiterleiten.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/aufgabeweiterleiten.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/EinstellungBenachrichtigo.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/EinstellungBenachrichtigo.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/faelligkeitaendern.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/faelligkeitaendern.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
             <source>content/bodys/system/workplace/help/de/Aufgaben/index.html</source>
             <destination>content/bodys/system/workplace/help/de/Aufgaben/index.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/kommentarerstellen.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/kommentarerstellen.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/MenuAufgabenverw.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/MenuAufgabenverw.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/nachrichtensenden.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/nachrichtensenden.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/prioritaetaendern.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/prioritaetaendern.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Aufgaben/rueckfragen.html</source>
-            <destination>content/bodys/system/workplace/help/de/Aufgaben/rueckfragen.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -455,15 +462,6 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/begriffsdefinitionen/index.html</source>
-            <destination>content/bodys/system/workplace/help/de/begriffsdefinitionen/index.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
             <properties/>
         </file>
         <file>
@@ -525,15 +523,6 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Ergebniskontrolle/index.html</source>
-            <destination>content/bodys/system/workplace/help/de/Ergebniskontrolle/index.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
             <properties/>
         </file>
         <file>
@@ -659,15 +648,6 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/ExplorerAnsicht/bearbeitungsAktionen/seiteeditiren.html</source>
-            <destination>content/bodys/system/workplace/help/de/ExplorerAnsicht/bearbeitungsAktionen/seiteeditiren.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
             <source>content/bodys/system/workplace/help/de/ExplorerAnsicht/bearbeitungsAktionen/Steuerdatei.html</source>
             <destination>content/bodys/system/workplace/help/de/ExplorerAnsicht/bearbeitungsAktionen/Steuerdatei.html</destination>
             <type>plain</type>
@@ -687,15 +667,6 @@
         <file>
             <source>content/bodys/system/workplace/help/de/ExplorerAnsicht/eigenschaftsAktionen/ChType.html</source>
             <destination>content/bodys/system/workplace/help/de/ExplorerAnsicht/eigenschaftsAktionen/ChType.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/ExplorerAnsicht/eigenschaftsAktionen/freigeben.html</source>
-            <destination>content/bodys/system/workplace/help/de/ExplorerAnsicht/eigenschaftsAktionen/freigeben.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -835,15 +806,6 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/FunkUebersicht/index.html</source>
-            <destination>content/bodys/system/workplace/help/de/FunkUebersicht/index.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
             <destination>content/bodys/system/workplace/help/de/Merkmale</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -886,15 +848,6 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/projektveroeffentlichen/index.html</source>
-            <destination>content/bodys/system/workplace/help/de/projektveroeffentlichen/index.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
             <destination>content/bodys/system/workplace/help/de/Seiteneditor</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -903,8 +856,8 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/ansichtBenutzero.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/ansichtBenutzero.html</destination>
+            <source>content/bodys/system/workplace/help/de/Seiteneditor/datei-bearbeitungsopt.html</source>
+            <destination>content/bodys/system/workplace/help/de/Seiteneditor/datei-bearbeitungsopt.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -912,8 +865,8 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/ArbeitMitEditor.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/ArbeitMitEditor.html</destination>
+            <source>content/bodys/system/workplace/help/de/Seiteneditor/formatierungsopt.html</source>
+            <destination>content/bodys/system/workplace/help/de/Seiteneditor/formatierungsopt.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -947,119 +900,38 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/ausschneiden.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/ausschneiden.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Drucken.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Drucken.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Einfuegen.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Einfuegen.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Exportieren.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Exportieren.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Hilfe.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Hilfe.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Importieren.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Importieren.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/index.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/index.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Kopieren.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Kopieren.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/rueckgaengig.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/rueckgaengig.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Speichern.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Speichern.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Suchen.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Suchen.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Wiederherstellen.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Wiederherstellen.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
             <destination>content/bodys/system/workplace/help/de/Seiteneditor/formatierung</destination>
             <type>folder</type>
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Seiteneditor/formatierung/bilder.html</source>
+            <destination>content/bodys/system/workplace/help/de/Seiteneditor/formatierung/bilder.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Seiteneditor/formatierung/einfuegenBild.html</source>
+            <destination>content/bodys/system/workplace/help/de/Seiteneditor/formatierung/einfuegenBild.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
+        </file>
+        <file>
+            <source>content/bodys/system/workplace/help/de/Seiteneditor/formatierung/einfuegenDatei.html</source>
+            <destination>content/bodys/system/workplace/help/de/Seiteneditor/formatierung/einfuegenDatei.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
             <properties/>
         </file>
         <file>
@@ -1072,8 +944,8 @@
             <properties/>
         </file>
         <file>
-            <source>content/bodys/system/workplace/help/de/Seiteneditor/formatierung/formatOptionenErweitert.html</source>
-            <destination>content/bodys/system/workplace/help/de/Seiteneditor/formatierung/formatOptionenErweitert.html</destination>
+            <source>content/bodys/system/workplace/help/de/Seiteneditor/formatierung/Hyperlink.html</source>
+            <destination>content/bodys/system/workplace/help/de/Seiteneditor/formatierung/Hyperlink.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -1118,15 +990,6 @@
         <file>
             <source>content/bodys/system/workplace/help/de/zugriffsverwaltung/index.html</source>
             <destination>content/bodys/system/workplace/help/de/zugriffsverwaltung/index.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
-        </file>
-        <file>
-            <source>content/bodys/system/workplace/help/de/zugriffsverwaltung/rechteAllgemein.html</source>
-            <destination>content/bodys/system/workplace/help/de/zugriffsverwaltung/rechteAllgemein.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -3851,17 +3714,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[12.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[]]></value>
                 </property>
@@ -3917,9 +3780,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[KONFIGURATION DER ACTIVE-X CONTROLS]]></value>
+                    <value><![CDATA[3.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -3927,9 +3790,9 @@
                     <value><![CDATA[Konfiguration der ActiveX Controls]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[3.0]]></value>
+                    <value><![CDATA[KONFIGURATION DER ACTIVE-X CONTROLS]]></value>
                 </property>
             </properties>
         </file>
@@ -3942,11 +3805,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -3954,7 +3812,12 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Konfiguration der ActiveX Controls]]></value>
+                    <value><![CDATA[Konfiguration der Browser]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -3967,17 +3830,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Internet Explorer]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[4.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Internet Explorer]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Internet Explorer]]></value>
                 </property>
@@ -3992,17 +3855,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Netscape Navigator]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[6.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Netscape Navigator]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Netscape Navigator]]></value>
                 </property>
@@ -4016,9 +3879,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[DIE ADMINISTRATIONS-ANSICHT]]></value>
+                    <value><![CDATA[7.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -4026,34 +3889,9 @@
                     <value><![CDATA[Die Administrations-Ansicht]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[7.0]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Administration/Benutzerverwaltung.html</source>
-            <destination>system/workplace/help/de/Administration/Benutzerverwaltung.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
                     <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Benutzerverwaltung]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[6.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Benutzerverwaltung]]></value>
+                    <type>0</type>
+                    <value><![CDATA[DIE ADMINISTRATIONS-ANSICHT]]></value>
                 </property>
             </properties>
         </file>
@@ -4066,19 +3904,19 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Dateityp-verwaltung]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
-                    <value><![CDATA[14.0]]></value>
+                    <value><![CDATA[4.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Dateityp-verwaltung]]></value>
+                    <value><![CDATA[Dateitypverwaltung]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Dateitypverwaltung]]></value>
                 </property>
             </properties>
         </file>
@@ -4091,17 +3929,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[5.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Eigenschaftsverwaltung]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[12.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Eigenschaftsverwaltung]]></value>
                 </property>
@@ -4116,11 +3954,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -4130,21 +3963,170 @@
                     <type>3</type>
                     <value><![CDATA[Administration]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Administration/module.html</source>
-            <destination>system/workplace/help/de/Administration/module.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
                 <property>
                     <name>NavText</name>
                     <type>3</type>
-                    <value><![CDATA[Modulverwaltung]]></value>
+                    <value><![CDATA[]]></value>
                 </property>
+            </properties>
+        </file>
+        <file>
+            <destination>system/workplace/help/de/Administration/Benutzerverwaltung</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[2.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[Benutzerverwaltung]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[Benutzerverwaltung]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/Benutzerverwaltung/Benutzer.html</source>
+            <destination>system/workplace/help/de/Administration/Benutzerverwaltung/Benutzer.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[2.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Benutzer]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Benutzer]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/Benutzerverwaltung/BenutzerBearbeiten.html</source>
+            <destination>system/workplace/help/de/Administration/Benutzerverwaltung/BenutzerBearbeiten.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[6.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Benutzer bearbeiten]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Benutzer bearbeiten]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/Benutzerverwaltung/BenutzerNeu.html</source>
+            <destination>system/workplace/help/de/Administration/Benutzerverwaltung/BenutzerNeu.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[4.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Benutzer neu anlegen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Benutzer neu anlegen]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/Benutzerverwaltung/Gruppe.html</source>
+            <destination>system/workplace/help/de/Administration/Benutzerverwaltung/Gruppe.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[8.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Gruppe]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Gruppe]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/Benutzerverwaltung/GruppeBearbeiten.html</source>
+            <destination>system/workplace/help/de/Administration/Benutzerverwaltung/GruppeBearbeiten.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[12.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Gruppe bearbeiten]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Gruppe bearbeiten]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/Benutzerverwaltung/GruppeNeu.html</source>
+            <destination>system/workplace/help/de/Administration/Benutzerverwaltung/GruppeNeu.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
                 <property>
                     <name>NavPos</name>
                     <type>3</type>
@@ -4153,7 +4135,27 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Modulverwaltung]]></value>
+                    <value><![CDATA[Gruppe neu anlegen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Gruppe neu anlegen]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/Benutzerverwaltung/index.html</source>
+            <destination>system/workplace/help/de/Administration/Benutzerverwaltung/index.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Benutzerverwaltung]]></value>
                 </property>
             </properties>
         </file>
@@ -4165,9 +4167,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[Bildergallerien]]></value>
+                    <value><![CDATA[6.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -4175,9 +4177,59 @@
                     <value><![CDATA[Bildergallerien]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[22.0]]></value>
+                    <value><![CDATA[Bildergallerien]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/bildergallerien/Bilderhochladen.html</source>
+            <destination>system/workplace/help/de/Administration/bildergallerien/Bilderhochladen.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[4.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Bilder hochladen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Bilder hochladen]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/bildergallerien/Bilderliste.html</source>
+            <destination>system/workplace/help/de/Administration/bildergallerien/Bilderliste.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[6.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Bilderliste]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Bilderliste]]></value>
                 </property>
             </properties>
         </file>
@@ -4190,10 +4242,20 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[]]></value>
+                    <value><![CDATA[Bildergallerien]]></value>
                 </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/bildergallerien/neueGalerie.html</source>
+            <destination>system/workplace/help/de/Administration/bildergallerien/neueGalerie.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
                 <property>
                     <name>NavPos</name>
                     <type>3</type>
@@ -4202,7 +4264,12 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Bildergallerien]]></value>
+                    <value><![CDATA[Neue Galerie anlegen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Neue Galerie anlegen]]></value>
                 </property>
             </properties>
         </file>
@@ -4214,9 +4281,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[Datenbankverwaltung]]></value>
+                    <value><![CDATA[3.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -4224,9 +4291,9 @@
                     <value><![CDATA[Datenbankverwaltung]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[18.0]]></value>
+                    <value><![CDATA[Datenbankverwaltung]]></value>
                 </property>
             </properties>
         </file>
@@ -4235,21 +4302,21 @@
             <destination>system/workplace/help/de/Administration/datenbankverwaltung/exportieren.html</destination>
             <type>page</type>
             <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
+            <group>Administrators</group>
+            <access>383</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[1.5]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Datenbanken Exportieren]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[6.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Datenbanken Exportieren]]></value>
                 </property>
@@ -4264,17 +4331,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Datenbanken Importieren]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[4.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Datenbanken Importieren]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Datenbanken Importieren]]></value>
                 </property>
@@ -4289,19 +4356,19 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
-                    <value><![CDATA[2.0]]></value>
+                    <value><![CDATA[3.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Datenbankverwaltung]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -4313,9 +4380,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[Downloadgallerien]]></value>
+                    <value><![CDATA[7.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -4323,9 +4390,9 @@
                     <value><![CDATA[Downloadgallerien]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[20.0]]></value>
+                    <value><![CDATA[Downloadgallerien]]></value>
                 </property>
             </properties>
         </file>
@@ -4338,11 +4405,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Dateien in die Gallerie hochladen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[6.0]]></value>
@@ -4352,21 +4414,21 @@
                     <type>3</type>
                     <value><![CDATA[Dateien in die Gallerie hochladen]]></value>
                 </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Dateien in die Gallerie hochladen]]></value>
+                </property>
             </properties>
         </file>
         <file>
-            <source>help/de/Administration/downloadgallerien/downloadVerwalten.html</source>
-            <destination>system/workplace/help/de/Administration/downloadgallerien/downloadVerwalten.html</destination>
+            <source>help/de/Administration/downloadgallerien/Downloadliste.html</source>
+            <destination>system/workplace/help/de/Administration/downloadgallerien/Downloadliste.html</destination>
             <type>page</type>
             <user>Admin</user>
             <group>Users</group>
             <access>79</access>
             <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Downloadgallerie verwalten]]></value>
-                </property>
                 <property>
                     <name>NavPos</name>
                     <type>3</type>
@@ -4375,7 +4437,12 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Downloadgallerie verwalten]]></value>
+                    <value><![CDATA[Downloadliste]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Downloadliste]]></value>
                 </property>
             </properties>
         </file>
@@ -4388,11 +4455,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -4401,6 +4463,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Downloadgallerien]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -4413,11 +4480,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Neue Downloadgallerie anlegen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[4.0]]></value>
@@ -4426,6 +4488,75 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Neue Downloadgallerie anlegen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Neue Downloadgallerie anlegen]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <destination>system/workplace/help/de/Administration/Modulverwaltung</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[8.5]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[Modulverwaltung]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[Modulverwaltung]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/Modulverwaltung/index.html</source>
+            <destination>system/workplace/help/de/Administration/Modulverwaltung/index.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Modulverwaltung]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/Modulverwaltung/Modulneu.html</source>
+            <destination>system/workplace/help/de/Administration/Modulverwaltung/Modulneu.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[2.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Neues Modul erstellen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Neues Modul erstellen]]></value>
                 </property>
             </properties>
         </file>
@@ -4437,9 +4568,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[Projektverwaltung]]></value>
+                    <value><![CDATA[1.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -4447,9 +4578,9 @@
                     <value><![CDATA[Projektverwaltung]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[16.0]]></value>
+                    <value><![CDATA[Projektverwaltung]]></value>
                 </property>
             </properties>
         </file>
@@ -4462,19 +4593,34 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[]]></value>
+                    <value><![CDATA[Projektverwaltung]]></value>
                 </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/projektverwaltung/ProjaktuellDetails.html</source>
+            <destination>system/workplace/help/de/Administration/projektverwaltung/ProjaktuellDetails.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
                 <property>
                     <name>NavPos</name>
                     <type>3</type>
-                    <value><![CDATA[2.0]]></value>
+                    <value><![CDATA[7.5]]></value>
                 </property>
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Projektverwaltung]]></value>
+                    <value><![CDATA[Aktuelle Projekte: Details]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Aktuelle Projekte: Details]]></value>
                 </property>
             </properties>
         </file>
@@ -4487,11 +4633,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[aktuelle Projekte]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[5.5]]></value>
@@ -4499,7 +4640,37 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[aktuelle Projekte]]></value>
+                    <value><![CDATA[Aktuelle Projekte: Übersicht]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Aktuelle Projekte: Übersicht]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Administration/projektverwaltung/projektbearbeiten.html</source>
+            <destination>system/workplace/help/de/Administration/projektverwaltung/projektbearbeiten.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[9.5]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Projekt bearbeiten]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Projekt bearbeiten]]></value>
                 </property>
             </properties>
         </file>
@@ -4512,11 +4683,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[neues Projekt]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[5.0]]></value>
@@ -4524,7 +4690,12 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[neues Projekt]]></value>
+                    <value><![CDATA[Neues Projekt]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Neues Projekt]]></value>
                 </property>
             </properties>
         </file>
@@ -4536,9 +4707,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[DIE ANSICHT AUFGABENVERWALTUNG]]></value>
+                    <value><![CDATA[8.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -4546,59 +4717,9 @@
                     <value><![CDATA[Die Ansicht Aufgabenverwaltung]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[8.0]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/aufgabeabhaken.html</source>
-            <destination>system/workplace/help/de/Aufgaben/aufgabeabhaken.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Aufgabe abhaken]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[32.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Aufgabe abhaken]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/aufgabeannehmen.html</source>
-            <destination>system/workplace/help/de/Aufgaben/aufgabeannehmen.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Annehmen einer Aufgabe]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[18.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Annehmen einer Aufgabe]]></value>
+                    <value><![CDATA[DIE ANSICHT AUFGABENVERWALTUNG]]></value>
                 </property>
             </properties>
         </file>
@@ -4611,17 +4732,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Bearbeiten einer Aufgabe]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[14.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Bearbeiten einer Aufgabe]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Bearbeiten einer Aufgabe]]></value>
                 </property>
@@ -4636,11 +4757,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Aufgaben erstellen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[4.0]]></value>
@@ -4650,155 +4766,10 @@
                     <type>3</type>
                     <value><![CDATA[Aufgaben erstellen]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/aufgabenverwalten.html</source>
-            <destination>system/workplace/help/de/Aufgaben/aufgabenverwalten.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
                 <property>
                     <name>NavText</name>
                     <type>3</type>
-                    <value><![CDATA[Aufgaben verwalten]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[6.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Aufgaben verwalten]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/aufgabereaktivieren.html</source>
-            <destination>system/workplace/help/de/Aufgaben/aufgabereaktivieren.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Aufgabe reaktivieren]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[34.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Aufgabe reaktivieren]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/aufgabeuebernehmen.html</source>
-            <destination>system/workplace/help/de/Aufgaben/aufgabeuebernehmen.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Übernehmen einer Aufgabe]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[20.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Übernehmen einer Aufgabe]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/aufgabeweiterleiten.html</source>
-            <destination>system/workplace/help/de/Aufgaben/aufgabeweiterleiten.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Aufgabe weiterleiten]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[24.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Aufgabe weiteleiten]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/EinstellungBenachrichtigo.html</source>
-            <destination>system/workplace/help/de/Aufgaben/EinstellungBenachrichtigo.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Einstellungen der Benachrichtigungsoptionen]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[12.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Einstellungen der Benachrichtigungsoptionen]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/faelligkeitaendern.html</source>
-            <destination>system/workplace/help/de/Aufgaben/faelligkeitaendern.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Fälligkeit ändern]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[22.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Fälligkeit ändern]]></value>
+                    <value><![CDATA[Aufgaben erstellen]]></value>
                 </property>
             </properties>
         </file>
@@ -4811,11 +4782,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -4825,130 +4791,10 @@
                     <type>3</type>
                     <value><![CDATA[Aufgaben-Ansicht]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/kommentarerstellen.html</source>
-            <destination>system/workplace/help/de/Aufgaben/kommentarerstellen.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
                 <property>
                     <name>NavText</name>
                     <type>3</type>
-                    <value><![CDATA[Kommentar erstellen]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[30.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Kommentar erstellen]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/MenuAufgabenverw.html</source>
-            <destination>system/workplace/help/de/Aufgaben/MenuAufgabenverw.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Menüleiste Aufgabenverwaltung]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[10.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Menüleiste Aufgabenverwaltung]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/nachrichtensenden.html</source>
-            <destination>system/workplace/help/de/Aufgaben/nachrichtensenden.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Nachrichten senden]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[28.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Nachrichten senden]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/prioritaetaendern.html</source>
-            <destination>system/workplace/help/de/Aufgaben/prioritaetaendern.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Priorität ändern]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[26.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Priorität ändern]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Aufgaben/rueckfragen.html</source>
-            <destination>system/workplace/help/de/Aufgaben/rueckfragen.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Rückfragen]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[16.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Rückfragen]]></value>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -4961,17 +4807,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Status einer Aufgabe]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[8.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Status einer Aufgabe]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Status einer Aufgabe]]></value>
                 </property>
@@ -4985,44 +4831,19 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[BEGRIFFSDEFINITIONEN]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Begriffsdefinitionen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>0</type>
                     <value><![CDATA[74.0]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/begriffsdefinitionen/index.html</source>
-            <destination>system/workplace/help/de/begriffsdefinitionen/index.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[2.0]]></value>
-                </property>
                 <property>
                     <name>Title</name>
-                    <type>3</type>
+                    <type>0</type>
                     <value><![CDATA[Begriffsdefinitionen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[BEGRIFFSDEFINITIONEN]]></value>
                 </property>
             </properties>
         </file>
@@ -5034,9 +4855,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[DIALOGFENSTER EINSTELLUNGEN]]></value>
+                    <value><![CDATA[4.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -5044,9 +4865,9 @@
                     <value><![CDATA[Dialogfenster Einstellungen]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[4.0]]></value>
+                    <value><![CDATA[DIALOGFENSTER EINSTELLUNGEN]]></value>
                 </property>
             </properties>
         </file>
@@ -5059,11 +4880,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Aufgaben]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[6.0]]></value>
@@ -5072,6 +4888,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Karteikarte Aufgaben]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Aufgaben]]></value>
                 </property>
             </properties>
         </file>
@@ -5084,11 +4905,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Benutzerdaten]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[10.0]]></value>
@@ -5097,6 +4913,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Karteikarte Benutzerdaten]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Benutzerdaten]]></value>
                 </property>
             </properties>
         </file>
@@ -5109,11 +4930,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Explorer]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[4.0]]></value>
@@ -5122,6 +4938,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Karteikarte Explorer]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Explorer]]></value>
                 </property>
             </properties>
         </file>
@@ -5134,11 +4955,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -5147,6 +4963,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Dialogfenster Einstellungen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -5159,11 +4980,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Starteinstellungen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[8.0]]></value>
@@ -5172,6 +4988,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Karteikarte Starteinstellungen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Starteinstellungen]]></value>
                 </property>
             </properties>
         </file>
@@ -5183,44 +5004,19 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[ERGEBNISKONTROLLE]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Ergebniskontrolle]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>0</type>
                     <value><![CDATA[28.0]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Ergebniskontrolle/index.html</source>
-            <destination>system/workplace/help/de/Ergebniskontrolle/index.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[2.0]]></value>
-                </property>
                 <property>
                     <name>Title</name>
-                    <type>3</type>
+                    <type>0</type>
                     <value><![CDATA[Ergebniskontrolle]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[ERGEBNISKONTROLLE]]></value>
                 </property>
             </properties>
         </file>
@@ -5232,9 +5028,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[DIE EXPLORER-ANSICHT]]></value>
+                    <value><![CDATA[6.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -5242,9 +5038,9 @@
                     <value><![CDATA[Die Explorer-Ansicht]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[6.0]]></value>
+                    <value><![CDATA[DIE EXPLORER-ANSICHT]]></value>
                 </property>
             </properties>
         </file>
@@ -5257,11 +5053,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -5270,6 +5061,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Aktionen im Kontextmenü]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -5281,9 +5077,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[Allgemeine Aktionen]]></value>
+                    <value><![CDATA[35.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -5291,9 +5087,9 @@
                     <value><![CDATA[Allgemeine Aktionen]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[35.1]]></value>
+                    <value><![CDATA[Allgemeine Aktionen]]></value>
                 </property>
             </properties>
         </file>
@@ -5306,17 +5102,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Dateien kopieren]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[1.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Dateien kopieren]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Dateien kopieren]]></value>
                 </property>
@@ -5331,17 +5127,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Dateien löschen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[7.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Dateien löschen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Dateien löschen]]></value>
                 </property>
@@ -5356,11 +5152,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -5369,6 +5160,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Allgemeine Aktionen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -5381,17 +5177,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Umbenennen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[9.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Umbenennen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Umbenennen]]></value>
                 </property>
@@ -5406,17 +5202,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Verschieben]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[21.2]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Verschieben]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Verschieben]]></value>
                 </property>
@@ -5430,9 +5226,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[Bearbeitungsaktionen]]></value>
+                    <value><![CDATA[33.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -5440,9 +5236,9 @@
                     <value><![CDATA[Bearbeitungsaktionen]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[33.1]]></value>
+                    <value><![CDATA[Bearbeitungsaktionen]]></value>
                 </property>
             </properties>
         </file>
@@ -5455,11 +5251,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Seite bearbeiten]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[5.1]]></value>
@@ -5468,6 +5259,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Seiten bearbeiten]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Seite bearbeiten]]></value>
                 </property>
             </properties>
         </file>
@@ -5480,11 +5276,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[23.1]]></value>
@@ -5494,30 +5285,10 @@
                     <type>3</type>
                     <value><![CDATA[Bearbeitungsaktionen]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/ExplorerAnsicht/bearbeitungsAktionen/seiteeditiren.html</source>
-            <destination>system/workplace/help/de/ExplorerAnsicht/bearbeitungsAktionen/seiteeditiren.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
                 <property>
                     <name>NavText</name>
                     <type>3</type>
-                    <value><![CDATA[Seite editieren]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[19.1]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Seite editieren]]></value>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -5530,17 +5301,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Steuerdatei bearbeiten]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[21.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Steuerdatei bearbeiten]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Steuerdatei bearbeiten]]></value>
                 </property>
@@ -5554,9 +5325,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[Eigenschaftsaktionen]]></value>
+                    <value><![CDATA[39.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -5564,9 +5335,9 @@
                     <value><![CDATA[Eigenschaftsaktionen]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[39.1]]></value>
+                    <value><![CDATA[Eigenschaftsaktionen]]></value>
                 </property>
             </properties>
         </file>
@@ -5579,11 +5350,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Datentyp wechseln]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[31.1]]></value>
@@ -5593,30 +5359,10 @@
                     <type>3</type>
                     <value><![CDATA[Datentyp wechseln]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/ExplorerAnsicht/eigenschaftsAktionen/freigeben.html</source>
-            <destination>system/workplace/help/de/ExplorerAnsicht/eigenschaftsAktionen/freigeben.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
                 <property>
                     <name>NavText</name>
                     <type>3</type>
-                    <value><![CDATA[Dateien Frei geben]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[15.1]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Dateien Frei geben]]></value>
+                    <value><![CDATA[Datentyp wechseln]]></value>
                 </property>
             </properties>
         </file>
@@ -5629,11 +5375,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Histiorie]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[29.1]]></value>
@@ -5642,6 +5383,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Historie]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Histiorie]]></value>
                 </property>
             </properties>
         </file>
@@ -5654,11 +5400,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -5667,6 +5408,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Eigenschaftsaktionen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -5679,17 +5425,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Eigenschaften]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[11.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Eigenschaften]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Eigenschaften]]></value>
                 </property>
@@ -5704,17 +5450,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Seite sperren]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[17.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Seite sperren]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Seite sperren]]></value>
                 </property>
@@ -5728,9 +5474,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[Zugriffsaktionen]]></value>
+                    <value><![CDATA[37.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -5738,9 +5484,9 @@
                     <value><![CDATA[Zugriffsaktionen]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[37.1]]></value>
+                    <value><![CDATA[Zugriffsaktionen]]></value>
                 </property>
             </properties>
         </file>
@@ -5753,17 +5499,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Gruppe ändern]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[13.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Gruppe ändern]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Gruppe ändern]]></value>
                 </property>
@@ -5778,17 +5524,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Eigentümer ändern]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[25.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Eigentümer ändern]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Eigentümer ändern]]></value>
                 </property>
@@ -5803,11 +5549,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -5816,6 +5557,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Zugriffsaktionen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -5828,17 +5574,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Zugriff ändern]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[27.1]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Zugriff ändern]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Zugriff ändern]]></value>
                 </property>
@@ -5852,9 +5598,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[FUNKTIONEN DES BUTTONS NEU]]></value>
+                    <value><![CDATA[24.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -5862,9 +5608,9 @@
                     <value><![CDATA[Funktionen des Buttons Neu]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[24.0]]></value>
+                    <value><![CDATA[FUNKTIONEN DES BUTTONS NEU]]></value>
                 </property>
             </properties>
         </file>
@@ -5877,17 +5623,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Anlegen eines neuen Ordners im aktuellen Ordner]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[4.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Anlegen eines neuen Ordners im aktuellen Ordner]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Anlegen eines neuen Ordners im aktuellen Ordner]]></value>
                 </property>
@@ -5902,17 +5648,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Anlegen einer neuen Verknüpfung im aktuellen Ordner]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[8.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Anlegen einer neuen Verknüpfung im aktuellen Ordner]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Anlegen einer neuen Verknüpfung im aktuellen Ordner]]></value>
                 </property>
@@ -5927,17 +5673,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Anlegen einer neuen Seite im aktuellen Ordner]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[6.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Anlegen einer neuen Seite im aktuellen Ordner]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Anlegen einer neuen Seite im aktuellen Ordner]]></value>
                 </property>
@@ -5952,11 +5698,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -5965,6 +5706,11 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Funktionen des Buttons Neu]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -5976,44 +5722,19 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[ÜBERSICHT DER FUNKTIONEN]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Übersicht der Funktionen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>0</type>
                     <value><![CDATA[80.0]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/FunkUebersicht/index.html</source>
-            <destination>system/workplace/help/de/FunkUebersicht/index.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[2.0]]></value>
-                </property>
                 <property>
                     <name>Title</name>
-                    <type>3</type>
+                    <type>0</type>
                     <value><![CDATA[Übersicht der Funktionen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[ÜBERSICHT DER FUNKTIONEN]]></value>
                 </property>
             </properties>
         </file>
@@ -6025,9 +5746,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[MERKMALE VON OPENCMS]]></value>
+                    <value><![CDATA[1.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -6035,9 +5756,9 @@
                     <value><![CDATA[Merkmale von OpenCMS]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[1.0]]></value>
+                    <value><![CDATA[MERKMALE VON OPENCMS]]></value>
                 </property>
             </properties>
         </file>
@@ -6069,9 +5790,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[WAS IST OPENSOURCE?]]></value>
+                    <value><![CDATA[2.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -6079,9 +5800,9 @@
                     <value><![CDATA[Was ist Open Source ?]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[2.0]]></value>
+                    <value><![CDATA[WAS IST OPENSOURCE?]]></value>
                 </property>
             </properties>
         </file>
@@ -6113,44 +5834,19 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[VERÖFFENTLICHUNG DES PROJEKTS]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Veröffentlichung des Projekts]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>0</type>
                     <value><![CDATA[26.0]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/projektveroeffentlichen/index.html</source>
-            <destination>system/workplace/help/de/projektveroeffentlichen/index.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[2.0]]></value>
-                </property>
                 <property>
                     <name>Title</name>
-                    <type>3</type>
+                    <type>0</type>
                     <value><![CDATA[Veröffentlichung des Projekts]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[VERÖFFENTLICHUNG DES PROJEKTS]]></value>
                 </property>
             </properties>
         </file>
@@ -6162,9 +5858,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[DER OPENCMS SEITENEDITOR]]></value>
+                    <value><![CDATA[9.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -6172,59 +5868,59 @@
                     <value><![CDATA[Der OpenCMS Seiteneditor]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[9.0]]></value>
+                    <value><![CDATA[DER OPENCMS SEITENEDITOR]]></value>
                 </property>
             </properties>
         </file>
         <file>
-            <source>help/de/Seiteneditor/ansichtBenutzero.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/ansichtBenutzero.html</destination>
+            <source>help/de/Seiteneditor/datei-bearbeitungsopt.html</source>
+            <destination>system/workplace/help/de/Seiteneditor/datei-bearbeitungsopt.html</destination>
             <type>page</type>
             <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
+            <group>Administrators</group>
+            <access>383</access>
             <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Ansicht der Benutzeroberfläche]]></value>
-                </property>
                 <property>
                     <name>NavPos</name>
                     <type>3</type>
-                    <value><![CDATA[4.0]]></value>
+                    <value><![CDATA[7.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Ansicht der Benutzeroberfläche]]></value>
+                    <value><![CDATA[Datei- und Bearbeitungsoptionen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Datei- und Bearbeitungsoptionen]]></value>
                 </property>
             </properties>
         </file>
         <file>
-            <source>help/de/Seiteneditor/ArbeitMitEditor.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/ArbeitMitEditor.html</destination>
+            <source>help/de/Seiteneditor/formatierungsopt.html</source>
+            <destination>system/workplace/help/de/Seiteneditor/formatierungsopt.html</destination>
             <type>page</type>
             <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
+            <group>Administrators</group>
+            <access>383</access>
             <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Arbeiten mit dem Seiteneditor]]></value>
-                </property>
                 <property>
                     <name>NavPos</name>
                     <type>3</type>
-                    <value><![CDATA[2.0]]></value>
+                    <value><![CDATA[8.5]]></value>
                 </property>
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Arbeiten mit dem Seiteneditor]]></value>
+                    <value><![CDATA[Formatierungsoptionen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Formatierungsoptionen]]></value>
                 </property>
             </properties>
         </file>
@@ -6237,11 +5933,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[10.0]]></value>
@@ -6249,7 +5940,12 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Datei- und Bearbeitungsaktionen]]></value>
+                    <value><![CDATA[Arbeiten mit dem Seiteneditor]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -6262,17 +5958,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Template-Optionen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[6.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Template-Optionen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Template-Optionen]]></value>
                 </property>
@@ -6286,319 +5982,19 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[Datei- und Bearbeitungsoptionen]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Datei- und Bearbeitungsoptionen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>0</type>
                     <value><![CDATA[8.0]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/ausschneiden.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/ausschneiden.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Ausschneiden]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[16.0]]></value>
-                </property>
                 <property>
                     <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Ausschneiden]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/Drucken.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Drucken.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Drucken]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[12.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Drucken]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/Einfuegen.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Einfuegen.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Einfügen]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[20.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Einfügen]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/Exportieren.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Exportieren.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Exportieren]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[24.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Exportieren]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/Hilfe.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Hilfe.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Hilfe]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[14.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Hilfe]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/Importieren.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Importieren.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Importieren]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[22.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Impotrieren]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/index.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/index.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[2.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
+                    <type>0</type>
                     <value><![CDATA[Datei- und Bearbeitungsoptionen]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/Kopieren.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Kopieren.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
                 <property>
                     <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Kopieren]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[18.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Kopieren]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/rueckgaengig.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/rueckgaengig.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Rückgängig]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[6.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Rückgängig]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/Speichern.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Speichern.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Speichern]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[4.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Speichern]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/Suchen.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Suchen.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Suchen]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[10.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Suchen]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/Datei-BearbeitungsOpt/Wiederherstellen.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt/Wiederherstellen.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Wiederherstellen]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[8.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Wiederherstellen]]></value>
+                    <type>0</type>
+                    <value><![CDATA[Datei- und Bearbeitungsoptionen]]></value>
                 </property>
             </properties>
         </file>
@@ -6610,19 +6006,94 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[Formatierungs-Optionen]]></value>
+                    <value><![CDATA[12.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
                     <type>0</type>
-                    <value><![CDATA[Formatierungs-Optionen]]></value>
+                    <value><![CDATA[Erweiterte Formatierungsoptionen]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
+                    <value><![CDATA[Erweiterte Formatierungsoptionen]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Seiteneditor/formatierung/bilder.html</source>
+            <destination>system/workplace/help/de/Seiteneditor/formatierung/bilder.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
                     <value><![CDATA[12.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Bildparameter]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Bildparameter]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Seiteneditor/formatierung/einfuegenBild.html</source>
+            <destination>system/workplace/help/de/Seiteneditor/formatierung/einfuegenBild.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[14.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Einfügen eines Bildes]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Einfügen eines Bildes]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Seiteneditor/formatierung/einfuegenDatei.html</source>
+            <destination>system/workplace/help/de/Seiteneditor/formatierung/einfuegenDatei.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>NavPos</name>
+                    <type>3</type>
+                    <value><![CDATA[16.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Einfügen einer Datei]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Einfügen einer Datei]]></value>
                 </property>
             </properties>
         </file>
@@ -6635,11 +6106,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Einfügen einer Tabelle]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[6.0]]></value>
@@ -6649,30 +6115,35 @@
                     <type>3</type>
                     <value><![CDATA[Einfügen einer Tabelle]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/Seiteneditor/formatierung/formatOptionenErweitert.html</source>
-            <destination>system/workplace/help/de/Seiteneditor/formatierung/formatOptionenErweitert.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
                 <property>
                     <name>NavText</name>
                     <type>3</type>
-                    <value><![CDATA[Erweiterte Formatierungs-Optionen]]></value>
+                    <value><![CDATA[Einfügen einer Tabelle]]></value>
                 </property>
+            </properties>
+        </file>
+        <file>
+            <source>help/de/Seiteneditor/formatierung/Hyperlink.html</source>
+            <destination>system/workplace/help/de/Seiteneditor/formatierung/Hyperlink.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
                 <property>
                     <name>NavPos</name>
                     <type>3</type>
-                    <value><![CDATA[4.0]]></value>
+                    <value><![CDATA[10.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Erweiterte Formatierungs-Optionen]]></value>
+                    <value><![CDATA[Hyperlink]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[Hyperlink]]></value>
                 </property>
             </properties>
         </file>
@@ -6685,11 +6156,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -6697,7 +6163,12 @@
                 <property>
                     <name>Title</name>
                     <type>3</type>
-                    <value><![CDATA[Formatierungs-Optionen]]></value>
+                    <value><![CDATA[Erweiterte Formatierungsoptionen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -6710,17 +6181,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Veränderung einer Tabelle]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[8.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Veränderung einer Tabelle]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Veränderung einer Tabelle]]></value>
                 </property>
@@ -6734,9 +6205,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
+                    <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[VERWALTUNG DER ZUGRIFFSRECHTE]]></value>
+                    <value><![CDATA[5.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -6744,9 +6215,9 @@
                     <value><![CDATA[Verwaltung der Zugriffsrechte]]></value>
                 </property>
                 <property>
-                    <name>NavPos</name>
+                    <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[5.0]]></value>
+                    <value><![CDATA[VERWALTUNG DER ZUGRIFFSRECHTE]]></value>
                 </property>
             </properties>
         </file>
@@ -6759,17 +6230,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Bedeutung der Zugriffsrechte]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[4.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Bedeutung der Zugriffsrechte]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Bedeutung der Zugriffsrechte]]></value>
                 </property>
@@ -6784,11 +6255,6 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[2.0]]></value>
@@ -6798,30 +6264,10 @@
                     <type>3</type>
                     <value><![CDATA[Verwaltung der Zugriffsrechte]]></value>
                 </property>
-            </properties>
-        </file>
-        <file>
-            <source>help/de/zugriffsverwaltung/rechteAllgemein.html</source>
-            <destination>system/workplace/help/de/zugriffsverwaltung/rechteAllgemein.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
                 <property>
                     <name>NavText</name>
                     <type>3</type>
-                    <value><![CDATA[Rechte allgemein]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>3</type>
-                    <value><![CDATA[6.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Rechte allgemein]]></value>
+                    <value><![CDATA[]]></value>
                 </property>
             </properties>
         </file>
@@ -6834,17 +6280,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Zugriffsrechte - Standardeinstellungen]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[8.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Zugriffsrechte - Standardeinstellungen]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Zugriffsrechte - Standardeinstellungen]]></value>
                 </property>
@@ -6859,17 +6305,17 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>NavText</name>
-                    <type>3</type>
-                    <value><![CDATA[Vermeidung von unrechtmäßigem Zugang]]></value>
-                </property>
-                <property>
                     <name>NavPos</name>
                     <type>3</type>
                     <value><![CDATA[10.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[Vermeidung von unrechtmäßigem Zugang]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Vermeidung von unrechtmäßigem Zugang]]></value>
                 </property>
