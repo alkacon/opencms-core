@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/01/30 19:11:58 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/02/03 19:46:13 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2003/01/30 19:11:58 $
+ * @version $Revision: 1.31 $ $Date: 2003/02/03 19:46:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -153,7 +153,6 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
  
         // here we show the report updates when the threads are allready running.
         // This is used for import (action=showResult) and for export (action=showExportResult).
-        // TODO: the wait template is not used anymore. We can remove it. It is used for export moduledata!!!
         if("showResult".equals(action)){
             // ok. Thread for import is started and we shoud show the report information.
             CmsAdminDatabaseImportThread doTheWork = (CmsAdminDatabaseImportThread)session.getValue(C_DATABASE_THREAD);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/02/03 19:46:49 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.49 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.50 $ $Date: 2003/02/03 19:46:49 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -230,8 +230,6 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     session.removeValue(C_PARA_FILE);
                     session.removeValue(C_PARA_NEWFOLDER);
                     session.removeValue(C_PARA_FLAGS);
-
-                    // TODO: Error handling
 
                     // return to the calling page
                     try {

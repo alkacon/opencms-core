@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/02/03 19:47:02 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.33 $ $Date: 2003/02/03 19:47:02 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -226,9 +226,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                         template = "ownlocked";
                     }
                     else {
-
-
-                    // TODO: add an error message that this key is already exisitng
+                        // the key already exists, this is ok
                     }
                 }
                 else {

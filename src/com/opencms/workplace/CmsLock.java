@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/02/03 19:46:39 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.43 $ $Date: 2003/01/20 23:59:20 $
+ * @version $Revision: 1.44 $ $Date: 2003/02/03 19:46:39 $
  */
 
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -138,7 +138,6 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     xmlTemplateDocument.setData("FILENAME", file.getName());
                     // process the selected template
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
-                    // TODO: ErrorHandling
                 }
 
                 // return to filelist

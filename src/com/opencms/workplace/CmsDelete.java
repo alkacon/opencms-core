@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/02/03 19:46:32 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.42 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.43 $ $Date: 2003/02/03 19:46:32 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -157,8 +157,6 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     template = "update";
                 }
             }
-
-        // TODO: Error handling
         }
 
         // set the required datablocks
