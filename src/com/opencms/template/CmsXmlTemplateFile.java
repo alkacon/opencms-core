@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/05/09 12:28:56 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2001/05/09 12:37:40 $
+* Version: $Revision: 1.38 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.37 $ $Date: 2001/05/09 12:28:56 $
+ * @version $Revision: 1.38 $ $Date: 2001/05/09 12:37:40 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -82,7 +82,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         init(cms, filename);
     }
     public int createNewSection(String sectionName) {
-        int loop = 1;
+        int loop = 2;
         String tempName = sectionName + loop;
         while(hasData("template." + tempName)) {
             tempName = sectionName + (++loop);
