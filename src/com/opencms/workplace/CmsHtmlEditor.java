@@ -6,13 +6,14 @@ import com.opencms.util.*;
 import com.opencms.template.*;
 
 import java.util.*;
+import java.io.*;
 
 /**
  * Template class for displaying the text HTML editor of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/02/01 08:30:31 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/02 10:07:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsHtmlEditor extends CmsWorkplaceDefault {
@@ -32,7 +33,6 @@ public class CmsHtmlEditor extends CmsWorkplaceDefault {
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "****************************************");
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
@@ -41,15 +41,78 @@ public class CmsHtmlEditor extends CmsWorkplaceDefault {
         
         String content = (String)parameters.get("CONTENT");
         String file = (String)parameters.get("file");
-        if(content!=null && (!"".equals(content))) {
-            CmsFile editFile= cms.readFile(file);
-            Encoder encoder = new Encoder();
-            content = encoder.unescape(content);
-            editFile.setContents(content.getBytes());
-            cms.writeFile(editFile);
+        String exit = (String)parameters.get("EXIT");
+        
+        System.err.println("*** Parameter exit: " + exit);
+        
+        boolean existsContentParam = (content!=null && (!"".equals(content)));
+        boolean existsFileParam = (file!=null && (!"".equals(file)));
+        
+        // Check the existance of the "file" parameter
+        if(! existsFileParam) {
+            throwException("No file requested", CmsException.C_BAD_NAME);
         }
         
-        System.err.println("*** WORKPLACE URL: " + workplaceUrl(cms));        
+        // Try to read the file. If it doesn't exist, an exception
+        // will be thrown.
+        CmsFile editFile = cms.readFile(file);
+        CmsFile tempFile = null;
+        String temporaryFileName = editFile.getParent() + C_WP_TEMP_PREFIX + editFile.getName();
+                                
+/*        if(!existsContentParam) {
+            // This should be the first call of this class
+            // since there is no content given back to be saved.
+            // Create temporary file here
+            try {
+                cms.copyFile(file, temporaryFileName);               
+            } catch(CmsException e) {
+                if(e.getType() == CmsException.C_FILE_EXISTS) {
+                    // The temporary file already exists.
+                    // Delete it and try copying again.
+                    try {
+                        cms.deleteFile(temporaryFileName);
+                        cms.copyFile(file, temporaryFileName);
+                    } catch(CmsException e2) {
+                        throwException("Could not create temporary file " + temporaryFileName + ". File already exist.", e2);
+                    }
+                } else {
+                    // This was no FILE EXISTS exception. Cancel editing
+                    throwException("Could not create temporary file " + temporaryFileName + ". ", e);                                    
+                }
+            }
+        } else {            
+            // We got a possibly changed content as parameter.
+            // There must be a temp file. read it and set it's content.
+            // But only, if no cancel was requested!
+            if(exit == null || "save".equals(exit)) {
+                tempFile = cms.readFile(temporaryFileName);
+                Encoder encoder = new Encoder();
+                content = encoder.unescape(content);
+                tempFile.setContents(content.getBytes());
+                cms.writeFile(tempFile);
+            }
+        }*/
+        
+        if(exit != null && ("save".equals(exit) || "cancel".equals(exit))) {
+            // The user requested EXIT
+            // Delete the temporary file and 
+            // get the path of the workplace main screen and send a redirect.
+/*            try {                
+                cms.deleteFile(temporaryFileName);
+            } catch(CmsException e) {
+                // Could not delete temporary file :-(
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Could not remove temporary file " + temporaryFileName + ". ");
+                }
+            }*/
+            try {
+                System.err.println("**** trying to send redirect");
+                cms.getRequestContext().getResponse().sendCmsRedirect(workplaceUrl(cms));
+            } catch(IOException e) {
+                throwException("Could not send redirect to workplace main screen.", e);
+            }
+            return "".getBytes();
+        }
         
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
@@ -58,8 +121,6 @@ public class CmsHtmlEditor extends CmsWorkplaceDefault {
     
     public Object setText(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
-        
-        System.err.println("*** CmsHtmlEditor setText started");
         
         Hashtable parameters = (Hashtable)userObj;
         String filename = (String)parameters.get("file");
