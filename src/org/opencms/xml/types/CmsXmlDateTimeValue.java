@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlDateTimeValue.java,v $
- * Date   : $Date: 2004/08/18 11:52:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/09/27 17:14:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,12 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.page.CmsXmlPage;
 
 import org.dom4j.Element;
 
@@ -42,7 +45,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -135,6 +138,29 @@ public class CmsXmlDateTimeValue extends A_CmsXmlContentValue implements I_CmsXm
         }
     }
 
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, int)
+     */
+    public void appendDefaultXml(Element root, int index) {
+
+        Element sub = root.addElement(getNodeName());
+        
+        if (m_defaultValue != null) {
+            try {
+                I_CmsXmlContentValue value = createValue(sub, getNodeName(), index);
+                int todo = 0;
+                // TODO: check "double null" dilemma here...
+                value.setStringValue(null, null, m_defaultValue);
+            } catch (CmsXmlException e) {
+                // should not happen if default value is correct
+                OpenCms.getLog(this).error("Invalid default value '" + m_defaultValue + "' for XML content", e);
+                sub.clearContent();
+            }
+        } else {
+            sub.setText("0");
+        }
+    }    
+    
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, int)
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/09/27 17:13:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,7 @@
  */
 package org.opencms.xml;
 
-import org.opencms.main.OpenCms;
 import org.opencms.xml.types.CmsXmlLocaleValue;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
@@ -57,7 +55,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -610,20 +608,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         while (i.hasNext()) {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
             for (int j=0; j<type.getMinOccurs(); j++) {
-                Element sub = node.addElement(type.getNodeName());
-                String defaultValue = type.getDefault();
-                if (defaultValue != null) {
-                    try {
-                        I_CmsXmlContentValue value = type.createValue(sub, type.getNodeName(), j);
-                        int todo = 0;
-                        // TODO: check "double null" dilemma here...
-                        value.setStringValue(null, null, defaultValue);
-                    } catch (CmsXmlException e) {
-                        // should not happen if default value is correct
-                        OpenCms.getLog(this).error("Invalid default value '" + defaultValue + "' for XML content", e);
-                        sub.clearContent();
-                    }
-                }
+                type.appendDefaultXml(node, j);
             }
         }
         
