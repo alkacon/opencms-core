@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.7 $ $Date: 2000/01/28 18:46:41 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/09 10:24:34 $
  */
 interface I_CmsRbTask { 	
 
@@ -124,6 +124,8 @@ interface I_CmsRbTask {
 	public A_CmsTask readTask(int id)
 		throws CmsException;
 	
+	// TODO: readTask by name is missing here!
+	
 	
 	//--------------------------------------------
 	// Task lists
@@ -179,6 +181,7 @@ interface I_CmsRbTask {
 	 * 
 	 * @param callingUser The user who wants to use this method.
 	 * @param project The Project in which the tasks are defined or null for all projects..
+	 * // TODO: correct the parameter description
 	 * @param group The group who has to process the task or null for all groups.
 	 * @param orderBy Chooses, how to order the tasks. Valid tasktypes are:
 	 * C_TASKS_NEW, C_TASKS_OPEN, C_TASKS_ACTIVE, C_TASKS_DONE
