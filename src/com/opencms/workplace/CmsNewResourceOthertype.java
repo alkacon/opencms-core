@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
-* Date   : $Date: 2001/03/28 14:28:35 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/04/04 12:10:12 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2001/03/28 14:28:35 $
+ * @version $Revision: 1.24 $ $Date: 2001/04/04 12:10:12 $
  */
 
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -73,14 +73,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        System.err.println("******");
-	Enumeration enu = parameters.keys();
-	while (enu.hasMoreElements()) {
-		String key = (String) enu.nextElement();
-		String values = (String) parameters.get(key);
-		System.err.println(key + " : " + values);
-	}
-	System.err.println("-------");
+
         // the template to be displayed
         String template = null;
         String filename = null;
