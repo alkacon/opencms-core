@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/08/28 13:54:34 $
- * Version: $Revision: 1.9 $
- * Date   : $Date: 2003/08/28 13:54:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/01 13:20:42 $
+ * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/01 13:20:42 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/08/28 13:54:34 $
+ * @version $Revision: 1.10 $ $Date: 2003/09/01 13:20:42 $
  */
 public class CmsSynchronize {
 
@@ -445,6 +445,7 @@ public class CmsSynchronize {
             // create the file
             String filename = translate(fsFile.getName());
             CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder), filename, m_cms.getResourceTypeId(type), null, content);
+     
             // now check if there is some external method to be called which
             // should modify the imported resource in the VFS
             Iterator i = m_synchronizeModifications.iterator();
@@ -460,6 +461,7 @@ public class CmsSynchronize {
             //m_cms.unlockResource(m_cms.readAbsolutePath(newFile), false);
             // we have to read the new resource again, to get the correct
             // timestamp.
+            m_cms.touch(m_cms.readAbsolutePath(newFile), fsFile.lastModified(), false);
             CmsResource newRes = m_cms.readFileHeader(m_cms.readAbsolutePath(newFile));
             // m_cms.add resource to synchronisation list
             CmsSynchronizeList syncList = new CmsSynchronizeList(resName, translate(resName), newRes.getDateLastModified(), fsFile.lastModified());
@@ -591,7 +593,9 @@ public class CmsSynchronize {
             // everything is done now, so unlock the resource
             //m_cms.unlockResource(resourcename, false);
             //read the resource again, nescessary to get the actual timestamps
+            m_cms.touch(resourcename, fsFile.lastModified(), false);            
             res = m_cms.readFileHeader(resourcename);
+            
             //add resource to synchronisation list
             CmsSynchronizeList syncList = new CmsSynchronizeList(sync.getResName(), translate(resourcename), res.getDateLastModified(), fsFile.lastModified());
             m_newSyncList.put(translate(resourcename), syncList);
