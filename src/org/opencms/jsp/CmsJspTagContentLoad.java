@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2004/11/17 12:16:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/25 15:13:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
@@ -203,7 +203,6 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         // construct the parameters from the "property" and the "param" tag
         String param = getProperty();
-        String createParam;
         if (CmsStringUtil.isNotEmpty(param)) {
             
             // read the selected property value
@@ -221,11 +220,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
                 // property and param not empty, concat "property" and "param" tag
                 param = param.concat(getParam());
             }
-            createParam = param;
         } else {
             // resolve magic parameter name
             param = resolveMagicName(getParam());
-            createParam = getParam();
         }
         
         // now collect the resources
@@ -238,7 +235,8 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
                 // the collector returned an empty list, there's no content to iterate
                 return SKIP_BODY;
             }
-            if (collector.getCreateLink(m_cms, collectorName, param) != null) {
+            String createParam = collector.getCreateParam(m_cms, collectorName, param);
+            if (createParam != null) {
                 // use "create link" only if collector supports it
                 m_directEditCreateLink = CmsEncoder.encode(collectorName + "|" + createParam);
             }

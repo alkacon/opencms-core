@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceCollector.java,v $
- * Date   : $Date: 2004/10/19 18:05:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/25 15:13:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.file;
 
 import org.opencms.main.CmsException;
@@ -39,15 +40,26 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.2
  */
 public interface I_CmsResourceCollector extends Comparable {
-    
+
+    /**
+     * Returns a list of all collector names (Strings) this collector implementation supports.<p>
+     * 
+     * @return a list of all collector names this collector implementation supports
+     */
+    List getCollectorNames();
+
     /**
      * Returns the link that must be executed when a user clicks on the direct edit
      * "new" button on a list created by the named collector.<p> 
      * 
+     * If this method returns <code>null</code>, 
+     * it indicated that the selected collector implementation does not support a "create link",
+     * and so no "new" button will should shown on lists generated with this collector.<p>
+     *  
      * @param cms the current CmsObject 
      * @param collectorName the name of the collector to use
      * @param param an optional collector parameter
@@ -55,9 +67,42 @@ public interface I_CmsResourceCollector extends Comparable {
      * @return the link to execute after a "new" button was clicked
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @see #getCreateParam(CmsObject, String, String)
      */
-    String getCreateLink(CmsObject cms, String collectorName, String param) throws CmsException; 
-    
+    String getCreateLink(CmsObject cms, String collectorName, String param) throws CmsException;
+
+    /**
+     * Returns the parameter that must be passed to the 
+     * {@link #getCreateLink(CmsObject, String, String)} method.<p> 
+     * 
+     * If this method returns <code>null</code>, 
+     * it indicates that the selected collector implementation does not support a "create link",
+     * and so no "new" button will should shown on lists generated with this collector.<p>
+     * 
+     * @param cms the current CmsObject 
+     * @param collectorName the name of the collector to use
+     * @param param an optional collector parameter from the current page context
+     * 
+     * @return the parameter that will be passed to the {@link #getCreateLink(CmsObject, String, String)} method, or null
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #getCreateLink(CmsObject, String, String)
+     */
+    String getCreateParam(CmsObject cms, String collectorName, String param) throws CmsException;
+
+    /**
+     * Returns the "order weight" of this collector.<p>
+     * 
+     * The "order weight" is important because two collector classes may provide a collector with 
+     * the same name. If this is the case, the collector implementation with the higher 
+     * order number "overrules" the lower order number classs.<p>
+     * 
+     * @return the "order weight" of this collector
+     */
+    int getOrder();
+
     /** 
      * Returns a list of {@link CmsResource} Objects that are 
      * gathered in the VFS using the named collector.<p>
@@ -70,26 +115,8 @@ public interface I_CmsResourceCollector extends Comparable {
      * 
      * @throws CmsException if something goes wrong
      */
-    List getResults(CmsObject cms, String collectorName, String param) throws CmsException; 
-    
-    /**
-     * Returns a list of all collector names (Strings) this collector implementation supports.<p>
-     * 
-     * @return a list of all collector names this collector implementation supports
-     */
-    List getCollectorNames();
-    
-    /**
-     * Returns the "order weight" of this collector.<p>
-     * 
-     * The "order weight" is important because two collector classes may provide a collector with 
-     * the same name. If this is the case, the collector implementation with the higher 
-     * order number "overrules" the lower order number classs.<p>
-     * 
-     * @return the "order weight" of this collector
-     */
-    int getOrder();      
-    
+    List getResults(CmsObject cms, String collectorName, String param) throws CmsException;
+
     /**
      * Sets the "order weight" of this collector.<p>
      * 

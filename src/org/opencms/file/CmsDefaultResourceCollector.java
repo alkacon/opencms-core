@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2004/10/26 16:33:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/25 15:13:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.2
  */
 public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
@@ -139,6 +139,14 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     private static final List m_collectors = Collections.unmodifiableList(Arrays.asList(m_collectorNames));
 
     /**
+     * @see org.opencms.file.I_CmsResourceCollector#getCollectorNames()
+     */
+    public List getCollectorNames() {
+
+        return m_collectors;
+    }
+
+    /**
      * @see org.opencms.file.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public String getCreateLink(CmsObject cms, String collectorName, String param) throws CmsException {
@@ -170,11 +178,34 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceCollector#getCollectorNames()
+     * @see org.opencms.file.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List getCollectorNames() {
+    public String getCreateParam(CmsObject cms, String collectorName, String param) throws CmsException {
 
-        return m_collectors;
+        // if action is not set, use default action
+        if (collectorName == null) {
+            collectorName = m_collectorNames[0];
+        }
+
+        switch (m_collectors.indexOf(collectorName)) {
+            case 0:
+                // "singleFile"
+                return null;
+            case 1:
+                // "allInFolder"
+                return param;
+            case 2:
+                // "allInFolderDateReleasedDesc"
+                return param;
+            case 3:
+                // "allInSubTree"
+                return null;
+            case 4:
+                // "allInSubTreeDateReleasedDesc"
+                return null;
+            default:
+                throw new CmsException("Invalid resource collector selected: " + collectorName);
+        }
     }
 
     /**
@@ -230,13 +261,12 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         List result = cms.readResources(foldername, filter, tree);
 
         Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
-        Collections.reverse(result);
-        
+
         if ((data.getCount() > 0) && (result.size() > data.getCount())) {
             // cut off all items > count
             result = result.subList(0, data.getCount());
-        }        
-        
+        }
+
         return result;
     }
 
@@ -261,7 +291,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         Collections.sort(result, CmsResource.COMPARE_ROOT_PATH);
         Collections.reverse(result);
-        
+
         if ((data.getCount() > 0) && (result.size() > data.getCount())) {
             // cut off all items > count
             result = result.subList(0, data.getCount());
@@ -288,7 +318,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         // must check ALL resources in folder because name dosen't care for type
         List resources = cms.readResources(foldername, CmsResourceFilter.ALL, false);
-        
+
         // now create a list of all resources that just contains the file names
         List result = new ArrayList(resources.size());
         for (int i = 0; i < resources.size(); i++) {
