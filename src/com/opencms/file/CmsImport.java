@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2003/03/04 08:37:11 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.81 $ $Date: 2003/03/02 18:43:54 $
+ * @version $Revision: 1.82 $ $Date: 2003/03/04 08:37:11 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -540,13 +540,15 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, 
     String propertyName, String propertyValue) throws CmsException {
         NodeList fileNodes, propertyNodes;
-        Element currentElement, currentProperty;               
+        Element currentElement, currentProperty;
         String source, destination, type, user, group, access, launcherStartClass, dummy;
         long lastmodified = 0;
         Map properties;
         
         Vector types = new Vector(); // stores the file types for which the property already exists
-        if (excludeList == null) excludeList = new Vector();
+        if (excludeList == null) {
+            excludeList = new Vector();
+        }
         
         m_webAppNames = (List)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
         if (m_webAppNames == null)
@@ -932,7 +934,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             fileContent = scanFrameTemplate(fileContent);
         }
         // translate OpenCms 4.x paths to the new directory structure 
-        fileContent = setDirectories(fileContent);
+        fileContent = setDirectories(fileContent, m_cms.getRequestContext().getDirectoryTranslator().getTranslations());
         // scan content/bodys
         if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1
             || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
@@ -1026,9 +1028,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param type the file type
      * @return String the manipulated file content
      */
-    private String setDirectories(String content) {
+    public static String setDirectories(String content, String[] rules) {
         // get translation rules
-        String[] rules = m_cms.getRequestContext().getDirectoryTranslator().getTranslations();
         String root = I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS;   
         for (int i=0; i<rules.length; i++) {
             String actRule = rules[i];
@@ -1040,7 +1041,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             String search = ruleT.nextToken();
             search = search.substring(0, search.lastIndexOf("(.*)"));
             String replace = ruleT.nextToken();
-            replace = replace.substring(0,replace.lastIndexOf("$1"));
+            replace = replace.substring(0, replace.lastIndexOf("$1"));
             // scan content for paths if the replace String is not present
             if (content.indexOf(replace) == -1 && content.indexOf(search) != -1) {
                 // ensure subdirectories of the same name are not replaced
