@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/11/20 14:58:51 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/11/22 17:09:47 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.21 $ $Date: 2000/11/20 14:58:51 $
+ * @version $Revision: 1.22 $ $Date: 2000/11/22 17:09:47 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -1562,7 +1562,12 @@ public void lockedBy(String resource) {
  */
 public void lockResource(String resource, String force) {
 	try {
-		m_cms.lockResource(resource, Boolean.getBoolean(force));
+		//m_cms.lockResource(resource, Boolean.getBoolean(force));
+		if (force.toLowerCase().equals("true")){
+			m_cms.lockResource(resource, true);
+		} else {
+			m_cms.lockResource(resource, false);
+		}		
 	} catch (Exception exc) {
 		CmsShell.printException(exc);
 	}
