@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/13 19:48:07 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2000/04/13 21:30:48 $
+ * Version: $Revision: 1.66 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.65 $ $Date: 2000/04/13 19:48:07 $ 
+ * @version $Revision: 1.66 $ $Date: 2000/04/13 21:30:48 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -361,7 +361,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public CmsFile createFile(String folder, String filename, 
 							  byte[] contents, String type)
 		throws CmsException { 
-		return( c_rb.createFile(m_context.currentUser(), 
+		return( c_rb.createFile(m_context.currentUser(), m_context.currentGroup(),
 								m_context.currentProject(), 
 								folder, filename, contents, type, 
 								new Hashtable() ) );
@@ -394,7 +394,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public CmsFile createFile(String folder, String filename, byte[] contents, String type, 
 							  Hashtable properties)
 		throws CmsException { 
-		return( c_rb.createFile(m_context.currentUser(), 
+		return( c_rb.createFile(m_context.currentUser(), m_context.currentGroup(), 
 								m_context.currentProject(), 
 								folder, filename, contents, type, 
 								properties ) );
@@ -607,7 +607,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public CmsFolder createFolder(String folder, String newFolderName)
 		throws CmsException { 
-		return( c_rb.createFolder(m_context.currentUser(), 
+		return( c_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), 
 								  m_context.currentProject(), folder, 
 								  newFolderName, new Hashtable() ) );
 	}
@@ -634,7 +634,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public CmsFolder createFolder(String folder, String newFolderName, 
 								  Hashtable properties)
 		throws CmsException { 
-		return( c_rb.createFolder(m_context.currentUser(), 
+		return( c_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), 
 								  m_context.currentProject(), folder, 
 								  newFolderName, properties ) );
 	}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2000/04/13 21:31:01 $
+ * Version: $Revision: 1.60 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.59 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.60 $ $Date: 2000/04/13 21:31:01 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -1375,6 +1375,7 @@ interface I_CmsResourceBroker {
 	 * </ul>
 	 * 
 	 * @param currentUser The user who requested this method.
+	 * @param currentGroup The group who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param folder The complete path to the folder in which the new folder will 
 	 * be created.
@@ -1389,7 +1390,8 @@ interface I_CmsResourceBroker {
 	 * or if the filename is not valid. The CmsException will also be thrown, if the 
 	 * user has not the rights for this resource.
 	 */
-	public CmsFolder createFolder(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public CmsFolder createFolder(A_CmsUser currentUser, A_CmsGroup currentGroup, 
+                                  A_CmsProject currentProject, 
 								  String folder, String newFolderName, 
 								  Hashtable propertyinfos)
 		throws CmsException;
@@ -1593,8 +1595,9 @@ interface I_CmsResourceBroker {
 	 * <li>the file dosn't exists</li>
 	 * </ul>
 	 * 
-	 * @param user The user who own this file.
-	 * @param project The project in which the resource will be used.
+	 * @param currentUser The user who owns this file.
+	 * @param currentGroup The group who owns this file.
+	 * @param currentProject The project in which the resource will be used.
 	 * @param folder The complete path to the folder in which the new folder will 
 	 * be created.
 	 * @param file The name of the new file (No pathinformation allowed).
@@ -1607,7 +1610,7 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFile createFile(A_CmsUser currentUser,
+	 public CmsFile createFile(A_CmsUser currentUser, A_CmsGroup currentGroup, 
                                A_CmsProject currentProject, String folder,
                                String filename, byte[] contents, String type,
 							   Hashtable propertyinfos) 

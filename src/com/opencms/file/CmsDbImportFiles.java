@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/04/03 10:48:29 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/13 21:30:42 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.15 $ $Date: 2000/04/03 10:48:29 $
+ * @version $Revision: 1.16 $ $Date: 2000/04/13 21:30:42 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -195,7 +195,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 				if( !(m_fName.equals("")) ) {
                     System.out.print("Importing: " + m_fName);
 				    System.out.flush();
-					CmsFolder newFolder = m_RB.createFolder(m_user,m_project,m_importPath, m_fName, h_fProperty);
+					CmsFolder newFolder = m_RB.createFolder(m_user,null,m_project,m_importPath, m_fName, h_fProperty);
 					m_RB.lockResource(m_user, m_project,newFolder.getAbsolutePath(),true);
 					m_RB.chown(m_user, m_project, newFolder.getAbsolutePath(), m_fUser);
 					m_RB.chgrp(m_user, m_project, newFolder.getAbsolutePath(), m_fGroup);
@@ -220,7 +220,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 			try {
 				System.out.print("Importing: " + m_fName);
 				System.out.flush();
-				CmsFile newFile = m_RB.createFile(m_user, m_project, picimportPath ,m_fName, fContent, m_fTypename, h_fProperty);
+				CmsFile newFile = m_RB.createFile(m_user, null, m_project, picimportPath ,m_fName, fContent, m_fTypename, h_fProperty);
 				m_RB.lockResource(m_user,m_project,newFile.getAbsolutePath(), true);
 				m_RB.chown(m_user, m_project, newFile.getAbsolutePath(), m_fUser);
 				m_RB.chgrp(m_user, m_project, newFile.getAbsolutePath(), m_fGroup);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/13 20:58:21 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2000/04/13 21:30:53 $
+ * Version: $Revision: 1.104 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.103 $ $Date: 2000/04/13 20:58:21 $
+ * @version $Revision: 1.104 $ $Date: 2000/04/13 21:30:53 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2683,6 +2683,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * </ul>
 	 * 
 	 * @param currentUser The user who requested this method.
+	 * @param currentGroup The group who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param folder The complete path to the folder in which the new folder will 
 	 * be created.
@@ -2697,7 +2698,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * or if the filename is not valid. The CmsException will also be thrown, if the 
 	 * user has not the rights for this resource.
 	 */
-	public CmsFolder createFolder(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public CmsFolder createFolder(A_CmsUser currentUser, A_CmsGroup currentGroup, 
+                                  A_CmsProject currentProject, 
 								  String folder, String newFolderName, 
 								  Hashtable metainfos)
 		throws CmsException {
@@ -2720,7 +2722,23 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 														folder + newFolderName + 
 														C_FOLDER_SEPERATOR,
 														0);
-			// write metainfos for the folder
+
+            // update the access flags
+            Hashtable startSettings=null;
+            Integer accessFlags=null;
+            startSettings=(Hashtable)currentUser.getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+            if (startSettings != null) {
+                accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+                if (accessFlags != null) {
+                    newFolder.setAccessFlags(accessFlags.intValue());
+                }
+            }
+            if(currentGroup != null) {
+                newFolder.setGroupId(currentGroup.getId());
+            }
+            m_fileRb.writeFolder(currentProject, newFolder, false);
+                                        
+            // write metainfos for the folder
          
 			m_metadefRb.writeMetainformations((A_CmsResource) newFolder, metainfos);
 			// inform about the file-system-change
@@ -3140,8 +3158,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * <li>the file dosn't exists</li>
 	 * </ul>
 	 * 
-	 * @param user The user who own this file.
-	 * @param project The project in which the resource will be used.
+	 * @param currentUser The user who owns this file.
+	 * @param currentGroup The group who owns this file.
+	 * @param currentProject The project in which the resource will be used.
 	 * @param folder The complete path to the folder in which the new folder will 
 	 * be created.
 	 * @param file The name of the new file (No pathinformation allowed).
@@ -3154,7 +3173,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFile createFile(A_CmsUser currentUser,
+	 public CmsFile createFile(A_CmsUser currentUser, A_CmsGroup currentGroup, 
                                A_CmsProject currentProject, String folder,
                                String filename, byte[] contents, String type,
 							   Hashtable metainfos) 
@@ -3202,10 +3221,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
                 if (accessFlags != null) {
                     file.setAccessFlags(accessFlags.intValue());
-                    m_fileRb.writeFileHeader(currentProject,onlineProject(currentUser,currentProject),
-                                             file,false);
                 }
             }
+            if(currentGroup != null) {                
+                file.setGroupId(currentGroup.getId());
+            }
+            m_fileRb.writeFileHeader(currentProject,onlineProject(currentUser,currentProject),
+                                     file,false);
                 
                 
             
