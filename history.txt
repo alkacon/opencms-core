@@ -12,7 +12,7 @@ OpenCms 4.5.31 Chusuk       - xx December 2001
 ! Modification on Explorer-View for "Gecko" support. The "Gecko-Support" is not finished yet.
 ! New property exportname used for the static export. While exporting the name is replaced
   by the value of this property if existent.
-! New property dynamic used for the static export. Resources with the propertyvalue true or https are
+! New property export used for the static export. Resources with the propertyvalue dynamic, false or https are
   not exported and the exported resources link to them to the OpenCms system. For the https the Protocol
   is changed to https and back.
 ! Added administration item to view the actual tail of the opencms logfile.
