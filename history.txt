@@ -9,6 +9,12 @@ Legend:
 - General comment
 
 OpenCms 4.7.4 Ecaz - ?? April 2002
+! A new property (pool.mysql.testQuery) for the OpenCms SQL Connection pool:
+  The following is an example property - it can be used for all pools. It defines
+  an testQuery that should be executed before the pool returns an connection. If
+  there was an SQLException the connection will be destroyed and a new will be created.
+  If the property is not set no test will be performed.
+  pool.mysql.testQuery = select count(*) from CMS_USERS
 - Now the image list generates image urls without any server information. E.g:
   old urls: http://www.myserver.com:8080/opencms/opencms/pics/mygallery/mypic.gif
   new urls: /opencms/opencms/pics/mygallery/mypic.gif

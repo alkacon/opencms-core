@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsDriver.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/04/09 14:39:59 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -207,10 +207,11 @@ public class CmsDriver implements java.sql.Driver {
         int increaseRate = c_config.getInteger("pool." + poolName + ".increaseRate", 1);
         int timeout = c_config.getInteger("pool." + poolName + ".timeout", 120);
                 int maxage = c_config.getInteger("pool." + poolName + ".maxage", 360);
+        String conTestQuery = c_config.getString("pool." + poolName + ".testQuery", null);
 
         // create the pool and return it
         return new CmsPool(poolName, driver, url, user, password, minConn,
-                        maxConn, increaseRate, timeout, maxage);
+                        maxConn, increaseRate, timeout, maxage, conTestQuery);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
-* Date   : $Date: 2002/04/05 12:34:50 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/04/09 14:39:59 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ public class CmsPool extends Thread {
     private String m_url;
     private String m_user;
     private String m_password;
+    private String m_conTestQuery = null;
     private int m_minConn;
     private int m_maxConn;
     private int m_increaseRate;
@@ -117,6 +118,30 @@ public class CmsPool extends Thread {
         }
     }
 
+    /**
+     * Creates a new Pool.
+     * @param poolname - the name of this pool.
+     * @param driver - the classname of the driver.
+     * @param url - the url to connect to the database.
+     * @param user - the user to access the db.
+     * @param password - the password to connect to the db.
+     * @param minConn - the minimum amount Connections maintained in the pool.
+     * @param maxConn - the maximum amount Connections maintained in the pool.
+     * @param increaseRate - the rate to increase the the amount of
+     * connections in the pool.
+     * @param timeout - the timout after a unused connection has to be closed.
+     * @param conTestQuery - the test query to test a connection before
+     * delivering. If this is set to null, no test will be performed.
+     * @exception SQLException - if a SQL-Error occurs.
+     */
+    public CmsPool(String poolname, String driver, String url, String user,
+                String password, int minConn, int maxConn, int increasRate,
+                int timeout, int maxage, String conTestQuery)
+        throws SQLException {
+        this(poolname, driver, url, user, password, minConn, maxConn,
+            increasRate, timeout, maxage);
+        m_conTestQuery = conTestQuery;
+    }
     /**
      * The run-method for the connection-guard
      */
@@ -203,12 +228,27 @@ public class CmsPool extends Thread {
             }
         }
         // done it - we have a connection
-        /* if(testConnection(con)) {
+        if(testConnection(con)) {
             return con;
         } else {
+            synchronized(m_availableConnections) {
+                // the connection is invalid - destroy it
+                ((CmsConnection)con).closeOriginalConnection();
+                m_connectionAmount --;
+
+                // create a new one
+                try {
+                    createConnections(1);
+                    m_availableConnections.notify();
+                } catch(SQLException exc) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": unable to create new connection for broken one");
+                    }
+                }
+            }
+            // now return a new one
             return getConnection();
-        } */
-        return con;
+        }
     }
 
     /**
@@ -328,12 +368,26 @@ public class CmsPool extends Thread {
         }
     }
 
+    /**
+     * Test the connection by executing an select statement. This is done
+     * only if the statement is defined in opencms.properties. Normally there
+     * is no need for this testing - but in difficult environments (like firewalls)
+     * you can use it to find out whats going wrong.
+     * @param con The connection to test.
+     * @returns true if the connection could be tested without an SQLException.
+     * Returns true if there is no test-statement defined in opencms.properties.
+     * Returns false if there was an SQLException by executing the statement.
+     */
     protected boolean testConnection(java.sql.Connection con) {
+        if((m_conTestQuery == null) || (m_conTestQuery == "")) {
+            // no test should be performed - return true - con ok!
+            return true;
+        }
         ResultSet res = null;
         PreparedStatement stmnt = null;
         boolean retValue = true;
         try {
-            stmnt = con.prepareStatement("select count(*) from CMS_USERS");
+            stmnt = con.prepareStatement(m_conTestQuery);
             res = stmnt.executeQuery();
             res.next();
         } catch(SQLException exc) {
