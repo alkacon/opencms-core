@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2003/07/16 18:08:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/17 15:30:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class CmsSite implements Cloneable {   
@@ -173,6 +173,17 @@ public class CmsSite implements Cloneable {
      * @return a list of all site available for the current user
      */
     public static List getAvailableSites(CmsObject cms) {
+        return getAvailableSites(cms, true);    
+    }
+    
+    /**
+     * Returns a list of all site available for the current user.<p>
+     * 
+     * @param cms the current cms context 
+     * @param includeRoot if true, the root and current site is included for the admin user
+     * @return a list of all site available for the current user
+     */
+    public static List getAvailableSites(CmsObject cms, boolean includeRoot) {
         List result = new ArrayList();
         List resources;
         try {
@@ -189,7 +200,7 @@ public class CmsSite implements Cloneable {
         try {
             // for all operations here we need no context
             cms.getRequestContext().setSiteRoot("/");
-            if (cms.getRequestContext().isAdmin()) {
+            if (cms.getRequestContext().isAdmin() && includeRoot) {
                 CmsResource res = cms.readFileHeader("/");                
                 result.add(new CmsSite("/", res.getId(), "/ (root site)", "*"));
                 if (! "".equals(currentRoot)) {
