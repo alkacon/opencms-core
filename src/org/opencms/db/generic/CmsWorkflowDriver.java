@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/08/18 19:19:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsWorkflowDriver;
 import org.opencms.main.OpenCms;
 
@@ -51,6 +52,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -59,10 +61,10 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/08/18 19:19:23 $
+ * @version $Revision: 1.7 $ $Date: 2003/08/19 16:04:17 $
  * @since 5.1
  */
-public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
+public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
 
     /**
      * Table-key for max-id
@@ -329,7 +331,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
 
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#init(source.org.apache.java.util.Configurations, java.lang.String, org.opencms.db.CmsDriverManager)
-     */
+     *//*
     public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) {
         m_sqlManager = this.initQueries(dbPoolUrl);
         m_driverManager = driverManager;
@@ -337,8 +339,26 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Workflow driver init : ok");
         }        
-    }
+    }*/
 
+    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
+
+        String poolUrl = config.getString("db.workflow.pool");
+
+        m_sqlManager = this.initQueries(poolUrl);
+        m_driverManager = driverManager;
+
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + poolUrl);
+        }
+                
+        if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, this.getClass().toString() + " does not support successive drivers.");
+            }
+        }
+    }
+           
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#initQueries(java.lang.String)
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/19 14:38:07 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
@@ -73,12 +74,12 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.57 $ $Date: 2003/08/19 14:38:07 $
+ * @version $Revision: 1.58 $ $Date: 2003/08/19 16:04:17 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
-public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
+public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Constant to get property from configurations.
@@ -1002,7 +1003,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
     /**
 	 * @see org.opencms.db.I_CmsProjectDriver#init(source.org.apache.java.util.Configurations, java.lang.String, org.opencms.db.CmsDriverManager)
-	 */
+	 *//*
     public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException {
         m_sqlManager = this.initQueries(dbPoolUrl);      
         m_driverManager = driverManager;  
@@ -1010,7 +1011,25 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Project driver init  : ok");
         }
-    }
+    }*/
+    
+    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
+
+        String poolUrl = config.getString("db.project.pool");
+
+        m_sqlManager = this.initQueries(poolUrl);      
+        m_driverManager = driverManager;  
+
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + poolUrl);
+        }
+                
+        if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, this.getClass().toString() + " does not support successive drivers.");
+            }
+        }
+    }    
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#initQueries(java.lang.String)

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/19 07:44:51 $
-* Version: $Revision: 1.263 $
+* Date   : $Date: 2003/08/19 16:04:17 $
+* Version: $Revision: 1.264 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.263 $ $Date: 2003/08/19 07:44:51 $
+ * @version $Revision: 1.264 $ $Date: 2003/08/19 16:04:17 $
  */
 public interface I_CmsConstants {
 
@@ -995,6 +995,31 @@ public interface I_CmsConstants {
      */
     String C_CONFIGURATION_DB = "db";
 
+    /**
+     * 
+     */
+    String C_CONFIGURATION_VFS = "driver.vfs";
+    
+    /**
+     * 
+     */
+    String C_CONFIGURATION_PROJECT = "driver.project";
+    
+    /**
+     * 
+     */
+    String C_CONFIGURATION_USER = "driver.user";
+    
+    /**
+     * 
+     */
+    String C_CONFIGURATION_WORKFLOW = "driver.workflow";
+    
+    /**
+     * 
+     */
+    String C_CONFIGURATION_BACKUP = "driver.backup";
+    
     /**
      * A string in the configuration-file.
      */

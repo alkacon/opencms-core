@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/16 13:45:49 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/07/16 13:45:49 $
+ * @version $Revision: 1.8 $ $Date: 2003/08/19 16:04:17 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -102,7 +102,7 @@ public interface I_CmsBackupDriver {
      * @param dbPoolUrl the URL of the JDBC connection pool
      * @param driverManager the Cms driver manager
      */
-    void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
+    //void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
 
     /**
      * Initializes the SQL manager for this package.<p>

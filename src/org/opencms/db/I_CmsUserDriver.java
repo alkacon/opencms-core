@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/13 14:05:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/08/13 14:05:54 $
+ * @version $Revision: 1.10 $ $Date: 2003/08/19 16:04:17 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -261,7 +261,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param driverManager the driver manager object
      * @throws CmsException if operation was not successful
      */
-    void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException;
+    // void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException;
     
     /**
      * Initializes the SQL manager for this package.<p>

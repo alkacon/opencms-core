@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsDriver.java,v $
- * Date   : $Date: 2003/08/13 14:05:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,24 @@
  
 package org.opencms.db;
 
+import java.util.List;
+
+import source.org.apache.java.util.Configurations;
+
 /**
- * @version $Revision: 1.1 $ $Date: 2003/08/13 14:05:54 $
+ * @version $Revision: 1.2 $ $Date: 2003/08/19 16:04:17 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsDriver {
 
+    /**
+     * Initializes the driver.<p>
+     * 
+     * @param config hte configuration to read
+     * @param successiveDrivers a list of successive drivers to initialize
+     * @param driverManager backlink to the driver manager
+     */
+    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager);
     
     /**
      * Returns information about the driver.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/08/12 10:07:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required workflow driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/08/12 10:07:45 $
+ * @version $Revision: 1.3 $ $Date: 2003/08/19 16:04:17 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
@@ -118,7 +118,7 @@ public interface I_CmsWorkflowDriver {
      * @param dbPoolUrl the url of the connection pool to use
      * @param driverManager the driver manager
      */
-    void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
+    // void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
     
     /**
      * Initializes the SQL manager for this package.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/18 19:19:23 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsBackupDriver;
+import org.opencms.db.I_CmsDriver;
 import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -65,10 +66,10 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.28 $ $Date: 2003/08/18 19:19:23 $
+ * @version $Revision: 1.29 $ $Date: 2003/08/19 16:04:17 $
  * @since 5.1
  */
-public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
+public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
 
     /** The driver manager instance. */
     protected CmsDriverManager m_driverManager;
@@ -233,7 +234,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
 
     /**
      * @see org.opencms.db.I_CmsBackupDriver#init(source.org.apache.java.util.Configurations, java.lang.String, org.opencms.db.CmsDriverManager)
-     */
+     *//*
     public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) {
         m_sqlManager = this.initQueries(dbPoolUrl);
         m_driverManager = driverManager;
@@ -244,7 +245,28 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". max. backup/resource : " + m_maxResourceVersionCount);
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Backup driver init   : ok");
         }
-    }
+    }*/
+
+    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
+
+        String poolUrl = config.getString("db.backup.pool");
+
+        m_sqlManager = this.initQueries(poolUrl);
+        m_driverManager = driverManager;
+                
+        m_maxResourceVersionCount = config.getInteger(I_CmsConstants.C_CONFIGURATION_HISTORY + ".maxCountPerResource", 10);
+
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + poolUrl);
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". max. backup/resource : " + m_maxResourceVersionCount);
+        }
+        
+        if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, this.getClass().toString() + " does not support successive drivers.");
+            }
+        }
+    }                
 
     /**
      * @see org.opencms.db.I_CmsBackupDriver#initQueries(java.lang.String)

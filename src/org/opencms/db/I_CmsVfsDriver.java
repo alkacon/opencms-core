@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/19 14:38:07 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.36 $ $Date: 2003/08/19 14:38:07 $
+ * @version $Revision: 1.37 $ $Date: 2003/08/19 16:04:17 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -220,7 +220,7 @@ public interface I_CmsVfsDriver {
      * @param dbPoolUrl the URL of the JDBC connection pool
      * @param driverManager the Cms driver manager
      */
-    void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
+    //void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
     
     /**
      * Initializes the SQL manager for this package.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/19 15:56:57 $
- * Version: $Revision: 1.169 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.170 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.169 $ $Date: 2003/08/19 15:56:57 $
+ * @version $Revision: 1.170 $ $Date: 2003/08/19 16:04:17 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -284,8 +284,8 @@ public class CmsDriverManager extends Object {
      */
     public static final CmsDriverManager newInstance(Configurations configurations) throws CmsException {
         
+        List drivers = null;
         String driverName = null;
-        String driverPoolUrl = null;
 
         I_CmsVfsDriver vfsDriver = null;
         I_CmsUserDriver userDriver = null;
@@ -334,29 +334,34 @@ public class CmsDriverManager extends Object {
         }                
 
         // read the vfs driver class properties and initialize a new instance 
-        driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".vfs.driver");
-        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".vfs.pool");
-        vfsDriver = (I_CmsVfsDriver) driverManager.newDriverInstance(configurations, driverName, driverPoolUrl);
+        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_VFS));
+        driverName = configurations.getString((String)drivers.get(0) + ".vfs.driver");
+        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null; 
+        vfsDriver = (I_CmsVfsDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
 
         // read the user driver class properties and initialize a new instance 
-        driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.driver");
-        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.pool");
-        userDriver = (I_CmsUserDriver) driverManager.newDriverInstance(configurations, driverName, driverPoolUrl);
+        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_USER));
+        driverName = configurations.getString((String)drivers.get(0) + ".user.driver");
+        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+        userDriver = (I_CmsUserDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
 
-        // read the project driver class properties and initialize a new instance 
-        driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".project.driver");
-        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".project.pool");
-        projectDriver = (I_CmsProjectDriver) driverManager.newDriverInstance(configurations, driverName, driverPoolUrl);
+        // read the project driver class properties and initialize a new instance
+        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_PROJECT));
+        driverName = configurations.getString((String)drivers.get(0) + ".project.driver");
+        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+        projectDriver = (I_CmsProjectDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
 
-        // read the workflow driver class properties and initialize a new instance 
-        driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".workflow.driver");
-        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".workflow.pool");
-        workflowDriver = (I_CmsWorkflowDriver) driverManager.newDriverInstance(configurations, driverName, driverPoolUrl);
+        // read the workflow driver class properties and initialize a new instance
+        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_WORKFLOW)); 
+        driverName = configurations.getString((String)drivers.get(0) + ".workflow.driver");
+        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+        workflowDriver = (I_CmsWorkflowDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
 
-        // read the backup driver class properties and initialize a new instance 
-        driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".backup.driver");
-        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".backup.pool");
-        backupDriver = (I_CmsBackupDriver) driverManager.newDriverInstance(configurations, driverName, driverPoolUrl);
+        // read the backup driver class properties and initialize a new instance
+        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_BACKUP));
+        driverName = configurations.getString((String)drivers.get(0) + ".backup.driver");
+        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+        backupDriver = (I_CmsBackupDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
 
         try {
             // invoke the init method of the driver manager
@@ -377,9 +382,9 @@ public class CmsDriverManager extends Object {
 
         // set the pool for the COS
         // TODO: check if there is a better place for this
-        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".cos.pool");
-        OpenCms.setRuntimeProperty("cosPoolUrl", driverPoolUrl);
-        CmsIdGenerator.setDefaultPool(driverPoolUrl);
+        String cosPoolUrl = configurations.getString("db.cos.pool");
+        OpenCms.setRuntimeProperty("cosPoolUrl", cosPoolUrl);
+        CmsIdGenerator.setDefaultPool(cosPoolUrl);
                 
         // return the configured driver manager
         return driverManager;
@@ -4794,6 +4799,46 @@ public class CmsDriverManager extends Object {
         }
 
         return driver;
+    }
+    
+    public Object newDriverInstance(Configurations configurations, String driverName, List successiveDrivers) throws CmsException {
+        
+        Class initParamClasses[] = { Configurations.class, List.class, CmsDriverManager.class };
+        Object initParams[] = { configurations, successiveDrivers, this };
+
+        Class driverClass = null;
+        Object driver = null;
+
+        try {
+            // try to get the class
+            driverClass = Class.forName(driverName);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName);
+            }
+
+            // try to create a instance
+            driver = driverClass.newInstance();
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName);
+            }
+
+            // invoke the init-method of this access class
+            driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : ok, finished");
+            }
+
+        } catch (Exception exc) {
+            String message = "Critical error while initializing " + driverName;
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
+            }
+
+            exc.printStackTrace(System.err);
+            throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
+        }
+
+        return driver;        
     }
 
     /**

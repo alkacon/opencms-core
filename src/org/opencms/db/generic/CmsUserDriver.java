@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
@@ -60,6 +61,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -67,12 +69,12 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.15 $ $Date: 2003/08/14 15:37:25 $
+ * @version $Revision: 1.16 $ $Date: 2003/08/19 16:04:17 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
-public class CmsUserDriver extends Object implements I_CmsUserDriver {
+public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDriver {
 
     /**
      * A digest to encrypt the passwords.
@@ -869,7 +871,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#init(source.org.apache.java.util.Configurations, java.lang.String, org.opencms.db.CmsDriverManager)
-     */
+     *//*
     public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) {
         m_sqlManager = this.initQueries(dbPoolUrl);        
         m_driverManager = driverManager;
@@ -899,8 +901,48 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". User driver init     : ok");
         }
-    }
+    }*/
 
+    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
+
+        String poolUrl = config.getString("db.user.pool");
+
+        m_sqlManager = this.initQueries(poolUrl);        
+        m_driverManager = driverManager;
+
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + poolUrl);
+        }
+            
+        String digest = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest configured    : " + digest);
+        }
+    
+        m_digestFileEncoding = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", "UTF-8");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest file encoding : " + m_digestFileEncoding);
+        }
+    
+        // create the digest
+        try {
+            m_digest = MessageDigest.getInstance(digest);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Using digest encoding: " + m_digest.getAlgorithm() + " from " + m_digest.getProvider().getName() + " version " + m_digest.getProvider().getVersion());
+            }
+        } catch (NoSuchAlgorithmException e) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Error setting digest : using clear passwords - " + e.getMessage());
+            }
+        }
+        
+        if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, this.getClass().toString() + " does not support successive drivers.");
+            }
+        }
+    }
+    
     /**
      * @see org.opencms.db.I_CmsUserDriver#initQueries(java.lang.String)
      */   

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/19 14:38:07 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2003/08/19 16:04:17 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsAdjacencyTree;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.main.OpenCms;
 
@@ -73,10 +74,10 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.93 $ $Date: 2003/08/19 14:38:07 $
+ * @version $Revision: 1.94 $ $Date: 2003/08/19 16:04:17 $
  * @since 5.1
  */
-public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
+public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
     
     protected CmsDriverManager m_driverManager;
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
@@ -1932,7 +1933,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
         return undeletedResources;
     }
-
+/*
 	public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) {
 		m_sqlManager = this.initQueries(dbPoolUrl);
         m_driverManager = driverManager;
@@ -1941,6 +1942,24 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". VFS driver init      : ok");
         }
 	}
+*/  
+    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
+
+        String poolUrl = config.getString("db.vfs.pool");
+        
+        m_sqlManager = this.initQueries(poolUrl);
+        m_driverManager = driverManager;        
+
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + poolUrl);
+        }
+        
+        if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, this.getClass().toString() + " does not support successive drivers.");
+            }
+        }
+    }
 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#initQueries(java.lang.String)
