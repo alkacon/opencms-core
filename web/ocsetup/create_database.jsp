@@ -167,7 +167,10 @@
 											//Drop Tables (itentionally quiet)
 											db.dropTables(Bean.getResourceBroker());
 											db.clearErrors();
+											db.closeConnection();
 											
+											// reopen the connection in order to display errors
+											db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
 											//Create Tables
 											out.print("<p>Creating tables ...");
 											db.createTables(Bean.getResourceBroker());
