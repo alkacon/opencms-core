@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/07/30 07:37:50 $
-* Version: $Revision: 1.238 $
+* Date   : $Date: 2002/08/01 14:19:38 $
+* Version: $Revision: 1.239 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.238 $ $Date: 2002/07/30 07:37:50 $
+ * @version $Revision: 1.239 $ $Date: 2002/08/01 14:19:38 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2480,7 +2480,7 @@ public int publishResource(String resourcename, boolean justPrepare) throws CmsE
     if(oldProjectId != C_PROJECT_ONLINE_ID){
         // check access to project
         if(isAdmin() || isManagerOfProject()){
-            int newProjectId = m_rb.createProject(m_context.currentUser(), m_context.currentProject(),
+            int newProjectId = m_rb.createDirectPublishProject(m_context.currentUser(), m_context.currentProject(),
                                               "Direct Publish","","Users",
                                               "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
             retValue = newProjectId;

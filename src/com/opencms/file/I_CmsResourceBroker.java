@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/07/30 07:37:04 $
-* Version: $Revision: 1.182 $
+* Date   : $Date: 2002/08/01 14:19:39 $
+* Version: $Revision: 1.183 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.182 $ $Date: 2002/07/30 07:37:04 $
+ * @version $Revision: 1.183 $ $Date: 2002/08/01 14:19:39 $
  *
  */
 
@@ -644,6 +644,25 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
                                     int priority)
          throws CmsException;
     // Methods working with properties and propertydefinitions
+
+    /**
+     * Creates a project for the direct publish.
+     *
+     * <B>Security</B>
+     * Only the users which are in the admin or projectleader-group of the current project are granted.
+     *
+     * Changed: added the project type
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param name The name of the project to read.
+     * @param description The description for the new project.
+     * @param group the group to be set.
+     * @param managergroup the managergroup to be set.
+     * @param project type the type of the project
+     * @exception CmsException Throws CmsException if something goes wrong.
+     * @author Edna Falkenhan
+     */
+    public CmsProject createDirectPublishProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException;
 
     /**
      * Creates a project for the temporary files.

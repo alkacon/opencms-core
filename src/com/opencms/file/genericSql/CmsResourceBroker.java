@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/07/30 07:36:29 $
-* Version: $Revision: 1.328 $
+* Date   : $Date: 2002/08/01 14:19:13 $
+* Version: $Revision: 1.329 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.328 $ $Date: 2002/07/30 07:36:29 $
+ * @version $Revision: 1.329 $ $Date: 2002/08/01 14:19:13 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1888,6 +1888,44 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException
 {
     if (isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject))
+    {
+        if (C_PROJECT_ONLINE.equals(name)){
+            throw new CmsException ("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+        }
+        // read the needed groups from the cms
+        CmsGroup group = readGroup(currentUser, currentProject, groupname);
+        CmsGroup managergroup = readGroup(currentUser, currentProject, managergroupname);
+
+        // create a new task for the project
+        CmsTask task = createProject(currentUser, name, 1, group.getName(), System.currentTimeMillis(), C_TASK_PRIORITY_NORMAL);
+        return m_dbAccess.createProject(currentUser, group, managergroup, task, name, description, C_PROJECT_STATE_UNLOCKED, projecttype);
+    }
+    else
+    {
+        throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+    }
+}
+
+/**
+ * Creates a project for the direct publish.
+ *
+ * <B>Security</B>
+ * Only the users which are in the admin or projectleader-group of the current project are granted.
+ *
+ * Changed: added the project type
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param name The name of the project to read.
+ * @param description The description for the new project.
+ * @param group the group to be set.
+ * @param managergroup the managergroup to be set.
+ * @param project type the type of the project
+ * @exception CmsException Throws CmsException if something goes wrong.
+ * @author Edna Falkenhan
+ */
+public CmsProject createDirectPublishProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException
+{
+    if (isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, currentProject))
     {
         if (C_PROJECT_ONLINE.equals(name)){
             throw new CmsException ("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
