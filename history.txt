@@ -12,6 +12,9 @@ OpenCms 4.5.4  Gom Jabbar   - ?? August 2001
 * Added the name of the element to the parameters with the key  _ELEMENT_.
 * Added the parameters of the element-definition to the cache-directive -key.
 - Added redirect-informations to opencms.properties
+- Added a warning about the file.encoding. The warning will be printed 
+  if you are not using the prefered properties. You may get in trouble 
+  with user-password if you change the encoding later on.
 
 OpenCms 4.5.3  Gom Jabbar   - 10 August 2001
 * Corrected Cache-Directives in CmsXmlNav (Default-Navigation)
