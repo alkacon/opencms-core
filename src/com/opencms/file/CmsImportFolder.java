@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
- * Date   : $Date: 2001/03/29 08:23:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2001/04/02 14:30:38 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2001/03/29 08:23:36 $
+ * @version $Revision: 1.6 $ $Date: 2001/04/02 14:30:38 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -124,28 +124,35 @@ public class CmsImportFolder implements I_CmsConstants {
         m_importPath = importPath;
         m_cms = cms;
 
-        // check if user is allowed to write to the folder ...
-        if( m_cms.accessWrite(importPath) == false) {
-            throw new CmsException(CmsException.C_NO_ACCESS);
-        }
-
         try {
 			// open the import resource
             m_zipStreamIn = new ZipInputStream(new ByteArrayInputStream(
                                                         content) );
 
             CmsFolder impFold = m_cms.readFolder(importPath);
-            if( !impFold.isLocked() ) {
+
+            System.err.println("impPath: " + importPath);/*
+            if( !impFold.isLocked() && !importPath.equals("/") ) {
                 // frist lock the path to import into.
     			m_cms.lockResource(m_importPath);
-            }
+            }*/
+
+            // check if user is allowed to write to the folder ...
+            /*
+            if( m_cms.accessWrite(importPath) == false) {
+                throw new CmsException(CmsException.C_NO_ACCESS);
+            }*/
+
 			// import the resources
             importZipResource(m_zipStreamIn, m_importPath, noSubFolder);
 
 			// all is done, unlock the resources
-			m_cms.unlockResource(m_importPath);
+            /*
+            if( impFold.isLocked() && !importPath.equals("/") ) {
+			    m_cms.unlockResource(m_importPath);
+            }*/
 
-		} catch( Exception exc ) {
+        } catch( Exception exc ) {
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}
@@ -303,8 +310,6 @@ public class CmsImportFolder implements I_CmsConstants {
                 String type = getFileType( path[path.length-1] );
 
                 size = new Long(entry.getSize()).intValue();
-                System.err.println("size: " + size);
-
                 if(size == -1) {
                     Vector v = new Vector();
                     while(true) {
@@ -357,23 +362,20 @@ public class CmsImportFolder implements I_CmsConstants {
                 file = null; // reset file
                 // create the file
                 try { // check if file exists ...
-                    file = m_cms.readFile(actImportPath, path[path.length-1]);
+                    //file = m_cms.readFile(actImportPath, path[path.length-1]);
+                    m_cms.lockResource(actImportPath + path[path.length-1], true);
+                    m_cms.deleteFile(actImportPath + path[path.length-1]);
                 } catch(CmsException e) {
                     // ignore the exception (did not exist)
                 }
                 try {
-                    if(file == null) {
-                        // new file ...
-                        m_cms.createFile(actImportPath, path[path.length-1],
+                    // new file ...
+                    m_cms.createFile(actImportPath, path[path.length-1],
                                                             buffer, type);
-                    } else {
-                        // overwrite existing file without warning ...
-                        file.setContents(buffer);
-                        m_cms.writeFile(file);
-                    }
                 } catch(CmsException e) {
                     // ignore the exception
                     //System.err.println(Utils.getStackTrace(e));
+                    throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
             }
             // close the entry ...
