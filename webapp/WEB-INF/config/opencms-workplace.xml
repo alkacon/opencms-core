@@ -495,8 +495,8 @@
 					<filedeletion>preservesiblings</filedeletion> 
 					<directpublish>onlyresource</directpublish> 	
 					<showlock>false</showlock>
-					<show-permissionsuser>false</show-permissionsuser>
-					<show-permissionsinherited>false</show-permissionsinherited>
+					<expand-permissionsuser>false</expand-permissionsuser>
+					<expand-permissionsinherited>true</expand-permissionsinherited>
 					<permissions-inheritonfolder>true</permissions-inheritonfolder>
 				</dialogs-defaultsettings>		
 			</dialogs-preferences>	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/01/28 16:53:51 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/01/31 10:58:37 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -125,6 +125,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The name of the entry node. */
     public static final String N_ENTRY = "entry";
+    
+    /** The name of the expand inherited permissions node. */
+    public static final String N_EXPANDPERMISSIONSINHERITED = "expand-permissionsinherited";
+    
+    /** The name of the expand user permissions node. */
+    public static final String N_EXPANDPERMISSIONSUSER = "expand-permissionsuser";
 
     /** The node name of the explorer displayoptions node. */
     public static final String N_EXPLORERDISPLAYOPTIONS = "explorer-displayoptions";
@@ -182,12 +188,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The name of the separator node. */
     public static final String N_SEPARATOR = "separator";
-    
-    /** The name of the show inherited permissions node. */
-    public static final String N_SHOWPERMISSIONSINHERITED = "show-permissionsinherited";
-    
-    /** The name of the show user permissions node. */
-    public static final String N_SHOWPERMISSIONSUSER = "show-permissionsuser";
     
     /** The node name of the show lock node. */
     public static final String N_SHOWLOCK = "showlock";
@@ -610,10 +610,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 "setShowLockDialog", 0);      
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_PERMISSIONSINHERITONFOLDER,
                 "setDialogPermissionsInheritOnFolder", 0); 
-        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_SHOWPERMISSIONSINHERITED,
-                "setDialogShowInheritedPermissions", 0); 
-        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_SHOWPERMISSIONSUSER,
-                "setDialogShowUserPermissions", 0); 
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_EXPANDPERMISSIONSINHERITED,
+                "setDialogExpandInheritedPermissions", 0); 
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_EXPANDPERMISSIONSUSER,
+                "setDialogExpandUserPermissions", 0); 
         
         // add editor generaloptions rules
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_EDITORPREFERENCES + "/"+ N_EDITORGENERALOPTIONS + "/" + N_BUTTONSTYLE,
@@ -820,10 +820,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         dialogDefaultSettings.addElement(N_DIRECTPUBLISH).setText(m_workplaceManager.getDefaultUserSettings().getDialogPublishSiblingsString());
         // add the <showlock> node
         dialogDefaultSettings.addElement(N_SHOWLOCK).setText(m_workplaceManager.getDefaultUserSettings().getDialogShowLockString());
-        // add the <show-permissionsuser> node
-        dialogDefaultSettings.addElement(N_SHOWPERMISSIONSUSER).setText(m_workplaceManager.getDefaultUserSettings().getDialogShowUserPermissionsString());
-        // add the <show-permissionsinherited> node
-        dialogDefaultSettings.addElement(N_SHOWPERMISSIONSINHERITED).setText(m_workplaceManager.getDefaultUserSettings().getDialogShowInheritedPermissionsString());
+        // add the <expand-permissionsuser> node
+        dialogDefaultSettings.addElement(N_EXPANDPERMISSIONSUSER).setText(m_workplaceManager.getDefaultUserSettings().getDialogExpandUserPermissionsString());
+        // add the <expand-permissionsinherited> node
+        dialogDefaultSettings.addElement(N_EXPANDPERMISSIONSINHERITED).setText(m_workplaceManager.getDefaultUserSettings().getDialogExpandInheritedPermissionsString());
         // add the <permissions-inheritonfolder> node
         dialogDefaultSettings.addElement(N_PERMISSIONSINHERITONFOLDER).setText(m_workplaceManager.getDefaultUserSettings().getDialogPermissionsInheritOnFolderString());
         

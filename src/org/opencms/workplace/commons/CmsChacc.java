@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/01/28 16:53:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/01/31 10:58:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -86,6 +85,15 @@ public class CmsChacc extends CmsDialog {
     public static final String DIALOG_INTERNALUSE = "internaluse";  
     /** The dialog type. */
     public static final String DIALOG_TYPE = "chacc";
+    
+    /** Request parameter name for the inherit permissions parameter. */
+    public static final String PARAM_INHERIT = "inherit";
+    /** Request parameter name for the internal use only flag. */
+    public static final String PARAM_INTERNAL = "internal";
+    /** Request parameter name for the overwrite inherited permissions parameter. */
+    public static final String PARAM_OVERWRITEINHERITED = "overwriteinherited";
+    /** Request parameter name for the view parameter. */
+    public static final String PARAM_VIEW = "view";
     
     /** Constant for the request parameters suffix: allow. */
     public static final String PERMISSION_ALLOW = "allow";
@@ -185,14 +193,14 @@ public class CmsChacc extends CmsDialog {
     }
     
     /**
-     * Modified the INternal Use flag of a resource.<p>
+     * Modifies the Internal Use flag of a resource.<p>
      * @param request the Http servlet request
      * 
      * @return true if the operation was was successfully removed, otherwise false
      */
     public boolean actionInternalUse(HttpServletRequest request) {
         
-        String internal = request.getParameter("internal");
+        String internal = request.getParameter(PARAM_INTERNAL);
        
         CmsResource resource;
         boolean internalValue = false;
@@ -237,8 +245,8 @@ public class CmsChacc extends CmsDialog {
         // get request parameters
         String name = getParamName();
         String type = getParamType();
-        String inherit = request.getParameter("inherit");   
-        String overWriteInherited = request.getParameter("overwriteinherited");   
+        String inherit = request.getParameter(PARAM_INHERIT);   
+        String overWriteInherited = request.getParameter(PARAM_OVERWRITEINHERITED);   
         
         // get the new permissions
         Set permissionKeys = CmsPermissionSet.getPermissionKeys();
@@ -347,7 +355,7 @@ public class CmsChacc extends CmsDialog {
         // set icon and style class to use: hide user permissions
         String image = "plus.gif";
         String styleClass = "hide";
-        if (getSettings().getUserSettings().getDialogShowUserPermissions()) {
+        if (getSettings().getUserSettings().getDialogExpandUserPermissions()) {
             // show user permissions
             image = "minus.gif";
             styleClass = "show";
@@ -405,7 +413,7 @@ public class CmsChacc extends CmsDialog {
         // set icon and style class to use: hide inherited permissions
         String image = "plus.gif";
         String styleClass = "hide";
-        if (getSettings().getUserSettings().getDialogShowInheritedPermissions() || getShowInheritedPermissions()) {
+        if (getSettings().getUserSettings().getDialogExpandInheritedPermissions() || getShowInheritedPermissions()) {
             // show inherited permissions if configured in settings or if the view detail was switched
             image = "minus.gif";
             styleClass = "show";
@@ -438,7 +446,9 @@ public class CmsChacc extends CmsDialog {
         String selectedView = getSettings().getPermissionDetailView();   
         result.append("\t<form action=\"").append(getDialogUri()).append("\" method=\"post\" name=\"selectshortview\">\n");            
         result.append("\t<td>\n");
-        result.append("\t<input type=\"hidden\" name=\"view\" value=\"short\">\n");
+        result.append("\t<input type=\"hidden\" name=\"");
+        result.append(PARAM_VIEW);
+        result.append("\" value=\"short\">\n");
         // set parameters to show correct hidden input fields
         setParamAction(null);
         result.append(paramsAsHidden());
@@ -450,7 +460,9 @@ public class CmsChacc extends CmsDialog {
         result.append("\t</td>\n");
         result.append("\t</form>\n\t<form action=\"").append(getDialogUri()).append("\" method=\"post\" name=\"selectlongview\">\n");
         result.append("\t<td>\n");
-        result.append("\t<input type=\"hidden\" name=\"view\" value=\"long\">\n");
+        result.append("\t<input type=\"hidden\" name=\"");
+        result.append(PARAM_VIEW);
+        result.append("\" value=\"long\">\n");
         result.append(paramsAsHidden());
         result.append("\t<input type=\"submit\" class=\"dialogbutton\" value=\"").append(key("button.long")).append("\"");
         if ("long".equals(selectedView)) {
@@ -461,7 +473,7 @@ public class CmsChacc extends CmsDialog {
         result.append("</tr>\n</table>\n");
 
         // get all access control entries of the current file
-        List allEntries = new Vector();
+        List allEntries = new ArrayList();
         try {
             allEntries = getCms().getAccessControlEntries(getParamResource(), true);
         } catch (CmsException e) {
@@ -749,6 +761,16 @@ public class CmsChacc extends CmsDialog {
         
         return m_inherit;
     }
+      
+    /**
+     * Returns if the inherited permissions information should be displayed.<p>
+     *
+     * @return true if the inherited permissions information should be displayed, otherwise false
+     */
+    protected boolean getShowInheritedPermissions() {
+
+        return m_showInheritedPermissions;
+    }
     
     /**
      * Returns a String array with the possible entry types.<p>
@@ -789,7 +811,7 @@ public class CmsChacc extends CmsDialog {
         fillParamValues(request);
         
         // set the detail mode of the "inherited" list view
-        String detail = request.getParameter("view");
+        String detail = request.getParameter(PARAM_VIEW);
         if (detail != null) {
             settings.setPermissionDetailView(detail);
             setShowInheritedPermissions(true);
@@ -908,6 +930,16 @@ public class CmsChacc extends CmsDialog {
         m_inherit = value;
     }
     
+    /**
+     * Sets if the inherited permissions information should be displayed.<p>
+     *
+     * @param showInheritedPermissions true if the inherited permissions information should be displayed, otherwise false
+     */
+    protected void setShowInheritedPermissions(boolean showInheritedPermissions) {
+
+        m_showInheritedPermissions = showInheritedPermissions;
+    }
+    
     
     /**
      * Builds a String with HTML code to display the form to add a new access control entry for the current resource.<p>
@@ -1024,15 +1056,18 @@ public class CmsChacc extends CmsDialog {
         }
  
         if ((resource != null) && (resource.isFile())) {
+            // only show internal checkbox on files
             result.append("<form action=\"").append(getDialogUri()).append("\" method=\"post\" name=\"internal\" class=\"nomargin\">\n");        
             result.append("<table border=\"0\" width=\"100%\">\n");
             result.append("<tr>\n");
             result.append("\t<td class=\"dialogpermissioncell\">").append(key("dialog.permission.internal"));
-            result.append(" <input type=\"checkbox\" name=\"internal\" value=\"true\"");
+            result.append(" <input type=\"checkbox\" name=\"");
+            result.append(PARAM_INTERNAL);
+            result.append("\" value=\"true\"");
             if (internal) {
                 result.append(" checked=\"checked\"");
             }
-            if (!getEditable()) {
+            if (! getEditable()) {
                 result.append(" disabled=\"disabled\"");            
             }
             result.append(" ></td>\n");
@@ -1180,7 +1215,7 @@ public class CmsChacc extends CmsDialog {
             result.append("<tr>\n");
             result.append("\t<td class=\"dialogpermissioncell\">").append(key("dialog.permission.list.overwrite")).append("</td>\n");
             result.append("\t<td class=\"dialogpermissioncell textcenter\">");
-            result.append("<input type=\"checkbox\" name=\"overwriteinherited\" value=\"true\"").append(disabled);
+            result.append("<input type=\"checkbox\" name=\"").append(PARAM_OVERWRITEINHERITED).append("\" value=\"true\"").append(disabled);
             if (isOverWritingInherited(entry.getFlags())) {
                 result.append(" checked=\"checked\"");           
             }
@@ -1193,7 +1228,7 @@ public class CmsChacc extends CmsDialog {
                 result.append("<tr>\n");
                 result.append("\t<td class=\"dialogpermissioncell\">").append(key("dialog.permission.list.inherit")).append("</td>\n");
                 result.append("\t<td class=\"dialogpermissioncell textcenter\">");
-                result.append("<input type=\"checkbox\" name=\"inherit\" value=\"true\"").append(disabled);
+                result.append("<input type=\"checkbox\" name=\"").append(PARAM_INHERIT).append("\" value=\"true\"").append(disabled);
                 if (isInheriting(entry.getFlags())) {
                     result.append(" checked=\"checked\"");           
                 }
@@ -1310,26 +1345,6 @@ public class CmsChacc extends CmsDialog {
             result.append(dialogWhiteBox(HTML_END));
         }
         return result;
-    }
-      
-    /**
-     * Returns if the inherited permissions information should be displayed.<p>
-     *
-     * @return true if the inherited permissions information should be displayed, otherwise false
-     */
-    protected boolean getShowInheritedPermissions() {
-
-        return m_showInheritedPermissions;
-    }
-    
-    /**
-     * Sets if the inherited permissions information should be displayed.<p>
-     *
-     * @param showInheritedPermissions true if the inherited permissions information should be displayed, otherwise false
-     */
-    protected void setShowInheritedPermissions(boolean showInheritedPermissions) {
-
-        m_showInheritedPermissions = showInheritedPermissions;
     }
     
 }

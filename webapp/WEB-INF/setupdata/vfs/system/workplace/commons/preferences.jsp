@@ -174,18 +174,31 @@ case 3:
 		<table border="0" cellpadding="4" cellspacing="0">
 			<tr>
 				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.copyfile") %></td><td><%= wp.buildSelectCopyFileMode("name=\"" + wp.PARAM_DIALOGS_COPYFILEMODE + "\" style=\"width: 250px;\"") %></td>
+				<td style="width: 40px;">&nbsp;</td>
+				<td style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_DIALOGS_SHOWLOCK %>" value="true"<%= wp.isChecked(wp.getParamTabDiShowLock()) %>> <%= wp.key("input.showlockdialog") %></td>
 			</tr>
 			<tr>
-				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.copyfolder") %></td><td><%= wp.buildSelectCopyFolderMode("name=\"" + wp.PARAM_DIALOGS_COPYFOLDERMODE + "\" style=\"width: 250px;\"") %></td>
+				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.copyfolder") %></td><td colspan="3"><%= wp.buildSelectCopyFolderMode("name=\"" + wp.PARAM_DIALOGS_COPYFOLDERMODE + "\" style=\"width: 250px;\"") %></td>
 			</tr>
 			<tr>
-				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.deletefile") %></td><td><%= wp.buildSelectDeleteFileMode("name=\"" + wp.PARAM_DIALOGS_DELETEFILEMODE + "\" style=\"width: 250px;\"") %></td>
+				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.deletefile") %></td><td colspan="3"><%= wp.buildSelectDeleteFileMode("name=\"" + wp.PARAM_DIALOGS_DELETEFILEMODE + "\" style=\"width: 250px;\"") %></td>
 			</tr>
 			<tr>
-				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.publishsiblings") %></td><td><%= wp.buildSelectPublishSiblings("name=\"" + wp.PARAM_DIALOGS_PUBLISHFILEMODE + "\" style=\"width: 250px;\"") %></td>
+				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.publishsiblings") %></td><td colspan="3"><%= wp.buildSelectPublishSiblings("name=\"" + wp.PARAM_DIALOGS_PUBLISHFILEMODE + "\" style=\"width: 250px;\"") %></td>
+			</tr>
+		</table>			
+		<%= wp.dialogBlockEnd() %>
+		<%= wp.dialogSpacer() %>
+		<%= wp.dialogBlockStart(wp.key("preferences.subhead.dialogpermissions")) %>
+		<table border="0" cellpadding="4" cellspacing="0">
+			<tr>
+				<td style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_DIALOGS_PERMISSIONS_INHERITONFOLDER %>" value="true"<%= wp.isChecked(wp.getParamTabDiPermissionsInheritOnFolder()) %>> <%= wp.key("input.dialogpermissions.inherit") %></td>
 			</tr>
 			<tr>
-				<td colspan="2" style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_DIALOGS_SHOWLOCK %>" value="true"<%= wp.isChecked(wp.getParamTabDiShowLock()) %>> <%= wp.key("input.showlockdialog") %></td>
+				<td style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_DIALOGS_PERMISSIONS_EXPANDUSER %>" value="true"<%= wp.isChecked(wp.getParamTabDiPermissionsExpandUser()) %>> <%= wp.key("input.dialogpermissions.expanduser") %></td>
+			</tr>
+			<tr>
+				<td style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_DIALOGS_PERMISSIONS_EXPANDINHERITED %>" value="true"<%= wp.isChecked(wp.getParamTabDiPermissionsExpandInherited()) %>> <%= wp.key("input.dialogpermissions.expandinherited") %></td>
 			</tr>
 		</table>			
 		<%= wp.dialogBlockEnd() %>

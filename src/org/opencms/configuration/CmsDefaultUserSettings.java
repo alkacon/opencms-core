@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2005/01/28 16:53:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/01/31 10:58:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
 
@@ -177,6 +177,26 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
             return C_DELETEMODE_PRESERVE;
         }
     }
+    
+    /**
+     * Returns the default setting for expanding inherited permissions in the dialog.<p>
+     * 
+     * @return true if inherited permissions should be expanded, otherwise false
+     */
+    public String getDialogExpandInheritedPermissionsString() {
+
+        return getBoolRepresentation(getDialogExpandInheritedPermissions());
+    }
+    
+    /**
+     * Returns the default setting for expanding the users permissions in the dialog.<p>
+     * 
+     * @return true if the users permissions should be expanded, otherwise false
+     */
+    public String getDialogExpandUserPermissionsString() {
+
+        return getBoolRepresentation(getDialogExpandUserPermissions());
+    }
 
     /**
      * Returns the default setting for inheriting permissions on folders.<p>
@@ -203,16 +223,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
-     * Returns the default setting for showing inherited permissions in the dialog.<p>
-     * 
-     * @return true if inherited permissions should be displayed, otherwise false
-     */
-    public String getDialogShowInheritedPermissionsString() {
-
-        return getBoolRepresentation(getDialogShowInheritedPermissions());
-    }
-
-    /**
      * Determines if the lock dialog should be shown.<p>
      * 
      * @return true if the lock dialog is shown, otherwise false
@@ -220,16 +230,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getDialogShowLockString() {
 
         return getBoolRepresentation(getDialogShowLock());
-    }
-
-    /**
-     * Returns the default setting for showing the users permissions in the dialog.<p>
-     * 
-     * @return true if the users permissions should be displayed, otherwise false
-     */
-    public String getDialogShowUserPermissionsString() {
-
-        return getBoolRepresentation(getDialogShowUserPermissions());
     }
 
     /**
@@ -533,6 +533,26 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
     
     /**
+     * Sets the default setting for expanding inherited permissions in the dialog.<p>
+     *
+     * @param dialogExpandInheritedPermissions the default setting for expanding inherited permissions in the dialog
+     */
+    public void setDialogExpandInheritedPermissions(String dialogExpandInheritedPermissions) {
+
+        setDialogExpandInheritedPermissions(Boolean.valueOf(dialogExpandInheritedPermissions).booleanValue());
+    }
+    
+    /**
+     * Sets the default setting for expanding the users permissions in the dialog.<p>
+     *
+     * @param dialogExpandUserPermissions the default setting for expanding the users permissions in the dialog
+     */
+    public void setDialogExpandUserPermissions(String dialogExpandUserPermissions) {
+
+        setDialogExpandUserPermissions(Boolean.valueOf(dialogExpandUserPermissions).booleanValue());
+    }
+    
+    /**
      * Sets the default setting for inheriting permissions on folders.<p>
      *
      * @param dialogPermissionsInheritOnFolder the default setting for inheriting permissions on folders
@@ -554,26 +574,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
             publishSiblings = true;
         }
         setDialogPublishSiblings(publishSiblings);
-    }
-    
-    /**
-     * Sets the default setting for showing inherited permissions in the dialog.<p>
-     *
-     * @param dialogShowInheritedPermissions the default setting for showing inherited permissions in the dialog
-     */
-    public void setDialogShowInheritedPermissions(String dialogShowInheritedPermissions) {
-
-        setDialogShowInheritedPermissions(Boolean.valueOf(dialogShowInheritedPermissions).booleanValue());
-    }
-    
-    /**
-     * Sets the default setting for showing the users permissions in the dialog.<p>
-     *
-     * @param dialogShowUserPermissions the default setting for showing the users permissions in the dialog
-     */
-    public void setDialogShowUserPermissions(String dialogShowUserPermissions) {
-
-        setDialogShowUserPermissions(Boolean.valueOf(dialogShowUserPermissions).booleanValue());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/01/28 16:53:51 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/01/31 10:58:37 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1.12
  */
@@ -68,12 +68,12 @@ public class CmsUserSettings {
     private static final String C_PREFERENCES = "USERPREFERENCES_";
     
     private boolean m_dialogDirectpublish;
+    private boolean m_dialogExpandInheritedPermissions;
+    private boolean m_dialogExpandUserPermissions;
     private int m_dialogFileCopy;
     private int m_dialogFileDelete;
     private int m_dialogFolderCopy;
     private boolean m_dialogPermissionsInheritOnFolder;
-    private boolean m_dialogShowInheritedPermissions;
-    private boolean m_dialogShowUserPermissions;
     private int m_directeditButtonStyle;
     private int m_editorButtonStyle;
     private HashMap m_editorSettings; 
@@ -151,6 +151,26 @@ public class CmsUserSettings {
     }
     
     /**
+     * Returns the default setting for expanding inherited permissions in the dialog.<p>
+     * 
+     * @return true if inherited permissions should be expanded, otherwise false
+     */
+    public boolean getDialogExpandInheritedPermissions() {
+        
+        return m_dialogExpandInheritedPermissions;
+    }
+    
+    /**
+     * Returns the default setting for expanding the users permissions in the dialog.<p>
+     * 
+     * @return true if the users permissions should be expanded, otherwise false
+     */
+    public boolean getDialogExpandUserPermissions() {
+    
+        return m_dialogExpandUserPermissions;
+    }
+    
+    /**
      * Returns the default setting for inheriting permissions on folders.<p>
      * 
      * @return true if permissions should be inherited on folders, otherwise false
@@ -170,32 +190,12 @@ public class CmsUserSettings {
     }
     
     /**
-     * Returns the default setting for showing inherited permissions in the dialog.<p>
-     * 
-     * @return true if inherited permissions should be displayed, otherwise false
-     */
-    public boolean getDialogShowInheritedPermissions() {
-        
-        return m_dialogShowInheritedPermissions;
-    }
-    
-    /**
      * Determines if the lock dialog should be shown.<p>
      * 
      * @return true if the lock dialog is shown, otherwise false
      */
     public boolean getDialogShowLock() {
         return m_showLock;
-    }
-    
-    /**
-     * Returns the default setting for showing the users permissions in the dialog.<p>
-     * 
-     * @return true if the users permissions should be displayed, otherwise false
-     */
-    public boolean getDialogShowUserPermissions() {
-    
-        return m_dialogShowUserPermissions;
     }
     
     /**
@@ -509,17 +509,17 @@ public class CmsUserSettings {
         } catch (Throwable t) {
             m_dialogPermissionsInheritOnFolder  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogPermissionsInheritOnFolder();           
         }
-        // dialog show inherited permissions mode
+        // dialog expand inherited permissions mode
         try {
-            m_dialogShowInheritedPermissions = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSINHERITED)).booleanValue();
+            m_dialogExpandInheritedPermissions = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSINHERITED)).booleanValue();
         } catch (Throwable t) {
-            m_dialogShowInheritedPermissions  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowInheritedPermissions();           
+            m_dialogExpandInheritedPermissions  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogExpandInheritedPermissions();           
         }
-        // dialog show users permissions mode
+        // dialog expand users permissions mode
         try {
-            m_dialogShowUserPermissions = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSUSER)).booleanValue();
+            m_dialogExpandUserPermissions = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSUSER)).booleanValue();
         } catch (Throwable t) {
-            m_dialogShowUserPermissions  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowUserPermissions();           
+            m_dialogExpandUserPermissions  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogExpandUserPermissions();           
         }       
         // editor button style
         try {
@@ -687,17 +687,17 @@ public class CmsUserSettings {
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER);
         }
-        // dialog show inherited permissions mode
-        if (getDialogShowInheritedPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowInheritedPermissions()) {       
-            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSINHERITED, new Boolean(getDialogShowInheritedPermissions()));
+        // dialog expand inherited permissions mode
+        if (getDialogExpandInheritedPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogExpandInheritedPermissions()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSINHERITED, new Boolean(getDialogExpandInheritedPermissions()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSINHERITED);
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSINHERITED);
         }
-        // dialog show users permissions mode
-        if (getDialogShowUserPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowUserPermissions()) {       
-            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSUSER, new Boolean(getDialogShowUserPermissions()));
+        // dialog expand users permissions mode
+        if (getDialogExpandUserPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogExpandUserPermissions()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSUSER, new Boolean(getDialogExpandUserPermissions()));
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSUSER);
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_EXPANDPERMISSIONSUSER);
         }       
         // editor button style    
         if (getEditorButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorButtonStyle()) {          
@@ -790,6 +790,26 @@ public class CmsUserSettings {
     }
     
     /**
+     * Sets the default setting for expanding inherited permissions in the dialog.<p>
+     *
+     * @param dialogShowInheritedPermissions the default setting for expanding inherited permissions in the dialog
+     */
+    public void setDialogExpandInheritedPermissions(boolean dialogShowInheritedPermissions) {
+
+        m_dialogExpandInheritedPermissions = dialogShowInheritedPermissions;
+    }
+    
+    /**
+     * Sets the default setting for expanding the users permissions in the dialog.<p>
+     *
+     * @param dialogShowUserPermissions the default setting for expanding the users permissions in the dialog
+     */
+    public void setDialogExpandUserPermissions(boolean dialogShowUserPermissions) {
+
+        m_dialogExpandUserPermissions = dialogShowUserPermissions;
+    }
+    
+    /**
      * Sets the default setting for inheriting permissions on folders.<p>
      *
      * @param dialogPermissionsInheritOnFolder the default setting for inheriting permissions on folders
@@ -809,32 +829,12 @@ public class CmsUserSettings {
     }
     
     /**
-     * Sets the default setting for showing inherited permissions in the dialog.<p>
-     *
-     * @param dialogShowInheritedPermissions the default setting for showing inherited permissions in the dialog
-     */
-    public void setDialogShowInheritedPermissions(boolean dialogShowInheritedPermissions) {
-
-        m_dialogShowInheritedPermissions = dialogShowInheritedPermissions;
-    }
-    
-    /**
      *  Sets if the lock dialog should be shown.<p>
      * 
      * @param show true if the lock dialog should be shown, otherwise false
      */
     public void setDialogShowLock(boolean show) {
         m_showLock = show;
-    }
-    
-    /**
-     * Sets the default setting for showing the users permissions in the dialog.<p>
-     *
-     * @param dialogShowUserPermissions the default setting for showing the users permissions in the dialog
-     */
-    public void setDialogShowUserPermissions(boolean dialogShowUserPermissions) {
-
-        m_dialogShowUserPermissions = dialogShowUserPermissions;
     }
     
     /**

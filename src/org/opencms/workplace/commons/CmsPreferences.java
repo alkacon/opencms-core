@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2004/11/30 08:15:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/01/31 10:58:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -111,6 +111,15 @@ public class CmsPreferences extends CmsTabDialog {
     
     /** Request parameter name for the dialog delete file siblings default setting. */
     public static final String PARAM_DIALOGS_DELETEFILEMODE = "tabdideletefilemode";
+    
+    /** Request parameter name for the dialog permissions default inheritance behaviour on folders. */
+    public static final String PARAM_DIALOGS_PERMISSIONS_INHERITONFOLDER = "tabdipermissionsinheritonfolder";
+    
+    /** Request parameter name for the dialog permissions show inherited permissions. */
+    public static final String PARAM_DIALOGS_PERMISSIONS_EXPANDINHERITED = "tabdipermissionsexpandinherited";
+    
+    /** Request parameter name for the dialog permissions show current users permissions. */
+    public static final String PARAM_DIALOGS_PERMISSIONS_EXPANDUSER = "tabdipermissionsexpanduser";
     
     /** Request parameter name for the dialog publish file siblings default setting. */
     public static final String PARAM_DIALOGS_PUBLISHFILEMODE = "tabdipublishfilemode";
@@ -854,6 +863,33 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
+     * Returns the "expand inherited permissions" default setting.<p>
+     * 
+     * @return the "expand inherited permissions" default setting
+     */
+    public String getParamTabDiPermissionsExpandInherited() {
+        return isParamEnabled(m_userSettings.getDialogExpandInheritedPermissions());
+    }
+    
+    /**
+     * Returns the "expand current users permissions" default setting.<p>
+     * 
+     * @return the "expand current users permissions" default setting
+     */
+    public String getParamTabDiPermissionsExpandUser() {
+        return isParamEnabled(m_userSettings.getDialogExpandUserPermissions());
+    }
+    
+    /**
+     * Returns the "inherit permissions on folders" default setting.<p>
+     * 
+     * @return the "inherit permissions on folders" default setting
+     */
+    public String getParamTabDiPermissionsInheritOnFolder() {
+        return isParamEnabled(m_userSettings.getDialogPermissionsInheritOnFolder());
+    }
+    
+    /**
      * Returns the "publish file siblings default" setting.<p>
      * 
      * @return the "publish file siblings default" setting
@@ -1258,6 +1294,33 @@ public class CmsPreferences extends CmsTabDialog {
                 OpenCms.getLog(this).info(t);
             }
         }
+    }
+    
+    /**
+     * Sets the "expand inherited permissions" default setting.<p>
+     * 
+     * @param value the "expand inherited permissions" default setting
+     */
+    public void setParamTabDiPermissionsExpandInherited(String value) {
+        m_userSettings.setDialogExpandInheritedPermissions(Boolean.valueOf(value).booleanValue());
+    }
+    
+    /**
+     * Sets the "expand current users permissions" default setting.<p>
+     * 
+     * @param value the "expand current users permissions" default setting
+     */
+    public void setParamTabDiPermissionsExpandUser(String value) {
+        m_userSettings.setDialogExpandUserPermissions(Boolean.valueOf(value).booleanValue());
+    }
+    
+    /**
+     * Sets the "inherit permissions on folders" default setting.<p>
+     * 
+     * @param value the "inherit permissions on folders" default setting
+     */
+    public void setParamTabDiPermissionsInheritOnFolder(String value) {
+        m_userSettings.setDialogPermissionsInheritOnFolder(Boolean.valueOf(value).booleanValue());
     }
     
     /**

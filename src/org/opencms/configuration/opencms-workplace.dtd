@@ -467,8 +467,8 @@
 								   filedeletion,
 								   directpublish,
 								   showlock,
-								   show-permissionsuser,
-								   show-permissionsinherited,
+								   expand-permissionsuser,
+								   expand-permissionsinherited,
 								   permissions-inheritonfolder)>
 <!--
 # The default setting of the file copy dialog. This dialog displays different options how
@@ -501,14 +501,14 @@
 <!ELEMENT showlock (#PCDATA)>
 
 <!--
-# If this element is set to "true", the permission dialog shows the users permission when opened.
+# If this element is set to "true", the permission dialog expands the users permission when opened.
 -->	
-<!ELEMENT show-permissionsuser (#PCDATA)>
+<!ELEMENT expand-permissionsuser (#PCDATA)>
 
 <!--
-# If this element is set to "true", the permission dialog shows the inherited permission when opened.
+# If this element is set to "true", the permission dialog expands the inherited permission when opened.
 -->	
-<!ELEMENT show-permissionsinherited (#PCDATA)>
+<!ELEMENT expand-permissionsinherited (#PCDATA)>
 
 <!--
 # If this element is set to "true", the permission dialog inherits the set permissions per default on folders.
