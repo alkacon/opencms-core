@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/03/25 16:35:50 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsObject {
 
@@ -915,9 +915,7 @@ public class CmsObject {
     public void deleteResource(String filename, int deleteOption) throws CmsException {
         getResourceType(readFileHeader(filename).getType()).deleteResource(this, filename, deleteOption);
     }
-    
-    
-    
+
     /**
      * Deletes an entry in the published resource table.<p>
      * 
@@ -929,9 +927,7 @@ public class CmsObject {
     public void deleteStaticExportPublishedResource(String resourceName, int linkType, String linkParameter) throws CmsException {
         m_driverManager.deleteStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
     }
-    
-    
-    
+
     /**
      * Deletes a user from the Cms.<p>
      * 
@@ -2492,12 +2488,13 @@ public class CmsObject {
      * @return the absolute path
      */
     public String readAbsolutePath(CmsResource resource, boolean includeDeleted) {
-        try {
-            if (!resource.hasFullResourceName()) {
+        if (!resource.hasFullResourceName()) {
+            try {
                 m_driverManager.readPath(m_context, resource, includeDeleted);
+            } catch (CmsException e) {
+                OpenCms.getLog(this).error("Could not read absolute path for resource " + resource, e);
+                resource.setFullResourceName(null);
             }
-        } catch (CmsException e) {
-            resource.setFullResourceName(null);
         }
 
         // adjust the resource path for the current site root
@@ -3167,8 +3164,7 @@ public class CmsObject {
     public List readStaticExportResources(boolean parameterResources) throws CmsException {
         return m_driverManager.readStaticExportResources(m_context, parameterResources);
     }
-    
-    
+
     /**
      * Reads the task with the given id.
      *
@@ -3818,8 +3814,7 @@ public class CmsObject {
     public void writeProperty(String name, String property, String value, boolean addDefinition) throws CmsException {
         m_driverManager.writeProperty(m_context, addSiteRoot(name), property, value, addDefinition);
     }
-    
-    
+
     /**
      * Inserts an entry in the published resource table.<p>
      * 
@@ -3832,8 +3827,6 @@ public class CmsObject {
     public void writeStaticExportPublishedResource(String resourceName, int linkType, String linkParameter) throws CmsException {
         m_driverManager.writeStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
     }
-    
-    
 
     /**
      * Writes a new user tasklog for a task.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/03/25 16:35:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsFlexController {
     
@@ -87,27 +87,63 @@ public class CmsFlexController {
     /** URI of a VFS resource that caused the exception */
     private String m_throwableResourceUri;
     
+    /** Indicates if the respose should be streamed */
+    private boolean m_streaming;
+    
+    /** Indicates if the request is the top request */
+    private boolean m_top;
+    
+    /**
+     * Returns <code>true</code> if the generated output of the response should 
+     * be written to the stream directly.<p>
+     * 
+     * @return <code>true</code> if the generated output of the response should be written to the stream directly
+     */
+    public boolean isStreaming() {
+        return m_streaming;
+    }
+    
+    /**
+     * Returns <code>true</code> if this controller was generated as top level controller.<p>
+     * 
+     * If a resource (e.g. a JSP) is processed and it's content is included in 
+     * another resource, then this will be <code>false</code>.   
+     * 
+     * @return <code>true</code> if this controller was generated as top level controller
+     * @see org.opencms.loader.I_CmsResourceLoader#dump(CmsObject, CmsResource, String, java.util.Locale, HttpServletRequest, HttpServletResponse)
+     * @see org.opencms.jsp.CmsJspActionElement#getContent(String)
+     */
+    public boolean isTop() {
+        return m_top;
+    }
+    
     /**
      * Default constructor.<p>
      * 
      * @param cms the initial CmsObject to wrap in the controller
-     * @param file the file requested 
+     * @param resource the file requested 
      * @param cache the instance of the flex cache
      * @param req the current request
      * @param res the current response
+     * @param streaming indicates if the response is streaming
+     * @param top indicates if the response is the top response
      */
     public CmsFlexController(
         CmsObject cms, 
-        CmsResource file, 
+        CmsResource resource, 
         CmsFlexCache cache, 
         HttpServletRequest req, 
-        HttpServletResponse res
+        HttpServletResponse res,
+        boolean streaming,
+        boolean top
     ) {
         m_cmsObject = cms;
-        m_resource = file;
+        m_resource = resource;
         m_cache = cache;
         m_req = req;
         m_res = res;
+        m_streaming = streaming;
+        m_top = top;
         m_flexRequestList = Collections.synchronizedList(new ArrayList());
         m_flexResponseList = Collections.synchronizedList(new ArrayList());
         m_flexContextInfoList = Collections.synchronizedList(new ArrayList());

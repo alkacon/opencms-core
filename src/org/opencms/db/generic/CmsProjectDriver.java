@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.155 $
+ * Date   : $Date: 2004/03/25 16:35:50 $
+ * Version: $Revision: 1.156 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,69 +83,29 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.155 $ $Date: 2004/03/25 15:08:52 $
+ * @version $Revision: 1.156 $ $Date: 2004/03/25 16:35:50 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
 public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjectDriver, I_CmsEventListener {
 
-    /** Constant to get property from configurations */
-    protected static final String C_CONFIGURATIONS_DIGEST = "digest";
-
-    /** Constant to get property from configurations */
-    protected static final String C_CONFIGURATIONS_DIGEST_FILE_ENCODING = "digest.fileencoding";
-
-    /** Constant to get property from configurations */
-    protected static final String C_CONFIGURATIONS_POOL = "pool";
-
-    /** Internal debugging flag.<p> */
+    /** Internal debugging flag*/
     private static final boolean C_DEBUG = false;
 
-    /**
-     * The maximum amount of tables.
-     */
-    protected static final int C_MAX_TABLES = 18;
-
-    /**
-     * The session-timeout value:
-     * currently six hours. After that time the session can't be restored.
-     */
-    public static final long C_SESSION_TIMEOUT = 6 * 60 * 60 * 1000;
-
-    /**
-     * Table-key for projects
-     */
+    /** Table-key for projects */
     protected static final String C_TABLE_PROJECTS = "CMS_PROJECTS";
 
-    /**
-     * Table-key for properties
-     */
-    protected static final String C_TABLE_PROPERTIES = "CMS_PROPERTIES";
-
-    /**
-     * Table-key for property definitions
-     */
-    protected static final String C_TABLE_PROPERTYDEF = "CMS_PROPERTYDEF";
-
-    /**
-     * Table-key for system properties
-     */
+    /** Table-key for system properties */
     protected static final String C_TABLE_SYSTEMPROPERTIES = "CMS_SYSTEMPROPERTIES";
 
-    /**
-     * The driver manager
-     */
+    /** The driver manager */
     protected CmsDriverManager m_driverManager;
 
-    /**
-     * Array containing all max-ids for the tables.
-     */
+    /** Array containing all max-ids for the tables */
     protected int[] m_maxIds;
 
-    /**
-     * The sql manager
-     */
+    /** The sql manager */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
@@ -338,8 +298,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
-    
-    
+
     /**
      * delete a projectResource from an given CmsResource object.<p>
      *
@@ -430,7 +389,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
     }
 
-
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deleteStaticExportPublishedResource(org.opencms.file.CmsProject, java.lang.String, int, java.lang.String)
      */
@@ -451,9 +409,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
-    
-    
-    
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#destroy()
      */
@@ -557,8 +513,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         return m_sqlManager;
     }
 
-    
-    
     /**
      * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
      */
@@ -1499,8 +1453,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
         
         return project;
-    }
-    
+    }    
 
     /**
      * Reads log entries for a project.<p>
@@ -1860,7 +1813,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         return publishedResources;      
     }
 
-
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readStaticExportResources(org.opencms.file.CmsProject, boolean)
      */
@@ -1873,29 +1825,27 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         // the parameter mode triggers either to read resources with parameter links or those without.
         // is set to TRUE, all resources with parameter links are read
         int parameterMode = 0;
-        if (parameterResources) parameterMode = 1;
-       
+        if (parameterResources) {
+            parameterMode = 1;
+        }
         
         try {
-           conn = m_sqlManager.getConnection(currentProject);
-           stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_ALL_PUBLISHED_RESOURCES");
-           stmt.setInt(1, parameterMode);
-           res = stmt.executeQuery();
-           // add all resourcenames to the list of return values
-           while (res.next()) {
-            returnValue.add(res.getString(1));               
-           }           
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_ALL_PUBLISHED_RESOURCES");
+            stmt.setInt(1, parameterMode);
+            res = stmt.executeQuery();
+            // add all resourcenames to the list of return values
+            while (res.next()) {
+                returnValue.add(res.getString(1));               
+            }           
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }  
-       
-       
-       return returnValue;
-       
-    }
- 
+
+        return returnValue;        
+    }   
     
     /**
      * Reads a serializable object from the systempropertys.
@@ -1937,7 +1887,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
         return property;
     }
-
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#unmarkProjectResources(org.opencms.file.CmsProject)
@@ -2019,9 +1968,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
     }    
 
-    
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(java.lang.String)
+     * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(org.opencms.file.CmsProject, java.lang.String, int, java.lang.String)
      */
     public void writeStaticExportPublishedResource(CmsProject currentProject, String resourceName, int linkType, String linkParameter) throws CmsException {
         Connection conn = null;
@@ -2060,8 +2008,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
         }
     }
-    
-    
+
     /**
      * Writes a serializable object to the systemproperties.
      *

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/03/25 16:35:50 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.44 $ $Date: 2004/03/25 15:08:52 $
+ * @version $Revision: 1.45 $ $Date: 2004/03/25 16:35:50 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -141,7 +141,6 @@ public interface I_CmsProjectDriver {
      */
     void deleteSystemProperty(String name) throws CmsException;
 
-    
     /**
      * Deletes an entry in the published resource table.<p>
      * 
@@ -152,11 +151,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     void deleteStaticExportPublishedResource(CmsProject currentProject, String resourceName, int linkType, String linkParameter) throws CmsException;
-    
-    
-  
-    
-    
+
     /**
      * Destroys this driver.<p>
      * 
@@ -184,7 +179,6 @@ public interface I_CmsProjectDriver {
      */
     org.opencms.db.generic.CmsSqlManager initQueries();
 
-    
     /**
      * Publishes a deleted folder.<p>
      * 
@@ -389,8 +383,6 @@ public interface I_CmsProjectDriver {
      */
     List readPublishedResources(int projectId, CmsUUID publishHistoryId) throws CmsException;
 
-    
-    
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
@@ -400,8 +392,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     List readStaticExportResources(CmsProject currentProject, boolean parameterResources) throws CmsException;
- 
-    
+
     /**
      * Reads a serializable object from the systempropertys.<p>
      *
@@ -436,8 +427,6 @@ public interface I_CmsProjectDriver {
      */
     void writePublishHistory(CmsProject currentProject, CmsUUID publishId, int tagId, String contentDefinitionName, CmsUUID masterId, int subId, int state) throws CmsException;
 
-    
-    
     /**
      * Inserts an entry in the published resource table.<p>
      * 
@@ -449,10 +438,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     void writeStaticExportPublishedResource(CmsProject currentProject, String resourceName, int linkType, String linkParameter) throws CmsException;
-    
-    
-    
-    
+
     /**
      * Writes a serializable object to the systemproperties.<p>
      *
