@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/03/18 17:06:00 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2002/03/20 10:03:56 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.82 $ $Date: 2002/03/18 17:06:00 $
+ * @version $Revision: 1.83 $ $Date: 2002/03/20 10:03:56 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -158,6 +158,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * Is the static export enabled of diabled
      */
     private static boolean c_staticExportEnabled = false;
+
+    /**
+     * the value of the exportEnabled parameter.
+     */
+    private static String c_staticExportEnabledValue = "";
 
     /**
      * the link in the static export that link to pages that are exportet too
@@ -357,6 +362,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             c_exportRelativeLinks = conf.getBoolean("relativelinks_in_export", false);
             // is the static export enabled?
             String activCheck = conf.getString("staticexport.enabled", "false");
+            c_staticExportEnabledValue = activCheck;
             if("true".equalsIgnoreCase(activCheck)){
                 c_staticExportEnabled = true;
             }else{
@@ -479,6 +485,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public static boolean isStaticExportEnabled(){
         return c_staticExportEnabled;
+    }
+
+    /**
+     * Returns the value of the static export enable.
+     * (needed for the false_ssl feature)
+     */
+    public static String getStaticExportEnabledValue(){
+        return c_staticExportEnabledValue;
     }
 
     /**

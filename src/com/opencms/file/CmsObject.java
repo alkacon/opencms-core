@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/03/13 11:24:22 $
-* Version: $Revision: 1.222 $
+* Date   : $Date: 2002/03/20 10:04:21 $
+* Version: $Revision: 1.223 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.222 $ $Date: 2002/03/13 11:24:22 $
+ * @version $Revision: 1.223 $ $Date: 2002/03/20 10:04:21 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1713,6 +1713,21 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
      */
     public boolean isStaticExportEnabled(){
         return OpenCms.isStaticExportEnabled();
+    }
+
+    /**
+     * Returns the value of the static export enable.
+     * (needed for the false_ssl feature)
+     */
+    public String getStaticExportEnabledValue(){
+        return OpenCms.getStaticExportEnabledValue();
+    }
+
+    /**
+     * Returns true if the links in the static export should be relative.
+     */
+    public boolean relativLinksInExport(){
+        return OpenCms.relativLinksInExport();
     }
 
     /**

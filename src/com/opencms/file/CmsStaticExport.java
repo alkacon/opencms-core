@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/03/14 11:22:04 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/03/20 10:04:21 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.21 $ $Date: 2002/03/14 11:22:04 $
+ * @version $Revision: 1.22 $ $Date: 2002/03/20 10:04:21 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -266,17 +266,20 @@ public class CmsStaticExport implements I_CmsConstants{
         // first the rules for namereplacing
         try{
             // get the resources with the property exportname
-            Vector resWithProp = m_cms.getResourcesWithProperty(C_PROPERTY_EXPORTNAME);
-            // generate the dynamic rules for the nice exportnames
-            if(resWithProp != null && resWithProp.size() != 0){
-                m_dynamicExportNameRules = new Vector();
-                m_dynamicExportNameRulesExtern = new Vector();
-                for(int i=0; i < resWithProp.size(); i++){
-                    CmsResource resource = (CmsResource)resWithProp.elementAt(i);
-                    String oldName = resource .getAbsolutePath();
-                    String newName = m_cms.readProperty(oldName, C_PROPERTY_EXPORTNAME);
-                    m_dynamicExportNameRules.addElement("s#^"+oldName+"#"+m_cms.getUrlPrefixArray()[0]+newName+"#");
-                    m_dynamicExportNameRulesExtern.addElement("s#^"+oldName+"#"+newName+"#");
+            Vector resWithProp = null;
+            if(!"false_ssl".equalsIgnoreCase(m_cms.getStaticExportEnabledValue())){
+                resWithProp = m_cms.getResourcesWithProperty(C_PROPERTY_EXPORTNAME);
+                // generate the dynamic rules for the nice exportnames
+                if(resWithProp != null && resWithProp.size() != 0){
+                    m_dynamicExportNameRules = new Vector();
+                    m_dynamicExportNameRulesExtern = new Vector();
+                    for(int i=0; i < resWithProp.size(); i++){
+                        CmsResource resource = (CmsResource)resWithProp.elementAt(i);
+                        String oldName = resource .getAbsolutePath();
+                        String newName = m_cms.readProperty(oldName, C_PROPERTY_EXPORTNAME);
+                        m_dynamicExportNameRules.addElement("s#^"+oldName+"#"+m_cms.getUrlPrefixArray()[0]+newName+"#");
+                        m_dynamicExportNameRulesExtern.addElement("s#^"+oldName+"#"+newName+"#");
+                    }
                 }
             }
         }catch(CmsException e){
