@@ -195,17 +195,7 @@ table.dialogbox {
 	font-size: 12px;
 	font-weight: bold;
 	width: 100%;
-}
-
-.dialogheadnew {
-	background-color: ActiveCaption;
-	margin-bottom: 8px;
-	padding: 2px;
-	color: CaptionText;
-	font-size: 12px;
-	font-weight: bold;
-	width: 100%;
-	filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1,startColorStr=#440033,endColorStr=#CC0033);
+	white-space: nowrap;	
 }
 
 /* Subheadline used in content area */
