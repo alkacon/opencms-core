@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/12/07 10:31:06 $
-* Version: $Revision: 1.211 $
+* Date   : $Date: 2001/12/07 14:18:02 $
+* Version: $Revision: 1.212 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.211 $ $Date: 2001/12/07 10:31:06 $
+ * @version $Revision: 1.212 $ $Date: 2001/12/07 14:18:02 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2257,7 +2257,10 @@ public void publishProject(int id) throws CmsException {
         // do static export if the static-export flag is set for the project
         if (doStatExp){
             try{
+                int oldId = m_context.currentProject().getId();
+                m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
                 this.exportStaticResources(this.getStaticExportStartPoints());
+                m_context.setCurrentProject(oldId);
             } catch (Exception ex){
                 System.err.println("Error while exporting static resources:");
                 ex.printStackTrace();
