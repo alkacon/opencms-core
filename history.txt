@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.4  Com Jabbar   - 19 August 2001
+* Added missing element._TEMPLATE_, element._TEMPLATECLASS_, and 
+  element._TEMPLATESELECTOR_ - parameters.
+
 OpenCms 4.4.1  Gom Jabbar   - 17 August 2001
 ! Added mimetype-properties. So now you can easy edit the mimetypes in 
   TOMCAT_HOME/web-apps/opencms/WEB-INF/occlasses/mimtypes.properties.
