@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElementLink.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/30 15:27:57 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,4 +41,32 @@ import com.opencms.file.*;
  */
 public class CmsElementLink {
 
+    /**
+     * The name of the element to link to.
+     */
+    String m_elementName;
+
+    /**
+     * Creates a new Element-Link to find out where to link to.
+     * @param nameToLinkTo - the name of the element to link to.
+     */
+    public CmsElementLink(String nameToLinkTo) {
+        m_elementName = nameToLinkTo;
+    }
+
+    /**
+     * Returns the name of the element to link to.
+     * @returns the name of the element to link to.
+     */
+    public String toString() {
+        return m_elementName;
+    }
+
+    /**
+     * Returns the name of the element to link to.
+     * @returns the name of the element to link to.
+     */
+    public String getElementName() {
+        return toString();
+    }
 }
