@@ -15,7 +15,7 @@ import java.util.*;
  * @author Alexander Lucas
 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/26 11:50:14 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/26 13:52:40 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
@@ -91,6 +91,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     private void registerMyTags() {
         registerTag("BUTTON", "com.opencms.workplace.CmsButton");
         registerTag("BUTTONSEPARATOR", "com.opencms.workplace.CmsButtonSeparator");
+        registerTag("SUBMITBUTTON", "com.opencms.workplace.CmsButtonSubmit");
         registerTag("LABEL", "com.opencms.workplace.CmsLabel");
         registerTag("INPUTFIELD", "com.opencms.workplace.CmsInput");
         registerTag("PASSWORD", "com.opencms.workplace.CmsInputPassword");

@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/01/26 11:50:14 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/26 13:52:40 $
  */
 public interface I_CmsWpConstants {
 
@@ -41,7 +41,11 @@ public interface I_CmsWpConstants {
     */
    public static final String C_TAG_PASSWORD="password";
     
-    
+    /**
+    * Name if the submitbutton tag in the button definiton template
+    */
+   public static final String C_TAG_SUBMITBUTTON="submitbutton";
+   
     // Parameters for buttons
     
     /** Name of the button */
@@ -56,6 +60,15 @@ public interface I_CmsWpConstants {
     /** href text of the button */
     public static final String C_BUTTON_HREF = "href";
 
+    /** Value of the button */
+    public static final String C_BUTTON_VALUE = "value";
+    
+    /** Style of the button */
+    public static final String C_BUTTON_STYLE = "class";
+    
+    /** width of the button */
+    public static final String C_BUTTON_WIDTH = "width";
+    
     
     // Parameters for labels
     

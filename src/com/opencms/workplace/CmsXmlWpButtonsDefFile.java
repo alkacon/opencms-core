@@ -14,7 +14,8 @@ import java.util.*;
  * Content definition for the workplace button element definition file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/26 10:15:05 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.5 $ $Date: 2000/01/26 13:52:40 $
  */
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent 
         implements I_CmsLogChannels, I_CmsWpConstants {
@@ -87,4 +88,20 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
     public String getButtonSeparator() throws CmsException {
         return getProcessedDataValue("buttonseparator");
     }    
+    
+     /**
+     * Gets the processed data for a button.
+     * @return Processed button.
+     * @exception CmsException
+     */
+    public String getButtonSubmit(String name, String action, 
+                                  String value, String style, String width)
+        throws CmsException {
+        setData(C_BUTTON_NAME, name);
+        setData(C_BUTTON_ACTION, action);
+        setData(C_BUTTON_VALUE, value);
+        setData(C_BUTTON_STYLE, style);
+        setData(C_BUTTON_WIDTH,width);
+        return getProcessedDataValue("submitbutton");                
+    }  
 }

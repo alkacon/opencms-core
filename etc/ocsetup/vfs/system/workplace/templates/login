@@ -49,6 +49,9 @@
         </tr>
         <tr>
             <td colspan=2 align=middle class=formular><input class=button width=100 type="submit" value="Enter" id=LOGIN name=LOGIN onclick="openwin('login.html', 'opencms', 0, 0); window.close(); return false;"></td>
+			<td>
+			]]><SUBMITBUTTON class="button" name="LOGIN2" value="ok" width="100" action="" /><![CDATA[
+			</td>
         </tr>
         </table>
 </td></tr>
