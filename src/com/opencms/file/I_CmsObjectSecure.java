@@ -14,11 +14,11 @@ import com.opencms.core.*;
  * I_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/07 18:50:35 $ 
+ * @version $Revision: 1.3 $ $Date: 1999/12/09 16:28:43 $ 
  * 
  */
 interface I_CmsObjectSecure {	
-	
+
 	/**
 	 * Initialises the CmsObject with the resourceBroker. This only done ones!
 	 * If the ressource broker was set before - it will not be overitten. This is
@@ -39,6 +39,14 @@ interface I_CmsObjectSecure {
 	 * @param uri Teh uri of this request.
 	 */
 	void init(I_CmsUser user, String host, String url, String uri);
+	
+	/**
+	 * Returns a version-string vor the Cms. The constant C_VERSION should be used
+	 * for this.
+	 * 
+	 * @return a version-string vor the Cms.
+	 */
+	public String version();
 	
 	/**
 	 * Returns the uri for this CmsObject.
@@ -372,6 +380,22 @@ interface I_CmsObjectSecure {
 		throws CmsException;
 
 	/**
+	 * Sets the resource-type of this resource.
+	 * The onlineproject will be used for this resource<BR/>
+	 * 
+	 * @param resource The complete path for the resource to be changed.
+	 * @param type The new type for the resource.
+	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
+	 * 
+	 * @exception CmsException will be thrown, if the file type couldn't be changed. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public void setResourceType(String resource, I_CmsResourceType newType,
+								Hashtable metainfos)
+		throws CmsException;
+
+	/**
 	 * Creates a new folder.
 	 * The onlineproject will be used for this resource<BR/>
 	 * If there are some mandatory metadefinitions for the folder-resourcetype, a 
@@ -421,7 +445,7 @@ interface I_CmsObjectSecure {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	public I_CmsFile createFolder(String folder, String newFolderName, 
+	public I_CmsFolder createFolder(String folder, String newFolderName, 
 								Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
 
@@ -439,7 +463,7 @@ interface I_CmsObjectSecure {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	public I_CmsFile readFolder(String folder, String folderName)
+	public I_CmsFolder readFolder(String folder, String folderName)
 		throws CmsException;
 	
 	/**
@@ -550,6 +574,43 @@ interface I_CmsObjectSecure {
 		throws CmsException;
 	
 	/**
+	 * Tests, if a resource was locked<BR/>
+	 * 
+	 * The onlineproject is used for this method.<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. This methods checks, if a resource was locked.
+	 * 
+	 * 
+	 * @param resource The complete path to the resource.
+	 * 
+	 * @return true, if the resource is locked else it returns false.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	public boolean isLocked(String resource)
+		throws CmsException;
+	
+	/**
+	 * Returns the user, who had locked the resource.<BR/>
+	 * 
+	 * The onlineproject is used for this method.
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. This methods checks, if a resource was locked.
+	 * 
+	 * @param resource The complete path to the resource.
+	 * 
+	 * @return true, if the resource is locked else it returns false.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	public I_CmsUser lockedBy(String resource)
+		throws CmsException;
+
+	/**
 	 * Tests if the user has full access to a resource.
 	 * The onlineproject will be used for this resource<BR/>
 	 * 
@@ -620,7 +681,7 @@ interface I_CmsObjectSecure {
 	 * 
 	 * @return true, if the user has admin-rights, else returns false.
 	 */
-	public boolean adminResource(I_CmsResource resource);
+	public boolean adminResource(String filename);
 	
 	/**
 	 * Changes the flags for this resource<BR/>
@@ -765,9 +826,6 @@ interface I_CmsObjectSecure {
 	public boolean userInGroup(String username, String groupname)
 		throws CmsException;
 		
-	// Stuff about metadef and metainfo
-	// ?? whats about metadef_types?? (normal|optional|mandatory)
-	
 	/**
 	 * Reads a metadefinition for the given resource type.
 	 * 
@@ -787,7 +845,7 @@ interface I_CmsObjectSecure {
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
 	 * The Vector is maybe empty.
 	 */	
-	public Vector getAllMetaDefinitions(I_CmsResourceType type);
+	public Vector readAllMetaDefinitions(I_CmsResourceType type);
 	
 	/**
 	 * Reads all metadefinitions for the given resource type.
@@ -798,7 +856,7 @@ interface I_CmsObjectSecure {
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
 	 * The Vector is maybe empty.
 	 */	
-	public Vector getAllMetaDefinitions(I_CmsResourceType resourcetype, int type);
+	public Vector readAllMetaDefinitions(I_CmsResourceType resourcetype, int type);
 
 	/**
 	 * Returns a MetaInformation of a file or folder.<BR/>
@@ -849,7 +907,7 @@ interface I_CmsObjectSecure {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Vector getAllMetaInformations(String name)
+	public Vector readAllMetaInformations(String name)
 		throws CmsException;
 	
 	/**
@@ -872,7 +930,7 @@ interface I_CmsObjectSecure {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteMetaInformations(String resourcename, String meta)
+	public void deleteMetaInformation(String resourcename, String meta)
 		throws CmsException;
 
 	/** 
@@ -887,4 +945,13 @@ interface I_CmsObjectSecure {
 	 */
 	public void setPassword(String username, String newPassword)
 		throws CmsException;
+	
+	/**
+	 * Tests if the user can access the project.
+	 * 
+	 * @param projectname the name of the project.
+	 * 
+	 * @return true, if the user has access, else returns false.
+	 */
+	public boolean accessProject(String projectname);
 }

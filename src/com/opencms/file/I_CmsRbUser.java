@@ -14,10 +14,20 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/07 18:50:35 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/09 16:28:43 $
  */
-public interface I_CmsRbUser
-{
+public interface I_CmsRbUser {
+	/**
+	 * Returns the anonymous user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @return the anonymous user object.
+	 */
+	I_CmsUser anonymousUser(I_CmsUser callingUSer);
+	
 	/**
 	 * Returns a user object.<P/>
 	 * 
@@ -260,6 +270,43 @@ public interface I_CmsRbUser
 	void removeUserFromGroup(I_CmsUser callingUser, String username, String groupname)
 		throws CmsException;
 
-	// TODO: boolean isAdmin-methods are missing here!
-	// TODO: check the returnvalues!
+	/**
+	 * Returns all users<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @return users A Vector of all existing users.
+	 */
+	Vector getUsers(I_CmsUser callingUser);
+	
+	/**
+	 * Returns all groups<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @return users A Vector of all existing groups.
+	 */
+	Vector getGroups(I_CmsUser callingUser);	
+
+	/** 
+	 * Sets the password for a user.
+	 * 
+	 * Only a adminstrator or the curretuser can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * Current users can change their own password.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @param username The name of the user.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	void setPassword(I_CmsUser callingUser, String username, String newPassword)
+		throws CmsException;
 }
