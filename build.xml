@@ -22,6 +22,7 @@
     <property name="opencms.input.defaultconfiguration" location="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" />
     <property name="opencms.input.default.registry"		location="${opencms.input.warfiles}/WEB-INF/config/registry.xml" />
     <property name="opencms.input.default.config"		location="${opencms.input.warfiles}/WEB-INF/config/opencms.xml" />
+    <property name="opencms.input.default.system"		location="${opencms.input.warfiles}/WEB-INF/config/opencms-system.xml" />
         
     <property name="opencms.inputlib.servlet"     		location="${opencms.input.libs}/servlet.jar" />
     <property name="opencms.inputlib.activation"  		location="${opencms.input.libs}/activation.jar" />
@@ -62,6 +63,7 @@
 	<property name="drivers.configuration"				value="" />
 	<property name="registry.configuration"				value="" />
 	<property name="opencms.configuration"				value="" />
+	<property name="system.runtimeinfo"					value="org.opencms.db.CmsDbContextFactory" />
 
     <property name="excludes"                   		value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath" />
     
@@ -290,7 +292,7 @@ ${opencms.inputlib.pdfbox}
       			<filter token="DRIVERS_CONFIGURATION" value="${drivers.configuration}"/>
     		</filterset>	   		
 	   	</copy>       	  
-
+    	
 	   	<copy 
 	   		file="${opencms.input.default.config}" 
 	   		tofile="${opencms.output.classes}/opencms.xml" overwrite="true">	   		
@@ -298,7 +300,17 @@ ${opencms.inputlib.pdfbox}
       			<filter token="OPENCMS_CONFIGURATION" value="${opencms.configuration}"/>
     		</filterset>	   		
 	   	</copy>	   		   	
-    </target>
+
+    	<echo message="${opencms.input.default.system}" />
+        <echo message="${opencms.output.classes}/opencms-system.xml" />
+	   	<copy 
+	   		file="${opencms.input.default.system}" 
+	   		tofile="${opencms.output.classes}/opencms-system.xml" overwrite="true">	   		
+    		<filterset>
+      			<filter token="RUNTIME_INFO" value="${system.runtimeinfo}"/>
+    		</filterset>	   		
+	   	</copy>	   		   	
+	</target>
     		    
 
     <target name="jar-legacy" 
@@ -353,6 +365,7 @@ ${opencms.inputlib.pdfbox}
        			<exclude name="WEB-INF/web.xml" />
        			<exclude name="WEB-INF/lib/*" />
        			<exclude name="WEB-INF/config/opencms.properties" />
+       			<exclude name="WEB-INF/config/opencms-system.xml" />
        			<exclude name="WEB-INF/config/registry.xml" />
        			<exclude name="WEB-INF/setupdata/vfs/system/login/version.js" />
        			<exclude name="setup/versions.txt" />
@@ -360,6 +373,7 @@ ${opencms.inputlib.pdfbox}
        			<exclude name="build.xml,.*,${excludes}" />
        		</fileset>
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.properties" />
+  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms-system.xml" />
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="registry.xml" />  			
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/setupdata/vfs/system/login" includes="version.js" />
   			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="versions.txt" />
