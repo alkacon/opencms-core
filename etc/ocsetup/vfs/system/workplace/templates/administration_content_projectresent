@@ -55,13 +55,13 @@ function show_help()
 ]]>
 
 <contextmenue name="project_lock">
-	<contextentry name="project.context.createtask" href="javascript:doPAction(DO_PTASK);"/>
+	<contextdisabled name="project.context.createtask" href="javascript:doPAction(DO_PTASK);"/>
 	<contextspacer/>
 	<contextentry name="project.context.removelock" href="javascript:doPAction(DO_PUNLOCK);"/>
 </contextmenue>
 
 <contextmenue name="project_unlock">
-	<contextentry name="project.context.createtask" href="javascript:doPAction(DO_PTASK);"/>
+	<contextdisabled name="project.context.createtask" href="javascript:doPAction(DO_PTASK);"/>
 	<contextspacer/>
 	<contextentry name="project.context.publish" href="javascript:doPAction(DO_PONLINE);"/>
 </contextmenue>

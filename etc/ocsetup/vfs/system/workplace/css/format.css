@@ -146,6 +146,14 @@ TD.wizard
     FONT-SIZE: 8pt;
     FONT-WEIGHT: normal
 }
+TD.wizardbold
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold;
+}
 TD.leerzeile
 {
     BACKGROUND-COLOR: #c0c0c0;
@@ -172,6 +180,16 @@ INPUT.textfeld
     HEIGHT: 20px;
     WIDTH: 150px
 }
+INPUT.textfeld1
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+    HEIGHT: 20px;
+    WIDTH: 200px
+}
 INPUT.textfeld2
 {
     BACKGROUND-COLOR: white;
@@ -191,6 +209,13 @@ INPUT.textfeld3
 	WIDTH: 300px
 }
 TEXTAREA.textarea
+{
+    COLOR: #000000;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	WIDTH: 300px
+}
+TEXTAREA.textarea1
 {
     COLOR: #000000;
 	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
@@ -269,7 +294,7 @@ TD.taskviewhead2
     FONT-SIZE: 10pt;
     FONT-WEIGHT: bold;
 }
-TD.taskviewheadblue
+TD.taskviewheadactive
 {
     BACKGROUND-COLOR: blue;
     COLOR: #ffffff;
@@ -277,13 +302,29 @@ TD.taskviewheadblue
     FONT-SIZE: 10pt;
     FONT-WEIGHT: bold;
 }
-TD.taskviewheadred
+TD.taskviewheadnew
+{
+    BACKGROUND-COLOR: #b1c7ff;
+    COLOR: #000000;
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+}
+TD.taskviewheadalert
 {
     BACKGROUND-COLOR: #ff0000;
     COLOR: #ffffff;
     FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
     FONT-SIZE: 10pt;
     FONT-WEIGHT: bold
+}
+TD.taskviewheadok
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
 }
 TD.taskviewbold
 {
@@ -312,6 +353,14 @@ TD.taskviewtxtred
 TD.taskviewbackblue
 {
     BACKGROUND-COLOR: blue;
+    COLOR: #ffffff;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal
+}
+TD.taskviewbackblack
+{
+    BACKGROUND-COLOR: black;
     COLOR: #ffffff;
     FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
     FONT-SIZE: 8pt;
