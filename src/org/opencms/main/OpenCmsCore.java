@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/07/02 16:05:08 $
- * Version: $Revision: 1.128 $
+ * Date   : $Date: 2004/07/05 15:37:34 $
+ * Version: $Revision: 1.129 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.128 $
+ * @version $Revision: 1.129 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1924,8 +1924,8 @@ public final class OpenCmsCore {
                              
                 if (propertyLoginForm != CmsProperty.getNullProperty() && propertyLoginForm.getValue() != null && !"".equals(propertyLoginForm.getValue())) {
                     // build a redirect URL using the value of the property
-    	            // "__loginform" is a dummy request parameter that could be used in a JSP template to trigger
-	                // if the template should display a login formular or not                       
+                    // "__loginform" is a dummy request parameter that could be used in a JSP template to trigger
+                    // if the template should display a login formular or not                       
                     redirectURL = servletPath + propertyLoginForm.getValue() + "?__loginform=true&requestedResource=" + req.getPathInfo();
                 }
             } catch (CmsException e) {
