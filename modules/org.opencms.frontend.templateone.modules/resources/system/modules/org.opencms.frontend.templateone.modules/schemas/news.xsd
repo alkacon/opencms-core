@@ -19,7 +19,9 @@
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="Author" type="OpenCmsString" />
+			<xsd:element name="Teaser" type="OpenCmsString" />
 			<xsd:element name="Text" type="OpenCmsHtml" />
+			<xsd:element name="Priority" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Date" type="OpenCmsDateTime" />			
 			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
 			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
@@ -38,11 +40,17 @@
 				<mapping element="Title" mapto="property:Title" />
 				<mapping element="Release" mapto="attribute:datereleased" />
 				<mapping element="Expiration" mapto="attribute:dateexpired" />
+				<mapping element="Date" mapto="property:collector.date" />
+				<mapping element="Priority" mapto="property:collector.priority" />
 			</mappings>
+			<layouts>
+				<layout element="Priority" widget="SelectorWidget" />
+			</layouts>
 			<validationrules/>
 			<defaults>
 				<default element="Date" value="${currenttime}"/>
 				<default element="Author" value="${currentuser.fullname}"/>
+				<default element="Priority" value="0:${key.priority.minimum}|1:${key.priority.verylow}|2:${key.priority.low}|3:${key.priority.standard}*|4:${key.priority.high}|5:${key.priority.veryhigh}|6:${key.priority.maximum}"/>
 			</defaults>
 		</xsd:appinfo>
 

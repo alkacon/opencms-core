@@ -24,6 +24,7 @@
 			<xsd:element name="ShortDescription" type="OpenCmsString" />	
 			<xsd:element name="LongDescription" type="OpenCmsHtml" />				
 			<xsd:element name="RegistrationClose" type="OpenCmsDateTime" minOccurs="0" />
+			<xsd:element name="Priority" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
 			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
 			<xsd:element name="EventOrganizer" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="5"/>
@@ -42,10 +43,16 @@
 				<mapping element="Title" mapto="property:Title" />
 				<mapping element="Release" mapto="attribute:datereleased" />
 				<mapping element="Expiration" mapto="attribute:dateexpired" />
+				<mapping element="Priority" mapto="property:collector.priority" />
+				<mapping element="RegistrationClose" mapto="property:collector.date" />
 			</mappings>
+			<layouts>
+				<layout element="Priority" widget="SelectorWidget" />
+			</layouts>
 			<validationrules/>
 			<defaults>
 				<default element="RegistrationClose" value="${currenttime}"/>
+				<default element="Priority" value="0:${key.priority.minimum}|1:${key.priority.verylow}|2:${key.priority.low}|3:${key.priority.standard}*|4:${key.priority.high}|5:${key.priority.veryhigh}|6:${key.priority.maximum}"/>
 			</defaults>
 		</xsd:appinfo>
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/06 11:36:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.collections.map.LRUMap;
  * An instance of this class is stored in the OpenCms runtime properties.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public final class CmsTemplateParts implements I_CmsEventListener {
     
@@ -104,7 +104,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
         } else if (OpenCms.getLog(CmsTemplateParts.class).isDebugEnabled()) {
             OpenCms.getLog(CmsTemplateParts.class).debug("Instance found in runtime properties");
         }
-        // set the projext String depending on the current project (offline or online)
+        // set the project String depending on the current project (offline or online)
         if (jsp.getRequestContext().currentProject().isOnlineProject()) {
             parts.setProject(C_PROJECT_ONLINE);    
         } else {
@@ -137,6 +137,16 @@ public final class CmsTemplateParts implements I_CmsEventListener {
             default:
                 // no operation
         }
+    }
+    /**
+     * Returns a previously cached part of template one with the specified key, or null, if no part is found.<p>
+     * 
+     * @param partKey the key to identify the part
+     * @return a previously cached part of template one with the specified key
+     */
+    public Object getPart(String partKey) {
+        
+        return m_parts.get(partKey);
     }
     
     /**
@@ -173,16 +183,6 @@ public final class CmsTemplateParts implements I_CmsEventListener {
         }
         return part;
     }
-    /**
-     * Returns a previously cached part of template one with the specified key, or null, if no part is found.<p>
-     * 
-     * @param partKey the key to identify the part
-     * @return a previously cached part of template one with the specified key
-     */
-    protected String getPart(String partKey) {
-        
-        return (String)m_parts.get(partKey);
-    }
     
     /**
      * Sets a part in the cache with the specified key and value.<p>
@@ -190,7 +190,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      * @param partKey the key to identify the part
      * @param value the value to cache
      */
-    protected void setPart(String partKey, String value) {
+    public void setPart(String partKey, Object value) {
         
         m_parts.put(partKey, value);
         // save modified class to runtime properties

@@ -9,10 +9,10 @@ boolean showSideUri = CmsStringUtil.isNotEmpty(sideUri) && !"none".equals(sideUr
 String xmlDemo = cms.property("xmlcontent-side-uri", "search");
 boolean showXmlDemo = CmsStringUtil.isNotEmpty(xmlDemo) && !"none".equals(xmlDemo);
 
-String newsList = cms.property("style_news_articles", "search");
-boolean showNewsList = CmsStringUtil.isNotEmpty(newsList) && !"none".equals(newsList);
+String newsList = cms.property(CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT, "search", CmsTemplateBean.C_PROPERTY_VALUE_NONE);
+boolean showList = ! CmsTemplateBean.C_PROPERTY_VALUE_NONE.equals(newsList);
 
-boolean showSide = showSideUri || showNewsList || showXmlDemo;
+boolean showSide = showSideUri || showList || showXmlDemo;
 
 // create info box
 if (showSide) {
@@ -28,8 +28,8 @@ if (showSide) {
     out.print(" class=\"infobox\">\n");
     out.println("<!-- Side info box start -->\n");
     
-    if (showNewsList) {
-    	cms.include("/system/modules/org.opencms.frontend.templateone.modules/elements/side_news_list.jsp", null, true);
+    if (showList) {
+    	cms.includeRightLists();
     	if (showSideUri || showXmlDemo) {
     		out.println(spacer);
     	}

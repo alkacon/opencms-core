@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/03/16 10:48:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/04/06 11:36:25 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.frontend.templateone.modules.CmsTemplateContentListItem;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsLoaderException;
@@ -43,6 +44,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
@@ -66,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -111,12 +113,12 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
     /** Request parameter name to show the print version of a page. */
     public static final String C_PARAM_PRINT = "print";
-
-    /** Request parameter name for the uri. */
-    public static final String C_PARAM_URI = "uri";
     
     /** Request parameter name for the current site. */
     public static final String C_PARAM_SITE = "site";
+
+    /** Request parameter name for the uri. */
+    public static final String C_PARAM_URI = "uri";
 
     /** Name of the property key to set the configuration path for the template. */
     public static final String C_PROPERTY_CONFIGPATH = "style_main_configpath";
@@ -135,6 +137,12 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
     /** Name of the property key to set the head image uri. */
     public static final String C_PROPERTY_HEAD_IMGURI = "style_head_img_uri";
+    
+    /** Name of the property key to set the path to the layout file for the center layout. */
+    public static final String C_PROPERTY_LAYOUT_CENTER = "layout.center";
+    
+    /** Name of the property key to set the path to the layout file for the right layout. */
+    public static final String C_PROPERTY_LAYOUT_RIGHT = "layout.right";
 
     /** Name of the property key to set the left navigation include element uri. */
     public static final String C_PROPERTY_NAVLEFT_ELEMENTURI = "style_navleft_element_uri";
@@ -256,14 +264,15 @@ public class CmsTemplateBean extends CmsJspActionElement {
         m_properties.put(C_PARAM_LAYOUT, getLayout());
         // close content column
         JspWriter out = getJspContext().getOut();
-        out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "body_end.jsp", "1", getLayout()));
+        String elementName = C_FOLDER_ELEMENTS + "body_end.jsp";
+        out.print(getTemplateParts().includePart(elementName, "1", getLayout()));
         if (!showPrintVersion()) {
             // build the side info box
             include(getExtensionModuleFileUri("elements/info_side.jsp"), null, m_properties);
         }
 
         // close main content row
-        out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "body_end.jsp", "2", getLayout()));
+        out.print(getTemplateParts().includePart(elementName, "2", getLayout()));
 
         if (!showPrintVersion()) {
             // build the foot links row
@@ -296,7 +305,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         }
 
         // close body and html
-        out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "body_end.jsp", "3", getLayout()));
+        out.print(getTemplateParts().includePart(elementName, "3", getLayout()));
     }
 
     /**
@@ -418,7 +427,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Property value for extension module: " + configModule);
         }
-        if (!C_PROPERTY_VALUE_NONE.equals(configModule)) {
+        if (! C_PROPERTY_VALUE_NONE.equals(configModule)) {
             // extension module name found, check presence of file
             String fileName = I_CmsWpConstants.C_VFS_PATH_MODULES + configModule + "/" + relFilePath;
             try {
@@ -725,20 +734,51 @@ public class CmsTemplateBean extends CmsJspActionElement {
      */
     public void includeElements() throws IOException, JspException {
 
-        if (template("text1,text2,text3,text4,text5,text6,text7,text8", false)) {
-            // at least one element is present, create writer        
-            // create start part (common layout only)
+        // check if elements to show are present 
+        boolean elementsPresent = template("text1,text2,text3,text4,text5,text6,text7,text8", false);
+        
+        // get the list(s) of content items to display between elements
+        String configFile = (String)getProperties().get(C_PROPERTY_LAYOUT_CENTER);
+        List contents = new ArrayList();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configFile) && !C_PROPERTY_VALUE_NONE.equals(configFile)) {
+            // get the content list(s) for the center area
+            contents = getContentListItems(configFile, CmsTemplateContentListItem.C_DISPLAYAREA_CENTER);
+        }
+        // determine if list can show page links
+        int size = contents.size();
+        boolean showPageLinks = true;
+        if (size > 1) {
+            // more than one list is displayed, do not show page links on lists
+            showPageLinks = false;
+        }      
+             
+        if (elementsPresent || size > 0) {
+            // at least one element or list is present, create writer        
             JspWriter out = getJspContext().getOut();
-            out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "elements.jsp", "start", getLayout()));
-
-            // include the element rows
-            includeContentRow("text1", "text2", out);
-            includeContentRow("text3", "text4", out);
-            includeContentRow("text5", "text6", out);
-            includeContentRow("text7", "text8", out);
-
+            String elementName = C_FOLDER_ELEMENTS + "elements.jsp";
+            // create start part (common layout only)
+            out.print(getTemplateParts().includePart(elementName, "start", getLayout()));
+            
+            // calculate start point for content lists
+            int startPoint = 3 - size;
+            int listIndex = 0;
+            for (int i=0; i<4; i++) {              
+                int elementIndex = (i * 2) + 1;
+                // include the element row
+                includeContentRow("text" + (elementIndex), "text" + (elementIndex + 1), out);
+                if ((listIndex < size) && (i >= startPoint)) {
+                    // include the list item
+                    CmsTemplateContentListItem item = (CmsTemplateContentListItem)contents.get(listIndex);
+                    out.print(getTemplateParts().includePart(elementName, "column_start", getLayout()));
+                    out.print(getTemplateParts().includePart(elementName, "element_start_1", getLayout()));
+                    item.includeListItem(this, showPageLinks);
+                    out.print(getTemplateParts().includePart(elementName, "element_end", getLayout()));
+                    out.print(getTemplateParts().includePart(elementName, "column_end", getLayout()));
+                    listIndex++;
+                }
+            }
             // create end part (common layout only)
-            out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "elements.jsp", "end", getLayout()));
+            out.print(getTemplateParts().includePart(elementName, "end", getLayout()));
         }
     }
 
@@ -761,6 +801,24 @@ public class CmsTemplateBean extends CmsJspActionElement {
         }
         // include the element
         include(I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME + "/pages/popup_includes.jsp", element, properties);
+    }
+    
+    /**
+     * Includes center list elements if defined.<p>
+     * 
+     * @throws JspException if including an element fails
+     */
+    public void includeRightLists() throws JspException {
+
+        String configFile = (String)getProperties().get(C_PROPERTY_LAYOUT_RIGHT);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configFile) && !C_PROPERTY_VALUE_NONE.equals(configFile)) {
+            List contents = getContentListItems(configFile, CmsTemplateContentListItem.C_DISPLAYAREA_RIGHT);
+            int size = contents.size();          
+            for (int i=0; i<size; i++) {
+                CmsTemplateContentListItem item = (CmsTemplateContentListItem)contents.get(i);
+                item.includeListItem(this, false);
+            }
+        }
     }
 
     /**
@@ -947,6 +1005,36 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
         return m_showPrintVersion;
     }
+    
+    /**
+     * Returns a list of content list item objects which are needed to display lists on the side and in the center of the page.<p>
+     * 
+     * @param configFile the configuration file uri from which to read the properties from
+     * @param displayArea the area where to build the lists (left, center or right)
+     * @return a list of content list items
+     */
+    private List getContentListItems(String configFile, String displayArea) {
+
+        List result = new ArrayList();
+        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(getRequestContext().getLocale());
+        // read all properties of configuration file
+        Map properties = properties(configFile);
+        int i = 1;
+        boolean cont = true;
+        do {
+            // create a list item
+            CmsTemplateContentListItem item = CmsTemplateContentListItem.newInstance(messages, properties, getStartFolder(), displayArea, i);
+            if (item == null) {
+                // no item created, stop loop
+                cont = false;
+            } else {
+                // add created item to result
+                result.add(item);
+                i++;
+            }
+        } while (cont);
+        return result;
+    }
 
     /**
      * Includes one row of page elements.<p>
@@ -966,48 +1054,35 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
         if (template(elementLeft + "," + elementRight, false)) {
             // at least one element is present, create row (common layout only)
-            out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "elements.jsp", "column_start", getLayout()));
+            String elementName = C_FOLDER_ELEMENTS + "elements.jsp";
+            out.print(getTemplateParts().includePart(elementName, "column_start", getLayout()));
 
             if (template(elementLeft, true)) {
                 // left element is present
                 if (template(elementRight, true)) {
                     // right element is present, too
-                    out.print(getTemplateParts().includePart(
-                        C_FOLDER_ELEMENTS + "elements.jsp",
-                        "element_start_2",
-                        getLayout()));
+                    out.print(getTemplateParts().includePart(elementName, "element_start_2", getLayout()));
                 } else {
                     // no right element
-                    out.print(getTemplateParts().includePart(
-                        C_FOLDER_ELEMENTS + "elements.jsp",
-                        "element_start_1",
-                        getLayout()));
+                    out.print(getTemplateParts().includePart(elementName, "element_start_1", getLayout()));
                 }
                 include(null, elementLeft, true);
-                out.print(getTemplateParts()
-                    .includePart(C_FOLDER_ELEMENTS + "elements.jsp", "element_end", getLayout()));
+                out.print(getTemplateParts().includePart(elementName, "element_end", getLayout()));
             }
             if (template(elementRight, true)) {
                 // right element is present
                 if (template(elementLeft, true)) {
                     // left element is present, too
-                    out.print(getTemplateParts().includePart(
-                        C_FOLDER_ELEMENTS + "elements.jsp",
-                        "element_start_2",
-                        getLayout()));
+                    out.print(getTemplateParts().includePart(elementName, "element_start_2", getLayout()));
                 } else {
                     // no left element
-                    out.print(getTemplateParts().includePart(
-                        C_FOLDER_ELEMENTS + "elements.jsp",
-                        "element_start_1",
-                        getLayout()));
+                    out.print(getTemplateParts().includePart(elementName, "element_start_1", getLayout()));
                 }
                 include(null, elementRight, true);
-                out.print(getTemplateParts()
-                    .includePart(C_FOLDER_ELEMENTS + "elements.jsp", "element_end", getLayout()));
+                out.print(getTemplateParts().includePart(elementName, "element_end", getLayout()));
             }
             // close row (common layout only)
-            out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "elements.jsp", "column_end", getLayout()));
+            out.print(getTemplateParts().includePart(elementName, "column_end", getLayout()));
         }
     }
 
@@ -1023,7 +1098,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         String layout = C_PARAM_COMMON;
         // check if the print version should be shown
         m_showPrintVersion = Boolean.valueOf(getRequest().getParameter(C_PARAM_PRINT)).booleanValue();
-        if (!showPrintVersion()) {
+        if (! showPrintVersion()) {
             // check if the accessible page layout should be used
             m_showAccessibleVersion = Boolean.valueOf(getRequest().getParameter(C_PARAM_ACCESSIBLE)).booleanValue();
         } else {

@@ -259,6 +259,34 @@ a.navleft:hover { color: <%= navLeftFont %>; text-decoration: underline; }
 a.navleftactive,a.navleftactive:link,a.navleftactive:visited,a.navleftactive:active { font-family: <%= navFontFamily %>; font-size: 0.8em; color: <%= navLeftFont %>; font-weight: bold; text-decoration:none; }
 a.navleftactive:hover { color: <%= navLeftFont %>; text-decoration: underline; }
 
+/* Side element styles */
+div.sidelist {
+	margin: 5px; 
+	border: 1px solid <%= contentBorder %>; 
+	text-align: left; 
+	clear: both;
+}
+
+p.sidelisthead {
+	font-size: 0.8em;
+	font-weight: bold;
+	margin: 0px;
+	padding-left: 3px;
+	padding-right: 3px;
+	background-color: <%= contentBorder %>;
+}
+
+p.sidelistitem {
+	font-size: 0.70em;
+	margin: 5px 3px 0px;
+}
+
+a.sidelistitemhead {
+	font-size: 1.0em;
+	font-weight: bold;
+	margin-bottom: 3px;
+}
+
 /* popup window border */
 div.popup { <% 
 	

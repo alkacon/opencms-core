@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/03/14 12:28:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/04/06 11:36:25 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
 
@@ -407,7 +407,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             key.append("_");
             key.append(showMenus());
             cacheKey = key.toString();
-            String cachedNav = parts.getPart(cacheKey);
+            String cachedNav = (String)parts.getPart(cacheKey);
             if (CmsStringUtil.isNotEmpty(cachedNav)) {
                 // found previously cached navigation menu structure, return it
                 return cachedNav;
