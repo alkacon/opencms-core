@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/05 14:15:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/06 12:48:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.security.CmsAccessControlEntry;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.7 $ $Date: 2003/06/06 12:48:11 $
  * @since 5.1.2
  */
 public interface I_CmsUserDriver {
@@ -159,4 +159,18 @@ public interface I_CmsUserDriver {
 	 * @return			a vector of access control entries defining all permissions for the given resource
 	 */
 	public Vector getAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException;	
+
+	/**
+	 * Publish all access control entries of a resource from the given offline project to the online project.
+	 * Within the given project, the resource is identified by its offlineId, in the online project,
+	 * it is identified by the given onlineId.
+	 * 
+	 * @param offlineProject
+	 * @param onlineProject
+	 * @param offlineId
+	 * @param onlineId
+	 * @throws CmsException
+	 */
+	public void publishAccessControlEntries(CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException;
+	
 }

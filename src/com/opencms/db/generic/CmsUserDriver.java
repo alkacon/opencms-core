@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/05 14:15:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/06/06 12:48:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import com.opencms.util.SqlHelper;
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.12 $ $Date: 2003/06/06 12:48:11 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {
@@ -1517,13 +1517,13 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			res = stmt.executeQuery();
 			if (!res.next()) {
 				
-				createAccessControlEntry(project, acEntry.getResource(),acEntry.getPrincipal(),acEntry.getAllowedPermissions(),acEntry.getDeniedPermissions(),acEntry.getFlags());
+				createAccessControlEntry(project, acEntry.getResource(), acEntry.getPrincipal(), acEntry.getAllowedPermissions(), acEntry.getDeniedPermissions(), acEntry.getFlags());
 				return;
 			}
 
 			// otherwise update the already existing entry
 
-			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_UPDATE");
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_UPDATE");
 
 			stmt.setInt(1, acEntry.getAllowedPermissions());
 			stmt.setInt(2, acEntry.getDeniedPermissions());
@@ -1642,5 +1642,56 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS"))
 		);
 	}
+	
+	private CmsAccessControlEntry createAceFromResultSet(ResultSet res, CmsUUID newId) throws SQLException {
+		// this method is final to allow the java compiler to inline this code!
 
+		return new CmsAccessControlEntry(
+			newId, new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))),
+			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")),
+			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")),
+			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS"))
+		);
+	}	
+	
+	/**
+	 * Publish all access control entries of a resource from the given project to the online project.
+	 * Within the given project, the resource is identified by its offlineId, in the online project,
+	 * it is identified by the given onlineId.
+	 * 
+	 * @param project
+	 * @param offlineId
+	 * @param onlineId
+	 * @throws CmsException
+	 */
+	public void publishAccessControlEntries(CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException {
+/*		
+		// System.err.println ("Publish " + project + "/" + offlineId + " -> " + onlineId);
+		Vector aceList = new Vector();
+		PreparedStatement stmt = null, stmt2 = null;
+		Connection conn = null, conn2 = null;
+		ResultSet res = null;
+		
+		try {
+			conn = m_sqlManager.getConnection();
+			stmt = m_sqlManager.getPreparedStatement(conn, offlineProject, "C_ACCESS_READ_ENTRIES");
+
+			stmt.setString(1, offlineId.toString());
+
+			res = stmt.executeQuery();
+					
+			while(res.next()) {
+				
+				CmsAccessControlEntry ace = createAceFromResultSet(res, onlineId);
+				if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) == 0)
+					writeAccessControlEntry(onlineProject, ace);
+			}
+			
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}
+*/
+	}
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/06/06 12:48:11 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.8 $ $Date: 2003/06/06 12:48:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -144,6 +144,8 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                     int flag = folder.getAccessFlags();
 
                     // set the access rights for 'other' users
+					// TODO: check how to set the appropriate access using acl
+                    /*
                     if(read != ((flag & C_ACCESS_PUBLIC_READ) != 0)) {
                         flag ^= C_ACCESS_PUBLIC_READ;
                     }
@@ -171,6 +173,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                     if((flag & C_ACCESS_PUBLIC_VISIBLE) == 0){
                         flag ^= C_ACCESS_PUBLIC_VISIBLE;
                     }
+                    */
                     cms.chmod(folder.getAbsolutePath(), flag);
                     cms.unlockResource(folder.getAbsolutePath());
                 }

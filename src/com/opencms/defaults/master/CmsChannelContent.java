@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/06/06 12:48:11 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.23 $
- * $Date: 2003/06/05 14:15:48 $
+ * $Revision: 1.24 $
+ * $Date: 2003/06/06 12:48:11 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -782,7 +782,9 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public String getAccessFlagsAsString() {
         int accessFlags = m_channel.getAccessFlags();
-        String str = "";
+        String str = "NOT YET";
+        // TODO: reimplement using acl
+        /*
         str += ((accessFlags & I_CmsConstants.C_PERMISSION_READ)>0?"r":"-");
         str += ((accessFlags & I_CmsConstants.C_PERMISSION_WRITE)>0?"w":"-");
         str += ((accessFlags & I_CmsConstants.C_PERMISSION_VIEW)>0?"v":"-");
@@ -793,6 +795,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         str += ((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_WRITE)>0?"w":"-");
         str += ((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE)>0?"v":"-");
         str += ((accessFlags & I_CmsConstants.C_ACCESS_INTERNAL_READ)>0?"i":"-");
+        */
         return str;
     }
 

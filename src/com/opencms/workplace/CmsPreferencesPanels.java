@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/06/06 12:48:11 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.48 $ $Date: 2003/06/06 12:48:11 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -736,6 +736,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         flag += C_PERMISSION_READ;
         flag += C_PERMISSION_WRITE;
         flag += C_PERMISSION_VIEW;
+//		TODO: reimplement using acl ?
+/*
         if(gr != null) {
             if(gr.equals("on")) {
                 flag += C_ACCESS_GROUP_READ;
@@ -771,6 +773,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 flag += C_ACCESS_INTERNAL_READ;
             }
         }
+*/
         startSettings.put(C_START_ACCESSFLAGS, new Integer(flag));
         return startSettings;
     }
@@ -1081,59 +1084,60 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         }else{
             xmlTemplateDocument.setData(C_LOCKDIALOG, " ");
         }
-        if((flags & C_PERMISSION_WRITE) > 0) {
-            xmlTemplateDocument.setData(C_CHECKUW, C_CHECKED);
-        }else {
+// TODO: check if neccessary to reimplement using acl
+//        if((flags & C_PERMISSION_WRITE) > 0) {
+//            xmlTemplateDocument.setData(C_CHECKUW, C_CHECKED);
+//        }else {
             xmlTemplateDocument.setData(C_CHECKUW, " ");
-        }
-        if((flags & C_PERMISSION_VIEW) > 0) {
-            xmlTemplateDocument.setData(C_CHECKUV, C_CHECKED);
-        }
-        else {
+//        }
+//        if((flags & C_PERMISSION_VIEW) > 0) {
+//            xmlTemplateDocument.setData(C_CHECKUV, C_CHECKED);
+//        }
+//        else {
             xmlTemplateDocument.setData(C_CHECKUV, " ");
-        }
-        if((flags & C_ACCESS_GROUP_READ) > 0) {
-            xmlTemplateDocument.setData(C_CHECKGR, C_CHECKED);
-        }
-        else {
+//        }
+//        if((flags & C_ACCESS_GROUP_READ) > 0) {
+//            xmlTemplateDocument.setData(C_CHECKGR, C_CHECKED);
+//        }
+//        else {
             xmlTemplateDocument.setData(C_CHECKGR, " ");
-        }
-        if((flags & C_ACCESS_GROUP_WRITE) > 0) {
-            xmlTemplateDocument.setData(C_CHECKGW, C_CHECKED);
-        }
-        else {
+//        }
+//        if((flags & C_ACCESS_GROUP_WRITE) > 0) {
+//            xmlTemplateDocument.setData(C_CHECKGW, C_CHECKED);
+//        }
+//        else {
             xmlTemplateDocument.setData(C_CHECKGW, " ");
-        }
-        if((flags & C_ACCESS_GROUP_VISIBLE) > 0) {
-            xmlTemplateDocument.setData(C_CHECKGV, C_CHECKED);
-        }
-        else {
+//        }
+//        if((flags & C_ACCESS_GROUP_VISIBLE) > 0) {
+//            xmlTemplateDocument.setData(C_CHECKGV, C_CHECKED);
+//        }
+//        else {
             xmlTemplateDocument.setData(C_CHECKGV, " ");
-        }
-        if((flags & C_ACCESS_PUBLIC_READ) > 0) {
-            xmlTemplateDocument.setData(C_CHECKPR, C_CHECKED);
-        }
-        else {
+//        }
+//        if((flags & C_ACCESS_PUBLIC_READ) > 0) {
+//            xmlTemplateDocument.setData(C_CHECKPR, C_CHECKED);
+//        }
+//        else {
             xmlTemplateDocument.setData(C_CHECKPR, " ");
-        }
-        if((flags & C_ACCESS_PUBLIC_WRITE) > 0) {
-            xmlTemplateDocument.setData(C_CHECKPW, C_CHECKED);
-        }
-        else {
+//        }
+//        if((flags & C_ACCESS_PUBLIC_WRITE) > 0) {
+//            xmlTemplateDocument.setData(C_CHECKPW, C_CHECKED);
+//        }
+//        else {
             xmlTemplateDocument.setData(C_CHECKPW, " ");
-        }
-        if((flags & C_ACCESS_PUBLIC_VISIBLE) > 0) {
-            xmlTemplateDocument.setData(C_CHECKPV, C_CHECKED);
-        }
-        else {
+//        }
+//        if((flags & C_ACCESS_PUBLIC_VISIBLE) > 0) {
+//            xmlTemplateDocument.setData(C_CHECKPV, C_CHECKED);
+//        }
+//        else {
             xmlTemplateDocument.setData(C_CHECKPV, " ");
-        }
-        if((flags & C_ACCESS_INTERNAL_READ) > 0) {
-            xmlTemplateDocument.setData(C_CHECKIF, C_CHECKED);
-        }
-        else {
+//        }
+//        if((flags & C_ACCESS_INTERNAL_READ) > 0) {
+//            xmlTemplateDocument.setData(C_CHECKIF, C_CHECKED);
+//        }
+//        else {
             xmlTemplateDocument.setData(C_CHECKIF, " ");
-        }
+//        }
     }
 
     /**

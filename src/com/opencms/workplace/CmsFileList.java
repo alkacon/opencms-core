@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/06/06 12:48:11 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.62 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.63 $ $Date: 2003/06/06 12:48:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -229,7 +229,8 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
      * @param time The access value as an int.
      * @return Formated access right string.
      */
-
+    // TODO: cw remove after switch to acl
+    /*
     private String getAccessFlags(int access) {
         StringBuffer accessFlags = new StringBuffer();
         if((access & C_PERMISSION_READ) > 0) {
@@ -294,7 +295,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
         }
         return accessFlags.toString();
     }
-
+	*/
     /**
      * Selects the context menue displayed for this entry iin the file list.
      * @param cms The CmsObject.
@@ -511,7 +512,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
                         // get the access flags
                         int access = res.getAccessFlags();
-                        template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, getAccessFlags(access));
+                        template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, cms.getPermissionString(res.getName()));
                     }
                     if((filelist & C_FILELIST_LOCKED) != 0) {
 
@@ -614,7 +615,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
                         // get the access flags
                         int access = file.getAccessFlags();
-                        template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, getAccessFlags(access));
+                        template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, cms.getPermissionString(res.getName()));
                     }
                     if((filelist & C_FILELIST_ACCESS) != 0) {
 

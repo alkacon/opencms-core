@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/05 14:15:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/06/06 12:48:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import source.org.apache.java.util.Configurations;
  * This is the generic project driver to execute operations requested by the Cms
  * using the underlying drivers. This code is still messy like a living space.
  *
- * @version $Revision: 1.10 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.11 $ $Date: 2003/06/06 12:48:11 $
  * @since 5.1.2
  */
 public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
@@ -1278,8 +1278,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         throw e;
                     }
                 }
-
                 folderIdIndex.put(currentFolder.getResourceId(), newFolder.getResourceId());
+                
+                // copy the access control entries of the folder
+				m_driverManager.getUserDriver().publishAccessControlEntries(currentProject, onlineProject, currentFolder.getResourceId(), newFolder.getResourceId());
+
                 // copy properties
                 Map props = new HashMap();
 
@@ -1505,6 +1508,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsProjectDriver] error publishing, deleting properties for " + onlineFile.toString() + " Message= " + exc.getMessage());
                     }
                 }
+                // copy access control entries
+				m_driverManager.getUserDriver().publishAccessControlEntries(currentProject, onlineProject, currentFile.getResourceId(), onlineFile.getResourceId());
+
                 if (enableHistory) {
                     // backup the offline resource
                     m_driverManager.getBackupDriver().backupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
@@ -1595,6 +1601,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsProjectDriver] error publishing, copy properties for " + newFile.toString() + " Message= " + exc.getMessage());
                     }
                 }
+                
+				// copy access control entries
+				m_driverManager.getUserDriver().publishAccessControlEntries(currentProject, onlineProject, currentFile.getResourceId(), newFile.getResourceId());
+
                 if (enableHistory) {
                     // backup the offline resource
                     m_driverManager.getBackupDriver().backupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);

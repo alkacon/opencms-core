@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.277 $
+* Date   : $Date: 2003/06/06 12:48:11 $
+* Version: $Revision: 1.278 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.277 $
+ * @version $Revision: 1.278 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4477,7 +4477,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 	 * @return
 	 */
 	public I_CmsPrincipal lookupPrincipal (CmsUUID principalId) throws CmsException {
-    	return m_driverManager.lookupPrincipal(principalId);
+    	return m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalId);
     }
     
     /**
@@ -4488,18 +4488,18 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 	 * @throws CmsException
 	 */
 	public I_CmsPrincipal lookupPrincipal (String principalName) throws CmsException {
-    	return m_driverManager.lookupPrincipal(principalName);
+    	return m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalName);
     }
     
     // TODO: added for testing purposes - check later, if useful/neccessary
     public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		return m_driverManager.getAccessControlList(res); 
+		return m_driverManager.getAccessControlList(m_context.currentUser(), m_context.currentProject(), res); 
     }
     
 	public Vector getAccessControlEntries(String resourceName) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		return m_driverManager.getAccessControlEntries(res, true);
+		return m_driverManager.getAccessControlEntries(m_context.currentUser(), m_context.currentProject(), res, true);
 	}
 	
 	public int getPermissions(String resourceName, String userName) throws CmsException {
@@ -4509,11 +4509,19 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 	}
 	
 	public int getPermissions(String resourceName) throws CmsException {
-		CmsAccessControlList acList = getAccessControlList(resourceName);
+		CmsResource resource = readFileHeader(resourceName);
 		CmsUser user = m_context.currentUser();
-		return acList.getPermissions(user, getGroupsOfUser(user.getName()));		
+		
+		return m_driverManager.getPermissions(m_context.currentUser(), m_context.currentProject(), resource,user);		
 	}
-	
+
+	public String getPermissionString(String resourceName) throws CmsException {
+		CmsResource resource = readFileHeader(resourceName);
+		CmsUser user = m_context.currentUser();
+		
+		return CmsAccessControlEntry.toPermissionString(m_driverManager.getPermissions(m_context.currentUser(), m_context.currentProject(), resource,user),0,0);		
+	}
+		
 	/**
 	 * Checks if the current user has the requested permissions on the given resource
 	 * 
@@ -4523,12 +4531,13 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 	 * @throws CmsException
 	 */
 	public boolean checkPermissions(String resourceName, String permissionString) throws CmsException {
-		CmsAccessControlList acList = getAccessControlList(resourceName);
+		CmsResource resource = readFileHeader(resourceName);
 		CmsUser user = m_context.currentUser();
-		
+
 		int permissions[] = {0,0};
 		CmsAccessControlEntry.readPermissionString(permissionString, permissions);
-		return acList.hasPermissions(user, getGroupsOfUser(user.getName()), permissions[0]);		
+
+		return m_driverManager.checkPermissions(m_context.currentUser(), m_context.currentProject(), user, resource, permissions[0]);	
 	}
 	
 	/**
@@ -4541,16 +4550,16 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 	 */
 	public void chacc(String resourceName, String principalName, String permissionString) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(principalName);
+		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalName);
 		
 		if ("".equals(permissionString)) {
-			m_driverManager.removeAccessControlEntry(res, principal.getId());	
+			m_driverManager.removeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, principal.getId());	
 		} else {
 			int permissions[] = {0,0};
 			int flags = CmsAccessControlEntry.readPermissionString(permissionString, permissions);
 
 			CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissions[0], permissions[1], flags);
-			m_driverManager.writeAccessControlEntry(res, acEntry);
+			m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
 		}
 	}
 	
@@ -4565,9 +4574,9 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 	 */
 	public void chacc(String resourceName, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(principalName);
+		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalName);
 				
 		CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
-		m_driverManager.writeAccessControlEntry(res, acEntry);
+		m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
 	}
 }

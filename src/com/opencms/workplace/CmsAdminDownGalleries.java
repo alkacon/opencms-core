@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/06/06 12:48:11 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.26 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.27 $ $Date: 2003/06/06 12:48:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -164,6 +164,8 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                 int flag = folder.getAccessFlags();
 
                 // set the access rights for 'other' users
+                // TODO: check how to set the appropriate access using acl 
+                /*
                 if(read != ((flag & C_ACCESS_PUBLIC_READ) != 0)) {
                     flag ^= C_ACCESS_PUBLIC_READ;
                 }
@@ -191,6 +193,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                 if((flag & C_ACCESS_PUBLIC_VISIBLE) == 0){
                     flag ^= C_ACCESS_PUBLIC_VISIBLE;
                 }
+                */
                cms.chmod(folder.getAbsolutePath(), flag);
                cms.unlockResource(folder.getAbsolutePath());
             }

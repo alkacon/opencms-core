@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.226 $
+* Date   : $Date: 2003/06/06 12:48:11 $
+* Version: $Revision: 1.227 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.226 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.227 $ $Date: 2003/06/06 12:48:11 $
  */
 public interface I_CmsConstants {
 
@@ -414,8 +414,8 @@ public interface I_CmsConstants {
     /**
      * All may read this resource.
      */
-    final static int C_ACCESS_READ = C_PERMISSION_READ + C_ACCESS_GROUP_READ + C_ACCESS_PUBLIC_READ;
-
+    final static int C_ACCESS_READ = C_PERMISSION_READ + C_ACCESS_PUBLIC_READ;
+	// + C_ACCESS_GROUP_READ
     /**
      * All may write this resource.
      */
@@ -434,8 +434,8 @@ public interface I_CmsConstants {
     /**
      * Group has full access to this resource.
      */
-    final static int C_ACCESS_GROUP = C_ACCESS_GROUP_READ + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE;
-
+    final static int C_ACCESS_GROUP = C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE;
+	// + C_ACCESS_GROUP_READ
     /**
      *  has full access to this resource.
      */
@@ -445,8 +445,9 @@ public interface I_CmsConstants {
      * The default-flags for a new resource.
      */
     final static int C_ACCESS_DEFAULT_FLAGS = C_PERMISSION_READ + C_PERMISSION_WRITE + C_PERMISSION_VIEW
-            + C_ACCESS_GROUP_READ + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE;
-
+             + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE;
+	// + C_ACCESS_GROUP_READ
+	
 	/**
 	 * Flag to indicate that an access control entry is currently deleted
 	 */

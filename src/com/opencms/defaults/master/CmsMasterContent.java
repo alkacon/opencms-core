@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/06/06 12:48:11 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.32 $
- * $Date: 2003/06/05 14:15:48 $
+ * $Revision: 1.33 $
+ * $Date: 2003/06/06 12:48:11 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -538,7 +538,9 @@ public abstract class CmsMasterContent
      */
     public String getAccessFlagsAsString() {
         int accessFlags = getAccessFlags();
-        String str = "";
+        String str = "NOT YET";
+        // TODO: reimplement using acl
+        /*
         str += ((accessFlags & I_CmsConstants.C_PERMISSION_READ)>0?"r":"-");
         str += ((accessFlags & I_CmsConstants.C_PERMISSION_WRITE)>0?"w":"-");
         str += ((accessFlags & I_CmsConstants.C_PERMISSION_VIEW)>0?"v":"-");
@@ -549,6 +551,7 @@ public abstract class CmsMasterContent
         str += ((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_WRITE)>0?"w":"-");
         str += ((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE)>0?"v":"-");
         str += ((accessFlags & I_CmsConstants.C_ACCESS_INTERNAL_READ)>0?"i":"-");
+        */
         return str;
     }
 

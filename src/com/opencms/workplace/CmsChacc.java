@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/06/05 14:15:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/06 12:48:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import com.opencms.util.Utils;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/06 12:48:11 $
  */
 
 public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -135,7 +135,9 @@ public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
 			C_GROUP_ADMIN))) {
 
 				// calculate the new access flags
+//				TODO: check how to set the appropriate access using acl
 				int flag = 0;
+/*
 				if(ur != null && ur.equals("true"))
 					flag += C_PERMISSION_READ;
 				if(uw != null && uw.equals("true"))
@@ -156,7 +158,7 @@ public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
 					flag += C_ACCESS_PUBLIC_VISIBLE;
 				if(ir != null && ir.equals("true"))
 					flag += C_ACCESS_INTERNAL_READ;
-
+*/
 				// modify the access flags
 				boolean rekursive = (file.isFolder() && allflag.equals("true"));
 				cms.chmod(file.getAbsolutePath(), flag, rekursive);
@@ -240,46 +242,47 @@ public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		xmlTemplateDocument.setData("PERMISSION_TABLE", permissionTable);
 		
 		// now set the actual access flags i the dialog
+// TODO: replace with acl dialog
 		int flags = file.getAccessFlags();
-		if((flags & C_PERMISSION_READ) > 0)
-			xmlTemplateDocument.setData("CHECKUR", "CHECKED");
-		else
+//		if((flags & C_PERMISSION_READ) > 0)
+//			xmlTemplateDocument.setData("CHECKUR", "CHECKED");
+//		else
 			xmlTemplateDocument.setData("CHECKUR", " ");
-		if((flags & C_PERMISSION_WRITE) > 0)
-			xmlTemplateDocument.setData("CHECKUW", "CHECKED");
-		else
+//		if((flags & C_PERMISSION_WRITE) > 0)
+//			xmlTemplateDocument.setData("CHECKUW", "CHECKED");
+//		else
 			xmlTemplateDocument.setData("CHECKUW", " ");
-		if((flags & C_PERMISSION_VIEW) > 0)
-			xmlTemplateDocument.setData("CHECKUV", "CHECKED");
-		else
+//		if((flags & C_PERMISSION_VIEW) > 0)
+//			xmlTemplateDocument.setData("CHECKUV", "CHECKED");
+//		else
 			xmlTemplateDocument.setData("CHECKUV", " ");
-		if((flags & C_ACCESS_GROUP_READ) > 0)
-			xmlTemplateDocument.setData("CHECKGR", "CHECKED");
-		else
+//		if((flags & C_ACCESS_GROUP_READ) > 0)
+//			xmlTemplateDocument.setData("CHECKGR", "CHECKED");
+//		else
 			xmlTemplateDocument.setData("CHECKGR", " ");
-		if((flags & C_ACCESS_GROUP_WRITE) > 0)
-			xmlTemplateDocument.setData("CHECKGW", "CHECKED");
-		else
+//		if((flags & C_ACCESS_GROUP_WRITE) > 0)
+//			xmlTemplateDocument.setData("CHECKGW", "CHECKED");
+//		else
 			xmlTemplateDocument.setData("CHECKGW", " ");
-		if((flags & C_ACCESS_GROUP_VISIBLE) > 0)
-			xmlTemplateDocument.setData("CHECKGV", "CHECKED");
-		else
+//		if((flags & C_ACCESS_GROUP_VISIBLE) > 0)
+//			xmlTemplateDocument.setData("CHECKGV", "CHECKED");
+//		else
 			xmlTemplateDocument.setData("CHECKGV", " ");
-		if((flags & C_ACCESS_PUBLIC_READ) > 0)
-			xmlTemplateDocument.setData("CHECKPR", "CHECKED");
-		else
+//		if((flags & C_ACCESS_PUBLIC_READ) > 0)
+//			xmlTemplateDocument.setData("CHECKPR", "CHECKED");
+//		else
 			xmlTemplateDocument.setData("CHECKPR", " ");
-		if((flags & C_ACCESS_PUBLIC_WRITE) > 0)
-			xmlTemplateDocument.setData("CHECKPW", "CHECKED");
-		else
+//		if((flags & C_ACCESS_PUBLIC_WRITE) > 0)
+//			xmlTemplateDocument.setData("CHECKPW", "CHECKED");
+//		else
 			xmlTemplateDocument.setData("CHECKPW", " ");
-		if((flags & C_ACCESS_PUBLIC_VISIBLE) > 0)
-			xmlTemplateDocument.setData("CHECKPV", "CHECKED");
-		else
+//		if((flags & C_ACCESS_PUBLIC_VISIBLE) > 0)
+//			xmlTemplateDocument.setData("CHECKPV", "CHECKED");
+//		else
 			xmlTemplateDocument.setData("CHECKPV", " ");
-		if((flags & C_ACCESS_INTERNAL_READ) > 0)
-			xmlTemplateDocument.setData("CHECKIF", "CHECKED");
-		else
+//		if((flags & C_ACCESS_INTERNAL_READ) > 0)
+//			xmlTemplateDocument.setData("CHECKIF", "CHECKED");
+//		else
 			xmlTemplateDocument.setData("CHECKIF", " ");
 
 		// process the selected template
