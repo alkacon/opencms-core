@@ -114,7 +114,9 @@
                 <files>existing Files</files>
                 <titleexport>Export Database</titleexport>
                 <titleexportmoduledata>Export Moduledata</titleexportmoduledata>
-                <titleimport>Import Database</titleimport>
+                <titleimport>Import Database from Server</titleimport>
+                <upload>Upload Database from </upload>
+                <uploadlocal>Upload Database from local computer</uploadlocal>
             </label>
         </database>
 

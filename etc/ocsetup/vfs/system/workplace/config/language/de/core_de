@@ -112,9 +112,11 @@
                 <userdata>inklusive Gruppen- und Benutzerdaten</userdata>
                 <titleexport>Datenbank exportieren</titleexport>
                 <titleexportmoduledata>Moduldaten exportieren</titleexportmoduledata>
-                <titleimport>Datenbank importieren</titleimport>
+                <titleimport>Datenbank importieren vom Server</titleimport>
                 <filename>Exportdatei</filename>
                 <files>bestehende Dateien</files>
+                <upload>Datenbank importieren von </upload>
+                <uploadlocal>Datenbank importieren von localem Rechner</uploadlocal>
             </label>
         </database>
         <staticexport>

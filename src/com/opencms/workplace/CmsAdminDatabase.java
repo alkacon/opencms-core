@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2002/02/20 11:06:50 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2002/04/12 12:07:17 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,13 +42,67 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2002/02/20 11:06:50 $
+ * @version $Revision: 1.23 $ $Date: 2002/04/12 12:07:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConstants {
 
     private static String C_DATABASE_THREAD = "databse_im_export_thread";
+
+    /**
+     * Gets a database importfile from the client and copys it to the server.
+     *
+     * @param cms The CmsObject.
+     * @param session The session.
+     *
+     * @return the name of the file.
+     */
+    private String copyFileToServer(CmsObject cms, I_CmsSession session) throws CmsException{
+
+        // get the filename
+        String filename = null;
+        Enumeration files = cms.getRequestContext().getRequest().getFileNames();
+        while(files.hasMoreElements()) {
+            filename = (String)files.nextElement();
+        }
+        if(filename != null) {
+            session.putValue(C_PARA_FILE, filename);
+        }
+        filename = (String)session.getValue(C_PARA_FILE);
+
+        // get the filecontent
+        byte[] filecontent = new byte[0];
+        if(filename != null) {
+            filecontent = cms.getRequestContext().getRequest().getFile(filename);
+        }
+        if(filecontent != null) {
+            session.putValue(C_PARA_FILECONTENT, filecontent);
+        }
+        filecontent = (byte[])session.getValue(C_PARA_FILECONTENT);
+        // first create the folder if it doesnt exists
+        File discFolder = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/");
+        if(!discFolder.exists()) {
+            boolean success = discFolder.mkdir();
+            if(com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && (!success)) {
+                A_OpenCms.log(com.opencms.boot.I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/"+ ".");
+            }
+        }
+
+        // now write the file into the modules dierectory in the exportpaht
+        File discFile = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/"  + filename);
+        try {
+
+            // write the new file to disk
+            OutputStream s = new FileOutputStream(discFile);
+            s.write(filecontent);
+            s.close();
+        }
+        catch(Exception e) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage());
+        }
+        return filename;
+    }
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -86,6 +140,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         String action = (String)parameters.get("action");
         String allResources = (String)parameters.get("ALLRES");
         String allModules = (String)parameters.get("ALLMOD");
+        String step = (String)parameters.get("step");
         if(action == null) {
 
             // This is an initial request of the database administration page
@@ -112,17 +167,17 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                 wert += 20;
                 xmlTemplateDocument.setData("time", "" + wert);
                 return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "wait");
-            }
-            else {
+            }else {
 
                 // thread has come to an end, was there an error?
                 String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
                 if(errordetails == null) {
 
                     // im/export ready
+                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_FILECONTENT);
                     return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
-                }
-                else {
+                }else {
 
                     // get errorpage:
                     xmlTemplateDocument.setData("details", errordetails);
@@ -204,17 +259,27 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                 templateSelector = "wait";
 
             } else if("import".equals(action)) {
-                // start the thread for: import
-                // first clear the session entry if necessary
-                if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-                    session.removeValue(C_SESSION_THREAD_ERROR);
+                // look for the step
+                if("local".equals(step) || "server".equals(step)){
+                    templateSelector = step;
+                }else if("localupload".equals(step)){
+                    // get the filename and set step to 'go'
+                    existingFile = copyFileToServer(cms, session);
+                    step = "go";
                 }
-                Thread doImport = new CmsAdminDatabaseImportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
-                            + existingFile, session);
-                doImport.start();
-                session.putValue(C_DATABASE_THREAD, doImport);
-                xmlTemplateDocument.setData("time", "10");
-                templateSelector = "wait";
+                if("go".equals(step) ){
+                    // start the thread for: import
+                    // first clear the session entry if necessary
+                    if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
+                        session.removeValue(C_SESSION_THREAD_ERROR);
+                    }
+                    Thread doImport = new CmsAdminDatabaseImportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
+                                + existingFile, session);
+                    doImport.start();
+                    session.putValue(C_DATABASE_THREAD, doImport);
+                    xmlTemplateDocument.setData("time", "10");
+                    templateSelector = "wait";
+                }
             }
         }
         catch(CmsException exc) {
