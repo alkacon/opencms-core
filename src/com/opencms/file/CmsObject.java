@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/11/15 15:43:57 $
-* Version: $Revision: 1.204 $
+* Date   : $Date: 2001/11/15 16:41:21 $
+* Version: $Revision: 1.205 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.204 $ $Date: 2001/11/15 15:43:57 $
+ * @version $Revision: 1.205 $ $Date: 2001/11/15 16:41:21 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3616,4 +3616,33 @@ public int getBackupVersionId(){
 public void backupProject(int projectId, int versionId, long publishDate) throws CmsException{
     m_rb.backupProject(projectId, versionId, publishDate, getRequestContext().currentUser());
 }
+
+    /**
+     * Gets the Crontable.
+     *
+     * <B>Security:</B>
+     * All users are garnted<BR/>
+     *
+     * @return the crontable.
+     */
+    public String readCronTable()
+        throws CmsException {
+        return m_rb.readCronTable(m_context.currentUser(), m_context.currentProject());
+    }
+
+    /**
+     * Writes the Crontable.
+     *
+     * <B>Security:</B>
+     * Only a administrator can do this<BR/>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     *
+     * @return the crontable.
+     */
+    public void writeCronTable(String crontable)
+        throws CmsException {
+        m_rb.writeCronTable(m_context.currentUser(), m_context.currentProject(), crontable);
+    }
 }

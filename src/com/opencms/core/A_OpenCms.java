@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2001/10/05 07:33:07 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/11/15 16:41:21 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import source.org.apache.java.util.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2001/10/05 07:33:07 $
+ * @version $Revision: 1.20 $ $Date: 2001/11/15 16:41:21 $
  *
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
@@ -151,4 +151,15 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @return data the sessionData.
      */
     abstract void storeSession(String sessionId, Hashtable sessionData) throws CmsException;
+
+    /**
+     * Reads the actual entries from the database and updates the Crontable
+     */
+    abstract void updateCronTable();
+
+    /**
+     * Starts a schedule job with a correct instantiated CmsObject.
+     * @param entry the CmsCronEntry to start.
+     */
+    abstract void startScheduleJob(CmsCronEntry entry);
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/11/14 10:07:15 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2001/11/15 16:41:21 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.45 $ $Date: 2001/11/14 10:07:15 $
+ * @version $Revision: 1.46 $ $Date: 2001/11/15 16:41:21 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -3454,6 +3454,30 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void setContextToCos(){
         m_cms.setContextToCos();
+    }
+
+    /**
+     * Gets the Crontable.
+     */
+    public void readCronTable() {
+        try {
+            System.out.println(m_cms.readCronTable());
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Writes the Crontable.
+     */
+    public void writeCronTable(String crontable) {
+        try {
+            m_cms.writeCronTable(crontable);
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/11/15 15:43:57 $
-* Version: $Revision: 1.187 $
+* Date   : $Date: 2001/11/15 16:41:21 $
+* Version: $Revision: 1.188 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.187 $ $Date: 2001/11/15 15:43:57 $
+ * @version $Revision: 1.188 $ $Date: 2001/11/15 16:41:21 $
  */
 public interface I_CmsConstants {
 
@@ -486,6 +486,11 @@ public interface I_CmsConstants {
      * The name of the rood folder
      */
     static final String C_ROOT = C_FOLDER_SEPERATOR;
+
+    /**
+     * The name of the exportpath-systemproperty.
+     */
+    static final String C_SYSTEMPROPERTY_CRONTABLE = "CRONTABLE";
 
     /**
      * The name of the exportpath-systemproperty.

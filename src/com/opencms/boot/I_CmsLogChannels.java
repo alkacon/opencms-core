@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2001/11/15 15:43:57 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/11/15 16:41:21 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.boot;
  *
  * @author Alexander Lucas
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2001/11/15 15:43:57 $
+ * @version $Revision: 1.8 $ $Date: 2001/11/15 16:41:21 $
  */
 public interface I_CmsLogChannels {
 
@@ -78,8 +78,12 @@ public interface I_CmsLogChannels {
     /** Messages of the new OpenCms element cache */
     public static final String C_OPENCMS_ELEMENTCACHE = "opencms_elementcache";
 
+    /** Messages of the OpenCms Scheduler */
+    public static final String C_OPENCMS_CRONSCHEDULER = "opencms_cronscheduler";
+
     /** Messages of the static export */
     public static final String C_OPENCMS_STATICEXPORT = "opencms_staticexport";
+
 
     /** Debugging messages */
     public static final String C_MODULE_DEBUG = "module_debug";

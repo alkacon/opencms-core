@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/10/05 07:33:07 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/11/15 16:41:21 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,15 +63,10 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2001/10/05 07:33:07 $
+ * @version $Revision: 1.19 $ $Date: 2001/11/15 16:41:21 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
-
-    /**
-     * Debug-switch
-     */
-    static final boolean C_DEBUG = false;
 
     /**
      * The name of the redirect entry in the configuration file.
@@ -112,11 +107,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * Storage for the clusterurl
      */
     private String m_clusterurl = null;
-
-    /**
-     * The total amount of concurrent requests.
-     */
-    private int m_currentRequestAmount = 0;
 
     /**
      * Checks if the requested resource must be redirected to the server docroot and
@@ -451,9 +441,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
         // start time of this request
-        if(C_DEBUG) {
-            long reqStartTime = System.currentTimeMillis();
-        }
         if(req.getRequestURI().indexOf("system/workplace/action/login.html") > 0) {
             HttpSession session = req.getSession(false);
             if(session != null) {
@@ -481,16 +468,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         catch(CmsException e) {
             errorHandling(cms, cmsReq, cmsRes, e);
         }
-
-        // create debug informations
-        if(C_DEBUG) {
-            long total = Runtime.getRuntime().totalMemory() / 1024;
-            long free = Runtime.getRuntime().freeMemory() / 1024;
-            System.err.print(new Date() + " doGet()  reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size());
-            System.err.print((" [" + total + "/" + free + "/" + (total - free) + "] "));
-            System.err.print("threads:" + Thread.activeCount() + " ");
-            System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
-        }
     }
 
     /**
@@ -505,11 +482,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * @exception IOException Thrown if user autherization fails.
      */
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-
-        // start time of this request
-        if(C_DEBUG) {
-            long reqStartTime = System.currentTimeMillis();
-        }
 
         //Check for content type "form/multipart" and decode it
         String type = req.getHeader("content-type");
@@ -538,16 +510,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         }
         catch(CmsException e) {
             errorHandling(cms, cmsReq, cmsRes, e);
-        }
-
-        // create debug informations
-        if(C_DEBUG) {
-            long total = Runtime.getRuntime().totalMemory() / 1024;
-            long free = Runtime.getRuntime().freeMemory() / 1024;
-            System.err.print(new Date() + " doPost() reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size());
-            System.err.print((" [" + total + "/" + free + "/" + (total - free) + "] "));
-            System.err.print("threads:" + Thread.activeCount() + " ");
-            System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
         }
     }
 

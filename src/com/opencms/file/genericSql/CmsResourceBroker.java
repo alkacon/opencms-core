@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/11/15 15:43:58 $
-* Version: $Revision: 1.291 $
+* Date   : $Date: 2001/11/15 16:41:21 $
+* Version: $Revision: 1.292 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.291 $ $Date: 2001/11/15 15:43:58 $
+ * @version $Revision: 1.292 $ $Date: 2001/11/15 16:41:21 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7449,5 +7449,51 @@ protected void validName(String name, boolean blank) throws CmsException {
             return false;
         }
         return true;
+    }
+
+
+    /**
+     * Gets the Crontable.
+     *
+     * <B>Security:</B>
+     * All users are garnted<BR/>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     *
+     * @return the crontable.
+     */
+    public String readCronTable(CmsUser currentUser, CmsProject currentProject)
+        throws CmsException {
+        String retValue = (String) m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_CRONTABLE);
+        if(retValue == null) {
+            return "";
+        } else {
+            return retValue;
+        }
+    }
+
+    /**
+     * Writes the Crontable.
+     *
+     * <B>Security:</B>
+     * Only a administrator can do this<BR/>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     *
+     * @return the crontable.
+     */
+    public void writeCronTable(CmsUser currentUser, CmsProject currentProject, String crontable)
+        throws CmsException {
+        if(isAdmin(currentUser, currentProject)) {
+            if(m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_CRONTABLE) == null) {
+                m_dbAccess.addSystemProperty(C_SYSTEMPROPERTY_CRONTABLE, crontable);
+            } else {
+                m_dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_CRONTABLE, crontable);
+            }
+        } else {
+            throw new CmsException("No access to write crontable", CmsException.C_NO_ACCESS);
+        }
     }
 }

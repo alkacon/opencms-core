@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/11/15 15:43:57 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2001/11/15 16:41:21 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import javax.servlet.http.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 import com.opencms.file.*;
+import com.opencms.boot.*;
+import com.opencms.util.*;
 import com.opencms.launcher.*;
 import com.opencms.template.cache.*;
 
@@ -50,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.66 $ $Date: 2001/11/15 15:43:57 $
+ * @version $Revision: 1.67 $ $Date: 2001/11/15 16:41:21 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -76,7 +78,17 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     private static I_CmsResourceBroker c_rb;
 
     /**
-     * Reference to the OpenCms launcher manager
+     * The cron scheduler to schedule the cronjobs
+     */
+    private CmsCronScheduler m_scheduler;
+
+    /**
+     * The cron table to use with the scheduler
+     */
+    private CmsCronTable m_table;
+
+    /**
+     * Reference to the OpenCms launcer manager
      */
     private CmsLauncherManager m_launcherManager;
 
@@ -177,6 +189,21 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             m_streaming = conf.getBoolean("httpstreaming.enabled", true);
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] HTTP streaming " + (m_streaming?"en":"dis") + "abled. ");
+            }
+
+            // now initialise the OpenCms scheduler to launch cronjobs
+            m_table = new CmsCronTable(c_rb.readCronTable(null, null));
+
+            // if the System property opencms.disableScheduler is set to true, don't start scheduling
+            if(!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
+                m_scheduler = new CmsCronScheduler(this, m_table);
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsCronScheduler... DONE");
+                }
+            } else {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] CmsCronScheduler is disabled!");
+                }
             }
 
             // Check the file.encoding
@@ -569,4 +596,35 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         }
     }
 
+    /**
+     * Starts a schedule job with a correct instantiated CmsObject.
+     * @param entry the CmsCronEntry to start.
+     */
+    void startScheduleJob(CmsCronEntry entry) {
+        // create a valid cms-object
+        CmsObject cms = new CmsObject();
+        try {
+            initUser(cms, null, null, entry.getUserName(), C_GROUP_GUEST, C_PROJECT_ONLINE_ID, null);
+            // create a new ScheduleJob and start it
+            CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
+            job.start();
+        } catch(Exception exc) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
+                CmsBase.log(C_OPENCMS_CRONSCHEDULER, "Error initialising job for " + entry + " Error: " + Utils.getStackTrace(exc));
+            }
+        }
+    }
+
+    /**
+     * Reads the actual entries from the database and updates the Crontable
+     */
+    void updateCronTable() {
+        try {
+            m_table.update(c_rb.readCronTable(null, null));
+        } catch(Exception exc) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
+            }
+        }
+    }
 }
