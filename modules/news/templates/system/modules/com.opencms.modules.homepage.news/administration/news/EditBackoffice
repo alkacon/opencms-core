@@ -134,7 +134,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 									</tr>
 									<tr>
 										<td class="formular" >
-											<input class="textfeld6" type="text" size="10" maxlength="10" name="date" id="date" value="]]><PROCESS>date</PROCESS><![CDATA[">
+											<input class="textfeld6" type="text" size="18" maxlength="24" name="date" id="date" value="]]><PROCESS>date</PROCESS><![CDATA[">
 										<td class="formular">
 											]]><PROCESS>channelHighlightStart</PROCESS><LABEL value="com_opencms_modules_homepage_news_NewsBackoffice.label.channel" /><PROCESS>channelHighlightEnd</PROCESS><![CDATA[:
 										</td>

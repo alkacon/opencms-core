@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
-<xmltemplate>
-
-<template>
-
-<![CDATA[<?xml version="1.0"?>
-<!DOCTYPE wml PUBLIC "-//WAPFORUM//DTD WML 1.1//EN" "http://www.wapforum.org/DTD/wml_1.1.xml">
-<wml>]]>
-
-<ELEMENT name="body"/><![CDATA[
-
-</wml>]]>
-</template>
-
-</xmltemplate>
+<XMLTEMPLATE>
+    <ELEMENTDEF name="contenttemplate">
+        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+        <TEMPLATE>/system/modules/com.opencms.modules.homepage.news/contenttemplates/wmlMaster</TEMPLATE>
+    </ELEMENTDEF>
+    <ELEMENTDEF name="frametemplate">
+        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+        <TEMPLATE>/content/frametemplates/empty</TEMPLATE>
+    </ELEMENTDEF>   
+<TEMPLATE>
+<ELEMENT name="frametemplate"/>
+</TEMPLATE>
+</XMLTEMPLATE>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<XMLTEMPLATE>
+<errorText>Das gewünschte Element existiert nicht!</errorText>
+
+<template><![CDATA[
+<card id="news" title="]]><METHOD name="getTitle"/><![CDATA[">
+	<p>]]>	
+	<method name="getSingleNews"/><![CDATA[
+	</p> 
+</card>]]>
+</template>
+
+<newsentry><![CDATA[
+<table align="LL" columns="1">
+<tr>
+<td><b>]]><process>headline</process><![CDATA[</b></td>
+</tr>
+<tr>
+<td>]]><process>description</process><![CDATA[</td>
+</tr>
+<tr>
+<td>]]><process>author</process><![CDATA[</td>
+</tr>
+<tr>
+<td>]]><process>date</process><![CDATA[</td>
+</tr>
+</table>]]>
+</newsentry>
+
+</XMLTEMPLATE>
+
+

@@ -4,7 +4,7 @@
     <MASTERTEMPLATE>/system/modules/com.opencms.modules.homepage.news/templates/wmlMaster</MASTERTEMPLATE>
     <ELEMENTDEF name="body">
          <CLASS>com.opencms.modules.homepage.news.NewsTemplate</CLASS>
-        <TEMPLATE>/content/bodys/moduledemos/com.opencms.modules.homepage.news/index.wml</TEMPLATE>
-        <PARAMETER name="channelname">ZDF</PARAMETER>
+        <TEMPLATE>/moduledemos/com.opencms.modules.homepage.news/content/index.wml</TEMPLATE>
+        <PARAMETER name="channelid">1</PARAMETER>
     </ELEMENTDEF>
 </page>

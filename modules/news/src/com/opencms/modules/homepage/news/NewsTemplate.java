@@ -15,6 +15,31 @@ public class NewsTemplate extends CmsXmlTemplate {
   private static int NAME = 1;
   private static int ID = 2;
 
+    /**
+     * Gets the content of a defined section in a given template file and its subtemplates
+     * with the given parameters.
+     *
+     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms CmsObject Object for accessing system resources.
+     * @param templateFile Filename of the template file.
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     */
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG ) {
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] getting content of element " + ((elementName == null) ? "<root>" : elementName));
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] template file is: " + templateFile);
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
+        }
+        CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+        if(templateSelector == null || "".equals(templateSelector)) {
+            templateSelector = (String)parameters.get(C_FRAME_SELECTOR);
+        }
+        parameters.put("_ELEMENT_", elementName);
+        return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+    }
+
 	/**
 	 * method that should be called from a template File to get a list of news that
 	 * belong to one channel.
@@ -213,22 +238,25 @@ public class NewsTemplate extends CmsXmlTemplate {
 		}
 		return ret;
 	}
+
     /**
-	 * Indicates if the results of this class are cacheable.
-	 * <P>
-	 * Checks if the templateCache is set and if all subtemplates
-	 * are cacheable.
-	 *
-	 * @param cms CmsObject Object for accessing system resources
-	 * @param templateFile Filename of the template file
-	 * @param elementName Element name of this template in our parent template.
-	 * @param parameters Hashtable with all template class parameters.
-	 * @param templateSelector template section that should be processed.
-	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     * */
-    /*
-	public boolean isCacheable(CmsObject cms, String templateFile,
-            String elementName, Hashtable parameters, String templateSelector) {
-		return false;
-	}*/
+     * gets the caching information from the current template class.
+     *
+     * @param cms CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
+     */
+    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+
+        // First build our own cache directives.
+        CmsCacheDirectives result = new CmsCacheDirectives(true);
+        Vector para = new Vector();
+        para.add("id");
+        result.setCacheParameters(para);
+        return result;
+    }
+
 }

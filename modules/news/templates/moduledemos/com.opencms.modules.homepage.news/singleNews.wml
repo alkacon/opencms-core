@@ -4,6 +4,6 @@
     <MASTERTEMPLATE>/system/modules/com.opencms.modules.homepage.news/templates/wmlMaster</MASTERTEMPLATE>
      <ELEMENTDEF name="body">
         <CLASS>com.opencms.modules.homepage.news.NewsTemplate</CLASS>
-        <TEMPLATE>/content/bodys/moduledemos/com.opencms.modules.homepage.news/singleNews.wml</TEMPLATE>
+        <TEMPLATE>/moduledemos/com.opencms.modules.homepage.news/content/singleNews.wml</TEMPLATE>
     </ELEMENTDEF>
 </page>

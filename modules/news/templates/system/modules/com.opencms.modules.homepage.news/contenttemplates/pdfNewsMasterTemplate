@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<xmltemplate>
+
+<template>
+
+<![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+<?cocoon-format type="text/xslfo"?>
+
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+<fo:layout-master-set>
+	<fo:simple-page-master
+ 	page-height="29.7cm" 
+ 	page-width="21cm"
+ 	margin-right="2cm"
+	margin-left="3cm"
+ 	margin-bottom="1.5cm" 
+ 	margin-top="3cm"
+ 	page-master-name="normal">
+ 	<fo:region-body margin-bottom="3cm"/>
+ 	<fo:region-after extent="1.5cm"/>
+ </fo:simple-page-master>
+</fo:layout-master-set>
+
+<fo:page-sequence initial-page-number="1">
+ 
+ <fo:sequence-specification>
+ <fo:sequence-specifier-alternating 
+ page-master-even="normal" 
+ page-master-odd="normal" 
+ page-master-first="normal"/>
+ </fo:sequence-specification>
+ 
+ <fo:static-content flow-name="xsl-after">
+ <fo:table>
+	 <fo:table-column column-width="10cm"/>
+	 <fo:table-column column-width="6cm"/>
+	 <fo:table-body>
+	 	<fo:table-row>
+	 		<fo:table-cell>
+	 			<fo:block text-align-last="start" font-size="10pt" color="#888888">
+	 			© www.opencms.com
+	 			</fo:block>
+	 		</fo:table-cell>
+	 		<fo:table-cell>
+	 			<fo:block text-align-last="end" font-size="10pt">
+	 			<fo:page-number/>
+	 			</fo:block>
+	 		</fo:table-cell>
+	 	</fo:table-row>
+	 </fo:table-body>
+ </fo:table>
+ </fo:static-content>
+ 
+	<fo:flow>]]>
+
+	<ELEMENT name="body"/><![CDATA[
+
+	</fo:flow>
+	 
+</fo:page-sequence>
+	 
+</fo:root>
+]]>
+
+</template>
+
+</xmltemplate>
+

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<XMLTEMPLATE>
+<TEMPLATE>
+<![CDATA[<table border=1>]]>
+<process>tablehead</process>
+<!-- Here the news are inserted -->
+<!-- The parameter determines the number of entries that should be displayed! -->
+<method name="getNewsList">4</method> <![CDATA[
+</table> ]]>
+</TEMPLATE>
+
+<!-- not really needed -->
+<tablehead><![CDATA[
+<tr>
+<td><b>ID</b></td>
+<td><b>HEADLINE</b></td>
+<td><b>DESCRIPTION</b></td>
+<td><b>AUTHOR</b></td>
+<td><b>DATE</b></td>
+<td><b>LINK</b></td>
+<td><b>LINKTEXT</b></td>
+<td><b>TEXT</b></td>
+<td><b>CHANNEL</b></td>
+<td><b>A_INOF1</b></td>
+<td><b>A_INOF2</b></td>
+<td><b>A_INOF3</b></td>
+</tr>]]>
+</tablehead>
+
+<!-- This datablock is filled by the method -->
+<newsentry> <![CDATA[
+<tr>
+<!-- all acceseable items are used here.. -->
+<td>]]><process>id</process><![CDATA[</td>
+<td>]]><process>headline</process><![CDATA[</td>
+<td>]]><process>description</process><![CDATA[</td>
+<td>]]><process>author</process><![CDATA[</td>
+<td>]]><process>date</process><![CDATA[</td>
+<td>]]><process>link</process><![CDATA[</td>
+<td>]]><process>linkText</process><![CDATA[</td>
+<td>]]><process>text</process><![CDATA[</td>
+<td>]]><process>channel</process><![CDATA[</td>
+<td>]]><process>a_info1</process><![CDATA[</td>
+<td>]]><process>a_info2</process><![CDATA[</td>
+<td>]]><process>a_info3</process><![CDATA[</td>
+</tr>
+]]>
+</newsentry>
+
+</XMLTEMPLATE>
