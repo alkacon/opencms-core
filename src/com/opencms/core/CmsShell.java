@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/18 15:41:05 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/09/20 13:54:26 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.29 $ $Date: 2000/09/18 15:41:05 $
+ * @version $Revision: 1.30 $ $Date: 2000/09/20 13:54:26 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -85,10 +85,12 @@ public class CmsShell implements I_CmsConstants {
 	 * 
 	 * @param name The name of the new group.
 	 * @param description The description for the new group.
+	 * @int flags The flags for the new group.
+	 * @param name The name of the parent group (or null).
 	 */
-	public void addGroup(String name, String description) {
+	public void addGroup(String name, String description, String flags, String parent) {
 		try {
-			m_cms.addGroup( name, description, C_FLAG_ENABLED, null );
+			m_cms.addGroup( name, description, Integer.parseInt(flags), parent );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -98,12 +100,10 @@ public class CmsShell implements I_CmsConstants {
 	 * 
 	 * @param name The name of the new group.
 	 * @param description The description for the new group.
-	 * @int flags The flags for the new group.
-	 * @param name The name of the parent group (or null).
 	 */
-	public void addGroup(String name, String description, String flags, String parent) {
+	public void addGroup(String name, String description) {
 		try {
-			m_cms.addGroup( name, description, Integer.parseInt(flags), parent );
+			m_cms.addGroup( name, description, C_FLAG_ENABLED, null );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -132,13 +132,18 @@ public class CmsShell implements I_CmsConstants {
 	 * @param password The new password for the user.
 	 * @param group The default groupname for the user.
 	 * @param description The description for the user.
+	 * @param flags The flags for the user.
 	 */
 	public void addUser( String name, String password, 
-						 String group, String description) {
+						 String group, String description,
+						 String firstname, String lastname, String email) {
 		try {
-			System.out.println(m_cms.addUser( name, password, group, 
-											  description, new Hashtable(), 
-											  C_FLAG_ENABLED) );
+			CmsUser user = m_cms.addUser( name, password, group, 
+											description, new Hashtable(), C_FLAG_ENABLED);
+			user.setEmail(email);
+			user.setFirstname(firstname);
+			user.setLastname(lastname);
+			m_cms.writeUser(user);
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -169,18 +174,13 @@ public class CmsShell implements I_CmsConstants {
 	 * @param password The new password for the user.
 	 * @param group The default groupname for the user.
 	 * @param description The description for the user.
-	 * @param flags The flags for the user.
 	 */
 	public void addUser( String name, String password, 
-						 String group, String description,
-						 String firstname, String lastname, String email) {
+						 String group, String description) {
 		try {
-			CmsUser user = m_cms.addUser( name, password, group, 
-											description, new Hashtable(), C_FLAG_ENABLED);
-			user.setEmail(email);
-			user.setFirstname(firstname);
-			user.setLastname(lastname);
-			m_cms.writeUser(user);
+			System.out.println(m_cms.addUser( name, password, group, 
+											  description, new Hashtable(), 
+											  C_FLAG_ENABLED) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -495,6 +495,19 @@ public class CmsShell implements I_CmsConstants {
 		}		
 	}
 	/**
+	 * Delete the propertydefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the propertydefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the propertydefinition.
+	 */
+	public void deletepropertydefinition(String name, String resourcetype) {
+		try {
+			m_cms.deletePropertydefinition(name, resourcetype);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	/**
 	 * Deletes a propertyinformation for a file or folder.
 	 * 
 	 * @param resourcename The resource-name of which the propertyinformation has to be delteted.
@@ -515,19 +528,6 @@ public class CmsShell implements I_CmsConstants {
 	public void deleteUser( String name ) {
 		try {
 			m_cms.deleteUser( name );
-		} catch( Exception exc ) {
-			printException(exc);
-		}
-	}
-	/**
-	 * Delete the propertydefinition for the resource type.<BR/>
-	 * 
-	 * @param name The name of the propertydefinition to overwrite.
-	 * @param resourcetype The name of the resource-type for the propertydefinition.
-	 */
-	public void deletepropertydefinition(String name, String resourcetype) {
-		try {
-			m_cms.deletePropertydefinition(name, resourcetype);
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -637,7 +637,11 @@ public class CmsShell implements I_CmsConstants {
 	public void getAllSites() {
 		try {
 			Vector sites = m_cms.getAllSites();
-			System.out.println(sites.size() + " sites in database");
+			Enumeration en = sites.elements();
+			while(en.hasMoreElements())
+			{
+				System.out.println((CmsSite)en.nextElement());
+			}
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
@@ -697,16 +701,6 @@ public void getCurrentSite()
 	}
 }
 	/**
-	 * This method can be called, to determine if the file-system was changed 
-	 * in the past. A module can compare its previosly stored number with this
-	 * returned number. If they differ, a change was made.
-	 * 
-	 * @return the number of file-system-changes.
-	 */
-	 public void getFileSystemChanges() {
-		System.out.println( m_cms.getFileSystemChanges() );
-	 }
-	/**
 	 * Returns a Vector with all subfiles.<BR/>
 	 * 
 	 * @param foldername the complete path to the folder.
@@ -727,18 +721,15 @@ public void getCurrentSite()
 		}
 	}
 	/**
-	 * Returns all users of the cms.
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * @return the number of file-system-changes.
 	 */
-	public void getGroups() {
-		try {
-			Vector groups = m_cms.getGroups();
-			for( int i = 0; i < groups.size(); i++ ) {
-				System.out.println( (CmsGroup)groups.elementAt(i) );
-			}
-		} catch( Exception exc ) {
-			printException(exc);
-		}
-	}
+	 public void getFileSystemChanges() {
+		System.out.println( m_cms.getFileSystemChanges() );
+	 }
 	/**
 	 * Returns all groups of a user.
 	 * 
@@ -747,6 +738,19 @@ public void getCurrentSite()
 	public void getGroupsOfUser(String username) {
 		try {
 			Vector groups = m_cms.getGroupsOfUser(username);
+			for( int i = 0; i < groups.size(); i++ ) {
+				System.out.println( (CmsGroup)groups.elementAt(i) );
+			}
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	/**
+	 * Returns all users of the cms.
+	 */
+	public void getGroups() {
+		try {
+			Vector groups = m_cms.getGroups();
 			for( int i = 0; i < groups.size(); i++ ) {
 				System.out.println( (CmsGroup)groups.elementAt(i) );
 			}
@@ -880,11 +884,13 @@ public void getCurrentSite()
 		}
 	}
 	/**
-	 * Returns all users of the cms.
+	 * Returns all groups of a user.
+	 * 
+	 * @param groupname The name of the group.
 	 */
-	public void getUsers() {
+	public void getUsersOfGroup(String groupname) {
 		try {
-			Vector users = m_cms.getUsers();
+			Vector users = m_cms.getUsersOfGroup(groupname);
 			for( int i = 0; i < users.size(); i++ ) {
 				System.out.println( (CmsUser)users.elementAt(i) );
 			}
@@ -893,13 +899,11 @@ public void getCurrentSite()
 		}
 	}
 	/**
-	 * Returns all groups of a user.
-	 * 
-	 * @param groupname The name of the group.
+	 * Returns all users of the cms.
 	 */
-	public void getUsersOfGroup(String groupname) {
+	public void getUsers() {
 		try {
-			Vector users = m_cms.getUsersOfGroup(groupname);
+			Vector users = m_cms.getUsers();
 			for( int i = 0; i < users.size(); i++ ) {
 				System.out.println( (CmsUser)users.elementAt(i) );
 			}
@@ -1041,19 +1045,6 @@ public void importModule(String importFile) {
 }
 /**
  * Imports an import-resource (folder or zipfile) to the cms.
- * Creation date: (09.08.00 16:28:48)
- * @param importFile java.lang.String the name (absolute Path) of the import resource (zip or folder)
- */
-public void importResources(String importFile) {
-	// import the resources
-	try {
-		m_cms.importResources(importFile, C_ROOT);
-	} catch (Exception exc) {
-		printException(exc);
-	}
-}
-/**
- * Imports an import-resource (folder or zipfile) to the cms.
  * 
  * @param importFile the name (absolute Path) of the import resource (zip or folder)
  * @param importPath the name (absolute Path) of folder in which should be imported
@@ -1062,6 +1053,19 @@ public void importResources(String importFile, String importPath) {
 	// import the resources
 	try {
 		m_cms.importResources(importFile, importPath);
+	} catch (Exception exc) {
+		printException(exc);
+	}
+}
+/**
+ * Imports an import-resource (folder or zipfile) to the cms.
+ * Creation date: (09.08.00 16:28:48)
+ * @param importFile java.lang.String the name (absolute Path) of the import resource (zip or folder)
+ */
+public void importResources(String importFile) {
+	// import the resources
+	try {
+		m_cms.importResources(importFile, C_ROOT);
 	} catch (Exception exc) {
 		printException(exc);
 	}
@@ -1259,10 +1263,12 @@ private void init(String[] args) throws Exception
 	 * 
 	 * @param resourcetype The name of the resource type to read the 
 	 * propertydefinitions for.
+	 * @param type The type of the propertydefinition (normal|mandatory|optional).
 	 */	
-	public void readAllPropertydefinitions(String resourcetype) {
+	public void readAllPropertydefinitions(String resourcetype, String type) {
 		try {
-			Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype);
+			Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype, 
+														   Integer.parseInt(type));
 			for( int i = 0; i < propertydefs.size(); i++ ) {
 				System.out.println( (CmsPropertydefinition)propertydefs.elementAt(i) );
 			}
@@ -1275,12 +1281,10 @@ private void init(String[] args) throws Exception
 	 * 
 	 * @param resourcetype The name of the resource type to read the 
 	 * propertydefinitions for.
-	 * @param type The type of the propertydefinition (normal|mandatory|optional).
 	 */	
-	public void readAllPropertydefinitions(String resourcetype, String type) {
+	public void readAllPropertydefinitions(String resourcetype) {
 		try {
-			Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype, 
-														   Integer.parseInt(type));
+			Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype);
 			for( int i = 0; i < propertydefs.size(); i++ ) {
 				System.out.println( (CmsPropertydefinition)propertydefs.elementAt(i) );
 			}
@@ -1307,18 +1311,6 @@ private void init(String[] args) throws Exception
 	 * 
 	 * @param filename The complete path to the file
 	 */
-	public void readFile(String filename) {
-		try {
-			System.out.println(m_cms.readFile(filename));
-		} catch( Exception exc ) {
-			printException(exc);
-		}
-	}
-	/**
-	 * Reads a file from the Cms.<BR/>
-	 * 
-	 * @param filename The complete path to the file
-	 */
 	public void readFileContent(String filename) {
 		try {
 			System.out.println(m_cms.readFile(filename));
@@ -1336,6 +1328,18 @@ private void init(String[] args) throws Exception
 	public void readFileHeader(String filename) {
 		try {
 			System.out.println( m_cms.readFileHeader(filename) );
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * @param filename The complete path to the file
+	 */
+	public void readFile(String filename) {
+		try {
+			System.out.println(m_cms.readFile(filename));
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -1400,6 +1404,19 @@ private void init(String[] args) throws Exception
 		}		
 	}
 	/**
+	 * Reads the propertydefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the propertydefinition to read.
+	 * @param resourcetype The name of the resource type for the propertydefinition.
+	 */
+	public void readpropertydefinition(String name, String resourcetype) {
+		try {
+			System.out.println( m_cms.readPropertydefinition(name, resourcetype) );
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	/**
 	 * Returns a propertyinformation of a file or folder.
 	 * 
 	 * @param name The resource-name of which the propertyinformation has to be read.
@@ -1417,9 +1434,9 @@ private void init(String[] args) throws Exception
 	 * 
 	 * @param username The name of the user that is to be read.
 	 */
-	public void readUser(String username) {
+	public void readUser(String username, String password) {
 		try {
-			System.out.println( m_cms.readUser(username) );
+			System.out.println( m_cms.readUser(username, password) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
@@ -1429,25 +1446,12 @@ private void init(String[] args) throws Exception
 	 * 
 	 * @param username The name of the user that is to be read.
 	 */
-	public void readUser(String username, String password) {
+	public void readUser(String username) {
 		try {
-			System.out.println( m_cms.readUser(username, password) );
+			System.out.println( m_cms.readUser(username) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
-	}
-	/**
-	 * Reads the propertydefinition for the resource type.<BR/>
-	 * 
-	 * @param name The name of the propertydefinition to read.
-	 * @param resourcetype The name of the resource type for the propertydefinition.
-	 */
-	public void readpropertydefinition(String name, String resourcetype) {
-		try {
-			System.out.println( m_cms.readPropertydefinition(name, resourcetype) );
-		} catch( Exception exc ) {
-			printException(exc);
-		}
 	}
 	/** 
 	 * Recovers the password for a user.
@@ -1506,11 +1510,12 @@ private void init(String[] args) throws Exception
 	 * Sets the password for a user.
 	 * 
 	 * @param username The name of the user.
+	 * @param oldPassword The old password.
 	 * @param newPassword The new password.
 	 */
-	public void setPassword(String username, String newPassword) {
+	public void setPassword(String username, String oldPassword, String newPassword) {
 		try {
-			m_cms.setPassword( username, newPassword );
+			m_cms.setPassword( username, oldPassword, newPassword );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -1519,12 +1524,11 @@ private void init(String[] args) throws Exception
 	 * Sets the password for a user.
 	 * 
 	 * @param username The name of the user.
-	 * @param oldPassword The old password.
 	 * @param newPassword The new password.
 	 */
-	public void setPassword(String username, String oldPassword, String newPassword) {
+	public void setPassword(String username, String newPassword) {
 		try {
-			m_cms.setPassword( username, oldPassword, newPassword );
+			m_cms.setPassword( username, newPassword );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -1679,6 +1683,27 @@ private void init(String[] args) throws Exception
 		}
 	}
 	/**
+	 * Writes the propertydefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the propertydefinition to overwrite.
+	 * @param resourcetype The name of the resource type to read the 
+	 * propertydefinitions for.
+	 * @param type The new type of the propertydefinition (normal|mandatory|optional).
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void writepropertydefinition(String name, 
+									String resourcetype, 
+									String type) {
+		try {
+			CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
+			propertydef.setPropertydefType(Integer.parseInt(type));			
+			System.out.println( m_cms.writePropertydefinition(propertydef) );
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	/**
 	 * Writes a propertyinformation for a file or folder.
 	 * 
 	 * @param name The resource-name of which the propertyinformation has to be set.
@@ -1712,27 +1737,6 @@ private void init(String[] args) throws Exception
 			// write it back
 			m_cms.writeUser(user);		
 
-		} catch( Exception exc ) {
-			printException(exc);
-		}
-	}
-	/**
-	 * Writes the propertydefinition for the resource type.<BR/>
-	 * 
-	 * @param name The name of the propertydefinition to overwrite.
-	 * @param resourcetype The name of the resource type to read the 
-	 * propertydefinitions for.
-	 * @param type The new type of the propertydefinition (normal|mandatory|optional).
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void writepropertydefinition(String name, 
-									String resourcetype, 
-									String type) {
-		try {
-			CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
-			propertydef.setPropertydefType(Integer.parseInt(type));			
-			System.out.println( m_cms.writePropertydefinition(propertydef) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
