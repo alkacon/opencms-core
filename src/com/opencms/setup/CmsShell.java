@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2000/02/08 09:51:35 $
+ * @version $Revision: 1.22 $ $Date: 2000/02/08 13:22:32 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -50,14 +50,15 @@ public class CmsShell implements I_CmsConstants {
 		
 				// wait for user-input
 				shell.commands();	
-				/* shell.initDb();
+				/*
+				shell.initDb();
 				
 				// init 2
 				shell = new CmsShell();
 				args[0] = "com.opencms.file.CmsInitMySql";
 				shell.init(args);
-				shell.initDb2(); */
-
+				shell.initDb2();
+				*/
 			}
 		} catch(Exception exc) {
 			System.out.println(exc);
@@ -106,18 +107,19 @@ public class CmsShell implements I_CmsConstants {
 			tokenizer.eolIsSignificant(true);
 			Vector input;
 			System.out.println("Type help to get a list of commands.");
+			System.out.print("> ");
+			input = new Vector();
 			for(;;) { // ever
-				System.out.print("> ");
-				input = new Vector();
-				while(tokenizer.nextToken() != tokenizer.TT_EOL) {
-					if(tokenizer.ttype == tokenizer.TT_NUMBER) {
-						input.addElement(tokenizer.nval + "");
-					} else {
-						input.addElement(tokenizer.sval);
-					}
+				tokenizer.nextToken();
+				if(tokenizer.ttype == tokenizer.TT_NUMBER) {
+					input.addElement(tokenizer.nval + "");
+				} else if(tokenizer.ttype == tokenizer.TT_WORD) {
+					input.addElement(tokenizer.sval);
+				} else {
+					call(input);
+					System.out.print("> ");
+					input = new Vector();
 				}
-				// call the command
-				call(input);
 			}
 		}catch(Exception exc){
 			printException(exc);
@@ -138,6 +140,10 @@ public class CmsShell implements I_CmsConstants {
 	 * @param command The command to be called.
 	 */
 	private void call(Vector command) {
+		if((command == null) || (command.size() == 0)) {
+			return;
+		}
+		
 		String splittet[] = new String[command.size()];
 		String toCall;
 		
