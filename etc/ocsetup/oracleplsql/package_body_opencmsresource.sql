@@ -40,7 +40,7 @@ PACKAGE BODY opencmsresource IS
       vFolderName := pFolderName;
     END IF;
     IF substr(vFolderName, -1) = '/' THEN
-      curResource := readFolder(pUserId, pProjectId, vFolderName);
+      curResource := readFolderAcc(pUserId, pProjectId, vFolderName);
     ELSE
       curResource := readFileHeader(pUserId, pProjectId, vFolderName);
     END IF;
@@ -132,7 +132,7 @@ PACKAGE BODY opencmsresource IS
     END IF;
    -- read all Information about this resource
     IF substr(vFolderName, -1) = '/' THEN
-      curResource := readFolder(pUserId, pProjectId, vFolderName);
+      curResource := readFolderAcc(pUserId, pProjectId, vFolderName);
     ELSE
       curResource := readFileHeader(pUserId, pProjectId, vFolderName);
     END IF;
@@ -184,6 +184,32 @@ PACKAGE BODY opencmsresource IS
       rollback;
       RAISE;
   END unlockResource;
+--------------------------------------------------------------------------------------------------------------
+-- returns a folder with foldername = pFolderName
+-- for project with project_id = pProjectId or for online-project
+--------------------------------------------------------------------------------------------------------------
+  FUNCTION readFolderAcc(pUserId NUMBER, pProjectID NUMBER, pFolderName VARCHAR2) RETURN userTypes.anyCursor IS
+    curFolder userTypes.anyCursor;
+    recFolder cms_resources%ROWTYPE;
+  BEGIN
+    curFolder := readFolder(pUserId, pProjectID, pFolderName);
+    FETCH curFolder INTO recFolder;
+    CLOSE curFolder;
+    -- check the access for the existing file
+    IF recFolder.resource_id IS NOT NULL THEN
+      IF opencmsAccess.accessRead(pUserId, pProjectId, recFolder.resource_id) = 0 THEN
+          -- error: no access for this file
+        userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
+      END IF;
+      -- because the cursor was fetched into a record it seems to be necessary to read the file again for returning
+      -- the cursor
+      curFolder := readFolder(pUserId, pProjectID, pFolderName);
+    ELSE
+      -- error: open the cursor with a select that returns no rows
+      OPEN curFolder FOR select * from cms_resources where resource_id = -1;
+    END IF;
+    RETURN curFolder;
+  END readFolderAcc;  
 --------------------------------------------------------------------------------------------------------------
 -- returns a folder with foldername = pFolderName
 -- for project with project_id = pProjectId or for online-project
