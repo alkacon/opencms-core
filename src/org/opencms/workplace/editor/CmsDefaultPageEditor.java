@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/02/16 12:05:58 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/02/16 15:51:01 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsRequestContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 5.1.12
  */
@@ -212,16 +213,17 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @throws JspException if inclusion of error page fails
      */
     public void actionPreview() throws IOException, JspException {
-        // save content of the editor to the temporary file
         try {
+            // save content of the editor to the temporary file
             performSaveContent(getParamElementname(), getElementLocale());
         } catch (CmsException e) {
             // show error page
             showErrorPage(this, e, "save");
         }
         
-        // redirect to the temporary file
-        getCms().getRequestContext().getResponse().sendCmsRedirect(getParamTempfile());
+        // redirect to the temporary file with current active element language
+        String param = "?" + CmsRequestContext.C_PARAMETER_LOCALE + "=" + getParamElementlanguage();
+        getCms().getRequestContext().getResponse().sendCmsRedirect(getParamTempfile() + param);
         
     }
 
