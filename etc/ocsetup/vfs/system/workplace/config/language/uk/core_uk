@@ -177,7 +177,7 @@
 				<picbrowser>The folder for the picture galleries doesn't exist.</picbrowser>
 				<picdatamissing>You need to pic a foldername and a caretaker of the gallery.</picdatamissing>
 				<picnogallery>There is no picture gallery yet.</picnogallery>
-				<projectdatamissing>The fields 'Project name' and 'Folders' need to be filled in.</projectdatamissing>
+				<projectdatamissing>The fields Project name and Folders need to be filled in.</projectdatamissing>
 				<projectlockchange>There was an error.</projectlockchange>
 				<namemissing>The field Name must be filled out.</namemissing>
 				<titlemissing>The field Title must be filled out.</titlemissing>
