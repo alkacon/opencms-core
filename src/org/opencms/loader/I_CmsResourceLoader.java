@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/06/21 09:56:59 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/08/04 13:47:55 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -91,10 +91,10 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      * that the content is handled or modified in a special way, or set special http headers.<p>
      * 
      * Moreover, if the page type is template based, calling "dump" will not trigger the 
-     * template but directly deliver the contents from the selected resource.<p>
+     * template but directly deliver the contents from the selected element.<p>
      * 
      * @param cms used to access the OpenCms VFS
-     * @param resource the reqested resource in the VFS
+     * @param resource the requested resource in the VFS
      * @param element the element in the file to display
      * @param locale the locale to display
      * @param req the servlet request

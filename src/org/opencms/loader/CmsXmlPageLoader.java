@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/08/04 13:47:55 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -99,8 +99,12 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             req.setAttribute(absolutePath, page);
         }    
 
+        // check the page locales
+        List locales = page.getLocales(element);
+        Locale loc = OpenCms.getLocaleManager().getBestMatchingLocale(locale, OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), locales);
+        
         // get the appropriate content and convert it to bytes
-        String value = page.getStringValue(cms, element, locale);
+        String value = page.getStringValue(cms, element, loc);
         if (value != null) {
             return value.getBytes(page.getEncoding());
         } 
@@ -221,7 +225,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             return;                    
         } else { 
             locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), locales);
-        }        
+        }
         
         // get the appropriate content
         String value = page.getStringValue(cms, element, locale);

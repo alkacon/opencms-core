@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2004/08/04 13:47:55 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,8 +53,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -99,7 +101,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -191,6 +193,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         // get the current Flex controller
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         CmsFlexController oldController = null;
+
         if (controller != null) {
             // for dumping we must create an new "top level" controller, save the old one to be restored later
             oldController = controller;
@@ -200,6 +203,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         try {
             // now create a new, temporary Flex controller
             controller = getController(cms, file, req, res, false, false);
+            if (element != null) {
+                // add the element parameter to the included request
+                String[] value = new String[]{element};
+                Map parameters = Collections.singletonMap(I_CmsConstants.C_PARAMETER_ELEMENT, value);
+                controller.getCurrentRequest().addParameterMap(parameters);
+            }
             // dispatch to the JSP
             result = dispatchJsp(controller);
             // remove temporary controller
