@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/15 15:31:53 $
- * Version: $Revision: 1.217 $
+ * Date   : $Date: 2003/09/15 16:01:39 $
+ * Version: $Revision: 1.218 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.217 $ $Date: 2003/09/15 15:31:53 $
+ * @version $Revision: 1.218 $ $Date: 2003/09/15 16:01:39 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -536,7 +536,7 @@ public class CmsDriverManager extends Object {
             // check the username
             validFilename(name);
             CmsGroup group = readGroup(context, defaultGroup);
-            CmsUser newUser = m_userDriver.addImportUser(new CmsUUID(id), name, password, recoveryPassword, description, firstname, lastname, email, 0, 0, flags, additionalInfos, group, address, section, type);
+            CmsUser newUser = m_userDriver.importUser(new CmsUUID(id), name, password, recoveryPassword, description, firstname, lastname, email, 0, 0, flags, additionalInfos, group, address, section, type);
             addUserToGroup(context, newUser.getName(), group.getName());
             return newUser;
         } else {
@@ -576,7 +576,7 @@ public class CmsDriverManager extends Object {
             validatePassword(password);
             if (name.length() > 0) {
                 CmsGroup defaultGroup = readGroup(context, group);
-                CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+                CmsUser newUser = m_userDriver.createUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
                 addUserToGroup(context, newUser.getName(), defaultGroup.getName());
                 return newUser;
             } else {
@@ -621,7 +621,7 @@ public class CmsDriverManager extends Object {
                     //check if group exists
                     if (group != null) {
                         //add this user to the group
-                        m_userDriver.addUserToGroup(user.getId(), group.getId());
+                        m_userDriver.createUserInGroup(user.getId(), group.getId());
                         // update the cache
                         m_userGroupsCache.clear();
                     } else {
@@ -664,7 +664,7 @@ public class CmsDriverManager extends Object {
         validatePassword(password);
         if ((name.length() > 0)) {
             CmsGroup defaultGroup = readGroup(context, group);
-            CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_WEBUSER);
+            CmsUser newUser = m_userDriver.createUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_WEBUSER);
             CmsUser user;
             CmsGroup usergroup;
 
@@ -676,7 +676,7 @@ public class CmsDriverManager extends Object {
                 //check if group exists
                 if (usergroup != null) {
                     //add this user to the group
-                    m_userDriver.addUserToGroup(user.getId(), usergroup.getId());
+                    m_userDriver.createUserInGroup(user.getId(), usergroup.getId());
                     // update the cache
                     m_userGroupsCache.clear();
                 } else {
@@ -722,7 +722,7 @@ public class CmsDriverManager extends Object {
         validatePassword(password);
         if ((name.length() > 0)) {
             CmsGroup defaultGroup = readGroup(context, group);
-            CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_WEBUSER);
+            CmsUser newUser = m_userDriver.createUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_WEBUSER);
             CmsUser user;
             CmsGroup usergroup;
             CmsGroup addGroup;
@@ -734,7 +734,7 @@ public class CmsDriverManager extends Object {
                 //check if group exists
                 if (usergroup != null && isWebgroup(usergroup)) {
                     //add this user to the group
-                    m_userDriver.addUserToGroup(user.getId(), usergroup.getId());
+                    m_userDriver.createUserInGroup(user.getId(), usergroup.getId());
                     // update the cache
                     m_userGroupsCache.clear();
                 } else {
@@ -746,7 +746,7 @@ public class CmsDriverManager extends Object {
                     addGroup = readGroup(context, additionalGroup);
                     if (addGroup != null && isWebgroup(addGroup)) {
                         //add this user to the group
-                        m_userDriver.addUserToGroup(user.getId(), addGroup.getId());
+                        m_userDriver.createUserInGroup(user.getId(), addGroup.getId());
                         // update the cache
                         m_userGroupsCache.clear();
                     } else {
@@ -811,7 +811,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             // try to remove user from cache
             clearUserCache(user);
-            m_userDriver.changeUserType(user.getId(), userType);
+            m_userDriver.writeUserType(user.getId(), userType);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] changeUserType() " + user.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                            
         }
@@ -1069,9 +1069,9 @@ public class CmsDriverManager extends Object {
 
         checkPermissions(context, dest, I_CmsConstants.C_CONTROL_ACCESS);
 
-        ListIterator acEntries = m_userDriver.getAccessControlEntries(context.currentProject(), source.getResourceId(), false).listIterator();
+        ListIterator acEntries = m_userDriver.readAccessControlEntries(context.currentProject(), source.getResourceId(), false).listIterator();
 
-        m_userDriver.removeAllAccessControlEntries(context.currentProject(), dest.getResourceId());
+        m_userDriver.removeAccessControlEntries(context.currentProject(), dest.getResourceId());
         clearAccessControlListCache();
 
         while (acEntries.hasNext()) {
@@ -1182,7 +1182,7 @@ public class CmsDriverManager extends Object {
             m_propertyCache.clear();             
 
             // copy the access control entries
-            ListIterator aceList = m_userDriver.getAccessControlEntries(context.currentProject(), sourceFile.getResourceId(), false).listIterator();
+            ListIterator aceList = m_userDriver.readAccessControlEntries(context.currentProject(), sourceFile.getResourceId(), false).listIterator();
             while (aceList.hasNext()) {
                 CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
@@ -1935,7 +1935,7 @@ public class CmsDriverManager extends Object {
 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
-        m_userDriver.deleteAllAccessControlEntries(context.currentProject(), resource.getResourceId());
+        m_userDriver.deleteAccessControlEntries(context.currentProject(), resource.getResourceId());
         
         // not here
         // touchResource(context, resource, System.currentTimeMillis());
@@ -2112,7 +2112,7 @@ public class CmsDriverManager extends Object {
                     // remove the properties                
                     deleteAllProperties(context, currentResource.getRootPath());
                     // remove the access control entries
-                    m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceId());
+                    m_userDriver.removeAccessControlEntries(context.currentProject(), currentResource.getResourceId());
                     // the resource doesn't exist online => remove the file
                     if (currentResource.isLabeled() && !hasLabeledLinks(context, context.currentProject(), currentResource)) {
                         // update the resource flags to "unlabel" the other siblings
@@ -2191,7 +2191,7 @@ public class CmsDriverManager extends Object {
             deleteAllProperties(context, foldername);
             m_vfsDriver.removeFolder(context.currentProject(), cmsFolder);
             // remove the access control entries
-            m_userDriver.removeAllAccessControlEntries(context.currentProject(), cmsFolder.getResourceId());
+            m_userDriver.removeAccessControlEntries(context.currentProject(), cmsFolder.getResourceId());
 
         } else {
             // m_vfsDriver.deleteFolder(context.currentProject(), cmsFolder);
@@ -2297,7 +2297,7 @@ public class CmsDriverManager extends Object {
                     // delete the file
                     m_vfsDriver.removeFile(context.currentProject(), currentFile);
                     // remove the access control entries
-                    m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentFile.getResourceId());
+                    m_userDriver.removeAccessControlEntries(context.currentProject(), currentFile.getResourceId());
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_CHANGED) {
                     CmsLock lock = getLock(context, currentFile);
                     if (lock.isNullLock()) {
@@ -2364,7 +2364,7 @@ public class CmsDriverManager extends Object {
                 CmsFolder delFolder = ((CmsFolder) deletedFolders.elementAt(i));
                 m_vfsDriver.removeFolder(context.currentProject(), delFolder);
                 // remove the access control entries
-                m_userDriver.removeAllAccessControlEntries(context.currentProject(), delFolder.getResourceId());
+                m_userDriver.removeAccessControlEntries(context.currentProject(), delFolder.getResourceId());
                 
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", delFolder)));
             }
@@ -2545,7 +2545,7 @@ public class CmsDriverManager extends Object {
      * @return The encrypted value.
      */
     public String digest(String value) {
-        return m_userDriver.digest(value);
+        return m_userDriver.encryptPassword(value);
     }
 
     /**
@@ -2841,14 +2841,14 @@ public class CmsDriverManager extends Object {
         //CmsAccessControlList acList = new CmsAccessControlList();
 
         // add the aces of the resource itself
-        Vector acEntries = m_userDriver.getAccessControlEntries(context.currentProject(), resourceId, false);
+        Vector acEntries = m_userDriver.readAccessControlEntries(context.currentProject(), resourceId, false);
 
         // add the aces of each predecessor
         CmsUUID structureId;
         while (getInherited && !(structureId = res.getParentStructureId()).isNullUUID()) {
 
             res = m_vfsDriver.readFolder(res.getProjectLastModified(), structureId);
-            acEntries.addAll(m_userDriver.getAccessControlEntries(context.currentProject(), res.getResourceId(), getInherited));
+            acEntries.addAll(m_userDriver.readAccessControlEntries(context.currentProject(), res.getResourceId(), getInherited));
         }
 
         return acEntries;
@@ -2902,7 +2902,7 @@ public class CmsDriverManager extends Object {
         }
 
         // add the access control entries belonging to this resource
-        acEntries = m_userDriver.getAccessControlEntries(context.currentProject(), resource.getResourceId(), inheritedOnly).listIterator();
+        acEntries = m_userDriver.readAccessControlEntries(context.currentProject(), resource.getResourceId(), inheritedOnly).listIterator();
         while (acEntries.hasNext()) {
             CmsAccessControlEntry acEntry = (CmsAccessControlEntry) acEntries.next();
 
@@ -3188,7 +3188,7 @@ public class CmsDriverManager extends Object {
     public Vector getChild(CmsRequestContext context, String groupname) throws CmsException {
         // check security
         if (!context.currentUser().isGuestUser()) {
-            return m_userDriver.getChild(groupname);
+            return m_userDriver.getChildGroups(groupname);
         } else {
             throw new CmsSecurityException("[" + getClass().getName() + "] getChild()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
@@ -3215,7 +3215,7 @@ public class CmsDriverManager extends Object {
             CmsGroup group = null;
 
             // get all child groups if the user group
-            childs = m_userDriver.getChild(groupname);
+            childs = m_userDriver.getChildGroups(groupname);
             if (childs != null) {
                 allChilds = childs;
                 // now get all subchilds for each group
@@ -3274,7 +3274,7 @@ public class CmsDriverManager extends Object {
     public Vector getDirectGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
         CmsUser user = readUser(username);
-        return m_userDriver.getGroupsOfUser(user.getId());
+        return m_userDriver.readGroupsOfUser(user.getId());
     }
 
     /**
@@ -3381,7 +3381,7 @@ public class CmsDriverManager extends Object {
     public Vector getGroups(CmsRequestContext context) throws CmsException {
         // check security
         if (!context.currentUser().isGuestUser()) {
-            return m_userDriver.getGroups();
+            return m_userDriver.readGroups();
         } else {
             throw new CmsSecurityException("[" + getClass().getName() + "] getGroups()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
@@ -3409,7 +3409,7 @@ public class CmsDriverManager extends Object {
             CmsGroup subGroup;
             CmsGroup group;
             // get all groups of the user
-            Vector groups = m_userDriver.getGroupsOfUser(user.getId());
+            Vector groups = m_userDriver.readGroupsOfUser(user.getId());
             allGroups = new Vector();
             // now get all childs of the groups
             Enumeration enu = groups.elements();
@@ -3914,7 +3914,7 @@ public class CmsDriverManager extends Object {
     public Vector getUsers(CmsRequestContext context) throws CmsException {
         // check security
         if (!context.currentUser().isGuestUser()) {
-            return m_userDriver.getUsers(I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+            return m_userDriver.readUsers(I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         } else {
             throw new CmsSecurityException("[" + getClass().getName() + "] getUsers()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
@@ -3934,7 +3934,7 @@ public class CmsDriverManager extends Object {
     public Vector getUsers(CmsRequestContext context, int type) throws CmsException {
         // check security
         if (!context.currentUser().isGuestUser()) {
-            return m_userDriver.getUsers(type);
+            return m_userDriver.readUsers(type);
         } else {
             throw new CmsSecurityException("[" + getClass().getName() + "] getUsers()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
@@ -3955,7 +3955,7 @@ public class CmsDriverManager extends Object {
     public Vector getUsers(CmsRequestContext context, int type, String namestart) throws CmsException {
         // check security
         if (!context.currentUser().isGuestUser()) {
-            return m_userDriver.getUsers(type, namestart);
+            return m_userDriver.readUsers(type, namestart);
         } else {
             throw new CmsSecurityException("[" + getClass().getName() + "] getUsers()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
@@ -3978,7 +3978,7 @@ public class CmsDriverManager extends Object {
     public Vector getUsersByLastname(CmsRequestContext context, String Lastname, int UserType, int UserStatus, int wasLoggedIn, int nMax) throws CmsException {
         // check security
         if (!context.currentUser().isGuestUser()) {
-            return m_userDriver.getUsersByLastname(Lastname, UserType, UserStatus, wasLoggedIn, nMax);
+            return m_userDriver.readUsers(Lastname, UserType, UserStatus, wasLoggedIn, nMax);
         } else {
             throw new CmsSecurityException("[" + getClass().getName() + "] getUsersByLastname()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
@@ -3998,7 +3998,7 @@ public class CmsDriverManager extends Object {
     public Vector getUsersOfGroup(CmsRequestContext context, String groupname) throws CmsException {
         // check the security
         if (!context.currentUser().isGuestUser()) {
-            return m_userDriver.getUsersOfGroup(groupname, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+            return m_userDriver.readUsersOfGroup(groupname, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         } else {
             throw new CmsSecurityException("[" + getClass().getName() + "] getUsersOfGroup()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
@@ -7167,7 +7167,7 @@ public class CmsDriverManager extends Object {
         validatePassword(newPassword);
 
         // recover the password
-        m_userDriver.recoverPassword(username, recoveryPassword, newPassword);
+        m_userDriver.writePassword(username, recoveryPassword, newPassword);
     }
 
     /**
@@ -7266,7 +7266,7 @@ public class CmsDriverManager extends Object {
                     // do not remmove the user from its default group
                     if (user.getDefaultGroupId() != group.getId()) {
                         //remove this user from the group
-                        m_userDriver.removeUserFromGroup(user.getId(), group.getId());
+                        m_userDriver.deleteUserInGroup(user.getId(), group.getId());
                         m_userGroupsCache.clear();
                     } else {
                         throw new CmsException("[" + getClass().getName() + "]", CmsException.C_NO_DEFAULT_GROUP);
@@ -7522,7 +7522,7 @@ public class CmsDriverManager extends Object {
         validatePassword(newPassword);
 
         if (isAdmin(context)) {
-            m_userDriver.setPassword(username, newPassword);
+            m_userDriver.writePassword(username, newPassword);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] setPassword() " + username, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
@@ -7561,7 +7561,7 @@ public class CmsDriverManager extends Object {
             } catch (CmsException e) {
             }
 
-        m_userDriver.setPassword(username, newPassword);
+        m_userDriver.writePassword(username, newPassword);
     }
 
     /**
@@ -7617,7 +7617,7 @@ public class CmsDriverManager extends Object {
             } catch (CmsException e) {
             }
 
-        m_userDriver.setRecoveryPassword(username, newPassword);
+        m_userDriver.writeRecoveryPassword(username, newPassword);
     }
 
     /**
@@ -7846,9 +7846,9 @@ public class CmsDriverManager extends Object {
 
         }
         
-        m_userDriver.removeAllAccessControlEntries(context.currentProject(),resource.getResourceId());
+        m_userDriver.removeAccessControlEntries(context.currentProject(),resource.getResourceId());
         // copy the access control entries
-        ListIterator aceList = m_userDriver.getAccessControlEntries(onlineProject,resource.getResourceId(), false).listIterator();
+        ListIterator aceList = m_userDriver.readAccessControlEntries(onlineProject,resource.getResourceId(), false).listIterator();
         while (aceList.hasNext()) {
             CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
             m_userDriver.createAccessControlEntry(context.currentProject(), resource.getResourceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
@@ -8060,7 +8060,7 @@ public class CmsDriverManager extends Object {
 
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
 
-        m_userDriver.removeAllAccessControlEntries(context.currentProject(), resource.getResourceId());
+        m_userDriver.removeAccessControlEntries(context.currentProject(), resource.getResourceId());
 
         Iterator i = acEntries.iterator();
         while (i.hasNext()) {

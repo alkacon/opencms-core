@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/15 15:06:16 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/09/15 16:01:39 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $ $Date: 2003/09/15 15:06:16 $
+ * @version $Revision: 1.19 $ $Date: 2003/09/15 16:01:39 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -74,7 +74,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return the created user.
      * @throws CmsException if something goes wrong.
      */
-    CmsUser addImportUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
+    CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
 
     /**
      * Adds a user to the database.
@@ -86,7 +86,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param lastname user-lastname
      * @param email user-email
      * @param lastlogin user-lastlogin
-     * @param lastused user-lastused
      * @param flags user-flags
      * @param additionalInfos user-additional-infos
      * @param defaultGroup user-defaultGroup
@@ -97,7 +96,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return the created user.
      * @throws CmsException if something goes wrong.
      */
-    CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
+    CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
 
     /**
      * Adds a user to a group.<BR/>
@@ -108,7 +107,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param groupid The id of the group.
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
-    void addUserToGroup(CmsUUID userid, CmsUUID groupid) throws CmsException;
+    void createUserInGroup(CmsUUID userid, CmsUUID groupid) throws CmsException;
 
     /**
      * Changes the user type of the user
@@ -117,7 +116,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param userType The new usertype of the user
      * @throws CmsException if something goes wrong
      */
-    void changeUserType(CmsUUID userId, int userType) throws CmsException;
+    void writeUserType(CmsUUID userId, int userType) throws CmsException;
 
     /**
      * Creates an access control entry.<p>
@@ -132,10 +131,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      */
     void createAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException;
 
-    /*
-    CmsUUID checkGroupDependence(CmsUUID groupId1, CmsUUID groupId2) throws CmsException;
-    CmsUUID checkGroupDependence(Vector groups) throws CmsException;
-    */
+
     /**
      * Creates a new group.<p>
      *
@@ -157,8 +153,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param principal the id of the principal
      * @throws CmsException if something goes wrong
      */
-    //public void deleteAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
-
+  
     /**
      * Deletes all access control entries belonging to a resource.<p>
      * 
@@ -166,7 +161,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param resource the id of the resource
      * @throws CmsException if something goes wrong
      */
-    void deleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
+    void deleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
 
     /**
      * Delete a group from the Cms.<BR/>
@@ -209,7 +204,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param value The value to encrypt.
      * @return The encrypted value.
      */
-    String digest(String value);
+    String encryptPassword(String value);
 
     /**
      * Reads all relevant access control entries for a given resource.<p>
@@ -220,7 +215,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return a vector of access control entries defining all permissions for the given resource
      * @throws CmsException if something goes wrong
      */
-    Vector getAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException;
+    Vector readAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException;
 
     /**
      * Returns all child groups of a groups<P/>
@@ -230,7 +225,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return users A Vector of all child groups or null.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    Vector getChild(String groupname) throws CmsException;
+    Vector getChildGroups(String groupname) throws CmsException;
 
     /**
      * Returns all groups<P/>
@@ -238,7 +233,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return users A Vector of all existing groups.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    Vector getGroups() throws CmsException;
+    Vector readGroups() throws CmsException;
 
     /**
      * Returns a list of groups of a user.<P/>
@@ -247,7 +242,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return Vector of groups
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    Vector getGroupsOfUser(CmsUUID userId) throws CmsException;
+    Vector readGroupsOfUser(CmsUUID userId) throws CmsException;
 
     /**
      * Gets all users of a type.
@@ -256,7 +251,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return list of users of this type
      * @throws CmsException if something goes wrong
      */
-    Vector getUsers(int type) throws CmsException;
+    Vector readUsers(int type) throws CmsException;
 
     /**
      * Gets all users of a type and namefilter.
@@ -266,7 +261,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return list of users of this type matching the namefilter
      * @throws CmsException if something goes wrong
      */
-    Vector getUsers(int type, String namefilter) throws CmsException;
+    Vector readUsers(int type, String namefilter) throws CmsException;
 
     /**
      * Gets all users with a certain Lastname.
@@ -281,7 +276,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @throws CmsException if operation was not successful.
      */
-    Vector getUsersByLastname(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException;
+    Vector readUsers(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException;
 
     /**
      * Returns a list of users of a group.<P/>
@@ -291,7 +286,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return Vector of users
      * @throws CmsException if operation was not successful
      */
-    Vector getUsersOfGroup(String name, int type) throws CmsException;
+    Vector readUsersOfGroup(String name, int type) throws CmsException;
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -315,7 +310,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    boolean isUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
+    boolean validateUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
 
     /**
      * Publish all access control entries of a resource from the given offline project to the online project.
@@ -409,7 +404,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param password the password to set
      * @throws CmsException if something goes wrong
      */
-    void recoverPassword(String userName, String recoveryPassword, String password) throws CmsException;
+    void writePassword(String userName, String recoveryPassword, String password) throws CmsException;
 
     /**
      * Removes an access control entry from the database.<p>
@@ -428,7 +423,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param resource the id of the resource
      * @throws CmsException if something goes wrong
      */
-    void removeAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
+    void removeAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
 
     /**
      * Removes a user from a group.
@@ -439,7 +434,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param groupId The id of the group
      * @throws CmsException if something goes wrong
      */
-    void removeUserFromGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
+    void deleteUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
 
     /**
      * Sets a new password for a user.<p>
@@ -448,7 +443,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param password the password to set
      * @throws CmsException if something goes wrong
      */
-    void setPassword(String userName, String password) throws CmsException;
+    void writePassword(String userName, String password) throws CmsException;
 
     /**
      * Sets a new password for a user.<p>
@@ -457,7 +452,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param password the recoveryPassword to set
      * @throws CmsException if something goes wrong
      */
-    void setRecoveryPassword(String userName, String password) throws CmsException;
+    void writeRecoveryPassword(String userName, String password) throws CmsException;
 
     /**
      * Undeletes all access control entries belonging to a resource.<p>
@@ -466,7 +461,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param resource the id of the resource
      * @throws CmsException if something goes wrong
      */
-    void undeleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
+    void undeleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
 
     /**
      * Writes an access control entry to the cms.<p>
