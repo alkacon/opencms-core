@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2001/10/18 07:02:34 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/12/20 08:32:13 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -209,7 +209,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                             cms.chgrp(newfile.getAbsolutePath(), newGroup);
                         } catch (CmsException e){
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTrace());
+                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTraceAsString());
                             }
                         }
                     }
@@ -295,7 +295,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                             cms.chmod(newfile.getAbsolutePath(), flags);
                         } catch (CmsException e){
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTrace());
+                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTraceAsString());
                             }
                         }
                     }
@@ -378,7 +378,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                             cms.chown(newfile.getAbsolutePath(), newOwner);
                         } catch (CmsException e){
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTrace());
+                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTraceAsString());
                             }
                         }
                     }

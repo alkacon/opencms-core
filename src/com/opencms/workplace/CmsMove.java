@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2001/12/06 10:02:00 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2001/12/20 08:32:13 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.43 $ $Date: 2001/12/06 10:02:00 $
+ * @version $Revision: 1.44 $ $Date: 2001/12/20 08:32:13 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -170,9 +170,9 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
                 template = "error";
                 if(ex.getType() == CmsException.C_NOT_FOUND) {
-                    xmlTemplateDocument.setData("details", "Destination folder not exists"+ex.getStackTrace());
+                    xmlTemplateDocument.setData("details", "Destination folder not exists"+ex.getStackTraceAsString());
                 } else {
-                    xmlTemplateDocument.setData("details", ex.getStackTrace());
+                    xmlTemplateDocument.setData("details", ex.getStackTraceAsString());
                 }
                 xmlTemplateDocument.setData("lasturl", lasturl);
                 return startProcessing(cms, xmlTemplateDocument, "", parameters,
@@ -210,7 +210,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
                         //throw ex;
                         template = "error";
-                        xmlTemplateDocument.setData("details", ex.getStackTrace());
+                        xmlTemplateDocument.setData("details", ex.getStackTraceAsString());
                         xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters,
                                 template);
@@ -252,7 +252,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
                         //throw e;
                         template = "error";
-                        xmlTemplateDocument.setData("details", e.getStackTrace());
+                        xmlTemplateDocument.setData("details", e.getStackTraceAsString());
                         xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
                     }

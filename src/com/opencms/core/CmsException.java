@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2001/12/20 08:32:13 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -35,7 +35,7 @@ import java.util.*;
  * This exception is thrown for security reasons in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2001/07/31 15:50:12 $
+ * @version $Revision: 1.42 $ $Date: 2001/12/20 08:32:13 $
  */
 public class CmsException extends Exception {
 
@@ -362,7 +362,7 @@ public class CmsException extends Exception {
      * Creation date: (10/23/00 %r)
      * @return java.lang.String
      */
-    public String getStackTrace() {
+    public String getStackTraceAsString() {
         java.io.StringWriter sw = new java.io.StringWriter();
         java.io.PrintWriter pw = new java.io.PrintWriter(sw);
 
@@ -433,7 +433,7 @@ public class CmsException extends Exception {
      * @since   JDK1.0
      */
     public void printStackTrace(java.io.PrintStream s) {
-        s.println(getStackTrace());
+        s.println(getStackTraceAsString());
     }
 
     /**
@@ -443,7 +443,7 @@ public class CmsException extends Exception {
      * @since   JDK1.1
      */
     public void printStackTrace(java.io.PrintWriter s) {
-        s.println(getStackTrace());
+        s.println(getStackTraceAsString());
     }
 
     /**
