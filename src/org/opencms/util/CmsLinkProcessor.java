@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsLinkProcessor.java,v $
- * Date   : $Date: 2003/12/05 11:02:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/12/08 09:15:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/12/05 11:02:07 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/08 09:15:05 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -140,8 +140,8 @@ public class CmsLinkProcessor extends NodeVisitor {
                 break;
                 
             case C_PROCESS_LINKS:
-                String link =  m_linkTable.getLink(getMacro(linkTag.getLink())).getTarget();
-                linkTag.setLink(link);
+                CmsLinkTable.CmsLink link =  m_linkTable.getLink(getMacro(linkTag.getLink()));
+                linkTag.setLink(link.getRootTarget());
                 break;
                 
             default:
@@ -167,8 +167,8 @@ public class CmsLinkProcessor extends NodeVisitor {
                 break;
                 
             case C_PROCESS_LINKS:
-                String link = m_linkTable.getLink(getMacro(imageTag.getImageURL())).getTarget();
-                imageTag.setImageURL(link);
+                CmsLinkTable.CmsLink link = m_linkTable.getLink(getMacro(imageTag.getImageURL()));
+                imageTag.setImageURL(link.getRootTarget());
                 break;
                 
             default:
