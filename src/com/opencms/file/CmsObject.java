@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/08/11 12:58:57 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2000/08/17 16:03:18 $
+ * Version: $Revision: 1.104 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.103 $ $Date: 2000/08/11 12:58:57 $ 
+ * @version $Revision: 1.104 $ $Date: 2000/08/17 16:03:18 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -67,7 +67,6 @@ public class CmsObject implements I_CmsConstants {
 	 */
 	private CmsCoreSession m_sessionStorage = null;
 
-   
 	/**
 	 * The default constructor.
 	 */
@@ -987,6 +986,22 @@ public class CmsObject implements I_CmsConstants {
 		return( m_rb.getParent(m_context.currentUser(), m_context.currentProject(), 
 							   groupname ) );
 	}
+	 /**
+	 * Gets the Registry.<BR/>
+	 *
+	 * Only the admin can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 *
+	 * @exception Throws CmsException if access is not allowed.
+	 */
+
+	 public I_CmsRegistry getRegistry()
+	 	throws CmsException {
+	    return( m_rb.getRegistry(m_context.currentUser(), 
+									 m_context.currentProject() ));
+	 }
 	/**
 	 * Returns the current request-context.
 	 * 
@@ -1122,6 +1137,42 @@ public class CmsObject implements I_CmsConstants {
 		clearcache();
 		m_rb.importFolder(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
 		clearcache();
+	}
+	 /**
+	 * Imports a module (a zip file) to the cms.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param importContent The modle content. 
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importModule(byte[] importContent)
+		throws CmsException {
+		// import the module
+		clearcache();
+		m_rb.importModule(m_context.currentUser(), m_context.currentProject(),importContent, this);
+		clearcache();
+		
+	}
+	 /**
+	 * Imports a module (a zip file) to the cms.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param importFile the name (complete Path) of the import module
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importModule(String importFile)
+		throws CmsException {
+		// import the module
+		clearcache();
+		m_rb.importModule(m_context.currentUser(), m_context.currentProject(),importFile, this);
+		clearcache();
+		
 	}
 	 // database import, export stuff
 
