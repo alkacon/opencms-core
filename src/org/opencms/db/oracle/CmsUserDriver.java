@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/10/07 12:36:43 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/10/10 11:44:13 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.19 $ $Date: 2003/10/07 12:36:43 $
+ * @version $Revision: 1.20 $ $Date: 2003/10/10 11:44:13 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -153,7 +153,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             internalWriteUserInfo(id, additionalInfos, reservedParam);
                         
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "importUser name=" + name + " id=" + id.toString(), CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "importUser name=" + name + " id=" + id.toString(), CmsException.C_SQL_ERROR, e, true);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
