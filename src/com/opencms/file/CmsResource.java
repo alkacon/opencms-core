@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/01/24 20:39:54 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/02/17 00:32:27 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,11 +37,10 @@ import java.io.Serializable;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2003/01/24 20:39:54 $
+ * @version $Revision: 1.43 $ $Date: 2003/02/17 00:32:27 $
  */
- public class CmsResource implements I_CmsConstants,
-                                                           Cloneable,
-                                                           Serializable {
+public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
+    
      /**
       * The database ID
       */
@@ -438,15 +437,6 @@ import java.io.Serializable;
     }
     
     /**
-     * Gets the Parent database id for this resource.
-     *
-     * @return the Parent database id of this resource.
-     */
-    public int getParentId() {
-        return m_parentId;
-    }
-    
-    /**
      * Returns the folder path of this resource,
      * if the resource is a folder, the complete path of the folder is returned 
      * (not the parent folder path).<p>
@@ -482,6 +472,75 @@ import java.io.Serializable;
      */
     public static String getPath(String resource) {
         return resource.substring(0, resource.lastIndexOf("/") + 1);
+    }
+        
+    /**
+     * Returns the name of a parent folder of the given resource, 
+     * that is either minus levels up 
+     * from the current folder, or that is plus levels down from the 
+     * root folder.<p>
+     * 
+     * @param resource the name of a resource
+     * @param number of levels to walk up or down
+     * @return the name of a parent folder of the given resource, 
+     * that is either minus levels up 
+     * from the current folder, or that is plus levels down from the 
+     * root folder
+     */
+    public static String getPathPart(String resource, int level) {
+        resource = getPath(resource); 
+        String result = null;
+        int pos = 0, count = 0;
+        if (level >= 0) {
+            // Walk down from the root folder /
+            while ((count < level) && (pos > -1)) {
+                count ++;
+                pos = resource.indexOf('/', pos+1);
+            }
+        } else {
+            // Walk up from the current folder
+            pos = resource.length();
+            while ((count > level) && (pos > -1)) {
+                count--;
+                pos = resource.lastIndexOf('/', pos-1);
+            }      
+        }
+        if (pos > -1) {
+            // To many levels walked
+            result = resource.substring(0, pos+1);
+        } else {
+            // Add trailing slash
+            result = (level < 0)?"/":resource;
+        }        
+        return result;
+    }
+    
+    /**
+     * Returns the directory level of a resource.<p>
+     * 
+     * The root folder "/" has level 0,
+     * a folder "/foo/" would have level 1,
+     * a folfer "/foo/bar/" level 2 etc.<p> 
+     * 
+     * @return the directory level of a resource
+     */
+    public static int getPathLevel(String resource) {
+        int level = -1;
+        int pos = 0;
+        while (resource.indexOf('/', pos) >= 0) {
+            pos = resource.indexOf('/', pos) + 1;
+            level++;
+        }
+        return level;
+    }    
+        
+    /**
+     * Gets the Parent database id for this resource.
+     *
+     * @return the Parent database id of this resource.
+     */
+    public int getParentId() {
+        return m_parentId;
     }
           
     /**

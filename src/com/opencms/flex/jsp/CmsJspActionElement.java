@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/02/14 10:00:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/02/17 00:32:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.0 beta 2
  */
@@ -74,6 +74,9 @@ public class CmsJspActionElement {
 
     /** JSP page context */
     private PageContext m_context;
+    
+    /** JSP navigation builder */
+    private CmsJspNavBuilder m_navigation = null;    
     
     /** Flag to indicate that this bean was properly initialized */
     private boolean m_notInitialized;
@@ -406,5 +409,17 @@ public class CmsJspActionElement {
     public CmsRequestContext getRequestContext() {
         if (m_notInitialized) return null;
         return m_request.getCmsObject().getRequestContext();  
+    }
+    
+    /**
+     * Returns an initialized {@link CmsJspNavBuilder} instance.<p>
+     *  
+     * @return CmsJspNavBuilder an initialized <code>CmsJspNavBuilder</code>
+     */
+    public CmsJspNavBuilder getNavigation() {
+        if (m_navigation == null) {
+            m_navigation = new CmsJspNavBuilder(m_request.getCmsObject());
+        }
+        return m_navigation;
     }
 }

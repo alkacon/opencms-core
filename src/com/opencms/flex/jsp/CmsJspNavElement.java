@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2003/02/12 17:22:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/02/17 00:32:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,22 +31,16 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Vector;
 
 /**
  * Bean to extract navigation information from the OpenCms VFS folder
  * structure.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -58,18 +52,13 @@ public class CmsJspNavElement implements Comparable {
     public final static String C_PROPERTY_NAVINFO = "NavInfo";    
     
     // Member variables for get / set methods:
-    private String m_resource;
-    private String m_text;
-    private String m_title;
-    private String m_description;
-    private String m_locale;
-    private String m_image;    
-    private String m_info;
-    private Hashtable m_properties;
+    private String m_resource = null;
+    private String m_fileName = null;
+    private String m_text = null;
+    private Hashtable m_properties = null;
     private float m_position;
-    private int m_navTreeLevel;
-    private boolean m_hasNav;
-
+    private int m_navTreeLevel = Integer.MIN_VALUE;
+    private Boolean m_hasNav = null;
 
     /**
      * Empty constructor required for every JavaBean, does nothing.<p>
@@ -152,28 +141,20 @@ public class CmsJspNavElement implements Comparable {
     public void init(String resource, Hashtable properties, int navTreeLevel) {
         m_resource = resource;
         m_properties = properties;
-        // Get values from property hash, will be null if property is not set for the resource
-        m_title = (String)m_properties.get(I_CmsConstants.C_PROPERTY_TITLE);
-        m_description = (String)m_properties.get(I_CmsConstants.C_PROPERTY_DESCRIPTION);
-        m_text = (String)m_properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT);
-        m_locale = (String)m_properties.get(C_PROPERTY_LOCALE);
-        m_image = (String)m_properties.get(C_PROPERTY_NAVIMAGE);
-        m_info = (String)m_properties.get(C_PROPERTY_NAVINFO);        
-        String pos = (String)m_properties.get(I_CmsConstants.C_PROPERTY_NAVPOS);
-        m_position = Float.MAX_VALUE;
         m_navTreeLevel = navTreeLevel;
+        // init the position value
+        m_position = Float.MAX_VALUE;
         try {
-            m_position = Float.parseFloat(pos);
-        } catch (Exception ex) {
+            m_position = Float.parseFloat((String)m_properties.get(I_CmsConstants.C_PROPERTY_NAVPOS));
+        } catch (Exception e) {
             // m_position will have Float.MAX_VALUE, so nevigation element will 
             // appear last in navigation
         }
-        // The element will be in the nav if at least one of the two properties are set
-        m_hasNav = ((m_text != null) || (m_position != Float.MAX_VALUE));
-        // If element is in nav but no text was provided: add some default text
-        if (m_text == null) m_text = "[missing " + I_CmsConstants.C_PROPERTY_NAVTEXT + " property for resource " + m_resource + "]";    
     }
-
+    
+    /**
+     * @see java.lang.Comparable#compareTo(Object)
+     */
     public int compareTo(Object o) {
         if (o == null) return 0;
         if (! (o instanceof CmsJspNavElement)) return 0;
@@ -183,374 +164,221 @@ public class CmsJspNavElement implements Comparable {
         return 0;
     }
         
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
     public boolean equals(Object o) {
         if (o == null) return false;
         if (! (o instanceof CmsJspNavElement)) return false;
         return m_resource.equals(((CmsJspNavElement)o).getResourceName());
     }    
+
+    /**
+     * Returns the nav tree level of this resource.<p>
+     * 
+     * @return int the nav tree level of this resource
+     */
+    public int getNavTreeLevel() {
+        if (m_navTreeLevel < 0) {
+            // use "lazy initialiting"
+            m_navTreeLevel = CmsResource.getPathLevel(m_resource);
+        }
+        return m_navTreeLevel;
+    }
     
+    /**
+     * Returns the value of the property C_PROPERTY_NAVPOS converted to a <code>float</code>,
+     * or a value of <code>Float.MAX_VALUE</code> if the nav position property is not 
+     * set (or not a valid number) for this resource.<p>
+     * 
+     * @return float the value of the property C_PROPERTY_NAVPOS converted to a <code>float</code>,
+     * or a value of <code>Float.MAX_VALUE</code> if the nav position property is not 
+     * set (or not a valid number) for this resource
+     */
     public float getNavPosition() {
         return m_position;
     }
     
+    /**
+     * Sets the value that will be returned by the {@link #getNavPosition()}
+     * method of this class.<p>
+     * 
+     * @param value the value to set
+     */
     public void setNavPosition(float value) {
         m_position = value;
     }
     
+    /**
+     * Returns the resource name this nav element was initalized with.<p>
+     * 
+     * @return String the resource name this nav element was initalized with
+     */
     public String getResourceName() {
         return m_resource;
     }
     
-    public String getFileName() {
-        String name = null;
-        if (!m_resource.endsWith("/")) {
-            name = m_resource.substring(
-                    m_resource.lastIndexOf("/") + 1,
-                    m_resource.length());
-        } else {
-            name = m_resource.substring(
-                    m_resource.substring(0,m_resource.length()-1).lastIndexOf("/") + 1,
-                    m_resource.length());
-        }   
-        return name; 
-    }
-    
-    public String getParentFolderName() {
-        if (isFolderLink()) {
-            // This is a folder
-            return getFolderName(m_resource, -1);
-        } else {
-            // This is a file
-            return m_resource.substring(0, m_resource.lastIndexOf("/") + 1);
+    /**
+     * Returns the filename of the nav element, i.e.
+     * the name of the nav resource without any path information.<p>
+     * 
+     * @return String the filename of the nav element, i.e.
+     * the name of the nav resource without any path information
+     */
+    public String getFileName() {        
+        if (m_fileName == null) {
+            // use "lazy initialiting"
+            if (!m_resource.endsWith("/")) {
+                m_fileName = m_resource.substring(m_resource.lastIndexOf("/") + 1, m_resource.length());
+            } else {
+                m_fileName =
+                    m_resource.substring(
+                        m_resource.substring(0, m_resource.length() - 1).lastIndexOf("/") + 1,
+                        m_resource.length());
+            }
         }
+        return m_fileName;
     }
-        
+
+    /**
+     * Returns the name of the parent folder of the resource of this nav element,<p>
+     * 
+     * @return String the name of the parent folder of the resource of this nav element
+     */
+    public String getParentFolderName() {
+        return CmsResource.getParent(m_resource);
+    }
+
+    /**
+     * Returns the value of the property C_PROPERTY_NAVTEXT of this nav element,
+     * or a warning message if this property is not set 
+     * (this method will never return <code>null</code>).<p> 
+     * 
+     * @return String the value of the property C_PROPERTY_NAVTEXT of this nav element,
+     * or a warning message if this property is not set 
+     * (this method will never return <code>null</code>)
+     */
     public String getNavText() {
+        if (m_text == null) {
+            // use "lazy initialiting"
+            m_text = (String)m_properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT);
+            if (m_text == null) m_text = "??? " + I_CmsConstants.C_PROPERTY_NAVTEXT + " ???";    
+        }
         return m_text;
     }
     
+    /**
+     * Returns the value of the property C_PROPERTY_TITLE of this nav element,
+     * or <code>null</code> if this property is not set.<p> 
+     * 
+     * @return String the value of the property C_PROPERTY_TITLE of this nav element
+     * or <code>null</code> if this property is not set
+     */
     public String getTitle() {
-        return m_title;
+        return (String)m_properties.get(I_CmsConstants.C_PROPERTY_TITLE);
     }
     
+    /**
+     * Returns the value of the property C_PROPERTY_NAVINFO of this nav element,
+     * or <code>null</code> if this property is not set.<p> 
+     * 
+     * @return String the value of the property C_PROPERTY_NAVINFO of this nav element
+     * or <code>null</code> if this property is not set
+     */
     public String getInfo() {
-        return m_info;
+        return (String)m_properties.get(C_PROPERTY_NAVINFO);
     }
-    
+
+    /**
+     * Returns the value of the property C_PROPERTY_LOCALE of this nav element,
+     * or <code>null</code> if this property is not set.<p> 
+     * 
+     * @return String the value of the property C_PROPERTY_LOCALE of this nav element
+     * or <code>null</code> if this property is not set
+     */    
     public String getLocale() {
-        return m_locale;
+        return (String)m_properties.get(C_PROPERTY_LOCALE);
     }    
     
+    /**
+     * Returns the value of the property C_PROPERTY_NAVIMAGE of this nav element,
+     * or <code>null</code> if this property is not set.<p> 
+     * 
+     * @return String the value of the property C_PROPERTY_NAVIMAGE of this nav element
+     * or <code>null</code> if this property is not set
+     */    
     public String getNavImage() {
-        return m_image;
+        return (String)m_properties.get(C_PROPERTY_NAVIMAGE);
     }        
     
+    /**
+     * Returns the value of the property C_PROPERTY_DESCRIPTION of this nav element,
+     * or <code>null</code> if this property is not set.<p> 
+     * 
+     * @return String the value of the property C_PROPERTY_DESCRIPTION of this nav element
+     * or <code>null</code> if this property is not set
+     */    
     public String getDescription() {
-        return m_description;
+        return (String)m_properties.get(I_CmsConstants.C_PROPERTY_DESCRIPTION);
     }
     
-    public int getNavTreeLevel() {
-        return m_navTreeLevel;
-    }
-    
+    /**
+     * Returns <code>true</code> if this nav element is in the navigation, <code>false</code>
+     * otherwise.<p>
+     * 
+     * A resource is considered to be in the navigation, if <ol>
+     * <li>it has the property C_PROPERTY_NAVTEXT set
+     * <li><em>or</em> it has the property C_PROPERTY_NAVPOS set 
+     * <li><em>and</em> it is not a temporary file that contains a '~' in it's filename.</ol> 
+     * 
+     * @return boolean <code>true</code> if this nav element is in the navigation, <code>false</code>
+     * otherwise
+     */
     public boolean isInNavigation() {
-        return m_hasNav && (m_resource.indexOf('~') < 0);
+        if (m_hasNav == null) {
+            // use "lazy initialiting"
+            Object o1 = m_properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT);
+            Object o2 = m_properties.get(I_CmsConstants.C_PROPERTY_NAVPOS);
+            m_hasNav = new Boolean(((o1 != null) || (o2 != null)) && (m_resource.indexOf('~') < 0));
+        }
+        return m_hasNav.booleanValue();
     }
     
+    /**
+     * Returns <code>true</code> if this nav element describes a folder, <code>false</code>
+     * otherwise.<p>
+     * 
+     * @return boolean <code>true</code> if this nav element describes a folder, <code>false</code>
+     * otherwise.<p>
+     */
     public boolean isFolderLink() {
         return m_resource.endsWith("/");
     }
     
+    /**
+     * Returns the value of the selected property from this nav element.<p> 
+     * 
+     * The nav element contains a hash of all file properties of the resource that
+     * the nav element belongs to.<p>
+     * 
+     * @param key the property name to look up
+     * @return String the value of the selected property
+     */
     public String getProperty(String key) {
         return (String)m_properties.get(key);
     }
-    
+
+    /**
+     * Returns the original Hashtable of all file properties of the resource that
+     * the nav element belongs to.<p>
+     * 
+     * Please note that the original reference is returned, so be careful when making 
+     * changes to the Hashtable.<p>
+     * 
+     * @return Hashtable the original Hashtable of all file properties of the resource that
+     * the nav element belongs to
+     */    
     public Hashtable getProperties() {
         return m_properties;
-    }
-    
-    /**
-     * @return the name of a parent folder of the current folder 
-     * that is either minus levels up 
-     * from the current folder, or that us plus levels down from the 
-     * root folder. 
-     */
-    public static String getFolderName(String folder, int level) {
-        String navfolder = null;
-        if (folder.endsWith("/")) folder = folder.substring(0, folder.length()-1);
-        int pos = 0, count = 0;
-        if (level >= 0) {
-            // Walk down from the root folder /
-            while ((count < level) && (pos > -1)) {
-                count ++;
-                pos = folder.indexOf('/', pos+1);
-            }
-        } else {
-            // Walk up from the current folder
-            pos = folder.length();
-            while ((count > level) && (pos > -1)) {
-                count--;
-                pos = folder.lastIndexOf('/', pos-1);
-            }      
-        }
-        if (pos > -1) {
-            // To many levels walked
-            navfolder = folder.substring(0, pos) + "/";
-        } else {
-            // Add trailing slash
-            navfolder = (level < 0)?"/":folder + "/";
-        }        
-        return navfolder;
-    }
-    
-    /**
-     * Collect navigation elements from the files in the given folder.
-     * Navigation elements are of class CmsJspNavElement.
-     *
-     * @param cms CmsObject for the current request
-     * @param folder The current folder
-     * @return A sorted (ascending) ArrayList of navigation elements.
-     */    
-    public static ArrayList getNavigationForFolder(CmsObject cms, String folder) {
-        return getNavigationForFolder(cms, folder, null);
-    }
-    
-    /**
-     * Collect navigation elements from the files in the given folder.
-     * Navigation elements are of class CmsJspNavElement.
-     *
-     * @param cms CmsObject for the current request
-     * @param folder The current folder
-     * @param prefix If not null, use only resources in navigation with a name starting with this prefix
-     * @return A sorted (ascending) ArrayList of navigation elements.
-     */
-    public static ArrayList getNavigationForFolder(CmsObject cms, String folder, String prefix) {
-        folder = CmsFile.getPath(folder);
-        ArrayList list = new ArrayList();
-        Vector v = null, dir = null;
-        try {
-            // v = cms.getResourcesInFolder(folder);        
-            v = cms.getFilesInFolder(folder);
-            dir = cms.getSubFolders(folder);
-        } catch (Exception e) {
-            return new ArrayList(0);
-        }        
-        v.addAll(dir);
-        
-        Iterator i = v.iterator();
-        while (i.hasNext()) {
-            CmsResource r = (CmsResource)i.next();
-            if (r.getState() != CmsResource.C_STATE_DELETED) {
-                CmsJspNavElement element = getNavigationForResource(cms, r.getAbsolutePath());
-                if ((element != null) && element.isInNavigation()) {
-                    if ((prefix == null) || (element.getNavText().startsWith(prefix))) {
-                        list.add(element);
-                    }
-                }
-            }            
-        }
-        Collections.sort(list);
-        return list;
-    }
-    
-    /** 
-     * Build a navigation for the folder that is either minus levels up 
-     * from the current folder, or that us plus levels down from the 
-     * root folder. If level is set to zero use the root folder.
-     *
-     * @param cms CmsObject for the current request
-     * @param level If negative, walk this many levels up, if positive, walk this many 
-     *        levels down from root folder. 
-     * @param folder The current folder
-     * @param prefix If not null, use only resources in navigation with a name starting with this prefix
-     */
-    public static ArrayList getNavigationForFolder(CmsObject cms, String folder, int level, String prefix) {
-        folder = CmsFile.getPath(folder);
-        // If level is one just use root folder
-        if (level == 0) return getNavigationForFolder(cms, "/", prefix);
-        String navfolder = getFolderName(folder, level);
-        // If navfolder found use it to build navigation
-        if (navfolder != null) return getNavigationForFolder(cms, navfolder, prefix);
-        // Nothing found, return empty list
-        return new ArrayList(0);
-    }
-
-    /**
-     * Build a navigation for the folder for the levels between startlevel and 
-     * endlevel.
-     */
-    public static ArrayList getNavigationTreeForFolder(CmsObject cms, String folder, int startlevel, int endlevel, String prefix) {
-        folder = CmsFile.getPath(folder);
-        if (endlevel < startlevel) return new ArrayList(0);
-        int currentlevel = getFolderLevel(folder);
-        if (currentlevel < endlevel) endlevel = currentlevel;
-        if (startlevel == endlevel) return getNavigationForFolder(cms, getFolderName(folder, startlevel), startlevel, prefix);
-     
-        ArrayList result = new ArrayList(0);
-        Iterator it = null;
-        float parentcount = 0;
-        
-        for (int i=startlevel; i<=endlevel; i++) {
-            String currentfolder = getFolderName(folder, i);
-            // System.err.println("Folder for level " + i + " is: " + currentfolder);      
-            
-            ArrayList entries = getNavigationForFolder(cms, currentfolder, prefix);
-            
-            // Check for parent folder
-            if (parentcount > 0) {                
-                it = entries.iterator();          
-                while (it.hasNext()) {
-                    CmsJspNavElement e = (CmsJspNavElement)it.next();
-                    e.setNavPosition(e.getNavPosition() + parentcount);
-                }                  
-            }
-
-            // Add new entries to result
-            result.addAll(entries);
-            Collections.sort(result);
-                        
-            // Finally spread the values of the nav items so that there is enough room for further items.
-            float pos = 0;
-            int count = 0;            
-            it = result.iterator();
-            String nextfolder = getFolderName(folder, i+1);
-            parentcount = 0;
-            while (it.hasNext()) {
-                pos = 10000 * (++count);
-                CmsJspNavElement e = (CmsJspNavElement)it.next();
-                e.setNavPosition(pos);
-                if (e.getResourceName().startsWith(nextfolder)) parentcount = pos;
-            }            
-            if (parentcount == 0) parentcount = pos;
-        }
-
-        return result;
-    }
-    
-    /**
-     * @return A CmsJspNavElement for the given resource.
-     */
-    public static CmsJspNavElement getNavigationForResource(CmsObject cms, String resource) {
-        Hashtable h;
-        try {
-            h = cms.readAllProperties(resource);
-        } catch (Exception e) {
-            return null;
-        }
-        int level =  getFolderLevel(resource);
-        if (resource.endsWith("/")) level--;
-        return new CmsJspNavElement(resource, h, level);
     }    
-    
-    /**
-     * @return The directory level of a folder.
-     * The root folder "/" has level 0,
-     * a folder "/foo/" would have level 1,
-     * a folfer "/foo/bar/" level 2 etc.
-     */
-    public static int getFolderLevel(String resource) {
-        int level = -1;
-        int pos = 0;
-        while (resource.indexOf('/', pos) >= 0) {
-            pos = resource.indexOf('/', pos) + 1;
-            level++;
-        }
-        return level;
-    }
-    
-    /**
-     * @return all subfolders of a channel that has 
-     * the given parent channel, or an empty array if 
-     * the folder does not exist or has no subfolders.
-     */    
-    public static ArrayList getChannelSubFolders(CmsObject cms, String parentChannel, String subChannel) {
-        String channel = null;
-        if (subChannel == null) {
-            subChannel = "";
-        } else if (subChannel.startsWith("/")) {
-            subChannel = subChannel.substring(1);
-        }
-        if (parentChannel == null) parentChannel = "";        
-        if (parentChannel.endsWith("/")) {
-            channel = parentChannel + subChannel;
-        } else {
-            channel = parentChannel + "/" + subChannel;
-        }
-        return getChannelSubFolders(cms, channel);
-    }
-    
-    /**
-     * @return all subfolders of a channel, or an empty array if 
-     * the folder does not exist or has no subfolders.
-     */
-    public static ArrayList getChannelSubFolders(CmsObject cms, String channel) {
-        if (! channel.startsWith("/")) channel = "/" + channel;
-        if (! channel.endsWith("/")) channel += "/";    
-
-        // Now read all subchannels of this channel    
-        java.util.Vector subChannels = new java.util.Vector();  
-        try {
-            cms.setContextToCos();
-            subChannels = cms.getSubFolders(channel);
-        } catch (Exception e) {
-            System.err.println("Exception: " + e);
-        } finally {
-            cms.setContextToVfs();
-        }           
-        
-        // Create an ArrayList out of the Vector        
-        java.util.ArrayList list = new java.util.ArrayList(subChannels.size());
-        list.addAll(subChannels);        
-        return list;
-    }
-    
-    /**
-     * @return all subfolders of a channel, sorted by "Title" property ascending, or an empty array if 
-     * the folder does not exist or has no subfolders.
-     */
-    public static ArrayList getChannelSubFoldersSortTitleAsc(CmsObject cms, String channel, String subChannel) {
-        ArrayList subChannels = getChannelSubFolders(cms, channel, subChannel);
-        // Create an ArrayList out of the Vector        
-        java.util.ArrayList tmpList = new java.util.ArrayList(subChannels.size());
-        Iterator i = subChannels.iterator();
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
-            ResourceTitleContainer container = new ResourceTitleContainer(cms, res);
-            tmpList.add(container);
-        }
-        Collections.sort(tmpList);
-        java.util.ArrayList list = new java.util.ArrayList(subChannels.size());
-        i = tmpList.iterator();
-        while (i.hasNext()) {
-            ResourceTitleContainer container = (ResourceTitleContainer)i.next();
-            list.add(container.m_res);
-        }             
-        return list;
-    }    
-    
-    /**
-     * Helper class to get a title - comparable resource
-     */
-    private static class ResourceTitleContainer implements Comparable {        
-        public CmsResource m_res = null;
-        public String m_title = null;
-        
-        ResourceTitleContainer(CmsObject cms, CmsResource res) {
-            m_res = res;
-            try {
-                cms.setContextToCos();
-                m_title = cms.readProperty(res.getAbsolutePath(), com.opencms.core.I_CmsConstants.C_PROPERTY_TITLE);
-                cms.setContextToVfs();
-            } catch (Exception e) {
-                m_title = "";
-            }
-        }
-        
-        public int compareTo(Object obj) {
-            if (! (obj instanceof ResourceTitleContainer)) return 0;
-            if (m_title == null) return 1;
-            return (m_title.toLowerCase().compareTo(((ResourceTitleContainer)obj).m_title.toLowerCase()));
-        }
-        
-    }
 }
