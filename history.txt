@@ -18,6 +18,7 @@ OpenCms 4.3.34 Bela Tegeuse - ?? July 2001
 - Added the class CmsWorkplaceDefaultNoCache again for module compatibility.
 - Switched picgalery to new filelist.
 - Switched downgalery to new filelist.
+- Switched off the contextmenus in download-list.
 
 OpenCms 4.3.33 Bela Tegeuse - 25 July 2001
 ! Added icons and there handling of locked ressources in the new filelist.

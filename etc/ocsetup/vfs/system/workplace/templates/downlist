@@ -36,9 +36,6 @@
 </body>
 </html>
 
-<!-- Contextmenus -->
 ]]>
-
-<INCLUDE>/system/workplace/templates/explorer_files_contextmenu</INCLUDE>
 </TEMPLATE>
 </WORKPLACE>
