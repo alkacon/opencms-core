@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/16 15:59:13 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2000/06/16 16:08:41 $
+ * Version: $Revision: 1.68 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.67 $ $Date: 2000/06/16 15:59:13 $ * 
+ * @version $Revision: 1.68 $ $Date: 2000/06/16 16:08:41 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2551,6 +2551,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 																	currentFolder.getAbsolutePath());
 						onlineFolder.setState(C_STATE_UNCHANGED);
 						writeFolder(onlineProject, onlineFolder, false);
+						// copy properties
+						try {
+							Hashtable props = readAllProperties(currentFolder.getResourceId(), currentFolder.getType());
+							writeProperties(props, onlineFolder.getResourceId(), onlineFolder.getType());
+						} catch(CmsException exc2) {
+							if(A_OpenCms.isLogging()) {
+								A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
+							}
+						}
 					}else { 
 						throw exc;
 					}	
