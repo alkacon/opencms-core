@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/06/04 10:48:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/08 14:13:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -90,7 +91,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsXmlPage {
     
@@ -159,6 +160,9 @@ public class CmsXmlPage {
 
     /** Set of locales contained in this page */
     private Set m_locales;
+    
+    /** Maps element names to available locales */
+    private Map m_elementLocales;
     
     /**
      * Creates a new CmsXmlPage based on the provided document and encoding.<p>
@@ -310,7 +314,7 @@ public class CmsXmlPage {
               .addAttribute(C_ATTRIBUTE_LANGUAGE, locale.toString());       
         element.addElement(C_NODE_LINKS);
         element.addElement(C_NODE_CONTENT);
-        setBookmark(name, locale, element);
+        setBookmark(name, locale, true, element);
     }
 
     /**
@@ -443,6 +447,20 @@ public class CmsXmlPage {
      */
     public List getLocales() {    
         return new ArrayList(m_locales);
+    }
+    
+    /**
+     * Returns a List of all locales that have the named element set in this page.<p>
+     * 
+     * @param element the element to look up the locale List for
+     * @return a List of all locales that have the named element set in this page
+     */
+    public List getLocales(String element) {
+        Object result = m_elementLocales.get(element);
+        if (result == null) {
+            return Collections.EMPTY_LIST;
+        }        
+        return new ArrayList((Set)result);
     }
     
     /**
@@ -870,14 +888,17 @@ public class CmsXmlPage {
 
         m_bookmarks = new HashMap();
         m_locales = new HashSet();
+        m_elementLocales = new HashMap();
         
         for (Iterator i = m_document.getRootElement().element(C_NODE_ELEMENTS).elementIterator(C_NODE_ELEMENT); i.hasNext();) {
    
             Element elem = (Element)i.next();
             try {
-                String elementName = elem.attribute(C_ATTRIBUTE_NAME).getValue();
-                String elementLang = elem.attribute(C_ATTRIBUTE_LANGUAGE).getValue();
-                setBookmark(elementName, CmsLocaleManager.getLocale(elementLang), elem);              
+                String elementName = elem.attributeValue(C_ATTRIBUTE_NAME);
+                String elementLang = elem.attributeValue(C_ATTRIBUTE_LANGUAGE);
+                String elementEnabled = elem.attributeValue(C_ATTRIBUTE_ENABLED);
+                boolean enabled = (elementEnabled==null)?true:Boolean.valueOf(elementEnabled).booleanValue();
+                setBookmark(elementName, CmsLocaleManager.getLocale(elementLang), enabled, elem);              
             } catch (NullPointerException e) {
                 OpenCms.getLog(this).error("Error while initalizing xmlPage bookmarks", e);                
             }    
@@ -904,6 +925,7 @@ public class CmsXmlPage {
         if (locale != null) {
             return (Element)m_bookmarks.remove(locale.toString() + "|" + name);
         } else {
+            int warning = 0;
             return (Element)m_bookmarks.remove(name);
         }
     }
@@ -915,11 +937,23 @@ public class CmsXmlPage {
      * @param locale the locale of the element
      * @param element the element to bookmark
      */
-    protected void setBookmark(String name, Locale locale, Element element) {        
+    protected void setBookmark(String name, Locale locale, boolean enabled, Element element) {        
         if (locale != null) {
             m_locales.add(locale);
             m_bookmarks.put(locale.toString() + "|" + name, element);
+            if (enabled) {
+                Object o = m_elementLocales.get(name);
+                if (o != null) {
+                    Set set = (Set)o;
+                    set.add(locale);
+                } else {
+                    Set set = new HashSet();
+                    set.add(locale);
+                    m_elementLocales.put(name, set);
+                }
+            }
         } else {
+            int warning = 0;
             m_bookmarks.put(name, element);
         }
     }            

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElement.java,v $
- * Date   : $Date: 2004/04/28 22:34:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/08 14:13:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.util.CmsStringSubstitution;
  * Contains the setup information about a single dialog element.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.0
  */
@@ -117,9 +117,10 @@ public class CmsDialogElement implements Comparable {
     }
 
     /**
-     * Returns the templateElement.<p>
+     * Returns true if the element is defined by the template,
+     * false if the element is just contained in the xml page code.<p>
      *
-     * @return the templateElement
+     * @return true if the element is defined by the template
      */
     public boolean isTemplateElement() {
 

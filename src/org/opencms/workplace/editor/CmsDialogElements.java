@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/05/13 11:09:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/06/08 14:13:59 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.3.0
  */
@@ -269,8 +269,7 @@ public class CmsDialogElements extends CmsDialog {
                         // must set enabled to true or check for contains always fails
                         page.setEnabled(element.getName(), getElementLocale(), true);
                         // disable element if it is already existing
-                        if (! element.isTemplateElement() 
-                        && "".equals(page.getContent(getCms(), element.getName(), getElementLocale()))) {
+                        if ("".equals(page.getContent(getCms(), element.getName(), getElementLocale()))) {
                             // element is not defined in template, empty and disabled - remove it
                             page.removeElement(element.getName(), getElementLocale());
                         } else {
