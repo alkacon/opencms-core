@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.34 Bela Tegeuse - ?? July 2001
+- Added the class CmsWorkplaceDefaultNoCache again for module compatibility.
+
 OpenCms 4.3.33 Bela Tegeuse - 25 July 2001
 ! Added icons and there handling of locked ressources in the new filelist.
 * Fixed bug when publishing a project: update the state of the offline resources without
