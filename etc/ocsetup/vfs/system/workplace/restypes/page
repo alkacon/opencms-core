@@ -26,6 +26,7 @@
     addMenuEntry(resource_id, "language_key(explorer.context.chown)",           "chown.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.chgrp)",           "chgrp.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.access)",          "chmod.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
+    addMenuEntry(resource_id, "language_key(explorer.context.chnav)",           "chnav.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa dddd dddd dddd)");
 
     addMenuEntry(resource_id, "language_key(explorer.context.editcontrolfile)", "edit_text.html?init=true",             "_top", "rules_key(d d iiii aaai dddd dddd dddd)");
