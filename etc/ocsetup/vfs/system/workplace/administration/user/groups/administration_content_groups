@@ -178,7 +178,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
                         <table border=0 width=100% height=200px>
                             <tr>
                                 <td class=formular>]]><LABEL value="input.groupname" /><![CDATA[:</td>
-                                <td class=dialogtxt colspan=2><input type="text" size=32 value="]]><PROCESS>GROUPNAME</PROCESS><![CDATA[" maxlength="16" class="textfeld3" name="GROUPNAME" id="GROUPNEAME"></td>
+                                <td class=dialogtxt colspan=2><input type="text" size="32" value="]]><PROCESS>GROUPNAME</PROCESS><![CDATA[" maxlength="64" class="textfeld3" name="GROUPNAME" id="GROUPNEAME"></td>
                             </tr>
                             <tr>
                                 <td class=formular>]]><LABEL value="input.description" /><![CDATA[:</td>

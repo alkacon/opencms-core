@@ -2,8 +2,8 @@
 <!--
 
 File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/login/Attic/index,v $
-Date   : $Date: 2003/02/16 02:29:29 $
-Version: $Revision: 1.5 $
+Date   : $Date: 2003/04/08 11:50:01 $
+Version: $Revision: 1.6 $
  
 Template for the OpenCms login screen.
 
@@ -116,7 +116,7 @@ function login() {
         </tr>
         <tr>
             <td class="formular" width="35%">]]><METHOD name="message">login.username</METHOD><![CDATA[:</td>
-            <td class="formular"><input class="textfeld" value="" size="15" maxlength="32" name="OPENCMSUSERNAME"></td>
+            <td class="formular"><input class="textfeld" value="" size="15" maxlength="64" name="OPENCMSUSERNAME"></td>
         </tr>
          <tr>
             <td class="formular">]]><METHOD name="message">login.password</METHOD><![CDATA[:</td>   

@@ -388,7 +388,7 @@ function checkForm(){
                             <tr>
                                 <td class=formular width=10%>
                                 ]]><LABEL value="input.user"/><![CDATA[:</td>
-                                <td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USER</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="USER" id="USER"></td>
+                                <td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USER</PROCESS><![CDATA[" maxlength="64" class="textfeld" name="USER" id="USER"></td>
                                 <td class=formular width=10%>
                                 ]]><LABEL value="input.description"/><![CDATA[:</td>
                                 <td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USERDESC</PROCESS><![CDATA[" maxlength=255 class="textfeld" name="USERDESC" id="USERDESC"></td>

@@ -118,7 +118,7 @@ var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
                         <table border=0 cellspacing=4 width=100% height=200px>
                             <tr>
                                 <td class=formular width=10%>]]><LABEL value="label.projectname" /><![CDATA[:</td>
-                                <td class=dialogtxt><input type="text" name="NAME" class="textfeld3" size=31 maxlength=16 value="]]><PROCESS>new_project_name</PROCESS><![CDATA["> </td>
+                                <td class=dialogtxt><input type="text" name="NAME" class="textfeld3" size="31" maxlength="64" value="]]><PROCESS>new_project_name</PROCESS><![CDATA["> </td>
                                 <td class=formular><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="50" height="1" alt="" border="0"></td>
                             </tr>
                             <tr>
