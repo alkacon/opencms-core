@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/22 11:14:22 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/07/22 13:01:23 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.47 $ $Date: 2003/07/22 11:14:22 $
+ * @version $Revision: 1.48 $ $Date: 2003/07/22 13:01:23 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3334,7 +3334,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             else 
                 resourceState = structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
         }
-        
+     
         try {
             conn = m_sqlManager.getConnection(project);
             //savepoint = conn.setSavepoint("before_update");

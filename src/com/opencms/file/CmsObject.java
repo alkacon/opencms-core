@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/22 11:14:22 $
-* Version: $Revision: 1.346 $
+* Date   : $Date: 2003/07/22 13:01:23 $
+* Version: $Revision: 1.347 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.346 $
+ * @version $Revision: 1.347 $
  */
 public class CmsObject extends Object {
 
@@ -1358,9 +1358,10 @@ public class CmsObject extends Object {
      * @throws CmsException if the user has not the rights to move this resource,
      * or if the file couldn't be moved.
      */
+    /*
     protected void doMoveResource(String source, String destination) throws CmsException {
         m_driverManager.moveResource(m_context, addSiteRoot(source), addSiteRoot(destination));
-    }
+    }*/
 
     /**
      * Renames the resource to the new name.
@@ -1471,10 +1472,9 @@ public class CmsObject extends Object {
     *
     * @throws CmsException  Throws CmsException if operation was not succesful.
     */
-    protected void doWriteResource(CmsResource resource, Map properties, byte[] content) throws CmsException {        
-        m_driverManager.writeResource(m_context, resource, properties, content);
+    protected void doWriteResource(String resourcename, Map properties, String username, String groupname, int accessFlags, int resourceType, byte[] filecontent) throws CmsException {
+        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), properties, username, groupname, accessFlags, resourceType, filecontent);
     }
-
 
     /**
      * Ends a task of the Cms.
@@ -2442,7 +2442,7 @@ public class CmsObject extends Object {
      * @throws CmsException if operation was not successful
      */
     public CmsResource importResource(CmsResource resource, byte[] content, Map properties, String importpath) throws CmsException {
-        return getResourceType(resource.getType()).importResource(this, resource, content, properties, importpath);   
+        return getResourceType(resource.getType()).importResource(this, resource, content, properties, importpath);
     }
 
     /**
@@ -4264,9 +4264,9 @@ public class CmsObject extends Object {
      * @param acEntries			a vector of access control entries
      * @throws CmsException		if something goes wrong
      */
-    public void importAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
+    public void writeAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
         // TODO: force the access control entries to belong to the given resource
-        m_driverManager.importAccessControlEntries(m_context, resource, acEntries);
+        m_driverManager.writeAccessControlEntries(m_context, resource, acEntries);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/22 11:14:22 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2003/07/22 13:01:23 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.87 $
+ * @version $Revision: 1.88 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -547,14 +547,9 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         }
         if (changed) {
             // if the resource already exists it must be updated
-            lockResource(cms, destination, true);           
-            // set the last modification date again, to mark the resource as touched
-            resource.setDateLastModified(resource.getDateLastModified()); 
-          
-            cms.doWriteResource(resource, properties,content);   
-            cms.touch(destination,resource.getDateLastModified(),false);         
+            lockResource(cms, destination, true);
+            cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
             importedResource = cms.readFileHeader(destination);
-                     
         }
         return importedResource;
     }

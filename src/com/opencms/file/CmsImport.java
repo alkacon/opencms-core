@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/22 11:14:22 $
-* Version: $Revision: 1.118 $
+* Date   : $Date: 2003/07/22 13:01:23 $
+* Version: $Revision: 1.119 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.118 $ $Date: 2003/07/22 11:14:22 $
+ * @version $Revision: 1.119 $ $Date: 2003/07/22 13:01:23 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -632,7 +632,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             if (resname.lastIndexOf("/")>0) {
                 resname=resname.substring(resname.lastIndexOf("/")+1,resname.length());
             }
-
+                         
             // create a new CmsResource                         
             CmsResource resource=new CmsResource(newUuidstructure,newUuidresource,
                                                  CmsUUID.getNullUUID(),
@@ -651,8 +651,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
                 }
             }
-
-            
             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         } catch (Exception exc) {
             // an error while importing the file
@@ -1087,7 +1085,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
                     // import the specified file 
                     CmsResource res = importResourceVersion2(source, destination, uuid, uuidfile, uuidresource, type, access, lastmodified, properties, writtenFilenames, fileCodes);
- 
+
                     if (res != null) {
 
                         // write all imported access control entries for this file
@@ -1106,7 +1104,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                             addImportAccessControlEntry(res, id, allowed, denied, flags);
                         }
                         importAccessControlEntries(res);
-                    
 
                     } else {
                         // resource import failed, since no CmsResource was created
@@ -1131,12 +1128,16 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             if (m_importVersion < 3) {
                 // only do the conversions if the new resourcetype (CmsResourceTypeNewPage.) is available 
                 CmsResource newpage = null;
+                
                 try {
                     newpage = m_cms.readFileHeader("/system/workplace/restypes/" + CmsResourceTypeNewPage.C_RESOURCE_TYPE_NAME);
                 } catch (CmsException e1) {
                     // do nothing, 
                 }
-                if (newpage != null) {
+                
+                boolean convertToNewPage=((newpage!=null) || (CmsResourceTypeFolder.C_BODY_MIRROR==false));
+                
+                if (convertToNewPage) {
                     mergePageFiles();
                     removeFolders();
                 }
@@ -1598,7 +1599,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     private void importAccessControlEntries(CmsResource resource) throws CmsException {
         try {
             try {
-                m_cms.importAccessControlEntries(resource, m_acEntriesToCreate);
+                m_cms.writeAccessControlEntries(resource, m_acEntriesToCreate);
             } catch (CmsException exc) {
                 m_report.println(m_report.key("report.import_accesscontroldata_failed"), I_CmsReport.C_FORMAT_WARNING);
             }

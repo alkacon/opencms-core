@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/22 11:14:22 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2003/07/22 13:01:23 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -218,8 +218,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         for (int i = 0; i < allSubFiles.size(); i++) {
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if (curFile.getState() != I_CmsConstants.C_STATE_DELETED) {
-                // both destination and readAbsolutePath have a trailing/leading slash !
-                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length() + 1);
+                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length());
                 cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags, false);
             }
         }
@@ -368,7 +367,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             destination += I_CmsConstants.C_FOLDER_SEPARATOR;
 
         boolean changed = true;
-        //int resaccess = 0;
+        int resaccess = 0;
         //try to create the resource
         try {
             importedResource = cms.doImportResource(resource, content, properties, destination);
@@ -414,11 +413,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             // update the folder if something has changed
             if (changed) {
                 lockResource(cms, cms.readAbsolutePath(importedResource), true);
-                // set the last modification date again, to mark the resource as touched
-                resource.setDateLastModified(resource.getDateLastModified());   
-                cms.doWriteResource(resource, properties, new byte[0]);  
-                cms.touch(destination,resource.getDateLastModified(),false);                   
-             }
+                cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, cms.getRequestContext().currentUser().getName(), cms.getRequestContext().currentGroup().getName(), resaccess, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new byte[0]);
+            }
         }
 
         return importedResource;
