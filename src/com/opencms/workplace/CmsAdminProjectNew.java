@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2003/07/30 17:46:38 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.75 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.76 $ $Date: 2003/07/30 17:46:38 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -186,7 +186,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 elementName, parameters, templateSelector);
 
         //look if we come from the explorer view
-        String fileToGo = (String)parameters.get("file");
+        String fileToGo = (String)parameters.get(C_PARA_RESOURCE);
         if (fileToGo == null){
             fileToGo = (String)session.getValue("newProjectCallingFrom");
         }
