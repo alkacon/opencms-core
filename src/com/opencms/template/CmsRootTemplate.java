@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2003/09/25 14:39:00 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/11/03 10:01:33 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * the content of a master template.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.46 $ $Date: 2003/09/25 14:39:00 $
+ * @version $Revision: 1.47 $ $Date: 2003/11/03 10:01:33 $
  */
 public class CmsRootTemplate {
 
@@ -120,7 +120,7 @@ public class CmsRootTemplate {
             }
             catch(CmsException e) {
                 cache.clearCache(cacheKey);
-                if(OpenCms.getLog(this).isWarnEnabled()) {
+                if(OpenCms.getLog(this).isWarnEnabled() && (e.getType() != CmsException.C_NO_USER)) {
                     OpenCms.getLog(this).warn("Could not get contents of master template " + masterTemplate.getName(), e);
                 }
                 throw e;
