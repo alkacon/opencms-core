@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/01 19:14:46 $
- * Version: $Revision: 1.440 $
+ * Date   : $Date: 2003/02/02 11:03:41 $
+ * Version: $Revision: 1.441 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 5.0 (next version)
 ! Improved editor GUI (for both source code and WYSIWYG editor) 
 ! The setup wizards now checks for the correct setting of the Java file.encoding 
 ! The com.opencms.flex.jsp.CmsJspNavElement now provides direct access to all properties of a file
+* Fixed issue with cache setting causing binary document types (like *.doc, *.pdf) not to display in the offline project
 * Fixed various issues regarding the character encoding, as a result it is now possible to use any encoding,
   not just UTF-8 as with previous releases
 * Fixed an issue with JSP error pages not working in Tomcat 4.1,
