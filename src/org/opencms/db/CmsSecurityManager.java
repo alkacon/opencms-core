@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/07 17:45:11 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/12/08 13:59:49 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -4241,7 +4241,7 @@ public final class CmsSecurityManager {
      */
     public void writeGroup(CmsRequestContext context, CmsGroup group) throws CmsException {
 
-        if (isAdmin(context)) {
+        if (! isAdmin(context)) {
             throw new CmsSecurityException(
                 "[" + this.getClass().getName() + "] writeGroup() " + group.getName(),
                 CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
