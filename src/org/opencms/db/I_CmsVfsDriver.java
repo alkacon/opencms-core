@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/03 14:08:37 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2003/09/04 15:00:33 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.45 $ $Date: 2003/09/03 14:08:37 $
+ * @version $Revision: 1.46 $ $Date: 2003/09/04 15:00:33 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -740,7 +740,7 @@ public interface I_CmsVfsDriver {
      */
     void removeResource(CmsProject currentProject, CmsResource resource) throws CmsException;
     
-    void removeTemporaryFile(CmsFile file) throws CmsException;
+    void removeTemporaryFile(CmsResource file) throws CmsException;
     int renameResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, String newResourceName) throws CmsException;
     void updateLockstate(CmsResource res, int projectId) throws CmsException;
     
