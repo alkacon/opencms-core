@@ -62,16 +62,16 @@
 <body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed>
 
 <table cellspacing=0 cellpadding=0 border=0>
-]]><PROCESS>BACKBUTTON</PROCESS><![CDATA[
+]]><PROCESS>BACK_BUTTON</PROCESS><![CDATA[
 </table>
 </body>
 </html>
 ]]>
 </TEMPLATE>
 
-<BACKBUTTON>
+<BACK_BUTTON>
 <BUTTON href="javascript:updateFrame('body.explorer_content.explorer_head','explorer_head.html');updateFrame('body.explorer_content.explorer_files','explorer_files.html')" name="bt_back" action="" alt="back"/>
-</BACKBUTTON>
+</BACK_BUTTON>
 
 <PARENT_DISABLED>
 <![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_up_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.parent"  />"<![CDATA[" name="bt_up" border=0 width=32 height=32></td>]]>
