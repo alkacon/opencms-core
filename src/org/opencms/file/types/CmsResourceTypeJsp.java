@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/11 11:46:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.file.types;
 
-import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -58,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -91,14 +90,14 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     public CmsResource createResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
-        String resourcename, 
+        String resourcename,
         byte[] content,
         List properties
     ) throws CmsException {
         
         List newProperties;       
         if (properties == null) {
-            newProperties = new ArrayList(); 
+            newProperties = new ArrayList();
         } else {
             newProperties = new ArrayList(properties);
         }
@@ -116,6 +115,16 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
         ExtendedProperties result = new ExtendedProperties();
         result.put(C_CONFIGURATION_JSP_ENCODING, m_defaultEncoding);
         return result;
+    }
+
+    /**
+     * Returns the default encoding for JSP pages.<p>
+     * 
+     * @return the default encoding for JSP pages
+     */
+    public String getDefaultEncoding() {
+
+        return m_defaultEncoding;
     }
 
     /**
@@ -143,10 +152,11 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#initConfiguration()
+     * @see org.opencms.file.types.A_CmsResourceType#initialize(org.opencms.file.CmsObject)
      */
-    public void initConfiguration() throws CmsConfigurationException {
-        super.initConfiguration();
+    public void initialize(CmsObject cms) {
+
+        super.initialize(cms);
         // ensure default content encoding is set
         if (m_defaultEncoding == null) {
             m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();

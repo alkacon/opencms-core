@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/11 11:46:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.util.Locale;
@@ -44,7 +45,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
   
@@ -69,6 +70,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
                 
         suite.addTest(new TestOpenCmsSingleton("testInitCmsObject"));
         suite.addTest(new TestOpenCmsSingleton("testLog"));
+        suite.addTest(new TestOpenCmsSingleton("testEncoding"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -205,4 +207,25 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
             fail("Writing to 'fatal' log level did not cause test to fail.");
         }
     }
+        
+    /**
+     * Test case for the encoding.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testEncoding() throws Exception {
+        
+        echo("Testing the encoding settings");
+        
+        String systemEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
+        String workplaceEncoding = OpenCms.getWorkplaceManager().getDefaultEncoding();
+        
+        CmsResourceTypeJsp jsp = (CmsResourceTypeJsp)OpenCms.getResourceManager().getResourceType(CmsResourceTypeJsp.C_RESOURCE_TYPE_ID);
+        String jspEncoding = jsp.getDefaultEncoding();
+        
+        assertEquals("ISO-8859-1", systemEncoding);
+        assertEquals(systemEncoding, workplaceEncoding);
+        assertEquals(systemEncoding, jspEncoding);        
+    }
+            
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/10/29 13:46:41 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/11/11 11:46:53 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 5.3.1
  */
@@ -182,9 +182,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_explorerTypeSettingsMap = new HashMap();
         m_defaultPropertiesOnStructure = true;
         m_enableAdvancedPropertyTabs = true;
-        // TODO: Set workplace encoding independent from main system (use UTF-8 as default)
-        m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
-        // m_defaultEncoding = C_DEFAULT_WORKPLACE_ENCODING;
         m_defaultUserSettings = new CmsDefaultUserSettings();
         m_defaultAccess = new CmsExplorerTypeAccess();
 
@@ -604,6 +601,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 "Workplace manager initialization can only be done by an OpenCms Administrator",
                 CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
+        
+        // set the workplace encoding
+        m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();      
         
         // add the additional explorer types found in the modules
         CmsModuleManager moduleManager = OpenCms.getModuleManager();

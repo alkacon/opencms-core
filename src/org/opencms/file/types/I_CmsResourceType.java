@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/11 11:46:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -391,6 +391,17 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     ) throws CmsException;
     
     /**
+     * Initializes this resource type.<p>
+     * 
+     * This method will be called once during the OpenCms 
+     * initialization processs. The VFS will already be available 
+     * at the time the method is called.<p>
+     * 
+     * @param cms a OpenCms context initialized with "Admin" permissions
+     */
+    void initialize(CmsObject cms);
+    
+    /**
      * Indicates that this is an additional resource type which is defined in a module.<p>
      * @return true or false
      */
@@ -652,5 +663,4 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource resource, 
         List properties
     ) throws CmsException;
-    
 }

@@ -50,7 +50,7 @@
 			<group-users>Users</group-users>
 			<group-guests>Guests</group-guests>
 		</defaultusers>	
-		<defaultcontentencoding>UTF-8</defaultcontentencoding>	
+		<defaultcontentencoding>ISO-8859-1</defaultcontentencoding>	
 		<memorymonitor>
 			<maxusagepercent>90</maxusagepercent>
 			<log-interval>2</log-interval>

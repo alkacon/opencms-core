@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/11/11 11:46:53 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -331,6 +331,17 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }    
     
     /**
+     * @see org.opencms.file.types.I_CmsResourceType#initialize(org.opencms.file.CmsObject)
+     */
+    public void initialize(CmsObject cms) {
+        
+        // most resource type do not require any runtime information
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("initialize() called on " + this);
+        }        
+    }    
+    
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#isAdditionalModuleResourceType()
      */
     public boolean isAdditionalModuleResourceType() {
@@ -584,5 +595,4 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         
         return OpenCms.getResourceManager().getResourceType(resourceType);
     }
-    
 }
