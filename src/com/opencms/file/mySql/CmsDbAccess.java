@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2002/09/04 15:45:30 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.72 $ $Date: 2002/09/03 11:57:06 $ *
+ * @version $Revision: 1.73 $ $Date: 2002/09/04 15:45:30 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -1014,11 +1014,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
                     // create statement
                     statement = con.prepareStatement(m_cq.get("C_PROPERTIES_UPDATE"+usedStatement));
                     if (value != null) {
-                        try {
-                            statement.setString(1, java.net.URLEncoder.encode(value, "utf-8"));
-                        } catch (UnsupportedEncodingException e) {
-                            statement.setString(1, value);
-                        }
+                        statement.setString(1, com.opencms.util.Encoder.encode(value, "utf-8"));
                     } else {
                         statement.setString(1, value);
                     }
@@ -1034,11 +1030,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
                     statement.setInt(2, propdef.getId());
                     statement.setInt(3, resource.getResourceId());
                     if (value != null) {
-                        try {
-                            statement.setString(4, java.net.URLEncoder.encode(value, "utf-8"));
-                        } catch (UnsupportedEncodingException e) {
-                            statement.setString(4, value);
-                        }
+                        statement.setString(4, com.opencms.util.Encoder.encode(value, "utf-8"));
                     } else {
                         statement.setString(4, value);
                     }
@@ -1141,11 +1133,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
         if (result == null) {
             return null;
         }
-        try {
-            return java.net.URLDecoder.decode(result, "utf-8");
-        } catch (Exception e) {
-            return result;
-        }
+        return com.opencms.util.Encoder.decode(result, "utf-8");
     }
 
     /**
@@ -1163,9 +1151,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
             if (value == null) {
                 continue;
             }
-            try {
-                result.put(key, java.net.URLDecoder.decode(value, "utf-8"));
-            } catch (Exception e) {;}
+            result.put(key, com.opencms.util.Encoder.decode(value, "utf-8"));
         }
         return result;
     }
