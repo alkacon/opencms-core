@@ -11,7 +11,7 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/21 10:35:18 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/11 18:49:34 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -92,6 +92,16 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
     }
     
     /**
+     * Sets the filename of the master template file defined in
+     * the body file.
+     * @param template Filename of the template file.
+     * @exception CmsException
+     */
+    public void setMasterTemplate(String template) {
+        setData("masterTemplate", template);
+    }
+    
+    /**
      * Checks if the body file contains a definition of the 
      * template class name for a given subelement definition.
      * @param elementName Name of the subelement.
@@ -112,6 +122,16 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
     }
     
     /**
+     * Checks if the body file contains a definition of the 
+     * template selector for a given subelement definition.
+     * @param elementName Name of the subelement.
+     * @return <code>true<code> if a definition exists, <code>false</code> otherwise.
+     */
+    public boolean isElementTemplSelectorDefined(String elementName) {
+        return this.hasData("ELEMENTDEF." + elementName + ".TEMPLATESELECTOR");
+    }
+        
+    /**
      * Gets the template class of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Name of the template class.
@@ -128,6 +148,15 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
     public String getElementTemplate(String elementName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".TEMPLATE"); 
     }
+
+    /**
+     * Gets the filename of the master template file of a given subelement definition.
+     * @param elementName Name of the subelement.
+     * @return Filename of the template file.
+     */
+    public String getElementTemplSelector(String elementName) throws CmsException {
+        return getDataValue("ELEMENTDEF." + elementName + ".TEMPLATESELECTOR"); 
+    }
         
     /**
      * Gets an enumeration of all names of the subelement definition in the
@@ -136,9 +165,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @exception CmsException
      */
     public Enumeration getElementDefinitions() throws CmsException {        
-        Document domDoc = getXmlDocument();
-        NodeList elementDefTags = domDoc.getElementsByTagName("ELEMENTDEF");
-        return getNamesFromNodeList(elementDefTags);
+        NodeList elementDefTags = getXmlDocument().getDocumentElement().getChildNodes();
+        return getNamesFromNodeList(elementDefTags, "ELEMENTDEF", false);
     }
   
     /**
@@ -149,8 +177,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      */
     public Enumeration getParameterNames(String elementName) throws CmsException {
         Element elementDefinition = getData("elementdef." + elementName);
-        NodeList parameterTags = elementDefinition.getElementsByTagName("PARAMETER");
-        return getNamesFromNodeList(parameterTags);            
+        NodeList parameterTags = elementDefinition.getChildNodes();
+        return getNamesFromNodeList(parameterTags, "PARAMETER", false);            
     }
     
     /**
@@ -164,28 +192,36 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
     
     /**
      * Internal utility method to extract the values of the "name" attribute
-     * from all nodes of a given nodelist.
+     * from defined nodes of a given nodelist.
      * @param nl NodeList to extract.
+     * @param tag Name of the tag whose "name" attribute should be extracted
+     * @param unnamedAllowed Indicates if unnamed tags are allowed or an exception should
+     * be thrown.
      * @return Enumeration of all "name" attributes.
      * @exception CmsException
      */
-    private Enumeration getNamesFromNodeList(NodeList nl) throws CmsException {
+    private Enumeration getNamesFromNodeList(NodeList nl, String tag, boolean unnamedAllowed) throws CmsException {
         int numElements = nl.getLength();
         Vector collectNames = new Vector();
 
         for(int i=0; i<numElements; i++) {
-            Element n = (Element)nl.item(i);
-            String name = n.getAttribute("name");
-            if(name == null || "".equals(name)) {
-                // unnamed element found.
-                // this is bad. throw an exception.
-                if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename() + ".");
-                }
-                throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename() + ".", CmsException.C_XML_TAG_MISSING);
+            Node n = (Node)nl.item(i);                        
+            if(n.getNodeType() == n.ELEMENT_NODE 
+                    && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
+                String name = ((Element)n).getAttribute("name");
+                if(name == null || "".equals(name)) {
+                    // unnamed element found.
+                    if(unnamedAllowed) {                        
+                        name = "-- unnamed --";
+                    } else {
+                        if(A_OpenCms.isLogging()) {
+                            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename() + ".");
+                        }
+                        throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename() + ".", CmsException.C_XML_TAG_MISSING);
+                    }
+                } 
+                collectNames.addElement(name);
             }
-            collectNames.addElement(name);
         }
         return collectNames.elements();
-    }        
-}
+    }}
