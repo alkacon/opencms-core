@@ -16,7 +16,7 @@
  * OpenXML.org. Portions created by OpenXML.org and/or Assaf Arkin
  * are Copyright (C) 1998, 1999 OpenXML.org. All Rights Reserved.
  *
- * $Id: BasePrinter.java,v 1.1 2000/01/13 13:44:20 a.lucas Exp $
+ * $Id: BasePrinter.java,v 1.2 2000/02/20 16:11:19 a.lucas Exp $
  */
 
 
@@ -29,7 +29,7 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 import org.w3c.dom.*;
-// import org.w3c.dom.html.HTMLDocument;
+import org.w3c.dom.html.HTMLDocument;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -74,7 +74,7 @@ import org.xml.sax.SAXException;
  * another element.
  * 
  *
- * @version $Revision: 1.1 $ $Date: 2000/01/13 13:44:20 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/20 16:11:19 $
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  * @see Printer
  * @see DocumentHandler

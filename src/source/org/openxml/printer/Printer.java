@@ -16,7 +16,7 @@
  * OpenXML.org. Portions created by OpenXML.org and/or Assaf Arkin
  * are Copyright (C) 1998, 1999 OpenXML.org. All Rights Reserved.
  *
- * $Id: Printer.java,v 1.1 2000/01/13 13:44:20 a.lucas Exp $
+ * $Id: Printer.java,v 1.2 2000/02/20 16:11:19 a.lucas Exp $
  */
 
 
@@ -58,7 +58,7 @@ import org.xml.sax.DocumentHandler;
  * UTF8 encoding.
  * 
  *
- * @version $Revision: 1.1 $ $Date: 2000/01/13 13:44:20 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/20 16:11:19 $
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  * @see DocumentHandler
  * @see OutputFormat
@@ -233,12 +233,12 @@ public abstract class Printer
 	    format = new OutputFormat( "xml", "UTF8", false );
 	    printer = new XMLPrinter();
 	} else {
-	    // if ( format.getMethod().equalsIgnoreCase( "html" ) )
-		// printer = new HTMLPrinter( false );
-	    // else
-	    // if ( format.getMethod().equalsIgnoreCase( "xhtml" ) )
-		// printer = new HTMLPrinter( true );
-	    // else
+	    if ( format.getMethod().equalsIgnoreCase( "html" ) )
+		printer = new HTMLPrinter( false );
+	    else
+	    if ( format.getMethod().equalsIgnoreCase( "xhtml" ) )
+		printer = new HTMLPrinter( true );
+	    else
 		printer = new XMLPrinter();
 	}
 	return printer;

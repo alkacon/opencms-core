@@ -16,7 +16,7 @@
  * OpenXML.org. Portions created by OpenXML.org and/or Assaf Arkin
  * are Copyright (C) 1998, 1999 OpenXML.org. All Rights Reserved.
  *
- * $Id: OutputFormat.java,v 1.1 2000/01/13 13:44:20 a.lucas Exp $
+ * $Id: OutputFormat.java,v 1.2 2000/02/20 16:11:19 a.lucas Exp $
  */
 
 
@@ -28,7 +28,7 @@ import java.util.Hashtable;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Node;
-// import org.w3c.dom.html.HTMLDocument;
+import org.w3c.dom.html.HTMLDocument;
 
 
 /**
@@ -46,7 +46,7 @@ import org.w3c.dom.Node;
  * </ul>
  * 
  *
- * @version $Revision: 1.1 $ $Date: 2000/01/13 13:44:20 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/20 16:11:19 $
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  *         <a href="mailto:visco@exoffice.com">Keith Visco</a>
  * @see Printer
@@ -513,8 +513,8 @@ public class OutputFormat
 
 	// If document is derived from HTMLDocument then the default
 	// method is html.
-	// if ( doc instanceof HTMLDocument )
-	//    return METHOD_HTML;
+	if ( doc instanceof HTMLDocument )
+	    return METHOD_HTML;
 	// Lookup the root element and the text nodes preceding it.
 	// If root element is html and all text nodes contain whitespace
 	// only, the method is html.
@@ -563,8 +563,8 @@ public class OutputFormat
 	    } catch ( Error except ) {  }
 	}
 	*/
-	// if ( doc instanceof HTMLDocument )
-	//    return DOCTYPE_XHTML_PUBLIC;
+	if ( doc instanceof HTMLDocument )
+	    return DOCTYPE_XHTML_PUBLIC;
 	return null;
     }
 
@@ -587,8 +587,8 @@ public class OutputFormat
 	    } catch ( Error except ) { }
 	}
 	*/
-	// if ( doc instanceof HTMLDocument )
-	//    return DOCTYPE_XHTML_SYSTEM;
+	if ( doc instanceof HTMLDocument )
+	    return DOCTYPE_XHTML_SYSTEM;
 	return null;
     }
 

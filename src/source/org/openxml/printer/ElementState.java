@@ -16,7 +16,7 @@
  * OpenXML.org. Portions created by OpenXML.org and/or Assaf Arkin
  * are Copyright (C) 1998, 1999 OpenXML.org. All Rights Reserved.
  *
- * $Id: ElementState.java,v 1.1 2000/01/13 13:44:20 a.lucas Exp $
+ * $Id: ElementState.java,v 1.2 2000/02/20 16:11:19 a.lucas Exp $
  */
 
 
@@ -27,7 +27,7 @@ package source.org.openxml.printer;
  * Holds the state of the currently printing element.
  *
  *
- * @version $Revision: 1.1 $ $Date: 2000/01/13 13:44:20 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/20 16:11:19 $
  * @author <a href="mailto:arkin@openxml.org">Assaf Arkin</a>
  * @see BasePrinter
  */
