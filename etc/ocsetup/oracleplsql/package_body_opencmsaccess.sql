@@ -11,19 +11,20 @@ PACKAGE BODY opencmsAccess IS
     vLockedInProject NUMBER;
     vOnlineProject NUMBER;
     vLockedBy NUMBER;
+    vProjectFlag NUMBER;
   BEGIN
     -- project = online-project => false
     vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
-    IF pProjectID = vOnlineProject THEN   
+    IF pProjectID = vOnlineProject THEN
       RETURN 0;
     END IF;
     -- no access for projekt => false
-    IF accessProject(pUserID, pProjectID) = 0 THEN   
+    IF accessProject(pUserID, pProjectID) = 0 THEN
       RETURN 0;
     END IF;
     -- resource does not belong to the projekt with project_id = pProjectId => false
     BEGIN
-      select max(p.project_id), max(r.resource_name), max(r.project_id), max(r.locked_by) 
+      select max(p.project_id), max(r.resource_name), max(r.project_id), max(r.locked_by)
              into vResProjectID, vNextPath, vLockedInProject, vLockedBy
              from cms_resources r, cms_projectresources p
              where resource_id = pResourceID
@@ -35,18 +36,25 @@ PACKAGE BODY opencmsAccess IS
         vResProjectID := null;
         vNextPath := null;
     END;
-    IF vResProjectID != pProjectId THEN  
+    IF vResProjectID != pProjectId THEN
       RETURN 0;
     END IF;
+    BEGIN
+      select project_flags into vProjectFlag from cms_projects where project_id = pProjectID;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+      	vProjectFlag := opencmsConstants.C_PROJECT_STATE_UNLOCKED;
+    END;
     -- resource locked by another user => false
     IF vLockedBy != opencmsConstants.C_UNKNOWN_ID AND
-    	(vLockedBy != pUserID OR vLockedInProject != pProjectID) THEN
+    	(vLockedBy != pUserID OR (vLockedInProject != pProjectID AND 
+    	vProjectFlag != opencmsConstants.C_PROJECT_STATE_INVISIBLE)) THEN
         RETURN 0;
     END IF;
     -- for current resource no write access Other/Owner/Group => false
     IF (accessOwner(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_WRITE) = 0
         AND accessGroup(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_GROUP_WRITE) = 0
-        AND accessOther(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_PUBLIC_WRITE) = 0) THEN 
+        AND accessOther(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_PUBLIC_WRITE) = 0) THEN
       RETURN 0;
     END IF;
     -- select super resources
@@ -67,7 +75,7 @@ PACKAGE BODY opencmsAccess IS
           CLOSE curNextResource;
           -- resource locked by another user => false
           IF recResource.locked_by != opencmsConstants.C_UNKNOWN_ID AND
-             (recResource.locked_by != pUserID OR vLockedInProject != pProjectID) THEN
+             recResource.locked_by != pUserID THEN
             RETURN 0;
           END IF;
           -- search next folder
@@ -133,12 +141,12 @@ PACKAGE BODY opencmsAccess IS
           recResource := NULL;
         END IF;
         CLOSE curResource;
-        select project_id into vLockedInProject 
-               from cms_resources 
+        select project_id into vLockedInProject
+               from cms_resources
                where resource_id = recResource.resource_id;
         select project_flags into vProjectFlag from cms_projects where project_id = pProjectId;
         -- resource.locked_by not in (C_UNKNOWN_ID, pUserID) => false
-        IF recResource.locked_by NOT IN (opencmsConstants.C_UNKNOWN_ID, pUserID) 
+        IF recResource.locked_by NOT IN (opencmsConstants.C_UNKNOWN_ID, pUserID)
            OR (recResource.locked_by != opencmsConstants.C_UNKNOWN_ID AND vLockedInProject != pProjectId
            AND vProjectFlag != opencmsConstants.C_PROJECT_STATE_INVISIBLE) THEN
           RETURN 0;
