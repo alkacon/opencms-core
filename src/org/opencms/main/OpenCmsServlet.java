@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/07/18 16:33:00 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/01/10 10:16:01 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -189,7 +189,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());  
             cms.getRequestContext().setUri(handlerUri);
         } catch (CmsException e) {
-            // unlikley to happen 
+            // unlikely to happen 
             if (OpenCms.getLog(this).isWarnEnabled()) {                    
                 OpenCms.getLog(this).warn("Error initializing CmsObject in " + errorCode + " URI handler for '" + handlerUri + "'", e);
             }
