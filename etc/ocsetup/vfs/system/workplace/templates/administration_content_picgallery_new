@@ -37,6 +37,11 @@ function inputOK() {
 
 function checkFormData(form,field,lyr)
 {
+	if ( inputOK()==false ) {
+		alert(']]><LABEL value="error.message.datamissing" /><![CDATA[.');
+		return false;
+	}
+
 	var result=true;
 	var at_pos, entry, strLength;
 	
@@ -87,11 +92,11 @@ function checkFormData(form,field,lyr)
 	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
 	<tr>
 		<td class=formular width=35%>]]><LABEL value="input.foldername" /><![CDATA[:</td>
-		<td class=dialogtxt><INPUT type="text" size=40 maxlength="248" class="textfeld2" id="NAME" name="NAME" size=20 onchange="if (inputOK()) document.NEU.FERTIG.disabled=false; else document.NEU.FERTIG.disabled=true;"></td>
+		<td class=dialogtxt><INPUT type="text" size=40 maxlength="248" class="textfeld2" id="NAME" name="NAME" size=20 ></td>
 	</tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-		<td class=dialogtxt><INPUT type="text" size=40 maxlength="255" class="textfeld2" id="TITLE" name="TITLE" size=20 onchange="if (inputOK()) document.NEU.FERTIG.disabled=false; else document.NEU.FERTIG.disabled=true;"></td>
+		<td class=dialogtxt><INPUT type="text" size=40 maxlength="255" class="textfeld2" id="TITLE" name="TITLE" size=20 ></td>
 	</tr>
 	
 	<tr><td colspan=2 class=leerzeile><img src="pics/empty.gif" border=0 width=1 height=10px</td></tr>
@@ -99,7 +104,7 @@ function checkFormData(form,field,lyr)
 		<td class=formular>]]><LABEL value="input.galadmin" /><![CDATA[:</td>
 		<td class=dialogtxt> ]]>
 			<SELECT class="textfeld" name="GROUP" width="330" method="getGroups" 
-				style="WIDTH: 330px" onDblClick="" onchange="if (inputOK()) document.NEU.FERTIG.disabled=false; else document.NEU.FERTIG.disabled=true;"/>
+				style="WIDTH: 330px" onDblClick="" />
 			<![CDATA[ 
 		</td>
 	</tr>
@@ -116,7 +121,7 @@ function checkFormData(form,field,lyr)
 		<td class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
-				<td class=formular width=50% align=center><INPUT disabled class=button width=100 type="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id="FERTIG" name="FERTIG"></td>
+				<td class=formular width=50% align=center><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id="FERTIG" name="FERTIG"></td>
 				<td class=formular width=50% align=center><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='administration_content_picgalleries.html';"></td>
 			</tr>
 			</table>
@@ -141,4 +146,7 @@ function checkFormData(form,field,lyr)
 <ERRORPAGE title="error.title.picgallery" message="error.message.picgallery" reason="error.reason.picgallery" suggestion="error.suggestion.none" ref="administration_content_picgalleries.html" ><PROCESS>ERRORDETAILS</PROCESS></ERRORPAGE> 
 </TEMPLATE>
 
+<TEMPLATE name="datamissing"> 
+<ERRORPAGE title="error.title.picgallery" message="error.message.picgallery" reason="error.reason.picgallery" suggestion="error.suggestion.none" ref="administration_content_picgalleries.html" ><PROCESS>ERRORDETAILS</PROCESS></ERRORPAGE> 
+</TEMPLATE>
 </WORKPLACE>

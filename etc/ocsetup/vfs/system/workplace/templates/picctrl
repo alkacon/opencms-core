@@ -25,7 +25,7 @@
 
 
 </head>
-<body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" onLoad="getSelection();" bgproperties=fixed  bgproperties=fixed>
+<body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed  bgproperties=fixed>
 <form action="" method=post id=form1 name=form1>
 <table WIDTH=100% cellspacing=0 cellpadding=0 border=0>
 <TR> 

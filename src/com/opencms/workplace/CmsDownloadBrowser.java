@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
- * Date   : $Date: 2000/05/30 11:44:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/05/30 18:11:37 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.3 $ $Date: 2000/05/30 11:44:51 $
+ * @version $Revision: 1.4 $ $Date: 2000/05/30 18:11:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFileListUsers {
@@ -112,41 +112,46 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
 				if (galleries.size() > 0) {
 					// take the first gallery
 					folder = ((A_CmsResource) galleries.elementAt(0)).getAbsolutePath();
+					session.putValue(C_PARA_FOLDER, folder); 
+				} else {
+					// there was a /download/ - folder but no gallery in it
+					templateSelector="error_no_gallery";
 				}
-			    session.putValue(C_PARA_FOLDER, folder);
-			} 
-			String pageText = (String)parameters.get(C_PARA_PAGE);
-			String filter = (String)parameters.get(C_PARA_FILTER);
-			        
-			// Check if the user requested a certain page number
-			if (pageText == null ||"".equals(pageText))  {
-			    pageText = "1";
-				parameters.put(C_PARA_PAGE, pageText);
 			}
-			session.putValue(C_PARA_PAGE, pageText);
+			if (! "error_no_gallery".equals(templateSelector)) {
+				String pageText = (String)parameters.get(C_PARA_PAGE);
+				String filter = (String)parameters.get(C_PARA_FILTER);
+				        
+				// Check if the user requested a certain page number
+				if (pageText == null ||"".equals(pageText))  {
+				    pageText = "1";
+					parameters.put(C_PARA_PAGE, pageText);
+				}
+				session.putValue(C_PARA_PAGE, pageText);
         
-			// Check if the user requested a filter
-			if (filter == null) {
-			    filter = "";
-				session.putValue(C_PARA_FILTER, filter);
-			    parameters.put(C_PARA_FILTER, filter); 
-			}
+				// Check if the user requested a filter
+				if (filter == null) {
+				    filter = "";
+					session.putValue(C_PARA_FILTER, filter);
+				    parameters.put(C_PARA_FILTER, filter); 
+				}
         
-			// Compute the maximum page number
-			Vector filteredFiles = getFilteredDownList(cms, folder, filter);  
-			int maxpage = ((filteredFiles.size()-1)/C_DOWNBROWSER_MAXENTRIES)+1;  
-			                
-			// Now set the appropriate datablocks
+				// Compute the maximum page number
+				Vector filteredFiles = getFilteredDownList(cms, folder, filter);  
+				int maxpage = ((filteredFiles.size()-1)/C_DOWNBROWSER_MAXENTRIES)+1;  
+				                
+				// Now set the appropriate datablocks
     
-			xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
-			xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
-			xmlTemplateDocument.setData(C_PARA_FILTER, filter);
-			xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
+				xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
+				xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
+				xmlTemplateDocument.setData(C_PARA_FILTER, filter);
+				xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
         
-			session.putValue("_DOWNLIST_", filteredFiles);
-			session.putValue("numfiles", new Integer(filteredFiles.size())); // for 'showNextButton'
+				session.putValue("_DOWNLIST_", filteredFiles);
+				session.putValue("numfiles", new Integer(filteredFiles.size())); // for 'showNextButton'
+			}
 		}
-        // Start the processing     
+        // Start the processing    
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }      
 

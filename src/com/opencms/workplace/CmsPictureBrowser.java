@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/05/30 10:06:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/05/30 18:11:37 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.17 $ $Date: 2000/05/30 10:06:09 $
+ * @version $Revision: 1.18 $ $Date: 2000/05/30 18:11:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -103,35 +103,46 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 			}
 			folder = (String) session.getValue(C_PARA_FOLDER);
 			if (folder == null || "".equals(folder)) {
-				folder = getConfigFile(cms).getPicGalleryPath();
-			    session.putValue(C_PARA_FOLDER, folder);
+				folder = getConfigFile(cms).getPicGalleryPath(); 
+				Vector galleries = cms.getSubFolders(folder);
+				if (galleries.size() > 0) {
+					// take the first gallery
+					folder = ((A_CmsResource) galleries.elementAt(0)).getAbsolutePath();
+					session.putValue(C_PARA_FOLDER, folder); 
+				} else {
+					// there was a /pics/ - folder but no galery in it
+					templateSelector="error_no_gallery";
+				}
+			    
 			}
-			String pageText = (String)parameters.get(C_PARA_PAGE);
-			String filter = (String)parameters.get(C_PARA_FILTER);
-			        
-			// Check if the user requested a special page
-			if(pageText == null ||"".equals(pageText))  {
-			    pageText = "1";
-			    parameters.put(C_PARA_PAGE, pageText);
+			if (! "error_no_gallery".equals(templateSelector)) {
+				String pageText = (String)parameters.get(C_PARA_PAGE);
+				String filter = (String)parameters.get(C_PARA_FILTER);
+				        
+				// Check if the user requested a special page
+				if(pageText == null ||"".equals(pageText))  {
+				    pageText = "1";
+				    parameters.put(C_PARA_PAGE, pageText);
+				}
+        
+				// Check if the user requested a filter
+				if (filter == null) {
+				    filter = "";
+				    parameters.put(C_PARA_FILTER, filter);
+				}
+        
+				// Compute the maximum page number
+				Vector filteredPics = getFilteredPicList(cms, folder, filter);
+				int maxpage = ((filteredPics.size()-1)/C_PICBROWSER_MAXIMAGES)+1;
+				                
+				// Now set the appropriate datablocks
+				xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
+				xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
+				xmlTemplateDocument.setData(C_PARA_FILTER, filter);
+				xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
+        
+				parameters.put("_PICLIST_", filteredPics);
 			}
-        
-			// Check if the user requested a filter
-			if (filter == null) {
-			    filter = "";
-			    parameters.put(C_PARA_FILTER, filter);
-			}
-        
-			// Compute the maximum page number
-			Vector filteredPics = getFilteredPicList(cms, folder, filter);
-			int maxpage = ((filteredPics.size()-1)/C_PICBROWSER_MAXIMAGES)+1;
-			                
-			// Now set the appropriate datablocks
-			xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
-			xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
-			xmlTemplateDocument.setData(C_PARA_FILTER, filter);
-			xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
-        
-			parameters.put("_PICLIST_", filteredPics);
 		}
         // Start the processing        
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);

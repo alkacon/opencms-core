@@ -27,4 +27,8 @@
 <ERRORPAGE title="error.title.picbrowser" message="error.message.picbrowser" reason="error.reason.picbrowser" suggestion="error.suggestion.picbrowser" ref="javascript:top.close()"><PROCESS>ERRORDETAILS</PROCESS></ERRORPAGE> 
 </TEMPLATE>
 
+<TEMPLATE name="error_no_gallery">
+<ERRORPAGE title="error.title.picbrowser" message="error.message.picbrowser" reason="error.reason.picnogallery" suggestion="error.suggestion.picnogallery" ref="javascript:top.close()"></ERRORPAGE> 
+</TEMPLATE>
+
 </WORKPLACE>

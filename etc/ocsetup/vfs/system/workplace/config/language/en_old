@@ -116,6 +116,7 @@
 				<chown>Sorry, the owner could not be changed.</chown>
 				<chpwd>Sorry, the password could not be changed.</chpwd>
 				<chtype>Sorry, the file type could not be changed.</chtype>
+				<datamissing>You haven't entered all the required fields in the form.</datamissing>
 				<delete>Sorry, the file could not be deleted.</delete>
 				<deleteuser> Sorry, the user could not be deleted.</deleteuser>
 				<deleteextension>Sorry, the file extension could not be deleted.</deleteextension>
@@ -161,12 +162,15 @@
 				<database>There was a system error.</database>
 				<datamissing>The fields User, Name and Email must be filled out.</datamissing> 
 				<disadmin>A user in the group Administrators can not be disabled.</disadmin>
-				<downbrowser>The folder for the download galeries doesn't exist.</downbrowser>
+				<downbrowser>The folder for the download galleries doesn't exist.</downbrowser> 
+				<downnogallery>There is no download gallery yet.</downnogallery> 
 				<extinuse>This extension has already been assigned to a resource type.</extinuse>
 				<lock>Either you don't have the needed permissions, or the contents of this file are locked by someone else.</lock>
 				<lockchange>The file is locked by another user.</lockchange>
 				<login>The data entered is not correct.</login>
-				<picbrowser>The folder for the picture galeries doesn't exist.</picbrowser>
+				<picbrowser>The folder for the picture galleries doesn't exist.</picbrowser>
+				<picdatamissing>You need to pic a foldername and a caretaker of the gallery.</picdatamissing>
+				<picnogallery>There is no picture gallery yet.</picnogallery>
 				<projectlockchange>There was an error.</projectlockchange>
 				<namemissing>The field Name must be filled out.</namemissing>
 				<titlemissing>The field Title must be filled out.</titlemissing>
@@ -204,10 +208,12 @@
 				<deletegroup>Please contact your system administrator.</deletegroup>
 				<database>You must have Admin permissions to export or import the database.</database>
 				<disadmin>If you want to disable the user, remove him from the Administrators group first.</disadmin>
-				<downbrowser>Create the folder for the download galeries or contact your system administrator.</downbrowser>
+				<downbrowser>Create the folder for the download galleries or contact your system administrator.</downbrowser>
+				<downnogallery>Please first create a gallery with the menu item Administration/Download Galleries.</downnogallery> 
 				<lock></lock>
 				<lockchange>Please try again later, or contact your system administrator.</lockchange>
 				<login>Please check the entered data or contact your system administrator.</login>
+				<picnogallery>Please first create a gallery with the menu item Administration/Picture Galleries.</picnogallery>
 				<projectlockchange>Please try again later, or contact your system administrator.</projectlockchange>
 				<newproject>Please check the entered data or contact your system administrator.</newproject>
 				<newprop>Please try again later, or contact your system administrator.</newprop>
@@ -215,7 +221,7 @@
 				<newextension>Please contact your system administrator.</newextension>				
 				<newtask>Please check the entered data or contact your system administrator.</newtask>
 				<none></none>
-				<picbrowser>Create the folder for the picture galeries or contact your system administrator.</picbrowser>
+				<picbrowser>Create the folder for the picture galleries or contact your system administrator.</picbrowser>
 				<picgallery>Creating a picture gallery</picgallery>
 				<publishproject>Please try again later, or contact your system administrator.</publishproject>
 				<rmdefault>You must first change the default group of this user(s).</rmdefault>

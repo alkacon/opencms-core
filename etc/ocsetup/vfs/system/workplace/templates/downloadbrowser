@@ -27,4 +27,7 @@
 <ERRORPAGE title="error.title.downbrowser" message="error.message.downbrowser" reason="error.reason.downbrowser" suggestion="error.suggestion.downbrowser" ref="javascript:top.close()"><PROCESS>ERRORDETAILS</PROCESS></ERRORPAGE> 
 </TEMPLATE>
 
+<TEMPLATE name="error_no_gallery">
+<ERRORPAGE title="error.title.downbrowser" message="error.message.downbrowser" reason="error.reason.downnogallery" suggestion="error.suggestion.downnogallery" ref="javascript:top.close()"></ERRORPAGE> 
+</TEMPLATE>
 </WORKPLACE>

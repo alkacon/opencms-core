@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
- * Date   : $Date: 2000/05/30 11:44:51 $
+ * Date   : $Date: 2000/05/30 18:11:37 $
  * Version: $ $
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.3 $ $Date: 2000/05/30 11:44:51 $
+ * @version $Revision: 1.4 $ $Date: 2000/05/30 18:11:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -106,29 +106,35 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
 		if ("new".equals(action)) { 
 			String  galleryname = (String) parameters.get("NAME"); 
 			String  group = (String) parameters.get("GROUP");
-			boolean  read = parameters.get("READ") != null;
-			boolean  write = parameters.get("WRITE") != null; 
-			try {   
-				// create the folder
-				// get the path from the workplace.ini
-				String superfolder = getConfigFile(cms).getPicGalleryPath(); 
-				CmsFolder folder=cms.createFolder(superfolder, galleryname); 
-				cms.lockResource(folder.getAbsolutePath()); 
-				cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
-				cms.chgrp(folder.getAbsolutePath(), group);
-				int flag = folder.getAccessFlags(); 
-				// set the access rights for 'other' users
-				if (read != ((flag & C_ACCESS_PUBLIC_READ) != 0)) {
-					flag ^= C_ACCESS_PUBLIC_READ;	
+			if (galleryname != null && group != null && galleryname != "" && group != "") {
+				boolean  read = parameters.get("READ") != null;
+				boolean  write = parameters.get("WRITE") != null; 
+				try {   
+					// create the folder
+					// get the path from the workplace.ini
+					String superfolder = getConfigFile(cms).getPicGalleryPath(); 
+					CmsFolder folder=cms.createFolder(superfolder, galleryname); 
+					cms.lockResource(folder.getAbsolutePath());
+					if (title != null) {
+						cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
+					} 
+					cms.chgrp(folder.getAbsolutePath(), group);
+					int flag = folder.getAccessFlags(); 
+					// set the access rights for 'other' users
+					if (read != ((flag & C_ACCESS_PUBLIC_READ) != 0)) {
+						flag ^= C_ACCESS_PUBLIC_READ;	
+					} 
+					if (write != ((flag & C_ACCESS_PUBLIC_WRITE) != 0)) {
+						flag ^= C_ACCESS_PUBLIC_WRITE;	
+					}  
+					cms.chmod(folder.getAbsolutePath(), flag);
+				} catch (CmsException ex) { 
+					xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(ex));
+					templateSelector="error"; 
 				} 
-				if (write != ((flag & C_ACCESS_PUBLIC_WRITE) != 0)) {
-					flag ^= C_ACCESS_PUBLIC_WRITE;	
-				}  
-				cms.chmod(folder.getAbsolutePath(), flag);
-            } catch (CmsException ex) { 
-				xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(ex));
-				templateSelector="error"; 
-            } 
+			} else {
+				templateSelector="datamissing";
+			}
 		} else if ("upload".equals(action)) { 
 			// get filename and file content if available
 			String filename=null;
