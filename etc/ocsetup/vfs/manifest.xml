@@ -14,7 +14,13 @@
             <user>Admin</user>
             <group>Users</group>
             <access>95</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>dynamic</name>
+                    <type>0</type>
+                    <value><![CDATA[true]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>content/bodys</destination>
@@ -3256,7 +3262,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>95</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>dynamic</name>
+                    <type>0</type>
+                    <value><![CDATA[true]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules</destination>
@@ -3272,7 +3284,13 @@
             <user>Admin</user>
             <group>Users</group>
             <access>79</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>dynamic</name>
+                    <type>0</type>
+                    <value><![CDATA[true]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/workplace/action</destination>
