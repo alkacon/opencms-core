@@ -2,9 +2,10 @@
 	
 	// get workplace class from request attribute
 	CmsDialog wp = CmsDialog.initCmsDialog(pageContext, request, response);
-    wp.setParamAction(wp.DIALOG_CONFIRMED);
+        wp.setParamAction(wp.DIALOG_CONFIRMED);
+%>
 
-%><%= wp.htmlStart() %>
+<%= wp.htmlStart() %>
 
 <script type="text/javascript">
 var init = false;
@@ -36,7 +37,6 @@ function closeErrorDialog(actionValue, theForm) {
 </script>
 
 <%= wp.bodyStart("dialog") %>
-
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 

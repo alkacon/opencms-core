@@ -1,0 +1,72 @@
+<%@ page import="
+	org.opencms.workplace.administration.CmsAdminMenu,
+	org.opencms.jsp.CmsJspActionElement"
+	buffer="none"
+%>
+<%
+    CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
+    CmsAdminMenu wp = new CmsAdminMenu(jsp);
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>Administration Menu</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1'>
+     <link rel='stylesheet' type='text/css' href='<%=wp.getStyleUri(wp.getJsp(),"menu.css")%>'>
+  </head>
+
+  <style type='text/css'>
+    #loaderContainer td {
+      background-image: url(<%=wp.getSkinUri()%>admin/images/semi-transparent.gif);
+    }
+    body {
+      background-image: url(<%=wp.getSkinUri()%>admin/images/left_bg_oc_01.jpg);
+    }
+    .navOpened {
+      background-image: url(<%=wp.getSkinUri()%>admin/images/nav_bg.jpg);
+    }
+    .navOpened .titleHandle {
+      background-image: url(<%=wp.getSkinUri()%>admin/images/navopened.gif);
+    }
+    .navClosed {
+      background-image: url(<%=wp.getSkinUri()%>admin/images/nav_bg.jpg);
+    }
+    .navClosed .titleHandle {
+      background-image: url(<%=wp.getSkinUri()%>admin/images/navclosed.gif);
+    }
+  </style>
+  <script language='javascript' type='text/javascript' src='<%=wp.getSkinUri()%>admin/javascript/general.js'></script>
+  <script language='javascript' type='text/javascript' src='<%=wp.getSkinUri()%>admin/javascript/adminmenu.js'></script>
+  <script language='javascript'><!--
+    function bodyLoad() {
+      if (navigator.appName == 'Microsoft Internet Explorer' && document.documentElement && navigator.userAgent.indexOf ('Opera') == -1) {
+        setScrollInIE();
+      }
+      setContextHelp();
+      loadingOff();
+      document.getElementById('loaderContainerH').height = document.getElementById('navArea').offsetHeight;
+    }
+    function bodyUnload() {
+      loadingOn();
+    }
+    var activeItem = '/';
+  //--></script>
+  <body onLoad='bodyLoad();' onUnload='bodyUnload();'>
+    <a href='#' name='top' id='top'></a>
+      <table border="0" cellspacing="0" cellpadding="0" id="loaderContainer" onClick="return false;">
+          <tr><td id="loaderContainerH">&nbsp;</td></tr>
+      </table>
+      <div class='screenBody'>
+        <table id='navArea' cellspacing='0' cellpadding='0' width='100%' border='0' height='100%' summary='Navigation Items Area'>
+          <tr>
+            <td>
+              <div id='navLayout'>
+                <%=wp.groupHtml(wp)%>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+  </body>
+</html>

@@ -14,7 +14,7 @@
 
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
-<link rel="stylesheet" type="text/css" href="<%= wp.getSkinUri() %>commons/css_workplace.css">
+<link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css")%>">
 
 <script type="text/javascript">
     var pfad="<%= wp.getResourceUri() %>";

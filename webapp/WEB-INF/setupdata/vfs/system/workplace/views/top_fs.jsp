@@ -72,6 +72,7 @@ function initialize_resources() {
 
 vi.iconPath="<%= wp.getResourceUri() %>";
 vi.skinPath="<%= wp.getSkinUri() %>";
+vi.stylePath="<%= wp.getStyleUri(wp.getJsp(),"workplace.css") %>";
 <%= wp.buildContextMenues() %>
 
 } // initialize_resources()

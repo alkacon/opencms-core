@@ -1,0 +1,55 @@
+<%@ page import="
+        org.opencms.util.CmsStringUtil,
+	org.opencms.workplace.CmsDialog,
+	org.opencms.jsp.CmsJspActionElement"
+	buffer="none"
+%>
+<%
+	
+CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
+CmsDialog wp = new CmsDialog(jsp);
+
+int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
+%>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
+<title>External Administration View Tool Bar</title>
+
+<link rel=stylesheet type="text/css" href="<%= wp.getStyleUri(wp.getJsp())%>workplace.css">
+
+<script type="text/javascript">
+<!--
+	// Ask user whether he really wants to leave 
+	function confirmExit()	{
+		if (confirm ("<%= wp.key("admin.message.exit") %>")) {
+<% if (wp.isPopup() || CmsStringUtil.isEmpty(wp.getParamCloseLink()) || wp.getParamCloseLink().equals("null")) { %>
+			top.close();
+<%     } else { %>
+			parent.location.href='<%=wp.getParamCloseLink()%>';
+<%     } %>
+		}
+	}
+//-->
+</script>
+
+</head>
+<body class="buttons-head" unselectable="on" >
+
+<table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
+	<tr>
+		<td>
+
+<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBarStartTab(0, 5) %>
+<td class="maxwidth">&nbsp;</td>
+<%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
+<%= wp.buttonBarSpacer(5) %>
+<%= wp.buttonBar(wp.HTML_END) %>
+
+	</td>
+</tr>
+</table>
+
+</body>
+</html>

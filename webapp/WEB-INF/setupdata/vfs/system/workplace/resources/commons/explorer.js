@@ -228,8 +228,12 @@ function updateWindowStore() {
 	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
 		theTree = window.body.explorer_body.explorer_tree;
 	}
-	if ((mode == "projectview") || (mode == "galleryview") || window.body.admin_head) {
-		win = new windowStore(window.body.document, window.body.admin_head.document, theTree, window.body.admin_content.document);
+	if ((mode == "projectview") || (mode == "galleryview")) {
+                if (window.body.admin_head) {
+ 			win = new windowStore(window.body.document, window.body.admin_head.document, theTree, window.body.admin_content.document);
+                } else {
+ 			win = new windowStore(window.body.document, null, theTree, window.body.admin_content.document);
+                }
 	} else {
 		try {
 			win = new windowStore(window.body.document, window.body.explorer_head.document, theTree, window.body.explorer_body.explorer_files.document);

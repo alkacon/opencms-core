@@ -1,0 +1,52 @@
+<%@ page import="
+	org.opencms.workplace.CmsDialog,
+	org.opencms.workplace.tools.CmsToolManager,
+	org.opencms.jsp.CmsJspActionElement,
+	java.util.*"
+	buffer="none"
+%>
+<%
+    CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
+    CmsDialog wp = new CmsDialog(jsp);
+    Map params = new HashMap(jsp.getRequest().getParameterMap());
+
+    // initialize
+    wp.getToolManager().initParams(wp, wp.getParamPath(), wp.getParamRoot());
+
+    // reload if called as default
+    if (!wp.useNewStyle()) {
+        params.put(CmsDialog.PARAM_STYLE, "new");
+        wp.setParamStyle("new");
+    }
+
+    // load parent if disabled
+    if (!wp.getAdminTool().isEnabled()) {
+        params.put(CmsDialog.PARAM_PATH, wp.getParentPath());
+        wp.setParamPath(wp.getParentPath());
+    }
+
+    // set close link
+    if (wp.getParamCloseLink() == null) {
+         if (!wp.getToolManager().getRootToolPath(wp.getCms()).equals(wp.getToolManager().getCurrentToolPath(wp.getCms()))) {
+              wp.setParamCloseLink(wp.getToolManager().cmsLinkForPath(wp.getJsp(), wp.getParentPath()));
+              params.put(CmsDialog.PARAM_CLOSELINK, wp.getParamCloseLink());
+         }
+    }
+
+    // just grouping or real tool
+    if (!wp.getAdminTool().getLink().equals(wp.getCms().getRequestContext().getUri())) {
+        jsp.include(wp.getAdminTool().getLink(), null, params);
+    } else {  %>
+
+<%= wp.htmlStart() %>
+<%= wp.bodyStart(null) %>
+    <%= wp.dialogStart() %>
+    <%= wp.dialogContentStart(wp.getParamTitle()) %>
+    <%= wp.dialogContentEnd() %>
+    <%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%=wp.htmlEnd() %>
+
+<%  } %>
+
+

@@ -20,7 +20,7 @@ int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 <head>
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
 <title>Button bar</title>
-<link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>commons/css_workplace.css">
+<link rel=stylesheet type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css") %>">
 
 <script type="text/javascript">
 <!--

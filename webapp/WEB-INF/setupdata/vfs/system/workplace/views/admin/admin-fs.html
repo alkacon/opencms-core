@@ -1,0 +1,34 @@
+<%@ page import="
+        org.opencms.workplace.*,
+        org.opencms.workplace.administration.*,
+        org.opencms.workplace.tools.*,
+	org.opencms.jsp.*"
+	buffer="none"
+%>
+<%
+    CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
+    CmsAdminFrameset wp = new CmsAdminFrameset(jsp);
+    // reset root
+    wp.getToolManager().initParams(wp, null, "/");
+	
+%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+
+<html>
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
+<title><%= wp.key("label.wptitle") %> <%= wp.getSettings().getUser().getName() %>@<%= request.getServerName() %></title>
+
+<script language="javascript" type="text/javascript" src="<%=wp.getSkinUri()%>admin/javascript/common.js"></script>
+<script language="javascript"><!--
+var _context = "";
+//--></script>
+
+</head>
+	<frameset cols="<%=(wp.withMenu()?"210,":"")%>*" border="0" frameborder="0" framespacing="0">
+<%    if (wp.withMenu()) { %>                
+		<frame <%= wp.getFrameSource("admin_menu", jsp.link("admin-menu.html") + "?" + wp.getParamsAsRequest()) %> frameborder="0" border="0" noresize>
+<%    } %>
+		<frame <%= wp.getFrameSource("admin_content", jsp.link(CmsToolManager.C_VIEW_JSPPAGE_LOCATION) + "?" + wp.getParamsAsRequest()) %> frameborder="0" border="0" framespacing="0" marginheight="7" marginwidth="7" noresize scrolling="yes">
+	</frameset>
+</html>

@@ -1,17 +1,18 @@
-<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
-
+<%@ page buffer="none" import="
+	org.opencms.workplace.*"%>
+<%	
     // get workplace class from request attribute
     CmsReport wp = CmsReport.initCmsReport(pageContext, request, response);
-	
+
 //////////////////// start of switch statement 
-	
 switch (wp.getAction()) {
 
 //////////////////// ACTION: get report update
-case CmsReport.ACTION_REPORT_UPDATE:
+    case CmsReport.ACTION_REPORT_UPDATE:
+%>
+    <%= wp.htmlStart(false) %>
 
-%><%= wp.htmlStart(false) %>
-<script language=JavaScript>
+<script language='JavaScript'>
 <!--
 
 function a(message) {
@@ -47,10 +48,8 @@ function aB() {
 }
 
 <%
-
 String str = new String(wp.getReportUpdate());
 // System.err.println(str);
-
 %>
 
 var active = null;
@@ -91,7 +90,7 @@ function reload(actionParam) {
 	if (resName != "") {
 		resName = "&resource=" + encodeURIComponent(resName);
 	}
-	location.href="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=" + actionParam + "&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>" + resName;
+	location.href="<%= wp.getDialogRealUri() %>?<%= wp.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= wp.PARAM_ACTION %>=" + actionParam + "&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>" + resName;
 }
 
 
@@ -112,8 +111,10 @@ function continueReport() {
 // -->
 </script>
 
-<%= wp.bodyStart("empty", "style=\"background-color:ThreeDFace;\" onLoad=\"init();\"") %><%= wp.bodyEnd() %>
-<%= wp.htmlEnd() %><%
+    <%= wp.bodyStart("empty", "style=\"background-color:ThreeDFace;\" onLoad=\"init();\"") %><%= wp.bodyEnd() %>
+    <%= wp.htmlEnd() %>
+
+<%
 
 break;
 //////////////////// ACTION: report begin
@@ -122,7 +123,10 @@ default:
 
 wp.setParamAction(CmsReport.REPORT_END);
 
-%><%= wp.htmlStart() %>
+%>
+
+     <%= wp.htmlStart() %>
+
 <script type="text/javascript" language="JavaScript">
 <!--
 
@@ -489,27 +493,34 @@ function initButtons() {
 //-->
 </script>
 
-<%= wp.bodyStart("dialog", "onLoad=\"start();\"") %>
+    <%= wp.bodyStart(null, "onLoad=\"start();\"") /*"dialog"*/%>
+    <%= wp.dialogStart() %>
 
-<%= wp.dialogStart() %>
+<form name="main" action="<%= wp.getDialogRealUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
-
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
-
 <%= wp.paramsAsHidden() %>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>
-<iframe name="report" id="report" src="about:blank" style="width:100%; height:400px; padding: 0; margin: 0;" frameborder="0"></iframe>
+<iframe name="report" id="report" src="about:blank" style="width:100%; height:400px; padding: 0; margin: 0;" frameborder="<%=(wp.useNewStyle()?1:0)%>"></iframe>
 </td></tr></table>
 
-<%= wp.dialogContentEnd() %>
+    <%= wp.dialogContentEnd() %>
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
-<td><span style="height:20px; width:20px; display:block"></span></td>
-<td width="100%" id="buttonrowcontinue" class="hide"><%= wp.dialogButtonsContinue("id=\"contok\" onclick=\"update.continueReport();\"", "id=\"contcancel\"", "id=\"contdetails\"") %></td>
-<td width="100%" id="buttonrowok" class="hide"><%= wp.dialogButtonsOkCancelDetails("id=\"okclose\"", "id=\"okcancel\"", "id=\"details\"") %></td>
-<td><iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>&resource=<%= wp.getParamResource() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" marginheight="0" frameborder="0" framespacing="0" scrolling="no"></iframe></td>
-</tr></table>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr><td width="100%" id="buttonrowcontinue" class="hide">
+    <%= wp.dialogButtonsContinue("id=\"contok\" onclick=\"update.continueReport();\"", "id=\"contcancel\"", "id=\"contdetails\"") %>
+  </td></tr>
+  <tr><td width="100%" id="buttonrowok" class="hide">
+    <%= wp.dialogButtonsOkCancelDetails("id=\"okclose\"", "id=\"okcancel\"", "id=\"details\"") %>
+  </td></tr>
+  <tr><td>
+    <iframe src="<%= wp.getDialogRealUri() %>?<%= wp.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= 
+     wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= 
+     wp.getParamThreadHasNext() %>&resource=<%= wp.getParamResource() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" 
+     marginheight="0" frameborder="0" framespacing="0" scrolling="no" class='hide'></iframe>
+  </td></tr>
+</table>
 
 <table border="0" cellpadding="0" cellspacing="0" align="center"><tr>
 <td class="hide" style="width: 100%; text-align: center;" id="checkcontinue"><input type="checkbox" name="continuereport" id="continuereport" value="true">&nbsp;<%= wp.key(wp.getParamReportContinueKey()) %></td>
@@ -517,10 +528,10 @@ function initButtons() {
 
 </form>
 
-<%= wp.dialogEnd() %>
-<%= wp.bodyEnd() %>
-<%= wp.htmlEnd() %><%
-
+    <%= wp.dialogEnd() %>
+    <%= wp.bodyEnd() %>
+    <%= wp.htmlEnd() %>
+<%
 break;
 } 
 //////////////////// end of switch statement 
