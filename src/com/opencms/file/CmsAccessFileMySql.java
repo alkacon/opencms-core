@@ -4,7 +4,6 @@ import java.util.*;
 import java.sql.*;
 
 import com.opencms.core.*;
-import com.opencms.util.*;
 
 /**
  * This class describes the access to files and folders in the Cms.<BR/>
@@ -13,7 +12,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/01/24 19:13:05 $
+ * @version $Revision: 1.18 $ $Date: 2000/01/24 19:14:57 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
