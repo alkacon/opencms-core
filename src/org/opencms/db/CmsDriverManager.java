@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/01 08:48:53 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2003/08/01 09:55:34 $
+ * Version: $Revision: 1.117 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.116 $ $Date: 2003/08/01 08:48:53 $
+ * @version $Revision: 1.117 $ $Date: 2003/08/01 09:55:34 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1035,10 +1035,18 @@ public class CmsDriverManager extends Object {
      * @param context the current request context
      * @param source The complete m_path of the sourcefile.
      * @param destination The complete m_path to the destination.
-     *
+     * @param lockCopy flag to lock the copied resource
+     * @param copyAsLink force the copy mode to link
+     * @param copyMode mode of the copy operation, described how to handle linked resourced during copy.
+     * Possible values are: 
+     * <ul>
+     * <li>C_COPY_AS_NEW</li>
+     * <li>C_COPY_AS_LINK</li>
+     * <li>C_COPY_PRESERVE_LINK</li>
+     * </ul>
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void copyFile(CmsRequestContext context, String source, String destination, boolean lockCopy, boolean copyAsLink) throws CmsException {
+    public void copyFile(CmsRequestContext context, String source, String destination, boolean lockCopy, boolean copyAsLink, int copyMode) throws CmsException {
         String destinationFileName = null;
         String destinationFolderName = null;
         CmsResource newResource = null;
@@ -1048,6 +1056,7 @@ public class CmsDriverManager extends Object {
             copyFolder(context, source, destination, lockCopy, copyAsLink);
             return;
         }
+
 
         // validate the destination path/filename
         validFilename(destination.replace('/', 'a'));
@@ -1059,6 +1068,23 @@ public class CmsDriverManager extends Object {
         // read the source file and destination parent folder
         CmsFile sourceFile = readFile(context, source, false);
         CmsFolder destinationFolder = readFolder(context, destinationFolderName);
+
+
+        // check the link mode to see if this resource has to be copied as a link.
+        // only check this if the override flag "copyAsLink" is not set.
+        if (!copyAsLink) {
+            // if we have the copy mode "copy as link, set the override flag to true
+            if (copyMode==I_CmsConstants.C_COPY_AS_LINK) {
+                copyAsLink=true;
+            }
+            // if the mode is "preservre links", we have to check the link counter
+            if (copyMode==I_CmsConstants.C_COPY_PRESERVE_LINK) {
+                if (sourceFile.getLinkCount()>1) {
+                    copyAsLink=true;
+                }
+            }
+        }
+
 
         // checks, if the type is valid, i.e. the user can copy files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
@@ -4392,7 +4418,7 @@ public class CmsDriverManager extends Object {
 
     /**
      * Locks a resource.<p>
-     * 
+     *
      * @param context the current request context
      * @param resourcename the resource name that gets locked
      * @param stealLock true, if the lock should be taken away from another user
@@ -4402,38 +4428,38 @@ public class CmsDriverManager extends Object {
         CmsResource resource = readFileHeader(context, resourcename);
         CmsLock oldLock = null;
         CmsLock exclusiveLock = null;
-
+        
         if (stealLock) {
-
+        
             // stealing a lock: checking permissions will throw an exception coz the
             // resource is still locked for the user. thus, the resource is unlocked
             // before the permissions of the new user are checked. if the new user 
             // has insufficient permissions, the previous lock is restored.
-
+        
             // save the lock of the resource's exclusive locked sibling
             exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
             // save the lock of the resource itself 
             oldLock = unlockResource(context, resourcename, true);
-        }
-
+        }    
+ 
         try {
-            // check if the user has write access to the resource
-            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
+        // check if the user has write access to the resource
+        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);                
         } catch (CmsException e) {
             if (stealLock && e.getType() == CmsException.C_NO_ACCESS && oldLock.getType() != CmsLock.C_TYPE_INHERITED && oldLock.getType() != CmsLock.C_TYPE_SHARED_INHERITED && !exclusiveLock.isNullLock()) {
                 // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
                 // a new user with insufficient permissions on the resource
                 m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
             }
-
+        
             throw e;
-        }
+        } 
 
         if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED && resource.getProjectId() != context.currentProject().getId()) {
             // update the project flag of a modified resource as "modified inside the current project"
             m_vfsDriver.updateProjectId(context.currentProject(), resource);
         }
-
+        
         m_lockDispatcher.addResource(this, context, resource.getFullResourceName(), context.currentUser().getId(), context.currentProject().getId());
 
         clearResourceCache();
@@ -4602,7 +4628,7 @@ public class CmsDriverManager extends Object {
 
         if (source.isFile()) { 
             // file is copied as link
-            copyFile(context, sourceName, destinationName, true, true);
+            copyFile(context, sourceName, destinationName, true, true,I_CmsConstants.C_COPY_AS_LINK);
             deleteFile(context, sourceName, I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS);
         } else {
             // folder is copied as link
@@ -7435,7 +7461,7 @@ public class CmsDriverManager extends Object {
     
     /**
      * Unlocks a resource.<p>
-     * 
+     *
      * @param context the current request context
      * @param resourcename the resource name that gets locked
      * @param forceUnlock true, if the lock should be removed ignoring by which user and project the resource is currently locked
@@ -7447,8 +7473,8 @@ public class CmsDriverManager extends Object {
         clearResourceCache();   
         
         return oldLock;     
-    }
-
+        }
+        
     /**
      * When a project is published this method aktualises the online link table.
      *

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/31 19:20:09 $
-* Version: $Revision: 1.355 $
+* Date   : $Date: 2003/08/01 09:55:34 $
+* Version: $Revision: 1.356 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.355 $
+ * @version $Revision: 1.356 $
  */
 public class CmsObject {
 
@@ -531,7 +531,7 @@ public class CmsObject {
      * @deprecated Use copyResource instead.
      */
     public void copyFile(String source, String destination) throws CmsException {
-        copyResource(source, destination, false, true);
+        copyResource(source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
     }
 
     /**
@@ -546,7 +546,7 @@ public class CmsObject {
      * @deprecated Use copyResource instead.
      */
     public void copyFolder(String source, String destination) throws CmsException {
-        copyResource(source, destination, false, false);
+        copyResource(source, destination, false, false, I_CmsConstants.C_COPY_PRESERVE_LINK);
     }
 
     /**
@@ -559,7 +559,7 @@ public class CmsObject {
      * has not the appropriate rights to copy the file.
      */
     public void copyResource(String source, String destination) throws CmsException {
-        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, false, true);
+        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, false, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
     }
 
     /**
@@ -569,12 +569,18 @@ public class CmsObject {
      * @param destination the complete path of the destinationfolder.
      * @param keepFlags <code>true</code> if the copy should keep the source file's flags,
      *        <code>false</code> if the copy should get the user's default flags.
-     *
+     * @param copyMode mode of the copy operation, described how to handle linked resourced during copy.
+     * Possible values are: 
+     * <ul>
+     * <li>C_COPY_AS_NEW</li>
+     * <li>C_COPY_AS_LINK</li>
+     * <li>C_COPY_PRESERVE_LINK</li>
+     * </ul>
      * @throws CmsException if the file couldn't be copied, or the user
      * has not the appropriate rights to copy the file.
      */
-    public void copyResource(String source, String destination, boolean keepFlags, boolean lockCopy) throws CmsException {
-        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, keepFlags, lockCopy);
+    public void copyResource(String source, String destination, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
+        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, keepFlags, lockCopy, copyMode);
     }
 
     /**
@@ -1133,12 +1139,19 @@ public class CmsObject {
      *
      * @param source the complete path of the sourcefile.
      * @param destination the complete path of the destinationfolder.
-     *
+     * @param lockCopy flag to lock the copied resource
+     * @param copyMode mode of the copy operation, described how to handle linked resourced during copy.
+     * Possible values are: 
+     * <ul>
+     * <li>C_COPY_AS_NEW</li>
+     * <li>C_COPY_AS_LINK</li>
+     * <li>C_COPY_PRESERVE_LINK</li>
+     * </ul>
      * @throws CmsException if the file couldn't be copied, or the user
      * has not the appropriate rights to copy the file.
      */
-    protected void doCopyFile(String source, String destination, boolean lockCopy) throws CmsException {
-        m_driverManager.copyFile(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy, false);
+    protected void doCopyFile(String source, String destination, boolean lockCopy, int copyMode) throws CmsException {
+        m_driverManager.copyFile(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy, false, copyMode);
     }
 
     /**

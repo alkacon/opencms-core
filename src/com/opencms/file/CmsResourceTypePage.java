@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/31 17:02:45 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2003/08/01 09:55:34 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.93 $
+ * @version $Revision: 1.94 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -222,7 +222,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
-    public void copyResource(CmsObject cms, String resourcename, String destination, boolean keepFlags, boolean lockCopy) throws CmsException {
+    public void copyResource(CmsObject cms, String resourcename, String destination, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
         // Read and parse the source page file
         CmsFile file = cms.readFile(resourcename);
         CmsXmlControlFile hXml = new CmsXmlControlFile(cms, file);
@@ -245,13 +245,13 @@ public class CmsResourceTypePage implements I_CmsResourceType {
             // to avoid overhead by copying, readig, parsing, setting XML and writing again.
             // Instead, we re-use the already parsed XML content of the source
             hXml.setElementTemplate("body", newbodyPath);
-            cms.doCopyFile(resourcename, destination, lockCopy);
+            cms.doCopyFile(resourcename, destination, lockCopy,copyMode);
             CmsFile newPageFile = cms.readFile(destination);
             newPageFile.setContents(hXml.getXmlText().getBytes());
             cms.writeFile(newPageFile);
 
             // Now the new page file is created. Copy the body file
-            cms.doCopyFile(bodyPath, newbodyPath, lockCopy);
+            cms.doCopyFile(bodyPath, newbodyPath, lockCopy,copyMode);
             // linkmanagement: copy the links of the page
             cms.createLinkEntrys(newPageFile.getResourceId(), cms.readLinkEntrys(file.getResourceId()));
         } else {
@@ -259,7 +259,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
             // the default place. Leave it there, don't make
             // a copy and simply make a copy of the page file.
             // So the new page links to the old body.
-            cms.doCopyFile(resourcename, destination, true);
+            cms.doCopyFile(resourcename, destination, true,copyMode);
         }
     }
 
@@ -371,13 +371,13 @@ public class CmsResourceTypePage implements I_CmsResourceType {
 
         // rename the file itself
         // cms.doRenameResource(resourcename, newname);
-        this.copyResource(cms, resourcename, newname, true, true);
+        this.copyResource(cms, resourcename, newname, true, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
         this.deleteResource(cms, resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
 
         // unless somebody edited the body path by hand, rename the file in the body path additionally
         if (defaultBodyPath.equals(currentBodyPath)) {
             // cms.doRenameResource(currentBodyPath, newname);
-            this.copyResource(cms, currentBodyPath, newname, true, true);
+            this.copyResource(cms, currentBodyPath, newname, true, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
             this.deleteResource(cms, currentBodyPath, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
             lastSlashIndex = currentBodyPath.lastIndexOf("/") + 1;
             defaultBodyPath = currentBodyPath.substring(0, lastSlashIndex) + newname;

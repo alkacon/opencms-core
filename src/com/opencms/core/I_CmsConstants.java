@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/01 07:53:00 $
-* Version: $Revision: 1.253 $
+* Date   : $Date: 2003/08/01 09:55:34 $
+* Version: $Revision: 1.254 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.253 $ $Date: 2003/08/01 07:53:00 $
+ * @version $Revision: 1.254 $ $Date: 2003/08/01 09:55:34 $
  */
 public interface I_CmsConstants {
 
@@ -1428,6 +1428,16 @@ public interface I_CmsConstants {
     /** 
      * Signals that VFS links pointing to this resource should be deleted.
      */
-    int C_DELETE_OPTION_DELETE_VFS_LINKS = 2;    
+    int C_DELETE_OPTION_DELETE_VFS_LINKS = 2;   
+    
+    /** copy mode for copy resources as new resource */
+    int C_COPY_AS_NEW = 1;
+    
+    /** copy mode for copy resources as link */
+    int C_COPY_AS_LINK = 2;
+    
+    //* copy mode to preserve links during copy */
+    int C_COPY_PRESERVE_LINK = 3;
+     
 
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/23 08:22:53 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2003/08/01 09:55:34 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -185,7 +185,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
-    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags, boolean lockCopy) throws CmsException {
+    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
 
         // we have to copy the folder and all resources in the folder
         Vector allSubFolders = new Vector();
@@ -221,14 +221,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             if (curFile.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // both destination and readAbsolutePath have a trailing/leading slash !
                 String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length() + 1);
-                cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags, false);
+                cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags, false, copyMode);
             }
         }
         
         if (C_BODY_MIRROR) {
             // copy the content bodys
             try {
-                copyResource(cms, I_CmsWpConstants.C_VFS_PATH_BODIES + source.substring(1), I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1), keepFlags, true);
+                copyResource(cms, I_CmsWpConstants.C_VFS_PATH_BODIES + source.substring(1), I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1), keepFlags, true, copyMode);
                 // finaly lock the copy in content bodys if it exists.
                 cms.lockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1));
             } catch (CmsException e) { }
@@ -444,7 +444,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#moveResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
-        cms.doMoveResource(source, destination);
+        //cms.doMoveResource(source, destination);
+        this.copyResource(cms, source, destination, true, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
+        this.deleteResource(cms, source, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);        
     }
 
     /**
@@ -455,7 +457,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
         // rename the folder itself
         // cms.doRenameResource(oldname, newname);
-        this.copyResource(cms, oldname, newname, true, true);
+        this.copyResource(cms, oldname, newname, true, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
         this.deleteResource(cms, oldname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
 
         if (C_BODY_MIRROR) {
@@ -464,7 +466,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
             // rename the corresponding body folder
             // cms.doRenameResource(bodyPath, newname);
-            this.copyResource(cms, bodyPath, newname, true, true);
+            this.copyResource(cms, bodyPath, newname, true, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
             this.deleteResource(cms, bodyPath, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         }
     }

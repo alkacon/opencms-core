@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/08/01 09:55:34 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.64 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.65 $ $Date: 2003/08/01 09:55:34 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault {
@@ -162,7 +162,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
             else {
 
                 try {
-                    cms.copyResource(cms.readAbsolutePath(file), newFolder +newFile, !flags.equals("false"), true);
+                    cms.copyResource(cms.readAbsolutePath(file), newFolder +newFile, !flags.equals("false"), true,C_COPY_PRESERVE_LINK);
                 }
                 catch(CmsException ex) {
                     // something went wrong, so remove all session parameters

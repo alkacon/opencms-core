@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/08/01 07:53:00 $
-* Version: $Revision: 1.102 $
+* Date   : $Date: 2003/08/01 09:55:34 $
+* Version: $Revision: 1.103 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.102 $ $Date: 2003/08/01 07:53:00 $
+ * @version $Revision: 1.103 $ $Date: 2003/08/01 09:55:34 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -352,7 +352,7 @@ class CmsShellCommands {
     public void copyFolder(String source, String destination) {
         try {
             // copy the folder with keeping the flags
-            m_cms.copyResource(source, destination, true, true);
+            m_cms.copyResource(source, destination, true, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
