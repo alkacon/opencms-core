@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.7.10 Ecaz - xx July 2002
+OpenCms 4.7.10 Ecaz - 09 July 2002
 ! When checking the external links by the scheduler you can use the parameter owneremail to send
   a generated email to the owner of the broken link.
 ! The behaviour of the history function can be managed now. The history can be enabled/disabled.
