@@ -7,7 +7,7 @@
 <head>
 <title>]]><method name="getTitle"/><![CDATA[</title>
 </head>
-<BODY>
+<BODY bgcolor="#ffffff" border="0" cellspacing="0" cellpadding="0" marginheight="0" topmargin="0" leftmargin="0" marginwidth="0">
 ]]><ELEMENT name="body"/><![CDATA[
 </BODY>
 </html>
