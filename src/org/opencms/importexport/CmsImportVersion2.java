@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/01/22 16:23:22 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/01/23 09:06:55 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -811,7 +811,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             m_cms.writeProperty(resname, I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, true);
             // if set, add the bodyclass as property
             if (bodyclass != null && !"".equals(bodyclass)) {
-                m_cms.writeProperty(resname, "templateclass", bodyclass, true);
+                m_cms.writeProperty(resname, I_CmsConstants.C_PROPERTY_BODY_CLASS, bodyclass, true);
             }
             // if set, add bodyparams as properties
             if (bodyparams != null) {
