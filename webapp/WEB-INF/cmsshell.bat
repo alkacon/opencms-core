@@ -1,54 +1,110 @@
-@rem Start script for the OpenCms Shell
-@rem Please make sure that "servlet.jar" is found, the path used below was tested with Tomcat 4.1
+@echo off
+if "%OS%" == "Windows_NT" setlocal
+rem ---------------------------------------------------------------------------
+rem Script for OpenCms Shell
+rem
+rem Environment Variable Prequisites
+rem
+rem   OPENCMS_HOME  May point at your OpenCms "WEB-INF" directory.
+rem                 if not, we try to guess.
+rem
+rem   OPENCMS_OPTS  (Optional) OpenCms options.
+rem
+rem   OPENCMS_LIB   (Optional) OpenCms classpath.
+rem
+rem   TOMCAT_HOME   May point at your Tomcat installation directory.
+rem                 if not, we try to guess.
+rem
+rem   JAVA_HOME     Must point at your Java Development Kit installation.
+rem
+rem   JAVA_OPTS     (Optional) Java runtime options.
+rem
+rem ---------------------------------------------------------------------------
 
-@echo off 
+rem add this options to debug OpenCms using the shell
+rem set JAVA_OPTS=%JAVA_OPTS% -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 -Djava.compiler=NONE
 
-@rem set jvm options
+rem Make sure prerequisite environment variables are set
+if not "%JAVA_HOME%" == "" goto gotJavaHome
+echo The JAVA_HOME environment variable is not defined
+echo This environment variable is needed to run this program
+goto end
+:gotJavaHome
+if not exist "%JAVA_HOME%\bin\java.exe" goto noJavaHome
+if not exist "%JAVA_HOME%\bin\javaw.exe" goto noJavaHome
+if not exist "%JAVA_HOME%\bin\jdb.exe" goto noJavaHome
+if not exist "%JAVA_HOME%\bin\javac.exe" goto noJavaHome
+goto okJavaHome
+:noJavaHome
+echo The JAVA_HOME environment variable is not defined correctly
+echo This environment variable is needed to run this program
+goto end
+:okJavaHome
 
-set OPTIONS=
+rem Guess OPENCMS_HOME if not defined
+if not "%OPENCMS_HOME%" == "" goto gotHome
+set OPENCMS_HOME=.
+if exist "%OPENCMS_HOME%\cmsshell.bat" goto okHome
+set OPENCMS_HOME=WEB-INF
+:gotHome
+if exist "%OPENCMS_HOME%\cmsshell.bat" goto okHome
+echo The OPENCMS_HOME environment variable is not defined correctly
+echo This environment variable is needed to run this program
+goto end
+:okHome
 
-@rem add this options to debug OpenCms using the shell
-rem set OPTIONS= %OPTIONS% -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 -Djava.compiler=NONE
+rem Guess TOMCAT_HOME if not defined
+if not "%TOMCAT_HOME%" == "" goto gotTomcatHome
+set TOMCAT_HOME=..\..
+if exist "%TOMCAT_HOME%\bin\catalina.bat" goto okTomcatHome
+set TOMCAT_HOME=..\..\..
+:gotTomcatHome
+if exist "%TOMCAT_HOME%\bin\catalina.bat" goto okTomcatHome
+echo The TOMCAT_HOME environment variable is not defined correctly
+echo This environment variable is needed to run this program
+goto end
+:okTomcatHome
 
-@rem set libs in classpath
+rem Guess OPENCMS_LIB if not defined
+if not "%OPENCMS_LIB%" == "" goto gotLib
+set OPENCMS_LIB=%OPENCMS_HOME%\lib
+:gotHome
+if exist "%OPENCMS_LIB%\opencms.jar" goto okLib
+echo The OPENCMS_LIB environment variable is not defined correctly
+echo This environment variable is needed to run this program
+goto end
+:okLib
+rem Add all jars in lib dir to OPENCMS_CP variable (will include a initial semicolon ";")
+for %%i in ("%OPENCMS_LIB%\*.jar") do call "%OPENCMS_HOME%\cpappend.bat" %%i
 
-set CLASSPATH= .
-set CLASSPATH= %CLASSPATH%;../../../common/lib/servlet.jar
-set CLASSPATH= %CLASSPATH%;../../../common/lib/servlet-api.jar
-set CLASSPATH= %CLASSPATH%;../../../common/lib/jsp-api.jar
-set CLASSPATH= %CLASSPATH%;lib/commons-dbcp-1.2.1.jar
-set CLASSPATH= %CLASSPATH%;lib/commons-pool-1.2.jar
-set CLASSPATH= %CLASSPATH%;lib/commons-collections-3.1.jar
-set CLASSPATH= %CLASSPATH%;lib/commons-digester-1.6.jar
-set CLASSPATH= %CLASSPATH%;lib/commons-beanutils-1.7.0.jar
-set CLASSPATH= %CLASSPATH%;lib/commons-fileupload-1.0.jar
-set CLASSPATH= %CLASSPATH%;lib/commons-codec-1.3.jar
-set CLASSPATH= %CLASSPATH%;lib/commons-email-1.0-mod.jar
-set CLASSPATH= %CLASSPATH%;lib/commons-httpclient-2.0.2.jar
-set CLASSPATH= %CLASSPATH%;lib/commons-logging-1.0.4.jar
-set CLASSPATH= %CLASSPATH%;lib/ojdbc14.jar
-set CLASSPATH= %CLASSPATH%;lib/log4j-1.2.8.jar
-set CLASSPATH= %CLASSPATH%;lib/opencms.jar;lib/opencms-legacy.jar
-set CLASSPATH= %CLASSPATH%;lib/activation.jar
-set CLASSPATH= %CLASSPATH%;lib/htmlparser-1.41.jar
-set CLASSPATH= %CLASSPATH%;lib/jakarta-oro-2.0.8.jar
-set CLASSPATH= %CLASSPATH%;lib/mysql-connector-java-3.0.15-ga-bin.jar
-set CLASSPATH= %CLASSPATH%;lib/jaxen-1.1-beta-4.jar
-set CLASSPATH= %CLASSPATH%;lib/jtidy-r8-05102004.jar
-set CLASSPATH= %CLASSPATH%;lib/mail.jar
-set CLASSPATH= %CLASSPATH%;lib/jug-1.1.2.jar
-set CLASSPATH= %CLASSPATH%;lib/dom4j-1.5.2.jar
-set CLASSPATH= %CLASSPATH%;lib/lucene-1.4.1.jar
-set CLASSPATH= %CLASSPATH%;lib/poi-2.5.1-final-20040804.jar
-set CLASSPATH= %CLASSPATH%;lib/snowball-1.0.jar
-set CLASSPATH= %CLASSPATH%;lib/PDFBox-0.6.6.jar
-set CLASSPATH= %CLASSPATH%;lib/quartz-1.4.2.jar
-set CLASSPATH= %CLASSPATH%;lib/xercesImpl-2.6.2.jar;lib/xml-apis-2.6.2.jar
-set CLASSPATH= %CLASSPATH%;classes
+rem Check for Tomcat libs
+rem Add all jars in TOMCAT_HOME\common\lib dir to TOMCAT_LIB variable (will include a initial semicolon ";")
+for %%i in ("%TOMCAT_HOME%\common\lib\*.jar") do call "%OPENCMS_HOME%\tlappend.bat" %%i
+:okLib
+
+rem ----- Execute The Requested Command ---------------------------------------
+echo Using JAVA_HOME:       %JAVA_HOME%
+echo Using OPENCMS_HOME:    %OPENCMS_HOME%
+echo Using TOMCAT_HOME:     %TOMCAT_HOME%
+
+rem Set standard command for invoking Java.
+set _RUNJAVA="%JAVA_HOME%\bin\java.exe"
+set MAINCLASS=org.opencms.main.CmsShell
+
+rem Get command line arguments and save them in 
+rem the CMD_LINE_ARGS environment variable
+set CMD_LINE_ARGS=
+:setArgs
+if ""%1""=="""" goto doneSetArgs
+set CMD_LINE_ARGS=%CMD_LINE_ARGS% %1
+shift
+goto setArgs
+:doneSetArgs
 
 @rem set opencms arguments
+set CMD_LINE_ARGS=%CMD_LINE_ARGS% -base="%CD%"
 
-set ARGS=
-set ARGS= %ARGS% -base="%CD%"
+rem execute OPENCMS
+%_RUNJAVA% %JAVA_OPTS% -classpath "%OPENCMS_HOME%\classes%CLASSPATH%%OPENCMS_CP%%TOMCAT_LIB%" %MAINCLASS% %CMD_LINE_ARGS%
 
-java %OPTIONS% -classpath %CLASSPATH% org.opencms.main.CmsShell %1 %2 %3 %4 %5 %6 %7 %8 %9 %ARGS%
+:end
