@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.515 $
+ * Date   : $Date: 2004/01/23 15:38:37 $
+ * Version: $Revision: 1.516 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2003 Alkacon Software
+ * Copyright (C) 2003 - 2004 Alkacon Software
  */
 
 History of changes for the OpenCms project.
@@ -18,6 +18,22 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.3.1 Ix - January 23, 2004
+! New XmlPage API finished
+! Additional tags to cms: taglib (and CmsJspActionelement) for easy access to XmlPage features
+! Multilanguage: Support for multiple locales in one XmlPage finished
+! Multilanguage: Locale handler is configurable in registry.xml
+! Multilanguage: Default implementation of locale handler based on resource properties
+! Multilanguage: Added new menu to XmlPage editor for language selection
+! Implementation of "direct edit" mode finished
+! Workplace reports now feature a "simple" mode that can be switched with a "Details..." button
+! New linkchecker for XmlPages added that finds broken links in an XmlPage
+! Removed old linkcheck code since it didn't work as expected anyway
+! Re-implemented all Workplace Editors in JSP 
+! Improved special property screen for XmlPages, also used in all Editors
+! Updated v2 import so that XmlTemplate based page files are converted to new xmlpage type
+* Fixed backward compatiblity issues for XmlTemplate mechanism
 
 OpenCms 5.3.0 Ix - December 11, 2003
 ! User preferences dialog now JSP based
