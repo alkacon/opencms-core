@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/06/06 10:44:09 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.main;
 
-import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
@@ -69,7 +68,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -176,7 +175,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @see CmsObject#chacc(String, String, String, String)
      */
     public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
-        if (CmsImportExportConfiguration.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType.trim())) {
+        if (I_CmsPrincipal.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType.trim())) {
             principalName = OpenCms.getImportExportManager().translateGroup(principalName);
         } else {
             principalName = OpenCms.getImportExportManager().translateUser(principalName);
@@ -570,9 +569,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void ls() throws Exception {        
         String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
-        Vector v = m_cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
-        System.out.println("\nThe current folder '" + folder + "' contains " + v.size() + " resources");
-        Iterator i = v.iterator();
+        List resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
+        System.out.println("\nThe current folder '" + folder + "' contains " + resources.size() + " resources");
+        Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource r = (CmsResource)i.next();
             System.out.println(m_cms.readAbsolutePath(r));

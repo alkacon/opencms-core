@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2004/03/11 09:47:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/06 10:46:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.workplace;
 
-import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ import java.util.Map;
  * in the new resource dialog.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
@@ -198,7 +198,7 @@ public class CmsExplorerTypeSettings implements Comparable {
             // get the principal name from the principal String
             String principal = key.substring(key.indexOf(".") + 1, key.length());
     
-            if (key.startsWith(CmsImportExportConfiguration.C_PRINCIPAL_GROUP)) {
+            if (key.startsWith(I_CmsPrincipal.C_PRINCIPAL_GROUP)) {
                 // read the group
                 principal = OpenCms.getImportExportManager().translateGroup(principal);  
                 principalId = cms.readGroup(principal).getId();
