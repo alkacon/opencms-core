@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/24 12:01:40 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/24 19:13:05 $
  */
 class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
      
@@ -82,43 +82,7 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
      */
     private Connection m_Con  = null;
 
-    /**
-    * Prepared SQL Statement for reading a user.
-    */
-    private PreparedStatement m_statementUserRead;
-  
-    /**
-    * Prepared SQL Statement for reading a user.
-    */
-    private PreparedStatement m_statementUserReadId;
-        
-    /**
-    * Prepared SQL Statement for writing a user.
-    */
-    private PreparedStatement m_statementUserWrite;
-    
-    /**
-    * Prepared SQL Statement for reading a user by his password.
-    */
-    private PreparedStatement m_statementUserReadPwd;
-
-    /**
-    * Prepared SQL Statement for setting a new password
-    */
-    private PreparedStatement m_statementSetPwd;
-    
-    
-    /**
-    * Prepared SQL Statement for deleting a user.
-    */
-    private PreparedStatement m_statementUserDelete;
-    
-    /**
-    * Prepared SQL Statement for getting all users.
-    */
-    private PreparedStatement m_statementUserGetAll;    
-    
-    
+       
      /**
      * Constructor, creartes a new CmsAccessUserMySql object and connects it to the
      * user information database.
@@ -133,7 +97,6 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
         throws CmsException, ClassNotFoundException {
         Class.forName(driver);
         initConnections(conUrl);
-        initStatements();
     }
     
    	/**
@@ -150,26 +113,21 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
          ResultSet res = null;
 
          try{
-             // read the user from the database
-            /* synchronized (m_statementUserRead) {
-                m_statementUserRead.setString(1,username);
-                res = m_statementUserRead.executeQuery();
-             }*/
-            Statement s = m_Con.createStatement();			
-			s.setEscapeProcessing(false);	
-			
-            res = s.executeQuery("SELECT * FROM USERS WHERE USER_NAME = '"+username+"'");
+            PreparedStatement statementUserRead=m_Con.prepareStatement(C_USER_READ);
+            statementUserRead.setString(1,username);
+            res = statementUserRead.executeQuery();
+   
              // create new Cms user object
 			 if(res.next()) {
                 user=new CmsUser(res.getInt(C_USER_ID),
                                  res.getString(C_USER_NAME),
                                  res.getString(C_USER_DESCRIPTION));                                                        
              } else {
-                  throw new CmsException("[CmsAccessUserMySql/readUser(username)]:"+username,CmsException.C_NO_USER);                  	
+                  throw new CmsException("["+this.getClass().getName()+"]"+username,CmsException.C_NO_USER);                  	
              }
        
          } catch (SQLException e){
-             throw new CmsException("[CmsAccessUserMySql/readUser(username)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return user;
   
@@ -189,28 +147,19 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
          ResultSet res = null;
          
          try{
-             // read the user from the database
-            /* synchronized(m_statementUserReadId) {
-                m_statementUserReadId.setInt(1,userid);
-                res = m_statementUserReadId.executeQuery();
-             }*/
-            Statement s = m_Con.createStatement();			
-			s.setEscapeProcessing(false);	
-         
-            res = s.executeQuery(   "SELECT * FROM USERS WHERE USER_ID = "+userid);
-             
+            PreparedStatement statementUserReadId=m_Con.prepareStatement(C_USER_READID);
+            statementUserReadId.setInt(1,userid);
+            res = statementUserReadId.executeQuery();
              // create new Cms user object
 			 if(res.next()) {
                 user=new CmsUser(res.getInt(C_USER_ID),
                                  res.getString(C_USER_NAME),
                                  res.getString(C_USER_DESCRIPTION));                                                        
              } else {
-                 throw new CmsException("[CmsAccessUserMySql/readUser(id)]: User ID:"+userid,CmsException.C_NO_USER);
+                 throw new CmsException("["+this.getClass().getName()+"]"+userid,CmsException.C_NO_USER);
              }
-             
-       
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessUserMySql/readUser(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return user;
   
@@ -232,29 +181,21 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
          ResultSet res=null;
    
          try{
-             // read the user from the database
-            /* synchronized (m_statementUserReadPwd) {
-                m_statementUserReadPwd.setString(1,username);
-                m_statementUserReadPwd.setString(2,password);
-                res = m_statementUserReadPwd.executeQuery();
-             }*/
-            Statement s = m_Con.createStatement();			
-			s.setEscapeProcessing(false);	
-			
-            res = s.executeQuery("SELECT * FROM USERS WHERE USER_NAME = '"+username+
-                                           "' AND USER_PASSWORD = PASSWORD('"+password+"')");
-             
-             // create new Cms user object
+             PreparedStatement statementUserReadPwd=m_Con.prepareStatement(C_USER_READPWD);
+             statementUserReadPwd.setString(1,username);
+             statementUserReadPwd.setString(2,password);
+             res = statementUserReadPwd.executeQuery();
+              // create new Cms user object
 			 if(res.next()) {
                 user=new CmsUser(res.getInt(C_USER_ID),
                                  res.getString(C_USER_NAME),
                                  res.getString(C_USER_DESCRIPTION));                                                        
              } else {
-               throw new CmsException("[CmsAccessUserMySql/readUser(username/password)]:"+username,CmsException.C_NO_ACCESS);  
+               throw new CmsException(""+this.getClass().getName()+"]"+username,CmsException.C_NO_ACCESS);  
              }
        
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessUserMySql/readUser(username/password)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return user;
      }
@@ -279,17 +220,15 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
                         
          try {     
             // write new user to the database
-             synchronized (m_statementUserWrite) {
-                m_statementUserWrite.setInt(1,0);
-                m_statementUserWrite.setString(2,name);
-                m_statementUserWrite.setString(3,password);
-                m_statementUserWrite.setString(4,description);
-                m_statementUserWrite.executeUpdate();
-             }
-          
-            
+                PreparedStatement statementUserWrite=m_Con.prepareStatement(C_USER_WRITE);
+                statementUserWrite.setInt(1,0);
+                statementUserWrite.setString(2,name);
+                statementUserWrite.setString(3,password);
+                statementUserWrite.setString(4,description);
+                statementUserWrite.executeUpdate();
+           
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessUserMySql/createUser(name,password,description)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
          return readUser(name);
      }
@@ -306,12 +245,11 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
 	 public void deleteUser(String username)
          throws CmsException {
           try {
-              synchronized(m_statementUserDelete) {
-                m_statementUserDelete.setString(1,username);
-                m_statementUserDelete.executeUpdate();
-              }
+               PreparedStatement statementUserDelete=m_Con.prepareStatement(C_USER_DELETE);
+               statementUserDelete.setString(1,username);
+               statementUserDelete.executeUpdate();
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessUserMySql/deleteUser(username)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
  
      }
@@ -348,9 +286,8 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
          
          try {
             //  get all users
-            synchronized(m_statementUserGetAll) {
-                res = m_statementUserGetAll.executeQuery();
-            }
+                PreparedStatement statementUserGetAll=m_Con.prepareStatement(C_USER_GETALL);
+                res = statementUserGetAll.executeQuery();
             // create new Cms group objects
 		    while ( res.next() ) {
                     user=new CmsUser(res.getInt(C_USER_ID),
@@ -361,7 +298,7 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
              
        
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessUserMySql/getUsers()]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
          return users;
      }
@@ -379,38 +316,15 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
 	 */
 	 public void setPassword(String username, String newPassword)
          throws CmsException {
-          try {     
-              synchronized(m_statementSetPwd) {
+          try { 
                 // write new password
-                m_statementSetPwd.setString(1,newPassword);    
-                m_statementSetPwd.setString(2,username);
-                m_statementSetPwd.executeUpdate();
-              }
-            
+                PreparedStatement statementSetPwd=m_Con.prepareStatement(C_USER_SETPWD);
+                statementSetPwd.setString(1,newPassword);    
+                statementSetPwd.setString(2,username);
+                statementSetPwd.executeUpdate();     
          } catch (SQLException e){
-             throw new CmsException("[CmsAccessUserMySql/setPassword(username,password)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+             throw new CmsException("["+this.getClass().getName()+"]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
           }
-     }
-     
-   /**
-     * This method creates all preparted SQL statements required in this class.
-     * 
-     * @exception CmsException Throws CmsException if something goes wrong.
-     */
-     private void initStatements()
-       throws CmsException{
-         try{
-          m_statementUserRead=m_Con.prepareStatement(C_USER_READ);
-          m_statementUserReadId=m_Con.prepareStatement(C_USER_READID);
-          m_statementUserWrite=m_Con.prepareStatement(C_USER_WRITE);
-          m_statementUserReadPwd=m_Con.prepareStatement(C_USER_READPWD);
-          m_statementUserDelete=m_Con.prepareStatement(C_USER_DELETE);
-          m_statementUserGetAll=m_Con.prepareStatement(C_USER_GETALL);
-          m_statementSetPwd=m_Con.prepareStatement(C_USER_SETPWD);
-         } catch (SQLException e){
-           
-            throw new CmsException("[CmsAccessUserMySql]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
      }
     
      /**

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/01/24 18:56:36 $
+ * @version $Revision: 1.15 $ $Date: 2000/01/24 19:13:05 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -119,8 +119,7 @@ import com.opencms.core.*;
     * This is the connection object to the database
     */
     private Connection m_Con  = null;
-    
-    
+
      /**
      * Constructor, creartes a new CmsAccessGroupMySql object and connects it to the
      * group database.
@@ -148,16 +147,12 @@ import com.opencms.core.*;
         A_CmsGroup group;
         Vector groups=new Vector();
         ResultSet res = null;
-         try {
-			//  get all all groups of the user
-			// create statement
-			PreparedStatement statementGetGroupsOfUser =
-				m_Con.prepareStatement(C_GETGROUPSOFUSER);
+        try {
+          //  get all all groups of the user
+            PreparedStatement statementGetGroupsOfUser=m_Con.prepareStatement(C_GETGROUPSOFUSER);
+            statementGetGroupsOfUser.setInt(1,userid);
+            res = statementGetGroupsOfUser.executeQuery();
 
-			statementGetGroupsOfUser.setInt(1,userid);
-			res = statementGetGroupsOfUser.executeQuery();
-          
-            // create new Vector.
 		    while ( res.next() ) {
                  group=new CmsGroup(res.getInt(C_GROUP_ID),
                                    res.getInt(C_PARENT_GROUP_ID),
@@ -191,13 +186,11 @@ import com.opencms.core.*;
          ResultSet res = null;
    
          try{ 
-			 // create statement
-			 PreparedStatement statementGroupRead=m_Con.prepareStatement(C_GROUP_READ);
-			 
-			 // read the group from the database
-			 statementGroupRead.setString(1,groupname);
-			 res = statementGroupRead.executeQuery();
-			 
+             // read the group from the database
+             PreparedStatement statementGroupRead=m_Con.prepareStatement(C_GROUP_READ);
+             statementGroupRead.setString(1,groupname);
+             res = statementGroupRead.executeQuery();
+   
              // create new Cms group object
 			 if(res.next()) {
                 group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -230,17 +223,12 @@ import com.opencms.core.*;
          ResultSet res = null;
    
          try{
-			 // create statement
-			 PreparedStatement statementGroupReadId=m_Con.prepareStatement(C_GROUP_READID);
-			 
-			 // read the group from the database
-			 statementGroupReadId.setInt(1,id);
-			 res = statementGroupReadId.executeQuery();
-			 
-            Statement s = m_Con.createStatement();			
-			s.setEscapeProcessing(false);	
-            res = s.executeQuery("SELECT * FROM GROUPS WHERE GROUP_ID = "+id);
-            
+              // read the group from the database
+
+                PreparedStatement statementGroupReadId=m_Con.prepareStatement(C_GROUP_READID);             
+                statementGroupReadId.setInt(1,id);
+                res = statementGroupReadId.executeQuery();
+   
              // create new Cms group object
 			 if(res.next()) {
                 group=new CmsGroup(res.getInt(C_GROUP_ID),

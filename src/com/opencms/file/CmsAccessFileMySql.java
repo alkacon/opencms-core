@@ -4,6 +4,7 @@ import java.util.*;
 import java.sql.*;
 
 import com.opencms.core.*;
+import com.opencms.util.*;
 
 /**
  * This class describes the access to files and folders in the Cms.<BR/>
@@ -12,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/01/24 12:01:39 $
+ * @version $Revision: 1.17 $ $Date: 2000/01/24 19:13:05 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -267,72 +268,7 @@ import com.opencms.core.*;
      * Name of the column FILE_CONTENT in the SQL table FILE.
      */
     private static final String C_FILE_CONTENT="FILE_CONTENT";
-    
-    /**
-    * Prepared SQL Statement for writing a resource.
-    */
-    private PreparedStatement m_statementResourceWrite;
-
-    /**
-    * Prepared SQL Statement for reading a resource.
-    */
-    private PreparedStatement m_statementResourceRead;
-    
-    /**
-    * Prepared SQL Statement for reading all headers of a resource.
-    */
-    private PreparedStatement m_statementResourceReadAll;
-
-    /**
-    * Prepared SQL Statement for reading a file from the online project.
-    */
-    private PreparedStatement m_statementFileReadOnline;
-      
-    /**
-    * Prepared SQL Statement for reading a file.
-    */
-    private PreparedStatement m_statementFileRead;
-    
-    /**
-    * Prepared SQL Statement for writing a resource.
-    */
-    private PreparedStatement m_statementFileWrite;
-        
-    /**
-    * Prepared SQL Statement for updating a resource.
-    */
-    private PreparedStatement m_statementResourceUpdate;
-
-    /**
-    * Prepared SQL Statement for updating a file.
-    */
-    private PreparedStatement m_statementFileUpdate;
-    
-    /**
-    * Prepared SQL Statement for deleting a resource.
-    */
-    private PreparedStatement m_statementResourceDelete;
- 
-    /**
-    * Prepared SQL Statement for removing a resource.
-    */
-    private PreparedStatement m_statementResourceRemove;
-       
-    /**
-    * Prepared SQL Statement for deleting a file.
-    */
-    private PreparedStatement m_statementFileDelete;
-    
-    /**
-    * Prepared SQL Statement for getting all files of a project.
-    */
-    private PreparedStatement m_statementProjectReadFiles;    
-    
-    /**
-    * Prepared SQL Statement for getting all folders of a project.
-    */
-    private PreparedStatement m_statementProjectReadFolders;    
-        
+           
     /**
      * Constructor, creartes a new CmsAccessFileMySql object and connects it to the
      * user information database.
@@ -349,8 +285,6 @@ import com.opencms.core.*;
         m_mountpoint= (CmsMountPoint) mountpoint;
         Class.forName(mountpoint.getDriver());
         initConnections(mountpoint.getConnect());
-        initStatements();
-        
     }
     
 	 /**
@@ -376,51 +310,50 @@ import com.opencms.core.*;
 							
          throws CmsException {
                
-           try {   
-               synchronized ( m_statementResourceWrite) {
+           try {             
+                PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
                 // write new resource to the database
                 //RESOURCE_NAME
-                m_statementResourceWrite.setString(1,absoluteName(filename));
+                statementResourceWrite.setString(1,absoluteName(filename));
                 //RESOURCE_TYPE
-                m_statementResourceWrite.setInt(2,resourceType.getResourceType());
+                statementResourceWrite.setInt(2,resourceType.getResourceType());
                 //RESOURCE_FLAGS
-                m_statementResourceWrite.setInt(3,flags);
+                statementResourceWrite.setInt(3,flags);
                 //USER_ID
-                m_statementResourceWrite.setInt(4,user.getId());
+                statementResourceWrite.setInt(4,user.getId());
                 //GROUP_ID
-                m_statementResourceWrite.setInt(5,user.getDefaultGroupId());
+                statementResourceWrite.setInt(5,user.getDefaultGroupId());
                 //PROJECT_ID
-                m_statementResourceWrite.setInt(6,project.getId());
+                statementResourceWrite.setInt(6,project.getId());
                 //ACCESS_FLAGS
-                m_statementResourceWrite.setInt(7,C_ACCESS_DEFAULT_FLAGS);
+                statementResourceWrite.setInt(7,C_ACCESS_DEFAULT_FLAGS);
                 //STATE
-                m_statementResourceWrite.setInt(8,C_STATE_NEW);
+                statementResourceWrite.setInt(8,C_STATE_NEW);
                 //LOCKED_BY
-                m_statementResourceWrite.setInt(9,C_UNKNOWN_ID);
+                statementResourceWrite.setInt(9,C_UNKNOWN_ID);
                 //LAUNCHER_TYPE
-                m_statementResourceWrite.setInt(10,resourceType.getLauncherType());
+                statementResourceWrite.setInt(10,resourceType.getLauncherType());
                 //LAUNCHER_CLASSNAME
-                m_statementResourceWrite.setString(11,resourceType.getLauncherClass());
+                statementResourceWrite.setString(11,resourceType.getLauncherClass());
                 //DATE_CREATED
-                m_statementResourceWrite.setLong(12,System.currentTimeMillis());
+                statementResourceWrite.setLong(12,System.currentTimeMillis());
                 //DATE_LASTMODIFIED
-                m_statementResourceWrite.setLong(13,System.currentTimeMillis());
+                statementResourceWrite.setLong(13,System.currentTimeMillis());
                 //SIZE
-                m_statementResourceWrite.setInt(14,contents.length);
-                m_statementResourceWrite.executeUpdate();
-               }
-               synchronized (m_statementFileWrite) {
+                statementResourceWrite.setInt(14,contents.length);
+                statementResourceWrite.executeUpdate();
+
+                PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
                 //RESOURCE_NAME
-                m_statementFileWrite.setString(1,absoluteName(filename));
+                statementFileWrite.setString(1,absoluteName(filename));
                 //PROJECT_ID
-                m_statementFileWrite.setInt(2,project.getId());
+                statementFileWrite.setInt(2,project.getId());
                 //FILE_CONTENT
-                m_statementFileWrite.setBytes(3,contents);
-                m_statementFileWrite.executeUpdate();
-                   
-               }
+                statementFileWrite.setBytes(3,contents);
+                statementFileWrite.executeUpdate();
+
          } catch (SQLException e){                        
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
          return readFile(project,onlineProject,filename);
      }
@@ -441,52 +374,51 @@ import com.opencms.core.*;
                                A_CmsProject onlineProject,
                                CmsFile file,String filename)
          throws CmsException {
-            try {   
-               synchronized ( m_statementResourceWrite) {
+              try {   
+                PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
                 // write new resource to the database
                 //RESOURCE_NAME
-                m_statementResourceWrite.setString(1,absoluteName(filename));
+                statementResourceWrite.setString(1,absoluteName(filename));
                 //RESOURCE_TYPE
-                m_statementResourceWrite.setInt(2,file.getType());
+                statementResourceWrite.setInt(2,file.getType());
                 //RESOURCE_FLAGS
-                m_statementResourceWrite.setInt(3,file.getFlags());
+                statementResourceWrite.setInt(3,file.getFlags());
                 //USER_ID
-                m_statementResourceWrite.setInt(4,file.getOwnerId());
+                statementResourceWrite.setInt(4,file.getOwnerId());
                 //GROUP_ID
-                m_statementResourceWrite.setInt(5,file.getGroupId());
+                statementResourceWrite.setInt(5,file.getGroupId());
                 //PROJECT_ID
-                m_statementResourceWrite.setInt(6,project.getId());
+                statementResourceWrite.setInt(6,project.getId());
                 //ACCESS_FLAGS
-                m_statementResourceWrite.setInt(7,file.getAccessFlags());
+                statementResourceWrite.setInt(7,file.getAccessFlags());
                 //STATE
-                m_statementResourceWrite.setInt(8,C_STATE_NEW);
+                statementResourceWrite.setInt(8,C_STATE_NEW);
                 //LOCKED_BY
-                m_statementResourceWrite.setInt(9,file.isLockedBy());
+                statementResourceWrite.setInt(9,file.isLockedBy());
                 //LAUNCHER_TYPE
-                m_statementResourceWrite.setInt(10,file.getLauncherType());
+                statementResourceWrite.setInt(10,file.getLauncherType());
                 //LAUNCHER_CLASSNAME
-                m_statementResourceWrite.setString(11,file.getLauncherClassname());
+                statementResourceWrite.setString(11,file.getLauncherClassname());
                 //DATE_CREATED
-                m_statementResourceWrite.setLong(12,file.getDateCreated());
+                statementResourceWrite.setLong(12,file.getDateCreated());
                 //DATE_LASTMODIFIED
-                m_statementResourceWrite.setLong(13,System.currentTimeMillis());
+                statementResourceWrite.setLong(13,System.currentTimeMillis());
                 //SIZE
-                m_statementResourceWrite.setInt(14,file.getContents().length);
-                m_statementResourceWrite.executeUpdate();
-               }
-               synchronized (m_statementFileWrite) {
+                statementResourceWrite.setInt(14,file.getContents().length);
+                statementResourceWrite.executeUpdate();
+                
+                PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
                 //RESOURCE_NAME
-                m_statementFileWrite.setString(1,absoluteName(filename));
+                statementFileWrite.setString(1,absoluteName(filename));
                 //PROJECT_ID
-                m_statementFileWrite.setInt(2,project.getId());
+                statementFileWrite.setInt(2,project.getId());
                 //FILE_CONTENT
-                m_statementFileWrite.setBytes(3,file.getContents());
-                m_statementFileWrite.executeUpdate();
+                statementFileWrite.setBytes(3,file.getContents());
+                statementFileWrite.executeUpdate();
                    
-               }
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         } 
          return readFile(project,onlineProject,filename);
       }
      
@@ -507,40 +439,40 @@ import com.opencms.core.*;
                                          A_CmsResource resource)
          throws CmsException {
             try {   
-               synchronized ( m_statementResourceWrite) {
+                PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
                 // write new resource to the database
                 //RESOURCE_NAME
-                m_statementResourceWrite.setString(1,absoluteName(resource.getAbsolutePath()));
+                statementResourceWrite.setString(1,absoluteName(resource.getAbsolutePath()));
                 //RESOURCE_TYPE
-                m_statementResourceWrite.setInt(2,resource.getType());
+                statementResourceWrite.setInt(2,resource.getType());
                 //RESOURCE_FLAGS
-                m_statementResourceWrite.setInt(3,resource.getFlags());
+                statementResourceWrite.setInt(3,resource.getFlags());
                 //USER_ID
-                m_statementResourceWrite.setInt(4,resource.getOwnerId());
+                statementResourceWrite.setInt(4,resource.getOwnerId());
                 //GROUP_ID
-                m_statementResourceWrite.setInt(5,resource.getGroupId());
+                statementResourceWrite.setInt(5,resource.getGroupId());
                 //PROJECT_ID
-                m_statementResourceWrite.setInt(6,project.getId());
+                statementResourceWrite.setInt(6,project.getId());
                 //ACCESS_FLAGS
-                m_statementResourceWrite.setInt(7,resource.getAccessFlags());
+                statementResourceWrite.setInt(7,resource.getAccessFlags());
                 //STATE
-                m_statementResourceWrite.setInt(8,resource.getState());
+                statementResourceWrite.setInt(8,resource.getState());
                 //LOCKED_BY
-                m_statementResourceWrite.setInt(9,resource.isLockedBy());
+                statementResourceWrite.setInt(9,resource.isLockedBy());
                 //LAUNCHER_TYPE
-                m_statementResourceWrite.setInt(10,resource.getLauncherType());
+                statementResourceWrite.setInt(10,resource.getLauncherType());
                 //LAUNCHER_CLASSNAME
-                m_statementResourceWrite.setString(11,resource.getLauncherClassname());
+                statementResourceWrite.setString(11,resource.getLauncherClassname());
                 //DATE_CREATED
-                m_statementResourceWrite.setLong(12,resource.getDateCreated());
+                statementResourceWrite.setLong(12,resource.getDateCreated());
                 //DATE_LASTMODIFIED
-                m_statementResourceWrite.setLong(13,System.currentTimeMillis());
+                statementResourceWrite.setLong(13,System.currentTimeMillis());
                 //SIZE
-                m_statementResourceWrite.setInt(14,resource.getLength());
-                m_statementResourceWrite.executeUpdate();
-               }
+                statementResourceWrite.setInt(14,resource.getLength());
+                statementResourceWrite.executeUpdate();
+
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
          return readResource(project,resource.getAbsolutePath());
       } 
@@ -569,10 +501,10 @@ import com.opencms.core.*;
              // if the actual prject is the online project read file header and content
              // from the online project
              if (project.equals(onlineProject)) {
-                 synchronized(m_statementFileReadOnline) {
-                    m_statementFileReadOnline.setString(1,absoluteName(filename));
-                    m_statementFileReadOnline.setInt(2,onlineProject.getId());
-                    res = m_statementFileReadOnline.executeQuery();  
+                    PreparedStatement statementFileReadOnline=m_Con.prepareStatement(C_FILE_READ_ONLINE);
+                    statementFileReadOnline.setString(1,absoluteName(filename));
+                    statementFileReadOnline.setInt(2,onlineProject.getId());
+                    res = statementFileReadOnline.executeQuery();  
                     if(res.next()) {
                          file = new CmsFile(filename,
                                             res.getInt(C_RESOURCE_TYPE),
@@ -587,13 +519,12 @@ import com.opencms.core.*;
                                             res.getString(C_LAUNCHER_CLASSNAME),
                                             res.getLong(C_DATE_CREATED),
                                             res.getLong(C_DATE_LASTMODIFIED),
-                                            res.getBytes(C_FILE_CONTENT),
+                                            (res.getString(C_FILE_CONTENT)).getBytes(),
                                             res.getInt(C_SIZE)
                                            );
                      } else {
-                       throw new CmsException(filename,CmsException.C_NOT_FOUND);  
-                    }
-                 }                 
+                       throw new CmsException("["+this.getClass().getName()+"]"+filename,CmsException.C_NOT_FOUND);  
+                  }                
              } else {
                // reading a file from an offline project must be done in two steps:
                // first read the file header from the offline project, then get either
@@ -604,7 +535,7 @@ import com.opencms.core.*;
                file=readFileHeader(project,filename);
                // check if the file is marked as deleted
                if (file.getState() == C_STATE_DELETED) {
-                   throw new CmsException(CmsException.C_NOT_FOUND); 
+                   throw new CmsException("["+this.getClass().getName()+"]"+CmsException.C_NOT_FOUND); 
                }
                
                
@@ -619,21 +550,19 @@ import com.opencms.core.*;
                    projectId=project.getId();
                }
                // read the file content
-               synchronized (m_statementFileRead) {
-                   m_statementFileRead.setString(1,absoluteName(filename));
-                   m_statementFileRead.setInt(2,projectId);
-                   res = m_statementFileRead.executeQuery();
+                   PreparedStatement statementFileRead=m_Con.prepareStatement(C_FILE_READ);
+                   statementFileRead.setString(1,absoluteName(filename));
+                   statementFileRead.setInt(2,projectId);
+                   res = statementFileRead.executeQuery();
                    if (res.next()) {
                        file.setContents(res.getBytes(C_FILE_CONTENT));
                    } else {
-                         throw new CmsException(filename,CmsException.C_NOT_FOUND);  
-                   }
-               }               
+                         throw new CmsException("["+this.getClass().getName()+"]"+filename,CmsException.C_NOT_FOUND);  
+                   }    
              }                
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
-         
          return file;
      }
 	
@@ -656,12 +585,12 @@ import com.opencms.core.*;
          ResultSet res =null;
            
          try {  
-              synchronized ( m_statementResourceRead) {
-                   // read file data from database
-                   m_statementResourceRead.setString(1,absoluteName(filename));
-                   m_statementResourceRead.setInt(2,project.getId());
-                   res = m_statementResourceRead.executeQuery();
-               }
+               PreparedStatement statementResourceRead=m_Con.prepareStatement(C_RESOURCE_READ);
+               // read file data from database
+               statementResourceRead.setString(1,absoluteName(filename));
+               statementResourceRead.setInt(2,project.getId());
+               res = statementResourceRead.executeQuery();
+
                // create new file
                if(res.next()) {
                         file = new CmsFile(res.getString(C_RESOURCE_NAME),
@@ -682,14 +611,13 @@ import com.opencms.core.*;
                                            );
                          // check if this resource is marked as deleted
                         if (file.getState() == C_STATE_DELETED) {
-                            throw new CmsException(file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
+                            throw new CmsException("["+this.getClass().getName()+"]"+file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
                         }
                } else {
-                 throw new CmsException(filename,CmsException.C_NOT_FOUND);  
+                 throw new CmsException("["+this.getClass().getName()+"]"+filename,CmsException.C_NOT_FOUND);  
                }
- 
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
         return file;
        }
@@ -712,11 +640,10 @@ import com.opencms.core.*;
          Vector allHeaders = new Vector();
          
          try {  
-              synchronized ( m_statementResourceReadAll) {
-                   // read file header data from database
-                   m_statementResourceReadAll.setString(1,absoluteName(filename));
-                   res = m_statementResourceReadAll.executeQuery();
-               }
+               PreparedStatement statementResourceReadAll=m_Con.prepareStatement(C_RESOURCE_READ_ALL);
+               // read file header data from database
+               statementResourceReadAll.setString(1,absoluteName(filename));
+               res = statementResourceReadAll.executeQuery();
                // create new file headers
                while(res.next()) {
                         file = new CmsFile(res.getString(C_RESOURCE_NAME),
@@ -739,7 +666,7 @@ import com.opencms.core.*;
                         allHeaders.addElement(file);
                }
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
          return allHeaders;
      }
@@ -762,18 +689,16 @@ import com.opencms.core.*;
              // update the file header in the RESOURCE database.
              writeFileHeader(project,onlineProject,file);
              // update the file content in the FILES database.
-             synchronized ( m_statementFileUpdate) {
-               //FILE_CONTENT
-                m_statementFileUpdate.setBytes(1,file.getContents());
-                // set query parameters
-                m_statementFileUpdate.setString(2,absoluteName(file.getAbsolutePath()));
-                m_statementFileUpdate.setInt(3,file.getProjectId());
-                m_statementFileUpdate.executeUpdate();
-              }
-             } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+             PreparedStatement statementFileUpdate=m_Con.prepareStatement(C_FILE_UPDATE);
+             //FILE_CONTENT
+             statementFileUpdate.setBytes(1,file.getContents());
+             // set query parameters
+             statementFileUpdate.setString(2,absoluteName(file.getAbsolutePath()));
+             statementFileUpdate.setInt(3,file.getProjectId());
+             statementFileUpdate.executeUpdate();
+           } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
-
       }
 	
 	 /**
@@ -799,62 +724,60 @@ import com.opencms.core.*;
                 // to the offline project.
                 if (file.getState() == C_STATE_UNCHANGED) {
                     // read file content form the online project
-                   synchronized (m_statementFileRead) {
-                        m_statementFileRead.setString(1,absoluteName(file.getAbsolutePath()));
-                        m_statementFileRead.setInt(2,onlineProject.getId());     
-                        res = m_statementFileRead.executeQuery();
-                        if (res.next()) {
-                          content=res.getBytes(C_FILE_CONTENT);
-                        } else {
-                          throw new CmsException(file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
-                        }
-                   }
-                   // add the file content to the offline project.
-                   synchronized (m_statementFileWrite) {
-                        m_statementFileWrite.setString(1,absoluteName(file.getAbsolutePath()));
-                        m_statementFileWrite.setInt(2,project.getId());     
-                        m_statementFileWrite.setBytes(3,content);
-                        m_statementFileWrite.executeUpdate();
-                   }             
-                  }             
+    
+                    PreparedStatement statementFileRead=m_Con.prepareStatement(C_FILE_READ);
+                    statementFileRead.setString(1,absoluteName(file.getAbsolutePath()));
+                    statementFileRead.setInt(2,onlineProject.getId());     
+                    res = statementFileRead.executeQuery();
+                    if (res.next()) {
+                       content=res.getBytes(C_FILE_CONTENT);
+                    } else {
+                        throw new CmsException("["+this.getClass().getName()+"]"+file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
+                    }
+    
+                    // add the file content to the offline project.
+                    PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
+              
+                    statementFileWrite.setString(1,absoluteName(file.getAbsolutePath()));
+                    statementFileWrite.setInt(2,project.getId());     
+                    statementFileWrite.setBytes(3,content);
+                    statementFileWrite.executeUpdate();
+                }             
+                // update resource in the database
+                PreparedStatement statementResourceUpdate=m_Con.prepareStatement(C_RESOURCE_UPDATE);
+                //RESOURCE_TYPE
+                statementResourceUpdate.setInt(1,file.getType());
+                //RESOURCE_FLAGS
+                statementResourceUpdate.setInt(2,file.getFlags());
+                //USER_ID
+                statementResourceUpdate.setInt(3,file.getOwnerId());
+                //GROUP_ID
+                statementResourceUpdate.setInt(4,file.getGroupId());
+                //ACCESS_FLAGS
+                statementResourceUpdate.setInt(5,file.getAccessFlags());
+                //STATE
+                statementResourceUpdate.setInt(6,C_STATE_CHANGED);
+                //LOCKED_BY
+                statementResourceUpdate.setInt(7,file.isLockedBy());
+                //LAUNCHER_TYPE
+                statementResourceUpdate.setInt(8,file.getLauncherType());
+                //LAUNCHER_CLASSNAME
+                statementResourceUpdate.setString(9,file.getLauncherClassname());
+                //DATE_LASTMODIFIED
+                statementResourceUpdate.setLong(10,System.currentTimeMillis());
+                //SIZE
+                statementResourceUpdate.setInt(11,file.getContents().length);
+                // set query parameters
+                statementResourceUpdate.setString(12,absoluteName(file.getAbsolutePath()));
+                statementResourceUpdate.setInt(13,file.getProjectId());
+                statementResourceUpdate.executeUpdate();               
                 
-               synchronized ( m_statementResourceUpdate) {
-                    // update resource in the database
-          
-                    //RESOURCE_TYPE
-                    m_statementResourceUpdate.setInt(1,file.getType());
-                    //RESOURCE_FLAGS
-                    m_statementResourceUpdate.setInt(2,file.getFlags());
-                    //USER_ID
-                    m_statementResourceUpdate.setInt(3,file.getOwnerId());
-                    //GROUP_ID
-                    m_statementResourceUpdate.setInt(4,file.getGroupId());
-                    //ACCESS_FLAGS
-                    m_statementResourceUpdate.setInt(5,file.getAccessFlags());
-                    //STATE
-                    m_statementResourceUpdate.setInt(6,C_STATE_CHANGED);
-                    //LOCKED_BY
-                    m_statementResourceUpdate.setInt(7,file.isLockedBy());
-                    //LAUNCHER_TYPE
-                    m_statementResourceUpdate.setInt(8,file.getLauncherType());
-                    //LAUNCHER_CLASSNAME
-                    m_statementResourceUpdate.setString(9,file.getLauncherClassname());
-                    //DATE_LASTMODIFIED
-                    m_statementResourceUpdate.setLong(10,System.currentTimeMillis());
-                    //SIZE
-                    m_statementResourceUpdate.setInt(11,file.getContents().length);
-                
-                    // set query parameters
-                    m_statementResourceUpdate.setString(12,absoluteName(file.getAbsolutePath()));
-                    m_statementResourceUpdate.setInt(13,file.getProjectId());
-                    m_statementResourceUpdate.executeUpdate();               
-                  }
                } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
      }
      
-	/**
+	 /**
 	 * Renames the file to the new name.
 	 * 
 	 * @param project The project in which the resource will be used.
@@ -886,19 +809,18 @@ import com.opencms.core.*;
 	 public void deleteFile(A_CmsProject project, String filename)
          throws CmsException {
          try { 
-            synchronized ( m_statementResourceRemove) {
-                   // mark the file as deleted       
-                    m_statementResourceRemove.setInt(1,C_STATE_DELETED);
-                    m_statementResourceRemove.setString(2,absoluteName(filename));
-                    m_statementResourceRemove.setInt(3,project.getId());
-                    m_statementResourceRemove.executeUpdate();               
-                  }
-               } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+           PreparedStatement statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);  
+           // mark the file as deleted       
+           statementResourceRemove.setInt(1,C_STATE_DELETED);
+           statementResourceRemove.setString(2,absoluteName(filename));
+           statementResourceRemove.setInt(3,project.getId());
+           statementResourceRemove.executeUpdate();               
+          
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }        
      }
 	
-		
 	 /**
 	 * Copies the file.
 	 * 
@@ -938,42 +860,42 @@ import com.opencms.core.*;
                                    String foldername,
                                    int flags)
          throws CmsException {
-           try {   
-               synchronized ( m_statementResourceWrite) {
-                // write new resource to the database
-                //RESOURCE_NAME
-                m_statementResourceWrite.setString(1,absoluteName(foldername));
-                //RESOURCE_TYPE
-                m_statementResourceWrite.setInt(2,C_TYPE_FOLDER);
-                //RESOURCE_FLAGS
-                m_statementResourceWrite.setInt(3,flags);
-                //USER_ID
-                m_statementResourceWrite.setInt(4,user.getId());
-                //GROUP_ID
-                m_statementResourceWrite.setInt(5,user.getDefaultGroupId());
-                //PROJECT_ID
-                m_statementResourceWrite.setInt(6,project.getId());
-                //ACCESS_FLAGS
-                m_statementResourceWrite.setInt(7,C_ACCESS_DEFAULT_FLAGS);
-                //STATE
-                m_statementResourceWrite.setInt(8,C_STATE_NEW);
-                //LOCKED_BY
-                m_statementResourceWrite.setInt(9,C_UNKNOWN_ID);
-                //LAUNCHER_TYPE
-                m_statementResourceWrite.setInt(10,C_UNKNOWN_LAUNCHER_ID);
-                //LAUNCHER_CLASSNAME
-                m_statementResourceWrite.setString(11,C_UNKNOWN_LAUNCHER);
-                //DATE_CREATED
-                m_statementResourceWrite.setLong(12,System.currentTimeMillis());
-                //DATE_LASTMODIFIED
-                m_statementResourceWrite.setLong(13,System.currentTimeMillis());
-                //SIZE
-                m_statementResourceWrite.setInt(14,0);
-                m_statementResourceWrite.executeUpdate();
-               }
-            } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+         try {  
+            // write new resource to the database
+            PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
+            //RESOURCE_NAME
+            statementResourceWrite.setString(1,absoluteName(foldername));
+            //RESOURCE_TYPE
+            statementResourceWrite.setInt(2,C_TYPE_FOLDER);
+            //RESOURCE_FLAGS
+            statementResourceWrite.setInt(3,flags);
+            //USER_ID
+            statementResourceWrite.setInt(4,user.getId());
+            //GROUP_ID
+            statementResourceWrite.setInt(5,user.getDefaultGroupId());
+            //PROJECT_ID
+            statementResourceWrite.setInt(6,project.getId());
+            //ACCESS_FLAGS
+            statementResourceWrite.setInt(7,C_ACCESS_DEFAULT_FLAGS);
+            //STATE
+            statementResourceWrite.setInt(8,C_STATE_NEW);
+            //LOCKED_BY
+            statementResourceWrite.setInt(9,C_UNKNOWN_ID);
+            //LAUNCHER_TYPE
+            statementResourceWrite.setInt(10,C_UNKNOWN_LAUNCHER_ID);
+            //LAUNCHER_CLASSNAME
+            statementResourceWrite.setString(11,C_UNKNOWN_LAUNCHER);
+            //DATE_CREATED
+            statementResourceWrite.setLong(12,System.currentTimeMillis());
+            //DATE_LASTMODIFIED
+            statementResourceWrite.setLong(13,System.currentTimeMillis());
+            //SIZE
+            statementResourceWrite.setInt(14,0);
+            statementResourceWrite.executeUpdate();
+            
+           } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         } 
          return readFolder(project,foldername);
      }
      
@@ -991,41 +913,40 @@ import com.opencms.core.*;
                                    CmsFolder folder,
                                    String foldername)
          throws CmsException {
-             try {   
-               synchronized ( m_statementResourceWrite) {
+            try {   
                 // write new resource to the database
+                PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
                 //RESOURCE_NAME
-                m_statementResourceWrite.setString(1,absoluteName(folder.getAbsolutePath()));
+                statementResourceWrite.setString(1,absoluteName(folder.getAbsolutePath()));
                 //RESOURCE_TYPE
-                m_statementResourceWrite.setInt(2,folder.getType());
+                statementResourceWrite.setInt(2,folder.getType());
                 //RESOURCE_FLAGS
-                m_statementResourceWrite.setInt(3,folder.getFlags());
+                statementResourceWrite.setInt(3,folder.getFlags());
                 //USER_ID
-                m_statementResourceWrite.setInt(4,folder.getOwnerId());
+                statementResourceWrite.setInt(4,folder.getOwnerId());
                 //GROUP_ID
-                m_statementResourceWrite.setInt(5,folder.getGroupId());
+                statementResourceWrite.setInt(5,folder.getGroupId());
                 //PROJECT_ID
-                m_statementResourceWrite.setInt(6,project.getId());
+                statementResourceWrite.setInt(6,project.getId());
                 //ACCESS_FLAGS
-                m_statementResourceWrite.setInt(7,folder.getAccessFlags());
+                statementResourceWrite.setInt(7,folder.getAccessFlags());
                 //STATE
-                m_statementResourceWrite.setInt(8,C_STATE_NEW);
+                statementResourceWrite.setInt(8,C_STATE_NEW);
                 //LOCKED_BY
-                m_statementResourceWrite.setInt(9,folder.isLockedBy());
+                statementResourceWrite.setInt(9,folder.isLockedBy());
                 //LAUNCHER_TYPE
-                m_statementResourceWrite.setInt(10,folder.getLauncherType());
+                statementResourceWrite.setInt(10,folder.getLauncherType());
                 //LAUNCHER_CLASSNAME
-                m_statementResourceWrite.setString(11,folder.getLauncherClassname());
+                statementResourceWrite.setString(11,folder.getLauncherClassname());
                 //DATE_CREATED
-                m_statementResourceWrite.setLong(12,folder.getDateCreated());
+                statementResourceWrite.setLong(12,folder.getDateCreated());
                 //DATE_LASTMODIFIED
-                m_statementResourceWrite.setLong(13,System.currentTimeMillis());
+                statementResourceWrite.setLong(13,System.currentTimeMillis());
                 //SIZE
-                m_statementResourceWrite.setInt(14,0);
-                m_statementResourceWrite.executeUpdate();
-               }
+                statementResourceWrite.setInt(14,0);
+                statementResourceWrite.executeUpdate();
             } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
          return readFolder(project,folder.getAbsolutePath());
      }
@@ -1047,16 +968,10 @@ import com.opencms.core.*;
          ResultSet res =null;
            
          try {  
-            /*  synchronized ( m_statementResourceRead) {
-                   // read resource data from database
-                   m_statementResourceRead.setString(1,absoluteName(foldername));
-                   m_statementResourceRead.setInt(2,project.getId());
-                   res = m_statementResourceRead.executeQuery();
-               }*/
-              Statement s = m_Con.createStatement();			
-			  s.setEscapeProcessing(false);	
-			  res = s.executeQuery("SELECT * FROM RESOURCES WHERE RESOURCE_NAME = '"+foldername
-                                   +"' AND PROJECT_ID = "+project.getId());
+               PreparedStatement statementResourceRead=m_Con.prepareStatement(C_RESOURCE_READ);
+               statementResourceRead.setString(1,absoluteName(foldername));
+               statementResourceRead.setInt(2,project.getId());
+               res = statementResourceRead.executeQuery();
                // create new resource
                if(res.next()) {
                         folder = new CmsFolder(res.getString(C_RESOURCE_NAME),
@@ -1073,17 +988,15 @@ import com.opencms.core.*;
                                                );
                         // check if this resource is marked as deleted
                         if (folder.getState() == C_STATE_DELETED) {
-                            throw new CmsException(folder.getAbsolutePath(),CmsException.C_NOT_FOUND);  
+                            throw new CmsException("["+this.getClass().getName()+"]"+folder.getAbsolutePath(),CmsException.C_NOT_FOUND);  
                         }
                    }else {
-                 throw new CmsException(foldername,CmsException.C_NOT_FOUND);  
+                 throw new CmsException("["+this.getClass().getName()+"]"+foldername,CmsException.C_NOT_FOUND);  
                }
- 
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
         return folder;
-        
     }
 	
      	
@@ -1099,39 +1012,37 @@ import com.opencms.core.*;
          throws CmsException {
          
            try {   
-               synchronized ( m_statementResourceUpdate) {
                 // update resource in the database
-          
+                PreparedStatement statementResourceUpdate=m_Con.prepareStatement(C_RESOURCE_UPDATE);
                 //RESOURCE_TYPE
-                m_statementResourceUpdate.setInt(1,folder.getType());
+                statementResourceUpdate.setInt(1,folder.getType());
                 //RESOURCE_FLAGS
-                m_statementResourceUpdate.setInt(2,folder.getFlags());
+                statementResourceUpdate.setInt(2,folder.getFlags());
                 //USER_ID
-                m_statementResourceUpdate.setInt(3,folder.getOwnerId());
+                statementResourceUpdate.setInt(3,folder.getOwnerId());
                 //GROUP_ID
-                m_statementResourceUpdate.setInt(4,folder.getGroupId());
+                statementResourceUpdate.setInt(4,folder.getGroupId());
                 //ACCESS_FLAGS
-                m_statementResourceUpdate.setInt(5,folder.getAccessFlags());
+                statementResourceUpdate.setInt(5,folder.getAccessFlags());
                 //STATE
-                m_statementResourceUpdate.setInt(6,C_STATE_CHANGED);
+                statementResourceUpdate.setInt(6,C_STATE_CHANGED);
                 //LOCKED_BY
-                m_statementResourceUpdate.setInt(7,folder.isLockedBy());
+                statementResourceUpdate.setInt(7,folder.isLockedBy());
                 //LAUNCHER_TYPE
-                m_statementResourceUpdate.setInt(8,folder.getLauncherType());
+                statementResourceUpdate.setInt(8,folder.getLauncherType());
                 //LAUNCHER_CLASSNAME
-                m_statementResourceUpdate.setString(9,folder.getLauncherClassname());
+                statementResourceUpdate.setString(9,folder.getLauncherClassname());
                 //DATE_LASTMODIFIED
-                m_statementResourceUpdate.setLong(10,System.currentTimeMillis());
+                statementResourceUpdate.setLong(10,System.currentTimeMillis());
                 //SIZE
-                m_statementResourceUpdate.setInt(11,0);
+                statementResourceUpdate.setInt(11,0);
                 
                 // set query parameters
-                m_statementResourceUpdate.setString(12,absoluteName(folder.getAbsolutePath()));
-                m_statementResourceUpdate.setInt(13,folder.getProjectId());
-                m_statementResourceUpdate.executeUpdate();
-                }
-               } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+                statementResourceUpdate.setString(12,absoluteName(folder.getAbsolutePath()));
+                statementResourceUpdate.setInt(13,folder.getProjectId());
+                statementResourceUpdate.executeUpdate();
+            } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
      }
 
@@ -1160,21 +1071,20 @@ import com.opencms.core.*;
              if (folders.size()==0) {
                  //this folder is empty, delete it
                  try { 
-                 synchronized ( m_statementResourceRemove) {
-                   // mark the folder as deleted       
-                    m_statementResourceRemove.setInt(1,C_STATE_DELETED);
-                    m_statementResourceRemove.setString(2,absoluteName(foldername));
-                    m_statementResourceRemove.setInt(3,project.getId());
-                    m_statementResourceRemove.executeUpdate();               
-                  }
+                    // mark the folder as deleted       
+                    PreparedStatement statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);  
+                    statementResourceRemove.setInt(1,C_STATE_DELETED);
+                    statementResourceRemove.setString(2,absoluteName(foldername));
+                    statementResourceRemove.setInt(3,project.getId());
+                    statementResourceRemove.executeUpdate();              
                 } catch (SQLException e){
-                 throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+                 throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
                 }        
               } else {
-                 throw new CmsException(foldername,CmsException.C_NOT_EMPTY);  
+                 throw new CmsException("["+this.getClass().getName()+"]"+foldername,CmsException.C_NOT_EMPTY);  
               }
          } else {
-                 throw new CmsException(foldername,CmsException.C_NOT_EMPTY);  
+                 throw new CmsException("["+this.getClass().getName()+"]"+foldername,CmsException.C_NOT_EMPTY);  
          }
      }
 	
@@ -1219,7 +1129,7 @@ import com.opencms.core.*;
              }
 
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);		
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
          return folders;
      }
@@ -1269,7 +1179,7 @@ import com.opencms.core.*;
              }
 
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);		
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
            return files;
      }
@@ -1310,11 +1220,10 @@ import com.opencms.core.*;
         
         try {
             // read all files that are in the requested project
-            synchronized (m_statementProjectReadFiles) {
-                   //get all files from the actual project
-                    m_statementProjectReadFiles.setInt(1,project.getId());
-                    res=m_statementProjectReadFiles.executeQuery();               
-                  }
+            PreparedStatement statementProjectReadFiles=m_Con.prepareStatement(C_PROJECT_READ_FILES);
+            //get all files from the actual project
+            statementProjectReadFiles.setInt(1,project.getId());
+            res=statementProjectReadFiles.executeQuery();               
             // create new file objects
 		    while ( res.next() ) {
                      file = new CmsFile(res.getString(C_RESOURCE_NAME),
@@ -1350,12 +1259,12 @@ import com.opencms.core.*;
              
              }
             // read all folders that are in the requested project
-            synchronized (m_statementProjectReadFolders) {
-                   //get all folders from the actual project
-                    m_statementProjectReadFolders.setInt(1,project.getId());
-                    m_statementProjectReadFolders.setInt(2,C_TYPE_FOLDER);
-                    res=m_statementProjectReadFolders.executeQuery();               
-                  }
+            PreparedStatement statementProjectReadFolders=m_Con.prepareStatement(C_PROJECT_READ_FOLDER);
+            //get all folders from the actual project
+            statementProjectReadFolders.setInt(1,project.getId());
+            statementProjectReadFolders.setInt(2,C_TYPE_FOLDER);
+            res=statementProjectReadFolders.executeQuery();               
+              
             // create new folder objects
 		    while ( res.next() ) {
                      folder = new CmsFolder(res.getString(C_RESOURCE_NAME),
@@ -1388,10 +1297,9 @@ import com.opencms.core.*;
                         resources.addElement(folder.getAbsolutePath()); 
                 }
             }
-         
-            
+
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);		
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
            return resources;
     }
@@ -1415,12 +1323,11 @@ import com.opencms.core.*;
          ResultSet res =null;
            
          try {  
-              synchronized ( m_statementResourceRead) {
-                   // read resource data from database
-                   m_statementResourceRead.setString(1,absoluteName(filename));
-                   m_statementResourceRead.setInt(2,project.getId());
-                   res = m_statementResourceRead.executeQuery();
-               }
+               // read resource data from database
+               PreparedStatement statementResourceRead=m_Con.prepareStatement(C_RESOURCE_READ);
+               statementResourceRead.setString(1,absoluteName(filename));
+               statementResourceRead.setInt(2,project.getId());
+               res = statementResourceRead.executeQuery();
                // create new resource
                if(res.next()) {
                         file = new CmsResource(res.getString(C_RESOURCE_NAME),
@@ -1439,11 +1346,11 @@ import com.opencms.core.*;
                                            res.getInt(C_SIZE)
                                            );
                } else {
-                 throw new CmsException(filename,CmsException.C_NOT_FOUND);  
+                 throw new CmsException("["+this.getClass().getName()+"]"+filename,CmsException.C_NOT_FOUND);  
                }
  
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
         return file;
        }
@@ -1461,19 +1368,18 @@ import com.opencms.core.*;
         throws CmsException{
             try { 
             // delete the file header
-            synchronized ( m_statementResourceDelete) {
-                    m_statementResourceDelete.setString(1,absoluteName(file.getAbsolutePath()));
-                    m_statementResourceDelete.setInt(2,file.getProjectId());
-                    m_statementResourceDelete.executeUpdate();               
-                  }
+            PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
+            statementResourceDelete.setString(1,absoluteName(file.getAbsolutePath()));
+            statementResourceDelete.setInt(2,file.getProjectId());
+            statementResourceDelete.executeUpdate(); 
+            
             // delete the file content
-            synchronized ( m_statementFileDelete) {
-                    m_statementFileDelete.setString(1,absoluteName(file.getAbsolutePath()));
-                    m_statementFileDelete.setInt(2,file.getProjectId());
-                    m_statementFileDelete.executeUpdate();               
-                  }
-               } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            PreparedStatement statementFileDelete=m_Con.prepareStatement(C_FILE_DELETE);
+            statementFileDelete.setString(1,absoluteName(file.getAbsolutePath()));
+            statementFileDelete.setInt(2,file.getProjectId());
+            statementFileDelete.executeUpdate();               
+            } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }         
      }
      
@@ -1488,43 +1394,14 @@ import com.opencms.core.*;
      private void deleteFolder(CmsFolder folder) 
         throws CmsException{
             try { 
-            // delete the folder
-            synchronized ( m_statementResourceDelete) {
-                    m_statementResourceDelete.setString(1,absoluteName(folder.getAbsolutePath()));
-                    m_statementResourceDelete.setInt(2,folder.getProjectId());
-                    m_statementResourceDelete.executeUpdate();               
-                  }
-              } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+              // delete the folder
+              PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
+              statementResourceDelete.setString(1,absoluteName(folder.getAbsolutePath()));
+              statementResourceDelete.setInt(2,folder.getProjectId());
+              statementResourceDelete.executeUpdate();               
+             } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }         
-     }
-    
-     /**
-     * This method creates all preparted SQL statements required in this class.
-     * 
-     * @exception CmsException Throws CmsException if something goes wrong.
-     */
-     private void initStatements()
-       throws CmsException{
-         try{
-            m_statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
-            m_statementResourceRead=m_Con.prepareStatement(C_RESOURCE_READ);
-            m_statementResourceReadAll=m_Con.prepareStatement(C_RESOURCE_READ_ALL);
-            m_statementFileReadOnline=m_Con.prepareStatement(C_FILE_READ_ONLINE);
-            m_statementFileRead=m_Con.prepareStatement(C_FILE_READ);
-            m_statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
-            m_statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);        
-            m_statementResourceUpdate=m_Con.prepareStatement(C_RESOURCE_UPDATE);
-            m_statementFileUpdate=m_Con.prepareStatement(C_FILE_UPDATE);
-            m_statementProjectReadFiles=m_Con.prepareStatement(C_PROJECT_READ_FILES);
-            m_statementProjectReadFolders=m_Con.prepareStatement(C_PROJECT_READ_FOLDER);
-            m_statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
-            m_statementFileDelete=m_Con.prepareStatement(C_FILE_DELETE);
-  
-           } catch (SQLException e){
-           
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
      }
     
      /**

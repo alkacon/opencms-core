@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/24 19:13:05 $
  */
 public class CmsAccessPropertyMySql implements I_CmsAccessProperty  {
 
@@ -49,26 +49,6 @@ public class CmsAccessPropertyMySql implements I_CmsAccessProperty  {
     private Connection m_Con  = null;
     
     /**
-    * Prepared SQL Statement for reading a property.
-    */
-    private PreparedStatement m_statementPropertyRead;
-    
-    /**
-    * Prepared SQL Statement for writing a property.
-    */
-    private PreparedStatement m_statementPropertyWrite;
-    
-    /**
-    * Prepared SQL Statement for updasting a property.
-    */
-    private PreparedStatement m_statementPropertyUpdate;
-    
-    /**
-    * Prepared SQL Statement for deleting a property.
-    */
-    private PreparedStatement m_statementPropertyDelete;
-	
-    /**
      * Constructor, creartes a new CmsAccessProperty object and connects it to the
      * property database.
      *
@@ -82,7 +62,6 @@ public class CmsAccessPropertyMySql implements I_CmsAccessProperty  {
         throws CmsException, ClassNotFoundException {
         Class.forName(driver);
         initConnections(conUrl);
-        initStatements();
     }
         
      /**
@@ -110,17 +89,15 @@ public class CmsAccessPropertyMySql implements I_CmsAccessProperty  {
             value=bout.toByteArray();
             
             // create the object
-            synchronized (m_statementPropertyWrite) {
-                m_statementPropertyWrite.setString(1,name);
-                m_statementPropertyWrite.setBytes(2,value);
-                m_statementPropertyWrite.executeUpdate();
-            }
+                PreparedStatement statementPropertyWrite=m_Con.prepareStatement(C_PROPERTY_WRITE);
+                statementPropertyWrite.setString(1,name);
+                statementPropertyWrite.setBytes(2,value);
+                statementPropertyWrite.executeUpdate();
         } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch (IOException e){
-            throw new CmsException(CmsException. C_SERIALIZATION, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}
-       
         return readProperty(name);
      }
     
@@ -142,28 +119,26 @@ public class CmsAccessPropertyMySql implements I_CmsAccessProperty  {
             
         // create get the property data from the database
     	try {
-            synchronized (m_statementPropertyRead) {
-                m_statementPropertyRead.setString(1,name);
-           	    res = m_statementPropertyRead.executeQuery();
-            }
-			
-            if(res.next()) {
+          PreparedStatement statementPropertyRead=m_Con.prepareStatement(C_PROPERTY_READ);
+          statementPropertyRead.setString(1,name);
+          res = statementPropertyRead.executeQuery();
+       		
+          if(res.next()) {
 				value = res.getBytes(C_PROPERTY_VALUE);
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
                 property=(Serializable)oin.readObject();                
 			}	
-			
 		}
 		catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}	
         catch (IOException e){
-            throw new CmsException(CmsException. C_SERIALIZATION, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}
 	    catch (ClassNotFoundException e){
-            throw new CmsException(CmsException. C_SERIALIZATION, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}	
         return property;
     }
@@ -192,18 +167,16 @@ public class CmsAccessPropertyMySql implements I_CmsAccessProperty  {
             oout.close();
             value=bout.toByteArray();   
             
-            synchronized (m_statementPropertyUpdate) {
-                m_statementPropertyUpdate.setBytes(1,value);
-                m_statementPropertyUpdate.setString(2,name);
-		        m_statementPropertyUpdate.executeUpdate();
-            }
-			
+            PreparedStatement statementPropertyUpdate=m_Con.prepareStatement(C_PROPERTY_UPDATE);
+            statementPropertyUpdate.setBytes(1,value);
+            statementPropertyUpdate.setString(2,name);
+		    statementPropertyUpdate.executeUpdate();
         }
         catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
         catch (IOException e){
-            throw new CmsException(CmsException. C_SERIALIZATION, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}
 
           return readProperty(name);
@@ -220,33 +193,14 @@ public class CmsAccessPropertyMySql implements I_CmsAccessProperty  {
         throws CmsException {
         
 		try	{
-            synchronized (m_statementPropertyDelete) {
-                m_statementPropertyDelete.setString(1,name);
-                m_statementPropertyDelete.executeUpdate();
-            }           
+           PreparedStatement statementPropertyDelete=m_Con.prepareStatement(C_PROPERTY_DELETE);
+           statementPropertyDelete.setString(1,name);
+           statementPropertyDelete.executeUpdate();       
 		}catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
     }
-    
- /**
-     * This method creates all preparted SQL statements required in this class.
-     * 
-     * @exception CmsException Throws CmsException if something goes wrong.
-     */
-     private void initStatements()
-       throws CmsException{
-         try{
-            m_statementPropertyRead=m_Con.prepareStatement(C_PROPERTY_READ);
-            m_statementPropertyWrite=m_Con.prepareStatement(C_PROPERTY_WRITE);
-            m_statementPropertyUpdate=m_Con.prepareStatement(C_PROPERTY_UPDATE);
-            m_statementPropertyDelete=m_Con.prepareStatement(C_PROPERTY_DELETE);
-         } catch (SQLException e){
-           
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
-     }
-    
+       
      /**
      * Connects to the property database.
      * 

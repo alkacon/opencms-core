@@ -27,7 +27,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.14 $ $Date: 2000/01/24 18:56:36 $  
+* @version $Revision: 1.15 $ $Date: 2000/01/24 19:13:04 $  
 * 
 */
 
@@ -114,7 +114,7 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
             //read the requested file
             file =cms.readFile(cms.getRequestContext().getUri());
         } catch (CmsException e ) {
-           /* if (e.getType() == CmsException.C_NOT_FOUND) {
+            if (e.getType() == CmsException.C_NOT_FOUND) {
                 
                 // there was no file found with this name. 
                 // it is possible that the requested resource was a folder, so try to access an
@@ -136,7 +136,7 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
            } else {
                // throw the CmsException.
               throw e;
-          }*/
+          }
         }
         if (file != null) {
             // test if this file is only available for internal access operations
