@@ -2,8 +2,8 @@ package com.opencms.defaults;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2001/04/02 15:00:46 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2001/04/05 15:18:17 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.29 $ $Date: 2001/04/02 15:00:46 $
+ * @version $Revision: 1.30 $ $Date: 2001/04/05 15:18:17 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -140,7 +140,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param depth An Integer that shows how many folders must be displayed.
 	 * @return String that contains the navigation.
 	 */
-	protected String buildNavFold(CmsObject cms, CmsXmlTemplateFile template, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int level)
+	protected String buildNavFold(CmsObject cms, CmsXmlTemplateFile template, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int level,int[] count)
 		throws CmsException {
 
 		StringBuffer result = new StringBuffer();
@@ -154,8 +154,9 @@ public class CmsXmlNav extends A_CmsNavBase {
 		if (max>0) {
 			result.append(template.getProcessedDataValue("navstart", this, userObject));
 			for(int i=0; i<max; i++) {
+                count[0]++;
 				template.setData("navtext", navText[i]);
-				template.setData("navcount", new Integer(i+1).toString());
+				template.setData("navcount", new Integer(count[0]).toString());
                 // this part is to set the level starting from specified level given as tagcontent
                 // there it must be make a difference between extracted level and the given level
                 int extractedLevel=extractLevel(cms,navLink[i]);
@@ -206,7 +207,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 					while (e.hasMoreElements()) {
 						all.addElement(e.nextElement());
 					}
-					result.append(buildNavFold(cms,template,userObject,all,requestedUri,currentFolder,servletPath,level));
+					result.append(buildNavFold(cms,template,userObject,all,requestedUri,currentFolder,servletPath,level,count));
 				}
 			}
 			result.append(template.getProcessedDataValue("navend", this, userObject));
@@ -231,7 +232,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param depthIsNull a boolean that determines whether the depth is given in tagcontent
 	 * @return String that contains the navigation.
 	 */
-	protected String buildNavTree(CmsObject cms, CmsXmlTemplateFile template, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int level,int depth,boolean depthIsNull)
+	protected String buildNavTree(CmsObject cms, CmsXmlTemplateFile template, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int level,int depth,boolean depthIsNull,int[] count)
 		throws CmsException {
 
 		StringBuffer result = new StringBuffer();
@@ -250,8 +251,9 @@ public class CmsXmlNav extends A_CmsNavBase {
             result.append(template.getProcessedDataValue("navstart", this, userObject));
 		    for(int i=0; i<max; i++) {
                 // set the templates
+                count[0]++;
 			    template.setData("navtext", navText[i]);
-			    template.setData("navcount", new Integer(i+1).toString());
+			    template.setData("navcount", new Integer(count[0]).toString());
                 // this part is to set the level starting from specified level given as tagcontent
                 // there it must be make a difference between extracted level and the given level
                 int extractedLevel=extractLevel(cms,navLink[i]);
@@ -313,7 +315,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 				        while (e.hasMoreElements()) {
 			  	            all.addElement(e.nextElement());
 				        }
-				        result.append(buildNavTree(cms,template,userObject,all,requestedUri,currentFolder,servletPath,level,depth,depthIsNull));
+				        result.append(buildNavTree(cms,template,userObject,all,requestedUri,currentFolder,servletPath,level,depth,depthIsNull,count));
                     }
                 }
             }
@@ -545,6 +547,7 @@ public class CmsXmlNav extends A_CmsNavBase {
             return "".getBytes();
         }
 		int level=0;
+        int[] count={0};
 		// if level is zero or null or negative then all folders recursive must
 		// be showed starting from root folder unless all folders stating from
 		// specified level of parent folder.
@@ -586,7 +589,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         if (!template.hasData("navend")) {
             template.setData("navend", "");
         }
-        result=buildNavFold(cms,template,userObject,resources,requestedUri,currentFolder,servletPath,level);
+        result=buildNavFold(cms,template,userObject,resources,requestedUri,currentFolder,servletPath,level,count);
 
 		return result.getBytes();
 	}
@@ -715,6 +718,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         }
 		int level=0;
 		int depth=0;
+        int[] count={0};
         // if there is not any depth then it must not be tested in a if condition
         boolean depthIsNull=true;
 		// if level is zero or null or negative then all folders recursive must
@@ -773,8 +777,123 @@ public class CmsXmlNav extends A_CmsNavBase {
         if (!template.hasData("navend")) {
             template.setData("navend", "");
         }
-        result=buildNavTree(cms,template,userObject,resources,requestedUri,currentFolder,servletPath,level,depth,depthIsNull);
+        result=buildNavTree(cms,template,userObject,resources,requestedUri,currentFolder,servletPath,level,depth,depthIsNull,count);
 
 		return result.getBytes();
+	}
+
+    /**
+	 * gets a specified property of current folder.
+	 *
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getPropertyCurrent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+        throws CmsException {
+		String property="";
+		// tagcontent must contain the property definition name.
+		if (!tagcontent.equals("")) {
+			String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+			property=cms.readProperty(currentFolder, tagcontent);
+			property=(property!=null?property:"");
+		}
+		return (property.getBytes());
+	}
+
+
+	/**
+	 * gets a specified property of specified folder starting from current folder.
+	 *
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getPropertyParent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+        throws CmsException {
+		int level=0;
+		String property="";
+		// tagcontent determines the parent folder starting from current folder and
+		// the property definition name sparated by a comma.
+		if (!tagcontent.equals("")) {
+			try {
+				level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
+			String currentFolder="";
+			if (level<=0) {
+				currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+			} else {
+				// level is converted to negative number, so I can use the method
+				// "extractFolder" for positive and negative numbers. Negative number
+				// determines the parent folder level starting from current folder and
+				// positive number determines the level starting ftom root folder.
+				currentFolder=extractFolder(cms,((-1)*level));
+			}
+			property=cms.readProperty(currentFolder, tagcontent.substring(tagcontent.indexOf(",")+1));
+            property=(property!=null?property:"");
+		}
+		return (property.getBytes());
+	}
+
+	/**
+	 * gets a specified property of specified folder starting from root.
+	 *
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getPropertyRoot(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+        throws CmsException {
+		int level=0;
+		String property="";
+		// tagcontent determines the folder starting from root folder and
+		// the property definition name sparated by a comma.
+		if (!tagcontent.equals("")) {
+			try {
+				level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
+			String currentFolder="";
+			if (level<=0) {
+				currentFolder=currentFolder=cms.rootFolder().getAbsolutePath();
+			} else {
+				currentFolder=extractFolder(cms,level);
+			}
+			property=cms.readProperty(currentFolder, tagcontent.substring(tagcontent.indexOf(",")+1));
+            property=(property!=null?property:"");
+		}
+		return (property.getBytes());
+	}
+
+
+	/**
+	 * gets a specified property of uri.
+	 *
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getPropertyUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+        throws CmsException {
+		String property="";
+		String requestedUri = cms.getRequestContext().getUri();
+		property=cms.readProperty(requestedUri, tagcontent);
+        property=(property!=null?property:"");
+		return (property.getBytes());
 	}
 }

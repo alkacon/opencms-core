@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsNavBase.java,v $
-* Date   : $Date: 2001/04/02 15:00:36 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/04/05 15:18:16 $
+* Version: $Revision: 1.14 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.13 $ $Date: 2001/04/02 15:00:36 $
+ * @version $Revision: 1.14 $ $Date: 2001/04/05 15:18:16 $
  */
 public abstract class A_CmsNavBase extends CmsXmlTemplate {
     protected static final String C_PROPERTY_NAVINDEX = "NavIndex";
@@ -156,6 +156,58 @@ public abstract class A_CmsNavBase extends CmsXmlTemplate {
      */
     protected abstract Object getNavTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException;
 
+    /**
+	 * gets a specified property of current folder.
+	 *
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getPropertyCurrent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+            throws CmsException;
+
+	/**
+	 * gets a specified property of specified folder starting from current folder.
+	 *
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getPropertyParent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+            throws CmsException;
+
+	/**
+	 * gets a specified property of specified folder starting from root.
+	 *
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getPropertyRoot(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+            throws CmsException;
+
+
+	/**
+	 * gets a specified property of uri.
+	 *
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getPropertyUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+            throws CmsException;
 
     /**
      * This method sorts the left and right side of unsorted partition.
