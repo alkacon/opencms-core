@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/04 16:00:24 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/07/08 15:55:28 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -684,18 +684,23 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=0; i<allSubFiles.size(); i++){
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if(curFile.getState() == C_STATE_DELETED){
-                cms.undeleteResource(cms.readAbsolutePath(curFile));
+                cms.undeleteResource(cms.readAbsolutePath(curFile, true));
             }
         }
         // now all the empty subfolders
         for (int i=0; i<allSubFolders.size(); i++){
             CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
             if(curFolder.getState() == C_STATE_DELETED){
-                cms.doUndeleteFolder(cms.readAbsolutePath(curFolder));
+                cms.doUndeleteFolder(cms.readAbsolutePath(curFolder, true));
             }
         }
         // finally the folder
         cms.doUndeleteFolder(folder);
+        
+        if (folder.startsWith(C_VFS_PATH_BODIES)) {
+            return;
+        }
+        
         // undelete the corresponding folder in C_VFS_PATH_BODIES
         String bodyFolder = C_VFS_PATH_BODIES.substring(0,
                     C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
@@ -1084,7 +1089,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         //copy the values into the allFiles and allFolders Vectors
         for(int i = 0;i < folders.size();i++) {
             allFolders.addElement((CmsFolder)folders.elementAt(i));
-            getAllResources(cms, cms.readAbsolutePath((CmsFolder)folders.elementAt(i)),
+            getAllResources(cms, cms.readAbsolutePath((CmsFolder)folders.elementAt(i), true),
                 allFiles, allFolders);
         }
         for(int i = 0;i < files.size();i++) {

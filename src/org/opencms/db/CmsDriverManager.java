@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/08 14:35:29 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/07/08 15:55:27 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.27 $ $Date: 2003/07/08 14:35:29 $
+ * @version $Revision: 1.28 $ $Date: 2003/07/08 15:55:27 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1012,7 +1012,10 @@ public class CmsDriverManager extends Object {
             }
             m_vfsDriver.writeFileHeader(currentProject, (CmsFile) resource, true, currentUser.getId());
         }
-        clearResourceCache(resource.getFullResourceName(), currentProject, currentUser);
+        
+        //clearResourceCache(resource.getFullResourceName(), currentProject, currentUser);
+        clearResourceCache();
+        
         fileSystemChanged(isFolder);
     }
 
@@ -1057,11 +1060,13 @@ public class CmsDriverManager extends Object {
         if (filename.endsWith("/")) {
             m_vfsDriver.writeFolder(currentProject, (CmsFolder) resource, false, currentUser.getId());
             // update the cache
-            this.clearResourceCache(filename, currentProject, currentUser);
+            //clearResourceCache(filename, currentProject, currentUser);
+            clearResourceCache();
         } else {
             m_vfsDriver.writeFileHeader(currentProject, (CmsFile) resource, false, currentUser.getId());
             // update the cache
-            this.clearResourceCache(filename, currentProject, currentUser);
+            //clearResourceCache(filename, currentProject, currentUser);
+            clearResourceCache();
         }
         // inform about the file-system-change
         fileSystemChanged(isFolder);
@@ -1112,7 +1117,8 @@ public class CmsDriverManager extends Object {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
         }
         // update the cache
-        this.clearResourceCache(filename, currentProject, currentUser);
+        //clearResourceCache(filename, currentProject, currentUser);
+        clearResourceCache();
 
         // inform about the file-system-change
         fileSystemChanged(false);
@@ -1190,7 +1196,8 @@ public class CmsDriverManager extends Object {
         m_vfsDriver.createFile(currentUser, currentProject, destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(currentUser, currentProject, sourceFile.getType()));
 
         // remove any possibly cached resources of the destination
-        this.clearResourceCache(destination, currentProject, currentUser);
+        //clearResourceCache(destination, currentProject, currentUser);
+        clearResourceCache();
 
         // copy the metainfos/properties
         newResource = lockResource(currentUser, currentProject, destination, true);
@@ -1254,7 +1261,9 @@ public class CmsDriverManager extends Object {
         // create a copy of the folder
         m_vfsDriver.createFolder(currentUser, currentProject, destinationFolder.getId(), CmsUUID.getNullUUID(), destinationResourceName, sourceFolder.getFlags());
         
-        this.clearResourceCache(destination, currentProject, currentUser);
+        //clearResourceCache(destination, currentProject, currentUser);
+        clearResourceCache();
+        
         // copy the properties
         CmsResource newResource = lockResource(currentUser, currentProject, destination, true);
                 writeProperties(currentUser,currentProject, destination,
@@ -1316,7 +1325,10 @@ public class CmsDriverManager extends Object {
                     String filename = ((CmsResource) subFiles.elementAt(i)).getResourceName();
                     m_resourceCache.remove(getCacheKey(null, currentUser, currentProject, filename));
                 }
-                this.clearResourceCache(resource, currentProject, currentUser);
+                
+                //clearResourceCache(resource, currentProject, currentUser);
+                clearResourceCache();
+                
                 m_accessCache.clear();
                 offlineRes = readFileHeaderInProject(currentUser, currentProject, currentProject.getId(), resource);
             } catch (CmsException exc) {
@@ -1433,7 +1445,8 @@ public class CmsDriverManager extends Object {
         //file.setState(I_CmsConstants.C_STATE_NEW);
         //m_vfsDriver.writeFileHeader(currentProject, file, false);
 
-        this.clearResourceCache(newFileName, currentProject, currentUser);
+        //clearResourceCache(newFileName, currentProject, currentUser);
+        clearResourceCache();
 
         // write the metainfos
         m_vfsDriver.writeProperties(propertyinfos, currentProject.getId(), file, file.getType());
@@ -1496,7 +1509,8 @@ public class CmsDriverManager extends Object {
         //newFolder.setState(I_CmsConstants.C_STATE_NEW);
         //m_vfsDriver.writeFolder(currentProject, newFolder, false);
 
-        this.clearResourceCache(newFolderName, currentProject, currentUser);
+        //clearResourceCache(newFolderName, currentProject, currentUser);
+        clearResourceCache();
 
         // write metainfos for the folder
         m_vfsDriver.writeProperties(propertyinfos, currentProject.getId(), newFolder, newFolder.getType());
@@ -1582,7 +1596,8 @@ public class CmsDriverManager extends Object {
         // create the folder.
         newResource = m_vfsDriver.importResource(currentProject, parentFolder.getId(), newResource, filecontent, currentUser.getId(), isFolder);
 
-        clearResourceCache(newResourceName, currentProject, currentUser);
+        //clearResourceCache(newResourceName, currentProject, currentUser);
+        clearResourceCache();
         
         // write metainfos for the folder
         m_vfsDriver.writeProperties(propertyinfos, currentProject.getId(), newResource, newResource.getType(), true);
@@ -1992,7 +2007,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         
         // update the cache
         clearAccessControlListCache();
-        clearResourceCache(filename, currentProject, currentUser);
+        //clearResourceCache(filename, currentProject, currentUser);
+        clearResourceCache();
         m_accessCache.clear();
 
         // inform about the file-system-change
@@ -2054,7 +2070,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         }
         // update cache
         clearAccessControlListCache();
-        clearResourceCache(foldername, currentProject, currentUser);
+        //clearResourceCache(foldername, currentProject, currentUser);
+        clearResourceCache();
         m_accessCache.clear();
         // inform about the file-system-change
         fileSystemChanged(true);
@@ -2081,41 +2098,38 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void undeleteResource(CmsUser currentUser, CmsProject currentProject,
-                                String filename)
-        throws CmsException {
-        boolean isFolder = false;
+    public void undeleteResource(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException {
         CmsResource resource = null;
         int state = I_CmsConstants.C_STATE_CHANGED;
+
         // read the resource to check the access
         if (filename.endsWith("/")) {
-            isFolder = true;
-            resource = readFolder(currentUser, currentProject, filename);
+            resource = readFolder(currentUser, currentProject, filename, true);
         } else {
             resource = (CmsFile) readFileHeader(currentUser, currentProject, filename, true);
         }
 
         // check if the user has write access to the destination folder
-        // accessWriteUnlocked
-		checkPermissions(currentUser, currentProject, resource, I_CmsConstants.C_WRITE_ACCESS);     
+        checkPermissions(currentUser, currentProject, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         // undelete the resource
         resource.setState(state);
         resource.setLocked(currentUser.getId());
+
         // write the file.
-        if (filename.endsWith("/")) {
+        if (resource.isFolder()) {
             m_vfsDriver.writeFolder(currentProject, (CmsFolder) resource, false, currentUser.getId());
-            // update the cache
-            this.clearResourceCache(filename, currentProject, currentUser);
         } else {
             m_vfsDriver.writeFileHeader(currentProject, (CmsFile) resource, false, currentUser.getId());
-            // update the cache
-            this.clearResourceCache(filename, currentProject, currentUser);
         }
+
+        clearResourceCache();
+
         // undelete access control entries
         undeleteAllAccessControlEntries(currentUser, currentProject, resource);
+
         // inform about the file-system-change
-        fileSystemChanged(isFolder);
+        fileSystemChanged(resource.isFolder());
     }
 
     /**
@@ -2293,7 +2307,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 m_vfsDriver.writeFolder(currentProject, readFolder(currentUser, currentProject, resource), true, currentUser.getId());
             }
             // update the cache
-            this.clearResourceCache(resource, currentProject, currentUser);
+            //clearResourceCache(resource, currentProject, currentUser);
+            clearResourceCache();
             m_propertyCache.clear();
         } else {
             // yes - throw exception
@@ -3482,13 +3497,17 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 
         String cacheKey = getCacheKey(currentUser.getName() + "_folders", currentUser, currentProject, foldername);
         folders = (Vector) m_resourceListCache.get(cacheKey);
+        
+        CmsFolder folder = readFolder(currentUser, currentProject, foldername, includeDeleted);                
+        // check if the user has read access 
+        checkPermissions(currentUser, currentProject, folder, I_CmsConstants.C_READ_ACCESS);        
 
         if ((folders == null) || (folders.size() == 0)) {
 
             folders = new Vector();
             // try to get the folders in the current project
-            try {
-                folders = helperGetSubFolders(currentUser, currentProject, foldername);
+            try {                                
+                folders = helperGetSubFolders(currentUser, currentProject, folder);
             } catch (CmsException exc) {
                 // no folders, ignoring them
             }
@@ -3499,7 +3518,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
                     Vector onlineFolders =
                     helperGetSubFolders(currentUser,
                                         onlineProject(currentUser, currentProject),
-                                        foldername);
+                                        folder);
                     // merge the resources
                     folders = mergeResources(folders, onlineFolders);
                 } catch (CmsException exc) {
@@ -3678,7 +3697,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         // get the folder
         CmsFolder cmsFolder = null;
         try {
-            cmsFolder = readFolder(currentUser, currentProject, foldername);
+            cmsFolder = readFolder(currentUser, currentProject, foldername, includeDeleted);
         } catch (CmsException exc) {
             if (exc.getType() == CmsException.C_NOT_FOUND) {
                 // ignore the exception - file dosen't exist in this project
@@ -3718,15 +3737,9 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    protected Vector helperGetSubFolders(CmsUser currentUser, CmsProject currentProject, String foldername) throws CmsException {
-
-        CmsFolder cmsFolder = readFolder(currentUser, currentProject, foldername);
-
-        // check if the user has read access 
-		checkPermissions(currentUser, currentProject, cmsFolder, I_CmsConstants.C_READ_ACCESS);
-
+    protected Vector helperGetSubFolders(CmsUser currentUser, CmsProject currentProject, CmsFolder parentFolder) throws CmsException {
         // acces to all subfolders was granted - return the sub-folders.
-        Vector folders = m_vfsDriver.getSubFolders(currentProject.getId(), cmsFolder);
+        Vector folders = m_vfsDriver.getSubFolders(currentProject.getId(), parentFolder);
         CmsFolder folder;
         for (int z = 0; z < folders.size(); z++) {
             // read the current folder
@@ -3739,6 +3752,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
                 z--;
             }
         }
+        
         return folders;
     }
     /**
@@ -6606,7 +6620,9 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         }
 
         // update the cache
-        this.clearResourceCache(resourceName, currentProject, currentUser);
+        //clearResourceCache(resourceName, currentProject, currentUser);
+        clearResourceCache();
+        
         m_propertyCache.clear();
         m_accessCache.clear();
         // inform about the file-system-change
@@ -6967,7 +6983,9 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         m_vfsDriver.writeProperties(properties, currentProject.getId(), resource, resource.getType(), true);
 
         // update the cache
-        this.clearResourceCache(resource.getResourceName(), currentProject, currentUser);
+        //clearResourceCache(resource.getResourceName(), currentProject, currentUser);
+        clearResourceCache();
+        
         m_accessCache.clear();
         // inform about the file-system-change
         fileSystemChanged(false);
@@ -7037,8 +7055,11 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         if (file.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             file.setState(I_CmsConstants.C_STATE_CHANGED);
         }
+        
         // update the cache
-        this.clearResourceCache(file.getResourceName(), currentProject, currentUser);
+        //clearResourceCache(file.getResourceName(), currentProject, currentUser);
+        clearResourceCache();
+        
         // inform about the file-system-change
         m_accessCache.clear();
         fileSystemChanged(false);
@@ -7094,8 +7115,10 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         } else {
             m_vfsDriver.writeFolder(currentProject, readFolder(currentUser, currentProject, resource), false, currentUser.getId());
         }
+        
         // update the cache
-        this.clearResourceCache(resource, currentProject, currentUser);
+        //clearResourceCache(resource, currentProject, currentUser);
+        clearResourceCache();
     }
 
     /**
@@ -7144,8 +7167,10 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
             }
             m_vfsDriver.writeFolder(currentProject, readFolder(currentUser, currentProject, resource), true, currentUser.getId());
         }
+        
         // update the cache
-        this.clearResourceCache(resource, currentProject, currentUser);
+        //clearResourceCache(resource, currentProject, currentUser);
+        clearResourceCache();
     }
 
     /**
@@ -7275,7 +7300,8 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
                 
         m_vfsDriver.changeLockedInProject(projectId, resource.getId());
-      this.  clearResourceCache(resourcename, new CmsProject(projectId, 0), currentUser);
+        //clearResourceCache(resourcename, new CmsProject(projectId, 0), currentUser);
+        clearResourceCache();
     }
 
     /**

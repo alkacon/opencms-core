@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/08 14:35:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/08 15:55:28 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/07/08 14:35:29 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/08 15:55:28 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -240,7 +240,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         m_sqlManager = this.initQueries(dbPoolUrl);
         m_driverManager = driverManager;
                 
-        m_maxResourceVersionCount = config.getInteger(I_CmsConstants.C_CONFIGURATION_HISTORY + ".maxCountPerResource", 1);
+        m_maxResourceVersionCount = config.getInteger(I_CmsConstants.C_CONFIGURATION_HISTORY + ".maxCountPerResource", 10);
 
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". max. backup/resource : " + m_maxResourceVersionCount);

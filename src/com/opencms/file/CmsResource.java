@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/06 13:43:21 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/07/08 15:55:28 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.51 $ $Date: 2003/07/06 13:43:21 $
+ * @version $Revision: 1.52 $ $Date: 2003/07/08 15:55:28 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -679,14 +679,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
       public boolean isFile() {
         return getType() != I_CmsConstants.C_TYPE_FOLDER;
       }
-    /**
-     * Determines, if this resource is a folder.
-     *
-     * @return true, if this resource is a folder, else it returns false.
-     */
-      public boolean isFolder(){
-          return getType() == I_CmsConstants.C_TYPE_FOLDER;
-      }
+
     /**
      * Determines, if this resource is locked by a user.
      *
@@ -915,4 +908,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         return ownResourceName.compareTo(otherResourceName);
     }
     
+    /**
+     * Proves if this resource is a folder.<p>
+     * 
+     * @return true if this is is a folder
+     */
+    public boolean isFolder() {
+        return this.getType() == I_CmsConstants.C_TYPE_FOLDER;
+    }
 }

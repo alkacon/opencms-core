@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/08 14:35:29 $
-* Version: $Revision: 1.300 $
+* Date   : $Date: 2003/07/08 15:55:28 $
+* Version: $Revision: 1.301 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.300 $
+ * @version $Revision: 1.301 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4635,10 +4635,14 @@ public int getBackupVersionId(){
 		m_driverManager.writeAccessControlEntries(m_context.currentUser(), m_context.currentProject(), resource, acEntries);
 	}
     
-    public String readAbsolutePath(CmsResource resource) {                
+    public String readAbsolutePath(CmsResource resource) {
+        return readAbsolutePath(resource, false);
+    }
+    
+    public String readAbsolutePath(CmsResource resource, boolean includeDeleted) {                
         try {
             if (!resource.hasFullResourceName()) {
-                m_driverManager.readPath(m_context.currentUser(), m_context.currentProject(), resource, false);
+                m_driverManager.readPath(m_context.currentUser(), m_context.currentProject(), resource, includeDeleted);
             }
         } catch (CmsException e) {
             resource.setFullResourceName(null);
