@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/16 09:15:50 $
- * Version: $Revision: 1.220 $
+ * Date   : $Date: 2003/09/16 09:42:19 $
+ * Version: $Revision: 1.221 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.220 $ $Date: 2003/09/16 09:15:50 $
+ * @version $Revision: 1.221 $ $Date: 2003/09/16 09:42:19 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2023,9 +2023,7 @@ public class CmsDriverManager extends Object {
 //System.err.println("Delete "+ versionsToDelete);          
 //System.err.println("");
 //}
-            }                                                       
-      
-        }   
+
         return lastVersion;
     }
     
@@ -5207,32 +5205,6 @@ public class CmsDriverManager extends Object {
      * All users are granted.
      *
      * @param context the current request context
-     * @param resourceType The resource type to read the propertydefinitions for.
-     *
-     * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
-     * The Vector is maybe empty.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public Vector readAllPropertydefinitions(CmsRequestContext context, int resourceType) throws CmsException {
-        Vector returnValue = null;
-        returnValue = (Vector) m_propertyDefVectorCache.get(Integer.toString(resourceType));
-        if (returnValue == null) {
-            returnValue = m_vfsDriver.readAllPropertydefinitions(context.currentProject().getId(), resourceType);
-            Collections.sort(returnValue);
-            m_propertyDefVectorCache.put(Integer.toString(resourceType), returnValue);
-        }
-
-        return returnValue;
-    }
-
-    /**
-     * Reads all propertydefinitions for the given resource type.
-     *
-     * <B>Security</B>
-     * All users are granted.
-     *
-     * @param context the current request context
      * @param resourcetype The name of the resource type to read the propertydefinitions for.
      *
      * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
@@ -5241,15 +5213,39 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readAllPropertydefinitions(CmsRequestContext context, String resourcetype) throws CmsException {
-        Vector returnValue = null;
         I_CmsResourceType resType = getResourceType(resourcetype);
-
-        returnValue = (Vector) m_propertyDefVectorCache.get(resType.getResourceTypeName());
+        return readAllPropertydefinitions(context, resType);
+    }
+    
+    /**
+     * Reads all propertydefinitions for the given resource type.
+     *
+     * <B>Security</B>
+     * All users are granted.
+     *
+     * @param context the current request context
+     * @param resourceType The resource type to read the propertydefinitions for.
+     *
+     * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
+     * The Vector is maybe empty.
+     *
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */
+    public Vector readAllPropertydefinitions(CmsRequestContext context, int resourceType) throws CmsException {
+        I_CmsResourceType resType = getResourceType(resourceType);
+        return readAllPropertydefinitions(context, resType);        
+    }
+    
+    private Vector readAllPropertydefinitions(CmsRequestContext context, I_CmsResourceType resourceType) throws CmsException {
+        Vector returnValue = null;
+        
+        returnValue = (Vector) m_propertyDefVectorCache.get(Integer.toString(resourceType.getResourceType()));
         if (returnValue == null) {
-            returnValue = m_vfsDriver.readAllPropertydefinitions(context.currentProject().getId(), resType);
+            returnValue = m_vfsDriver.readAllPropertydefinitions(context.currentProject().getId(), resourceType);
             Collections.sort(returnValue);
-            m_propertyDefVectorCache.put(resType.getResourceTypeName(), returnValue);
+            m_propertyDefVectorCache.put(Integer.toString(resourceType.getResourceType()), returnValue);
         }
+
         return returnValue;
     }
 
@@ -7807,8 +7803,12 @@ public class CmsDriverManager extends Object {
             // write the file in the offline project
             // this sets a flag so that the file date is not set to the current time
             restoredFile.setDateLastModified(onlineFile.getDateLastModified());
+            
             // write-acces  was granted - write the file without setting state = changed
-            m_vfsDriver.writeFile(context.currentProject(), restoredFile, C_NOTHING_CHANGED, restoredFile.getUserLastModified());
+            //m_vfsDriver.writeFile(context.currentProject(), restoredFile, C_NOTHING_CHANGED, restoredFile.getUserLastModified());
+            m_vfsDriver.writeFileHeader(context.currentProject(), restoredFile, C_NOTHING_CHANGED, restoredFile.getUserLastModified());
+            m_vfsDriver.writeFileContent(restoredFile.getFileId(), restoredFile.getContents(), context.currentProject().getId(), false);            
+            
             // restore the properties in the offline project
             readPath(context,restoredFile,true);
             m_vfsDriver.deleteAllProperties(context.currentProject().getId(), restoredFile);
@@ -8143,7 +8143,9 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, file, I_CmsConstants.C_WRITE_ACCESS);
 
         // write-acces  was granted - write the file.
-        m_vfsDriver.writeFile(context.currentProject(), file, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
+        //m_vfsDriver.writeFile(context.currentProject(), file, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
+        m_vfsDriver.writeFileHeader(context.currentProject(), file, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
+        m_vfsDriver.writeFileContent(file.getFileId(), file.getContents(), context.currentProject().getId(), false);        
 
         if (file.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             file.setState(I_CmsConstants.C_STATE_CHANGED);

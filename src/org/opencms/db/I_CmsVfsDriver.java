@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/15 15:06:16 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2003/09/16 09:42:20 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,10 +52,13 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.55 $ $Date: 2003/09/15 15:06:16 $
+ * @version $Revision: 1.56 $ $Date: 2003/09/16 09:42:20 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
+    
+    CmsFile createCmsFileFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException;
+    CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasFileContentInResultSet) throws SQLException, CmsException;
 
     /**
      * Semi-constructor to create a CmsResource instance from a JDBC result set.<p>
@@ -381,13 +384,6 @@ public interface I_CmsVfsDriver {
     List getSubResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException;
 
     /**
-     * Gets all resources that are marked as undeleted.
-     * @param resources Vector of resources
-     * @return Returns all resources that are markes as deleted
-     */
-    List getUndeletedResources(List resources);
-
-    /**
      * Creates a new resource from an given CmsResource object.
      *
      * @param project The project in which the resource will be used.
@@ -417,18 +413,6 @@ public interface I_CmsVfsDriver {
     org.opencms.db.generic.CmsSqlManager initQueries();
 
     /**
-     * Moves a resource to a new destination folder.<p>
-     * 
-     * @param currentUser the current user
-     * @param currentProject the current project
-     * @param resource the resource that is moved
-     * @param destinationFolder the destination folder where the resource is moved
-     * @throws CmsException if something goes wrong
-     * @return the number of affected resources (should be 1 in a consistent database)
-     */
-    void moveResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsResource destinationFolder, String resourceName) throws CmsException;
-
-    /**
      * Reads all propertydefinitions for the given resource type.
      *
      * @param projectId the id of the project
@@ -440,19 +424,6 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     Vector readAllPropertydefinitions(int projectId, I_CmsResourceType resourcetype) throws CmsException;
-
-    /**
-     * Reads all propertydefinitions for the given resource type.
-     *
-     * @param projectId the id of the project
-     * @param resourcetype The resource type to read the propertydefinitions for.
-     *
-     * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
-     * The Vector is maybe empty.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    Vector readAllPropertydefinitions(int projectId, int resourcetype) throws CmsException;
 
     /**
      * Reads a file.<p>
@@ -592,16 +563,6 @@ public interface I_CmsVfsDriver {
     void removeFile(CmsProject currentProject, CmsResource resource) throws CmsException;
 
     /**
-     * Removes a resource physically in the database.<p>
-     * 
-     * @param currentProject currentProject the current project
-     * @param parentId the ID of the parent resource
-     * @param filename the filename of the resource
-     * @throws CmsException if something goes wrong
-     */
-    void removeFile(CmsProject currentProject, CmsUUID parentId, String filename) throws CmsException;
-
-    /**
      * Removes a folder and its subfolders physically in the database.<p>
      * The contents of the folders must have been already deleted
      *
@@ -611,19 +572,7 @@ public interface I_CmsVfsDriver {
      */
     void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException;
 
-    /**
-     * Removes a single folder physically in the database.<p>
-     * The folder is removed without deleting its subresources.
-     * 
-     * @param currentProject the current project
-     * @param structureId the structure id of the folder
-     * @throws CmsException if something goes wrong
-     */
-    void removeResource(CmsProject currentProject, CmsResource resource) throws CmsException;
-
     void removeTemporaryFile(CmsResource file) throws CmsException;
-    int renameResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, String newResourceName) throws CmsException;
-
     /**
      * Replaces the content and properties of an existing resource.<p>
      * 
@@ -664,8 +613,6 @@ public interface I_CmsVfsDriver {
      */
     void updateResource(CmsResource onlineResource, CmsResource offlineResource) throws CmsException;
     void updateResourceState(CmsProject project, CmsResource resource, int changed) throws CmsException;
-    void writeFile(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;
-
     /**
      * Writes the file content of an existing file
      * 
