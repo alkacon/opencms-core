@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsDefaultPage.java,v $
- * Date   : $Date: 2003/11/26 15:59:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/26 17:11:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,13 +45,15 @@ import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
+import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
 /**
  * Simple DOM based implementation of CmsDefaultPage.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2003/11/26 15:59:47 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/26 17:11:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
@@ -121,8 +123,19 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
         
         Element element = (Element)m_elements.get(language+"_"+name);
         Element editdata = element.element("editdata");
+        Node node = (editdata.hasContent()) ? editdata.node(0) : null;
+        String cdata = new String(data);
+
+        if (node != null && node.getNodeType() == Node.CDATA_SECTION_NODE) {
+            
+            node.setText(cdata);
+            return;
+            
+        } else if (node != null) {
+            editdata.remove(node);
+        }
         
-        editdata.setText(data.toString());
+        editdata.addCDATA(cdata);
     }
     
     /**
@@ -211,7 +224,8 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
         
-            XMLWriter writer = new XMLWriter(out);
+            OutputFormat format = OutputFormat.createPrettyPrint();
+            XMLWriter writer = new XMLWriter(out, format);
             writer.write(m_document);
             writer.close();
         
