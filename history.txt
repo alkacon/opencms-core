@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.20 
+- Enabled variant caching for class "CmsShowMedia".
+
 OpenCms 4.5.19 Chusuk       - 13 November 2001
 * Bugfixing mastermodule.
 - The setup-wizard can now setup a oracle oci database.
