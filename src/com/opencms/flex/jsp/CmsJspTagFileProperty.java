@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagFileProperty.java,v $
-* Date   : $Date: 2002/08/21 11:29:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/09/03 19:46:40 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,13 @@
 
 package com.opencms.flex.jsp;
 
+import com.opencms.flex.util.CmsPropertyLookup;
+
 /**
  * This Tag provides access to the currently included files OpenCms properties.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport implements I_CmsJspConstants {
     
@@ -99,27 +101,18 @@ public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport i
                 String file = null;
                 String prop = null;
                 
-                if ("parent".equals(getFile())) {
+                if ("parent".equals(getFile())) {                    
                     // Read properties of parent (i.e. top requested) file
-                    // file = c_req.getCmsResource();
-                    file = c_req.getCmsObject().getRequestContext().getUri();
-                    prop = cms.readProperty(file, getName());                    
+                    prop = CmsPropertyLookup.lookupProperty(cms, cms.getRequestContext().getUri(), getName(), false);                  
                 } else if ("this".equals(getFile())) {
                     // Read properties of this file
-                    file = c_req.getCmsResource();                  
-                    prop = cms.readProperty(file, getName());                    
+                    prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsResource(), getName(), false);
                 } else if ("search".equals(getFile())) {
                     // Try to find property on file and all parent folders
-                    String f = c_req.getCmsObject().getRequestContext().getUri();
-                    prop = cms.readProperty(f, getName());
-                    while ((prop == null) && (! "".equals(f))) {
-                        f = f.substring(0, f.lastIndexOf("/"));
-                        prop = cms.readProperty(f + "/", getName());
-                    }                    
+                    prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsResource(), getName(), true);
                 } else {
                     // Read properties of the file named in the attribute
-                    file = c_req.toAbsolute(getFile());
-                    prop = cms.readProperty(file, getName());                    
+                    prop = CmsPropertyLookup.lookupProperty(cms, c_req.toAbsolute(getFile()), getName(), false);                  
                 }
 
                 if ((m_defaultValue != null) && (prop == null)) {
