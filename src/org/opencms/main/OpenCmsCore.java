@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/05/25 11:23:54 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2004/05/26 07:59:55 $
+ * Version: $Revision: 1.116 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.115 $
+ * @version $Revision: 1.116 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -535,16 +535,6 @@ public final class OpenCmsCore {
      */
     protected void fireCmsEvent(CmsObject cms, int type, java.util.Map data) {
         fireCmsEvent(new CmsEvent(cms, type, data));
-    }
-
-    /**
-     * Returns the configuration manager.<p>
-     *
-     * @return the configuration manager
-     */
-    protected CmsConfigurationManager getConfigurationManager() {
-
-        return m_configurationManager;
     }
 
     /**
