@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2001/03/23 10:33:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/04/17 14:39:10 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -44,7 +44,7 @@ import source.org.apache.java.util.*;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2001/03/23 10:33:17 $
+ * @version $Revision: 1.5 $ $Date: 2001/04/17 14:39:10 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -335,9 +335,9 @@ public class CmsSynchronize implements I_CmsConstants{
 			// the file from SFS has changed, so update the VFS
 			try {
 				byte [] content = getFileBytes(sfsFile);
-				updVfsFile = vfsFile;
+                m_cms.lockResource(vfsFile.getAbsolutePath(), true);
+                updVfsFile = m_cms.readFile(vfsFile.getAbsolutePath());
 				updVfsFile.setContents(content);
-                m_cms.lockResource(updVfsFile.getAbsolutePath(), true);
 				m_cms.writeFile(updVfsFile);
                 m_synchronizeList.putDates(vfsFile.getAbsolutePath(), m_cms.readFile(updVfsFile.getAbsolutePath()).getDateLastModified(), sfsFile.lastModified());
 			} catch (Exception e) {
