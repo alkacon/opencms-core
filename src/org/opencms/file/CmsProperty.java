@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/04/01 13:38:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/04/02 08:11:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2004/04/01 13:38:51 $
+ * @version $Revision: 1.6 $ $Date: 2004/04/02 08:11:20 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -155,6 +155,10 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * Transforms a map with compound (String) values keyed by property keys into a list of 
      * CmsProperty objects with structure values.<p>
      * 
+     * This method is to prevent issues with backward incompatibilities in older code.
+     * Use this method with caution, it might be removed without with being deprecated
+     * before.<p>
+     * 
      * @param map a map with compound (String) values keyed by property keys
      * @return a list of CmsProperty objects
      */
@@ -183,6 +187,10 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     /**
      * Transforms a list of CmsProperty objects with structure and resource values into a map with
      * compound (String) values keyed by property keys.<p>
+     *
+     * This method is to prevent issues with backward incompatibilities in older code.
+     * Use this method with caution, it might be removed without with being deprecated
+     * before.<p>
      * 
      * @param list a list of CmsProperty objects
      * @return a map with compound (String) values keyed by property keys
@@ -200,7 +208,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
 
         result = (Map)new HashMap();
 
-        // choose the fastest method to iterate the list
+        // choose the fastest method to traverse the list
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
                 property = (CmsProperty)list.get(i);
@@ -379,7 +387,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
 
         return (m_structureValue != null) ? m_structureValue : m_resourceValue;
     }
-    
+
     /**
      * Returns the compound value of this property, or a specified default value,
      * if both the structure and resource values are null.<p>
@@ -391,15 +399,16 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return the compound value of this property, or the default value
      */
     public String getValue(String defaultValue) {
-        
+
         if (this == CmsProperty.C_NULL_PROPERTY) {
             // return the default value if this property is the null property
             return defaultValue;
         }
-        
+
         // somebody might have set both values to null manually
         // on a property object different from the null property...
-        return (m_structureValue != null) ? m_structureValue : ((m_resourceValue != null) ? m_resourceValue : defaultValue);
+        return (m_structureValue != null) ? m_structureValue : ((m_resourceValue != null) ? m_resourceValue
+        : defaultValue);
     }
 
     /**
@@ -468,18 +477,51 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     }
 
     /**
-     * Compares two CmsProperty objects by their key names.<p>
+     * Compares this property to another Object.<p>
+     * 
+     * If the Object is a property, this method behaves like {@link String#compareTo(java.lang.String)}.
+     * Otherwise, it throws a ClassCastException (as properties are comparable only to other properties).<p>
      *  
-     * @param object another object to compare with this property object
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     * @param object the other object to be compared
+     * @return if the argument is a property object, returns zero if the key of the argument is equal to the key of this property object, a value less than zero if the key of this property object is lexicographically less than the key of the argument, or a value greater than zero if the key of this property object is lexicographically greater than the key of the argument 
+     * @throws ClassCastException if the argument is not a property
      */
     public int compareTo(Object object) {
 
-        if (object instanceof CmsProperty) {
-            return m_key.compareTo(((CmsProperty)object).getKey());
-        }
+        return compareTo((CmsProperty)object);
+    }
 
-        return 0;
+    /**
+     * Compares this property to another property.<p>
+     * 
+     * This method behaves like {@link String#compareTo(java.lang.String)}.
+     * Both properties are compared by their key names.<p>
+     *  
+     * @param property the other property object to be compared
+     * @return zero if the key of the argument is equal to the key of this property object, a value less than zero if the key of this property object is lexicographically less than the key of the argument, or a value greater than zero if the key of this property object is lexicographically greater than the key of the argument 
+     * @see String#compareTo(java.lang.String)
+     */
+    public int compareTo(CmsProperty property) {
+
+        return m_key.compareTo(property.getKey());
+    }
+
+    /**
+     * Creates a clone of this property.<p>
+     *  
+     * @return a clone of this property
+     * @see java.lang.Object#clone()
+     */
+    public Object clone() {
+
+        CmsProperty property = new CmsProperty();
+
+        property.m_key = m_key;
+        property.m_structureValue = m_structureValue;
+        property.m_resourceValue = m_resourceValue;
+        property.m_autoCreatePropertyDefinition = m_autoCreatePropertyDefinition;
+
+        return property;
     }
 
 }
