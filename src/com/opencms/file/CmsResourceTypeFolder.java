@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/24 12:15:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2001/07/25 12:07:14 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -801,6 +801,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=0; i<allSubFolders.size(); i++){
             CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
             if(curFolder.getState() != C_STATE_NEW){
+                if(curFolder.getState() == C_STATE_DELETED){
+                    undeleteResource(cms, curFolder.getAbsolutePath());
+                    lockResource(cms, curFolder.getAbsolutePath(), true);
+                }
                 undoChanges(cms, curFolder.getAbsolutePath());
             } else {
                 // if it is a new folder then delete the folder
@@ -811,6 +815,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=0; i<allSubFiles.size(); i++){
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if(curFile.getState() != C_STATE_NEW){
+                if(curFile.getState() == C_STATE_DELETED){
+                    cms.undeleteResource(curFile.getAbsolutePath());
+                    cms.lockResource(curFile.getAbsolutePath(), true);
+                }
                 cms.undoChanges(curFile.getAbsolutePath());
             } else {
                 // if it is a new file then delete the file
