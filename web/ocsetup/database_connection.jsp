@@ -3,14 +3,14 @@
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
 
 <% /* Import packages */ %>
-<%@ page import="source.org.apache.java.util.*,java.util.*" %>
+<%@ page import="java.util.*" %>
 
 <% /* Set all given properties */ %>
 <jsp:setProperty name="Bean" property="*" />
 
 <% 
-	/* Initialize dbsetupscripts.properties */
-	ExtendedProperties properties = new ExtendedProperties(Bean.getWorkFolder() + "dbsetupscripts.properties");
+	/* get all available resource brokers */
+	Enumeration resourceBrokers = Bean.getResourceBrokers();
 	
 	/* next page to be accessed */
 	String nextPage;
@@ -73,15 +73,19 @@
 											<%
 												/* 	List all resource broker found 
 													in the dbsetupscripts.properties */
-												Enumeration resourceBrokers = properties.keys();
-												for(Enumeration e = properties.keys();e.hasMoreElements();)	{
-													String key = e.nextElement().toString();
-													String selected = "";													
-													if(Bean.getResourceBroker().equals(key))	{
-														selected = "selected";
+												if (resourceBrokers !=null)	{
+													while(resourceBrokers.hasMoreElements())	{
+														String key = resourceBrokers.nextElement().toString();
+														String selected = "";													
+														if(Bean.getResourceBroker().equals(key))	{
+															selected = "selected";
+														}
+														out.println("<option value='"+key+"' "+selected+">"+key);
 													}
-													out.println("<option value='"+key+"' "+selected+">"+key);
-												}														
+												}
+												else	{
+													out.println("<option value='null'>no resource broker found");
+												}
 											%>
 											<!-- --------------------------------------------------------- -->
 											</select>
