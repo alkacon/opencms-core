@@ -160,25 +160,30 @@ The actual database query will be executed in a filtermethod in the {\class CmsD
 \begin{verbatim}
 public Vector filterAll(CmsObject cms, Class contentDefinitionClass, int subId)
 {
-   // get a connection from the connection pool
-   Connection con = getConnection(cms);
+	try {
+		// get a connection from the connection pool
+		Connection con = getConnection(cms);
    
-   // prepare the statement filter_all
-   PreparedStatement stmnt = sqlPrepare(cms, con, "filter_all");
+		// prepare the statement filter_all
+		PreparedStatement stmnt = sqlPrepare(cms, con, "filter_all");
    
-   // set the value for the sub_id in the statement
-   stmnt.setInt(1, subId);
+		// set the value for the sub_id in the statement
+		stmnt.setInt(1, subId);
    
-   // execute the query and get the result
-   ResultSet res = stmnt.executeQuery();
+		// execute the query and get the result
+		ResultSet res = stmnt.executeQuery();
    
-   // close the connection   
-   sqlClose(con, stmnt, res);
-   
-   // build a Vector of Content Definition objects from the result
-   // boolean parameter viewonly set to true to return only entries 
-   // which are allowed to be viewed by the current user (v-right)
-   return createVectorOfCd(res, contentDefinitionClass, cms, true);
+		// build a Vector of Content Definition objects from the result
+		// boolean parameter viewonly set to true to return only entries 
+		// which are allowed to be viewed by the current user (v-right)
+		return createVectorOfCd(res, contentDefinitionClass, cms, true);
+	} catch(SQLException exc) {
+		exc.printStackTrace(System.err);
+		throw new CmsException("Error accessing database.",
+			CmsException.C_SQL_ERROR, exc);
+	} finally {
+		sqlClose(con, stmnt, res);
+	}   
 }
 \end{verbatim}
 
