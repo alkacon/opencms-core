@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/17 16:16:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/11/17 16:20:59 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -608,7 +608,7 @@ function displayHead(doc){
 
     var headFoot="<td class=menu width=30px nowrap align=right>&nbsp;</td>"+
             "<td class=menubold nowrap align=right valign=middle><img border=0 id='bt_folder' name='bt_folder' width=16 height=16></td>"+ 
-            "<td class=menubold nowrap align=right valign=middle><p class=einzug><font face=arial size=2> adress: </td>"+
+            "<td class=menubold nowrap align=right valign=middle><p class=einzug><font face=arial size=2> <b>adress:</b> </td>"+
             "<td class=menu nowrap align=left valign=middle><p class=einzug>"+
 //onChange='javascript:openurl();' 
             "<input value="+vr.actDirectory+" size=50 maxlength=255 name=url id=url>"+
@@ -619,8 +619,8 @@ function displayHead(doc){
 
     if(vr.actProject!=vr.onlineProject){
         doc.writeln("<td class=menu nowrap width=32px>"+
-            //"<a href=\"javascript: top.updateFrame('body.explorer_content.explorer_files','explorer_files_new.html');\""+
-            "<a href='explorer_files_new.html' "+
+            //"<a href=\"javascript: top.updateFrame('body.explorer_content.explorer_files','explorer_files_new.html');\" target='explorer_files'"+
+            "<a href='explorer_files_new.html' target='explorer_files' "+
             "onmouseout=\"top.choff(document, 'bt_new');\" "+
             "onmouseover=\"top.chon(document, 'bt_new');\">");
         doc.writeln("<img alt=new width=32  height=32 border=0 name='bt_new'></a></td>"); 
