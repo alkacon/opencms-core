@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/12/07 11:14:35 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,18 +52,6 @@ import java.util.StringTokenizer;
  */
 public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsConstants {
 
-	/*  private final String C_PACKETNAME   = "packetname";
-	private final String C_VERSION      = "version";
-	private final String C_MODULENAME   = "modulename";
-	private final String C_DESCRIPTION  = "description";
-	private final String C_VIEW         = "view";
-	private final String C_ADMINPOINT   = "adminpoint";
-	private final String C_MAINTENANCE  = "maintenance";
-	private final String C_AUTHOR       = "author";
-	private final String C_EMAIL        = "email";
-	private final String C_DATE         = "date";
-	private final String C_SESSION_DATA = "module_create_data";
-	*/
 	private final String C_MODULE = "module";
 	private final String C_ACTION = "action";
 	private final String C_NAME_PARAMETER = "module";
@@ -165,7 +153,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 				resourcen[i++] = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length() - 1) + C_VFS_PATH_MODULEDEMOS + exportName + "/";
 			}
 
-			// TODO: check what this piece of code does:
+			// check if all resources exists and can be read
 			for (i = 0; i < resourceCount; i++) {
 				try {
 					if (resourcen[i] != null) {
@@ -176,6 +164,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 					}
 				}
 				catch (CmsException e) {
+                    // resource did not exist / could not be read
 					if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
 						A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "error exporting module: couldn't add " + resourcen[i] + " to Module\n" + Utils.getStackTrace(e));
 					}
@@ -192,17 +181,15 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 				return startProcessing(cms, templateDocument, elementName, parameters, "done");
 			}
 
-			// end hack
-			reg.exportModule(exportName, resourcen, com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + exportName + "_" + reg.getModuleVersion(exportName));
+			reg.exportModule(exportName, resourcen, com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + exportName + "_" + reg.getModuleVersion(exportName));
 			templateSelector = "done";
 		}
 		else {
-
 			// first call
 			templateDocument.setData("modulename", moduleName);
 		}
 
-		// Now load the template file and start the processing
+		// now load the template file and start the processing
 		return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
 	}
 

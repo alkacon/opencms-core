@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/11/07 19:31:33 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2002/12/07 11:14:30 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,24 +28,42 @@
 
 package com.opencms.file;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import java.text.*;
-import java.security.*;
-import java.lang.reflect.*;
-import org.w3c.dom.*;
-import com.opencms.template.*;
-import com.opencms.core.*;
-import com.opencms.report.*;
-import com.opencms.workplace.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.report.CmsShellReport;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.I_CmsXmlParser;
+import com.opencms.workplace.I_CmsWpConstants;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.53 $ $Date: 2002/11/07 19:31:33 $
+ * @version $Revision: 1.54 $ $Date: 2002/12/07 11:14:30 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -1665,7 +1683,7 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
     String newModuleName = newModule.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
     String newModuleVersion = newModule.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
 
-    // exists the module already?
+    // does the module already exist?
     if (moduleExists(newModuleName)) {
         throw new CmsException("The module " + newModuleName + " exists already", CmsException.C_REGISTRY_ERROR);
     }
@@ -1675,22 +1693,45 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
     if (dependencies.size() != 0) {
         throw new CmsException("the dependencies for the module are not fulfilled.", CmsException.C_REGISTRY_ERROR);
     }
+    
+    // add all 5.0 default directories to the exclusion list
+    // otherwise all of these folders would be locked during import, which is usually not 
+    // required and slows down the import considerably (esp. for the "/system/" fodler)
+    if (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && false) {
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_SYSTEM);        
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_MODULES);
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_BODIES);
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_WORKPLACE);
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_MODULEDEMOS);
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_GALLERIES);        
+        exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_PICS);
+        exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_HTML);
+        exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_DOWNLOAD);
+        exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_EXTERNALLINKS);        
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_DEFAULT_BODIES);
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_DEFAULT_INTERNAL);
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES);
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_HELP);
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_LOCALES);
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_SCRIPTS);
+        exclusion.add(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS);        
+    }
+    
     Vector resourceNames = new Vector();
     Vector resourceCodes = new Vector();
     
     String propertyName = null;
     String propertyValue = null;    
-    
+
+    // check for module type SIMPLE or TRADITIONAL
+    boolean isSimpleModule = false;    
     try {
-        String moduleType = newModule.getElementsByTagName("type").item(0).getFirstChild().getNodeValue();
-        
-        // only in case of a "traditional" module the "module" property is set on all imported files
-        if (moduleType==null || !moduleType.equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
-            propertyName = "module";
-            propertyValue = newModuleName + "_" + newModuleVersion;
-        }
+        isSimpleModule = CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(newModule.getElementsByTagName("type").item(0).getFirstChild().getNodeValue());
     }
     catch (Exception e) {
+        // value of "isSimpleModule" will be false, so traditional module is the default         
+    }    
+    if (! isSimpleModule) {
         propertyName = "module";
         propertyValue = newModuleName + "_" + newModuleVersion;        
     }
@@ -1711,26 +1752,28 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
     uploadBy.appendChild(newModule.getOwnerDocument().createTextNode(m_cms.getRequestContext().currentUser().getName()));
     newModule.appendChild(uploadBy);
 
+    if (! isSimpleModule) {
     // set the files
-    Node files = newModule.getOwnerDocument().createElement("files");
-
-    // store the resources-names that are depending to the module
-    for (int i = 0; i < resourceNames.size(); i++) {
-        Node file = newModule.getOwnerDocument().createElement("file");
-        files.appendChild(file);
-        Node name = newModule.getOwnerDocument().createElement("name");
-        file.appendChild(name);
-        Node checksum = newModule.getOwnerDocument().createElement("checksum");
-        file.appendChild(checksum);
-        name.appendChild(newModule.getOwnerDocument().createTextNode((String) resourceNames.elementAt(i)));
-        //Gridnine AB Aug 8, 2002
-        checksum.appendChild(newModule.getOwnerDocument().createTextNode(
-            com.opencms.util.Encoder.escape((String)resourceCodes.elementAt(i),
-            m_cms.getRequestContext().getEncoding())));
+        Node files = newModule.getOwnerDocument().createElement("files");
+    
+        // store the resources-names that are depending to the module
+        for (int i = 0; i < resourceNames.size(); i++) {
+            Node file = newModule.getOwnerDocument().createElement("file");
+            files.appendChild(file);
+            Node name = newModule.getOwnerDocument().createElement("name");
+            file.appendChild(name);
+            Node checksum = newModule.getOwnerDocument().createElement("checksum");
+            file.appendChild(checksum);
+            name.appendChild(newModule.getOwnerDocument().createTextNode((String) resourceNames.elementAt(i)));
+            // Encoding project:
+            checksum.appendChild(newModule.getOwnerDocument().createTextNode(
+                com.opencms.util.Encoder.escape((String)resourceCodes.elementAt(i),
+                m_cms.getRequestContext().getEncoding())));
+        }
+    
+        // append the files to the module-entry
+        newModule.appendChild(files);
     }
-
-    // append the files to the module-entry
-    newModule.appendChild(files);
 
     // append the module data to the registry
     Node newNode = getXmlParser().importNode(m_xmlReg, newModule);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2002/12/04 14:44:01 $
-* Version: $Revision: 1.118 $
+* Date   : $Date: 2002/12/07 11:14:42 $
+* Version: $Revision: 1.119 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.118 $ $Date: 2002/12/04 14:44:01 $
+ * @version $Revision: 1.119 $ $Date: 2002/12/07 11:14:42 $
  */
 
 public interface I_CmsWpConstants {
@@ -53,41 +53,50 @@ public interface I_CmsWpConstants {
     /** Parameter for content body folder */
     public static final String C_VFS_PATH_BODIES = C_VFS_NEW_STRUCTURE?"/system/bodies/":"/content/bodys/";
      
+    /** Path to system folder */ 
+    public static final String C_VFS_PATH_SYSTEM = "/system/"; 
+     
     /** Path to modules folder */
-    public static final String C_VFS_PATH_MODULES = "/system/modules/";
+    public static final String C_VFS_PATH_MODULES = C_VFS_PATH_SYSTEM+"modules/";
     
     /** Parameter for default module */
-    public static final String C_VFS_PATH_DEFAULTMODULE = C_VFS_NEW_STRUCTURE?"/system/modules/default/":"/content/";
+    public static final String C_VFS_PATH_DEFAULTMODULE = C_VFS_NEW_STRUCTURE?C_VFS_PATH_MODULES+"default/":"/content/";
     
     /** Path to module demo folder (deprecated since version 5.0 beta 2) */
-    public static final String C_VFS_PATH_MODULEDEMOS = C_VFS_NEW_STRUCTURE?"/system/modules/moduledemos/":"/moduledemos/";
+    public static final String C_VFS_PATH_MODULEDEMOS = C_VFS_NEW_STRUCTURE?C_VFS_PATH_MODULES+"moduledemos/":"/moduledemos/";
+
+    /** Path to the galleries */
+    public static final String C_VFS_PATH_GALLERIES = C_VFS_NEW_STRUCTURE?C_VFS_PATH_SYSTEM+"galleries/":"/";
 
     /** Path to pics gallery folder */
-    public static final String C_VFS_GALLERY_PICS = C_VFS_NEW_STRUCTURE?"/system/galleries/pics/":"/pics/";
+    public static final String C_VFS_GALLERY_PICS = C_VFS_NEW_STRUCTURE?C_VFS_PATH_GALLERIES+"pics/":"/pics/";
 
     /** Path to download gallery folder */
-    public static final String C_VFS_GALLERY_DOWNLOAD = C_VFS_NEW_STRUCTURE?"/system/galleries/download/":"/download/";
+    public static final String C_VFS_GALLERY_DOWNLOAD = C_VFS_PATH_GALLERIES+"download/";
  
     /** Path to html gallery folder */
-    public static final String C_VFS_GALLERY_HTML = C_VFS_NEW_STRUCTURE?"/system/galleries/htmlgalleries/":"/htmlgalleries/";
+    public static final String C_VFS_GALLERY_HTML = C_VFS_PATH_GALLERIES+"htmlgalleries/";
 
     /** Path to externallink gallery folder */
-    public static final String C_VFS_GALLERY_EXTERNALLINKS = C_VFS_NEW_STRUCTURE?"/system/galleries/externallinks/":"/externallinks/";
+    public static final String C_VFS_GALLERY_EXTERNALLINKS = C_VFS_PATH_GALLERIES+"externallinks/";
+
+    /** Path to the workplace */
+    public static final String C_VFS_PATH_WORKPLACE = C_VFS_PATH_SYSTEM + "workplace/";
 
     /** Path to system image folder */
-    public static final String C_VFS_PATH_SYSTEMPICS = C_VFS_NEW_STRUCTURE?"/system/workplace/resources/":"/pics/system/";
+    public static final String C_VFS_PATH_SYSTEMPICS = C_VFS_NEW_STRUCTURE?C_VFS_PATH_WORKPLACE+"resources/":"/pics/system/";
 
     /** Path to exported system image folder */
     public static final String C_SYSTEM_PICS_EXPORT_PATH = C_VFS_NEW_STRUCTURE?"/resources/":"/pics/system/";
 
     /** Path to locales */
-    public static final String C_VFS_PATH_LOCALES = C_VFS_NEW_STRUCTURE?"/system/workplace/locales/":"/system/workplace/config/language/";
+    public static final String C_VFS_PATH_LOCALES = C_VFS_NEW_STRUCTURE?C_VFS_PATH_WORKPLACE+"locales/":C_VFS_PATH_WORKPLACE+"config/language/";
 
     /** Path to scripts */
-    public static final String C_VFS_PATH_SCRIPTS = C_VFS_NEW_STRUCTURE?"/system/workplace/scripts/":"/system/workplace/templates/js/";
+    public static final String C_VFS_PATH_SCRIPTS = C_VFS_NEW_STRUCTURE?C_VFS_PATH_WORKPLACE+"scripts/":C_VFS_PATH_WORKPLACE+"templates/js/";
 
     /** Path to online help pages */
-    public static final String C_VFS_PATH_HELP = "/system/workplace/help/";
+    public static final String C_VFS_PATH_HELP = C_VFS_PATH_WORKPLACE+"help/";
 
     /** Directory name of content templates folder */
     public static final String C_VFS_DIR_TEMPLATES = "templates/";
@@ -102,7 +111,7 @@ public interface I_CmsWpConstants {
     public static final String C_VFS_PATH_DEFAULT_TEMPLATES = C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_TEMPLATES;
 
     /** Path to content internal folder */
-    public static final String C_VFS_PATH_DEFAULT_INTERNAL = C_VFS_NEW_STRUCTURE?"/system/workplace/templates/":C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_INTERNAL;
+    public static final String C_VFS_PATH_DEFAULT_INTERNAL = C_VFS_NEW_STRUCTURE?C_VFS_PATH_WORKPLACE+"templates/":C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_INTERNAL;
 
     /** Path to content default_bodies folder */
     public static final String C_VFS_PATH_DEFAULT_BODIES = C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_DEFAULTBODIES;
