@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/15 16:05:05 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/16 07:55:39 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,8 @@ import java.util.Vector;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2003/09/15 16:05:05 $
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @version $Revision: 1.21 $ $Date: 2003/09/16 07:55:39 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {

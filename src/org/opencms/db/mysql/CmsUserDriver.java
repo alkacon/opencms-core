@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/15 16:01:39 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/16 07:55:38 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2003/09/15 16:01:39 $
+ * @version $Revision: 1.11 $ $Date: 2003/09/16 07:55:38 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -65,7 +65,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         Connection conn = null;
 
         try {
-            value = serializeAdditionalUserInfo(additionalInfos);
+            value = internalSerializeAdditionalUserInfo(additionalInfos);
 
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
@@ -164,7 +164,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE");
 
-            value = serializeAdditionalUserInfo(user.getAdditionalInfo());
+            value = internalSerializeAdditionalUserInfo(user.getAdditionalInfo());
 
             // write data to database
             stmt.setString(1, user.getDescription());

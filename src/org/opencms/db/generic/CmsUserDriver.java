@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/15 16:01:39 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/09/16 07:55:39 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.23 $ $Date: 2003/09/15 16:01:39 $
+ * @version $Revision: 1.24 $ $Date: 2003/09/16 07:55:39 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -90,283 +90,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * Adds a user to the database.
-     *
-     * @param id user id
-     * @param name username
-     * @param password user-password
-     * @param recoveryPassword user-recoveryPassword
-     * @param description user-description
-     * @param firstname user-firstname
-     * @param lastname user-lastname
-     * @param email user-email
-     * @param lastlogin user-lastlogin
-     * @param lastused user-lastused
-     * @param flags user-flags
-     * @param additionalInfos user-additional-infos
-     * @param defaultGroup user-defaultGroup
-     * @param address user-defauladdress
-     * @param section user-section
-     * @param type user-type
-     *
-     * @return the created user.
-     * @throws CmsException if something goes wrong.
-     */
-    public CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
-        byte[] value = null;
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            value = serializeAdditionalUserInfo(additionalInfos);
-
-            // write data to database
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
-
-            stmt.setString(1, id.toString());
-            stmt.setString(2, name);
-            stmt.setString(3, m_sqlManager.validateNull(password));
-            stmt.setString(4, m_sqlManager.validateNull(recoveryPassword));
-            stmt.setString(5, m_sqlManager.validateNull(description));
-            stmt.setString(6, m_sqlManager.validateNull(firstname));
-            stmt.setString(7, m_sqlManager.validateNull(lastname));
-            stmt.setString(8, m_sqlManager.validateNull(email));
-            stmt.setTimestamp(9, new Timestamp(lastlogin));
-            stmt.setTimestamp(10, new Timestamp(lastused));
-            stmt.setInt(11, flags);
-            m_sqlManager.setBytes(stmt, 12, value);
-            stmt.setString(13, defaultGroup.getId().toString());
-            stmt.setString(14, m_sqlManager.validateNull(address));
-            stmt.setString(15, m_sqlManager.validateNull(section));
-            stmt.setInt(16, type);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "[CmsUser]: " + name + ", Id=" + id.toString(), CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        return readUser(id);
-    }
-
-    /**
-     * Adds a user to the database.
-     *
-     * @param id user id
-     * @param name username
-     * @param password user-password
-     * @param description user-description
-     * @param firstname user-firstname
-     * @param lastname user-lastname
-     * @param email user-email
-     * @param lastlogin user-lastlogin
-     * @param lastused user-lastused
-     * @param flags user-flags
-     * @param additionalInfos user-additional-infos
-     * @param defaultGroup user-defaultGroup
-     * @param address user-defauladdress
-     * @param section user-section
-     * @param type user-type
-     *
-     * @return the created user.
-     * @throws CmsException if something goes wrong.
-     */
-    public CmsUser addUser(CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
-        byte[] value = null;
-        //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
-        //CmsUUID id = new CmsUUID();
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            value = serializeAdditionalUserInfo(additionalInfos);
-
-            // write data to database
-
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
-
-            stmt.setString(1, id.toString());
-            stmt.setString(2, name);
-            // crypt the password with MD5
-            stmt.setString(3, encryptPassword(password));
-            stmt.setString(4, encryptPassword(""));
-            stmt.setString(5, m_sqlManager.validateNull(description));
-            stmt.setString(6, m_sqlManager.validateNull(firstname));
-            stmt.setString(7, m_sqlManager.validateNull(lastname));
-            stmt.setString(8, m_sqlManager.validateNull(email));
-            stmt.setTimestamp(9, new Timestamp(lastlogin));
-            stmt.setTimestamp(10, new Timestamp(lastused));
-            stmt.setInt(11, flags);
-            m_sqlManager.setBytes(stmt, 12, value);
-            stmt.setString(13, defaultGroup.getId().toString());
-            stmt.setString(14, m_sqlManager.validateNull(address));
-            stmt.setString(15, m_sqlManager.validateNull(section));
-            stmt.setInt(16, type);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        // cw 20.06.2003 avoid calling upper level methods
-        // return readUser(id);
-        return this.readUser(id);
-    }
-
-    /**
-     * Adds a user to the database.
-     *
-     * @param name username
-     * @param password user-password
-     * @param description user-description
-     * @param firstname user-firstname
-     * @param lastname user-lastname
-     * @param email user-email
-     * @param lastlogin user-lastlogin
-     * @param lastused user-lastused
-     * @param flags user-flags
-     * @param additionalInfos user-additional-infos
-     * @param defaultGroup user-defaultGroup
-     * @param address user-defauladdress
-     * @param section user-section
-     * @param type user-type
-     *
-     * @return the created user.
-     * @throws CmsException if something goes wrong.
-     */
-    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
-        byte[] value = null;
-        //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
-        CmsUUID id = new CmsUUID();
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            value = serializeAdditionalUserInfo(additionalInfos);
-
-            // write data to database
-
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
-
-            stmt.setString(1, id.toString());
-            stmt.setString(2, name);
-            // crypt the password with MD5
-            stmt.setString(3, encryptPassword(password));
-            stmt.setString(4, encryptPassword(""));
-            stmt.setString(5, m_sqlManager.validateNull(description));
-            stmt.setString(6, m_sqlManager.validateNull(firstname));
-            stmt.setString(7, m_sqlManager.validateNull(lastname));
-            stmt.setString(8, m_sqlManager.validateNull(email));
-            stmt.setTimestamp(9, new Timestamp(lastlogin));
-            stmt.setTimestamp(10, new Timestamp(0));
-            stmt.setInt(11, flags);
-            m_sqlManager.setBytes(stmt, 12, value);
-            stmt.setString(13, defaultGroup.getId().toString());
-            stmt.setString(14, m_sqlManager.validateNull(address));
-            stmt.setString(15, m_sqlManager.validateNull(section));
-            stmt.setInt(16, type);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        // cw 20.06.2003 avoid calling upper level methods
-        // return readUser(id);
-        return this.readUser(id);
-    }
-
-    /**
-     * Adds a user to a group.<BR/>
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param userid The id of the user that is to be added to the group.
-     * @param groupid The id of the group.
-     * @throws CmsException Throws CmsException if operation was not succesfull.
-     */
-    public void createUserInGroup(CmsUUID userid, CmsUUID groupid) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        // check if user is already in group
-        if (!validateUserInGroup(userid, groupid)) {
-            // if not, add this user to the group
-            try {
-                // create statement
-                conn = m_sqlManager.getConnection();
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_ADDUSERTOGROUP");
-
-                // write the new assingment to the database
-                stmt.setString(1, groupid.toString());
-                stmt.setString(2, userid.toString());
-                // flag field is not used yet
-                stmt.setInt(3, I_CmsConstants.C_UNKNOWN_INT);
-                stmt.executeUpdate();
-
-            } catch (SQLException e) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-            } finally {
-                m_sqlManager.closeAll(conn, stmt, null);
-            }
-        }
-    }
-
-    /**
-     * Changes the user type of the user
-     *
-     * @param userId The id of the user to change
-     * @param userType The new usertype of the user
-     * @throws CmsException if something goes wrong
-     */
-    public void writeUserType(CmsUUID userId, int userType) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_UPDATE_USERTYPE");
-
-            // write data to database
-            stmt.setInt(1, userType);
-            stmt.setString(2, userId.toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    //
-    // Access Control Entry
-    //
-
-    /**
-     * Creates an access control entry.<p>
-     * 
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @param principal the id of the principal (user or group)
-     * @param allowed the bitset of allowed permissions
-     * @param denied the bitset of denied permissions
-     * @param flags flags
-     * @throws CmsException if something goes wrong
+     * @see org.opencms.db.I_CmsUserDriver#createAccessControlEntry(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, int, int, int)
      */
     public void createAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException {
 
@@ -393,104 +117,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Internal helper method to create an access control entry from a database record.<p>
-     * 
-     * @param res resultset of the current query
-     * @return a new CmsAccessControlEntry initialized with the values from the current database record
-     * @throws SQLException if something goes wrong
-     */
-    private CmsAccessControlEntry createAceFromResultSet(ResultSet res) throws SQLException {
-        // this method is final to allow the java compiler to inline this code!
-
-        return new CmsAccessControlEntry(new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_RESOURCE_ID"))), new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS")));
-    }
-
-    /**
-     * Internal helper method to create an access control entry from a database record.<p>
-     * 
-     * @param res resultset of the current query
-     * @param newId the id of the new access control entry
-     * @return a new CmsAccessControlEntry initialized with the values from the current database record
-     * @throws SQLException if something goes wrong
-     */
-    private CmsAccessControlEntry createAceFromResultSet(ResultSet res, CmsUUID newId) throws SQLException {
-        // this method is final to allow the java compiler to inline this code!
-
-        return new CmsAccessControlEntry(newId, new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS")));
-    }
-
-    /**
-     * Semi-constructor to create a CmsGroup instance from a JDBC result set.
-     * 
-     * @param res the JDBC ResultSet
-     * @param hasGroupIdInResultSet true if the SQL select query includes the GROUP_ID table attribute
-     * @return CmsGroup the new CmsGroup object
-     * @throws SQLException in case the result set does not include a requested table attribute
-     */
-    protected final CmsGroup createCmsGroupFromResultSet(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException {
-        // this method is final to allow the java compiler to inline this code!
-        CmsUUID groupId = null;
-
-        if (hasGroupIdInResultSet) {
-            groupId = new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_GROUP_ID")));
-        } else {
-            groupId = new CmsUUID(res.getString(m_sqlManager.get("C_USERS_USER_DEFAULT_GROUP_ID")));
-        }
-
-        return new CmsGroup(groupId, new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.get("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.get("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.get("C_GROUPS_GROUP_FLAGS")));
-    }
-
-    /**
-     * Semi-constructor to create a CmsUser instance from a JDBC result set.
-     * 
-     * @param res the JDBC ResultSet
-     * @param hasGroupIdInResultSet true, if a default group id is available
-     * @return CmsUser the new CmsUser object
-     * @throws SQLException in case the result set does not include a requested table attribute
-     * @throws IOException if there is an error in deserializing the user info
-     * @throws ClassNotFoundException if there is an error in deserializing the user info
-     */
-    protected final CmsUser createCmsUserFromResultSet(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException, IOException, ClassNotFoundException {
-        // this method is final to allow the java compiler to inline this code!
-
-        // deserialize the additional userinfo hash
-        byte[] value = m_sqlManager.getBytes(res, m_sqlManager.get("C_USERS_USER_INFO"));
-        ByteArrayInputStream bin = new ByteArrayInputStream(value);
-        ObjectInputStream oin = new ObjectInputStream(bin);
-        Hashtable info = (Hashtable) oin.readObject();
-
-        return new CmsUser(
-            new CmsUUID(res.getString(m_sqlManager.get("C_USERS_USER_ID"))),
-            res.getString(m_sqlManager.get("C_USERS_USER_NAME")),
-            res.getString(m_sqlManager.get("C_USERS_USER_PASSWORD")),
-            res.getString(m_sqlManager.get("C_USERS_USER_RECOVERY_PASSWORD")),
-            res.getString(m_sqlManager.get("C_USERS_USER_DESCRIPTION")),
-            res.getString(m_sqlManager.get("C_USERS_USER_FIRSTNAME")),
-            res.getString(m_sqlManager.get("C_USERS_USER_LASTNAME")),
-            res.getString(m_sqlManager.get("C_USERS_USER_EMAIL")),
-            CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTLOGIN")).getTime(),
-            res.getInt(m_sqlManager.get("C_USERS_USER_FLAGS")),
-            info,
-            createCmsGroupFromResultSet(res, hasGroupIdInResultSet),
-            res.getString(m_sqlManager.get("C_USERS_USER_ADDRESS")),
-            res.getString(m_sqlManager.get("C_USERS_USER_SECTION")),
-            res.getInt(m_sqlManager.get("C_USERS_USER_TYPE")));
-    }
-
-    /**
-     * Adds a new group to the Cms.<BR/>
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param groupId The unique id of the new group.
-     * @param groupName The name of the new group.
-     * @param description The description for the new group.
-     * @param flags The flags for the new group.
-     * @param parentGroupName The name of the parent group (or null).
-     *
-     * @return Group
-     *
-     * @throws CmsException Throws CmsException if operation was not succesfull.
+     * @see org.opencms.db.I_CmsUserDriver#createGroup(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, int, java.lang.String)
      */
     public CmsGroup createGroup(CmsUUID groupId, String groupName, String description, int flags, String parentGroupName) throws CmsException {
         CmsUUID parentId = CmsUUID.getNullUUID();
@@ -534,11 +161,87 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Deletes all access control entries belonging to a resource.<p>
-     * 
-     * @param project the project to delete the entries
-     * @param resource the id of the resource
-     * @throws CmsException if something goes wrong
+     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
+     */
+    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+        byte[] value = null;
+        //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
+        CmsUUID id = new CmsUUID();
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            value = internalSerializeAdditionalUserInfo(additionalInfos);
+
+            // write data to database
+
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
+
+            stmt.setString(1, id.toString());
+            stmt.setString(2, name);
+            // crypt the password with MD5
+            stmt.setString(3, encryptPassword(password));
+            stmt.setString(4, encryptPassword(""));
+            stmt.setString(5, m_sqlManager.validateNull(description));
+            stmt.setString(6, m_sqlManager.validateNull(firstname));
+            stmt.setString(7, m_sqlManager.validateNull(lastname));
+            stmt.setString(8, m_sqlManager.validateNull(email));
+            stmt.setTimestamp(9, new Timestamp(lastlogin));
+            stmt.setTimestamp(10, new Timestamp(0));
+            stmt.setInt(11, flags);
+            m_sqlManager.setBytes(stmt, 12, value);
+            stmt.setString(13, defaultGroup.getId().toString());
+            stmt.setString(14, m_sqlManager.validateNull(address));
+            stmt.setString(15, m_sqlManager.validateNull(section));
+            stmt.setInt(16, type);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (IOException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+
+        // cw 20.06.2003 avoid calling upper level methods
+        // return readUser(id);
+        return this.readUser(id);
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#createUserInGroup(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public void createUserInGroup(CmsUUID userid, CmsUUID groupid) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        // check if user is already in group
+        if (!validateUserInGroup(userid, groupid)) {
+            // if not, add this user to the group
+            try {
+                // create statement
+                conn = m_sqlManager.getConnection();
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_ADDUSERTOGROUP");
+
+                // write the new assingment to the database
+                stmt.setString(1, groupid.toString());
+                stmt.setString(2, userid.toString());
+                // flag field is not used yet
+                stmt.setInt(3, I_CmsConstants.C_UNKNOWN_INT);
+                stmt.executeUpdate();
+
+            } catch (SQLException e) {
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            } finally {
+                m_sqlManager.closeAll(conn, stmt, null);
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#deleteAccessControlEntries(com.opencms.file.CmsProject, org.opencms.util.CmsUUID)
      */
     public void deleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 
@@ -562,13 +265,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Delete a group from the Cms.<BR/>
-     * Only groups that contain no subgroups can be deleted.
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param delgroup The name of the group that is to be deleted.
-     * @throws CmsException  Throws CmsException if operation was not succesfull.
+     * @see org.opencms.db.I_CmsUserDriver#deleteGroup(java.lang.String)
      */
     public void deleteGroup(String delgroup) throws CmsException {
         Connection conn = null;
@@ -588,10 +285,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Deletes a user from the database.
-     *
-     * @param userId The Id of the user to delete
-     * @throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsUserDriver#deleteUser(org.opencms.util.CmsUUID)
      */
     public void deleteUser(CmsUUID userId) throws CmsException {
         Connection conn = null;
@@ -610,10 +304,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Deletes a user from the database.
-     *
-     * @param userName the user to delete
-     * @throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsUserDriver#deleteUser(java.lang.String)
      */
     public void deleteUser(String userName) throws CmsException {
         Connection conn = null;
@@ -623,6 +314,27 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_DELETE");
             stmt.setString(1, userName);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#deleteUserInGroup(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public void deleteUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            // create statement
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_REMOVEUSERFROMGROUP");
+
+            stmt.setString(1, groupId.toString());
+            stmt.setString(2, userId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -643,10 +355,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Method to encrypt the passwords.
-     *
-     * @param value The value to encrypt.
-     * @return The encrypted value.
+     * @see org.opencms.db.I_CmsUserDriver#encryptPassword(java.lang.String)
      */
     public String encryptPassword(String value) {
         // is there a valid digest?
@@ -691,63 +400,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Reads all relevant access control entries for a given resource.
-     * If an access control entry is inherited, additionally the flag C_ACCESSFLAGS_INHERITED will be set
-     * in order to signal that this entry does not belong directly to the resource.
-     * 
-     * @param project the project to read the entries
-     * @param resource the id of the resource
-     * @param inheritedOnly if set, only entries with the inherit flag are returned
-     * @return a vector of access control entries defining all permissions for the given resource
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException {
-
-        Vector aceList = new Vector();
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRIES");
-
-            String resId = resource.toString();
-            stmt.setString(1, resId);
-
-            res = stmt.executeQuery();
-
-            // create new CmsAccessControlEntry and add to list
-            while (res.next()) {
-                CmsAccessControlEntry ace = createAceFromResultSet(res);
-                if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) > 0)
-                    continue;
-
-                if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) == 0))
-                    continue;
-
-                if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) > 0))
-                    ace.setFlags(I_CmsConstants.C_ACCESSFLAGS_INHERITED);
-
-                aceList.add(ace);
-            }
-
-            return aceList;
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Returns all child groups of a groups<P/>
-     *
-     *
-     * @param groupname The name of the group.
-     * @return users A Vector of all child groups or null.
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @see org.opencms.db.I_CmsUserDriver#getChildGroups(java.lang.String)
      */
     public Vector getChildGroups(String groupname) throws CmsException {
 
@@ -787,229 +440,48 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         return childs;
     }
 
-    /**
-     * Returns all groups<P/>
-     *
-     * @return users A Vector of all existing groups.
-     * @throws CmsException Throws CmsException if operation was not succesful.
+    /** (non-Javadoc)
+     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
      */
-    public Vector readGroups() throws CmsException {
-        Vector groups = new Vector();
-        //CmsGroup group = null;
-        ResultSet res = null;
+    public CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+        byte[] value = null;
+
+        Connection conn = null;
         PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            // create statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETGROUPS");
-
-            res = stmt.executeQuery();
-
-            // create new Cms group objects
-            while (res.next()) {
-                groups.addElement(createCmsGroupFromResultSet(res, true));
-            }
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return groups;
-    }
-
-    /**
-     * Returns a list of groups of a user.<P/>
-     *
-     * @param userId The id of the user.
-     * @return Vector of groups
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector readGroupsOfUser(CmsUUID userId) throws CmsException {
-        //CmsGroup group;
-        Vector groups = new Vector();
-
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
 
         try {
+            value = internalSerializeAdditionalUserInfo(additionalInfos);
+
+            // write data to database
             conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETGROUPSOFUSER");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
 
-            //  get all all groups of the user
-            stmt.setString(1, userId.toString());
-
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                groups.addElement(createCmsGroupFromResultSet(res, true));
-            }
+            stmt.setString(1, id.toString());
+            stmt.setString(2, name);
+            stmt.setString(3, m_sqlManager.validateNull(password));
+            stmt.setString(4, m_sqlManager.validateNull(recoveryPassword));
+            stmt.setString(5, m_sqlManager.validateNull(description));
+            stmt.setString(6, m_sqlManager.validateNull(firstname));
+            stmt.setString(7, m_sqlManager.validateNull(lastname));
+            stmt.setString(8, m_sqlManager.validateNull(email));
+            stmt.setTimestamp(9, new Timestamp(lastlogin));
+            stmt.setTimestamp(10, new Timestamp(lastused));
+            stmt.setInt(11, flags);
+            m_sqlManager.setBytes(stmt, 12, value);
+            stmt.setString(13, defaultGroup.getId().toString());
+            stmt.setString(14, m_sqlManager.validateNull(address));
+            stmt.setString(15, m_sqlManager.validateNull(section));
+            stmt.setInt(16, type);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "[CmsUser]: " + name + ", Id=" + id.toString(), CmsException.C_SQL_ERROR, e, false);
+        } catch (IOException e) {
+            throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return groups;
-    }
-
-    /**
-     * Gets all users of a type.
-     *
-     * @param type The type of the user.
-     * @return list of users of this type
-     * @throws CmsException if something goes wrong.
-     */
-    public Vector readUsers(int type) throws CmsException {
-        Vector users = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS");
-            stmt.setInt(1, type);
-            res = stmt.executeQuery();
-            // create new Cms user objects
-            while (res.next()) {
-                users.addElement(createCmsUserFromResultSet(res, true));
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return users;
-    }
-
-    /**
-     * Gets all users of a type and namefilter.
-     *
-     * @param type The type of the user.
-     * @param namefilter The namefilter
-     * @return list of users of this type matching the namefilter
-     * @throws CmsException if something goes wrong.
-     */
-    public Vector readUsers(int type, String namefilter) throws CmsException {
-        Vector users = new Vector();
-        Statement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = conn.createStatement();
-            res = stmt.executeQuery(m_sqlManager.get("C_USERS_GETUSERS_FILTER1") + type + m_sqlManager.get("C_USERS_GETUSERS_FILTER2") + namefilter + m_sqlManager.get("C_USERS_GETUSERS_FILTER3"));
-
-            // create new Cms user objects
-            while (res.next()) {
-                users.addElement(createCmsUserFromResultSet(res, true));
-            }
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(conn, stmt, null);
         }
 
-        return users;
-    }
-
-    /**
-     * Gets all users with a certain Lastname.
-     *
-     * @param lastname      the start of the users lastname
-     * @param userType      webuser or systemuser
-     * @param userStatus    enabled, disabled
-     * @param wasLoggedIn   was the user ever locked in?
-     * @param nMax          max number of results
-     *
-     * @return the users.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public Vector readUsers(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException {
-        Vector users = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        int i = 0;
-        // "" =  return (nearly) all users
-        if (lastname == null)
-            lastname = "";
-
-        try {
-            conn = m_sqlManager.getConnection();
-
-            if (wasLoggedIn == I_CmsConstants.C_AT_LEAST_ONCE)
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_ONCE");
-            else if (wasLoggedIn == I_CmsConstants.C_NEVER)
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_NEVER");
-            else // C_WHATEVER or whatever else
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_WHATEVER");
-
-            stmt.setString(1, lastname + "%");
-            stmt.setInt(2, userType);
-            stmt.setInt(3, userStatus);
-
-            res = stmt.executeQuery();
-            // create new Cms user objects
-            while (res.next() && (i++ < nMax)) {
-                users.addElement(createCmsUserFromResultSet(res, true));
-            }
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return users;
-    }
-
-    /**
-     * Returns a list of users of a group.<P/>
-     *
-     * @param name the name of the group
-     * @param type the type of the users to read
-     * @return Vector of users
-     * @throws CmsException if operation was not successful
-     */
-    public Vector readUsersOfGroup(String name, int type) throws CmsException {
-        Vector users = new Vector();
-
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETUSERSOFGROUP");
-            stmt.setString(1, name);
-            stmt.setInt(2, type);
-
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                users.addElement(createCmsUserFromResultSet(res, false));
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return users;
+        return readUser(id);
     }
 
     /**
@@ -1066,13 +538,673 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Checks if a user is member of a group.<P/>
-     *
-     * @param userId the id of the user to check
-     * @param groupId the id of the group to check
-     * @return true if user is member of group
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * Internal helper method to create an access control entry from a database record.<p>
+     * 
+     * @param res resultset of the current query
+     * @return a new CmsAccessControlEntry initialized with the values from the current database record
+     * @throws SQLException if something goes wrong
+     */
+    private CmsAccessControlEntry internalCreateAce(ResultSet res) throws SQLException {
+        // this method is final to allow the java compiler to inline this code!
+
+        return new CmsAccessControlEntry(new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_RESOURCE_ID"))), new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS")));
+    }
+
+    /**
+     * Internal helper method to create an access control entry from a database record.<p>
+     * 
+     * @param res resultset of the current query
+     * @param newId the id of the new access control entry
+     * @return a new CmsAccessControlEntry initialized with the values from the current database record
+     * @throws SQLException if something goes wrong
+     */
+    private CmsAccessControlEntry internalCreateAce(ResultSet res, CmsUUID newId) throws SQLException {
+        // this method is final to allow the java compiler to inline this code!
+
+        return new CmsAccessControlEntry(newId, new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")), res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS")));
+    }
+
+    /**
+     * Semi-constructor to create a CmsGroup instance from a JDBC result set.
+     * 
+     * @param res the JDBC ResultSet
+     * @param hasGroupIdInResultSet true if the SQL select query includes the GROUP_ID table attribute
+     * @return CmsGroup the new CmsGroup object
+     * @throws SQLException in case the result set does not include a requested table attribute
+     */
+    protected final CmsGroup internalCreateGroup(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException {
+        // this method is final to allow the java compiler to inline this code!
+        CmsUUID groupId = null;
+
+        if (hasGroupIdInResultSet) {
+            groupId = new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_GROUP_ID")));
+        } else {
+            groupId = new CmsUUID(res.getString(m_sqlManager.get("C_USERS_USER_DEFAULT_GROUP_ID")));
+        }
+
+        return new CmsGroup(groupId, new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.get("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.get("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.get("C_GROUPS_GROUP_FLAGS")));
+    }
+
+    /**
+     * Semi-constructor to create a CmsUser instance from a JDBC result set.
+     * 
+     * @param res the JDBC ResultSet
+     * @param hasGroupIdInResultSet true, if a default group id is available
+     * @return CmsUser the new CmsUser object
+     * @throws SQLException in case the result set does not include a requested table attribute
+     * @throws IOException if there is an error in deserializing the user info
+     * @throws ClassNotFoundException if there is an error in deserializing the user info
+     */
+    protected final CmsUser internalCreateUser(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException, IOException, ClassNotFoundException {
+        // this method is final to allow the java compiler to inline this code!
+
+        // deserialize the additional userinfo hash
+        byte[] value = m_sqlManager.getBytes(res, m_sqlManager.get("C_USERS_USER_INFO"));
+        ByteArrayInputStream bin = new ByteArrayInputStream(value);
+        ObjectInputStream oin = new ObjectInputStream(bin);
+        Hashtable info = (Hashtable)oin.readObject();
+
+        return new CmsUser(
+            new CmsUUID(res.getString(m_sqlManager.get("C_USERS_USER_ID"))),
+            res.getString(m_sqlManager.get("C_USERS_USER_NAME")),
+            res.getString(m_sqlManager.get("C_USERS_USER_PASSWORD")),
+            res.getString(m_sqlManager.get("C_USERS_USER_RECOVERY_PASSWORD")),
+            res.getString(m_sqlManager.get("C_USERS_USER_DESCRIPTION")),
+            res.getString(m_sqlManager.get("C_USERS_USER_FIRSTNAME")),
+            res.getString(m_sqlManager.get("C_USERS_USER_LASTNAME")),
+            res.getString(m_sqlManager.get("C_USERS_USER_EMAIL")),
+            CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTLOGIN")).getTime(),
+            res.getInt(m_sqlManager.get("C_USERS_USER_FLAGS")),
+            info,
+            internalCreateGroup(res, hasGroupIdInResultSet),
+            res.getString(m_sqlManager.get("C_USERS_USER_ADDRESS")),
+            res.getString(m_sqlManager.get("C_USERS_USER_SECTION")),
+            res.getInt(m_sqlManager.get("C_USERS_USER_TYPE")));
+    }
+
+    /**
+     * Serialize additional user information to write it as byte array in the database.<p>
+     * 
+     * @param additionalUserInfo the HashTable with additional information
+     * @return byte[] the byte array which is written to the db
+     * @throws IOException if something goes wrong
+     */
+    protected final byte[] internalSerializeAdditionalUserInfo(Hashtable additionalUserInfo) throws IOException {
+        // this method is final to allow the java compiler to inline this code!
+
+        // serialize the hashtable
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(additionalUserInfo);
+        oout.close();
+
+        return bout.toByteArray();
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#publishAccessControlEntries(com.opencms.file.CmsProject, com.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public void publishAccessControlEntries(CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+
+        // at first, we remove all access contries of this resource in the online project
+        removeAccessControlEntries(onlineProject, onlineId);
+
+        // then, we copy thze access control entries from the offline project into the online project
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, offlineProject, "C_ACCESS_READ_ENTRIES");
+
+            stmt.setString(1, offlineId.toString());
+
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                CmsAccessControlEntry ace = internalCreateAce(res, onlineId);
+                if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) == 0)
+                    writeAccessControlEntry(onlineProject, ace);
+            }
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readAccessControlEntries(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, boolean)
+     */
+    public Vector readAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException {
+
+        Vector aceList = new Vector();
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRIES");
+
+            String resId = resource.toString();
+            stmt.setString(1, resId);
+
+            res = stmt.executeQuery();
+
+            // create new CmsAccessControlEntry and add to list
+            while (res.next()) {
+                CmsAccessControlEntry ace = internalCreateAce(res);
+                if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) > 0)
+                    continue;
+
+                if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) == 0))
+                    continue;
+
+                if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) > 0))
+                    ace.setFlags(I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+
+                aceList.add(ace);
+            }
+
+            return aceList;
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readAccessControlEntry(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
+
+        CmsAccessControlEntry ace = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY");
+
+            stmt.setString(1, resource.toString());
+            stmt.setString(2, principal.toString());
+
+            res = stmt.executeQuery();
+
+            // create new CmsAccessControlEntry
+            if (res.next()) {
+                ace = internalCreateAce(res);
+            } else {
+                res.close();
+                res = null;
+                throw new CmsException("[" + this.getClass().getName() + "]", CmsException.C_NOT_FOUND);
+            }
+
+            return ace;
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, true);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readGroup(org.opencms.util.CmsUUID)
+     */
+    public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
+        CmsGroup group = null;
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READGROUP2");
+
+            // read the group from the database
+            stmt.setString(1, groupId.toString());
+            res = stmt.executeQuery();
+            // create new Cms group object
+            if (res.next()) {
+                group = internalCreateGroup(res, true);
+            } else {
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_NO_GROUP, new Exception(), false);
+            }
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return group;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readGroup(java.lang.String)
+     */
+    public CmsGroup readGroup(String groupName) throws CmsException {
+
+        CmsGroup group = null;
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READGROUP");
+
+            // read the group from the database
+            stmt.setString(1, groupName);
+            res = stmt.executeQuery();
+
+            // create new Cms group object
+            if (res.next()) {
+                group = internalCreateGroup(res, true);
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + "] " + groupName, CmsException.C_NO_GROUP);
+            }
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return group;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readGroups()
+     */
+    public Vector readGroups() throws CmsException {
+        Vector groups = new Vector();
+        //CmsGroup group = null;
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            // create statement
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETGROUPS");
+
+            res = stmt.executeQuery();
+
+            // create new Cms group objects
+            while (res.next()) {
+                groups.addElement(internalCreateGroup(res, true));
+            }
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return groups;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readGroupsOfUser(org.opencms.util.CmsUUID)
+     */
+    public Vector readGroupsOfUser(CmsUUID userId) throws CmsException {
+        //CmsGroup group;
+        Vector groups = new Vector();
+
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETGROUPSOFUSER");
+
+            //  get all all groups of the user
+            stmt.setString(1, userId.toString());
+
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                groups.addElement(internalCreateGroup(res, true));
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return groups;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readUser(org.opencms.util.CmsUUID)
+     */
+    public CmsUser readUser(CmsUUID id) throws CmsException {
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        CmsUser user = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READID");
+
+            stmt.setString(1, id.toString());
+            res = stmt.executeQuery();
+
+            // create new Cms user object
+            if (res.next()) {
+                user = internalCreateUser(res, true);
+            } else {
+                res.close();
+                res = null;
+                throw new CmsException("[" + this.getClass().getName() + "]" + id, CmsException.C_NO_USER);
+            }
+
+            return user;
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (CmsException e) {
+            // a.lucas: catch CmsException here and throw it again.
+            // Don't wrap another CmsException around it, since this may cause problems during login.
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readUser(java.lang.String, int)
+     */
+    public CmsUser readUser(String name, int type) throws CmsException {
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        CmsUser user = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ");
+            stmt.setString(1, name);
+            stmt.setInt(2, type);
+
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                user = internalCreateUser(res, true);
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + "]" + name, CmsException.C_NO_USER);
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (CmsException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return user;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readUser(java.lang.String, java.lang.String, int)
+     */
+    public CmsUser readUser(String name, String password, int type) throws CmsException {
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        CmsUser user = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READPW");
+            stmt.setString(1, name);
+            stmt.setString(2, encryptPassword(password));
+            stmt.setInt(3, type);
+            res = stmt.executeQuery();
+
+            // create new Cms user object
+            if (res.next()) {
+                user = internalCreateUser(res, true);
+            } else {
+                res.close();
+                res = null;
+                throw new CmsException("[" + this.getClass().getName() + "]" + name, CmsException.C_NO_USER);
+            }
+
+            return user;
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (CmsException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readUser(java.lang.String, java.lang.String, java.lang.String, int)
+     */
+    public CmsUser readUser(String name, String password, String remoteAddress, int type) throws CmsException {
+        CmsUser user = readUser(name, password, type);
+        user.setLastRemoteAddress(remoteAddress);
+        return user;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readUsers(int)
+     */
+    public Vector readUsers(int type) throws CmsException {
+        Vector users = new Vector();
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS");
+            stmt.setInt(1, type);
+            res = stmt.executeQuery();
+            // create new Cms user objects
+            while (res.next()) {
+                users.addElement(internalCreateUser(res, true));
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return users;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readUsers(int, java.lang.String)
+     */
+    public Vector readUsers(int type, String namefilter) throws CmsException {
+        Vector users = new Vector();
+        Statement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = conn.createStatement();
+            res = stmt.executeQuery(m_sqlManager.get("C_USERS_GETUSERS_FILTER1") + type + m_sqlManager.get("C_USERS_GETUSERS_FILTER2") + namefilter + m_sqlManager.get("C_USERS_GETUSERS_FILTER3"));
+
+            // create new Cms user objects
+            while (res.next()) {
+                users.addElement(internalCreateUser(res, true));
+            }
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return users;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readUsers(java.lang.String, int, int, int, int)
+     */
+    public Vector readUsers(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException {
+        Vector users = new Vector();
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+        int i = 0;
+        // "" =  return (nearly) all users
+        if (lastname == null)
+            lastname = "";
+
+        try {
+            conn = m_sqlManager.getConnection();
+
+            if (wasLoggedIn == I_CmsConstants.C_AT_LEAST_ONCE)
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_ONCE");
+            else if (wasLoggedIn == I_CmsConstants.C_NEVER)
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_NEVER");
+            else // C_WHATEVER or whatever else
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_WHATEVER");
+
+            stmt.setString(1, lastname + "%");
+            stmt.setInt(2, userType);
+            stmt.setInt(3, userStatus);
+
+            res = stmt.executeQuery();
+            // create new Cms user objects
+            while (res.next() && (i++ < nMax)) {
+                users.addElement(internalCreateUser(res, true));
+            }
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return users;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#readUsersOfGroup(java.lang.String, int)
+     */
+    public Vector readUsersOfGroup(String name, int type) throws CmsException {
+        Vector users = new Vector();
+
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETUSERSOFGROUP");
+            stmt.setString(1, name);
+            stmt.setInt(2, type);
+
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                users.addElement(internalCreateUser(res, false));
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return users;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntries(com.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     */
+    public void removeAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL");
+
+            stmt.setString(1, resource.toString());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntry(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public void removeAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE");
+
+            stmt.setString(1, resource.toString());
+            stmt.setString(2, principal.toString());
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#undeleteAccessControlEntries(com.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     */
+    public void undeleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_RESETFLAGS_ALL");
+
+            stmt.setInt(1, I_CmsConstants.C_ACCESSFLAGS_DELETED);
+            stmt.setString(2, resource.toString());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#validateUserInGroup(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
     public boolean validateUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
         boolean userInGroup = false;
@@ -1101,528 +1233,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Publish all access control entries of a resource from the given project to the online project.
-     * Within the given project, the resource is identified by its offlineId, in the online project,
-     * it is identified by the given onlineId.
-     * 
-     * @param offlineProject the project of which the entries are published
-     * @param onlineProject the online project to publish to 
-     * @param offlineId the id of the resource in the offline project
-     * @param onlineId the online id of the resource
-     * @throws CmsException if something goes wrong
-     */
-    public void publishAccessControlEntries(CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-
-        // at first, we remove all access contries of this resource in the online project
-        removeAccessControlEntries(onlineProject, onlineId);
-
-        // then, we copy thze access control entries from the offline project into the online project
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, offlineProject, "C_ACCESS_READ_ENTRIES");
-
-            stmt.setString(1, offlineId.toString());
-
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                CmsAccessControlEntry ace = createAceFromResultSet(res, onlineId);
-                if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) == 0)
-                    writeAccessControlEntry(onlineProject, ace);
-            }
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Reads an access control entry from the cms.<p>
-     * 
-     * @param project the project to read the entry
-     * @param resource the id of the resource
-     * @param principal the id of a group or a user any other entity
-     * @return an access control entry that defines the permissions of the entity for the given resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
-
-        CmsAccessControlEntry ace = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY");
-
-            stmt.setString(1, resource.toString());
-            stmt.setString(2, principal.toString());
-
-            res = stmt.executeQuery();
-
-            // create new CmsAccessControlEntry
-            if (res.next()) {
-                ace = createAceFromResultSet(res);
-            } else {
-                res.close();
-                res = null;
-                throw new CmsException("[" + this.getClass().getName() + "]", CmsException.C_NOT_FOUND);
-            }
-
-            return ace;
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, true);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Returns a group object.<P/>
-     * @param groupId the id of the group that is to be read
-     * @return the CmsGroup object.
-     * @throws CmsException if operation was not successful
-     */
-    public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
-        CmsGroup group = null;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READGROUP2");
-
-            // read the group from the database
-            stmt.setString(1, groupId.toString());
-            res = stmt.executeQuery();
-            // create new Cms group object
-            if (res.next()) {
-                group = createCmsGroupFromResultSet(res, true);
-            } else {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_NO_GROUP, new Exception(), false);
-            }
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return group;
-    }
-
-    /**
-     * Returns a group object.<P/>
-     * 
-     * @param groupName the name of the group that is to be read
-     * @return group object
-     * @throws CmsException  if something goes wrong
-     */
-    public CmsGroup readGroup(String groupName) throws CmsException {
-
-        CmsGroup group = null;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READGROUP");
-
-            // read the group from the database
-            stmt.setString(1, groupName);
-            res = stmt.executeQuery();
-
-            // create new Cms group object
-            if (res.next()) {
-                group = createCmsGroupFromResultSet(res, true);
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + groupName, CmsException.C_NO_GROUP);
-            }
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return group;
-    }
-
-    /**
-     * Reads a user from the cms.<p>
-     *
-     * @param id the id of the user
-     * @return the read user
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readUser(CmsUUID id) throws CmsException {
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        CmsUser user = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READID");
-
-            stmt.setString(1, id.toString());
-            res = stmt.executeQuery();
-
-            // create new Cms user object
-            if (res.next()) {
-                user = createCmsUserFromResultSet(res, true);
-            } else {
-                res.close();
-                res = null;
-                throw new CmsException("[" + this.getClass().getName() + "]" + id, CmsException.C_NO_USER);
-            }
-
-            return user;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (CmsException e) {
-            // a.lucas: catch CmsException here and throw it again.
-            // Don't wrap another CmsException around it, since this may cause problems during login.
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
-     * Reads a user from the cms.<p>
-     *
-     * @param name the name of the user
-     * @param type the type of the user
-     * @return the read user
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readUser(String name, int type) throws CmsException {
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        CmsUser user = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ");
-            stmt.setString(1, name);
-            stmt.setInt(2, type);
-
-            res = stmt.executeQuery();
-
-            if (res.next()) {
-                user = createCmsUserFromResultSet(res, true);
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + "]" + name, CmsException.C_NO_USER);
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (CmsException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return user;
-    }
-
-    /**
-     * Reads a user from the cms, only if the password is correct.<p>
-     *
-     * @param name the name of the user
-     * @param password the password of the user
-     * @param type the type of the user
-     * @return the read user
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readUser(String name, String password, int type) throws CmsException {
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        CmsUser user = null;
-        Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READPW");
-            stmt.setString(1, name);
-            stmt.setString(2, encryptPassword(password));
-            stmt.setInt(3, type);
-            res = stmt.executeQuery();
-
-            // create new Cms user object
-            if (res.next()) {
-                user = createCmsUserFromResultSet(res, true);
-            } else {
-                res.close();
-                res = null;
-                throw new CmsException("[" + this.getClass().getName() + "]" + name, CmsException.C_NO_USER);
-            }
-
-            return user;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (CmsException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
-     * Reads a user from the cms, only if the password is correct.<p>
-     *
-     * @param name the name of the user
-     * @param password the password of the user
-     * @param remoteAddress the remote address of the request
-     * @param type the type of the user
-     * @return the read user
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readUser(String name, String password, String remoteAddress, int type) throws CmsException {
-        CmsUser user = readUser(name, password, type);
-        user.setLastRemoteAddress(remoteAddress);
-        return user;
-    }
-
-    /**
-     * Sets the password, only if the user knows the recovery-password.<p>
-     *
-     * @param userName the user to set the password for
-     * @param recoveryPassword the recoveryPassword the user has to know to set the password
-     * @param password the password to set
-     * @throws CmsException if something goes wrong
-     */
-    public void writePassword(String userName, String recoveryPassword, String password) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        int result;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_RECOVERPW");
-
-            stmt.setString(1, encryptPassword(password));
-            stmt.setString(2, userName);
-            stmt.setString(3, encryptPassword(recoveryPassword));
-            result = stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        if (result != 1) {
-            // the update wasn't succesfull -> throw exception
-            throw new CmsException("[" + this.getClass().getName() + "] the password couldn't be recovered.");
-        }
-    }
-
-    /**
-     * Removes an access control entry from the database.<p>
-     * 
-     * @param project the project to remove the entry
-     * @param resource the id of the resource
-     * @param principal the id of the principal
-     * @throws CmsException if somethin goes wrong
-     */
-    public void removeAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE");
-
-            stmt.setString(1, resource.toString());
-            stmt.setString(2, principal.toString());
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Removes all access control entries belonging to a resource from the database.<p>
-     * 
-     * @param project the project to remove the entries
-     * @param resource the id of the resource
-     * @throws CmsException if something goes wrong
-     */
-    public void removeAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL");
-
-            stmt.setString(1, resource.toString());
-
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Removes a user from a group.
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param userId The id of the user that is to be added to the group
-     * @param groupId The id of the group
-     * @throws CmsException if something goes wrong
-     */
-    public void deleteUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            // create statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_REMOVEUSERFROMGROUP");
-
-            stmt.setString(1, groupId.toString());
-            stmt.setString(2, userId.toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Serialize additional user information to write it as byte array in the database.<p>
-     * 
-     * @param additionalUserInfo the HashTable with additional information
-     * @return byte[] the byte array which is written to the db
-     * @throws IOException if something goes wrong
-     */
-    protected final byte[] serializeAdditionalUserInfo(Hashtable additionalUserInfo) throws IOException {
-        // this method is final to allow the java compiler to inline this code!
-
-        // serialize the hashtable
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ObjectOutputStream oout = new ObjectOutputStream(bout);
-        oout.writeObject(additionalUserInfo);
-        oout.close();
-
-        return bout.toByteArray();
-    }
-
-    /**
-     * Sets a new password for a user.<p>
-     *
-     * @param userName the user to set the password for
-     * @param password the password to set
-     * @throws CmsException if something goes wrong
-     */
-    public void writePassword(String userName, String password) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SETPW");
-            stmt.setString(1, encryptPassword(password));
-            stmt.setString(2, userName);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Sets a new password for a user.<p>
-     *
-     * @param userName the user to set the password for.
-     * @param password the recoveryPassword to set
-     * @throws CmsException if something goes wrong
-     */
-    public void writeRecoveryPassword(String userName, String password) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        int result;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SETRECPW");
-
-            stmt.setString(1, encryptPassword(password));
-            stmt.setString(2, userName);
-            result = stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        if (result != 1) {
-            // the update wasn't succesfull -> throw exception
-            throw new CmsException("[" + this.getClass().getName() + "] new password couldn't be set.");
-        }
-    }
-
-    /**
-     * Undeletes all access control entries belonging to a resource.<p>
-     * 
-     * @param project the project to undelete the entries
-     * @param resource the id of the resource
-     * @throws CmsException if something goes wrong
-     */
-    public void undeleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_RESETFLAGS_ALL");
-
-            stmt.setInt(1, I_CmsConstants.C_ACCESSFLAGS_DELETED);
-            stmt.setString(2, resource.toString());
-
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Writes an access control entry to the cms.
-     * If the entry already exists in the database, it is updated with new values.<p>
-     * 
-     * @param project the project to write the entry
-     * @param acEntry the entry to write
-     * @throws CmsException if something goes wrong
+     * @see org.opencms.db.I_CmsUserDriver#writeAccessControlEntry(com.opencms.file.CmsProject, org.opencms.security.CmsAccessControlEntry)
      */
     public void writeAccessControlEntry(CmsProject project, CmsAccessControlEntry acEntry) throws CmsException {
 
@@ -1663,12 +1274,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Writes an already existing group in the Cms.<BR/>
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param group The group that should be written to the Cms.
-     * @throws CmsException  Throws CmsException if operation was not succesfull.
+     * @see org.opencms.db.I_CmsUserDriver#writeGroup(com.opencms.file.CmsGroup)
      */
     public void writeGroup(CmsGroup group) throws CmsException {
         PreparedStatement stmt = null;
@@ -1697,10 +1303,83 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * Writes a user to the database.<p>
-     *
-     * @param user the user to write
-     * @throws CmsException if something goes wrong
+     * @see org.opencms.db.I_CmsUserDriver#writePassword(java.lang.String, java.lang.String)
+     */
+    public void writePassword(String userName, String password) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SETPW");
+            stmt.setString(1, encryptPassword(password));
+            stmt.setString(2, userName);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#writePassword(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void writePassword(String userName, String recoveryPassword, String password) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        int result;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_RECOVERPW");
+
+            stmt.setString(1, encryptPassword(password));
+            stmt.setString(2, userName);
+            stmt.setString(3, encryptPassword(recoveryPassword));
+            result = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+
+        if (result != 1) {
+            // the update wasn't succesfull -> throw exception
+            throw new CmsException("[" + this.getClass().getName() + "] the password couldn't be recovered.");
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#writeRecoveryPassword(java.lang.String, java.lang.String)
+     */
+    public void writeRecoveryPassword(String userName, String password) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        int result;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SETRECPW");
+
+            stmt.setString(1, encryptPassword(password));
+            stmt.setString(2, userName);
+            result = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+
+        if (result != 1) {
+            // the update wasn't succesfull -> throw exception
+            throw new CmsException("[" + this.getClass().getName() + "] new password couldn't be set.");
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#writeUser(com.opencms.file.CmsUser)
      */
     public void writeUser(CmsUser user) throws CmsException {
         byte[] value = null;
@@ -1711,7 +1390,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE");
 
-            value = serializeAdditionalUserInfo(user.getAdditionalInfo());
+            value = internalSerializeAdditionalUserInfo(user.getAdditionalInfo());
 
             // write data to database
             stmt.setString(1, m_sqlManager.validateNull(user.getDescription()));
@@ -1732,6 +1411,29 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#writeUserType(org.opencms.util.CmsUUID, int)
+     */
+    public void writeUserType(CmsUUID userId, int userType) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_UPDATE_USERTYPE");
+
+            // write data to database
+            stmt.setInt(1, userType);
+            stmt.setString(2, userId.toString());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }

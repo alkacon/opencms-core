@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/15 16:01:39 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/16 07:55:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle/OCI implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.11 $ $Date: 2003/09/15 16:01:39 $
+ * @version $Revision: 1.12 $ $Date: 2003/09/16 07:55:38 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -74,7 +74,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         ResultSet res = null;
 
         try {
-            value = serializeAdditionalUserInfo(additionalInfos);
+            value = internalSerializeAdditionalUserInfo(additionalInfos);
 
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
@@ -190,7 +190,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         ResultSet res = null;
 
         try {
-            value = serializeAdditionalUserInfo(additionalInfos);
+            value = internalSerializeAdditionalUserInfo(additionalInfos);
 
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
@@ -289,7 +289,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         ResultSet res = null;
         Connection conn = null;
         try {
-            value = serializeAdditionalUserInfo(user.getAdditionalInfo());
+            value = internalSerializeAdditionalUserInfo(user.getAdditionalInfo());
 
             // write data to database
             conn = m_sqlManager.getConnection();
