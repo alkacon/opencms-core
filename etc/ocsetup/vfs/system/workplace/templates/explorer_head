@@ -7,6 +7,9 @@
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+	var filelist="]]><PROCESS>FILELIST</PROCESS><![CDATA[";
+</SCRIPT>
 </head>
 
 <body bgcolor="#C0C0C0" background="/pics/bg_grau.gif"  bgproperties=fixed>
@@ -14,7 +17,7 @@
 <table cellspacing=0 cellpadding=0 border=0>
 	<tr valign=center>
 		<td class=menu nowrap width=32px><IMG SRC="/pics/bt_back_in.gif" alt="Zurück" name="bt_up" border=0 width=32 height=32></td>
-		<td class=menu nowrap width=32px><IMG SRC="/pics/bt_up_in.gif" alt="Aufwärts" name="bt_up" border=0 width=32 height=32></td>
+		]]><PROCESS>PARENT</PROCESS><![CDATA[
 		<td class=menu nowrap width=32px><IMG SRC="/pics/bt_new_in.gif" alt="Neu" name="bt_new" border=0 width=32 height=32></a></td>
 		<td class=menu width=30px nowrap align=right>&nbsp;</td>
 		<td class=menubold nowrap align=right valign=middle><IMG border=0  src="/pics/ic_file_folder.gif" width=16 height=16></td>
@@ -54,6 +57,14 @@
 <BACKBUTTON>
 <BUTTON href="javascript:updateFrame('body.explorer_content.explorer_head','explorer_head.html');updateFrame('body.explorer_content.explorer_files','explorer_files.html')" name="bt_back" action="" alt="back"/>
 </BACKBUTTON>
+
+<PARENT_DISABLED>
+<![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_up_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.parent" /><![CDATA[" name="bt_up" border=0 width=32 height=32></td>]]>
+</PARENT_DISABLED>		
+
+<PARENT_ENABLED>
+<![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files.html?filelist='+filelist);" name="bt_up" action="" alt="parent"/><![CDATA[</td>]]>
+</PARENT_ENABLED>	
 
 </WORKPLACE>
 

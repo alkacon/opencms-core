@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/04 08:59:46 $
  */
  class CmsAccessUserInfoMySql implements I_CmsAccessUserInfo, I_CmsConstants {
 
@@ -171,7 +171,6 @@ import com.opencms.core.*;
  
             if(res.next()) {
                 value = res.getBytes(C_USER_INFO);
-				// TODO: read all missing infos from database!
                  // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);

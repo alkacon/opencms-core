@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/02 15:28:57 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/04 08:59:46 $
  */
 public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                 I_CmsConstants{    
@@ -51,7 +51,9 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
        Vector filesfolders=new Vector();
   
         String foldername;
-        String currentFilerlist;
+        String filelist;
+        String currentFilelist;
+        String currentFolder;
         // vectors to store all files and folders in the current folder.
         Vector files;
         Vector folders;
@@ -63,22 +65,35 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
             
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
               
-        //check if a folder parameter was included in the request.
-        // if a foldername was included, overwrite the value in the session for later use.
-        foldername=cms.getRequestContext().getRequest().getParameter(C_PARA_FILELIST);
-        if (foldername != null) {
-        session.putValue(C_PARA_FILELIST,foldername);
-        }
+         //check if a folder parameter was included in the request         
+         foldername=cms.getRequestContext().getRequest().getParameter(C_PARA_FOLDER);
+            if (foldername != null) {
+                session.putValue(C_PARA_FOLDER,foldername);
+            }
 
-        // get the current folder 
-        currentFilerlist=(String)session.getValue(C_PARA_FILELIST);
-        if (currentFilerlist == null) {
-            currentFilerlist=cms.getRequestContext().currentFolder().getAbsolutePath();
-        }          
+         // get the current folder to be displayed as maximum folder in the tree.
+         currentFolder=(String)session.getValue(C_PARA_FOLDER);
+            if (currentFolder == null) {
+                 currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+            }
+            
+            
+         //check if a filelist  parameter was included in the request.
+         // if a filelist was included, overwrite the value in the session for later use.
+            filelist=cms.getRequestContext().getRequest().getParameter(C_PARA_FILELIST);
+            if (filelist != null) {
+                session.putValue(C_PARA_FILELIST,filelist);
+            }
+
+        // get the current folder to be displayed as maximum folder in the tree.
+            currentFilelist=(String)session.getValue(C_PARA_FILELIST);
+            if (currentFilelist==null) {
+                currentFilelist=cms.getRequestContext().currentFolder().getAbsolutePath();
+            }     
         
         // get all files and folders of the current folder
-        folders=cms.getSubFolders(currentFilerlist);
-        files=cms.getFilesInFolder(currentFilerlist);
+        folders=cms.getSubFolders(currentFilelist);
+        files=cms.getFilesInFolder(currentFilelist);
        
         // combine both vectors
         enum=folders.elements();
