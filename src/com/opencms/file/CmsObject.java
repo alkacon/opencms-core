@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/19 17:14:14 $
-* Version: $Revision: 1.440 $
+* Date   : $Date: 2004/01/21 10:32:36 $
+* Version: $Revision: 1.441 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.440 $
+ * @version $Revision: 1.441 $
  */
 public class CmsObject {
 
@@ -2819,6 +2819,9 @@ public class CmsObject {
 
         synchronized (m_driverManager) {            
             try {
+                
+                List offlineFiles = m_driverManager.filterOfflineFiles(getRequestContext(), directPublishResource, directPublishSiblings, report);
+                m_driverManager.getHtmlLinkValidator().validateResources(this, offlineFiles, report);                
                                 
                 m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource, directPublishSiblings);
 
@@ -4590,6 +4593,17 @@ public class CmsObject {
             // a "directly" published COS resource can be handled totally equal to a published project            
             OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
         }
+    }
+    
+    /**
+     * Validates the HTML links (hrefs and images) in all unpublished plain files and XML pages
+     * of the current project.<p>
+     * 
+     * @param report an instance of I_CmsReport to print messages
+     * @throws Exception if something goes wrong
+     */
+    public void validateHtmlLinks(I_CmsReport report) throws Exception {
+        m_driverManager.validateHtmlLinks(this, report);
     }
 
 }
