@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<page>
-    <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-    <MASTERTEMPLATE>/system/modules/com.opencms.modules.homepage.news/templates/pdfNewsMasterTemplate</MASTERTEMPLATE>
-    <ELEMENTDEF name="body">
-        <CLASS>com.opencms.modules.homepage.news.NewsTemplate</CLASS>
-        <TEMPLATE>/content/bodys/moduledemos/com.opencms.modules.homepage.news/pdfEntry.pdf</TEMPLATE>
-    </ELEMENTDEF>
-</page>
