@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/26 08:46:16 $
- * Version: $Revision: 1.258 $
+ * Date   : $Date: 2001/07/26 11:41:31 $
+ * Version: $Revision: 1.259 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.258 $ $Date: 2001/07/26 08:46:16 $
+ * @version $Revision: 1.259 $ $Date: 2001/07/26 11:41:31 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2235,7 +2235,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                     // delete the properties
 		            m_dbAccess.deleteAllProperties(id, currentFile.getResourceId());
 		            // delete the file
-		            m_dbAccess.deleteFile(deleteProject, currentFile.getAbsolutePath());
+		            m_dbAccess.removeFile(id, currentFile.getAbsolutePath());
                 } else if (currentFile.getState() == C_STATE_CHANGED){
                     if(!currentFile.isLocked()){
                         // lock the resource
@@ -2283,7 +2283,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
             // now delete the folders in the vector
             for (int i = deletedFolders.size() - 1; i > -1; i--){
 			    CmsFolder delFolder = ((CmsFolder) deletedFolders.elementAt(i));
-                m_dbAccess.deleteFolder(deleteProject, delFolder, true);
+                m_dbAccess.removeFolder(id, delFolder);
             }
             // unlock all resources in the project
             m_dbAccess.unlockProject(deleteProject);
@@ -4241,7 +4241,9 @@ public void setCmsObjectForStaticExport(CmsObject cms){
             //new projectmechanism: the project can be still used after publishing
             // it will be deleted if the project_flag = C_PROJECT_STATE_TEMP
             if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY) {
-                deleteProject(currentUser, currentProject, id);
+                m_dbAccess.deleteProject(publishProject);
+                m_projectCache.remove(id);
+                //deleteProject(currentUser, currentProject, id);
             }
 
             // finally set the refrish signal to another server if nescessary
@@ -7022,5 +7024,17 @@ protected void validName(String name, boolean blank) throws CmsException {
             throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(),
                 CmsException.C_NO_ACCESS);
         }
+    }
+
+    /**
+     * Changes the project-id of a resource to the new project
+     * for publishing the resource directly
+     *
+     * @param newProjectId The new project-id
+     * @param resourcename The name of the resource to change
+     */
+    public void changeLockedInProject(int projectId, String resourcename) throws CmsException{
+        m_dbAccess.changeLockedInProject(projectId, resourcename);
+        m_resourceCache.remove(resourcename);
     }
 }
