@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/18 14:28:42 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import java.util.*;
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/18 14:28:42 $
  */
 public class Utils {
 	/**
@@ -61,4 +61,40 @@ public class Utils {
 		parts.copyInto((Object[]) partsArray );
 		return(partsArray);
 	}
+
+
+     /**
+      * Gets a formated time string form a long time value.
+      * @param time The time value as a long.
+      * @return Formated time string.
+      */
+     public static String getNiceDate(long time) {
+         StringBuffer niceTime=new StringBuffer();
+         
+         GregorianCalendar cal = new GregorianCalendar();
+         cal.setTime(new Date(time));
+         String day="0"+new Integer(cal.get(Calendar.DAY_OF_MONTH)).intValue();        
+         String month="0"+new Integer(cal.get(Calendar.MONTH)+1).intValue(); 
+         String year=new Integer(cal.get(Calendar.YEAR)).toString();
+         String hour="0"+new Integer(cal.get(Calendar.HOUR)+12*cal.get(Calendar.AM_PM)).intValue();   
+         String minute="0"+new Integer(cal.get(Calendar.MINUTE));   
+         if (day.length()==3) {
+             day=day.substring(1,3);
+         }
+         if (month.length()==3) {
+             month=month.substring(1,3);
+         }
+         if (hour.length()==3) {
+             hour=hour.substring(1,3);
+         }
+         if (minute.length()==3) {
+             minute=minute.substring(1,3);
+         }
+         niceTime.append(day+".");
+         niceTime.append(month+".");  
+         niceTime.append(year+" ");
+         niceTime.append(hour+":");
+         niceTime.append(minute);
+         return niceTime.toString();
+     }
 }

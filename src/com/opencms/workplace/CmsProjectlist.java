@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
- * Date   : $Date: 2000/02/15 17:53:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/18 14:28:42 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,6 +34,7 @@ import org.xml.sax.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
 import com.opencms.file.*;
+import com.opencms.util.*;
 
 import java.util.*;
 import java.lang.reflect.*;
@@ -43,7 +44,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/02/15 17:53:49 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/18 14:28:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -134,45 +135,10 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 			listdef.setXmlData(C_PROJECTLIST_STATE, lang.getLanguageValue(state));
 			listdef.setXmlData(C_PROJECTLIST_PROJECTMANAGER, cms.readManagerGroup(project).getName());
 			listdef.setXmlData(C_PROJECTLIST_PROJECTWORKER, cms.readGroup(project).getName());
-			listdef.setXmlData(C_PROJECTLIST_DATECREATED, getNiceDate(project.getCreateDate()) );
+			listdef.setXmlData(C_PROJECTLIST_DATECREATED, Utils.getNiceDate(project.getCreateDate()) );
 			listdef.setXmlData(C_PROJECTLIST_OWNER, cms.readOwner(project).getName());
 			result.append(listdef.getProcessedXmlDataValue(C_TAG_PROJECTLIST_DEFAULT, callingObject, parameters));
 		}		
 		return result.toString();
     }
-
-     /**
-      * Gets a formated time string form a long time value.
-      * @param time The time value as a long.
-      * @return Formated time string.
-      */
-     private String getNiceDate(long time) {
-         StringBuffer niceTime=new StringBuffer();
-         
-         GregorianCalendar cal = new GregorianCalendar();
-         cal.setTime(new Date(time));
-         String day="0"+new Integer(cal.get(Calendar.DAY_OF_MONTH)).intValue();        
-         String month="0"+new Integer(cal.get(Calendar.MONTH)+1).intValue(); 
-         String year=new Integer(cal.get(Calendar.YEAR)).toString();
-         String hour="0"+new Integer(cal.get(Calendar.HOUR)+12*cal.get(Calendar.AM_PM)).intValue();   
-         String minute="0"+new Integer(cal.get(Calendar.MINUTE));   
-         if (day.length()==3) {
-             day=day.substring(1,3);
-         }
-         if (month.length()==3) {
-             month=month.substring(1,3);
-         }
-         if (hour.length()==3) {
-             hour=hour.substring(1,3);
-         }
-         if (minute.length()==3) {
-             minute=minute.substring(1,3);
-         }
-         niceTime.append(day+".");
-         niceTime.append(month+".");  
-         niceTime.append(year+" ");
-         niceTime.append(hour+":");
-         niceTime.append(minute);
-         return niceTime.toString();
-     }
 }

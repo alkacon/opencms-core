@@ -6,6 +6,7 @@ import org.xml.sax.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
 import com.opencms.file.*;
+import com.opencms.util.*;
 
 import java.util.*;
 import java.lang.reflect.*;
@@ -15,10 +16,10 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;tasklist&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/02/17 15:51:01 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/18 14:28:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
+public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
 	
     /**
      * Handling of the special workplace <CODE>&lt;TASKLIST&gt;</CODE> tags.
@@ -74,21 +75,47 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         StringBuffer result = new StringBuffer();
 		String priority;
 		String projectname;
+		String stateIcon;
+		long startTime;
+		long timeout;
+		long now = new Date().getTime();
 		
 		for(int i = 0; i < list.size(); i++) {
 			// get the actual project
 			A_CmsTask task = (A_CmsTask) list.elementAt(i);
 			projectname = cms.readTask(task.getRoot()).getName();
 			priority = listdef.getProcessedXmlDataValue("priority" + task.getPriority(), callingObject);
+			startTime = task.getStartTime().getTime();
+			timeout = task.getTimeOut().getTime();
+			
+			System.err.println("~~~ " + task.getName() + " " + task.getState() + " " + task.getPercentage());
+			
+			// choose the right state-icon
+			if(task.getState() == C_TASK_STATE_ENDED) {
+				if(timeout > now ) {
+					stateIcon = listdef.getProcessedXmlDataValue("alertok", callingObject);
+				} else {
+					stateIcon = listdef.getProcessedXmlDataValue("ok", callingObject);
+				}
+			} else if(task.getPercentage() == 0) {
+				stateIcon = listdef.getProcessedXmlDataValue("new", callingObject);
+			} else {
+				if(timeout > now ) {
+					stateIcon = listdef.getProcessedXmlDataValue("alert", callingObject);
+				} else {
+					stateIcon = listdef.getProcessedXmlDataValue("activ", callingObject);
+				}
+			}
 			  
 			// get the processed list.
+			listdef.setXmlData("stateicon", stateIcon);
 			listdef.setXmlData("priority", priority);
 			listdef.setXmlData("task", task.getName());
 			listdef.setXmlData("foruser", cms.readAgent(task).getName());
 			listdef.setXmlData("forrole", cms.readGroup(task).getName());
 			listdef.setXmlData("actuator", cms.readOwner(task).getName());
-			listdef.setXmlData("due", task.getTimeOut().toLocaleString());
-			listdef.setXmlData("from", task.getStartTime().toLocaleString());
+			listdef.setXmlData("due", Utils.getNiceDate(timeout));
+			listdef.setXmlData("from", Utils.getNiceDate(startTime));
 			listdef.setXmlData("project", projectname);
 			
 			result.append(listdef.getProcessedXmlDataValue("defaulttasklist", callingObject, parameters));
