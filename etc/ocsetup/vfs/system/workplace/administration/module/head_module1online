@@ -9,18 +9,18 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
 
 <SCRIPT LANGUAGE="JavaScript">
-	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
 </SCRIPT>
 </head>
 
 <body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed>
 
 <table cellspacing=0 cellpadding=0 border=0>
-	<tr valign=center>
-		<td class=menu nowrap width=32px><A href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');parent.frames[1].location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/'"><IMG alt="Zurück" width=32 border=0 name=bt_back src="/pics/system/bt_back_off.gif" ></a></td>
-		<td class=menu nowrap width=32px><a href="module_new.html" target="admin_content" onMouseDown="ChPush('bt_upload2')" onMouseUp="ChOn('bt_upload2')" onMouseOver="ChOn('bt_upload2')" onMouseOut="ChOff('bt_upload2')"><IMG SRC="]]><METHOD name="picsUrl">bt_upload2_off.gif</METHOD><![CDATA[" alt="]]><LABEL value="module.lable.upload" /><![CDATA[" name="bt_upload2" border=0 width=32 heigth=32></a></td>
-		<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_new_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="module.lable.modulecreate" /><![CDATA[" name="bt_new" border=0 width=32 heigth=32></a></td>
-	</tr>
+    <tr valign=center>
+        <td class=menu nowrap width=32px><A href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');parent.frames[1].location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/'"><IMG alt="Zurück" width=32 border=0 name=bt_back src="]]><METHOD name="picsUrl">bt_back_off.gif</METHOD><![CDATA[" ></a></td>
+        <td class=menu nowrap width=32px><a href="module_new.html" target="admin_content" onMouseDown="ChPush('bt_upload2')" onMouseUp="ChOn('bt_upload2')" onMouseOver="ChOn('bt_upload2')" onMouseOut="ChOff('bt_upload2')"><IMG SRC="]]><METHOD name="picsUrl">bt_upload2_off.gif</METHOD><![CDATA[" alt="]]><LABEL value="module.lable.upload" /><![CDATA[" name="bt_upload2" border=0 width=32 heigth=32></a></td>
+        <td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_new_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="module.lable.modulecreate" /><![CDATA[" name="bt_new" border=0 width=32 heigth=32></a></td>
+    </tr>
 </table>
 </body>
 </html>

@@ -9,17 +9,17 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
 
 <SCRIPT LANGUAGE="JavaScript">
-	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
 </SCRIPT>
 </head>
 
 <body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed>
 
 <table cellspacing=0 cellpadding=0 border=0>
-	<tr valign=center>
-		<td class=menu nowrap width=32px><A href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');parent.frames[1].location.href='index.html'"><IMG alt="Zurück" width=32 border=0 name=bt_back src="/pics/system/bt_back_off.gif" ></a></td>
-		
-	</tr>
+    <tr valign=center>
+        <td class=menu nowrap width=32px><A href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');parent.frames[1].location.href='index.html'"><IMG alt="Zurück" width=32 border=0 name=bt_back src="]]><METHOD name="picsUrl">bt_back_off.gif</METHOD><![CDATA[" ></a></td>
+        
+    </tr>
 </table>
 </body>
 </html>
