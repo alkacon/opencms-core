@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/02/19 19:14:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/02/20 12:45:54 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,13 @@
  
 package org.opencms.jsp;
 
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypePage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
-
-import com.opencms.legacy.CmsXmlTemplateLoader;
-import com.opencms.template.CmsXmlTemplate;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -61,7 +54,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -79,9 +72,6 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /** Debugging on / off */
     private static final boolean DEBUG = false;
     
-    /** URI of the bodyloader XML file in the OpenCms VFS*/    
-    public static final String C_BODYLOADER_URI = I_CmsWpConstants.C_VFS_PATH_SYSTEM + "shared/bodyloader.html";
-        
     /**
      * Sets the include page target.<p>
      * 
@@ -334,6 +324,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     public static void includeTagAction(PageContext context, String target, String element, boolean editable, Map paramMap, ServletRequest req, ServletResponse res) 
     throws JspException {
         
+        // the Flex controller provides access to the interal OpenCms structures
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         
         if (target == null) {
@@ -341,105 +332,59 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             target = controller.getCmsObject().getRequestContext().getUri();
         }
                 
+        // each include will have it's unique map of parameters
         Map parameterMap = new HashMap();      
         if (paramMap != null) {
-            // add all parameters 
+            // add all parameters from the parent elements
             parameterMap.putAll(paramMap);
         }                    
-        
-        
-        
-        
-        
-        
-        // TODO: Remove dependencies from legacy OpenCms classes
         
         if (element != null) {            
             // add template element selector for JSP templates
             addParameter(parameterMap, CmsJspTagTemplate.C_TEMPLATE_ELEMENT, element, true);
-            if (!("body".equals(element) || "(default)".equals(element))) {
-                // add template selector for multiple body XML files
-                addParameter(parameterMap, CmsXmlTemplate.C_FRAME_SELECTOR, element, true);
-            }
-        }
-                       
-        // try to figure out if the target is a page, a new page or a XMLTemplate file        
-        boolean isPageTarget = false;                 
+        }        
+        
+        // resolve possible relative URI
+        target = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
+        
         try {
-            target = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
-            CmsResource resource = controller.getCmsObject().readFileHeader(target);
-            isPageTarget = ((CmsResourceTypePage.C_RESOURCE_TYPE_ID == resource.getType()));
+            // now resolve additional include extensions that might be required for special loader implementations
+            target = OpenCms.getLoaderManager().resolveIncludeExtensions(target, element, editable, paramMap, req, res);
         } catch (CmsException e) {
-            // any exception here and we will treat his as non-Page file
-            throw new JspException("File not found: " + target, e);
+            controller.setThrowable(e, target);
+            throw new JspException(e);
         }
-                
-        String bodyAttribute = (String) controller.getCmsObject().getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);               
-        if (bodyAttribute == null) {
-            // no body attribute is set: this is NOT a sub-element in a XML mastertemplate
-            if (isPageTarget) {
-                // add body file path to target 
-                if (! target.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
-                    target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
-                }                          
-            }
-            if (isPageTarget) {
-                // save target as "element replace" parameter for body loader
-                addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + target, true);  
-                target = C_BODYLOADER_URI;                   
-            }
-            // for other cases setting of "target" is fine 
-        } else {
-            // body attribute is set: this is a sub-element in a XML mastertemplate
-            if (target.equals(controller.getCmsObject().getRequestContext().getUri())) {
-                // target can be ignored, set body attribute as "element replace" parameter  
-                addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + bodyAttribute, true);
-                // redirect target to body loader
-                target = C_BODYLOADER_URI;                
-            } else {
-                if (isPageTarget) {
-                    // add body file path to target 
-                    if (isPageTarget && ! target.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
-                        target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
-                    }              
-                    // save target as "element replace" parameter  
-                    addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + target, true);  
-                    target = C_BODYLOADER_URI;                     
-                }
-            }
-            // for other cases setting of "target" is fine             
-        }          
-        
-        
-        
-        
-        
-        
-       
-        // save old parameters from request
-        Map oldParameterMap = req.getParameterMap();
         
         // check the "direct edit" mode
-        String directEditMode = null;
-        String directEditIncludeFile = null;
+        String directEditPermissions = null;
+        String directEditIncludeFile = null;    
         
         if (editable) {
+            // get the include file where the direct edit HTML is stored in
             directEditIncludeFile = (String)context.getRequest().getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI);
             if (directEditIncludeFile != null) {
-                directEditMode = OpenCms.getWorkplaceManager().getEditorActionHandler().getEditMode(controller.getCmsObject(), target, (CmsXmlPage)req.getAttribute(CmsXmlPage.C_ATTRIBUTE_XMLPAGE_OBJECT), element);
+                // check the direct edit permissions of the current user
+                directEditPermissions = OpenCms.getWorkplaceManager().getEditorActionHandler().getEditMode(controller.getCmsObject(), target, (CmsXmlPage)req.getAttribute(CmsXmlPage.C_ATTRIBUTE_XMLPAGE_OBJECT), element);
             }
+            if (directEditPermissions == null) {
+                // "editable" is true only if both direct edit include file and direct edit permissions are available
+                editable = false;
+            }            
         }
-
+        
+        // save old parameters from request
+        Map oldParameterMap = req.getParameterMap();        
+        
         try {                     
             // include direct edit "start" element (if enabled)
-            if (directEditMode != null) {
+            if (editable) {
                 
                 // set additional request parameters/attributes required for the included direct edit JSP 
                 req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT, element);
                 req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE, controller.getCmsObject().getRequestContext().getLocale().toString());
                 req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET, target);            
                 
-                includeDirectEditElement(context, directEditIncludeFile, I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START + "_" + directEditMode, req, res);
+                includeDirectEditElement(context, directEditIncludeFile, I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START + "_" + directEditPermissions, req, res);
             }
             
             // add parameters (again) to set the correct element
@@ -456,8 +401,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             controller.getCurrentRequest().getRequestDispatcher(target).include(req, res); 
             
             // include direct edit "end" element (if enabled)
-            if (directEditMode != null) {
-                includeDirectEditElement(context, directEditIncludeFile, I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_END + "_" + directEditMode, req, res);
+            if (editable) {
+                includeDirectEditElement(context, directEditIncludeFile, I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_END + "_" + directEditPermissions, req, res);
             }
             
         } catch (ServletException e) {
@@ -467,12 +412,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             } else {
                 t = e;
             }
-            t = controller.setThrowable(t);
-            throw new JspException(imprintExceptionMessage(t, target), t);    
+            t = controller.setThrowable(t, target);
+            throw new JspException(t);    
         } catch (IOException e) {
-            Throwable t = controller.setThrowable(e);
+            Throwable t = controller.setThrowable(e, target);
 
-            throw new JspException(imprintExceptionMessage(t, target), t);
+            throw new JspException(t);
         } finally {
             if (oldParameterMap != null) {
                 controller.getCurrentRequest().setParameterMap(oldParameterMap);
@@ -513,37 +458,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             } else {
                 t = e;
             }
-            t = controller.setThrowable(t);
-            throw new JspException(imprintExceptionMessage(t, target), t); 
+            t = controller.setThrowable(t, target);
+            throw new JspException(t); 
         } catch (IOException e) {
-            Throwable t = controller.setThrowable(e);
-            throw new JspException(imprintExceptionMessage(t, target), t);
+            Throwable t = controller.setThrowable(e, target);
+            throw new JspException(t);
         }
-    }
-    
-    /**
-     * Generate a exception message that contains information about the
-     * cause of the problem, which is otherwise hard to pinpoint in case 
-     * of more complex include() scenarios.<p>
-     * 
-     * @param t the exception to generate the message for
-     * @param target the current include target
-     * @return the exception message 
-     */
-    private static String imprintExceptionMessage(Throwable t, String target) {
-        String message = t.getMessage();
-        if ((message == null) || !(message.startsWith("cause "))) {
-            String cause;
-            if (t instanceof ServletException) {
-                cause = "" + ((ServletException)t).getRootCause();
-            } else {
-                cause = "" + t;
-            }
-            message = "cause " + cause + " in " + target;
-        } else {
-            message += " included by " + target;
-        }
-        return message;        
     }
     
     /**
@@ -581,7 +501,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     }
 
     /**
-     * Internal method to add parameters.<p>
+     * Adds parameters to a parameter Map that can be used for a http request.<p>
      * 
      * @param parameters the Map to add the parameters to
      * @param name the name to add
@@ -590,7 +510,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      *      a parameter with the same name, otherwise the request will have multiple parameters 
      *      with the same name (which is possible in http requests)
      */
-    private static void addParameter(Map parameters, String name, String value, boolean overwrite) {
+    public static void addParameter(Map parameters, String name, String value, boolean overwrite) {
         // No null values allowed in parameters
         if ((parameters == null) || (name == null) || (value == null)) {
             return;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/20 12:45:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsFlexController {
     
@@ -61,9 +61,6 @@ public class CmsFlexController {
 
     /** The wrapped CmsObject provides JSP with access to the core system */
     private CmsObject m_cmsObject;
-
-    /** The CmsResource that was initialized by the original request, required for URI actions */    
-    private CmsResource m_resource;   
         
     /** List of wrapped CmsFlexRequests */
     private List m_flexRequestList;
@@ -76,38 +73,15 @@ public class CmsFlexController {
     
     /** Wrapped top response */     
     private HttpServletResponse m_res;    
+
+    /** The CmsResource that was initialized by the original request, required for URI actions */    
+    private CmsResource m_resource;   
     
     /** Exception that was caught during inclusion of sub elements */
     private Throwable m_throwable;
-        
-    /**
-     * Returns an exception (Throwable) that was caught during inclusion of sub elements.<p>
-     * 
-     * @return an exception (Throwable) that was caught during inclusion of sub elements
-     */
-    public Throwable getThrowable() {
-        return m_throwable;
-    }
     
-    /**
-     * Sets an exception (Throwable) that was caught during inclusion of sub elements.<p>
-     * 
-     * If another exception is already set in this controller, then the additional exception
-     * is ignored.
-     * 
-     * @param throwable the exception (Throwable) to set
-     * @return the exception stored in the contoller
-     */
-    public Throwable setThrowable(Throwable throwable) {
-        if (m_throwable == null) {
-            m_throwable = throwable;
-        } else {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Ignored additional exception", throwable);
-            }
-        }
-        return m_throwable;
-    }
+    /** URI of a VFS resource that caused the exception */
+    private String m_throwableResourceUri;
     
     /**
      * Default constructor.<p>
@@ -151,6 +125,38 @@ public class CmsFlexController {
     }
     
     /**
+     * Provides access to a root cause Exception that might have occured in a complex inlucde scenario.<p>
+     * 
+     * @param req the current request
+     * @return the root cause exception or null if no root cause exception is available
+     * @see #getThrowable()
+     */
+    public static Throwable getThrowable(ServletRequest req) {
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
+        if (controller != null) {
+            return controller.getThrowable();
+        } else {
+            return null;
+        }
+    }    
+    
+    /**
+     * Provides access to URI of a VFS resource that caused an exception that might have occured in a complex inlucde scenario.<p>
+     * 
+     * @param req the current request
+     * @return to URI of a VFS resource that caused an exception, or null
+     * @see #getThrowableResourceUri()
+     */
+    public static String getThrowableResourceUri(ServletRequest req) {
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
+        if (controller != null) {
+            return controller.getThrowableResourceUri();
+        } else {
+            return null;
+        }    
+    }
+    
+    /**
      * Checks if the provided request is running in OpenCms.<p>
      *
      * @param req the current request
@@ -169,21 +175,6 @@ public class CmsFlexController {
         CmsFlexController controller = (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
         if (controller != null) {
             controller.clear();
-        }
-    }
-    
-    /**
-     * Provides access to a root cause Exception that might have occured in a complex inlucde scenario.<p>
-     * 
-     * @param req the current request
-     * @return the root cause exception or null if no root cause exception is available
-     */
-    public static Throwable getThrowable(ServletRequest req) {
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
-        if (controller != null) {
-            return controller.getThrowable();
-        } else {
-            return null;
         }
     }
     
@@ -222,6 +213,15 @@ public class CmsFlexController {
         return m_cache;
     }
     
+    /**
+     * Returns the wrapped CmsObject.<p>
+     * 
+     * @return the wrapped CmsObject
+     */
+    public CmsObject getCmsObject() {
+        return m_cmsObject;
+    }
+    
     /** 
      * This method provides access to the top-level CmsResource of the request
      * which is of a type that supports the FlexCache,
@@ -233,15 +233,6 @@ public class CmsFlexController {
     public CmsResource getCmsResource() {
         return m_resource;
     }     
-    
-    /**
-     * Returns the wrapped CmsObject.<p>
-     * 
-     * @return the wrapped CmsObject
-     */
-    public CmsObject getCmsObject() {
-        return m_cmsObject;
-    }
     
     /**
      * Returns the current flex request.<p>
@@ -268,6 +259,25 @@ public class CmsFlexController {
      */
     public int getResponseStackSize() {
         return m_flexResponseList.size();
+    }
+    
+    /**
+     * Returns an exception (Throwable) that was caught during inclusion of sub elements.<p>
+     * 
+     * @return an exception (Throwable) that was caught during inclusion of sub elements
+     */
+    public Throwable getThrowable() {
+        return m_throwable;
+    }
+        
+    /**
+     * Returns the URI of a VFS resource that caused the exception that was caught during inclusion of sub elements,
+     * might return null if no URI information was available for the exception.<p>
+     * 
+     * @return the URI of a VFS resource that caused the exception that was caught during inclusion of sub elements
+     */
+    public String getThrowableResourceUri() {
+        return m_throwableResourceUri;
     }
     
     /**
@@ -332,6 +342,28 @@ public class CmsFlexController {
      */    
     public void pushResponse(CmsFlexResponse res) {
         m_flexResponseList.add(res);
+    }
+    
+    /**
+     * Sets an exception (Throwable) that was caught during inclusion of sub elements.<p>
+     * 
+     * If another exception is already set in this controller, then the additional exception
+     * is ignored.
+     * 
+     * @param throwable the exception (Throwable) to set
+     * @param resource the URI of the VFS resource the error occured on (might be null if unknown)
+     * @return the exception stored in the contoller
+     */
+    public Throwable setThrowable(Throwable throwable, String resource) {
+        if (m_throwable == null) {
+            m_throwable = throwable;
+            m_throwableResourceUri = resource;
+        } else {
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Ignored additional exception" + ((resource!=null)?" on resource " + resource:""), throwable);
+            }
+        }
+        return m_throwable;
     }
     
     /**

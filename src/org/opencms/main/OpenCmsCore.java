@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2004/02/20 12:45:54 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.86 $
+ * @version $Revision: 1.87 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1771,7 +1771,11 @@ public final class OpenCmsCore {
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${resource_key}", messages.key("error.system.resource"));
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${version_key}", messages.key("error.system.version"));
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${context_key}", messages.key("error.system.context"));
-        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${resource}", cms.getRequestContext().getUri());
+        String errorUri = CmsFlexController.getThrowableResourceUri(request);
+        if (errorUri == null) {
+            errorUri = cms.getRequestContext().getUri();
+        }
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${resource}", errorUri);
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${version}", getSystemInfo().getVersionName());
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${context}", getSystemInfo().getOpenCmsContext());        
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${bt_close}", messages.key("button.close"));

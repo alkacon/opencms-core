@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/20 12:45:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,14 +35,19 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypePage;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspTagInclude;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.loader.I_CmsLoaderIncludeExtension;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.I_CmsRequest;
@@ -69,6 +74,7 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -83,13 +89,16 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
-public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
+public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
     /** Magic elemet replace name */
     public static final String C_ELEMENT_REPLACE = "_CMS_ELEMENTREPLACE";
     
+    /** URI of the bodyloader XML file in the OpenCms VFS*/    
+    public static final String C_BODYLOADER_URI = I_CmsWpConstants.C_VFS_PATH_SYSTEM + "shared/bodyloader.html";
+            
     /** The id of this loader */
     public static final int C_RESOURCE_LOADER_ID = 3;
 
@@ -791,5 +800,66 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      */
     public boolean isUsingUriWhenLoadingTemplate() {
         return true;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsLoaderIncludeExtension#includeExtension(java.lang.String, java.lang.String, boolean, java.util.Map, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     */
+    public String includeExtension(String target, String element, boolean editable, Map parameterMap, ServletRequest req, ServletResponse res) throws CmsException {
+        // the Flex controller provides access to the interal OpenCms structures
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        // simple sanity check, controller should never be null here
+        if (controller == null) {
+            return target;
+        }
+        // special code to handle XmlTemplate based file includes        
+        if (element != null) {
+            if (!("body".equals(element) || "(default)".equals(element))) {
+                // add template selector for multiple body XML files
+                CmsJspTagInclude.addParameter(parameterMap, CmsXmlTemplate.C_FRAME_SELECTOR, element, true);
+            }
+        }        
+        boolean isPageTarget;
+        try {            
+            // check if the target does exist in the OpenCms VFS
+            CmsResource targetResource = controller.getCmsObject().readFileHeader(target);
+            isPageTarget = ((CmsResourceTypePage.C_RESOURCE_TYPE_ID == targetResource.getType()));
+        } catch (CmsException e) {
+            controller.setThrowable(e, target);
+            throw new CmsException("File not found: " + target, e);
+        }
+        String bodyAttribute = (String) controller.getCmsObject().getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);               
+        if (bodyAttribute == null) {
+            // no body attribute is set: this is NOT a sub-element in a XML mastertemplate
+            if (isPageTarget) {
+                // add body file path to target 
+                if (! target.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
+                    target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
+                }
+                // save target as "element replace" parameter for body loader
+                CmsJspTagInclude.addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + target, true);  
+                target = C_BODYLOADER_URI;                   
+            }
+        } else {
+            // body attribute is set: this is a sub-element in a XML mastertemplate
+            if (target.equals(controller.getCmsObject().getRequestContext().getUri())) {
+                // target can be ignored, set body attribute as "element replace" parameter  
+                CmsJspTagInclude.addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + bodyAttribute, true);
+                // redirect target to body loader
+                target = C_BODYLOADER_URI;                
+            } else {
+                if (isPageTarget) {
+                    // add body file path to target 
+                    if (isPageTarget && ! target.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
+                        target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
+                    }           
+                    // save target as "element replace" parameter  
+                    CmsJspTagInclude.addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + target, true);  
+                    target = C_BODYLOADER_URI;                     
+                }
+            }          
+        }
+        
+        return target;
     }
 }

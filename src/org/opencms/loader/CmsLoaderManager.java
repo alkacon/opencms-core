@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/02/20 12:45:54 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,13 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -50,11 +55,15 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.1
  */
 public class CmsLoaderManager {
+    
+    /** Contains all loader extensions to the include process */
+    private List m_includeExtensions;
 
+    /** All initialized resource loaders, mapped to their ID */
     private I_CmsResourceLoader[] m_loaders;
 
     /**
@@ -123,11 +132,41 @@ public class CmsLoaderManager {
     }
     
     /**
+     * Extension method for handling special, loader depended actions during the include process.<p>
+     * 
+     * Note: If you have multiple loaders configured that require include extensions, 
+     * all loaders are called in the order they are configured in.<p> 
+     * 
+     * @param target the target for the include, might be <code>null</code>
+     * @param element the element to select form the target might be <code>null</code>
+     * @param editable the flag to indicate if the target is editable
+     * @param paramMap a map of parameters for the include, can be modified, might be <code>null</code>
+     * @param req the current request
+     * @param res the current response
+     * @throws CmsException in case something goes wrong
+     * @return the modified target URI
+     */
+    public String resolveIncludeExtensions(String target, String element, boolean editable, Map paramMap, ServletRequest req, ServletResponse res) throws CmsException {
+        if (m_includeExtensions == null) {
+            return target;
+        }
+        String result = target;
+        Iterator i = m_includeExtensions.iterator();
+        while (i.hasNext()) {
+            // offer the element to every include extension
+            I_CmsLoaderIncludeExtension loader = (I_CmsLoaderIncludeExtension)i.next();
+            result = loader.includeExtension(target, element, editable, paramMap, req, res);
+        }
+        return result;
+    }
+    
+    /**
      * Adds a new loader to the internal list of loaded loaders.<p>
      *
      * @param loader the loader to add
      */
     private void addLoader(I_CmsResourceLoader loader) {
+        // add the loader to the internal list of loaders
         int pos = loader.getLoaderId();
         if (pos > m_loaders.length) {
             I_CmsResourceLoader[] buffer = new I_CmsResourceLoader[pos * 2];
@@ -135,5 +174,12 @@ public class CmsLoaderManager {
             m_loaders = buffer;
         }
         m_loaders[pos] = loader;
+        if (loader instanceof I_CmsLoaderIncludeExtension) {
+            // this loader requires special processing during the include process
+            if (m_includeExtensions == null) {
+                m_includeExtensions = new ArrayList();
+            }
+            m_includeExtensions.add(loader);
+        }
     }
 }

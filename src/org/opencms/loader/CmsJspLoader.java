@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/02/20 12:45:54 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -180,39 +180,45 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      */
     public byte[] dump(CmsObject cms, CmsResource file, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException {
-
+        
+        // access the Flex controller
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-
-        CmsFlexRequest f_req;
-        CmsFlexResponse f_res;
-            
+        CmsFlexController oldController = null; 
         if (controller != null) {
-            // re-use currently wrapped request / response
-            f_req = controller.getCurrentRequest();
-            f_res = controller.getCurrentResponse();
-        } else {
-            // create new request / response wrappers
+            // for dumping we must create an new "top level" controller, save the old one to be restored later
+            oldController = controller;
+        }
+        
+        byte[] result = null;        
+        try {               
+            // create new request / response wrappers and crontoller
             controller = new CmsFlexController(cms, file, m_cache, req, res);
             req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
-            f_req = new CmsFlexRequest(req, controller);
-            f_res = new CmsFlexResponse(res, controller, false, false);
+            CmsFlexRequest f_req = new CmsFlexRequest(req, controller);
+            CmsFlexResponse f_res = new CmsFlexResponse(res, controller, false, false);
             controller.pushRequest(f_req);
             controller.pushResponse(f_res);
-        }
-
-        byte[] result = null;
-
-        try {
-            f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
-        } catch (java.net.SocketException e) {
-            // uncritical, might happen if client (browser) did not wait until end of page delivery
-        }
-
-        if (!f_res.isSuspended()) {
-            if (!res.isCommitted() || m_errorPagesAreNotCommited) {
-                // if a JSP errorpage was triggered the response will be already committed here
-                result = f_res.getWriterBytes();
-                result = CmsEncoder.changeEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding(), cms.getRequestContext().getEncoding());
+    
+            // now include the target
+            try {
+                f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
+            } catch (java.net.SocketException e) {
+                // uncritical, might happen if client (browser) did not wait until end of page delivery
+            }
+    
+            if (!f_res.isSuspended()) {
+                if (!res.isCommitted() || m_errorPagesAreNotCommited) {
+                    // if a JSP errorpage was triggered the response will be already committed here
+                    result = f_res.getWriterBytes();
+                    result = CmsEncoder.changeEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding(), cms.getRequestContext().getEncoding());
+                }
+            }
+            // remove temporary controller
+            req.removeAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        } finally {
+            if (oldController != null) {
+                // reset saved controller
+                req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, oldController);
             }
         }
         
