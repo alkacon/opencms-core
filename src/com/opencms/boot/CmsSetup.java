@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
- * Date   : $Date: 2003/11/10 08:12:59 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/01/25 12:39:34 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,11 +70,6 @@ public class CmsSetup {
     /** Contains the absolute path to the opencms home directory */
     private String m_basePath;
 
-    /** 
-     * Indicates if the user has chosen standard (false) or advanced (true) setup
-     */
-    private boolean m_setupType;
-
     /**
      * name of the database system
      */
@@ -84,11 +79,6 @@ public class CmsSetup {
      * database password used to drop and create database
      */
     private String m_dbCreatePwd;
-
-    /**
-     * replacer string
-     */
-    private Hashtable m_replacer;
 
     /** 
      * This method reads the properties from the opencms.property file
@@ -204,24 +194,6 @@ public class CmsSetup {
      */
     public String getBasePath() {
         return m_basePath.replace('\\', '/').replace('/', File.separatorChar);
-    }
-
-    /** 
-     * Sets the setup type to the given value
-     * 
-     * @param setupType the setup type:  standard (false), advanced (true)
-     */
-    public void setSetupType(boolean setupType) {
-        m_setupType = setupType;
-    }
-
-    /** 
-     * Returns the value of the setup type: standard (false), advanced (true)
-     * 
-     * @return the setup type 
-     */
-    public boolean getSetupType() {
-        return m_setupType;
     }
 
     /** 
@@ -474,700 +446,296 @@ public class CmsSetup {
         setExtProperty("db.pool." + getPool() + ".maxIdle", minConn);
     }
 
-    /** Returns the min. connections */
+    /** 
+     * Returns the min. connections.<p>
+     * 
+     * @return the min. connections
+     */
     public String getMinConn() {
         return this.getExtProperty("db.pool." + getPool() + ".maxIdle");
     }
 
-    /** Sets the maximum connections to the given value */
+    /** 
+     * Sets the maximum connections to the given value.<p>
+     * 
+     * @param maxConn maximum connection count
+     */
     public void setMaxConn(String maxConn) {
         setExtProperty("db.pool." + getPool() + ".maxActive", maxConn);
     }
 
-    /** Returns the max. connections */
+    /** 
+     * Returns the max. connections.<p>
+     * 
+     * @return the max. connections
+     */
     public String getMaxConn() {
         return this.getExtProperty("db.pool." + getPool() + ".maxActive");
     }
 
-    /** Sets the increase rate to the given value */
-    //public void setIncreaseRate(String increaseRate) {
-    //	setExtProperty("pool." + getResourceBroker() + ".increaseRate", increaseRate);
-    //}
-
-    /** Returns the increase rate */
-    //public String getIncreaseRate() {
-    //	return this.getExtProperty("pool." + getResourceBroker() + ".increaseRate");
-    //}
-
-    /** Sets the timeout to the given value */
+    /** 
+     * Sets the timeout to the given value.<p>
+     * 
+     * @param timeout the timeout to set
+     */
     public void setTimeout(String timeout) {
         setExtProperty("db.pool." + getPool() + ".maxWait", timeout);
     }
 
-    /** Returns the timeout value */
+    /** 
+     * Returns the timeout value.<p>
+     * 
+     * @return the timeout value
+     */
     public String getTimeout() {
         return this.getExtProperty("db.pool." + getPool() + ".maxWait");
     }
 
-    /** Sets the max. age to the given value */
-    //public void setMaxAge(String maxAge) {
-    //	setExtProperty("pool." + getResourceBroker() + ".maxage", maxAge);
-    //}
-
-    /** Returns the max. age */
-    //public String getMaxAge() {
-    //	return this.getExtProperty("pool." + getResourceBroker() + ".maxage");
-    //}
-
-    /** Sets the cache value for user to the given value */
-    public void setCacheUser(String cacheUser) {
-        setExtProperty("cache.user", cacheUser);
-    }
-
-    /** Returns the cache value for user */
-    public String getCacheUser() {
-        return this.getExtProperty("cache.user");
-    }
-
-    /** Sets the cache value for group to the given value */
-    public void setCacheGroup(String cacheGroup) {
-        setExtProperty("cache.group", cacheGroup);
-    }
-
-    /** Returns the cache value for group */
-    public String getCacheGroup() {
-        return this.getExtProperty("cache.group");
-    }
-
-    /** Sets the cache value for usergroups to the given value */
-    public void setCacheUserGroups(String cacheUserGroups) {
-        setExtProperty("cache.usergroups", cacheUserGroups);
-    }
-
-    /** Returns the cache value for usergroups */
-    public String getCacheUserGroups() {
-        return this.getExtProperty("cache.usergroups");
-    }
-
-    /** Sets the cache value for project to the given value */
-    public void setCacheProject(String cacheProject) {
-        setExtProperty("cache.project", cacheProject);
-    }
-
-    /** Returns the cache value for project */
-    public String getCacheProject() {
-        return this.getExtProperty("cache.project");
-    }
-
-    /** Sets the cache value for online project to the given value */
-    public void setCacheOnlineProject(String cacheOnlineProject) {
-        // TODO: remove this, property is never read
-        setExtProperty("cache.onlineproject", cacheOnlineProject);
-    }
-
-    /** Returns the cache value for online project */
-    public String getCacheOnlineProject() {
-        // TODO: remove this, property is never read
-        return this.getExtProperty("cache.onlineproject");
-    }
-
-    /** Sets the cache value for resource to the given value */
-    public void setCacheResource(String cacheResource) {
-        setExtProperty("cache.resource", cacheResource);
-    }
-
-    /** Returns the cache value for resource */
-    public String getCacheResource() {
-        return this.getExtProperty("cache.resource");
-    }
-
-    /** Sets the cache value for subres to the given value */
-    public void setCacheSubres(String cacheSubres) {
-        setExtProperty("cache.subres", cacheSubres);
-    }
-
-    /** Returns the cache value for subres */
-    public String getCacheSubres() {
-        return this.getExtProperty("cache.subres");
-    }
-
-    /** Sets the cache value for property to the given value */
-    public void setCacheProperty(String cacheProperty) {
-        setExtProperty("cache.property", cacheProperty);
-    }
-
-    /** Returns the cache value for property */
-    public String getCacheProperty() {
-        return this.getExtProperty("cache.property");
-    }
-
-    /** Sets the cache value for property def. to the given value */
-    public void setCachePropertyDef(String cachePropertyDef) {
-        // TODO: remove this, property is never read
-        setExtProperty("cache.propertydef", cachePropertyDef);
-    }
-
-    /** Returns the cache value for property def. */
-    public String getCachePropertyDef() {
-        // TODO: remove this, property is never read
-        return this.getExtProperty("cache.propertydef");
-    }
-
-    /** Sets the cache value for property def. vector to the given value */
-    public void setCachePropertyDefVector(String cachePropertyDefVector) {
-        setExtProperty("cache.propertydefvector", cachePropertyDefVector);
-    }
-
-    /** Returns the cache value for property def. vector */
-    public String getCachePropertyDefVector() {
-        return this.getExtProperty("cache.propertydefvector");
-    }
-
-    /** Sets the value for session failover to the given value */
-    public void setSessionFailover(String sessionFailover) {
-        setExtProperty("sessionfailover.enabled", sessionFailover);
-    }
-
-    /** Returns the value for session failover */
-    public String getSessionFailover() {
-        return this.getExtProperty("sessionfailover.enabled");
-    }
-
-    /** Sets the value for deleting published project parameters to the given value */
-    public void setHistoryEnabled(String historyEnabled) {
-        setExtProperty("history.enabled", historyEnabled);
-    }
-
-    /** Returns the value for deleting published project parameters */
-    public String getHistoryEnabled() {
-        return this.getExtProperty("history.enabled");
-    }
-
-    /** Sets the value for http streaming to the given value */
-    public void setHttpStreaming(String httpStreaming) {
-        setExtProperty("httpstreaming.enabled", httpStreaming);
-    }
-
-    /** Returns the value for http streaming */
-    public String getHttpStreaming() {
-        return this.getExtProperty("httpstreaming.enabled");
-    }
-
-    /** Sets the value for exportpoint nr to the given value */
-    public void setExportPoint(String exportPoint, int nr) {
-        setExtProperty("exportpoint." + nr, exportPoint);
-    }
-
-    /** Returns the value for exportpoint nr */
-    public String getExportPoint(int nr) {
-        return this.getExtProperty("exportpoint." + nr);
-    }
-
-    /** Sets the value for exportpoint path nr to the given value */
-    public void setExportPointPath(String exportPointPath, int nr) {
-        setExtProperty("exportpoint.path." + nr, exportPointPath);
-    }
-
-    /** Returns the value for exportpoint path nr */
-    public String getExportPointPath(int nr) {
-        return this.getExtProperty("exportpoint.path." + nr);
-    }
-
-    /** Sets the value for redirect nr to the given value */
-    public void setRedirect(String redirect, int nr) {
-        setExtProperty("redirect." + nr, redirect);
-    }
-
-    /** Returns the value for redirect nr */
-    public String getRedirect(int nr) {
-        return this.getExtProperty("redirect." + nr);
-    }
-
-    /** Sets the value for redirect location nr to the given value */
-    public void setRedirectLocation(String redirectLocation, int nr) {
-        setExtProperty("redirectlocation." + nr, redirectLocation);
-    }
-
-    /** Returns the value for redirect location nr */
-    public String getRedirectLocation(int nr) {
-        return this.getExtProperty("redirectlocation." + nr);
-    }
-
-    /** Sets the value for opencms logging to the given value */
-    public void setLogging(String logging) {
-        setExtProperty("log", logging);
-    }
-
-    /** Returns the value for opencms logging */
-    public String getLogging() {
-        return this.getExtProperty("log");
-    }
-
-    /** Sets the value for the log file to the given value */
-    public void setLogFile(String logFile) {
-        setExtProperty("log.file", logFile);
-    }
-
-    /** Returns the value for the log file */
-    public String getLogFile() {
-        return this.getExtProperty("log.file");
-    }
-
-    /** Enables/Disables timestamps in the opencms logfile */
-    public void setLogTimestamp(String logTimestamp) {
-        setExtProperty("log.timestamp", logTimestamp);
-    }
-
-    /** Indicates if timestamps are displayed in the opencms logfile */
-    public String getLogTimestamp() {
-        return this.getExtProperty("log.timestamp");
-    }
-
-    /** Enables/Disables memory state in the log messages */
-    public void setLogMemory(String logMemory) {
-        setExtProperty("log.memory", logMemory);
-    }
-
-    /** Indicates if memory state is displayed in the log messages */
-    public String getLogMemory() {
-        return this.getExtProperty("log.memory");
-    }
-
-    /** Sets the value for the log date format to the given value */
-    public void setLogDateFormat(String logDateFormat) {
-        setExtProperty("log.dateFormat", logDateFormat);
-    }
-
-    /** Returns the value for the log date format */
-    public String getLogDateFormat() {
-        return this.getExtProperty("log.dateFormat");
-    }
-
-    /** Sets the value for the log queue maxage to the given value */
-    public void setLogQueueMaxAge(String logQueueMaxAge) {
-        setExtProperty("log.queue.maxage", logQueueMaxAge);
-    }
-
-    /** Returns the value for the log queue maxage */
-    public String getLogQueueMaxAge() {
-        return this.getExtProperty("log.queue.maxage");
-    }
-
-    /** Sets the value for the log queue maxsize to the given value */
-    public void setLogQueueMaxSize(String logQueueMaxSize) {
-        setExtProperty("log.queue.maxsize", logQueueMaxSize);
-    }
-
-    /** Returns the value for the log queue maxsize */
-    public String getLogQueueMaxSize() {
-        return this.getExtProperty("log.queue.maxsize");
-    }
-
-    /** Enables/Disables channel names in the log messages */
-    public void setLoggingChannelName(String loggingChannelName) {
-        setExtProperty("log.channel", loggingChannelName);
-    }
-
-    /** Indicates if channel names are displayed in the log messages */
-    public String getLoggingChannelName() {
-        return this.getExtProperty("log.channel");
-    }
-
-    /** Enables/Disables channel opencms_init in the log messages */
-    public void setLoggingChannelOpencms_init(String loggingChannelOpencms_init) {
-        setExtProperty("log.channel.opencms_init", loggingChannelOpencms_init);
-    }
-
-    /** Indicates if channel opencms_init is enabled in the log messages */
-    public String getLoggingChannelOpencms_init() {
-        return this.getExtProperty("log.channel.opencms_init");
-    }
-
-    /** Enables/Disables channel opencms_debug in the log messages */
-    public void setLoggingChannelOpencms_debug(String loggingChannelOpencms_debug) {
-        setExtProperty("log.channel.opencms_debug", loggingChannelOpencms_debug);
-    }
-
-    /** Indicates if channel opencms_debug is enabled in the log messages */
-    public String getLoggingChannelOpencms_debug() {
-        return this.getExtProperty("log.channel.opencms_debug");
-    }
-
-    /** Enables/Disables channel opencms_cache in the log messages */
-    public void setLoggingChannelOpencms_cache(String loggingChannelOpencms_cache) {
-        setExtProperty("log.channel.opencms_cache", loggingChannelOpencms_cache);
-    }
-
-    /** Indicates if channel opencms_cache is enabled in the log messages */
-    public String getLoggingChannelOpencms_cache() {
-        return this.getExtProperty("log.channel.opencms_cache");
-    }
-
-    /** Enables/Disables channel opencms_info in the log messages */
-    public void setLoggingChannelOpencms_info(String loggingChannelOpencms_info) {
-        setExtProperty("log.channel.opencms_info", loggingChannelOpencms_info);
-    }
-
-    /** Indicates if channel opencms_info is enabled in the log messages */
-    public String getLoggingChannelOpencms_info() {
-        return this.getExtProperty("log.channel.opencms_info");
-    }
-
-    /** Enables/Disables channel opencms_pool in the log messages */
-    public void setLoggingChannelOpencms_pool(String loggingChannelOpencms_pool) {
-        setExtProperty("log.channel.opencms_pool", loggingChannelOpencms_pool);
-    }
-
-    /** Indicates if channel opencms_pool is enabled in the log messages */
-    public String getLoggingChannelOpencms_pool() {
-        return this.getExtProperty("log.channel.opencms_pool");
-    }
-
-    /** Enables/Disables channel opencms_streaming in the log messages */
-    public void setLoggingChannelOpencms_streaming(String loggingChannelOpencms_streaming) {
-        setExtProperty("log.channel.opencms_streaming", loggingChannelOpencms_streaming);
-    }
-
-    /** Indicates if channel opencms_streaming is enabled in the log messages */
-    public String getLoggingChannelOpencms_streaming() {
-        return this.getExtProperty("log.channel.opencms_streaming");
-    }
-
-    /** Enables/Disables channel opencms_critical in the log messages */
-    public void setLoggingChannelOpencms_critical(String loggingChannelOpencms_critical) {
-        setExtProperty("log.channel.opencms_critical", loggingChannelOpencms_critical);
-    }
-
-    /** Indicates if channel opencms_critical is enabled in the log messages */
-    public String getLoggingChannelOpencms_critical() {
-        return this.getExtProperty("log.channel.opencms_critical");
-    }
-
-    /** Enables/Disables channel opencms_elementcache in the log messages */
-    public void setLoggingChannelOpencms_elementcache(String loggingChannelOpencms_elementcache) {
-        setExtProperty("log.channel.opencms_elementcache", loggingChannelOpencms_elementcache);
-    }
-
-    /** Indicates if channel opencms_elementcache is enabled in the log messages */
-    public String getLoggingChannelOpencms_elementcache() {
-        return this.getExtProperty("log.channel.opencms_elementcache");
-    }
-
-    /** Enables/Disables channel modules_debug in the log messages */
-    public void setLoggingChannelModules_debug(String loggingChannelModules_debug) {
-        setExtProperty("log.channel.modules_debug", loggingChannelModules_debug);
-    }
-
-    /** Indicates if channel modules_debug is enabled in the log messages */
-    public String getLoggingChannelModules_debug() {
-        return this.getExtProperty("log.channel.modules_debug");
-    }
-
-    /** Enables/Disables channel modules_info in the log messages */
-    public void setLoggingChannelModules_info(String loggingChannelModules_info) {
-        setExtProperty("log.channel.modules_info", loggingChannelModules_info);
-    }
-
-    /** Indicates if channel modules_info is enabled in the log messages */
-    public String getLoggingChannelModules_info() {
-        return this.getExtProperty("log.channel.modules_info");
-    }
-
-    /** Enables/Disables channel modules_critical in the log messages */
-    public void setLoggingChannelModules_critical(String loggingChannelModules_critical) {
-        setExtProperty("log.channel.modules_critical", loggingChannelModules_critical);
-    }
-
-    /** Indicates if channel modules_critical is enabled in the log messages */
-    public String getLoggingChannelModules_critical() {
-        return this.getExtProperty("log.channel.modules_critical");
-    }
-
-    public String getLoggingFlexCache() {
-        return this.getExtProperty("log.channel.flex_cache");
-    }
-
-    public void setLoggingFlexCache(String value) {
-        this.setExtProperty("log.channel.flex_cache", value);
-    }
-
-    public String getLoggingFlexLoader() {
-        return this.getExtProperty("log.channel.flex_loader");
-    }
-
-    public void setLoggingFlexLoader(String value) {
-        this.setExtProperty("log.channel.flex_loader", value);
-    }
-
-    public void setElementCache(String elementCache) {
-        setExtProperty("elementcache.enabled", elementCache);
-    }
-
-    public String getElementCache() {
-        return this.getExtProperty("elementcache.enabled");
-    }
-
-    public void setElementCacheURI(String elementCacheURI) {
-        setExtProperty("elementcache.uri", elementCacheURI);
-    }
-
-    public String getElementCacheURI() {
-        return this.getExtProperty("elementcache.uri");
-    }
-
-    public void setElementCacheElements(String elementCacheElements) {
-        setExtProperty("elementcache.elements", elementCacheElements);
-    }
-
-    public String getElementCacheElements() {
-        return this.getExtProperty("elementcache.elements");
-    }
-
-    public void setElementCacheVariants(String elementCacheVariants) {
-        setExtProperty("elementcache.variants", elementCacheVariants);
-    }
-
-    public String getElementCacheVariants() {
-        return this.getExtProperty("elementcache.variants");
-    }
-
-    /** Set the fictional mac ethernet address */
+    /** 
+     * Set the mac ethernet address, required for UUID generation.<p>
+     * 
+     * @param ethernetAddress the mac addess to set
+     */
     public void setEthernetAddress(String ethernetAddress) {
         setExtProperty("server.ethernet.address", ethernetAddress);
     }
 
-    /** Get the fictional mac ethernet address */
+    /** 
+     * Return the mac ethernet address
+     * 
+     * @return the mac ethernet addess
+     */
     public String getEthernetAddress() {
         return getExtProperty("server.ethernet.address");
     }
 
-    /** Set the maximum file upload size */
+    /** 
+     * Set the maximum file upload size.<p>
+     * 
+     * @param size the size to set
+     */
     public void setFileMaxUploadSize(String size) {
         setExtProperty("workplace.file.maxuploadsize", size);
     }
 
-    /** Get the maximum file upload size */
+    /** 
+     * Returns the maximum file upload size.<p>
+     * 
+     * @return the maximum file upload size
+     */
     public String getFileMaxUploadSize() {
         return getExtProperty("workplace.file.maxuploadsize");
     }
 
+    /**
+     * Returns the database name.<p>
+     * 
+     * @return the database name
+     */
     public String getDb() {
         return this.getDbProperty(m_database + ".dbname");
     }
 
+    /**
+     * Sets the database name.<p>
+     * 
+     * @param db the database name to set
+     */
     public void setDb(String db) {
         this.setDbProperty(m_database + ".dbname", db);
     }
 
+    /**
+     * Returns the database create statement.<p>
+     * 
+     * @return the database create statement
+     */
     public String getDbCreateConStr() {
         String constr = null;
         constr = this.getDbProperty(m_database + ".constr");
         return constr;
     }
 
+    /**
+     * Sets the database create statement.<p>
+     * 
+     * @param dbCreateConStr the database create statement
+     */
     public void setDbCreateConStr(String dbCreateConStr) {
         this.setDbProperty(m_database + ".constr", dbCreateConStr);
     }
 
+    /**
+     * Returns the database user that is used to connect to the database.<p>
+     * 
+     * @return the database user
+     */
     public String getDbCreateUser() {
         return this.getDbProperty(m_database + ".user");
     }
 
+    /**
+     * Set the database user that is used to connect to the database.<p>
+     * 
+     * @param dbCreateUser the user to set
+     */
     public void setDbCreateUser(String dbCreateUser) {
         this.setDbProperty(m_database + ".user", dbCreateUser);
     }
 
+    /**
+     * Returns the password used for database creation.<p>
+     * 
+     * @return the password used for database creation
+     */
     public String getDbCreatePwd() {
         return (m_dbCreatePwd != null) ? m_dbCreatePwd : "";
     }
 
+    /**
+     * Sets the password used for the initial OpenCms database creation.<p>
+     * 
+     * This password will not be stored permanently, 
+     * but used only in the setup wizard.<p>
+     * 
+     * @param dbCreatePwd the password used for the initial OpenCms database creation
+     */
     public void setDbCreatePwd(String dbCreatePwd) {
         m_dbCreatePwd = dbCreatePwd;
     }
 
-    /** Set the default tablespace when creating a new oracle user */
+    /** 
+     * Set the default tablespace when creating a new oracle user.<p>
+     * 
+     * @param dbDefaultTablespace the tablespace to set
+     */
     public void setDbDefaultTablespace(String dbDefaultTablespace) {
         this.setDbProperty(m_database + ".defaultTablespace", dbDefaultTablespace);
     }
 
-    /** Get the default tablespace when creating a new oracle user */
+    /** 
+     * Returns the default tablespace when creating a new oracle user.<p>
+     * 
+     * @return the default tablespace when creating a new oracle user
+     */
     public String getDbDefaultTablespace() {
         return this.getDbProperty(m_database + ".defaultTablespace");
     }
 
-    /** Set the temporary tablespace when creating a new oracle user */
+    /** 
+     * Set the temporary tablespace when creating a new oracle user.<p>
+     * 
+     * @param dbTemporaryTablespace the temporary tablespace when creating a new oracle user
+     */
     public void setDbTemporaryTablespace(String dbTemporaryTablespace) {
         this.setDbProperty(m_database + ".temporaryTablespace", dbTemporaryTablespace);
     }
 
-    /** Get the temporary tablespace when creating a new oracle user */
+    /** 
+     * Returns the temporary tablespace when creating a new oracle user.<p>
+     * 
+     * @return the temporary tablespace when creating a new oracle user
+     */
     public String getDbTemporaryTablespace() {
         return this.getDbProperty(m_database + ".temporaryTablespace");
     }
 
-    /** Set the index tablespace when creating a new oracle user */
+    /** 
+     * Set the index tablespace when creating a new oracle user.<p>
+     * 
+     * @param dbIndexTablespace the index tablespace to set
+     */
     public void setDbIndexTablespace(String dbIndexTablespace) {
         this.setDbProperty(m_database + ".indexTablespace", dbIndexTablespace);
     }
 
-    /** Get the index tablespace when creating a new oracle user */
+    /** 
+     * Returns the index tablespace when creating a new oracle user
+     * 
+     * @return the index tablespace
+     */
     public String getDbIndexTablespace() {
         return this.getDbProperty(m_database + ".indexTablespace");
     }
 
+    /**
+     * Checks if the setup wizard is enabled.<p>
+     * 
+     * @return true if the setup wizard is enables, false otherwise
+     */
     public boolean getWizardEnabled() {
-        String dummy = this.getExtProperty("wizard.enabled");
-        return "true".equals(dummy);
+        return "true".equals(getExtProperty("wizard.enabled"));
     }
 
+    /**
+     * Locks (i.e. disables) the setup wizard.<p>
+     *
+     */
     public void lockWizard() {
         setExtProperty("wizard.enabled", "false");
     }
 
+    /**
+     * Returns the database setup properties.<p>
+     * 
+     * @return the database setup properties
+     */
     public Properties getDbSetupProps() {
         return m_dbProperties;
     }
 
-    public Hashtable getReplacer() {
-        return m_replacer;
-    }
-
-    public void setReplacer(Hashtable replacer) {
-        m_replacer = replacer;
-    }
-
-    public String getStaticExport() {
-        return this.getExtProperty("staticexport.enabled");
-    }
-
-    public void setStaticExport(String staticExport) {
-        setExtProperty("staticexport.enabled", staticExport);
-    }
-
-    public String getStaticExportPath() {
-        return this.getExtProperty("staticexport.path");
-    }
-
-    public void setStaticExportPath(String staticExportPath) {
-        setExtProperty("staticexport.path", staticExportPath);
-    }
-
-    public String getUrlPrefixExport() {
-        return this.getExtProperty("url_prefix_export");
-    }
-
-    public void setUrlPrefixExport(String urlPrefixExport) {
-        setExtProperty("url_prefix_export", urlPrefixExport);
-    }
-
-    public String getUrlPrefixHttp() {
-        return this.getExtProperty("url_prefix_http");
-    }
-
-    public void setUrlPrefixHttp(String urlPrefixHttp) {
-        setExtProperty("url_prefix_http", urlPrefixHttp);
-    }
-
-    public String getUrlPrefixHttps() {
-        return this.getExtProperty("url_prefix_https");
-    }
-
-    public void setUrlPrefixHttps(String urlPrefixHttps) {
-        setExtProperty("url_prefix_https", urlPrefixHttps);
-    }
-
-    public String getUrlPrefixServername() {
-        return this.getExtProperty("url_prefix_servername");
-    }
-
-    public void setUrlPrefixServername(String urlPrefixServername) {
-        setExtProperty("url_prefix_servername", urlPrefixServername);
-    }
-
-    public void setFlexCacheEnabled(String value) {
-        this.setExtProperty("flex.cache.enabled", value);
-    }
-
-    public String getFlexCacheEnabled() {
-        return this.getExtProperty("flex.cache.enabled");
-    }
-
-    public void setCacheOfflineEnabled(String value) {
-        this.setExtProperty("flex.cache.offline", value);
-    }
-
-    public String getCacheOfflineEnabled() {
-        return this.getExtProperty("flex.cache.offline");
-    }
-
-    public void setForceGc(String value) {
-        this.setExtProperty("flex.cache.forceGC", value);
-    }
-
-    public String getForceGc() {
-        return this.getExtProperty("flex.cache.forceGC");
-    }
-
+    /**
+     * Sets filename translation to enabled / disabled.<p>
+     * 
+     * @param value value to set (must be "true" or "false")
+     */
     public void setFilenameTranslationEnabled(String value) {
         this.setExtProperty("filename.translation.enabled", value);
     }
 
+    /** 
+     * Returns "true" if filename translation is enabled.<p>
+     * 
+     * @return "true" if filename translation is enabled
+     */
     public String getFilenameTranslationEnabled() {
         return this.getExtProperty("filename.translation.enabled");
     }
 
+    /**
+     * Sets directory translation to enabled / disabled.<p>
+     * 
+     * @param value value to set (must be "true" or "false")
+     */    
     public void setDirectoryTranslationEnabled(String value) {
         this.setExtProperty("directory.translation.enabled", value);
     }
 
+    /** 
+     * Returns "true" if directory translation is enabled.<p>
+     * 
+     * @return "true" if directory translation is enabled
+     */
     public String getDirectoryTranslationEnabled() {
         return this.getExtProperty("directory.translation.enabled");
     }
 
-    public void setMaxCacheBytes(String value) {
-        this.setExtProperty("flex.cache.maxCacheBytes", value);
-    }
-
-    public String getMaxCacheBytes() {
-        return this.getExtProperty("flex.cache.maxCacheBytes");
-    }
-
-    public void setAvgCacheBytes(String value) {
-        this.setExtProperty("flex.cache.avgCacheBytes", value);
-    }
-
-    public String getAvgCacheBytes() {
-        return this.getExtProperty("flex.cache.avgCacheBytes");
-    }
-
-    public void setMaxEntryBytes(String value) {
-        this.setExtProperty("flex.cache.maxEntryBytes", value);
-    }
-
-    public String getMaxEntryBytes() {
-        return this.getExtProperty("flex.cache.maxEntryBytes");
-    }
-
-    public void setMaxEntries(String value) {
-        this.setExtProperty("flex.cache.maxEntries", value);
-    }
-
-    public String getMaxEntries() {
-        return this.getExtProperty("flex.cache.maxEntries");
-    }
-
-    public void setMaxKeys(String value) {
-        this.setExtProperty("flex.cache.maxKeys", value);
-    }
-
-    public String getMaxKeys() {
-        return this.getExtProperty("flex.cache.maxKeys");
-    }
-
+    /**
+     * Sets the directory default index files.<p>
+     * 
+     * This must be a comma separated list of files.<p>
+     *
+     * @param value the value to set
+     */
     public void setDirectoryIndexFiles(String value) {
         this.setExtProperty("directory.default.files", value);
     }
 
+    /**
+     * Returns the directory default index files as a comma separated list.<p>
+     * 
+     * @return the directory default index files as a comma separated list
+     */
     public String getDirectoryIndexFiles() {
         Object value = null;
         value = m_extProperties.get("directory.default.files");
@@ -1199,6 +767,10 @@ public class CmsSetup {
 
     /**
      * Over simplistic helper to compare two strings to check radio buttons.
+     * 
+     * @param value1 the first value 
+     * @param value2 the secound value
+     * @return "checked" if both values are equal, the empty String "" otherwise
      */
     public String isChecked(String value1, String value2) {
         if (value1 == null || value2 == null) {
@@ -1244,5 +816,26 @@ public class CmsSetup {
      */
     public String getAppName() {
         return this.getExtProperty("app.name");
+    }
+
+    /** Replacer Hashtable */
+    private Hashtable m_replacer;
+    
+    /**
+     * Returns the replacer.<p>
+     * 
+     * @return the replacer
+     */
+    public Hashtable getReplacer() {
+        return m_replacer;
+    }
+    
+    /**
+     * Sets the replacer.<p>
+     * 
+     * @param value the replacer to set
+     */
+    public void setReplacer(Hashtable value) {
+        m_replacer = value;
     }
 }
