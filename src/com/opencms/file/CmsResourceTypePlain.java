@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/07/04 16:00:24 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -528,7 +528,7 @@ public class CmsResourceTypePlain extends Object implements I_CmsResourceType, I
     * @throws CmsException if the user has not the rights
     * to unlock this resource.
     */
-    public void unlockResource(CmsObject cms, String resource) throws CmsException{
+    public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException{
         cms.doUnlockResource(resource);
     }
 

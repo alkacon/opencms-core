@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/09 16:01:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/10 14:39:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import com.opencms.file.CmsResource;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/07/09 16:01:35 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/10 14:39:23 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -306,7 +306,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                     break;
                 }
             }
-            m_cms.unlockResource(translate(folder));
+            m_cms.unlockResource(translate(folder), false);
             // we have to read the new resource again, to get the correct
             // timestamp.
             newFolder = m_cms.readFolder(translate(folder));
@@ -445,7 +445,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             }
             // unlock it
 
-            m_cms.unlockResource(m_cms.readAbsolutePath(newFile));
+            m_cms.unlockResource(m_cms.readAbsolutePath(newFile), false);
             // we have to read the new resource again, to get the correct
             // timestamp.
             CmsResource newRes = m_cms.readFileHeader(m_cms.readAbsolutePath(newFile));
@@ -573,7 +573,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                 }
             }
             // everything is done now, so unlock the resource			
-            m_cms.unlockResource(resourcename);
+            m_cms.unlockResource(resourcename, false);
             //read the resource again, nescessary to get the actual timestamps
             res = m_cms.readFileHeader(resourcename);
             //add resource to synchronisation list

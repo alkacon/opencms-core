@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/10 14:18:51 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/07/10 14:39:23 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2003/07/10 14:18:51 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/10 14:39:23 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1421,20 +1421,19 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      * @param deleted A vecor (of CmsResources) with the deleted resources in the project.
      * @param newRes A vecor (of CmsResources) with the new resources in the project.
      */
-    public void getBrokenLinks(I_CmsReport report, Vector changed, Vector deleted, Vector newRes) throws CmsException {
-    
+    public void getBrokenLinks(I_CmsReport report, Vector changed, Vector deleted, Vector newRes) throws CmsException {    
         // first create some Vectors for performance increase
         Vector deletedByName = new Vector(deleted.size());
         for (int i = 0; i < deleted.size(); i++) {
-            deletedByName.add(((CmsResource) deleted.elementAt(i)).getResourceName());
+            deletedByName.add(((CmsResource) deleted.elementAt(i)).getFullResourceName());
         }
         Vector newByName = new Vector(newRes.size());
         for (int i = 0; i < newRes.size(); i++) {
-            newByName.add(((CmsResource) newRes.elementAt(i)).getResourceName());
+            newByName.add(((CmsResource) newRes.elementAt(i)).getFullResourceName());
         }
         Vector changedByName = new Vector(changed.size());
         for (int i = 0; i < changed.size(); i++) {
-            changedByName.add(((CmsResource) changed.elementAt(i)).getResourceName());
+            changedByName.add(((CmsResource) changed.elementAt(i)).getFullResourceName());
         }
         Vector onlineResNames = getOnlineResourceNames();
     
@@ -1451,7 +1450,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 }
             }
             if (aktualBrokenList.getLinkTargets().size() != 0) {
-                aktualBrokenList.setResourceName(((CmsResource) changed.elementAt(i)).getResourceName());
+                aktualBrokenList.setResourceName(((CmsResource) changed.elementAt(i)).getFullResourceName());
                 report.println(aktualBrokenList);
             }
         }
@@ -1467,7 +1466,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 }
             }
             if (aktualBrokenList.getLinkTargets().size() != 0) {
-                aktualBrokenList.setResourceName(((CmsResource) newRes.elementAt(i)).getResourceName());
+                aktualBrokenList.setResourceName(((CmsResource) newRes.elementAt(i)).getFullResourceName());
                 report.println(aktualBrokenList);
             }
         }
@@ -1476,7 +1475,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         Hashtable onlineResults = new Hashtable();
         changedByName.addAll(deletedByName);
         for (int i = 0; i < deleted.size(); i++) {
-            Vector refs = getAllOnlineReferencesForLink(((CmsResource) deleted.elementAt(i)).getResourceName(), changedByName);
+            Vector refs = getAllOnlineReferencesForLink(((CmsResource) deleted.elementAt(i)).getFullResourceName(), changedByName);
             for (int index = 0; index < refs.size(); index++) {
                 CmsPageLinks pl = (CmsPageLinks) refs.elementAt(index);
                 CmsUUID key = pl.getResourceId();
@@ -2337,11 +2336,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readProjectResource(com.opencms.file.CmsProject)
      */
-    public String readProjectResource(CmsProject project) throws CmsException {
+    public List readProjectResources(CmsProject project) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
-        String resName = null;
+        List result = (List) new ArrayList();
 
         try {
             conn = m_sqlManager.getConnection();
@@ -2354,10 +2353,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(4, I_CmsConstants.C_ROOT);
             res = stmt.executeQuery();
 
-            if (res.next()) {
-                resName = res.getString("RESOURCE_NAME");
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + ".readProjectResource] no project resource for ID: " + project.getId(), CmsException.C_NOT_FOUND);
+            while (res.next()) {
+                result.add(res.getString("RESOURCE_NAME"));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -2365,7 +2362,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             m_sqlManager.closeAll(conn, stmt, res);
         }
         
-        return resName;
+        return result;
     }    
 
     /**

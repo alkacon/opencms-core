@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/08 15:55:28 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.52 $ $Date: 2003/07/08 15:55:28 $
+ * @version $Revision: 1.53 $ $Date: 2003/07/10 14:38:59 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -406,20 +406,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * 
      */
     public String getName() {     
-        return getResourceName();
-          
-//        String name = null;
-//        String absoluteName = getAbsolutePath();
-//        
-//        // check if this is a file
-//        if (!absoluteName.endsWith("/")) {
-//            name = absoluteName.substring(absoluteName.lastIndexOf("/") + 1, absoluteName.length());
-//        } else {
-//            name = absoluteName.substring(0, absoluteName.length() - 1);
-//            name = name.substring(name.lastIndexOf("/") + 1, name.length());
-//        }
-//
-//        return name;    
+        return getResourceName();   
     }
     
     /**

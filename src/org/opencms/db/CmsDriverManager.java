@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/10 12:28:51 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/07/10 14:39:23 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.31 $ $Date: 2003/07/10 12:28:51 $
+ * @version $Revision: 1.32 $ $Date: 2003/07/10 14:39:23 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1314,6 +1314,7 @@ public class CmsDriverManager extends Object {
             // try to read the resource from the offline project, include deleted
             CmsResource offlineRes = null;
             try {
+                /*
                 m_resourceCache.remove(getCacheKey(null, currentUser, currentProject, resource));
                 List subFiles = getSubFiles(currentUser, currentProject, resource, true);
                 List subFolders = getSubFolders(currentUser, currentProject, resource, true);
@@ -1325,11 +1326,11 @@ public class CmsDriverManager extends Object {
                     String filename = ((CmsResource) subFiles.get(i)).getResourceName();
                     m_resourceCache.remove(getCacheKey(null, currentUser, currentProject, filename));
                 }
+                */
                 
-                //clearResourceCache(resource, currentProject, currentUser);
-                clearResourceCache();
-                
+                clearResourceCache();                
                 m_accessCache.clear();
+                
                 offlineRes = readFileHeaderInProject(currentUser, currentProject, currentProject.getId(), resource);
             } catch (CmsException exc) {
                 // if the resource does not exist in the offlineProject - it's ok
@@ -2195,6 +2196,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             // first delete files or undo changes in files
             for (int i = 0; i < allFiles.size(); i++) {
                 CmsFile currentFile = (CmsFile) allFiles.get(i);
+                String currentResourceName = readPath(currentUser, currentProject, currentFile, true);
                 if (currentFile.getState() == I_CmsConstants.C_STATE_NEW) {
                     // delete the properties
                     m_vfsDriver.deleteAllProperties(id, currentFile.getId());
@@ -2205,24 +2207,25 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_CHANGED) {
                     if (!currentFile.isLocked()) {
                         // lock the resource
-                        lockResource(currentUser, deleteProject, currentFile.getResourceName(), true);
+                        lockResource(currentUser, deleteProject, currentResourceName, true);
                     }
                     // undo all changes in the file
-                    undoChanges(currentUser, deleteProject, currentFile.getResourceName());
+                    undoChanges(currentUser, deleteProject, currentResourceName);
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_DELETED) {
                     // first undelete the file
-                    undeleteResource(currentUser, deleteProject, currentFile.getResourceName());
+                    undeleteResource(currentUser, deleteProject, currentResourceName);
                     if (!currentFile.isLocked()) {
                         // lock the resource
-                        lockResource(currentUser, deleteProject, currentFile.getResourceName(), true);
+                        lockResource(currentUser, deleteProject, currentResourceName, true);
                     }
                     // then undo all changes in the file
-                    undoChanges(currentUser, deleteProject, currentFile.getResourceName());
+                    undoChanges(currentUser, deleteProject, currentResourceName);
                 }
             }
             // now delete folders or undo changes in folders
             for (int i = 0; i < allFolders.size(); i++) {
                 CmsFolder currentFolder = (CmsFolder) allFolders.get(i);
+                String currentResourceName = readPath(currentUser, currentProject, currentFolder, true);
                 if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
                     // delete the properties
                     m_vfsDriver.deleteAllProperties(id, currentFolder.getId());
@@ -2231,19 +2234,19 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
                     if (!currentFolder.isLocked()) {
                         // lock the resource
-                        lockResource(currentUser, deleteProject, currentFolder.getResourceName(), true);
+                        lockResource(currentUser, deleteProject, currentResourceName, true);
                     }
                     // undo all changes in the folder
-                    undoChanges(currentUser, deleteProject, currentFolder.getResourceName());
+                    undoChanges(currentUser, deleteProject, currentResourceName);
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
                     // undelete the folder
-                    undeleteResource(currentUser, deleteProject, currentFolder.getResourceName());
+                    undeleteResource(currentUser, deleteProject, currentResourceName);
                     if (!currentFolder.isLocked()) {
                         // lock the resource
-                        lockResource(currentUser, deleteProject, currentFolder.getResourceName(), true);
+                        lockResource(currentUser, deleteProject, currentResourceName, true);
                     }
                     // then undo all changes in the folder
-                    undoChanges(currentUser, deleteProject, currentFolder.getResourceName());
+                    undoChanges(currentUser, deleteProject, currentResourceName);
                 }
             }
             // now delete the folders in the vector
@@ -3863,59 +3866,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
     }
     
     /**
-     * Merges two resource-vectors into one vector.
-     * All offline-resources will be putted to the return-vector. All additional
-     * online-resources will be putted to the return-vector, too. All online resources,
-     * which are present in the offline-vector will be ignored.
-     *
-     *
-     * @param offline The vector with the offline resources.
-     * @param online The vector with the online resources.
-     * @return The merged vector.
-     */
-    protected Vector mergeResources(Vector offline, Vector online) {
-
-        //dont do anything if any of the given vectors are empty or null.
-        if ((offline == null) || (offline.size() == 0))
-            return (online != null) ? online : new Vector();
-        if ((online == null) || (online.size() == 0))
-            return (offline != null) ? offline : new Vector();
-
-        // create a vector for the merged offline
-
-        //remove all objects in the online vector that are present in the offline vector.
-        for (Enumeration e = offline.elements(); e.hasMoreElements();) {
-            CmsResource cr = (CmsResource) e.nextElement();
-            Resource r = new Resource(cr.getResourceName());
-            online.removeElement(r);
-        }
-
-        //merge the two vectors. If both vectors were sorted, the mereged vector will remain sorted.
-
-        Vector merged = new Vector(offline.size() + online.size());
-        int offIndex = 0;
-        int onIndex = 0;
-
-        while ((offIndex < offline.size()) || (onIndex < online.size())) {
-            if (offIndex >= offline.size()) {
-                merged.addElement(online.elementAt(onIndex++));
-                continue;
-            }
-            if (onIndex >= online.size()) {
-                merged.addElement(offline.elementAt(offIndex++));
-                continue;
-            }
-            String on = ((CmsResource) online.elementAt(onIndex)).getResourceName();
-            String off = ((CmsResource) offline.elementAt(offIndex)).getResourceName();
-
-            if (on.compareTo(off) < 0)
-                merged.addElement(online.elementAt(onIndex++));
-            else
-                merged.addElement(offline.elementAt(offIndex++));
-        }
-        return (merged);
-    }
-    /**
      * Moves the file.
      *
      * This operation includes a copy and a delete operation. These operations
@@ -5203,7 +5153,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      */
     public Vector readProjectView(CmsUser currentUser, CmsProject currentProject, int projectId, String filter) throws CmsException {
         Vector retValue = new Vector();
-
         List resources = m_projectDriver.readProjectView(projectId, filter);
 
         // check the security
@@ -6297,9 +6246,12 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      */
     public void unlockResource(CmsUser currentUser, CmsProject currentProject, String resourcename) throws CmsException {
         CmsResource resource = readFileHeader(currentUser, currentProject, resourcename);
-        
+        unlockResource(currentUser, currentProject, resource);        
+    }
+    
+    public void unlockResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {       
         // check if the user has write access to the resource
-		checkPermissions(currentUser, currentProject, resource, I_CmsConstants.C_WRITE_ACCESS);
+        checkPermissions(currentUser, currentProject, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         // unlock the resource if it is locked by this user
         if (resource.isLockedBy().equals(currentUser.getId())) {
@@ -6315,7 +6267,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
             // ignore attempts to unlock not locked resources
             return;
         }        
-    }
+    }    
 
     /**
      * Checks if a user is member of a group.<P/>
@@ -8405,29 +8357,67 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         return resource;
     }
     
+    /**
+     * Gets the sub files of a folder.<p>
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project
+     * @param parentFolderName the name of the parent folder
+     * @return a List of all sub files
+     * @throws CmsException if something goes wrong
+     */
     public List getSubFiles(CmsUser currentUser, CmsProject currentProject, String parentFolderName) throws CmsException {
         return getSubFiles(currentUser, currentProject, parentFolderName, false);
     }
     
+    /**
+     * Gets the sub files of a folder.<p>
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project
+     * @param parentFolderName the name of the parent folder
+     * @param includeDeleted true if deleted files should be included in the result
+     * @return a List of all sub files
+     * @throws CmsException if something goes wrong
+     */
     public List getSubFiles(CmsUser currentUser, CmsProject currentProject, String parentFolderName, boolean includeDeleted) throws CmsException {
         return getSubResources(currentUser, currentProject, parentFolderName, includeDeleted, false);
     }        
     
+    /**
+     * Gets the sub folders of a folder.<p>
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project
+     * @param parentFolderName the name of the parent folder
+     * @return a List of all sub folders
+     * @throws CmsException if something goes wrong
+     */
     public List getSubFolders(CmsUser currentUser, CmsProject currentProject, String parentFolderName) throws CmsException {
         return getSubFolders(currentUser, currentProject, parentFolderName, false);
     }
     
+    /**
+     * Gets the sub folder of a folder.<p>
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project
+     * @param parentFolderName the name of the parent folder
+     * @param includeDeleted true if deleted files should be included in the result
+     * @return a List of all sub folders
+     * @throws CmsException if something goes wrong
+     */
     public List getSubFolders(CmsUser currentUser, CmsProject currentProject, String parentFolderName, boolean includeDeleted) throws CmsException {
         return getSubResources(currentUser, currentProject, parentFolderName, includeDeleted, true);
     }
     
     /**
-     * Gets all sub folders or sub files in a given parent folder.<p>
+     * Gets all sub folders or sub files in a folder.<p>
      * 
      * @param currentUser the current user
      * @param currentProject the current project
      * @param parentFolderName the name of the parent folder
-     * @param includeDeleted false if deleted folders should be ignored
+     * @param includeDeleted true if deleted files should be included in the result
      * @param getSubFolders true if the sub folders of the parent folder are requested, false if the sub files are requested
      * @return a list of all sub folders or sub files
      * @throws CmsException if something goes wrong

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/07/03 13:29:45 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -115,19 +115,45 @@ public class LinkChecker {
      * The report is filled with a CmsPageLinks object for each page containing broken links
      *          this CmsPageLinks object contains all links on the page withouth a valid target.
      */
-    public void checkProject(CmsObject cms, int projectId, I_CmsReport report)throws CmsException{
-        if(projectId == CmsObject.C_PROJECT_ONLINE_ID){
+    public void checkProject(CmsObject cms, int projectId, I_CmsReport report) throws CmsException {
+        
+        // TODO the link management is disabled and has to be rebuilt on a link<->UUID basis instead of link<->resourcename
+        return;
+        
+        /*
+        CmsResource currentResource = null;
+        int i = 0;
+        
+        if (projectId == CmsObject.C_PROJECT_ONLINE_ID) {
             // lets check only the online project
             Vector result = cms.getOnlineBrokenLinks();
-            for(int i=0; i<result.size(); i++){
-                report.println((CmsPageLinks)result.elementAt(i));
+            for (i = 0; i < result.size(); i++) {
+                report.println((CmsPageLinks) result.elementAt(i));
             }
-        }else{
+        } else {
             // we are in a project. First get the changed, new ,deleted resources
             Vector deleted = cms.readProjectView(projectId, "deleted");
             Vector changed = cms.readProjectView(projectId, "changed");
-            Vector newRes  = cms.readProjectView(projectId, "new");
+            Vector newRes = cms.readProjectView(projectId, "new");
+            
+            for (i=0;i<deleted.size();i++) {
+                currentResource = (CmsResource) deleted.elementAt(i);
+                cms.readAbsolutePath(currentResource);
+            }
+            
+            for (i=0;i<changed.size();i++) {
+                currentResource = (CmsResource) changed.elementAt(i);
+                cms.readAbsolutePath(currentResource);
+            }  
+            
+            for (i=0;i<newRes.size();i++) {
+                currentResource = (CmsResource) newRes.elementAt(i);
+                cms.readAbsolutePath(currentResource);
+            } 
+            
             cms.getBrokenLinks(projectId, report, changed, deleted, newRes);
         }
+        */
     }
+    
 }

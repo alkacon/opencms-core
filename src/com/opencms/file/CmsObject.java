@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/10 12:28:51 $
-* Version: $Revision: 1.305 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.306 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.305 $
+ * @version $Revision: 1.306 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -3719,10 +3719,14 @@ public void unlockProject(int id) throws CmsException {
  * @throws CmsException if the user has not the rights
  * to unlock this resource.
  */
-public void unlockResource(String resource) throws CmsException {
+public void unlockResource(String resource, boolean forceRecursive) throws CmsException {
     CmsResource res = readFileHeader(resource);
     I_CmsResourceType rt = getResourceType(res.getType());
-    rt.unlockResource(this, resource);
+    rt.unlockResource(this, resource, forceRecursive);
+}
+
+protected void doUnlockResource(CmsResource resource) throws CmsException {
+    m_driverManager.unlockResource(m_context.currentUser(), m_context.currentProject(), resource);
 }
 
 /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.27 $ $Date: 2003/07/10 14:38:59 $
  */
 
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -107,7 +107,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
                 cms.chown(cms.readAbsolutePath(newfolder), cms.readOwner(folder).getName());
                 cms.chgrp(cms.readAbsolutePath(newfolder), cms.readGroup(folder).getName());
                 cms.chmod(cms.readAbsolutePath(newfolder), folder.getAccessFlags());
-                cms.unlockResource(cms.readAbsolutePath(newfolder));
+                cms.unlockResource(cms.readAbsolutePath(newfolder), false);
             }
             completePath += foldername + "/";
         }

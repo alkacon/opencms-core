@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/04 16:00:24 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.30 $
- * $Date: 2003/07/04 16:00:24 $
+ * $Revision: 1.31 $
+ * $Date: 2003/07/10 14:38:59 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -380,7 +380,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
                     newChannel.getLockedInProject() != cms.getRequestContext().currentProject().getId()){
                     if(this.getLockstate().isNullUUID()){
                         // unlock the channel
-                        cms.unlockResource(cms.readAbsolutePath(newChannel));
+                        cms.unlockResource(cms.readAbsolutePath(newChannel), false);
                     } else {
                         // lock the channel
                         cms.lockResource(cms.readAbsolutePath(newChannel), true);

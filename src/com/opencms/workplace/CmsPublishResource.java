@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.19 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/10 14:38:59 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -195,7 +195,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             } else if("rmlocks".equals(action)){
                 // remove the locks and publish
                 try{
-                    unlockResource(cms, file);
+                    cms.unlockResource(filename, true);
                     action = "ok";
                 } catch (CmsException exc){
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
@@ -295,6 +295,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
      * @param cms The CmsObject for accessing system resources
      * @param resource The resource to unlock
      */
+    /*
     private void unlockResource(CmsObject cms, CmsResource resource) throws CmsException{
         // if the folder itself is locked, all subresources are unlocked by unlocking the folder
         if(resource.isLocked()){
@@ -324,6 +325,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             }
         }
     }
+    */
 
     /**
      * Indicates if the results of this class are cacheable.

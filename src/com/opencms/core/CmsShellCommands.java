@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.86 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.87 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.86 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.87 $ $Date: 2003/07/10 14:38:59 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -3034,7 +3034,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void unlockResource(String resource) {
         try {
-            m_cms.unlockResource(resource);
+            m_cms.unlockResource(resource, false);
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }

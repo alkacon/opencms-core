@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/07/10 12:28:51 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.63 $ $Date: 2003/07/10 12:28:51 $
+ * @version $Revision: 1.64 $ $Date: 2003/07/10 14:38:59 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants {
 
@@ -833,7 +833,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @throws CmsException if the user has not the rights
     * to unlock this resource.
     */
-    public void unlockResource(CmsObject cms, String resource) throws CmsException{
+    public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException{
         // First read the page file.
         CmsFile pageFile = cms.readFile(resource);
 

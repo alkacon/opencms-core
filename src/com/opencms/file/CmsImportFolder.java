@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2003/04/01 15:20:17 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.zip.ZipInputStream;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2003/04/01 15:20:17 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/10 14:38:59 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -111,7 +111,7 @@ public class CmsImportFolder implements I_CmsConstants {
             }
 
             // all is done, unlock the resources
-            m_cms.unlockResource(m_importPath);
+            m_cms.unlockResource(m_importPath, false);
 
             // clean-up the link management
             cms.joinLinksToTargets( new CmsShellReport() );             

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/07/10 14:38:59 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -1038,7 +1038,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @throws CmsException if the user has not the rights
     * to unlock this resource.
     */
-    public void unlockResource(CmsObject cms, String resource) throws CmsException{
+    public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException{        
         // first unlock the folder in the C_VFS_PATH_BODIES path if it exists.
         try{
             cms.doUnlockResource(C_VFS_PATH_BODIES  + resource.substring(1));
@@ -1047,7 +1047,25 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
         // now unlock the folder
         cms.doUnlockResource(resource);
+        
+        if (forceRecursive) {
+            List allSubFolders = (List) new ArrayList();
+            List allSubFiles   = (List) new ArrayList();
+            
+            getAllResources(cms, resource, allSubFiles, allSubFolders);
+
+            for (int i=0; i<allSubFiles.size(); i++){
+                CmsFile curFile = (CmsFile)allSubFiles.get(i);
+                cms.unlockResource(cms.readAbsolutePath(curFile), false);
+            }
+
+            for (int i=0; i<allSubFolders.size(); i++){
+                CmsFolder curFolder = (CmsFolder) allSubFolders.get(i);
+                cms.doUnlockResource(curFolder);
+            }            
+        }
     }
+    
     /**
      * Set the access flags of the copied Folder to the default values.
      * @param cms The CmsObject.
@@ -1079,8 +1097,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
      * @throws Throws CmsException if something goes wrong.
      */
 
-    private void getAllResources(CmsObject cms, String rootFolder, Vector allFiles,
-                    Vector allFolders) throws CmsException {
+    private void getAllResources(CmsObject cms, String rootFolder, List allFiles,
+                    List allFolders) throws CmsException {
         List folders = (List) new ArrayList();
         List files = (List) new ArrayList();
 
@@ -1090,12 +1108,12 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 
         //copy the values into the allFiles and allFolders Vectors
         for(int i = 0;i < folders.size();i++) {
-            allFolders.addElement((CmsFolder)folders.get(i));
+            allFolders.add((CmsFolder)folders.get(i));
             getAllResources(cms, cms.readAbsolutePath((CmsFolder)folders.get(i), true),
                 allFiles, allFolders);
         }
         for(int i = 0;i < files.size();i++) {
-            allFiles.addElement((CmsFile)files.get(i));
+            allFiles.add((CmsFile)files.get(i));
         }
     }
 
