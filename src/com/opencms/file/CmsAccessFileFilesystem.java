@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/01/03 09:54:34 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/04 16:52:44 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -36,9 +36,9 @@ import com.opencms.core.*;
      * @exception CmsException Throws CmsException if connection fails.
      * 
      */
-    public CmsAccessFileFilesystem(CmsMountPoint mountpoint)	
+    public CmsAccessFileFilesystem(A_CmsMountPoint mountpoint)	
         throws CmsException {
-        m_mountpoint=mountpoint;
+        m_mountpoint = (CmsMountPoint) mountpoint;
         //m_fileseperator=System.getProperty("file.seperator").charAt(0);
         
       }

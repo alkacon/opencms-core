@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/01/04 15:32:54 $ 
+ * @version $Revision: 1.10 $ $Date: 2000/01/04 16:52:44 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -1315,4 +1315,20 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		return( c_rb.getAllMountPoints(m_context.currentUser(), 
 									   m_context.getCurrentProject()) );
 	}
+
+	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * */
+	 public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
+							 String filename)
+		 throws CmsException {
+		 return( c_rb.readFile(m_context.currentUser(), 
+							   m_context.getCurrentProject(), filename ) );
+	 }
 }

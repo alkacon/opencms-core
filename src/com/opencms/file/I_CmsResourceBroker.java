@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/01/04 15:32:54 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/04 16:52:44 $
  */
 interface I_CmsResourceBroker {
 
@@ -779,4 +779,25 @@ interface I_CmsResourceBroker {
 	 */
 	public Hashtable getAllMountPoints(A_CmsUser currentUser, A_CmsProject currentProject)
 		throws CmsException ;
+
+	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * */
+	 public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
+							 String filename)
+		throws CmsException;
 }

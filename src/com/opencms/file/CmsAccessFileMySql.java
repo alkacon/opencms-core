@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 1999/12/23 16:47:39 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/04 16:52:44 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -278,10 +278,10 @@ import com.opencms.core.*;
      * @exception CmsException Throws CmsException if connection fails.
      * 
      */
-    public CmsAccessFileMySql(CmsMountPoint mountpoint)	
+    public CmsAccessFileMySql(A_CmsMountPoint mountpoint)	
         throws CmsException, ClassNotFoundException {
         
-        m_mountpoint=mountpoint;
+        m_mountpoint= (CmsMountPoint) mountpoint;
         Class.forName(mountpoint.getDriver());
         initConnections(mountpoint.getConnect());
         initStatements();

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/01/04 15:32:54 $ 
+ * @version $Revision: 1.15 $ $Date: 2000/01/04 16:52:44 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1108,4 +1108,17 @@ public abstract class A_CmsObject {
 	 */
 	abstract public Hashtable getAllMountPoints()
 		throws CmsException;
+
+	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	abstract public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
+							 String filename)
+		 throws CmsException;
 }

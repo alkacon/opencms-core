@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/01/04 15:32:54 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/04 16:52:44 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -50,11 +50,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * The constructor for this ResourceBroker. It gets all underlaying 
 	 * resource-brokers.
 	 */
-	public CmsResourceBroker(I_CmsRbUserGroup userRb, /* I_CmsRbFile fileRb ,*/ 
+	public CmsResourceBroker(I_CmsRbUserGroup userRb, I_CmsRbFile fileRb , 
 							 I_CmsRbMetadefinition metadefRb, I_CmsRbProperty propertyRb,
 							 I_CmsRbProject projectRb /*,  I_CmsRbTask taskRb */) {
 		m_userRb = userRb;
-		// m_fileRb = fileRb;
+		m_fileRb = fileRb;
 		m_metadefRb = metadefRb;
 		m_propertyRb = propertyRb;
 		m_projectRb = projectRb;
@@ -1006,7 +1006,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}		
 	}
 
-    /**
+	/**
 	 * Gets a CmsMountPoint. 
 	 * A mountpoint will be returned.
 	 * 
@@ -1103,4 +1103,31 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				CmsException.C_NO_ACCESS);
 		}		
 	}
+
+	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * */
+	 public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
+							 String filename)
+		 throws CmsException {
+		 // HACK: !!!
+		 // TODO: THIS is NOT correct, because there is no security-check!
+		 // HACK: !!!
+		 return( m_fileRb.readFile(currentProject, filename) );
+	 }
 }

@@ -1,5 +1,7 @@
 package com.opencms.file;
 
+import java.util.*;
+
 import com.opencms.core.*;
 
 /**
@@ -8,9 +10,9 @@ import com.opencms.core.*;
  * It helps the core to set up all layers correctly.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/01/04 15:32:54 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/04 16:52:44 $
  */
-public class CmsInitMySql extends A_CmsInit {
+public class CmsInitMySql extends A_CmsInit implements I_CmsConstants {
 	
 	/**
 	 * The init - Method creates a complete network of resource-borkers and 
@@ -26,19 +28,49 @@ public class CmsInitMySql extends A_CmsInit {
 	public I_CmsResourceBroker init( String propertyDriver, 
 									 String propertyConnectString )
 		throws Exception {
-        System.err.println("Init "+propertyDriver+":"+propertyConnectString);
-		return( new CmsResourceBroker(		
+		
+		I_CmsRbUserGroup userGroupRb = 
 			new CmsRbUserGroup( 
 				new CmsAccessUserGroup(
 					new CmsAccessUserMySql(propertyDriver, propertyConnectString),
 					new CmsAccessUserInfoMySql(propertyDriver, propertyConnectString),
-					new CmsAccessGroupMySql(propertyDriver, propertyConnectString))),
+					new CmsAccessGroupMySql(propertyDriver, propertyConnectString)));
+
+		I_CmsRbMetadefinition metadefinitionRb = 
 			new CmsRbMetadefinition(
-				new CmsAccessMetadefinitionMySql(propertyDriver, propertyConnectString)),			
+				new CmsAccessMetadefinitionMySql(propertyDriver, propertyConnectString));
+		
+		I_CmsRbProperty propertyRb =
 			new CmsRbProperty(
-				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString)),
+				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));
+		
+		I_CmsRbProject projectRb = 
 			new CmsRbProject(
-				new CmsAccessProjectMySql(propertyDriver, propertyConnectString))
-			) );
+				new CmsAccessProjectMySql(propertyDriver, propertyConnectString));
+		
+		// read all mountpoints from the properties.
+		Hashtable mountPoints = (Hashtable) propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
+		A_CmsMountPoint mountPoint;
+		Hashtable mountedAccessModules = new Hashtable();
+		Enumeration keys = mountPoints.keys();
+		Object key;
+		
+		// walk throug all mount-points.
+		while(keys.hasMoreElements()) {
+			key = keys.nextElement();
+			mountPoint = (A_CmsMountPoint) mountPoints.get(key);
+			
+			// select the right access-module for the mount-point
+			if( mountPoint.getType() == C_MOUNTPOINT_MYSQL ) {
+				mountedAccessModules.put(key, new CmsAccessFileMySql(mountPoint));
+			} else {
+				mountedAccessModules.put(key, new CmsAccessFileFilesystem(mountPoint));
+			}
+		}
+		
+		I_CmsRbFile fileRb = new CmsRbFile(new CmsAccessFile(mountedAccessModules));
+		
+		return( new CmsResourceBroker( userGroupRb, fileRb, metadefinitionRb, 
+									   propertyRb, projectRb) );
 	}
 }
