@@ -2267,6 +2267,11 @@
                     <value><![CDATA[com.opencms.workplace.CmsAdminStaticExport.isAdmin]]></value>
                 </property>
                 <property>
+                    <name>activemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsAdminStaticExport.isOnlineProject]]></value>
+                </property>
+                <property>
                     <name>NavText</name>
                     <type>0</type>
                     <value><![CDATA[icon.staticexport]]></value>
