@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2004/01/22 14:12:02 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2004/01/23 08:36:20 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
-public class CmsResourceTypePlain extends A_CmsResourceType /*implements I_CmsHtmlLinkValidatable*/ {
+public class CmsResourceTypePlain extends A_CmsResourceType {
         
     /** The type id of this resource */
     public static final int C_RESOURCE_TYPE_ID = 3;
@@ -79,57 +79,5 @@ public class CmsResourceTypePlain extends A_CmsResourceType /*implements I_CmsHt
         cms.doLockResource(cms.readAbsolutePath(res), false, CmsLock.C_MODE_COMMON);
         return res;
     }    
-    
-    /**
-     * @see org.opencms.validation.I_CmsHtmlLinkValidatable#findLinks(com.opencms.file.CmsObject, com.opencms.file.CmsResource)
-     */
-    /*
-    public List findLinks(CmsObject cms, CmsResource resource) {
-        List links = (List) new ArrayList();
-        String link = null;
-        Pattern pattern = null;
-        Matcher matcher = null;
-        String encoding = null;
-        String defaultEncoding = null;
-        CmsFile file = null;
-        String content = null;
-
-        try {
-            file = cms.readFile(cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error reading file content of " + resource.getRootPath(), e);
-            }
-
-            return Collections.EMPTY_LIST;
-        }
-
-        try {
-            defaultEncoding = cms.getRequestContext().getEncoding();
-            encoding = cms.readProperty(resource.getPath(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, defaultEncoding);
-            content = new String(file.getContents(), encoding);
-        } catch (Exception e) {
-            content = new String(file.getContents());
-        }
-
-        // regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags
-        // don't forget to update the group index on the matcher after changing the regex!
-        int flags = Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL;
-        pattern = Pattern.compile("<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>", flags);
-
-        matcher = pattern.matcher(content);
-        while (matcher.find()) {
-            link = matcher.group(6);
-
-            if (link.length() > 0 && !link.startsWith("]") && !link.endsWith("[") && link.startsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                // skip href or src attribs split inside CDATA sections by the XML template mechanism
-                // skip also URI pointing to external targets outside the OpenCms VFS
-                links.add(link);
-            }
-        }
-
-        return links;
-    }
-    */
     
 }
