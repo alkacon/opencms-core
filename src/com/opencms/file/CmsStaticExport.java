@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2001/11/22 15:25:10 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/12/12 10:59:58 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ import com.opencms.core.*;
 import com.opencms.launcher.*;
 import java.util.*;
 import java.io.*;
+import java.net.*;
 import org.apache.oro.text.perl.*;
 
 /**
@@ -38,7 +39,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.3 $ $Date: 2001/11/22 15:25:10 $
+ * @version $Revision: 1.4 $ $Date: 2001/12/12 10:59:58 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -85,6 +86,7 @@ public class CmsStaticExport implements I_CmsConstants{
         for(int i=0; i < exportLinks.size(); i++){
             exportLink((String)exportLinks.elementAt(i), exportLinks);
         }
+
     }
 
     /**
@@ -144,6 +146,18 @@ public class CmsStaticExport implements I_CmsConstants{
             String correctur = "";
             if(!externLink.startsWith("/")){
                 correctur = "/";
+                // this is only for old versions where the editor may have added linktags containing
+                // extern links. Such a link can not be exported and we dont want to create strange
+                // folders like '"http:'
+                boolean linkIsExtern = true;
+                try{
+                    URL test = new URL(externLink);
+                }catch(MalformedURLException e){
+                    linkIsExtern = false;
+                }
+                if(linkIsExtern){
+                    throw new CmsException(" This is a extern link.");
+                }
             }
             File discFolder = new File(m_exportPath + correctur + folder);
             if(!discFolder.exists()){
