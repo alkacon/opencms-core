@@ -312,7 +312,7 @@ function printList(wo) {
 	+ "document.onclick = top.handleOnClick;"
 	+ "</script>"
 	+ "<style type='text/css'>\n"
-	+ "body { font-family: verdana, sans-serif; font-size: 11px; padding: 0px; margin: 0px; backgound-color: Window; } "
+	+ "body { font-family: verdana, sans-serif; font-size: 11px; padding: 0px; margin: 0px; backgound-color: ThreeDFace; } "
 	+ "p, td { font-family: verdana, sans-serif; font-size: 11px; white-space: nowrap; } "
 	+ "td.t { white-space: nowrap; background:Menu; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
 	+ "td.t125 { white-space: nowrap; width: 125px; background:Menu; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "

@@ -16,7 +16,7 @@ body.buttons-head {
 	font-size: 11px;
 	padding: 0px;
 	margin: 0px;
-	background-color: Menu;
+	background-color: ThreeDFace;
 	border-top: 1px solid ThreeDHighlight;
 	border-left: 1px solid ThreeDHighlight;
 	border-bottom: 1px solid ThreeDShadow;
@@ -29,7 +29,7 @@ body.buttons-foot {
 	font-size: 11px;
 	padding: 0px;
 	margin: 0px;
-	background-color: Menu;
+	background-color: ThreeDFace;
 	border-top: 1px solid ThreeDLightShadow;
 	border-left: 1px solid ThreeDHighlight;
 	border-bottom: 1px solid ThreeDShadow;
