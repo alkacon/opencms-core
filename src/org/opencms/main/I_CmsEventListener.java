@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/09/26 15:11:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/10/02 16:37:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -213,6 +213,13 @@ public interface I_CmsEventListener {
      */
     int EVENT_CLEAR_OFFLINE_CACHES = 16;
     
+    /** 
+     * Event "clear all online caches".<p>
+     * 
+     * Event data: none
+     */
+    int EVENT_CLEAR_ONLINE_CACHES = 17;
+    
     /**
      * Event "a project was modified" (e.g. a project has been deleted, 
      * or the project resources have been changed).<p>
@@ -222,7 +229,7 @@ public interface I_CmsEventListener {
      * <li>key "project" (mandatory): the deleted CmsProject</li>
      * </ul>
      */
-    int EVENT_PROJECT_MODIFIED = 17;
+    int EVENT_PROJECT_MODIFIED = 18;
     
     /**
      * Event "write the export points".<p>
@@ -232,7 +239,19 @@ public interface I_CmsEventListener {
      * <li>key "publishHistoryId" (mandatory): the ID of the publish task in the publish history</li>
      * </ul>
      */     
-    int EVENT_WRITE_EXPORT_POINTS = 18;
+    int EVENT_WRITE_EXPORT_POINTS = 19;
+    
+    /**
+     * Event "a project was published".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "publishHistoryId" (mandatory): the ID of the publish task in the publish history</li>
+     * <li>key "report" (optional): an I_CmsReport instance to print output messages</li>
+     * </ul>
+     * @see com.opencms.file.CmsObject#publishProject()
+     */    
+    int EVENT_CLUSTER_PUBLISH_PROJECT = 20;    
    
     /**
      * Acknowledge the occurrence of the specified event, implement this 

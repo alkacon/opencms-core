@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/02 12:10:21 $
- * Version: $Revision: 1.258 $
+ * Date   : $Date: 2003/10/02 16:37:49 $
+ * Version: $Revision: 1.259 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.258 $ $Date: 2003/10/02 12:10:21 $
+ * @version $Revision: 1.259 $ $Date: 2003/10/02 16:37:49 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -5000,7 +5000,7 @@ public class CmsDriverManager extends Object {
      * @param directPublishResource a resource to be published directly
      * @throws Exception if something goes wrong
      */
-    public synchronized void publishProject(CmsObject cms, CmsRequestContext context, I_CmsReport report, int publishHistoryId, CmsResource directPublishResource) throws Exception {
+    public synchronized void publishProject(CmsObject cms, CmsRequestContext context, I_CmsReport report, CmsUUID publishHistoryId, CmsResource directPublishResource) throws Exception {
         Vector changedResources = new Vector();
         Vector changedModuleMasters = new Vector();
         int publishProjectId = context.currentProject().getId();
@@ -8128,7 +8128,7 @@ public class CmsDriverManager extends Object {
      * @return a List of CmsPublishedResource objects
      * @throws CmsException if something goes wrong
      */    
-    public List readPublishedResources(CmsRequestContext context, int publishHistoryId) throws CmsException {
+    public List readPublishedResources(CmsRequestContext context, CmsUUID publishHistoryId) throws CmsException {
         return getProjectDriver().readPublishedResources(context.currentProject().getId(), publishHistoryId);
     }
 
@@ -8140,7 +8140,7 @@ public class CmsDriverManager extends Object {
      * @param report an I_CmsReport instance to print output message, or null to write the export points quiet
      * @param publishHistoryId unique int ID to identify each publish task in the publish history
      */    
-    public void writeExportPoints(CmsRequestContext context, I_CmsReport report, int publishHistoryId) {
+    public void writeExportPoints(CmsRequestContext context, I_CmsReport report, CmsUUID publishHistoryId) {
         Hashtable exportPoints = null;
         CmsExportPointDriver discAccess = null;
         List publishedResources = null;
@@ -8188,9 +8188,9 @@ public class CmsDriverManager extends Object {
                     } else if (OpenCms.getLog(this).isDebugEnabled()) {
                         // print some log messages
                         if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                            OpenCms.getLog(this).debug(report.key("report.export_points_delete") + currentPublishedResource.getRootPath());
+                            OpenCms.getLog(this).debug("deleting export point " + currentPublishedResource.getRootPath());
                         } else {
-                            OpenCms.getLog(this).debug(report.key("report.export_points_write") + currentPublishedResource.getRootPath());
+                            OpenCms.getLog(this).debug("writing export point " + currentPublishedResource.getRootPath());
                         }
                     }
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/01 14:05:08 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/10/02 16:37:49 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.32 $ $Date: 2003/10/01 14:05:08 $
+ * @version $Revision: 1.33 $ $Date: 2003/10/02 16:37:49 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -208,7 +208,7 @@ public interface I_CmsProjectDriver {
      * @param maxVersions the maxmum number of backup versions for each resource
      * @throws Exception if something goes wrong
      */
-    void publishDeletedFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder offlineFolder, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+    void publishDeletedFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder offlineFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception;
 
     /**
      * Publishes a new, changed or deleted file.<p>
@@ -227,7 +227,7 @@ public interface I_CmsProjectDriver {
      * @param maxVersions the maxmum number of backup versions for each resource
      * @throws Exception if something goes wrong
      */
-    void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineResource, Set publishedContentIds, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+    void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineResource, Set publishedContentIds, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception;
     
     /**
      * Publishes the content record of a file.<p>
@@ -265,7 +265,7 @@ public interface I_CmsProjectDriver {
      * @param maxVersions the maxmum number of backup versions for each resource
      * @throws Exception if something goes wrong
      */
-    void publishFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder currentFolder, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+    void publishFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder currentFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception;
 
     /**
      * Publishes a specified project to the online project.<p>
@@ -280,7 +280,7 @@ public interface I_CmsProjectDriver {
      * @param maxVersions maximum number of backup versions
      * @throws Exception if something goes wrong
      */
-    void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, int publishHistoryId, CmsResource directPublishResource, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
+    void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsUUID publishHistoryId, CmsResource directPublishResource, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
 
     /**
      * Searches for broken links in the online project.<p>
@@ -327,15 +327,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     Vector readLinkEntriesOnline(CmsUUID pageId) throws CmsException;
-
-    /**
-     * Returns the next version number of the publish history.<p>
-     * 
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
-     * @return a new version number greater than the last used version number 
-     * @throws CmsException if something goes wrong
-     */
-    int readNextPublishVersionId(Object reservedParam) throws CmsException;
 
     /**
      * Reads a project by task-id.<p>
@@ -440,7 +431,7 @@ public interface I_CmsProjectDriver {
      * @return a List of CmsPublishedResource objects
      * @throws CmsException if something goes wrong
      */
-    List readPublishedResources(int projectId, int publishHistoryId) throws CmsException;
+    List readPublishedResources(int projectId, CmsUUID publishHistoryId) throws CmsException;
 
     /**
      * Reads a serializable object from the systempropertys.<p>
@@ -471,7 +462,7 @@ public interface I_CmsProjectDriver {
      * @param resource the resource that was published
      * @throws CmsException if something goes wrong
      */
-    void writePublishHistory(CmsProject currentProject, int publishId, int tagId, CmsResource resource) throws CmsException;
+    void writePublishHistory(CmsProject currentProject, CmsUUID publishId, int tagId, CmsResource resource) throws CmsException;
 
     /**
      * Writes a serializable object to the systemproperties.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/10/01 14:05:08 $
-* Version: $Revision: 1.422 $
+* Date   : $Date: 2003/10/02 16:37:49 $
+* Version: $Revision: 1.423 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.422 $
+ * @version $Revision: 1.423 $
  */
 public class CmsObject {
 
@@ -2650,34 +2650,16 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void publishProject(I_CmsReport report, CmsResource directPublishResource) throws CmsException {
-        //Vector newResources = null;
-        //Vector deletedResources = null;
         Vector changedResources = null;
         Vector changedModuleMasters = null;
         boolean success = false;
-        int publishHistoryId = m_driverManager.getProjectDriver().readNextPublishVersionId(null);
+        CmsUUID publishHistoryId = new CmsUUID();
 
         clearcache();
 
         synchronized (m_driverManager) {            
             try {
-                /*
-                newResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "new");
-                deletedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "deleted");
-                changedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "changed");
-                updateOnlineProjectLinks(deletedResources, changedResources, null, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
-                */
-
                 m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource);
-
-                // update the online links table for the new resources (now they are there)
-                //updateOnlineProjectLinks(null, null, newResources, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
-
-                /*
-                changedResources.clear();
-                changedResources = null;
-                newResources = null;
-                */
 
                 if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
                     CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
@@ -2720,7 +2702,7 @@ public class CmsObject {
                 // fire an event that a project has been published
                 Map eventData = (Map) new HashMap();
                 eventData.put("report", report);
-                eventData.put("publishHistoryId", new Integer(publishHistoryId).toString());
+                eventData.put("publishHistoryId", publishHistoryId.toString());
                 eventData.put("context", m_context);
                 CmsEvent exportPointEvent = new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData, false);
                 OpenCms.fireCmsEvent(exportPointEvent);                 
@@ -4323,7 +4305,7 @@ public class CmsObject {
      * @return a List of CmsPublishedResource objects
      * @throws CmsException if something goes wrong
      */
-    public List readPublishedResources(int publishHistoryId) throws CmsException {
+    public List readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
         return m_driverManager.readPublishedResources(m_context, publishHistoryId);
     }
 

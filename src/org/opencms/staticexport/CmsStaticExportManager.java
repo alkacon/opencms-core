@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/10/01 14:05:08 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/10/02 16:37:49 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -68,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -188,7 +189,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
                 // event data contains a list of the published resources
-                int publishHistoryId = new Integer((String) event.getData().get("publishHistoryId")).intValue();
+            CmsUUID publishHistoryId = new CmsUUID((String) event.getData().get("publishHistoryId"));
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("Static export manager catched event EVENT_PUBLISH_PROJECT for project ID " + publishHistoryId);
                 }
