@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/08 14:35:29 $
-* Version: $Revision: 1.238 $
+* Date   : $Date: 2003/07/10 12:28:51 $
+* Version: $Revision: 1.239 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.238 $ $Date: 2003/07/08 14:35:29 $
+ * @version $Revision: 1.239 $ $Date: 2003/07/10 12:28:51 $
  */
 public interface I_CmsConstants {
 
@@ -1358,6 +1358,9 @@ public interface I_CmsConstants {
      * The root name of the COS
      */
     String C_ROOTNAME_COS = "cos";
+
+    String C_VFS_DEFAULT = "/" + C_DEFAULT_SITE + "/" + C_ROOTNAME_VFS;
+    String C_COS_DEFAULT = "/" + C_DEFAULT_SITE + "/" + C_ROOTNAME_COS;       
 
     /**
      * The name of the entry for the id generator to create new channelid's

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.101 $
+* Date   : $Date: 2003/07/10 12:28:51 $
+* Version: $Revision: 1.102 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.101 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.102 $ $Date: 2003/07/10 12:28:51 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -711,8 +711,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
             int importSize = fileNodes.getLength();
     
-            String root = C_FOLDER_SEPARATOR + I_CmsConstants.C_DEFAULT_SITE + C_FOLDER_SEPARATOR + I_CmsConstants.C_ROOTNAME_VFS;
-    
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.getLength(); i++) {
     
@@ -739,7 +737,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     type = C_TYPE_PLAIN_NAME;
                 }
                 
-                String translatedName = root + m_importPath + destination;
+                String translatedName = C_VFS_DEFAULT + m_importPath + destination;
                 if (C_TYPE_FOLDER_NAME.equals(type)) {
                     translatedName += C_FOLDER_SEPARATOR;                    
                 }                    
@@ -761,7 +759,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     } 
                 }                                
                 
-                translatedName = translatedName.substring(root.length());
+                translatedName = translatedName.substring(C_VFS_DEFAULT.length());
                 if (resourceNotImmutable && (! excludeList.contains(translatedName))) {                   
                     
                     // print out the information to the report
@@ -1260,11 +1258,10 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      */
     public static String setDirectories(String content, String[] rules) {
         // get translation rules
-        String root = I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS;   
         for (int i=0; i<rules.length; i++) {
             String actRule = rules[i];
             // cut String "/default/vfs/" from rule
-            actRule = CmsStringSubstitution.substitute(actRule, root, "");
+            actRule = CmsStringSubstitution.substitute(actRule, "/default/vfs", "");
             // divide rule into search and replace parts and delete regular expressions
             StringTokenizer ruleT = new StringTokenizer(actRule, "#");
             ruleT.nextToken();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/07/10 12:28:51 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,9 +57,6 @@ import java.util.Vector;
  * This class provides methods to access the database in a generic way.
  */
 public class CmsDbAccess {
-
-    /** Prefix for the content object store */
-    public static final String C_COS_PREFIX = "/" + I_CmsConstants.C_ROOTNAME_COS;
 
     /** The root channel of the module */
     protected String m_rootChannel = "/";
@@ -1685,8 +1682,7 @@ public class CmsDbAccess {
         }
 
         // update changedModuleData Vector
-        changedModuleData.add(cms.getSiteName() + CmsObject.C_ROOTNAME_COS + "/"+
-            contentDefinitionName +"/"+dataset.m_masterId);
+        changedModuleData.add(cms.getRequestContext().addSiteRoot(contentDefinitionName + "/" + dataset.m_masterId));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/10 10:49:06 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/07/10 12:28:51 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $ $Date: 2003/07/10 10:49:06 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/10 12:28:51 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -2339,7 +2339,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_READ_BY_ID");
 
             stmt.setInt(1, project.getId());
-            stmt.setString(2, "%" + I_CmsConstants.C_FOLDER_SEPARATOR + I_CmsConstants.C_ROOTNAME_VFS + I_CmsConstants.C_FOLDER_SEPARATOR + "%");
+            // TODO: Check for multiple project resources
+            stmt.setString(2, I_CmsConstants.C_VFS_DEFAULT + "%");
             stmt.setInt(3, project.getId());
             stmt.setString(4, I_CmsConstants.C_ROOT);
             res = stmt.executeQuery();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/03 14:34:53 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2003/07/10 12:28:51 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.76 $ $Date: 2003/07/03 14:34:53 $
+ * @version $Revision: 1.77 $ $Date: 2003/07/10 12:28:51 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -113,7 +113,7 @@ public class CmsRequestContext implements I_CmsConstants {
     private Vector m_language = new Vector();
 
     /** The name of the root, e.g. /site_a/vfs */
-    private String m_siteRoot = I_CmsConstants.C_FOLDER_SEPARATOR + C_DEFAULT_SITE + I_CmsConstants.C_FOLDER_SEPARATOR + C_ROOTNAME_VFS;
+    private String m_siteRoot = I_CmsConstants.C_VFS_DEFAULT;
 
     /** Current encoding */
     private String m_encoding = null;
@@ -273,7 +273,7 @@ public class CmsRequestContext implements I_CmsConstants {
             m_driverManager.readFolder(
                 currentUser(),
                 currentProject(),
-                getSiteRoot(getFolderUri())
+                addSiteRoot(getFolderUri())
                 ));
     }
     
@@ -533,20 +533,50 @@ public class CmsRequestContext implements I_CmsConstants {
     }
     
     /**
-     * Returns the name of the current site root, e.g. /default/vfs
+     * Returns the name of a resource with the complete site root name,
+     * (e.g. /default/vfs/index.html) by adding the currently set site root prefix.<p>
      *
      * @param resourcename the resource name
-     * @return String The resourcename with its site root
+     * @return the resource name including site root
      */
-    public String getSiteRoot(String resourcename) {
+    public String addSiteRoot(String resourcename) {
         if (resourcename == null) return null;
-        if (resourcename.startsWith("///")) {
-            return m_directoryTranslator.translateResource(resourcename.substring(2));
-        } else if (resourcename.startsWith("//")) {
-            return m_directoryTranslator.translateResource(C_DEFAULT_SITE + resourcename.substring(1));
-        } else {
-            return m_directoryTranslator.translateResource(m_siteRoot + resourcename);
-        }
+//        if (resourcename.startsWith("///")) {
+//            return m_directoryTranslator.translateResource(resourcename.substring(2));
+//        } else if (resourcename.startsWith("//")) {
+//            return m_directoryTranslator.translateResource(C_DEFAULT_SITE + resourcename.substring(1));
+//        } else {
+//            return m_directoryTranslator.translateResource(m_siteRoot + resourcename);
+//        }
+        return m_directoryTranslator.translateResource(m_siteRoot + resourcename);
+    }
+    
+    /**
+     * Removes the current site root prefix from the absolute path in the resource name,
+     * i.e. adjusts the resource name for the current site root.<p> 
+     * 
+     * @param resourcename the resource name
+     * @return the resource name adjusted for the current site root
+     */   
+    public String removeSiteRoot(String resourcename) {
+        return CmsResource.getAbsolutePath(resourcename);
+    }
+    
+    /**
+     * Returns the current root directory in the virtual file system.<p>
+     *      * @return the current root directory in the virtual file system
+     */
+    public String getSiteRoot() {
+        return m_siteRoot;
+    }
+
+    /**
+     * Sets the current root directory in the virtual file system.<p>
+     * 
+     * @param root the name of the new root directory
+     */
+    public void setSiteRoot(String root) {
+        m_siteRoot = root;
     }
     
     /**
@@ -562,52 +592,14 @@ public class CmsRequestContext implements I_CmsConstants {
     public CmsResourceTranslator getFileTranslator() {
         return m_fileTranslator;
     }    
-
-    /**
-     * Returns the site name, e.g. <code>/default</code>
-     *
-     * @return the site name, e.g. <code>/default</code>
-     */
-    public String getSiteName() {
-        return C_DEFAULT_SITE;
-    }
-    
-    /**
-     * Returns the site root, e.g. <code>/default/vfs</code>
-     *      * @return the site root, e.g. <code>/default/vfs</code>
-     */
-    public String getSiteRoot() {
-        return m_siteRoot;
-    }
-
-    /**
-     * Sets the name of the current site root
-     * of the virtual file system
-     * 
-     * @param name the name of the site root
-     */
-    public void setContextTo(String name) {
-        StringBuffer strBuf = new StringBuffer();
         
-        strBuf.append(I_CmsConstants.C_FOLDER_SEPARATOR);
-        strBuf.append(C_DEFAULT_SITE);
-        strBuf.append(I_CmsConstants.C_FOLDER_SEPARATOR);
-        strBuf.append(name);
-        
-//        if (!name.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-//            strBuf.append(I_CmsConstants.C_FOLDER_SEPARATOR);
-//        }        
-        
-        m_siteRoot = strBuf.toString();
-    }
-
     /**
      * Detects current content encoding to be used in HTTP response
      * based on requested resource or session state.
      */
     public void initEncoding() {
         try {
-            m_encoding = m_driverManager.readProperty(m_user, m_currentProject, getSiteRoot(m_req.getRequestedResource()), m_siteRoot, C_PROPERTY_CONTENT_ENCODING, true);
+            m_encoding = m_driverManager.readProperty(m_user, m_currentProject, addSiteRoot(m_req.getRequestedResource()), m_siteRoot, C_PROPERTY_CONTENT_ENCODING, true);
         } catch (CmsException e) {
             m_encoding = null;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/09 10:58:09 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/07/10 12:28:51 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.30 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.31 $ $Date: 2003/07/10 12:28:51 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -7403,8 +7403,8 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 
         ArrayList brokenLinks = new ArrayList(0);
 
-        // /default/vfs/...
-        String siteRoot = cms.getSiteRoot("");
+        // get the current site root
+        String siteRoot = cms.getRequestContext().addSiteRoot("");
         int siteRootLen = siteRoot.length();
 
         // the resource type for VFS links

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/07/10 12:28:51 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,16 +48,13 @@ import java.util.StringTokenizer;
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.62 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.63 $ $Date: 2003/07/10 12:28:51 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants {
 
     /** Definition of the class */
     private static final String C_CLASSNAME = "com.opencms.template.CmsXmlTemplate";
 
-    /** String to save the combined /default/vfs/ path */
-    private static final String C_DEFVFS = C_FOLDER_SEPARATOR + C_DEFAULT_SITE + C_FOLDER_SEPARATOR + C_ROOTNAME_VFS;
-    
      /**
       * The id of resource type.
       */
@@ -383,9 +380,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String bodyPath=(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")))+(source);
         String body = hXml.getElementTemplate("body");
         body = hXml.validateBodyPath(cms, body, file);
-        String bodyXml=cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + body);        
+        String bodyXml=cms.getRequestContext().getDirectoryTranslator().translateResource(C_VFS_DEFAULT + body);        
 
-        if ((C_DEFVFS + bodyPath).equals(bodyXml)){
+        if ((C_VFS_DEFAULT + bodyPath).equals(bodyXml)){
 
             // Evaluate some path information
             String destinationFolder = destination.substring(0,destination.lastIndexOf("/")+1);
@@ -876,8 +873,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             // Return translated path name for body
             body = hXml.getElementTemplate("body");
             body = hXml.validateBodyPath(cms, body, file);
-            body = cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + body);        
-            if (body.startsWith(C_DEFVFS)) body = body.substring(C_DEFVFS.length());
+            body = cms.getRequestContext().getDirectoryTranslator().translateResource(C_VFS_DEFAULT + body);        
+            if (body.startsWith(C_VFS_DEFAULT)) body = body.substring(C_VFS_DEFAULT.length());
         } catch (CmsException exc){
             // could not read body
         }

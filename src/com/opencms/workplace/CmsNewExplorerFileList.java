@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/07/07 17:24:22 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/07/10 12:28:51 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.73 $ $Date: 2003/07/07 17:24:22 $
+ * @version $Revision: 1.74 $ $Date: 2003/07/10 12:28:51 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -743,7 +743,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 // remove the channel resources
                 for(int i=0; i<resources.size(); i++){
                     CmsResource curRes = (CmsResource)resources.elementAt(i);
-                    if(curRes.getResourceName().startsWith(cms.getRequestContext().getSiteName()+CmsObject.C_ROOTNAME_COS)){
+                    if(curRes.getResourceName().startsWith(C_COS_DEFAULT)){
                         resources.remove(i);
                     }
                 }
