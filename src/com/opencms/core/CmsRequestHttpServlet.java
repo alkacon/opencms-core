@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
- * Date   : $Date: 2000/05/18 13:39:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/07/11 06:34:15 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/05/18 13:39:47 $  
+ * @version $Revision: 1.11 $ $Date: 2000/07/11 06:34:15 $  
  */
 public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
                                               I_CmsRequest { 
@@ -368,16 +368,21 @@ public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
     // Read the first line, should look like this:
     // content-disposition: form-data; name="field1"; filename="file1.txt"
     String line = in.readLine();
-    if (line == null) {
+System.err.println(":" + line + ":");
+	
+    if (line == null || line.equals("")) {
       // No parts left, we're done
       return true;
     }
-
+System.err.println("line-length: " + line.length());
     // Parse the content-disposition line
+System.err.println("1");
     String[] dispInfo = extractDispositionInfo(line);
-    // String disposition = dispInfo[0];
+System.err.println("2");
+	// String disposition = dispInfo[0];
     String name = dispInfo[1];
     String filename = dispInfo[2];
+System.err.println("3");
 
     // Now onto the next line.  This will either be empty 
     // or contain a Content-Type and then an empty line.
