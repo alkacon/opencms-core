@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 12:04:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/06 12:35:27 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.3 $ $Date: 2000/06/06 12:04:48 $ * 
+ * @version $Revision: 1.4 $ $Date: 2000/06/06 12:35:27 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants {
 	
@@ -73,6 +73,11 @@ public class CmsDbAccess implements I_CmsConstants {
 	 * Constant to get property from configurations.
 	 */
 	private static final String C_CONFIGURATIONS_MAX_CONN = "maxConn";
+
+	/**
+	 * Constant to get property from configurations.
+	 */
+	private static final String C_CONFIGURATIONS_FILLDEFAULTS = "filldefaults";
 	
 	/**
 	 * The prepared-statement-pool.
@@ -92,6 +97,7 @@ public class CmsDbAccess implements I_CmsConstants {
 		String url = null;
 		String user = null;
 		String password = null;
+		boolean fillDefaults;
 		int maxConn;
 		
 		if(A_OpenCms.isLogging()) {
@@ -127,6 +133,11 @@ public class CmsDbAccess implements I_CmsConstants {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read maxConn from configurations: " + maxConn);
 		}
 		
+		fillDefaults = config.getBoolean(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_FILLDEFAULTS, false);
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read fillDefaults from configurations: " + fillDefaults);
+		}
+		
 		// create the pool
 		m_pool = new CmsPreparedStatementPool(driver, url, user, password, maxConn);
 		if(A_OpenCms.isLogging()) {
@@ -136,7 +147,16 @@ public class CmsDbAccess implements I_CmsConstants {
 		// now init the statements
 		initStatements();
 		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] all statements initialized in the pool.");
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] all statements initialized in the pool");
+		}
+		
+		// have we to fill the default resource like root and guest?
+		if(fillDefaults) {
+			// YES!
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fill default resources");
+			}
+			fillDefaults();			
 		}
 		
 		// TODO: start the connection-guard here...
@@ -148,5 +168,13 @@ public class CmsDbAccess implements I_CmsConstants {
 	private void initStatements() 
 		throws CmsException {
 		// TODO: init the statements here...
+	}
+	
+	/**
+	 * Private method to init all default-resources
+	 */
+	private void fillDefaults() 
+		throws CmsException {
+		// TODO: init all default-resources
 	}
 }
