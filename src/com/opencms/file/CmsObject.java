@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/26 13:04:13 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2000/06/27 15:56:27 $
+ * Version: $Revision: 1.93 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.92 $ $Date: 2000/06/26 13:04:13 $ 
+ * @version $Revision: 1.93 $ $Date: 2000/06/27 15:56:27 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -61,9 +61,24 @@ public class CmsObject implements I_CmsConstants {
 	 * The resource broker to access the cms.
 	 */
 	private CmsRequestContext m_context = null;
+    
+    private CmsSession m_sessionStorage = null;
 
+   
+    public CmsObject () {
+
+    }
+    
+    public CmsObject (CmsSession storage) {
+        m_sessionStorage=storage;
+    }
+    
+    public CmsSession getSessionStorage() {
+        return m_sessionStorage;
+    }
+    
 	/**
-	 * Initialises the CmsObject with the resourceBroker. This only done ones!
+	 * Initialises the CmsObject with the resourceBroker.   !
 	 * If the ressource broker was set before - it will not be overitten. This is
 	 * for security reasons.
 	 * 
@@ -1432,9 +1447,14 @@ public class CmsObject implements I_CmsConstants {
 		CmsUser newUser = c_rb.loginWebUser(m_context.currentUser(), 
 										   m_context.currentProject(),
 										   username, password);
+        System.err.println("+############");
+        System.err.println(newUser);
+   
 		// init the new user
 		init(m_context.getRequest(), m_context.getResponse(), newUser.getName(), 
 			 newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID);
+        System.err.println(this.getRequestContext().currentUser());
+        System.err.println("-############"); 
 		// return the user-name
 		return(newUser.getName());
 	}

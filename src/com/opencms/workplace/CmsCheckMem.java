@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCheckMem.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/06/27 15:56:27 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.3 $ $Date: 2000/06/27 15:56:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsCheckMem extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -96,7 +96,7 @@ public class CmsCheckMem extends CmsWorkplaceDefault implements I_CmsConstants {
 	{
 		long total=Runtime.getRuntime().totalMemory()/1024;
 		long free=Runtime.getRuntime().freeMemory()/1024;
-		return ("MhtCms Avail. Mem:"+total
+		return ("OpenCms Avail. Mem:"+total
 				+"k, Free Mem:"+free
 				+"k, Used Mem:"+(total-free)+"k");
 	}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/06/27 15:56:27 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.25 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.26 $ $Date: 2000/06/27 15:56:27 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -356,7 +356,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
        */
       private void checkFolders(CmsObject cms, String path) 
           throws CmsException {
-          System.err.println("---"+path);
+
           String completePath=C_CONTENTBODYPATH;
           StringTokenizer t=new StringTokenizer(path,"/");
           // check if all folders are there

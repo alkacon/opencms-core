@@ -35,4 +35,5 @@ createProject  "__setupproj" "The project to setup the cms" Administrators Admin
 setCurrentProject "2"
 copyResourceToProject "/"
 writeExportPath "C:/work41/"
+addUser "d.heckmann" "test" Users "Developer" D Heckmann "andreas.schouten@framfab.de"
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/26 16:03:23 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2000/06/27 15:56:27 $
+ * Version: $Revision: 1.81 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.80 $ $Date: 2000/06/26 16:03:23 $ * 
+ * @version $Revision: 1.81 $ $Date: 2000/06/27 15:56:27 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -1323,6 +1323,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 									int flags, int type) 
 		throws CmsException {
 		
+        
+        if ((description==null) || (description.length()<1)) {
+            description=" ";
+        }
+        
 		Timestamp createTime = new Timestamp(new java.util.Date().getTime());
 		PreparedStatement statement = null;
 		
@@ -3586,9 +3591,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
          throws CmsException {
          
-         System.err.println("CREATE NEW FILE");
-         System.err.println(file);
-         System.err.println(file.getLength());
+
          
           int state=0;         
           if (project.equals(onlineProject)) {
@@ -3890,14 +3893,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                     
                 if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
                     statementResourceUpdate.setInt(7,state);
-                    System.err.println("keep old state");
+          
                 } else {                                                                       
                     if (changed==true) {
                         statementResourceUpdate.setInt(7,C_STATE_CHANGED);
-                        System.err.println("set to changed");
+             
                     } else {
                         statementResourceUpdate.setInt(7,file.getState());
-                        System.err.println("do nothing");
+              
                     }
                 }
                 statementResourceUpdate.setInt(8,file.isLockedBy());

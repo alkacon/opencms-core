@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/06/21 09:48:11 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/06/27 15:56:27 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/06/21 09:48:11 $
+ * @version $Revision: 1.10 $ $Date: 2000/06/27 15:56:27 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -169,8 +169,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
      
 				}   
                 // remove values from session
-                  System.err.println("4");
-                session.removeValue(C_PARA_FILE);   
+                    session.removeValue(C_PARA_FILE);   
                 session.removeValue(C_PARA_VIEWFILE); 
                 session.removeValue(C_PARA_LINK);  
                 // TODO: ErrorHandling

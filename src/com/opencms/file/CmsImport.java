@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/06/25 11:40:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/06/27 15:56:27 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/06/25 11:40:23 $
+ * @version $Revision: 1.12 $ $Date: 2000/06/27 15:56:27 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -89,13 +89,13 @@ public class CmsImport implements I_CmsConstants {
 		m_importPath = importPath;
 		m_cms = cms;
 
-        System.err.println("getImportResource");
+ 
 		// open the import resource
 		getImportResource();
-		 System.err.println("getXmlConfigFile");
+
 		// read the xml-config file
 		getXmlConfigFile();
-		 System.err.println("importResources");
+
 		// import the resources
 		importResources();
 	}
