@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2004/05/13 11:09:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/17 10:54:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.xml.sax.InputSource;
  * Resolves XML entities (e.g. external DTDs) in the OpenCms VFS.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -64,6 +64,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     /** The (old) DTD address of the OpenCms xmlpage (used until 5.3.5) */
     public static final String C_XMLPAGE_DTD_OLD_SYSTEM_ID = "/system/shared/page.dtd";    
     
+    /** The static default entity resolver for reading / writing xml content */
+    private static CmsXmlEntityResolver m_resolver;        
+    
     /** A cache to avoid multiple readings of often used files from the VFS */
     private Map m_cache;
     
@@ -74,7 +77,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      * Creates a new entity resolver to read the xmlpage dtd.
      */
     public CmsXmlEntityResolver() {
-
+        
         m_cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
 
         LRUMap lruMap = new LRUMap(128);
@@ -89,6 +92,24 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT
         });
+    }
+    
+    /**
+     * Returns a static default entity resolver for reading / writing xml content
+     * from the OpenCms VFS.<p>
+     * 
+     * @return a static default entity resolver
+     */
+    public static synchronized CmsXmlEntityResolver getResolver() {
+        if (m_resolver == null) {
+            try {
+                m_resolver = new CmsXmlEntityResolver();
+            } catch (Throwable t) {
+                // might happen if OpenCms was not initialized 
+                m_resolver = null;
+            }
+        }
+        return m_resolver;
     }
 
     /**

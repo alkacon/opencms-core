@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/05/13 11:09:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/17 10:54:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsXmlPage {
     
@@ -136,9 +136,6 @@ public class CmsXmlPage {
 
     /** The DTD address of the OpenCms xmlpage */
     public static final String C_XMLPAGE_DTD_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX + "xmlpage.dtd";    
-    
-    /** The entity resolver for reading / writing xmlpages */
-    private static CmsXmlEntityResolver m_resolver = new CmsXmlEntityResolver();
     
     /** Indicates if relative Links are allowed */
     private boolean m_allowRelativeLinks;
@@ -269,7 +266,7 @@ public class CmsXmlPage {
     public static CmsXmlPage read(String xmlData, String encoding) throws CmsXmlException {        
         try {
             SAXReader reader = new SAXReader();
-            reader.setEntityResolver(m_resolver);
+            reader.setEntityResolver(CmsXmlEntityResolver.getResolver());
             Document document = reader.read(new StringReader(xmlData));
             return new CmsXmlPage(document, encoding);
         } catch (DocumentException e) {
@@ -288,7 +285,7 @@ public class CmsXmlPage {
     public static CmsXmlPage read(byte[] xmlData, String encoding) throws CmsXmlException {
         try {
             SAXReader reader = new SAXReader();
-            reader.setEntityResolver(m_resolver);
+            reader.setEntityResolver(CmsXmlEntityResolver.getResolver());
             Document document = reader.read(new ByteArrayInputStream(xmlData));
             return new CmsXmlPage(document, encoding);
         } catch (DocumentException e) {
@@ -674,7 +671,7 @@ public class CmsXmlPage {
             // set the OpenCms xml validation error handler 
             validator.setErrorHandler(new CmsXmlValidationErrorHandler());
             // set the xmlpage entitiy resolver for the validation XML reader
-            validator.getXMLReader().setEntityResolver(m_resolver);
+            validator.getXMLReader().setEntityResolver(CmsXmlEntityResolver.getResolver());
             // validate the document
             validator.validate(m_document);                        
         } catch (SAXException e) {
