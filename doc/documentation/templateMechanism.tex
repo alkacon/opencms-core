@@ -311,7 +311,7 @@ The method-tag is a special tag which allows to call functions from a template. 
 value of the method (in this case the correct title of the page) is inserted into the page when
 the template is processed. Other standard methods will be discussed later in this document.
 
-\section{Further Elementes}
+\section{Further Elements}
 %============================================================================
 \subsection{A master template with a table}
 
@@ -1228,7 +1228,8 @@ Here is the getContent method of the associated class:
 public byte[] getContent(CmsObject cms, String templateFile,
 String elementName, Hashtable parameters, String templateSelector)
 throws CmsException {
-    CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+    CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile,
+                                     elementName, parameters, templateSelector);
     String linkTarget;
     linkTarget = "link" + String.valueOf((int) (Math.random() * 2 + 1));
     templateDocument.setData("link", templateDocument.getDataValue(linkTarget));
@@ -1293,7 +1294,8 @@ String elementName, Hashtable parameters, String templateSelector)
 throws CmsException {
     String[] owners = {"Martin", "Thomas", "Andreas", "Bill", "Michael", "Doris"};
     String[] animals = {"cat", "dog", "mouse", "rat", "bird", "snake"};
-    CmsXmlTemplateFile template = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+    CmsXmlTemplateFile template = getOwnTemplateFile(cms, templateFile,
+                             elementName, parameters, templateSelector);
     String list = "";
     for (int i = 0; i < animals.length; i++) {
         template.setData("number", i + "");
@@ -1303,7 +1305,7 @@ throws CmsException {
         list += row;
     }
     template.setData("list", list);
-    return startProcessing(cms, template, elementName, parameters, templateSelector);
+    return startProcessing(cms,template,elementName,parameters,templateSelector);
 }
 \end{verbatim}
 
@@ -1408,7 +1410,7 @@ public class CmsExample9 extends CmsXmlTemplate {
 
 public Object getTable(CmsObject cms, String tagcontent,
 A_CmsXmlContent doc, Object userObject) throws CmsException {
-    String[] owners = {"Elmar", "Randolf", "Sandra", "Geoffrey", "Claudia", "Doris"};
+    String[] owners = {"Elmar", "Randolf", "Sandra", "Geoffrey","Claudia","Doris"};
     String[] animals = {"spider", "eagle", "lion", "cheetah", "scorpion", "snake"};
     CmsXmlTemplateFile template = (CmsXmlTemplateFile) doc;
     String list = "";
