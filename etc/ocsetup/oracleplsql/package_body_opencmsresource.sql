@@ -16,11 +16,11 @@ PACKAGE BODY opencmsresource IS
     -- first lock the resources
     lockResource(pUserId, pProjectId, pFolderName, pForce);
     -- now build the cursor which contains the locked resources to return the resultset
-    IF length(bResourceList) > 0 THEN
+    --IF length(bResourceList) > 0 THEN
       -- open the cursor with the locked resources
       OPEN pResource FOR 'select * from cms_resources where project_id = '||pProjectId||
                          ' and resource_name like '''||pFolderName||'%'' and locked_by = '||pUserId;
-    END IF;
+    --END IF;
     bResourceList := '';
   END;
 --------------------------------------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ PACKAGE BODY opencmsresource IS
       WHEN OTHERS THEN
         IF curResource%ISOPEN THEN
           CLOSE curResource;
-        END IF;  
+        END IF;
         rollback;
         RAISE;
   END lockResource;
@@ -125,10 +125,10 @@ PACKAGE BODY opencmsresource IS
     -- first unlock the resources
     unlockResource(pUserId, pProjectId, pFolderName);
     -- now build the cursor which contains the unlocked resources to return the resultset
-    IF length(bResourceList) > 0 THEN
+    --IF length(bResourceList) > 0 THEN
       OPEN pResource FOR 'select * from cms_resources where project_id='||pProjectId||
                          ' and resource_name like '''||pFolderName||'%'' and locked_by='||opencmsConstants.C_UNKNOWN_ID;
-    END IF;
+    --END IF;
     bResourceList := '';
   END unlockResource;
 --------------------------------------------------------------------------------------------------------------
@@ -214,7 +214,7 @@ PACKAGE BODY opencmsresource IS
     WHEN OTHERS THEN
       IF curResource%ISOPEN THEN
         CLOSE curResource;
-      END IF;  
+      END IF;
       rollback;
       RAISE;
   END unlockResource;
@@ -525,7 +525,7 @@ PACKAGE BODY opencmsresource IS
       END IF;
       IF oResource%ISOPEN THEN
         CLOSE oResource;
-      END IF;  
+      END IF;
       rollback;
       RAISE;
   END createFile;
@@ -561,7 +561,7 @@ PACKAGE BODY opencmsresource IS
     WHEN OTHERS THEN
       IF curSubResource%ISOPEN THEN
       	CLOSE curSubResource;
-      END IF;	
+      END IF;
       rollback;
       RAISE;
   END removeFolder;
@@ -751,7 +751,7 @@ PACKAGE BODY opencmsresource IS
       END IF;
       IF curNewResource%ISOPEN THEN
         CLOSE curNewResource;
-      END IF; 
+      END IF;
       RAISE;
   END copyFile;
 ----------------------------------------------------------------------------------------------
