@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/02/28 13:03:49 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/03/04 18:48:06 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -245,14 +246,17 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
         Vector conflictFiles = null;
         String moduleName = null;
         boolean importNewModule = true;
-        String type = I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+        String moduleType = I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
         
         if(nav == null) {
             // this is the first go. Try to import the module and if it dont't work return the corresponding errorpage
-            moduleName = reg.importGetModuleName(zipName);
+            Map moduleInfo = reg.importGetModuleInfo(zipName);
+            
+            moduleName = (String)moduleInfo.get("name");
+            moduleType = (String)moduleInfo.get("type");
+            
             if(reg.moduleExists(moduleName)) {
-                type = reg.getModuleType(moduleName);
-                if (! I_CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(type)) {
+                if (! I_CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(moduleType)) {
                     // not a simple module, can not be replaced
                     xmlDocument.setData("name", moduleName);
                     xmlDocument.setData("version", "" + reg.getModuleVersion(moduleName));
@@ -277,7 +281,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                 session.removeValue(C_MODULE_NAV);
                 return C_ERRORDEP;
             }
-            if (! I_CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(type)) {
+            if (! I_CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(moduleType)) {
                 conflictFiles = reg.importGetConflictingFileNames(zipName);
                 if (!conflictFiles.isEmpty()) {
                     session.putValue(C_SESSION_MODULE_VECTOR, conflictFiles);

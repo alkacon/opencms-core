@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/03/04 17:09:00 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2003/03/04 18:48:06 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -73,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.69 $ $Date: 2003/03/04 17:09:00 $
+ * @version $Revision: 1.70 $ $Date: 2003/03/04 18:48:06 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -715,7 +716,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         Element module = getModuleElement(moduleName);
         Element moduleCopy = (Element)module.cloneNode(true);
         NodeList list = moduleCopy.getChildNodes();
-        for (int i=(list.getLength()-1); i>0; i--) {
+        for (int i=(list.getLength()-1); i>=0; i--) {
             Element e = (Element)list.item(i);
             if ("uploaddate".equals(e.getNodeName()) || "uploadedby".equals(e.getNodeName())) {
                 moduleCopy.removeChild(e);
@@ -1760,14 +1761,42 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     }
 
     /**
-     *  Returns the name of the module to be imported.
+     * Returns a map of information about the module to be imported.<p>
      *
-     *  @param moduleZip the name of the zip-file to import from.
-     *  @return The name of the module to be imported.
+     * The map contains the following values:
+     * <ul>
+     * <li><code>"name"</code>: the package name of the module (e.g. "org.opencms.default")
+     * <li><code>"type"</code>: the type of the module ("simple" or "traditional")
+     * </ul>
+     *
+     * @param moduleZip the name of the zip file to import
+     * @return a map of information about the module to be imported
      */
-    public String importGetModuleName(String moduleZip) {
+    public Map importGetModuleInfo(String moduleZip) {
+        // read module node from import
         Element newModule = getModuleElementFromImport(moduleZip);
-        return newModule.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+        
+        // get module name
+        String moduleName = newModule.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+        
+        // get module type
+        String moduleType = null; 
+        NodeList list = newModule.getChildNodes();
+        for (int i=0; i<list.getLength(); i++) {
+            Element e = (Element)list.item(i);
+            if ("type".equals(e.getNodeName())) {
+                moduleType = e.getFirstChild().getNodeValue();
+                break;
+            }
+        }  
+        if (moduleType == null) moduleType = C_MODULE_TYPE_TRADITIONAL;
+
+        // fill return value map 
+        HashMap map = new HashMap();
+        map.put("name", moduleName);
+        map.put("type", moduleType);
+
+        return map;
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2003/02/21 15:18:23 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2003/03/04 18:48:06 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.report.I_CmsReport;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.39 $ $Date: 2003/02/21 15:18:23 $
+ * @version $Revision: 1.40 $ $Date: 2003/03/04 18:48:06 $
  */
 public interface I_CmsRegistry extends Cloneable {
 
@@ -655,7 +655,7 @@ public interface I_CmsRegistry extends Cloneable {
      *  @param moduleZip the name of the zip-file to import from.
      *  @return The name of the module to be imported.
      */
-    public String importGetModuleName(String moduleZip);
+    public Map importGetModuleInfo(String moduleZip);   
     
     /**
      *  Returns all files that are needed to create a project for the module-import.
