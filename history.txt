@@ -8,6 +8,16 @@ Legend:
 * Bug fixed
 - General comment
 
+
+OpenCms 4.0a23 Giedi Prime: Rabban - 24 March 2000
+! Folders can now be created, modified and deleted via the workplace.
+! File and folder properties can now be viewed and edited in the workplace.
+! Unpublished projects can now be deleted.
+* Bugfix in navigation, new folders and pages can now sorted between existing ones.
+* Bugfix in project management (selecting a project name).
+* Saving metainfos now results in a state-change of the resource.
+* Netscape compatibility in several workplace dialogs.
+
 OpenCms 4.0a22 Giedi Prime: Rabban - 17 March 2000
 
 ! A news example is added to the OpenCms. This example shows the usage of content defintions.
