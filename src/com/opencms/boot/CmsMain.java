@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
-* Date   : $Date: 2001/07/12 14:08:25 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/07/20 15:35:00 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -40,9 +40,13 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.4 $ $Date: 2001/07/12 14:08:25 $
+ * @version $Revision: 1.5 $ $Date: 2001/07/20 15:35:00 $
  */
 public class CmsMain {
+
+
+  private static final int C_MODE_ECMASCRIPT = 1;
+  private static final int C_MODE_CLASSIC = 0;
 
     /**
      * Main entry point when started via the command line.
@@ -52,9 +56,15 @@ public class CmsMain {
      */
     public static void main(String[] args) {
         boolean wrongUsage = false;
+
         String base = null;
         String script = null;
+        String cmdLineMode = null;
+
+        int mode = C_MODE_CLASSIC;
+
         if(args.length > 2) {
+
             wrongUsage = true;
         } else {
             for(int i=0; i < args.length; i++) {
@@ -63,8 +73,11 @@ public class CmsMain {
                     base = arg.substring(6);
                 } else if(arg.startsWith("-script=") ) {
                     script = arg.substring(8);
+                } else if(arg.startsWith("-mode=") ) {
+                    cmdLineMode = arg.substring(6);
                 } else {
-                    wrongUsage = true;
+                  System.out.println("wrong usage!");
+                  wrongUsage = true;
                 }
             }
         }
@@ -79,11 +92,18 @@ public class CmsMain {
                     System.out.println("wrong script-file " + script + " using stdin instead");
                 }
             }
-            if( stream == null) {
+            if(cmdLineMode!=null){
+              if(cmdLineMode.equals("ecmascript"))mode=C_MODE_ECMASCRIPT;
+              if(cmdLineMode.equals("es"))mode=C_MODE_ECMASCRIPT;
+              if(cmdLineMode.equals("classic"))mode=C_MODE_CLASSIC;
+            }
+
+            if(stream == null) {
                 // no script-file use input-stream
                 stream = new FileInputStream(FileDescriptor.in);
             }
-            begin(stream, base);
+
+            begin(stream, base, mode);
         }
     }
 
@@ -95,7 +115,7 @@ public class CmsMain {
      */
     public static void startSetup(String file, String base)  {
         try {
-            begin(new FileInputStream(new File(file)),base);
+            begin(new FileInputStream(new File(file)),base,C_MODE_CLASSIC);
         }
         catch (FileNotFoundException  e)  {
           e.printStackTrace();
@@ -105,7 +125,7 @@ public class CmsMain {
     /**
      * Used to launch the OpenCms command line interface (CmsShell)
      */
-    private static void begin(FileInputStream fis, String base)  {
+    private static void begin(FileInputStream fis, String base, int mode)  {
         String classname = "com.opencms.core.CmsShell";
         if(base == null || "".equals(base)) {
             System.out.println("No OpenCms home folder given. Trying to guess...");
@@ -131,10 +151,22 @@ public class CmsMain {
             Object o = c.newInstance();
 
             Class classArgs[] = {fis.getClass()};
-            Method m = c.getMethod("commands", classArgs);
 
-            Object objArgs[] = {fis};
-            m.invoke(o, objArgs);
+            // the "classic" mode
+            if(mode==C_MODE_CLASSIC){
+                    Method m = c.getMethod("commands", classArgs);
+
+                    Object objArgs[] = {fis};
+                    m.invoke(o, objArgs);
+            }
+
+            // the "ecmascript" mode
+            if(mode==C_MODE_ECMASCRIPT){
+                Method m = c.getMethod("ecmacommands", classArgs);
+
+                Object objArgs[] = {fis};
+                m.invoke(o, objArgs);
+            }
         } catch(InvocationTargetException e) {
             Throwable t = e.getTargetException();
             t.printStackTrace();
@@ -203,7 +235,7 @@ public class CmsMain {
      * Gives the usage-information to the user.
      */
     private static void usage() {
-        System.out.println("Usage: java com.opencms.core.CmsMain [-base=<basepath>] [-script=<scriptfile>]");
+        System.out.println("Usage: java com.opencms.core.CmsMain [-base=<basepath>] [-script=<scriptfile>] [-mode=[<ecmascript><es>/<classic>]]");
     }
 
     public static void collectRepositories(String base, CmsClassLoader cl) {

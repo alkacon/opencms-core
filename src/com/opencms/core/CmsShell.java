@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2001/07/18 06:18:08 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2001/07/20 15:35:10 $
+* Version: $Revision: 1.68 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -36,13 +36,23 @@ import com.opencms.file.*;
 import java.lang.reflect.*;
 import source.org.apache.java.util.*;
 
+import FESI.jslib.*;
+import FESI.Exceptions.*;
+import FESI.Parser.*;
+import FESI.AST.*;
+import FESI.Extensions.Extension;
+import FESI.Extensions.BasicIOInterface;
+import FESI.gui.*;
+import FESI.Data.*;
+import FESI.Interpreter.*;
+
 /**
  * This class is a commadnlineinterface for the opencms. It can be used to test
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.67 $ $Date: 2001/07/18 06:18:08 $
+ * @version $Revision: 1.68 $ $Date: 2001/07/20 15:35:10 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -81,6 +91,11 @@ public class CmsShell implements I_CmsConstants {
     static boolean m_exitCalled = false;
 
     /**
+     * the prompt for ecmaShell
+     */
+    String ecmaPrompt;
+
+    /**
      * Creates a new CmsShell-Object.
      */
     public CmsShell() {
@@ -90,7 +105,6 @@ public class CmsShell implements I_CmsConstants {
             Configurations conf = new Configurations(new ExtendedProperties(propsPath));
             m_openCms = new OpenCms(conf);
             m_cms = new CmsObject();
-            this.shellCommands = new CmsShellCommands(m_openCms, m_cms);
 
             m_logMemory = conf.getBoolean("log.memory", false);
             //log in default user.
@@ -108,7 +122,6 @@ public class CmsShell implements I_CmsConstants {
      */
     private void call(Vector command) {
         if(m_echo) {
-
             // all commands should be echoed to the shell
             for(int i = 0;i < command.size();i++) {
                 System.out.print(command.elementAt(i) + " ");
@@ -153,6 +166,7 @@ public class CmsShell implements I_CmsConstants {
      */
     public void commands(FileInputStream fis) {
         try {
+            this.shellCommands = new CmsShellCommands(m_openCms, m_cms);
             LineNumberReader lnr = new LineNumberReader(new InputStreamReader(fis));
             while(!m_exitCalled) { // ever
                 printPrompt();
@@ -165,8 +179,7 @@ public class CmsShell implements I_CmsConstants {
                 while(st.nextToken() != st.TT_EOF) {
                     if(st.ttype == st.TT_NUMBER) {
                         args.addElement(new Double(st.nval).intValue() + "");
-                    }
-                    else {
+                    } else {
                         args.addElement(st.sval);
                     }
                 }
@@ -182,6 +195,253 @@ public class CmsShell implements I_CmsConstants {
     }
 
     /**
+    *   The ecmaScript welcome text
+    */
+    public void printEcmaHelpText(){
+        System.out.println("");
+        System.out.println("help();              Gives a list of available commands with signature");
+        System.out.println("help(\"<command>\"     Shows signature of command");
+        System.out.println("exit();              Quit the Shell");
+        System.out.println("");
+    }
+
+    /**
+    *   The ecmaScript help-command
+    */
+    public void cmsHelp(Method m, String par) {
+        if(!m.getName().equals(par)){
+              System.out.print(par+"."+m.getName());
+
+              Class[] parameterTypes=m.getParameterTypes();
+
+              System.out.print("(");
+              for(int k=0;k<parameterTypes.length;k++){
+                if(k>0)System.out.print(", ");
+                System.out.print(""+ parameterTypes[k].getName());
+              }
+
+              String returnString=m.getReturnType().toString();
+              if(!returnString.equals("void") && !returnString.equals("int")){
+                  System.out.println("); returns: "+returnString);
+              }else{
+                  System.out.println(");");
+              }
+          }
+    }
+
+    /*
+    *   The ecmaScript input-command
+    */
+    public String ecmaInput(String inputPrompt){
+        String s="";
+        System.out.print(inputPrompt);
+        BufferedReader ins = new BufferedReader(new InputStreamReader(System.in));
+        try{
+            s=ins.readLine();
+        } catch (IOException ef){
+            System.out.println("IOException!!!");
+        }
+        if(s==null)s="";
+        return s;
+    }
+
+    /**
+    *   eval and print the ecmascript-prompt
+    */
+    public void printEcmaPrompt(JSGlobalObject jSGO,String s){
+
+        if(s!=null){
+            try {
+                Object result= jSGO.eval("echoNoLF("+s+")");
+            }catch (JSException je) {
+                System.out.println(je.getMessage());
+            }
+        }else System.out.print("\n");
+    }
+
+    /**
+     * the ecmascript interpreter
+     *
+     * @fis the file input stream for commands
+     */
+    public void ecmacommands(FileInputStream fis)throws Exception {
+
+      boolean lineMode=true;
+      boolean continueReading=true;
+
+      String in="";
+      String input = null;
+
+      // the prompt: "user@projectname>"
+      ecmaPrompt="cms.getRequestContext().currentUser().getName()+\"@\"+cms.getRequestContext().currentProject().getName()+\">\"";
+
+      JSGlobalObject jSGO = null;
+      jSGO = JSUtil.makeEvaluator();
+
+      JSObject jsCMS = jSGO.makeObjectWrapper(m_cms);
+      jSGO.setMember("cms", jsCMS);
+
+      // create a bufferedReader to read the data from
+      BufferedReader ins = new BufferedReader(new InputStreamReader(fis));
+
+      // print the ecmascript welcome-text
+      printEcmaHelpText();
+
+      Class[] args = {String.class};
+
+      // new command: echoNoLF (no linefeed)
+      jSGO.setMember("echoNoLF", new JSFunctionAdapter(){
+        public Object doCall(JSObject thisObject, Object args[]) throws JSException
+        {
+            if(args.length==0)System.out.println(" ");
+            else System.out.print(args[0]);
+            return null;
+        }
+      });
+
+      // new command: echo
+      jSGO.setMember("echo", new JSFunctionAdapter(){
+        public Object doCall(JSObject thisObject, Object args[]) throws JSException
+        {
+            if(args.length==0)System.out.print(" ");
+            else {
+                //if m_echo=true all commands are echoed
+                if(args[0].equals("on"))m_echo=true;
+                if(args[0].equals("off"))m_echo=false;
+                System.out.println(args[0]);
+            }
+            return null;
+        }
+      });
+
+      // new command: input
+      // the string-parameter is optional. if given it's used as prompt for the input
+      jSGO.setMember("input", new JSFunctionAdapter(){
+        public Object doCall(JSObject thisObject, Object args[]) throws JSException
+        {
+            String inputPrompt="? ";
+            if(args.length!=0)inputPrompt=args[0].toString();
+            return ecmaInput(inputPrompt);
+        }
+      });
+
+      // new command: setprompt
+      // if there is no string-parameter, there is no prompt
+      jSGO.setMember("setPrompt", new JSFunctionAdapter(){
+        public Object doCall(JSObject thisObject, Object args[]) throws JSException
+        {
+            if(args.length!=0)ecmaPrompt=args[0].toString();
+                else ecmaPrompt=null;
+            System.out.println("");
+            return null;
+        }
+      });
+
+      // new command: help
+      jSGO.setMember("help", new JSFunctionAdapter(){
+        public Object doCall(JSObject thisObject, Object args[]) throws JSException
+        {
+            Method meth[] = m_cms.getClass().getMethods();
+
+            if(args.length==0){
+                for(int z = 0;z < meth.length;z++) {
+                    cmsHelp(meth[z],"cms");
+                }
+                System.out.println("echo(java.lang.String);");
+                System.out.println("exit();");
+                System.out.println("input(String); returns input (int or string)");
+                System.out.println("input(); returns input (int or string)");
+
+            } else {
+                //because for example: user could search for: "cms.readUser", but
+                //the search only processes m_cms methods, so the "cms." must be deleted.
+                if(args[0].toString().startsWith("cms")){
+                    if(args[0].toString().charAt(3)=='.'){
+                        String ar=args[0].toString().substring(4);
+                        args[0]=ar;
+                    }
+                }
+                for(int z = 0;z < meth.length;z++)
+                    if(meth[z].getName().equals(args[0]))cmsHelp(meth[z],"cms");
+                    if(args[0].equals("echo"))System.out.println("echo(java.lang.String);");
+                    if(args[0].equals("exit"))System.out.println("exit();");
+                    if(args[0].equals("input"))System.out.println("input(String); returns input (int or string");
+                    if(args[0].equals("input"))System.out.println("input(); returns input (int or string");
+            }
+            return null;
+        }
+      });
+
+      // new command: exit
+      jSGO.setMember("exit", new JSFunctionAdapter(){
+        public Object doCall(JSObject thisObject, Object args[]) throws JSException
+        {
+            return "exit";
+        }
+      });
+
+      String eol = System.getProperty("line.separator", "\n");
+      ESValue theValue = ESUndefined.theUndefined;
+
+      Evaluator evaluator = new Evaluator();
+
+      // load fesi extension to access java from javascript
+      try {
+          evaluator.addMandatoryExtension("FESI.Extensions.JavaAccess");
+      } catch (EcmaScriptException e) {
+          System.out.println("Cannot initialize JavaAccess - exiting: " + eol + e);
+          e.printStackTrace();
+      }
+
+      while (continueReading) {               // main input loop
+          in="";
+          while(in.equals("")){
+
+              if(lineMode)printEcmaPrompt(jSGO,ecmaPrompt);
+                  else if(ecmaPrompt!=null)System.out.print("More> ");    // linemode = false if the line is incomplete
+              try{
+                  in=ins.readLine();          // read a line from input
+              } catch (IOException ef){
+                  System.out.println("IOException!!!");
+              }
+
+              if(in==null){                   // reached end of file or control-c was pressed
+                  continueReading=false;
+                  break;
+              }
+          }
+
+          if(lineMode) input = in;
+              else input += in;
+
+          if(continueReading)try {
+                  theValue = evaluator.evaluate(input);
+              } catch (EcmaScriptException e) {
+                  if (e.isIncomplete()) {
+                      lineMode=false;         // if the entered line is not complete
+                  }else{
+                      if (input == null) break;
+                      try {
+                          if(m_echo)System.out.println(input);
+
+                          Object result = jSGO.eval(input);     // interpret!
+
+                          if (result!=null) {
+                              if (result.toString().equals("exit"))break;
+                              System.out.println(result.toString());
+                          }
+                          lineMode=true;
+                      }catch (JSException je) {
+                          System.out.println(je.getMessage());
+                          lineMode=true;
+                          input="";
+                      }
+                  }// else
+              } // catch
+        } // while
+    }
+
+    /**
      * Prints a exception with the stacktrace.
      *
      * @param exc The exception to print.
@@ -189,18 +449,13 @@ public class CmsShell implements I_CmsConstants {
     protected static void printException(Exception exc) {
         if(CmsShell.m_shortException) {
             String exceptionText;
+
             if(exc instanceof CmsException) {
-
-                // this is a cms-exception: print a very short exeption-text
-                exceptionText = ((CmsException)exc).getTypeText();
-            }
-            else {
-
-                // only return the exception message
-                exceptionText = exc.getMessage();
+                exceptionText = ((CmsException)exc).getTypeText();    // this is a cms-exception: print a very short exeption-text
+            } else {
+                exceptionText = exc.getMessage();     // only return the exception message
             }
             if((exceptionText == null) || (exceptionText.length() == 0)) {
-
                 // the exception-text was empty, return the class-name of the exeption
                 exceptionText = exc.getClass().getName();
             }
