@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/11/28 16:28:09 $
- * Version: $Revision: 1.144 $
+ * Date   : $Date: 2000/12/06 17:00:47 $
+ * Version: $Revision: 1.145 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.144 $ $Date: 2000/11/28 16:28:09 $ 
+ * @version $Revision: 1.145 $ $Date: 2000/12/06 17:00:47 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -895,6 +895,17 @@ public Vector getFilesWithProperty(String propertyDefinition, String propertyVal
  */
 public long getFileSystemChanges() {
 	return (m_rb.getFileSystemChanges(m_context.currentUser(), m_context.currentProject()));
+}
+/**
+ * This method can be called, to determine if the file-system was changed in the past.
+ * <br>
+ * A module can compare its previously stored number with the returned number. 
+ * If they differ, the file system has been changed.
+ * 
+ * @return the number of file-system-changes.
+ */
+public long getFileSystemFolderChanges() {
+	return (m_rb.getFileSystemFolderChanges(m_context.currentUser(), m_context.currentProject()));
 }
 	/**
 	 * Returns a Vector with the complete folder-tree for this project.<br>

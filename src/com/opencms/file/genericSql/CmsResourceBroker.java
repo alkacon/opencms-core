@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/06 15:47:44 $
- * Version: $Revision: 1.206 $
+ * Date   : $Date: 2000/12/06 16:59:58 $
+ * Version: $Revision: 1.207 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.206 $ $Date: 2000/12/06 15:47:44 $
+ * @version $Revision: 1.207 $ $Date: 2000/12/06 16:59:58 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -927,7 +927,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 			}
 			m_subresCache.clear();
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(false);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				CmsException.C_NO_ACCESS);
@@ -996,7 +996,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 			m_subresCache.clear();
 			m_accessCache.clear();
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(false);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				CmsException.C_NO_ACCESS);
@@ -1058,7 +1058,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 		m_subresCache.clear();
 		m_accessCache.clear();
 		// inform about the file-system-change
-		fileSystemChanged();
+		fileSystemChanged(false);
 	} else {
 		throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NO_ACCESS);
 	}
@@ -1085,10 +1085,11 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 	public void chstate(CmsUser currentUser, CmsProject currentProject,
 						String filename, int state)
 		throws CmsException {
-	   
+	   	boolean isFolder=false;
 		CmsResource resource=null;
 		// read the resource to check the access
-		if (filename.endsWith("/")) {          
+		if (filename.endsWith("/")) {
+			isFolder=true; 
 			resource = readFolder(currentUser,currentProject,filename);
 			 } else {
 			resource = (CmsFile)readFileHeader(currentUser,currentProject,filename);
@@ -1110,7 +1111,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 			}
 			m_subresCache.clear();
 			// inform about the file-system-change
-			fileSystemChanged();  
+			fileSystemChanged(isFolder);  
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				CmsException.C_NO_ACCESS);
@@ -1166,7 +1167,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 			m_subresCache.clear();
 			
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(false);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				CmsException.C_NO_ACCESS);
@@ -1245,7 +1246,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 							readAllProperties(currentUser,currentProject,file.getAbsolutePath()));
 			m_accessCache.clear();							
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(file.isFolder());
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + destination, 
 				CmsException.C_NO_ACCESS);
@@ -1297,7 +1298,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 							readAllProperties(currentUser,currentProject,folder.getAbsolutePath()));
 			m_accessCache.clear();
 			// inform about the file-system-change
-			fileSystemChanged();                      
+			fileSystemChanged(true);                      
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + destination, 
 				CmsException.C_ACCESS_DENIED);
@@ -1507,7 +1508,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 			m_dbAccess.writeProperties(propertyinfos, file.getResourceId(), file.getType());
 
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(false);
 
 			return file ;
 		} else {
@@ -1591,7 +1592,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 			// writeProperties(currentUser,currentProject, newFolder.getAbsolutePath(), propertyinfos);
 			
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(true);
 			// return the folder
 			return newFolder ;			
 		} else {
@@ -1903,7 +1904,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 			m_accessCache.clear();
 
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(false);
 				
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
@@ -1962,7 +1963,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 			m_subresCache.clear();
 			m_accessCache.clear();
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(true);
 		
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + foldername, 
@@ -2281,10 +2282,13 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	 * This method is called, when a resource was changed. Currently it counts the
 	 * changes.
 	 */
-	protected void fileSystemChanged() {
+	protected void fileSystemChanged(boolean folderChanged) {
 		// count only the changes - do nothing else!
 		// in the future here will maybe a event-story be added
 		m_fileSystemChanges++;
+		if(folderChanged){
+			m_fileSystemFolderChanges++;
+		}
 	}
 	/**
 	 * Forwards a task to a new user.
@@ -2683,6 +2687,22 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 */
 	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject) {
 		return m_fileSystemChanges;
+	}
+	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	public long getFileSystemFolderChanges(CmsUser currentUser, CmsProject currentProject) {
+		return m_fileSystemFolderChanges;
 	}
 /**
  * Returns a Vector with the complete folder-tree for this project.<br>
@@ -3206,7 +3226,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 			  m_subresCache.clear();
 			  
 			  // inform about the file-system-change
-			  fileSystemChanged();  
+			  fileSystemChanged(true);  
 			     
 		
 		    // now walk recursive through all files and folders, and copy them too
@@ -3795,7 +3815,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 			// => the file was only copied, not moved!
 			deleteFile(currentUser, currentProject, source);
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(file.isFolder());
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + source, CmsException.C_NO_ACCESS);
 		}
@@ -3848,7 +3868,7 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 		m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
 		m_subresCache.clear();
 		// inform about the file-system-change
-		fileSystemChanged();
+		fileSystemChanged(true);
 
 		// the project-state will be set to "published", the date will be set.
 		// the project must be written to the cms.
@@ -5868,7 +5888,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 			m_subresCache.clear();
 			m_accessCache.clear();
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(false);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
 				CmsException.C_NO_ACCESS);
@@ -5941,7 +5961,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 			// inform about the file-system-change
 			m_subresCache.clear();
 			m_accessCache.clear();
-			fileSystemChanged();
+			fileSystemChanged(false);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
 				CmsException.C_NO_ACCESS);

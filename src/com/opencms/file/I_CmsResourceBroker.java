@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/20 14:59:06 $
- * Version: $Revision: 1.133 $
+ * Date   : $Date: 2000/12/06 17:00:47 $
+ * Version: $Revision: 1.134 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.133 $ $Date: 2000/11/20 14:59:06 $
+ * @version $Revision: 1.134 $ $Date: 2000/12/06 17:00:47 $
  * 
  */
 
@@ -890,7 +890,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	 * @param exportFile the name (absolute Path) of the export resource (zip)
 	 * @param exportPaths the name (absolute Path) of folders from which should be exported
 	 * @param includeSystem, desides if to include the system resources to the export.
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+	 * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
 	 * @param cms the cms-object to use for the export.
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
@@ -1079,6 +1079,20 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 * @return the number of file-system-changes.
 	 */
 	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject);
+	/**
+	 * This method can be called, to determine if the file-system was changed(only Folders) 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	public long getFileSystemFolderChanges(CmsUser currentUser, CmsProject currentProject);
    	/**
 	 * Returns a Vector with the complete folder-tree for this project.<br>
 	 * 

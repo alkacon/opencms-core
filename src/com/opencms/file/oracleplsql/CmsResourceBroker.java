@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/05 16:52:05 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/12/06 16:59:20 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.13 $ $Date: 2000/12/05 16:52:05 $
+ * @version $Revision: 1.14 $ $Date: 2000/12/06 16:59:20 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -324,7 +324,7 @@ public void copyFile(CmsUser currentUser, CmsProject currentProject, String sour
 	try {
 		dbAccess.copyFile(currentProject, currentUser.getId(), source, destination);
 		// inform about the file-system-change
-		fileSystemChanged();
+		fileSystemChanged(false);
 	} catch (CmsException e) {
 		throw e;
 	}
@@ -435,7 +435,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 			// write the metainfos
 			m_dbAccess.writeProperties(propertyinfos, file.getResourceId(), file.getType());
 			// inform about the file-system-change
-			fileSystemChanged();
+			fileSystemChanged(false);
 			return file ;
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + folder + filename, 
@@ -863,7 +863,7 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 		dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
 		m_subresCache.clear();
 		// inform about the file-system-change
-		fileSystemChanged();
+		fileSystemChanged(true);
 
 		// the project-state will be set to "published", the date will be set.
 		// the project must be written to the cms.
@@ -1359,7 +1359,7 @@ public void writeFile(CmsUser currentUser, CmsProject currentProject, CmsFile fi
 	m_subresCache.clear();
 	m_accessCache.clear();
 	// inform about the file-system-change
-	fileSystemChanged();
+	fileSystemChanged(false);
 }
 /**
  * Writes the file extensions  
@@ -1420,7 +1420,7 @@ public void writeFileHeader(CmsUser currentUser, CmsProject currentProject, CmsF
 	// inform about the file-system-change
 	m_subresCache.clear();
 	m_accessCache.clear();
-	fileSystemChanged();
+	fileSystemChanged(false);
 }
 /**
  * Updates the user information.<BR/>
