@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/16 18:08:55 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/07/18 14:11:18 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.65 $ $Date: 2003/07/16 18:08:55 $
+ * @version $Revision: 1.66 $ $Date: 2003/07/18 14:11:18 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -584,14 +584,21 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      public int getType() {
        return m_resourceType;
      }
+     
     /**
-     * Returns the project id of the project that has locked this resource.<p>
+     * Returns the ID of the project if the resource is directly locked in the database<p>
+     * 
+     * Don't use this method to detect the lock state of a resource. 
+     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} 
+     * instead to detect the lock state.
      *
      * @return the project id
+     * @see org.opencms.lock.CmsLock#getProjectId()
      */
-     public int getLockedInProject() {
-       return m_lockedInProject;
-     }
+    public int getLockedInProject() {
+        return m_lockedInProject;
+    }
+     
      /**
      * Checks if this resource belongs to a project.<p>
      * 
@@ -611,21 +618,34 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
       }
 
     /**
-     * Determines, if this resource is locked by a user.
+     * Checks if this resource is currently directly locked in the database.<p>
+     * 
+     * Don't use this method to detect the lock state of a resource. 
+     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} 
+     * instead to detect the lock state.
      *
-     * @return true, if this resource is locked by a user, else it returns false.
+     * @return true, if and only if this resource is directly locked by a user
+     * @deprecated use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead to detect the lock state
+     * @see org.opencms.lock.CmsLock#isNullLock()
      */
     public boolean isLocked() {
         return !isLockedBy().equals(CmsUUID.getNullUUID());
     }
+
     /**
-     * Returns the user id that locked this resource.<p>
+     * Returns the ID of the user if the resource is directly locked in the database.<p>
+     * 
+     * Don't use this method to detect the lock state of a resource. 
+     * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} 
+     * instead to detect the lock state.
      *
-     * @return the user id that locked this resource
+     * @return the CmsUUID of the user
+     * @see org.opencms.lock.CmsLock#getUserId()
      */
-      public CmsUUID isLockedBy() {
+    public CmsUUID isLockedBy() {
         return m_lockedByUserId;
-      }
+    }
+      
      /**
      * Sets the access flags of this resource.<p>
      *

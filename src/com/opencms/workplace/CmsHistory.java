@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2003/07/16 10:12:10 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/07/18 14:11:18 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.lock.CmsLock;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -48,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2003/07/16 10:12:10 $
+ * @version $Revision: 1.31 $ $Date: 2003/07/18 14:11:18 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -120,7 +122,8 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
             } else {
                 // This is an offline project, show all buttons if the resource is locked
                 CmsFile currentFile = (CmsFile)cms.readFileHeader(filename);
-                if (currentFile.isLocked()) {
+                CmsLock lock =cms.getLock(currentFile);                
+                if (!lock.isNullLock()) {
                     // show the button for restore the version
                     xmlTemplateDocument.setData("BUTTONRESTORE",xmlTemplateDocument.getProcessedDataValue("ENABLERESTORE", this));
                 } else {

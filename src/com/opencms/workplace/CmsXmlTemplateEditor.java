@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/16 13:03:23 $
-* Version: $Revision: 1.106 $
+* Date   : $Date: 2003/07/18 14:11:18 $
+* Version: $Revision: 1.107 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.lock.CmsLock;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -66,7 +67,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.106 $ $Date: 2003/07/16 13:03:23 $
+ * @version $Revision: 1.107 $ $Date: 2003/07/18 14:11:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -378,7 +379,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         // Check, if the selected page file is locked
         CmsResource pageFileResource = cms.readFileHeader(file);
-        if(!pageFileResource.isLocked()) {
+        CmsLock lock = cms.getLock(file);
+        if(lock.isNullLock()) {
             cms.lockResource(file);
         }
                                         
@@ -409,8 +411,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 }
 
                 // The content file must be locked before editing
-                CmsResource contentFileResource = cms.readFileHeader(bodyElementFilename);
-                if(!contentFileResource.isLocked()) {
+                //CmsResource contentFileResource = cms.readFileHeader(bodyElementFilename);
+                lock = cms.getLock(bodyElementFilename);
+                if(lock.isNullLock()) {
                     cms.lockResource(bodyElementFilename);
                 }
                 // Now get the currently selected master template file

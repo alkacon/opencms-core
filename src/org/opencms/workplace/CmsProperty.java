@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/07/15 12:17:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/18 14:11:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.lock.CmsLock;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
@@ -56,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -313,13 +315,9 @@ public class CmsProperty extends CmsDialog {
      * @return the HTML output String for the buttons
      */
     public String buildActionButtons() {
-        CmsResource curResource = null;
-        try {
-            curResource = getCms().readFileHeader(getParamFile());
-        } catch (CmsException e) {
-            return "";
-        }
-        if (curResource.isLocked()) {
+        CmsLock lock = getCms().getLock(getParamFile());
+
+        if (!lock.isNullLock()) {
             // resource is locked, show "define" & "modify" button
             StringBuffer retValue = new StringBuffer(256);
             

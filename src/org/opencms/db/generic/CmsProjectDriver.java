@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/18 08:22:42 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/07/18 14:11:18 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsProjectDriver;
+import org.opencms.lock.CmsLock;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -72,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.27 $ $Date: 2003/07/18 08:22:42 $
+ * @version $Revision: 1.28 $ $Date: 2003/07/18 14:11:18 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1143,6 +1144,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         CmsExportPointDriver discAccess = new CmsExportPointDriver(exportpoints);
         CmsFolder currentFolder = null;
         CmsFile currentFile = null;
+        CmsLock currentLock = null;
         CmsFolder newFolder = null;
         CmsFile newFile = null;
         List offlineFolders = null;
@@ -1173,6 +1175,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         while (i.hasNext()) {
             currentFolder = (CmsFolder)i.next();
             currentResourceName = m_driverManager.readPath(context, currentFolder, true);
+            currentLock = m_driverManager.getLock(context, currentResourceName);
             
             publishCurrentResource = false;
             for (count=0;count<projectResources.size();count++) {
@@ -1182,16 +1185,19 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
             }
             
-            if (publishCurrentResource) {           
+            if (publishCurrentResource && currentLock.isNullLock()) {           
                 currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFolder, true));
                 currentExportKey = checkExport(currentResourceName, exportpoints);
                 
                 report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);            
                 report.println(currentResourceName);
                 
-                if (currentFolder.isLocked()) {
+                /*
+                if (!currentLock.isNullLock()) {
                     // do not publish the folder if it is locked in another project
-                } else if (currentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
+                } else
+                */ 
+                if (currentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
                     // C_STATE_DELETE
     
                     deletedFolders.add(currentFolder);
@@ -1321,6 +1327,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         while (i.hasNext()) {
             currentFile = (CmsFile) i.next();              
             currentResourceName = m_driverManager.readPath(context, currentFile, true);
+            currentLock = m_driverManager.getLock(context, currentResourceName);
             
             publishCurrentResource = false;
             for (count=0;count<projectResources.size();count++) {
@@ -1337,13 +1344,13 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);            
                 report.println(currentResourceName);
                 
-                if (!currentFile.isLocked()) {
+                if (currentLock.isNullLock()) {
                     // remove the temporary files for this resource
                     m_driverManager.getVfsDriver().removeTemporaryFile(currentFile);
                 }
                 
                 // do not publish files that are locked in another project
-                if (currentFile.isLocked()) {
+                if (!currentLock.isNullLock()) {
                     //in this case do nothing
                 } else if (currentFile.getResourceName().startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
                     m_driverManager.getVfsDriver().deleteAllProperties(context.currentProject().getId(), currentFile);

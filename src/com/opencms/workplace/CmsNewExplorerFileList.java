@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2003/07/18 14:11:18 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.lock.CmsLock;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -62,7 +63,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.77 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.78 $ $Date: 2003/07/18 14:11:18 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -342,6 +343,8 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
         for(int i = startat;i < stopat;i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
+            CmsLock lock = cms.getLock(res);
+            
             content.append("top.aF(");
             // the name
             content.append("\"");
@@ -436,7 +439,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append(0);
             content.append(",");            
             // locked by
-            if(res.isLockedBy().isNullUUID()) {
+            if(lock.isNullLock()) {
                 content.append("\"\",");
             }else {
                 content.append("\"");                
@@ -444,7 +447,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 content.append("\",");                
             }
             // locked in project
-            int lockedInProject = res.getLockedInProject();
+            int lockedInProject = lock.isNullLock() ? res.getProjectId() : lock.getProjectId();
             String lockedInProjectName = "";
             try {
                 lockedInProjectName = cms.readProject(lockedInProject).getName();

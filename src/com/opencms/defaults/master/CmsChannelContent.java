@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/16 14:30:03 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/07/18 14:11:18 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 // TODO: remove group/user
 package com.opencms.defaults.master;
+
+import org.opencms.lock.CmsLock;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -55,8 +57,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.41 $
- * $Date: 2003/07/16 14:30:03 $
+ * $Revision: 1.42 $
+ * $Date: 2003/07/18 14:11:18 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -342,6 +344,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public void write(CmsObject cms) throws Exception {
         CmsResource newChannel = null;
+        CmsLock lock = null;
         // is this a new row or an existing row?
         cms.setContextToCos();
         try{
@@ -370,6 +373,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
                 }
                 // read the changed channel
                 newChannel =  cms.readFolder(m_parentchannel+m_channelname+"/");
+                lock = cms.getLock(newChannel);
                 // update the title of the channel
                 String propTitle = cms.readProperty(cms.readAbsolutePath(newChannel), I_CmsConstants.C_PROPERTY_TITLE);
                 if (propTitle == null){
@@ -379,8 +383,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
                     cms.writeProperty(cms.readAbsolutePath(newChannel), I_CmsConstants.C_PROPERTY_TITLE, this.getTitle());
                 }
                 // check if the lockstate has changed
-                if(!newChannel.isLockedBy().equals(this.getLockstate()) ||
-                    newChannel.getLockedInProject() != cms.getRequestContext().currentProject().getId()){
+                if(!lock.getUserId().equals(this.getLockstate()) ||
+                    lock.getProjectId() != cms.getRequestContext().currentProject().getId()){
                     if(this.getLockstate().isNullUUID()){
                         // unlock the channel
                         cms.unlockResource(cms.readAbsolutePath(newChannel), false);

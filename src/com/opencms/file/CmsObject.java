@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/18 12:44:46 $
-* Version: $Revision: 1.333 $
+* Date   : $Date: 2003/07/18 14:11:18 $
+* Version: $Revision: 1.334 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.file;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsSynchronize;
+import org.opencms.lock.CmsLock;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -70,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.333 $
+ * @version $Revision: 1.334 $
  */
 public class CmsObject extends Object {
 
@@ -526,7 +527,7 @@ public class CmsObject extends Object {
      * @deprecated Use copyResource instead.
      */
     public void copyFile(String source, String destination) throws CmsException {
-        copyResource(source, destination);
+        copyResource(source, destination, false, true);
     }
 
     /**
@@ -541,7 +542,7 @@ public class CmsObject extends Object {
      * @deprecated Use copyResource instead.
      */
     public void copyFolder(String source, String destination) throws CmsException {
-        copyResource(source, destination);
+        copyResource(source, destination, false, false);
     }
 
     /**
@@ -2946,7 +2947,10 @@ public class CmsObject extends Object {
         } else {
             res = readFileHeader(resourcename);
         }
-        if (res.isLocked()) {
+        
+        CmsLock lock = getLock(resourcename);
+        
+        if (!lock.isNullLock()) {
             throw new CmsException("[CmsObject] cannot publish locked resource", CmsException.C_NO_ACCESS);
         }
         if (res.getState() == I_CmsConstants.C_STATE_NEW) {
@@ -4493,8 +4497,12 @@ public class CmsObject extends Object {
         return m_driverManager.readLockedFileHeaders(m_context);
     }
     
-    public boolean isLocked(String resourcename) {
-        return m_driverManager.isLocked(resourcename);
+    public CmsLock getLock(CmsResource resource) {
+        return m_driverManager.getLock(m_context, resource);
+    }    
+    
+    public CmsLock getLock(String resourcename) {
+        return m_driverManager.getLock(m_context, resourcename);
     }
 
 }

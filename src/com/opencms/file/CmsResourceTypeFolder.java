@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/17 12:00:40 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2003/07/18 14:11:18 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -58,7 +58,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     private static final int DEBUG = 0;
     
     /** Flag for support of old duplicate "/system/bodies/" folder */
-    private static final boolean C_BODY_MIRROR = false;
+    public static final boolean C_BODY_MIRROR = false;
 
     /**
      * @see com.opencms.file.I_CmsResourceType#getResourceType()
@@ -269,7 +269,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             newFolderName += I_CmsConstants.C_FOLDER_SEPARATOR;
         CmsFolder res = cms.doCreateFolder(newFolderName, properties);
         cms.lockResource(newFolderName);
-        res.setLocked(cms.getRequestContext().currentUser().getId());
+        //res.setLocked(cms.getRequestContext().currentUser().getId());
         return res;
     }
 
@@ -302,8 +302,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             }
         }
 
-        // finaly the folder
+        // finally the folder
         cms.doDeleteFolder(folder);
+        
         if (C_BODY_MIRROR) {
             // delete the corresponding folder in C_VFS_PATH_BODIES
             String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
@@ -448,7 +449,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#lockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
-    public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException {
+    public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException {        
         if (C_BODY_MIRROR) {
             // first lock the folder in the C_VFS_PATH_BODIES path if it exists.
             try {
@@ -573,7 +574,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#unlockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
-    public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException {
+    public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException {       
         if (C_BODY_MIRROR) {
             // first unlock the folder in the C_VFS_PATH_BODIES path if it exists.
             try {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/07/18 14:11:18 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.45 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.46 $ $Date: 2003/07/18 14:11:18 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -119,6 +119,9 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         }
         else {
             template = "folder";
+            if (! filename.endsWith("/")) {
+                filename += "/";
+            }            
         }
         Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
         String showLockDialog = "off";

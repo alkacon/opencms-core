@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2003/07/17 12:00:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/18 14:11:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,26 +39,48 @@ import java.io.Serializable;
 /**
  * Represents the lock state of a VFS resource.<p>
  * 
- * The lock state is combination of by whom, how and in which project
- * a resource is currently locked.
+ * The lock state is combination of how, by whom and in which project
+ * a resource is currently locked.<p>
+ * 
+ * A resource is <b>direct</b> locked, if a user invoked the lock
+ * action in the context menu of a resource. The lock state of this
+ * resource is saved in the database.<p>
+ * 
+ * A resource is <b>indirect</b> locked, if one of it's parent
+ * folders is locked. The lock state of this resource is not saved 
+ * in the database.<p>
+ * 
+ * Using old-style methods on CmsResource objects to prove the lock
+ * state of a resource may result to incorrect lock states. Use 
+ * {@link com.opencms.file.CmsObject#getLock(String)} to obtain a
+ * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/07/17 12:00:40 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/18 14:11:18 $
  * @since 5.1.4
+ * @see com.opencms.file.CmsObject#getLock(CmsResource)
+ * @see org.opencms.lock.CmsLockDispatcher
  */
 public class CmsLock extends Object implements Serializable, Cloneable {
 
-    public static final int C_LOCK_STATE_DIRECT_LOCKED = 2;
+    /** The resource is directly locked */
+    public static final int C_HIERARCHY_DIRECT_LOCKED = 3;
 
-    public static final int C_LOCK_STATE_INDIRECT_LOCKED = 3;
+    /** The resource is indirect locked because one of it's parent folders is locked */
+    public static final int C_HIERARCHY_INDIRECT_LOCKED = 2;
 
-    public static final int C_LOCK_STATE_UNLOCKED = 1;
+    /** The resource is not locked at all */
+    public static final int C_UNLOCKED = 1;
 
-    private static final CmsLock C_NULL_LOCK = new CmsLock("", CmsUUID.getNullUUID(), I_CmsConstants.C_UNKNOWN_ID);
+    /** The shared Null lock object */
+    private static final CmsLock C_NULL_LOCK = new CmsLock("", CmsUUID.getNullUUID(), I_CmsConstants.C_UNKNOWN_ID, CmsLock.C_UNLOCKED);
+
+    /** Saves whether the resource is direct or indirect locked */
+    private int m_hierarchy;
 
     /** The ID of the project where the resource is currently locked */
     private int m_projectId;
-    
+
     /** The name of the locked resource */
     private String m_resourceName;
 
@@ -68,13 +90,16 @@ public class CmsLock extends Object implements Serializable, Cloneable {
     /**
      * Constructor for a new Cms lock.<p>
      * 
-     * @param userId the ID of the user
-     * @param projectId the ID of the project
+     * @param resourceName the full resource name including the site root
+     * @param userId the ID of the user who locked the resource
+     * @param projectId the ID of the project where the resource is locked
+     * @param hierarchy flag indicating how the resource is locked
      */
-    public CmsLock(String resourceName, CmsUUID userId, int projectId) {
+    public CmsLock(String resourceName, CmsUUID userId, int projectId, int hierarchy) {
         m_resourceName = resourceName;
         m_userId = userId;
         m_projectId = projectId;
+        m_hierarchy = hierarchy;
     }
 
     /**
@@ -103,6 +128,13 @@ public class CmsLock extends Object implements Serializable, Cloneable {
         }
 
         return false;
+    }
+
+    /**
+     * @return
+     */
+    public int getHierarchy() {
+        return m_hierarchy;
     }
 
     /**

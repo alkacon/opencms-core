@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/16 14:30:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/18 14:11:18 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.lock.CmsLock;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFolder;
@@ -57,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -319,6 +321,9 @@ public class CmsExplorer extends CmsWorkplace {
 
         for (int i = startat; i < stopat; i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
+            CmsLock lock = getCms().getLock(res);
+            String path = getCms().readAbsolutePath(res);
+            
             content.append("top.aF(");
             // position 1: name
             content.append("\"");
@@ -328,7 +333,7 @@ public class CmsExplorer extends CmsWorkplace {
             if (projectView || vfslinkView) {
                 content.append("\"");
                 // TODO: Check this (won't work with new repository)
-                content.append(getCms().readAbsolutePath(res));
+                content.append(path);
                 content.append("\",");
             } else {
                 //is taken from top.setDirectory
@@ -424,7 +429,7 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"\",");
             }     
             // position 14: locked by
-            if (res.isLockedBy().isNullUUID()) {
+            if (lock.isNullLock()) {
                 content.append("\"\",");
             } else {
                 content.append("\"");                
@@ -435,7 +440,7 @@ public class CmsExplorer extends CmsWorkplace {
                 }
                 content.append("\",");                
             }
-            int lockedInProject = res.getLockedInProject();
+            int lockedInProject = lock.isNullLock() ? res.getProjectId() : lock.getProjectId();
             String lockedInProjectName = "";
             try {
                 lockedInProjectName = getCms().readProject(lockedInProject).getName();

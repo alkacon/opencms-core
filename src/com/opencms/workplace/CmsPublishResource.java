@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/07/16 10:12:10 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/07/18 14:11:18 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.lock.CmsLock;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -47,7 +48,7 @@ import java.util.List;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.22 $ $Date: 2003/07/16 10:12:10 $
+ * @version $Revision: 1.23 $ $Date: 2003/07/18 14:11:18 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -261,13 +262,15 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
      * @param cms The CmsObject for accessing system resources
      * @param resource The resource to check
      */
-    private boolean checkLocked(CmsObject cms, CmsResource resource) throws CmsException{
+    private boolean checkLocked(CmsObject cms, CmsResource resource) throws CmsException {
+        CmsLock lock = cms.getLock(resource);
+        
         // do not need to check a file
         if(resource.isFile()){
             return true;
         }
         // check if the folder itself is locked
-        if(resource.isLocked()){
+        if(!lock.isNullLock()){
             return false;
         }
         List allFiles = cms.getFilesInFolder(cms.readAbsolutePath(resource));
@@ -275,7 +278,9 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         // first check if any file in the folder is locked
         for(int i=0; i<allFiles.size(); i++){
             CmsResource curFile = (CmsResource)allFiles.get(i);
-            if(curFile.isLocked()){
+            lock = cms.getLock(curFile);
+            
+            if(!lock.isNullLock()){
                 return false;
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/17 12:00:40 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2003/07/18 14:11:18 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.file;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.lock.CmsLock;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -53,7 +54,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -647,7 +648,8 @@ public class CmsResourceTypePage implements I_CmsResourceType {
                 cms.cpacc(orgFolder, cms.readAbsolutePath(newfolder));
                 try {
                     CmsFolder correspondingFolder = cms.readFolder(correspFolder);
-                    if (!correspondingFolder.isLocked()) {
+                    CmsLock lock = cms.getLock(correspondingFolder);
+                    if (lock.isNullLock()) {
                         cms.doUnlockResource(cms.readAbsolutePath(newfolder));
                     }
                 } catch (CmsException ex) {

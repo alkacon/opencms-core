@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/07/12 12:49:03 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2003/07/18 14:11:18 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.lock.CmsLock;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -63,7 +64,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.71 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.72 $ $Date: 2003/07/18 14:11:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -319,13 +320,15 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
                 // get the context menu
                 contextMenu = type.getResourceTypeName();
+                
+                CmsLock lock = cms.getLock(res);
 
                 // test if this resource is locked
-                if(res.isLocked()) {
+                if(!lock.isNullLock()) {
                     contextMenu += C_CONTEXT_LOCK;
 
                     // is this resource locked by the current user
-                    if(cms.getRequestContext().currentUser().getId().equals(res.isLockedBy())) {
+                    if(cms.getRequestContext().currentUser().getId().equals(lock.getUserId())) {
                         contextMenu += C_CONTEXT_LOCKUSER;
                     }
                 }
@@ -513,8 +516,8 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     if((filelist & C_FILELIST_LOCKEDBY) != 0) {
 
                         // get the locked by
-                        CmsUUID lockedby = res.isLockedBy();
-                        if(lockedby.isNullUUID()) {
+                        CmsLock lock = cms.getLock(res);
+                        if(lock.isNullLock()) {
                             template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, "");
                         }
                         else {
@@ -619,8 +622,8 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     if((filelist & C_FILELIST_PERMISSIONS) != 0) {
 
                         // get the locked by
-                        CmsUUID lockedby = file.isLockedBy();
-                        if(lockedby.isNullUUID()) {
+                        CmsLock lock = cms.getLock(file);
+                        if(lock.isNullLock()) {
                             template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, "");
                         }
                         else {
@@ -681,10 +684,11 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
     private String getLock(CmsObject cms, CmsResource file, CmsXmlWpTemplateFile template, CmsXmlLanguageFile lang) throws CmsException {
         StringBuffer output = new StringBuffer();
+        CmsLock lock = cms.getLock(file);
 
         // the file is locked
-        if(file.isLocked()) {
-            CmsUUID locked = file.isLockedBy();
+        if(!lock.isNullLock()) {
+            CmsUUID locked = lock.getUserId();
 
             // it is locked by the actuel user
             if(cms.getRequestContext().currentUser().getId().equals(locked)) {
