@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/03/25 10:06:43 $
-* Version: $Revision: 1.89 $
+* Date   : $Date: 2003/03/25 16:35:07 $
+* Version: $Revision: 1.90 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.89 $ $Date: 2003/03/25 10:06:43 $
+ * @version $Revision: 1.90 $ $Date: 2003/03/25 16:35:07 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -246,7 +246,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         try{
             m_importVersion = Integer.parseInt(
                 getTextNodeValue((Element)m_docXml.getElementsByTagName(
-                    C_EXPORT_TAG_INFO).item(0) , C_EXPORT_TAG_VERSION));
+                    C_EXPORT_TAG_INFO).item(0), C_EXPORT_TAG_VERSION));
         } catch(Exception e){
             //ignore the exception, the export file has no version nummber (version 0).
         }        
@@ -549,7 +549,28 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         String fullname = null;
                 
         try {
-            if (m_importingChannelData) m_cms.setContextToCos();
+            if (m_importingChannelData) {
+                m_cms.setContextToCos();
+                
+                // try to read an existing channel to get the channel id
+                String channelId = null;
+                try {
+                    if ((type.equalsIgnoreCase(C_TYPE_FOLDER_NAME)) && (! destination.endsWith(C_FOLDER_SEPARATOR))) {
+                        destination += C_FOLDER_SEPARATOR;
+                    }
+                    CmsResource res = m_cms.readFileHeader(C_ROOT + destination);
+                    channelId = m_cms.readProperty(res.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CHANNELID);
+                } catch (Exception e) {
+                    // ignore the exception, a new channel id will be generated
+                }
+                if (channelId == null) {
+                    // the channel id does not exist, so generate a new one
+                    int newChannelId = com.opencms.dbpool.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
+                    channelId = "" + newChannelId;
+                }
+                properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);
+            }
+            
             // get the file content
             if (source != null) {
                 content = getFileBytes(source);
@@ -576,8 +597,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 }   
             } 
             // version 2.0 import (since OpenCms 5.0), no content conversion required                        
-            
-   
+               
             CmsResource res = m_cms.importResource(source, destination, type, user, group, access, lastmodified,
                                         properties, launcherStartClass, content, m_importPath);
 

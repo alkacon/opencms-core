@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/03/25 10:06:43 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/03/25 16:35:07 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $ $Date: 2003/03/25 10:06:43 $
+ * @version $Revision: 1.12 $ $Date: 2003/03/25 16:35:07 $
  */
 public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Serializable {
 
@@ -151,9 +151,10 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
         try {
             // get all master-nodes
             masterNodes = m_docXml.getElementsByTagName(CmsExportModuledata.C_EXPORT_TAG_MASTER);
+            int length = masterNodes.getLength();
 
             // walk through all files in manifest
-            for (int i = 0; i < masterNodes.getLength(); i++) {
+            for (int i = 0; i < length; i++) {
                 currentElement = (Element) masterNodes.item(i);
                 // get the subid of the modulemaster
                 subid = getTextNodeValue(currentElement, CmsExportModuledata.C_EXPORT_TAG_MASTER_SUBID);
@@ -161,6 +162,7 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
                 String classname = (String)availableModules.get(subid);
                 if((classname != null) && !("".equals(classname.trim()))){
                     // import the dataset, the channelrelation and the media
+                    m_report.print(" ( " + (i+1) + " / " + length + " ) ");
                     importMaster(subid, classname, currentElement);
                 }
             }
@@ -189,6 +191,7 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
             int subIdInt = Integer.parseInt(subId);
             newDataset = getMasterDataSet(subIdInt, currentElement);
         } catch (Exception e){
+            m_report.println(e);
             throw new CmsException("Cannot get dataset ", e);
         }
         m_report.print("'" + Encoder.escapeHtml(newDataset.m_title) + "' (" + classname + ")");  
@@ -197,12 +200,14 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
         try{
             channelRelations = getMasterChannelRelation(currentElement);
         } catch (Exception e){
+            m_report.println(e);
             throw new CmsException("Cannot get channelrelations ", e);
         }
         // try to get the media
         try{
             masterMedia = getMasterMedia(currentElement);
         } catch (Exception e){
+            m_report.println(e);
             throw new CmsException("Cannot get media ", e);
         }
         // add the channels and media to the dataset
@@ -221,6 +226,7 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
             newMaster.chown(m_cms, userId);
             newMaster.chgrp(m_cms,groupId);
         } catch (Exception e){
+            m_report.println(e);
             throw new CmsException("Cannot write master ", e);
         }
         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);           
