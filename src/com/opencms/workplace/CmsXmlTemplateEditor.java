@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/11/21 15:29:33 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2001/11/22 17:26:37 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.55 $ $Date: 2001/11/21 15:29:33 $
+ * @version $Revision: 1.56 $ $Date: 2001/11/22 17:26:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -492,7 +492,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             // TODO: Set correct error page here
             //try {
             if((!exitRequested) || saveRequested) {
-                bodyTemplateFile.setEditedTemplateContent(content, oldBody, oldEdit.equals(C_SELECTBOX_EDITORVIEWS[0]));
+                bodyTemplateFile.setEditedTemplateContent(cms, content, oldBody, oldEdit.equals(C_SELECTBOX_EDITORVIEWS[0]));
             }
             /*} catch(CmsException e) {
             if(e.getType() == e.C_XML_PARSING_ERROR) {

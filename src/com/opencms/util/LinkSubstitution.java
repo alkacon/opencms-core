@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2001/11/22 16:32:24 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/11/22 17:26:37 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,12 +57,12 @@ public class LinkSubstitution {
      * substituteEditorContent except that it expects only the part of the
      * html page between the body tags.
      */
-    public String substituteEditorContentBody(String body) throws CmsException{
+    public String substituteEditorContentBody(CmsObject cms, String body) throws CmsException{
 
         // we have to prepare the content for the tidy
         body = "<html><head></head><body>" + body + "</body></html>";
         // start the tidy
-        String result = substituteEditorContent(body);
+        String result = substituteEditorContent(cms, body);
         // remove the preparetags
         int startIndex = result.indexOf("<body");
         startIndex = result.indexOf(">", startIndex + 1) + 1;
@@ -77,7 +77,7 @@ public class LinkSubstitution {
      * parses the html content from the editor. It replaces the links in <a href=""
      * and in <image src="". They will be replaced with ]]><LINK> path in opencms <LINK><![CDATA[
      */
-    public String substituteEditorContent(String content)throws CmsException{
+    public String substituteEditorContent(CmsObject cms, String content)throws CmsException{
         CmsHtmlConverter converter = new CmsHtmlConverter();
         String retValue = null;
         try{
