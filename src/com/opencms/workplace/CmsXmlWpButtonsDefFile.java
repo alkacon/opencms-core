@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/01/28 11:41:46 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/02 10:07:59 $
  */
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent 
         implements I_CmsLogChannels, I_CmsWpConstants {
@@ -90,7 +90,7 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
     }    
     
      /**
-     * Gets the processed data for a button.
+     * Gets the processed data for a submit button.
      * @return Processed button.
      * @exception CmsException
      */
@@ -104,4 +104,22 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
         setData(C_BUTTON_WIDTH,width);
         return getProcessedDataValue("submitbutton");                
     }  
+
+    /**
+     * Gets the processed data for a text button.
+     * @return Processed button.
+     * @exception CmsException
+     */
+    public String getButtonText(String name, String action, 
+                                  String value, String style, String width)
+        throws CmsException {
+        setData(C_BUTTON_NAME, name);
+        setData(C_BUTTON_ACTION, action);
+        setData(C_BUTTON_VALUE, value);
+        setData(C_BUTTON_STYLE, style);
+        setData(C_BUTTON_WIDTH, width);
+        return getProcessedDataValue("textbutton");                
+    }  
+
+
 }
