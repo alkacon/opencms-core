@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/14 11:26:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/11/17 07:45:48 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 package org.opencms.monitor;
 
 import org.opencms.cache.CmsLruCache;
-import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.cron.I_CmsCronJob;
 import org.opencms.flex.CmsFlexCache.CmsFlexCacheVariation;
 import org.opencms.main.CmsEvent;
@@ -71,7 +70,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.19 $ $Date: 2003/11/14 11:26:14 $
+ * @version $Revision: 1.20 $ $Date: 2003/11/17 07:45:48 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -79,8 +78,8 @@ import org.apache.commons.collections.LRUMap;
  */
 public class CmsMemoryMonitor implements I_CmsCronJob {
     
-    /** set interval for clearing the caches to 15 minutes */
-    private static final int C_INTERVAL_CLEAR = 1000 * 60 * 15;
+    /** set interval for clearing the caches to 10 minutes */
+    private static final int C_INTERVAL_CLEAR = 1000 * 60 * 10;
     
     /** max depth for object size recursion */
     private static final int C_MAX_DEPTH = 5;
@@ -464,8 +463,8 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      */
     public static int getMemorySize(Object obj) {
 
-        if (obj instanceof I_CmsLruCacheObject) {
-            return ((I_CmsLruCacheObject)obj).getLruCacheCosts();
+        if (obj instanceof I_CmsMemoryMonitorable) {
+            return ((I_CmsMemoryMonitorable)obj).getMemorySize();
         }
         
         if (obj instanceof byte[]) {
@@ -516,7 +515,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         }
         
         // System.err.println("Unresolved: " + obj.getClass().getName());
-        return 0;
+        return 8;
     }
     
     /**a
