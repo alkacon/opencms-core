@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/04/13 13:02:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
@@ -44,10 +46,16 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
+    
+    /** Regex that matches an end body tag */
+    private static final Pattern C_BODY_END_REGEX = Pattern.compile("<\\s*/\\s*body[^>]*>", Pattern.CASE_INSENSITIVE);
+
+    /** Regex that matches a start body tag */
+    private static final Pattern C_BODY_START_REGEX = Pattern.compile("<\\s*body[^>]*>", Pattern.CASE_INSENSITIVE);
 
     /** Day constant */
     private static final long C_DAYS = 1000 * 60 * 60 * 24;    
@@ -60,15 +68,15 @@ public final class CmsStringSubstitution {
         
     /** Second constant */
     private static final long C_SECONDS = 1000;
+
+    /** DEBUG flag */
+    private static final int DEBUG = 0;
     
     /** OpenCms context replace String, static for performance reasons */    
     private static String m_contextReplace;
     
     /** OpenCms context search String, static for performance reasons */    
     private static String m_contextSearch;
-
-    /** DEBUG flag */
-    private static final int DEBUG = 0;
         
     /** 
      * Default constructor (empty), private because this class has only 
@@ -152,6 +160,34 @@ public final class CmsStringSubstitution {
             System.err.println("[CmsStringSubstitution]: escaped String to: " + result.toString());
         }
         return new String(result);
+    }
+    
+    /**
+     * Extracts the content of a &lt;body&gt tag in a HTML page.<p>
+     * 
+     * This method should be pretty robust and work even if the input HTML does not contains
+     * a valid body tag.<p> 
+     * 
+     * @param content the content to extract the body from
+     * @return the extracted body tag content
+     */
+    public static final String extractHtmlBody(String content) {
+        
+        Matcher startMatcher = C_BODY_START_REGEX.matcher(content);
+        Matcher endMatcher = C_BODY_END_REGEX.matcher(content);        
+        
+        int start = 0;
+        int end = content.length();
+               
+        if (startMatcher.find()) {
+            start = startMatcher.end();            
+        }
+        
+        if (endMatcher.find(start)) {
+            end = endMatcher.start();
+        }
+        
+        return content.substring(start, end);
     }
     
     /**

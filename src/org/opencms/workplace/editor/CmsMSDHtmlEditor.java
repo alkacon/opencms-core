@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/02/16 12:05:58 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/04/13 13:02:34 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,11 +52,14 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 5.1.12
  */
 public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
+    
+    /** regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags */
+    private static final Pattern C_REGEX_LINKS = Pattern.compile("<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
     
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS */
     public static final String EDITOR_TYPE = "msdhtml";
@@ -69,59 +72,6 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
     public CmsMSDHtmlEditor(CmsJspActionElement jsp) {
         super(jsp);
     }
-    
-    /**
-     * Manipulates the content String for the different editor views and the save operation.<p>
-     * 
-     * @param save if set to true, the content parameter is not updated
-     * @return the prepared content String
-     */
-    protected String prepareContent(boolean save) {
-        String content = getParamContent();
-        int indexBodyStart = content.toLowerCase().indexOf("<body>");
-        if ("edit".equals(getParamEditormode()) || save) {
-            // editor is in text mode or content should be saved
-            if (indexBodyStart != -1) {
-                // cut tags which are unwanted for text editor
-                content = content.substring(indexBodyStart + 6);
-                content = content.substring(0, content.toLowerCase().indexOf("</body>"));
-            }
-            // remove unwanted "&amp;" from links
-            content = filterAnchors(content);
-        } else {
-            // editor is in html mode, add tags for stylesheet
-            String stylesheet = getUriStyleSheet();
-                      
-            if (indexBodyStart != -1) {
-                // first delete the old tags
-                content = content.substring(indexBodyStart + 6);
-                content = content.substring(0, content.toLowerCase().indexOf("</body>"));
-            }
-            
-            // remove unwanted "&amp;" from links
-            content = filterAnchors(content);
-            
-            // create a head with stylesheet for template and base URL to display images correctly
-            String server = getJsp().getRequest().getScheme() + "://" + getJsp().getRequest().getServerName() + ":" + getJsp().getRequest().getServerPort();
-            StringBuffer head = new StringBuffer(content.length() + 1024);
-            head.append("<html><head>");
-            if (!"".equals(stylesheet)) {
-                stylesheet = getJsp().link(stylesheet);
-                head.append("<link href=\"" + server + stylesheet + "\" rel=\"stylesheet\" type=\"text/css\">");
-            }            
-            head.append("<base href=\"" + server + OpenCms.getSystemInfo().getOpenCmsContext() + "\"></base></head><body>");
-            content =  head + content + "</body></html>";             
-        }
-        if (!save) {
-            // set the content parameter to the modified content
-            setParamContent(content);
-        } else {
-            // escape special characters for saving
-            // TODO: escape only if required because of encoding settings
-            content = CmsEncoder.escapeNonAscii(content);
-        }
-        return content.trim();
-    }  
     
     /**
      * Builds the html String for the editor views available in the editor screens.<p>
@@ -170,6 +120,53 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
     }
     
     /**
+     * Manipulates the content String for the different editor views and the save operation.<p>
+     * 
+     * @param save if set to true, the content parameter is not updated
+     * @return the prepared content String
+     */
+    protected String prepareContent(boolean save) {
+        String content = getParamContent();
+        // extract content of <body>...</body> tag
+        content = CmsStringSubstitution.extractHtmlBody(content);
+        // remove unwanted "&amp;" from links
+        content = filterAnchors(content);
+        
+        if (! ("edit".equals(getParamEditormode()) || save)) {
+            // editor is in html mode, add tags for stylesheet
+            String stylesheet = getUriStyleSheet();                      
+            
+            // create a head with stylesheet for template and base URL to display images correctly
+            String server = getJsp().getRequest().getScheme() + "://" + getJsp().getRequest().getServerName() + ":" + getJsp().getRequest().getServerPort();
+            StringBuffer result = new StringBuffer(content.length() + 1024);
+            result.append("<html><head>");
+            if (!"".equals(stylesheet)) {
+                stylesheet = getJsp().link(stylesheet);
+                result.append("<link href=\"");
+                result.append(server);
+                result.append(stylesheet);
+                result.append("\" rel=\"stylesheet\" type=\"text/css\">");
+            }            
+            result.append("<base href=\"");
+            result.append(server);
+            result.append(OpenCms.getSystemInfo().getOpenCmsContext());
+            result.append("\"></base></head><body>");
+            result.append(content);
+            result.append("</body></html>");
+            content = result.toString();       
+        }
+        if (!save) {
+            // set the content parameter to the modified content
+            setParamContent(content);
+        } else {
+            // escape special characters for saving
+            // TODO: escape only if required because of encoding settings
+            content = CmsEncoder.escapeNonAscii(content);
+        }
+        return content.trim();
+    }  
+    
+    /**
      * Filters the content String and removes unwanted "&amp;" Strings from anchor "href" or "src" attributes.<p>
      * 
      * These unwanted "&amp;" Strings are produced by the MS DHTML editing control.<p>
@@ -181,12 +178,8 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         String anchor = null;
         String newAnchor = null;
         
-        // regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags
-        // don't forget to update the group index on the matcher after changing the regex below!
-        int flags = Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL;        
-        Pattern pattern = Pattern.compile("<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>", flags);
-
-        Matcher matcher = pattern.matcher(content);
+        // don't forget to update the group index on the matcher after changing the regex below!      
+        Matcher matcher = C_REGEX_LINKS.matcher(content);
         while (matcher.find()) {
             anchor = matcher.group(6);
             newAnchor = CmsStringSubstitution.substitute(anchor, "&amp;", "&");

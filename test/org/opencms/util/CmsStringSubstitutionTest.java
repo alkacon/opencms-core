@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/CmsStringSubstitutionTest.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/04/13 13:02:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * Test cases for the class "CmsStringSubstitution"
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
@@ -176,5 +176,45 @@ public class CmsStringSubstitutionTest extends TestCase {
         
         test = CmsStringSubstitution.substituteContextPath(content, context);  
         assertEquals(test, result);            
-    }    
+    }
+    
+    /**
+     * Tests the body tag extraction.<p> 
+     */
+    public void testExtractHtmlBody() {
+        String content, result;
+        String innerContent = "This is body content in the body\n<h1>A headline</h1>\nSome text in the body\n";
+                
+        content = "<html><body>" + innerContent + "</body></html>";        
+        result = CmsStringSubstitution.extractHtmlBody(content);        
+        assertEquals(result, innerContent);                  
+        
+        content = "<html><body style='css' background-color:#ffffff>" + innerContent + "</body></html>";        
+        result = CmsStringSubstitution.extractHtmlBody(content);        
+        assertEquals(result, innerContent);   
+        
+        content = "<html>\n<title>Test</title>\n<body style='css' background-color:#ffffff>" + innerContent + "</body>\n</html>";        
+        result = CmsStringSubstitution.extractHtmlBody(content);        
+        assertEquals(result, innerContent);          
+        
+        content = "<html>< body style='css' background-color:#ffffff>" + innerContent + "</ BODY>";        
+        result = CmsStringSubstitution.extractHtmlBody(content);        
+        assertEquals(result, innerContent);                   
+        
+        content = "<BODY>" + innerContent + "</boDY></html></body><body>somemoretext</BODY>";        
+        result = CmsStringSubstitution.extractHtmlBody(content);        
+        assertEquals(result, innerContent);  
+
+        content = innerContent + "</boDY></html>";        
+        result = CmsStringSubstitution.extractHtmlBody(content);        
+        assertEquals(result, innerContent);   
+        
+        content = "<html><BODY>" + innerContent;        
+        result = CmsStringSubstitution.extractHtmlBody(content);        
+        assertEquals(result, innerContent);
+        
+        content = innerContent;        
+        result = CmsStringSubstitution.extractHtmlBody(content);        
+        assertEquals(result, innerContent);           
+    }
 }
