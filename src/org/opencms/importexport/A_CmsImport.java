@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/10/06 16:04:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/10/06 16:29:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypePointer;
 import com.opencms.linkmanagement.CmsPageLinks;
 
 import java.io.File;
@@ -233,6 +234,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_report.print(m_report.key("report.convert_link_notfound") + " " + link, I_CmsReport.C_FORMAT_WARNING);
                 }
 
+            } else {
+                    m_cms.createResource(key, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, properties, link.getBytes(), null);
+                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);  
             }
 
         }
