@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.7.12 Ecaz - XX July 2002
+OpenCms 4.7.12 Ecaz - 12 July 2002
 ! there is a select all feature when deleting modules now.
 ! now we have a nice errormessage for changing password
 
