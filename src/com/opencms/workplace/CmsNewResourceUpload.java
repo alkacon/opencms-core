@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/03/28 16:17:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/29 15:23:01 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/03/28 16:17:06 $
+ * @version $Revision: 1.3 $ $Date: 2000/03/29 15:23:01 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -92,7 +92,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
 
-        // get the parameters from the request and session
+     /*   // get the parameters from the request and session
         String step=(String)parameters.get("STEP");                
         String newtype=(String)parameters.get("R_NEU");       
         String currentFolder=(String)session.getValue(C_PARA_FILELIST);
@@ -120,7 +120,46 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
             session.putValue(C_PARA_FILECONTENT,filecontent);          
         }
         
+        filecontent=(byte[])session.getValue(C_PARA_FILECONTENT); */
+        
+           // get the parameters from the request and session
+        String step=(String)parameters.get("STEP");                  
+        String currentFolder=(String)session.getValue(C_PARA_FILELIST);
+        String title=(String)parameters.get(C_PARA_TITLE);       
+        String newname=(String)parameters.get(C_PARA_NAME);
+        
+        // get filename and file content if available
+        String filename=null;
+        byte[] filecontent=new byte[0];
+        
+        // get the filename
+        Enumeration files=cms.getRequestContext().getRequest().getFileNames();
+        while (files.hasMoreElements()) {
+           filename=(String)files.nextElement();
+        }             
+        if (filename != null) {
+            session.putValue(C_PARA_FILE,filename);
+        }        
+        filename=(String)session.getValue(C_PARA_FILE);
+        
+        // get the filecontent
+        if (filename != null) {
+            filecontent=cms.getRequestContext().getRequest().getFile(filename);
+        }        
+        if (filecontent != null) {
+            session.putValue(C_PARA_FILECONTENT,filecontent);          
+        }        
         filecontent=(byte[])session.getValue(C_PARA_FILECONTENT);
+     
+        //get the filetype
+        String newtype=(String)parameters.get(C_PARA_NEWTYPE);  
+        if (newtype != null) {
+             session.putValue(C_PARA_NEWTYPE,newtype);        
+        }
+        newtype=(String)session.getValue(C_PARA_NEWTYPE);
+        
+        // get the document to display
+        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);       
         
         // there was a file uploaded, so select its type
         if (step != null) {
@@ -129,29 +168,63 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 if (filename!= null) {
                     template="step1";   
                 }
-            } else if (step.equals("2")) {
-                // create the new file.    
-                // todo: error handling if file already exits              
+           } else if (step.equals("2")) {
+                // get the selected resource and check if it is an image
                 A_CmsResourceType type=cms.getResourceType(newtype);
-                cms.createFile(currentFolder,filename,filecontent,type.getResourceName());
+                if (newtype.equals(C_TYPE_IMAGE_NAME)) {
+                    // the file type is an image
+                    template="image";   
+                    xmlTemplateDocument.setXmlData("MIME",filename);
+                    xmlTemplateDocument.setXmlData("SIZE","Not yet available");
+                    xmlTemplateDocument.setXmlData("FILESIZE",new Integer(filecontent.length).toString()+" Bytes");
+        
+                } else {
+                    // create the new file.    
+                    // todo: error handling if file already exits      
+                    cms.createFile(currentFolder,filename,filecontent,type.getResourceName());
+                    // remove the values form the session
+                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_FILECONTENT);
+                    session.removeValue(C_PARA_NEWTYPE);
+                    // return to the filelist
+                    try {
+                        cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                    } catch (Exception ex) {
+                        throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,ex);
+                    }                      
+                }
+            } else if (step.equals("3")) {
+                // get the data from the special image upload dialog
+                
+                // check if a new filename is given
+                if (newname != null) {
+                    filename=newname;   
+                }
+                // create the new file.    
+                // todo: error handling if file already exits    
+                A_CmsResourceType type=cms.getResourceType(newtype);               
+                CmsFile file=cms.createFile(currentFolder,filename,filecontent,type.getResourceName());
+                // check if a file title was given
+                if (title!= null) {
+                    cms.lockResource(file.getAbsolutePath());
+                    cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE,title);                  
+                    cms.unlockResource(file.getAbsolutePath());                    
+                }
+                
                 // remove the values form the session
                 session.removeValue(C_PARA_FILE);
                 session.removeValue(C_PARA_FILECONTENT);
+                session.removeValue(C_PARA_NEWTYPE);
                 // return to the filelist
                 try {
                     cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
                 } catch (Exception ex) {
                     throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,ex);
-                                              
-                }
-              
+                }  
             }
-            
+  
         }
         
-        // get the document to display
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
-     
        if (filename != null) {
             xmlTemplateDocument.setXmlData("FILENAME",filename);
        }
@@ -215,13 +288,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
             }
       }     
 
-      private byte[] getByte(Byte[] array) {
-        byte[] output= new byte[array.length];
-        for (int i=0; i<array.length;i++) {
-            output[i]=array[i].byteValue();
-        }
-      return output;
-  }
+
    
      
 }

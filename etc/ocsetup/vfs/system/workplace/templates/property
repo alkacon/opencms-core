@@ -56,7 +56,7 @@ function show_help()
 					<tr><td class=dialogtxt>
 						<table border=0 width=100% height=200>
 							<tr><td class=dialogtxt>
-							]]><SELECT class="textfeld" name="selectmeta" size="10" width="330" method="getMetainfo" /><![CDATA[
+							]]><SELECT class="textfeld" name="selectproperty" size="10" width="330" method="getProperty" /><![CDATA[
 							</td></tr>
 						</table>
 					</td></tr>
@@ -140,13 +140,13 @@ function show_help()
 					<tr><td class=dialogtxt>
 						<table border=0 width=100% height=200px>
 							<tr><td class=dialogtxt>
-							]]><SELECT class="textfeld" name="selectmeta" size="10" width="330" method="getMetainfo" /><![CDATA[							
+							]]><SELECT class="textfeld" name="selectproperty" size="10" width="330" method="getProperty" /><![CDATA[							
 							</td></tr>
 							<tr><td class=dialogtxt>
 								<table cellspacing=0 cellpadding=5 width=100%>
 								<tr>
 								<td class=formular align=left width=40%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.newmetadef" /><![CDATA[" id=ORGANIZE name=ORGANIZE onClick="location.href='explorer_files_meta_organize.html'"></td>
-								<td class=formular align=center width=30%><INPUT  class=button width=100 type="submit" value="]]><LABEL value="button.new" /><![CDATA[" id=NEWMETAINFO name=NEWMETAINFO onClick="location.href='explorer_files_meta_new.html'"></td>
+								<td class=formular align=center width=30%><INPUT  class=button width=100 type="submit" value="]]><LABEL value="button.new" /><![CDATA[" id=NEWMETAINFO name=NEWPROPERTY onClick="location.href='explorer_files_meta_new.html'"></td>
 								<td class=formular align=center width=30%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.edit" /><![CDATA[" id=EDIT name=EDIT onClick="location.href='property.html'"></td>
 								<td class=formular align=center width=30%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.delete" /><![CDATA[" id=DELETE name=DELETE onClick="location.href='property.html'"></td>
 								</tr>
@@ -180,7 +180,7 @@ function show_help()
 ]]>
 </TEMPLATE>
 
-<TEMPLATE name="editmetainfo">
+<TEMPLATE name="editproperty">
 <![CDATA[
 <HTML>
 
@@ -238,13 +238,13 @@ function show_help()
 						
 							<tr>
 								<td class=formular width=10%>]]><LABEL value="label.metadef" /><![CDATA[:</td>
-								<td class=dialogtxt>]]><PROCESS>METADEF</PROCESS><![CDATA[</td>
+								<td class=dialogtxt>]]><PROCESS>PROPERTYDEF</PROCESS><![CDATA[</td>
 							</tr>
 							<tr>
 								<td class=formular colspan=2>]]><LABEL value="input.editmetainfo" /><![CDATA[:</td>
 							</tr>
 							<tr>
-							<td class=dialogtxt valign=top colspan=2>]]><INPUTFIELD name="EDITEDMETAINFO" class="textfeld2" size="50" length="255" method="getMetainfoValue" /><![CDATA[</td> 
+							<td class=dialogtxt valign=top colspan=2>]]><INPUTFIELD name="EDITEDPROPERTY" class="textfeld2" size="50" length="255" method="getPropertyValue" /><![CDATA[</td> 
 							</tr>
 						</table>
 					</td></tr>
@@ -277,7 +277,7 @@ function show_help()
 ]]>
 </TEMPLATE>
 
-<TEMPLATE name="deletemetainfo">
+<TEMPLATE name="deleteproperty">
 <![CDATA[
 <HTML>
 
@@ -313,7 +313,7 @@ function show_help()
 ]]>
 </TEMPLATE>
 
-<TEMPLATE name="newmetainfo">
+<TEMPLATE name="newproperty">
 <![CDATA[
 <HTML>
 
@@ -373,14 +373,14 @@ function show_help()
 								<td class=formular width=50%>]]><LABEL value="input.metadef" /><![CDATA[:</td>
 							</tr>
 							<tr><td class=dialogtxt valign=top>
-					        ]]><SELECT class="textfeld" name="selectmeta" size="8" width="450" method="getMetadef" /><![CDATA[							
+					        ]]><SELECT class="textfeld" name="selectproperty" size="8" width="450" method="getPropertydef" /><![CDATA[							
 							</td>
 							</tr>
 							<tr>
 								<td class=formular>]]><LABEL value="input.newmetadefvalue" /><![CDATA[:</td>
 							</tr>
 							<tr>
-							<td class=dialogtxt valign=top><INPUT type="text" size=50 class=textfeld2 id=NEWMETAVALUE name=NEWMETAVALUE></td>
+							<td class=dialogtxt valign=top><INPUT type="text" size=50 class=textfeld2 id=NEWPROPERTYVALUE name=NEWPROPERTYVALUE></td>
 							</tr>
 						</table>
 					</td></tr>
@@ -391,7 +391,7 @@ function show_help()
 			<tr><td class=dialogtxt>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-				    <INPUT type=hidden id=NEWMETAINFO name=NEWMETAINFO value="true">
+				    <INPUT type=hidden id=NEWPROPERTY name=NEWPROPERTY value="true">
 					<td class=formular align=right width=50%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='property.html'"></td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='property.html'"></td>
 				</tr>
@@ -413,7 +413,7 @@ function show_help()
 ]]>
 </TEMPLATE>
 
-<TEMPLATE name="newmetadef">
+<TEMPLATE name="newpropertydef">
 <![CDATA[
 <HTML>
 
@@ -467,9 +467,9 @@ function show_help()
 								<td class=formular>]]><LABEL value="input.activemetadef" /><![CDATA[:</td>
 							</tr>
 							<tr>
-								<td class=dialogtxt valign=top><INPUT class=textfeld id=NEWMETADEF name=NEWMETADEF onfocus="METAORG.OK.disabled=false;"></td>
+								<td class=dialogtxt valign=top><INPUT class=textfeld id=NEWPROPERTYDEF name=NEWPROPERTYDEF onfocus="METAORG.OK.disabled=false;"></td>
 								<td class=dialogtxt valign=top rowspan=4>
-							   ]]><SELECT class="textfeld" name="selectmeta" size="10" width="200" method="getAllMetadef" /><![CDATA[														                                
+							   ]]><SELECT class="textfeld" name="selectproperty" size="10" width="200" method="getAllPropertydef" /><![CDATA[														                                
 							</td>
 							</tr>
 							

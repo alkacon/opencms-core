@@ -45,7 +45,7 @@ function show_help()
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
 				<INPUT type="hidden" name="STEP" id="STEP" value="1">
-				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new';"></td>
+				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new_upload.html';"></td>
 				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="submit" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER></td>
 				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 			</tr>
@@ -113,7 +113,7 @@ function show_help()
 			<table border=1 width=100%>
 			<tr><td class=wizard>
 				<table border=0 width=100%>
-					]]><RADIOBUTTON name="R_NEU" method="getResources" /><![CDATA[
+					]]><RADIOBUTTON name="newtype" method="getResources" /><![CDATA[
 				</table>
 			</td></tr>
 			</table>
@@ -184,5 +184,89 @@ function show_help()
 	</html>
 	]]>
 </TEMPLATE>
+
+<TEMPLATE name="image">
+<![CDATA[
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return 'help/3.html';
+}
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+</HEAD>
+
+<body  bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 leftmargin=0 topmargin=0>
+
+<!-- Beginn neue Datei Docloader und EMailformulareditor Anlegen -->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<form id="UPLOADPIC" name="UPLOADPIC">
+<table border=2 cellspacing=0 cellpadding=0 width=500>
+
+<tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+	<!--Beginn Head-->
+	<tr><td colspan=2 class=head>]]><LABEL value="title.uploadimage" /><![CDATA[</td></tr>
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<!--Beginn Inhalt-->
+	<tr>
+		<td class=formular width=15%>]]><LABEL value="label.mimetype" /><![CDATA[:</td>
+		<td class=dialogtxt>]]><PROCESS>MIME</PROCESS><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="label.size" /><![CDATA[:</td>
+		<td class=dialogtxt>]]><PROCESS>SIZE</PROCESS><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="label.filesize" /><![CDATA[:</td>
+		<td class=dialogtxt>]]><PROCESS>FILESIZE</PROCESS><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="input.name" /><![CDATA[:</td>
+		<td class=dialogtxt><INPUT class="textfeld2" id=name name=name value="]]><PROCESS>FILENAME</PROCESS><![CDATA["></td>
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
+		<td class=dialogtxt><INPUT class="textfeld2" id=title name=title onfocus="UPLOADPIC.FERTIG.disabled=false;"></td>
+	</tr>
+	
+	<!--Beginn Buttons-->
+	<tr><td colspan=2 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<INPUT type="hidden" name="STEP" ID="STEP" value="3">
+				<td class=formular align=right width=60%><INPUT class=button width = 100 type ="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new_upload.html?STEP=1';"></td>
+				<td class=formular align=middle width=20%><INPUT disabled class=button width = 100 type ="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id =FERTIG name=FERTIG onClick="a=check_textfeld('UPLOADPIC', 'TITEL'); if(a==true)location='explorer_files_new_upload.html';"></td>
+				<td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</TD></TR>
+</TABLE>
+</FORM>
+</TD></TR>
+</TABLE>
+<!-- Ende neue Datei Anlegen -->
+
+</body>
+</HTML>
+	]]>
+</TEMPLATE>
+
 
 </WORKPLACE>

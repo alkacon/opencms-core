@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/03/27 09:54:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/29 15:23:01 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/03/27 09:54:25 $
+ * @version $Revision: 1.3 $ $Date: 2000/03/29 15:23:01 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -86,20 +86,20 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         if (filename != null) {
             session.putValue(C_PARA_FILE,filename);        
         }
-        String metadef =(String)parameters.get("selectmeta");
-        if (metadef != null) {
-            session.putValue(C_PARA_METADEF,metadef);        
+        String propertydef =(String)parameters.get("selectproperty");
+        if (propertydef != null) {
+            session.putValue(C_PARA_PROPERTYDEF,propertydef);        
         } 
         
         filename=(String)session.getValue(C_PARA_FILE);
-        metadef=(String)session.getValue(C_PARA_METADEF);    
+        propertydef=(String)session.getValue(C_PARA_PROPERTYDEF);    
 		
         CmsFile file=(CmsFile)cms.readFileHeader(filename);
         
         String edit=(String)parameters.get("EDIT");
         String delete=(String)parameters.get("DELETE");
-        String newmetainfo=(String)parameters.get("NEWMETAINFO");
-        String newmetadef=(String)parameters.get("ORGANIZE"); 
+        String newproperty=(String)parameters.get("NEWPROPERTY");
+        String newpropertydef=(String)parameters.get("ORGANIZE"); 
         
         
         // select the displayed template
@@ -108,17 +108,17 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         // if so, display a different dialog with more functions is shown
         if (file.isLockedBy()==cms.getRequestContext().currentUser().getId()) {                       
             if (edit != null) {
-                // display the edit metainfo dialog  
-                template="editmetainfo";
+                // display the edit property dialog  
+                template="editproperty";
             } else if (delete != null) {
-                // display the delete metainfo dialog  
-                template="deletemetainfo";
-             } else if (newmetainfo != null) {
-                // display the newmetainfo metainfo dialog  
-                template="newmetainfo";
-             } else if (newmetadef != null) {
-                // display the newmetadef metainfo dialog  
-                template="newmetadef";
+                // display the delete property dialog  
+                template="deleteproperty";
+             } else if (newproperty != null) {
+                // display the newproperty  dialog  
+                template="newproperty";
+             } else if (newpropertydef != null) {
+                // display the newpropertydef dialog  
+                template="newpropertydef";
             } else {
                 // set the default display
                 template="ownlocked";      
@@ -127,30 +127,20 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
       
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
      
-        
-        System.err.println("******");
-        Enumeration enu=parameters.keys();
-        while (enu.hasMoreElements()) {
-            String key=(String)enu.nextElement();
-            String values=(String)parameters.get(key);
-            System.err.println(key+" : "+values);
-        }
-        System.err.println("******"); 
-
         // now process the data taken form the dialog
         
         // edit was selected
         if (edit != null) {
-            // check if a metainfo was selected          
-            if (metadef != null) {
-                xmlTemplateDocument.setXmlData("METADEF",metadef);
-                // check if a edited metainfo is available
-                String newValue=(String)parameters.get("EDITEDMETAINFO");
+            // check if a property was selected          
+            if (propertydef != null) {
+                xmlTemplateDocument.setXmlData("PROPERTYDEF",propertydef);
+                // check if a edited property is available
+                String newValue=(String)parameters.get("EDITEDPROPERTY");
                 if (newValue != null) {
-                    // update the metainfomration
-                    cms.writeMetainformation(filename,metadef,newValue);
+                    // update the property
+                    cms.writeMetainformation(filename,propertydef,newValue);
                     template="ownlocked";    
-                    session.removeValue(C_PARA_METADEF);   
+                    session.removeValue(C_PARA_PROPERTYDEF);   
                 }
             } else {
                 template="ownlocked";    
@@ -161,63 +151,63 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         if (delete != null) {
             // check if the ok button was selected
             if (delete.equals("true")) {
-                // delete the metadefinition
-                if (metadef != null) {
-                    cms.deleteMetainformation(filename,metadef);
+                // delete the propertydefinition
+                if (propertydef != null) {
+                    cms.deleteMetainformation(filename,propertydef);
                     template="ownlocked";    
-                    session.removeValue(C_PARA_METADEF);   
+                    session.removeValue(C_PARA_PROPERTYDEF);   
                 }
             }
         }
         
-        // new metainfo was selected
-        if (newmetainfo != null) {
+        // new property was selected
+        if (newproperty != null) {
             // check if the ok button was selected
-            if (newmetainfo.equals("true")) {
-                String newValue=(String)parameters.get("NEWMETAVALUE");
-                if ((newValue != null) && (metadef !=null)) {
-                    // test if this metainfo is already existing
-                    String testValue=cms.readMetainformation(filename,metadef);
+            if (newproperty.equals("true")) {
+                String newValue=(String)parameters.get("NEWPROPERTYVALUE");
+                if ((newValue != null) && (propertydef !=null)) {
+                    // test if this property is already existing
+                    String testValue=cms.readMetainformation(filename,propertydef);
                     if (testValue == null) {
-                        // add the metainfomration                    
-                        cms.writeMetainformation(filename,metadef,newValue);
+                        // add the property                    
+                        cms.writeMetainformation(filename,propertydef,newValue);
                         template="ownlocked";    
-                        session.removeValue(C_PARA_METADEF);   
+                        session.removeValue(C_PARA_PROPERTYDEF);   
                     } else {
                         // todo: add an error message that this key is already exisitng
                     }
  
                 } else {
                  template="ownlocked";    
-                 session.removeValue(C_PARA_METADEF);   
+                 session.removeValue(C_PARA_PROPERTYDEF);   
                 }                           
             }
         }
         
-        // new metadef was selected
-        if (newmetadef != null) {
+        // new propertydef was selected
+        if (newpropertydef != null) {
              // check if the ok button was selected
-            if (newmetadef.equals("true")) {
-                 String newValue=(String)parameters.get("NEWMETADEF");
+            if (newpropertydef.equals("true")) {
+                 String newValue=(String)parameters.get("NEWPROPERTYDEF");
                  if (newValue != null) {
-                    // test if this metainfo is already existing
-                    String testValue=cms.readMetainformation(filename,metadef);
+                    // test if this property is already existing
+                    String testValue=cms.readMetainformation(filename,propertydef);
                     if (testValue == null) {
-                        // add the metainfomration   
+                        // add the property   
                         A_CmsResourceType type=cms.getResourceType(file.getType());
                         A_CmsMetadefinition def=cms.createMetadefinition(newValue,
                                                                           type.getResourceName(),
                                                                           C_METADEF_TYPE_NORMAL);
                         cms.writeMetadefinition(def);
                         template="ownlocked";    
-                        session.removeValue(C_PARA_METADEF);   
+                        session.removeValue(C_PARA_PROPERTYDEF);   
                     } else {
                         // todo: add an error message that this key is already exisitng
                     }
                      
                  } else {
                  template="ownlocked";    
-                 session.removeValue(C_PARA_METADEF);   
+                 session.removeValue(C_PARA_PROPERTYDEF);   
                  }
             }
             
@@ -261,7 +251,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      }
      
      /**
-     * Gets all metainformations the file.
+     * Gets all property the file.
      * <P>
      * The given vectors <code>names</code> and <code>values</code> will 
      * be filled with the appropriate information to be used for building
@@ -274,7 +264,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getMetainfo(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getProperty(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 	
 		int retValue = -1;
@@ -282,12 +272,12 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
        
         String filename=(String)session.getValue(C_PARA_FILE);       
         if (filename != null) {
-             Hashtable metainfo = cms.readAllMetainformations(filename);
+             Hashtable property = cms.readAllMetainformations(filename);
     
-             Enumeration enu=metainfo.keys();
+             Enumeration enu=property.keys();
              while (enu.hasMoreElements()) {
                 String key=(String)enu.nextElement();
-                String value=(String)metainfo.get(key);
+                String value=(String)property.get(key);
 	   
                 names.addElement(key+":"+value);
 		    	values.addElement(key);
@@ -300,7 +290,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
     }
     
      /**
-     * Gets the value of selected metainfo and sets it in the input field of the dialog.
+     * Gets the value of selected property and sets it in the input field of the dialog.
      * This method is directly called by the content definiton.
      * @param Cms The CmsObject.
      * @param lang The language file.
@@ -308,31 +298,31 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @return Value that is set into the input field.
      * @exception CmsExeption if something goes wrong.
      */
-    public String getMetainfoValue(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
+    public String getPropertyValue(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         
-        String metaValue=null;
+        String propertyValue=null;
         
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true); 
         
         // get the filename
         String filename=(String)session.getValue(C_PARA_FILE);        
         if (filename != null) {
-             //get the metadefinition
-            String metadef=(String)session.getValue(C_PARA_METADEF);  
-            if (metadef != null) {
+             //get the propertydefinition
+            String propertydef=(String)session.getValue(C_PARA_PROPERTYDEF);  
+            if (propertydef != null) {
                 // everything is there, so try to read the meteainfo
-                metaValue=cms.readMetainformation(filename,metadef);
-                if (metaValue == null) {
-                    metaValue="";
+                propertyValue=cms.readMetainformation(filename,propertydef);
+                if (propertyValue == null) {
+                    propertyValue="";
                 }   
             }            
         }        
-      return metaValue;
+      return propertyValue;
     }   
     
      /**
-     * Gets all unused metadefintions for the file.
+     * Gets all unused propertydefintions for the file.
      * <P>
      * The given vectors <code>names</code> and <code>values</code> will 
      * be filled with the appropriate information to be used for building
@@ -345,7 +335,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getMetadef(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getPropertydef(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 	
 		int retValue = -1;
@@ -355,19 +345,19 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         if (filename != null) {
              CmsFile file=(CmsFile)cms.readFileHeader(filename);
              A_CmsResourceType type=cms.getResourceType(file.getType());
-             // get all metadefinitions for this type
-             Vector metadef =cms.readAllMetadefinitions(type.getResourceName());
-             // get all existing metafinfos of this file
-             Hashtable metainfo = cms.readAllMetainformations(filename);   
+             // get all propertydefinitions for this type
+             Vector propertydef =cms.readAllMetadefinitions(type.getResourceName());
+             // get all existing properties of this file
+             Hashtable property = cms.readAllMetainformations(filename);   
     
-             Enumeration enu=metadef.elements();
+             Enumeration enu=propertydef.elements();
              while (enu.hasMoreElements()) {
-                CmsMetadefinition meta=(CmsMetadefinition)enu.nextElement();
+                CmsMetadefinition prop=(CmsMetadefinition)enu.nextElement();
                  
-                String metavalue=(String)metainfo.get(meta.getName());
-                if (metavalue == null ) {                  
-                    names.addElement(meta.getName());
-		    	    values.addElement(meta.getName());
+                String propertyvalue=(String)property.get(prop.getName());
+                if (propertyvalue == null ) {                  
+                    names.addElement(prop.getName());
+		    	    values.addElement(prop.getName());
                 }
              }
         }
@@ -377,7 +367,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
     }
     
      /**
-     * Gets all  metadefintions for the file.
+     * Gets all  propertydefintions for the file.
      * <P>
      * The given vectors <code>names</code> and <code>values</code> will 
      * be filled with the appropriate information to be used for building
@@ -390,7 +380,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getAllMetadef(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+    public Integer getAllPropertydef(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 	
 		int retValue = -1;
@@ -400,14 +390,14 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         if (filename != null) {
              CmsFile file=(CmsFile)cms.readFileHeader(filename);
              A_CmsResourceType type=cms.getResourceType(file.getType());
-             // get all metadefinitions for this type
-             Vector metadef =cms.readAllMetadefinitions(type.getResourceName());
+             // get all propertydefinitions for this type
+             Vector propertydef =cms.readAllMetadefinitions(type.getResourceName());
         
-             Enumeration enu=metadef.elements();
+             Enumeration enu=propertydef.elements();
              while (enu.hasMoreElements()) {
-                CmsMetadefinition meta=(CmsMetadefinition)enu.nextElement();                         
-                names.addElement(meta.getName());
-		    	values.addElement(meta.getName());
+                CmsMetadefinition prop=(CmsMetadefinition)enu.nextElement();                         
+                names.addElement(prop.getName());
+		    	values.addElement(prop.getName());
              }
         }
         
