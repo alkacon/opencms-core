@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/04/20 09:50:54 $
- * Version: $Revision: 1.237 $
+ * Date   : $Date: 2001/04/26 07:28:49 $
+ * Version: $Revision: 1.238 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.237 $ $Date: 2001/04/20 09:50:54 $
+ * @version $Revision: 1.238 $ $Date: 2001/04/26 07:28:49 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1905,6 +1905,8 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 
+        validFilename(taskName);   // check for valid Filename
+
         CmsTask task = m_dbAccess.createTask(projectid,
                                              projectid,
                                              taskType,
@@ -1947,6 +1949,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
         int agentId = C_UNKNOWN_ID;
+        validFilename(taskname);   // check for valid Filename
         try {
             agentId = m_dbAccess.readUser(agentName, C_USER_TYPE_SYSTEMUSER).getId();
         } catch (Exception e) {
