@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2003/06/13 16:17:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/20 07:32:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,16 +32,23 @@ package org.opencms.security;
 
 import com.opencms.core.I_CmsConstants;
 
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 /**
  * A permission set contains both allowed and denied permissions as bitsets.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2003/06/13 16:17:55 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/20 07:32:52 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
 
+	/*
+	 * hashtable of all available permissions
+	 */
+	static Hashtable m_permissions = null;
+	
 	/*
 	 * the set of allowed permissions
 	 */
@@ -51,6 +58,41 @@ public class CmsPermissionSet {
 	 * the set of denied permissions
 	 */
 	int m_denied;
+
+	/**
+	 * Returns the message keys of each permission known in the system.
+	 * 
+	 * @return Enumeration of message keys
+	 */
+	static Enumeration getPermissionKeys() {
+		return permissions().keys();	
+	}
+	
+	/**
+	 * Returns the value of a single permission.
+	 * 
+	 * @param key the key of the permission
+	 * @return the value of the given permission
+	 */
+	static int getPermissionValue(String key) {
+		return ((Integer)permissions().get(key)).intValue();
+	}
+	
+	/**
+	 * Initializes and returns the hashtable of all permissions known in the system.
+	 * 
+	 * @return hastable with permission keys and values
+	 */
+	private static Hashtable permissions() {
+		if (m_permissions == null) {
+			m_permissions = new Hashtable();
+			m_permissions.put("security.permission.read", new Integer(I_CmsConstants.C_PERMISSION_READ));
+			m_permissions.put("security.permission.write", new Integer(I_CmsConstants.C_PERMISSION_WRITE));
+			m_permissions.put("security.permission.view", new Integer(I_CmsConstants.C_PERMISSION_VIEW));
+			m_permissions.put("security.permission.control", new Integer(I_CmsConstants.C_PERMISSION_CONTROL));
+		}
+		return m_permissions;
+	}
 	
 	/**
 	 * Constructor to create an empty permission set.
