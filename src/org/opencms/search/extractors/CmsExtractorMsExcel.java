@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsExcel.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/26 11:37:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,23 +78,23 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractor {
 
         HSSFWorkbook excelWb = new HSSFWorkbook(in);
         StringBuffer result = new StringBuffer(4096);
-        
+
         int numberOfSheets = excelWb.getNumberOfSheets();
-                
+
         for (int i = 0; i < numberOfSheets; i++) {
             HSSFSheet sheet = excelWb.getSheetAt(i);
             int numberOfRows = sheet.getPhysicalNumberOfRows();
             if (numberOfRows > 0) {
-                
+
                 if (CmsStringUtil.isNotEmpty(excelWb.getSheetName(i))) {
                     // append sheet name to content
                     if (i > 0) {
                         result.append("\n\n");
                     }
                     result.append(excelWb.getSheetName(i).trim());
-                    result.append(":\n\n");                    
+                    result.append(":\n\n");
                 }
-                
+
                 Iterator rowIt = sheet.rowIterator();
                 while (rowIt.hasNext()) {
                     HSSFRow row = (HSSFRow)rowIt.next();
@@ -104,26 +104,25 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractor {
                         while (it.hasNext()) {
                             HSSFCell cell = (HSSFCell)it.next();
                             String text = null;
-                            switch (cell.getCellType()) {
-                                case HSSFCell.CELL_TYPE_BLANK:
-                                case HSSFCell.CELL_TYPE_ERROR:
-                                    // ignore all blank or error cells
-                                    break;
-                                case HSSFCell.CELL_TYPE_NUMERIC:
-                                    try {
+                            try {
+                                switch (cell.getCellType()) {
+                                    case HSSFCell.CELL_TYPE_BLANK:
+                                    case HSSFCell.CELL_TYPE_ERROR:
+                                        // ignore all blank or error cells
+                                        break;
+                                    case HSSFCell.CELL_TYPE_NUMERIC:
                                         text = Double.toString(cell.getNumericCellValue());
-                                    } catch (Exception e) {
-                                        // ignore this cell
-                                    }
-                                    break;
-                                case HSSFCell.CELL_TYPE_STRING:
-                                default:
-                                    try {
+                                        break;
+                                    case HSSFCell.CELL_TYPE_BOOLEAN:
+                                        text = Boolean.toString(cell.getBooleanCellValue());
+                                        break;
+                                    case HSSFCell.CELL_TYPE_STRING:
+                                    default:
                                         text = cell.getStringCellValue();
-                                    } catch (Exception e) {
-                                        // ignore this cell
-                                    }
-                                    break;
+                                        break;
+                                }
+                            } catch (Exception e) {
+                                // ignore this cell
                             }
                             if (CmsStringUtil.isNotEmpty(text)) {
                                 result.append(text.trim());
