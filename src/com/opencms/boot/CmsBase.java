@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsBase.java,v $
-* Date   : $Date: 2002/09/04 08:36:48 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/10/30 09:58:03 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.io.File;
  * and helper functions, e.g. OpenCms logging oder OpenCms base path.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2002/09/04 08:36:48 $
+ * @version $Revision: 1.8 $ $Date: 2002/10/30 09:58:03 $
  */
 public class CmsBase implements I_CmsLogChannels {
 
@@ -71,6 +71,19 @@ public class CmsBase implements I_CmsLogChannels {
             return true;
         }
     }
+    
+    /**
+     * Check if the system logging is active for the selected channel.
+     * @return <code>true</code> if the logging is active for the selected channel, <code>false</code> otherwise.
+     */
+    public static boolean isLogging(String channel) {
+        if(c_servletLogging) {
+            return c_cmsLog.isActive(channel);
+        }
+        else {
+            return true;
+        }
+    }    
 
     /**
      * Log a message into the OpenCms logfile.
