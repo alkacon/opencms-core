@@ -1,16 +1,8 @@
-<%@ page import="java.util.*" %>
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-<jsp:setProperty name="Bean" property="*" />
-<%
-	/* true if properties are initialized */
-	boolean setupOk = (Bean.getProperties()!=null);
-	
-	if (!setupOk) {
-		Bean.initHtmlParts();
-    }
-    
-    if (setupOk) {
+    if (Bean.isInitialized()) {
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>

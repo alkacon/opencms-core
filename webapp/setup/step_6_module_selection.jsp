@@ -1,16 +1,15 @@
-<%@ page import="java.util.*" %><%--
---%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
---%><jsp:setProperty name="Bean" property="*" /><%--
---%><%
-	String nextPage = "step_7_save_properties.jsp";
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 	
-	/* previous page in the setup process */
+	// next page
+	String nextPage = "step_7_save_properties.jsp";	
+	// previous page
 	String prevPage = "step_3_database_selection.jsp";
 	
-	boolean isSetupOk = (Bean.getProperties() != null);
 	boolean isFormSubmitted = (request.getParameter("submit") != null);
 	
-	if (isSetupOk && isFormSubmitted) {
+	if (Bean.isInitialized() && isFormSubmitted) {
 		response.sendRedirect(nextPage);
 	}	
 	
@@ -224,7 +223,7 @@ function sortAvailableModules() {
 OpenCms Setup Wizard - Module selection
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
-<% if (isSetupOk) { %>
+<% if (Bean.isInitialized()) { %>
 <form method="get" class="nomargin" name="modules" onSubmit="sortAvailableModules();">
 <input type="hidden" name="installModules" value="">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">

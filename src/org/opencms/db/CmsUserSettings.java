@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Locale;
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
@@ -58,14 +58,19 @@ public class CmsUserSettings {
     
     /** Identifier for the editor button style setting key */
     public static final String C_EDITOR_BUTTONSTYLE = "EDITOR_BUTTONSTYLE";
+    
     /** Identifier for the preferred editor setting key (prefix) */
     public static final String C_EDITOR_PREFERRED_PREFIX = "EDITOR_PREFERRED_";
+    
     /** Identifier for the explorer button style setting key */
     public static final String C_EXPLORER_BUTTONSTYLE = "EXPLORER_BUTTONSTYLE";
+    
     /** Identifier for the explorer number of file entries per page setting key */
     public static final String C_EXPLORER_FILEENTRIES = "USER_EXPLORER_FILEENTRIES";
+    
     /** Identifier for the workplace button style setting key */
     public static final String C_WORKPLACE_BUTTONSTYLE = "WORKPLACE_BUTTONSTYLE";
+    
     /** Identifier for the workplace report type setting key */
     public static final String C_WORKPLACE_REPORTTYPE = "WORKPLACE_REPORTTYPE";
     

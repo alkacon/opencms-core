@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/02/16 01:30:36 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,39 +62,27 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.28 $ $Date: 2004/02/16 01:30:36 $
+ * @version $Revision: 1.29 $ $Date: 2004/02/23 23:27:03 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
 
-    /**
-     * Table-key for max-id
-     */
-    protected static String C_TABLE_TASK = "CMS_TASKS";
+    /** Table-key for tasks */
+    protected static final String C_TABLE_TASK = "CMS_TASKS";
 
-    /**
-     * Table-key for max-id
-     */
-    protected static String C_TABLE_TASKLOG = "CMS_TASKLOG";
+    /** Table-key for task logs */
+    protected static final String C_TABLE_TASKLOG = "CMS_TASKLOG";
 
-    /**
-     * Table-key for max-id
-     */
-    protected static String C_TABLE_TASKPAR = "CMS_TASKPAR";
+    /** Table-key for task par(ameter) */
+    protected static final String C_TABLE_TASKPAR = "CMS_TASKPAR";
 
-    /**
-     * Table-key for max-id
-     */
-    protected static String C_TABLE_TASKTYPE = "CMS_TASKTYPE";
+    /** Table-key for taask type */
+    protected static final String C_TABLE_TASKTYPE = "CMS_TASKTYPE";
     
-    /**
-     * The driver manager
-     */
+    /** The driver manager */
     protected CmsDriverManager m_driverManager;
 
-    /**
-     * The sql manager
-     */
+    /** The sql manager */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**

@@ -1,38 +1,17 @@
-<%@ page import="org.opencms.setup.*,java.util.*" %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-<jsp:setProperty name="Bean" property="*" />
-<%
-	boolean setupOk = (Bean.getProperties()!=null);
-	boolean importWp = false;
-	
-	if (setupOk) {
-		// check params
-		String param = request.getParameter("importWorkplace");
-		if (param != null) {
-			importWp = param.equals("true");
-		}
-	
-		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
-	
-		Bean.checkEthernetAddress();
-	
-		// save Properties to file "opencms.properties" the 2nd time
-		Utils.saveProperties(Bean.getProperties(), "opencms.properties", true);
-	
-		// restore the registry.xml either to or from a backup file
-		Utils.backupRegistry("registry.xml", "registry.ori");
-	} else {
-		Bean.initHtmlParts();
-	}
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 
 	// next page
-	String nextPage = "step_9_browser_configuration_notes.jsp";
+	String nextPage = "step_9_browser_configuration_notes.jsp";	
+	// previous page 
+	String prevPage = "index.jsp";
 	
-	// previous page in the setup process
-	String prevPage = "step_7_save_properties.jsp";
+	boolean importWp = Bean.prepareStep8(request.getParameter("importWorkplace"));	
+
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+OpenCms Setup Wizard - Import workplace
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 
 <% if (importWp) { %>
@@ -48,7 +27,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Import workplace
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<% if (setupOk) { %>
+<% if (Bean.isInitialized()) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
@@ -77,7 +56,7 @@ OpenCms Setup Wizard - Import workplace
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="top.document.location.href='index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
-<% } else	{ %>
+<% } else { %>
 
 <%@ include file="error.jsp" %>
 

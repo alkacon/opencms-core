@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * @since 5.1.10
  */
 public class CmsThreadStore extends Thread {
@@ -58,6 +58,9 @@ public class CmsThreadStore extends Thread {
     /** A map to store all system Thread in */
     private Map m_threads;
     
+    /** Indicates that this thread store is alive */
+    private boolean m_alive;
+    
     /**
      * Hides the public constructor.<p>
      */
@@ -65,6 +68,7 @@ public class CmsThreadStore extends Thread {
         super(new ThreadGroup("OpenCms Thread Store"), "OpenCms: Grim Reaper");
         setDaemon(true);
         m_threads = Collections.synchronizedMap(new HashMap());
+        m_alive = true;
         start();
     }
 
@@ -107,10 +111,17 @@ public class CmsThreadStore extends Thread {
     }
     
     /**
+     * Shut down this thread store.<p>
+     */
+    protected void shutDown() {
+        m_alive = false;
+    }
+    
+    /**
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        while (true) {
+        while (m_alive) {
             // the Grim Reaper is eternal, of course
             try {
                 // one minute sleep time

@@ -1,14 +1,15 @@
-<%@ page import="org.opencms.setup.*,java.util.*" %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-<jsp:setProperty name="Bean" property="*" />
-<%
-	String nextPage = "step_3_database_selection.jsp";
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
+
+	// next page
+	String nextPage = "step_3_database_selection.jsp";	
+	// previous page
 	String prevPage = "index.jsp";
 
 	boolean isSubmitted = (request.getParameter("systemInfo") != null);
 	boolean hasSystemInfo = (request.getParameter("systemInfo") != null) && (request.getParameter("systemInfo").equals("false"));
 	boolean hasUserAccepted = (request.getParameter("accept") != null) && (request.getParameter("accept").equals("true"));
-	boolean isSetupOk = (Bean.getProperties() != null);
 
 	String descriptions = "";
 	CmsSetupTests setupTests = null;
@@ -18,15 +19,13 @@
 	String violatedConditions = "";
 	String questionableConditions = "";
 
-	if (isSetupOk) {
+	if (Bean.isInitialized()) {
 		if(!isSubmitted) {
 			setupTests = new CmsSetupTests();
 			setupTests.runTests(pageContext, Bean);
 		} else {
 			response.sendRedirect(nextPage);
 		}
-	} else {
-		Bean.initHtmlParts();
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
@@ -48,7 +47,7 @@ function toggleContinueButton() {
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Component tests
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<% if (isSetupOk) { %>
+<% if (Bean.isInitialized()) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin" name="components">
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 350px;">
 <tr>

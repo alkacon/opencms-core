@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/23 15:02:18 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,12 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
-import org.opencms.setup.CmsSetupUtils;
+import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 
-import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -76,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -404,12 +402,15 @@ public class CmsShell {
     /**
      * Creates a new CmsShell.<p>
      * 
-     * @param fileInputStream a (file) input stream from which commands are read
      * @param prompt the prompt format to set
      * @param additionalShellCommands optional object for additional shell commands, or null
      * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
      */
-    public CmsShell(String webInfPath, String prompt, FileInputStream fileInputStream, I_CmsShellCommands additionalShellCommands) {
+    public CmsShell(
+        String webInfPath, 
+        String prompt, 
+        I_CmsShellCommands additionalShellCommands
+    ) {
         setPrompt(prompt);       
         
         try {
@@ -438,7 +439,7 @@ public class CmsShell {
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
             System.out.println("OpenCms property file: " + propertyPath);
             System.out.println();            
-            ExtendedProperties configuration = CmsSetupUtils.loadProperties(propertyPath);
+            ExtendedProperties configuration = CmsPropertyUtils.loadProperties(propertyPath); 
             
             // now upgrade to runlevel 2
             m_opencms = m_opencms.upgradeRunlevel(configuration);  
@@ -471,15 +472,28 @@ public class CmsShell {
             // get all shell callable methods from the CmsRequestContext
             m_commandObjects.add(new CmsCommandObject(m_cms.getRequestContext())); 
             // get all shell callable methods from the CmsObject
-            m_commandObjects.add(new CmsCommandObject(m_cms));            
-
+            m_commandObjects.add(new CmsCommandObject(m_cms));                        
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
+        }
+    }   
+        
+    /**
+     * Starts this CmsShell.<p>
+     * 
+     * @param fileInputStream a (file) input stream from which commands are read
+     */    
+    public void start(
+        FileInputStream fileInputStream
+    ) { 
+        try {
             // execute the commands from the input stream
             executeCommands(fileInputStream);            
         } catch (Throwable t) {
             t.printStackTrace(System.err);
         }
     }   
-        
+    
     /**
      * Main program entry point when started via the command line.<p>
      *
@@ -520,22 +534,8 @@ public class CmsShell {
                 // no script-file, use standard input stream
                 stream = new FileInputStream(FileDescriptor.in);
             }
-            new CmsShell(webInfPath, "${user}@${project}:${siteroot}|${uri}>", stream, null);
-        }
-    }
-
-    /**
-     * Entry point when started from the OpenCms setup wizard.<p>
-     *
-     * @param fileName name of a script file containing the setup commands (e.g. cmssetup.txt)
-     * @param webInfPath base folder for the OpenCms web application
-     * @param object optional object for additional shell commands, or null
-     */
-    public static void startSetup(String webInfPath, String fileName, I_CmsShellCommands object) {
-        try {
-            new CmsShell(webInfPath, "${user}@${project}>", new FileInputStream(new File(fileName)), object);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            CmsShell shell = new CmsShell(webInfPath, "${user}@${project}:${siteroot}|${uri}>", null);
+            shell.start(stream);
         }
     }
 
@@ -543,17 +543,24 @@ public class CmsShell {
      * Exits this shell.<p>
      */
     public void exit() {
-        if (m_additionaShellCommands != null) {
-            m_additionaShellCommands.shellExit();
-        } else {
-            m_shellCommands.shellExit();
+        if (m_exitCalled) {
+            return;
         }
+        m_exitCalled = true;
+        try {
+            if (m_additionaShellCommands != null) {
+                m_additionaShellCommands.shellExit();
+            } else {
+                m_shellCommands.shellExit();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }   
         try {
             m_opencms.destroy();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }        
-        m_exitCalled = true;
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }   
     }
     
     /**
@@ -658,6 +665,14 @@ public class CmsShell {
             while (! m_exitCalled) {
                 printPrompt();
                 String line = lnr.readLine();
+                if (line == null) {
+                    // if null is read file is finished
+                    try {
+                        Thread.sleep(500);
+                    } catch (Throwable t) {
+                        continue;
+                    }
+                }
                 if ((line != null) && line.trim().startsWith("#")) {
                     System.out.println(line);
                     continue;                    

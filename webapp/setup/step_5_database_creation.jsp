@@ -1,16 +1,11 @@
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
---%><jsp:setProperty name="Bean" property="*" /><%--
---%><%@ page import="org.opencms.setup.*,java.util.*" %><%--
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 
---%><%
-	/* next page to be accessed */
-	String nextPage = "step_6_module_selection.jsp";
-	
-	/* previous page in the setup process */
+	// next page 
+	String nextPage = "step_6_module_selection.jsp";	
+	// previous page 
 	String prevPage = "step_3_database_selection.jsp";
-
-	/* true if properties are initialized */
-	boolean setupOk = (Bean.getProperties()!=null);
 
 	CmsSetupDb db = null;
 
@@ -19,7 +14,7 @@
 	boolean dbExists = false;
 	boolean dropDb = false;
 
-	if (setupOk) {
+	if (Bean.isInitialized()) {
 
 		String temp;
 		Object a;
@@ -37,7 +32,7 @@
 	    }
 
 		if(createDb || createTables)	{
-			db = new CmsSetupDb(Bean.getBasePath());
+			db = new CmsSetupDb(Bean.getWebAppRfsPath());
 			temp = request.getParameter("dropDb");
 			dropDb = temp != null && "Yes".equals(temp);
 
@@ -61,8 +56,6 @@
 			  	}
 			}
 		}
-	} else {
-		Bean.initHtmlParts();
 	}
 
 	boolean dbError = false;
@@ -79,7 +72,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Create database & tables
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<% if (setupOk)	{ %>
+<% if (Bean.isInitialized())	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 350px;">
 <tr>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/23 15:15:21 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,11 +58,11 @@ import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.setup.CmsSetupUtils;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.92 $
+ * @version $Revision: 1.93 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -478,37 +478,42 @@ public final class OpenCmsCore {
      */
     protected synchronized void destroy() {
 
-        // output shutdown message to STDERR
-        System.err.println("\n\nShutting down OpenCms, version " + getSystemInfo().getVersionName() + " in web application '" + getSystemInfo().getWebApplicationName() + "'");
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(".");
-            getLog(CmsLog.CHANNEL_INIT).info(".");
-            getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
-            getLog(CmsLog.CHANNEL_INIT).info(". Performing shutdown  : OpenCms version " + getSystemInfo().getVersionName());
-            getLog(CmsLog.CHANNEL_INIT).info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
-        }
-        try {
-            if (m_scheduler != null) {
-                m_scheduler.shutDown();
+        if (m_runLevel > 1) {
+            // runlevel 0 or 1 does not require any shutdown handling
+            System.err.println("\n\nShutting down OpenCms, version " + getSystemInfo().getVersionName() + " in web application '" + getSystemInfo().getWebApplicationName() + "'");
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(".");
+                getLog(CmsLog.CHANNEL_INIT).info(".");
+                getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
+                getLog(CmsLog.CHANNEL_INIT).info(". Performing shutdown  : OpenCms version " + getSystemInfo().getVersionName());
+                getLog(CmsLog.CHANNEL_INIT).info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
             }
-            if (m_driverManager != null) {
-                m_driverManager.destroy();
+            try {
+                if (m_threadStore != null) {
+                    m_threadStore.shutDown();
+                }
+                if (m_scheduler != null) {
+                    m_scheduler.shutDown();
+                }
+                if (m_driverManager != null) {
+                    m_driverManager.destroy();
+                }
+            } catch (Throwable e) {
+                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).error(". Error during shutdown: " + e.toString(), e);
+                }
             }
-        } catch (Throwable e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).error(". Error during shutdown: " + e.toString(), e);
+    
+            String runtime = CmsStringSubstitution.formatRuntime(getSystemInfo().getRuntime());
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". OpenCms stopped!     : Total uptime was " + runtime);
+                getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
+                getLog(CmsLog.CHANNEL_INIT).info(".");
+                getLog(CmsLog.CHANNEL_INIT).info(".");
             }
-        }
-
-        String runtime = CmsStringSubstitution.formatRuntime(getSystemInfo().getRuntime());
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms stopped!     : Total uptime was " + runtime);
-            getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
-            getLog(CmsLog.CHANNEL_INIT).info(".");
-            getLog(CmsLog.CHANNEL_INIT).info(".");
+            System.err.println("Shutdown completed, total uptime was " + runtime + ".\n");
         }
         m_instance = null;
-        System.err.println("Shutdown completed, total uptime was " + runtime + ".\n");
     }
 
     /**
@@ -1375,7 +1380,7 @@ public final class OpenCmsCore {
         // Collect the configurations 
         ExtendedProperties configuration = null;
         try {
-            configuration = CmsSetupUtils.loadProperties(getSystemInfo().getConfigurationFileRfsPath());
+            configuration = CmsPropertyUtils.loadProperties(getSystemInfo().getConfigurationFileRfsPath());
         } catch (Exception e) {
             throwInitException(new CmsInitException(C_ERRORMSG + "Trouble reading property file " + getSystemInfo().getConfigurationFileRfsPath() + ".\n\n", e));
         }

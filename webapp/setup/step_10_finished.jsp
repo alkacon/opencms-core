@@ -1,26 +1,12 @@
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
---%><%@ page import="org.opencms.setup.*" %><%--
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 
---%><%
-	/* true if properties are initialized */
-	boolean setupOk = (Bean.getProperties() != null);
-	
 	String openLink = request.getContextPath() + "/opencms/index.jsp";
-
-	if (setupOk) {
-		/* lock the wizard for further use */
-		Bean.lockWizard();
-
-		/* Save Properties to file "opencms.properties" */
-		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
-		Utils.saveProperties(Bean.getProperties(),"opencms.properties",false);
-
-		/* invalidate the sessions */
-		request.getSession().invalidate();
-	} else {
-		Bean.initHtmlParts();
+	if (Bean.isInitialized()) {
+		Bean.prepareStep10();
+		session.invalidate();
 	}
-
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Setup Wizard
@@ -32,14 +18,14 @@ function openWin() {
 	var theWindow = window.open("<%= openLink %>", "OpenCms", "top=10,left=10,width=780,height=550,location=yes,menubar=yes,resizable=yes,scrollbars=yes,status=yes,toolbar=yes");
 	theWindow.focus();
 }
-<% if (setupOk) { %>
+<% if (Bean.isInitialized()) { %>
 openWin();
 <% } %>
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Finished
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<% if (setupOk) { %>
+<% if (Bean.isInitialized()) { %>
 
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>

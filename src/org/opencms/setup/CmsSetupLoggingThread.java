@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupLoggingThread.java,v $
- * Date   : $Date: 2004/02/22 14:14:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,13 @@
  */
 package org.opencms.setup;
 
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.util.Vector;
 
 /**
  * Logging Thread which collects the output from CmsSetupThread and
@@ -39,14 +44,15 @@ import java.io.*;
  * the getMessages() method.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsSetupLoggingThread extends Thread {
-    private static Vector messages;
-    private PipedInputStream m_pipedIn;
     private LineNumberReader m_lineReader;
-    private boolean m_stopThread;
+   
+    private Vector m_messages;
+    private PipedInputStream m_pipedIn;
     private PipedOutputStream m_pipedOut;
+    private boolean m_stopThread;
 
     /** 
      * Constructor.<p>
@@ -58,7 +64,7 @@ public class CmsSetupLoggingThread extends Thread {
         super("OpenCms: Setup logging");
 
         m_pipedOut = pipedOut;
-        messages = new Vector();
+        m_messages = new Vector();
         m_stopThread = false;
 
         try {
@@ -66,8 +72,26 @@ public class CmsSetupLoggingThread extends Thread {
             m_pipedIn.connect(m_pipedOut);
             m_lineReader = new LineNumberReader(new BufferedReader(new InputStreamReader(m_pipedIn)));
         } catch (Exception e) {
-            messages.addElement(e.toString());
+            m_messages.addElement(e.toString());
         }    
+    }
+
+    /** 
+     * Returns a Vector with the last collected log messages.<p>
+     * 
+     * @return a Vector with the last collected log messages
+     */
+    public Vector getMessages() {
+        return m_messages;
+    }
+
+    /**
+     * Returns "true" if the logging is finished.<p>
+     * 
+     * @return "true" if the logging is finished
+     */
+    public boolean isFinished() {
+        return m_stopThread;
     }
     
     /**
@@ -87,7 +111,7 @@ public class CmsSetupLoggingThread extends Thread {
             if (line != null) {
                 if (lineNr > lastLineNr) {
                     // supress multiple output of the same line after "Write end dead" IO exception      
-                    messages.addElement(lineNr + ":\t" + line);
+                    m_messages.addElement(lineNr + ":\t" + line);
                     lastLineNr = lineNr;
                 }
             }          
@@ -95,41 +119,21 @@ public class CmsSetupLoggingThread extends Thread {
         try {
             m_pipedIn.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            // ignore
         }
-    }
-
-    /** 
-     * Returns a Vector with the last collected log messages.<p>
-     * 
-     * @return a Vector with the last collected log messages
-     */
-    public static Vector getMessages() {
-        return messages;
     }
 
     /** 
      * Used to break the loop in the run() method.<p> 
      */
     public void stopThread() {
-        m_stopThread = true;
-    }
-
-    /** 
-     * Indicates if the Thread has been stopped.<p>
-     * 
-     * @return true if the Thread is stopped 
-     */
-    public boolean getStopThread() {
-        return m_stopThread;
-    }
-
-    /**
-     * Cleans up.<p> 
-     */
-    public void reset() {
-        messages.clear();
-        m_stopThread = false;
+        try {
+            // give the logging thread a chance to read all remaining messages
+            Thread.sleep(1000);
+        } catch (Throwable t) {
+            // ignore
+        }
+        m_stopThread = true; 
     }
 
 }

@@ -1,26 +1,11 @@
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
---%><jsp:setProperty name="Bean" property="*" /><%--
---%><%@ page import="org.opencms.setup.*,java.util.*" %><%--
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 
---%><%
-
-	/* next page to be accessed */
-	String nextPage = "step_8_import_workplace.jsp";
-	
-	/* previous page in the setup process */
+	// next page 
+	String nextPage = "step_8_import_workplace.jsp";	
+	// previous page
 	String prevPage = "step_6_module_selection.jsp";
-
-	/* true if properties are initialized */
-	boolean setupOk = Bean.checkProperties();
-
-	/* true if there are errors */
-	boolean error = false;
-
-	Vector errors = new Vector();
-
-	if (!setupOk) {
-		Bean.initHtmlParts();
-	}
 	
 	String serverUrl = request.getScheme() + "://" + request.getServerName();
 	int serverPort = request.getServerPort();
@@ -49,7 +34,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Settings
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<% if (setupOk)	{ %>
+<% if (Bean.isInitialized())	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin" onsubmit="return checkSubmit();">
 
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 350px;">

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/02/16 01:30:36 $
- * Version: $Revision: 1.150 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.151 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,27 +83,21 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.150 $ $Date: 2004/02/16 01:30:36 $
+ * @version $Revision: 1.151 $ $Date: 2004/02/23 23:27:03 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
 public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjectDriver, I_CmsEventListener {
 
-    /**
-     * Constant to get property from configurations.
-     */
-    protected static String C_CONFIGURATIONS_DIGEST = "digest";
+    /** Constant to get property from configurations */
+    protected static final String C_CONFIGURATIONS_DIGEST = "digest";
 
-    /**
-     * Constant to get property from configurations.
-     */
-    protected static String C_CONFIGURATIONS_DIGEST_FILE_ENCODING = "digest.fileencoding";
+    /** Constant to get property from configurations */
+    protected static final String C_CONFIGURATIONS_DIGEST_FILE_ENCODING = "digest.fileencoding";
 
-    /**
-     * Constant to get property from configurations.
-     */
-    protected static String C_CONFIGURATIONS_POOL = "pool";
+    /** Constant to get property from configurations */
+    protected static final String C_CONFIGURATIONS_POOL = "pool";
 
     /** Internal debugging flag.<p> */
     private static final boolean C_DEBUG = false;
@@ -111,33 +105,33 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * The maximum amount of tables.
      */
-    protected static int C_MAX_TABLES = 18;
+    protected static final int C_MAX_TABLES = 18;
 
     /**
      * The session-timeout value:
      * currently six hours. After that time the session can't be restored.
      */
-    public static long C_SESSION_TIMEOUT = 6 * 60 * 60 * 1000;
+    public static final long C_SESSION_TIMEOUT = 6 * 60 * 60 * 1000;
 
     /**
-     * Table-key for max-id
+     * Table-key for projects
      */
-    protected static String C_TABLE_PROJECTS = "CMS_PROJECTS";
+    protected static final String C_TABLE_PROJECTS = "CMS_PROJECTS";
 
     /**
-     * Table-key for max-id
+     * Table-key for properties
      */
-    protected static String C_TABLE_PROPERTIES = "CMS_PROPERTIES";
+    protected static final String C_TABLE_PROPERTIES = "CMS_PROPERTIES";
 
     /**
-     * Table-key for max-id
+     * Table-key for property definitions
      */
-    protected static String C_TABLE_PROPERTYDEF = "CMS_PROPERTYDEF";
+    protected static final String C_TABLE_PROPERTYDEF = "CMS_PROPERTYDEF";
 
     /**
-     * Table-key for max-id
+     * Table-key for system properties
      */
-    protected static String C_TABLE_SYSTEMPROPERTIES = "CMS_SYSTEMPROPERTIES";
+    protected static final String C_TABLE_SYSTEMPROPERTIES = "CMS_SYSTEMPROPERTIES";
 
     /**
      * The driver manager

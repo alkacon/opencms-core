@@ -1,23 +1,11 @@
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
---%><jsp:useBean id="Thread" class="org.opencms.setup.CmsSetupThread" scope="session"/><%--
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 
---%><%
-	/* true if properties are initialized */
-	boolean setupOk = (Bean.getProperties()!=null);
-
-	if (!setupOk) {
-		Bean.initHtmlParts();
-	}
-
-	/* next page to be accessed */
+	// next page
 	String nextPage = "step_10_finished.jsp";
-
-	/* previous page in the setup process */
+	// previous page
 	String prevPage = "step_7_save_properties.jsp";
-
-	/* stop possible running threads */
-	Thread.stopLoggingThread();
-	Thread.stop();
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
@@ -33,7 +21,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Browser configuration
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<% if(setupOk)	{ %>
+<% if(Bean.isInitialized())	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
 
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; padding-right: 3px;">
@@ -65,7 +53,7 @@ OpenCms Setup Wizard - Browser configuration
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';" disabled="disabled">
 <input name="continue" id="continue" type="submit" value="Finish" class="dialogbutton" disabled="disabled">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>

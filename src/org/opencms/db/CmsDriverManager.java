@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/22 19:14:26 $
- * Version: $Revision: 1.328 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.329 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.dom4j.io.SAXReader;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.328 $ $Date: 2004/02/22 19:14:26 $
+ * @version $Revision: 1.329 $ $Date: 2004/02/23 23:27:03 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -451,6 +451,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public static final CmsDriverManager newInstance(ExtendedProperties configuration) throws CmsException {
 
+        // initialize static hastables
+        CmsDbUtil.init();
+        
         List drivers = null;
         String driverName = null;
 

@@ -1,21 +1,23 @@
-<%@ page session="true" %><%--
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 
---%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
-
---%><%
+// next page 
+String nextPage = "step_1_content_encoding.jsp";
 
 boolean isInitialized = false;
 boolean wizardEnabled = false;
 boolean showButtons = false;
 
-/* next page to be accessed */
-String nextPage = "step_1_content_encoding.jsp";
-
 try {
-	/* Initialize the Bean */
-	Bean.init(pageContext, request, "opencms.properties");
+	if (Bean.isInitialized()) {
+		session.invalidate();
+		response.sendRedirect("index.jsp");
+	}
+	// Initialize the Bean 
+	Bean.init(pageContext, request);
 
-	/* check wizards accessability */
+	// check wizards accessability 
 	wizardEnabled = Bean.getWizardEnabled();
 	
 	if (!wizardEnabled) {

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/Attic/CmsSetupUtilsTest.java,v $
- * Date   : $Date: 2004/02/03 10:59:17 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/Attic/CmsSetupBeanTest.java,v $
+ * Date   : $Date: 2004/02/23 23:27:03 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -45,7 +45,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @since 5.0
  */
-public class CmsSetupUtilsTest extends TestCase {
+public class CmsSetupBeanTest extends TestCase {
 
     // DEBUG flag
     // private static final boolean DEBUG = true;
@@ -58,7 +58,7 @@ public class CmsSetupUtilsTest extends TestCase {
      * 
      * @param arg0 JUnit parameters
      */
-    public CmsSetupUtilsTest(String arg0) {
+    public CmsSetupBeanTest(String arg0) {
         super(arg0);
     }
     
@@ -68,21 +68,21 @@ public class CmsSetupUtilsTest extends TestCase {
      * @throws IOException if something goes wrong
      */
     public void testSaveProperties() throws IOException {
-        CmsSetupUtils utils = new CmsSetupUtils("");
-        utils.setConfigPath("");
-                
+        CmsSetupBean bean = new CmsSetupBean();
+        bean.init("", null);
+
         String inputFile = System.getProperty("user.dir") + PROPERTIES;
         String outputFile = System.getProperty("java.io.tmpdir") + "output.properties";
                
         System.err.println("Reading properties from " + inputFile);
-        ExtendedProperties oldProperties = CmsSetupUtils.loadProperties(inputFile);
+        ExtendedProperties oldProperties = bean.loadProperties(inputFile);
         
         System.err.println("Writing properties to " + outputFile);
-        utils.copyFile(inputFile, outputFile);
-        utils.saveProperties(oldProperties, outputFile, false);
+        bean.copyFile(inputFile, outputFile);
+        bean.saveProperties(oldProperties, outputFile, false);
         
         System.err.println("Checking properties from " + outputFile);
-        ExtendedProperties newProperties = CmsSetupUtils.loadProperties(outputFile);
+        ExtendedProperties newProperties = bean.loadProperties(outputFile);
         
         for (Iterator i = oldProperties.keySet().iterator(); i.hasNext();) {
             String key = (String)i.next();

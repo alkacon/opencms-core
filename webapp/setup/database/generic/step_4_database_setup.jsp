@@ -1,14 +1,16 @@
-<%@ page import="java.util.*" %><%--
---%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
---%><jsp:setProperty name="Bean" property="*" /><%--
---%><%
-	String conStr = request.getParameter("dbCreateConStr");
-	boolean isSetupOk = (Bean.getProperties() != null);
-	boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null));
-	String nextPage = "../../step_5_database_creation.jsp";	
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
+
+	// next page
+	String nextPage = "../../step_5_database_creation.jsp";		
+	// previous page
 	String prevPage = "../../step_2_check_components.jsp";
+
+	String conStr = request.getParameter("dbCreateConStr");
+	boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null));
 	
-	if (isSetupOk)	{
+	if (Bean.isInitialized())	{
 		String createDb = request.getParameter("createDb");
 		if(createDb == null) {
 			createDb = "";
@@ -42,8 +44,6 @@
 			session.setAttribute("createTables", createTables);
 			session.setAttribute("createDb", createDb);
 		}
-	} else {
-		Bean.initHtmlParts();
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
@@ -83,7 +83,7 @@ OpenCms Setup Wizard
 //-->
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-<% if (isSetupOk) { %>
+<% if (Bean.isInitialized()) { %>
 OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <form method="POST" onSubmit="return checkSubmit()" class="nomargin">

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,29 +48,24 @@ import java.util.Hashtable;
  * This class is used to create primary keys as integers for Cms database tables that
  * don't have a UUID primary key.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.7 $ $Date: 2004/02/23 23:27:03 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
 public final class CmsDbUtil extends Object {
 
-    /**
-     * Hashtable with next available id's
-     */
-    private static Hashtable c_currentId = new Hashtable();
+    /** Hashtable with next available id's */
+    private static Hashtable c_currentId;
 
-    /**
-     * Hashtable with border id's
-     */
-    private static Hashtable c_borderId = new Hashtable();
+    /** Hashtable with border id's */
+    private static Hashtable c_borderId;
 
+    /** Grow value */
     private static final int C_GROW_VALUE = 10;
 
-    /**
-     * The name of the default pool
-     */
-    private static String c_dbPoolUrl = "";
+    /** The name of the default pool */
+    private static String c_dbPoolUrl;
 
     /**
      * Default constructor.<p>
@@ -81,6 +76,15 @@ public final class CmsDbUtil extends Object {
         super();
     }
 
+    /**
+     * Initilizes this DB utils.<p>
+     */
+    public static void init() {
+        c_currentId = new Hashtable();
+        c_borderId = new Hashtable();
+        c_dbPoolUrl = "";
+    }
+    
     /**
      * Sets the URL of the connection pool.<p>
      * 

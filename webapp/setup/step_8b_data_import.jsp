@@ -1,76 +1,39 @@
-<%@ page import="java.util.*,org.opencms.setup.*,org.opencms.i18n.*,org.opencms.util.*" %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-<jsp:useBean id="Thread" class="org.opencms.setup.CmsSetupThread" scope="session"/>
-<%	
-	Thread.setBasePath(config.getServletContext().getRealPath("/"));
-	Thread.setAdditionalShellCommand(Bean); 
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 
-	Vector messages = new Vector();
-	boolean setupOk = (Bean.getProperties()!=null);
-
-	if(setupOk)	{
-		if(!Thread.isAlive())	{
-			Thread.start();
-		}
-		messages = org.opencms.setup.CmsSetupLoggingThread.getMessages();
-	}
-
-	int size = messages.size();
-	Object tempOffset = new Object();
-	int offset = 0;
-	try	{
-		tempOffset = session.getAttribute("offset");
-
-	}
-	catch (NullPointerException e)	{
-		tempOffset = "0";
-	}
-	if(tempOffset != null)	{
-		offset = Integer.parseInt(tempOffset.toString());
-	}
-	else	{
-		offset = 0;
-	}
-
-	session.setAttribute("offset",""+(size));
+	Bean.prepareStep8b();
 
 %>
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
-<title>OpenCms Setup Wizard</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>OpenCms Setup Wizard - Import workplace</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script language="JavaScript">
 <!--
+
+var output = new Array();
+<%
+	boolean finished = Bean.prepareStep8bOutput(out);
+%>
 	
 function initThread() {
 <% 
-	if(setupOk)	{ 
+	if(Bean.isInitialized())	{ 
 		out.print("send();");
-		if(!Thread.finished()) {
-			out.println("setTimeout('location.reload()',5000);");
+		if(finished) {
+			out.println("setTimeout('top.display.finish()', 500);");
 		} else {
-			out.println("setTimeout('top.display.finish()',5000);");
+			int timeout = 5000;
+			if (Bean.getWorkplaceImportThread().getLoggingThread().getMessages().size() < 20) {
+				timeout = 1000;
+			} 
+			out.println("setTimeout('location.reload()', " + timeout + ");");
 		}
 	}
 %>	
 }
-
-var output = new Array();
-<%
-	if(setupOk)	{
-		for(int i = 0; i < (size-offset) ;i++)	{
-			String str = messages.elementAt(i+offset).toString();
-			//Thread.printToStdOut(str);			
-			
-			str = CmsEncoder.escapeWBlanks(str, "UTF-8");			
-			out.println("output[" + i + "] = \"" + str + "\";");
-		}
-	} else {
-		out.println("output[0] = 'ERROR';");
-	}
-%>
 
 function send()	{
 	top.window.display.start(output);

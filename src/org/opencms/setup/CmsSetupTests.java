@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/02/22 19:14:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,12 +56,12 @@ import org.xml.sax.InputSource;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2004/02/22 19:14:26 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/23 23:27:03 $
  * @since 5.3
  */
 public class CmsSetupTests extends Object implements Serializable, Cloneable {
 
-    private transient CmsSetup m_setupBean;
+    private transient CmsSetupBean m_setupBean;
     private boolean m_red;
     private boolean m_yellow;
     private boolean m_green;
@@ -81,7 +81,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
      * @param pageContext the page context of the JSP page
      * @param setupBean the CmsSetup bean of the setup wizard
      */
-    public void runTests(PageContext pageContext, CmsSetup setupBean) {
+    public void runTests(PageContext pageContext, CmsSetupBean setupBean) {
         Method method = null;
         String methodName = null;
         boolean hasRed = false;
@@ -381,7 +381,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
      * 
      * @return the CmsSetup bean of the setup wizard
      */
-    public CmsSetup getSetupBean() {
+    public CmsSetupBean getSetupBean() {
         return m_setupBean;
     }
 

@@ -1,22 +1,16 @@
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
---%><%
-	/* true if properties are initialized */
-	boolean setupOk = (Bean.getProperties() != null);
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 
-	if (!setupOk) {
-		Bean.initHtmlParts();
-	}
-
-	/* next page to be accessed */
+	// next page to be accessed
 	String nextPage = "step_9_browser_configuration_notes.jsp";
-
-	/* previous page in the setup process */
-	String prevPage = "step_7_save_properties.jsp";
+	// previous page in the setup process 
+	String prevPage = "index.jsp";
 
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+OpenCms Setup Wizard - Import workplace
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 	<script type="text/javascript">
 
@@ -26,19 +20,18 @@ OpenCms Setup Wizard
 		var message = "Importing workplace ... please wait";
 		var countchar = 0;
 
-		/* indicates if the document has been loaded */
+		// indicates if the document has been loaded 
 		function enable() {
 			enabled = true;
 			parent.data.location.href="step_8b_data_import.jsp";
 			replaceInfo(message, "wait");
 		}
 
-		/* displays the given output */
+		// displays the given output 
 		function start(out) {
 			if (enabled) {
 				document.forms[0].ctn.disabled = true;
 				document.forms[0].bck.disabled = true;
-				document.forms[0].cancel.disabled = true;
 				temp = "";
 				for(var i=out.length-1;i>=0;i--)    {
 					temp += unescape(out[i])+"\n";
@@ -48,30 +41,29 @@ OpenCms Setup Wizard
 			}
 		}
 
-		/* Displays a message and enables the continue button */
+		// displays a message and enables the continue button
 		function finish() {
 			replaceInfo("Finished. Please check the output to see if the workplace has been imported without errors.", "ok");
 			document.forms[0].ctn.disabled = false;
-			document.forms[0].bck.disabled = false;
-			document.forms[0].cancel.disabled = false;
+			document.forms[0].bck.disabled = true;
 			finished = true;
 		}
 
-		/* if finished, you can access next page */
+		// if finished, you can access next page 
 		function nextpage() {
 			if (finished) {
 				top.location.href="<%= nextPage %>";
 			}
 		}
 
-		/* if finished, you can go back */
+		// if finished, you can go back 
 		function lastpage() {
 			if (finished) {
 				top.location.href="<%= prevPage %>";
 			}
 		}
 
-		/* replaces info message */
+		// replaces info message 
 		function replaceInfo(msgString, imgSrc) {
 			var el = document.getElementById("statustxt");
 			var newTextNode = document.createTextNode(msgString);
@@ -87,7 +79,7 @@ OpenCms Setup Wizard
 OpenCms Setup Wizard - Import workplace
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
-<% if (setupOk) { %>
+<% if (Bean.isInitialized()) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>

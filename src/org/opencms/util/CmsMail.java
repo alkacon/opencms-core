@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsMail.java,v $
- * Date   : $Date: 2004/02/21 17:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/23 23:27:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,12 +88,9 @@ import javax.mail.internet.MimeMessage;
  * mail.start();<br>
  * </code>
  *
- * @author Waruschan Babachan <waruschan.babachan@framfab.de>
- * @author mla
- * @author Alexander Lucas <alexander.lucas@framfab.de>
- *
- * @version $Name:  $ $Revision: 1.5 $ $Date: 2004/02/21 17:11:43 $
- * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.6 $
  */
 public class CmsMail extends Thread {
 
@@ -674,7 +671,7 @@ public class CmsMail extends Thread {
      * 
      * @author  Alexander Kandzior (a.kandzior@alkacon.com)
      * 
-     * @version $Revision: 1.5 $ $Date: 2004/02/21 17:11:43 $
+     * @version $Revision: 1.6 $ $Date: 2004/02/23 23:27:03 $
      * @see org.opencms.util.CmsMail
      */
     class CmsByteArrayDataSource implements DataSource {

@@ -1,33 +1,24 @@
-<%@page import="java.util.*" %><%--
+<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+--%><jsp:useBean id="Bean" class="CmsSetupBean" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%
 
---%><% /* Initialize the setup bean */ %><%--
---%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
---%><jsp:setProperty name="Bean" property="*" /><%--
-
---%><%
-/* next page in the setup process */
+// next page 
 String nextPage = "step_2_check_components.jsp";
-
-/* previous page in the setup process */
+// previous page
 String prevPage = "index.jsp";
-
-/* true if properties are initialized */
-boolean setupOk = (Bean.getProperties()!=null);
 
 // Reading the system properties
 Properties vmProperties = System.getProperties();
 String vmEncoding = vmProperties.getProperty("file.encoding");
 boolean encodingOk = false;
 
-if (setupOk) {
+if (Bean.isInitialized()) {
 	encodingOk = Bean.getDefaultContentEncoding().equalsIgnoreCase(vmEncoding);
-} else {
-	Bean.initHtmlParts();
+	if (encodingOk) {
+		response.sendRedirect(nextPage);
+	}
 }
 
-if (encodingOk) {
-	response.sendRedirect(nextPage);
-}
 %><%--
 
 --%><%= Bean.getHtmlPart("C_HTML_START") %>
@@ -38,7 +29,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Wrong content encoding!
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<% if (setupOk) { %>
+<% if (Bean.isInitialized()) { %>
 <table border="0" cellpadding="0" cellspacing="0" style="height: 100%;">
 <tr><td style="vertical-align: bottom;">
 
