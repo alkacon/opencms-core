@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/04/01 06:24:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/04/01 09:01:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,10 +60,25 @@ import java.util.RandomAccess;
  * the "PROPERTY_MAPPING_ID" table attribute in the database. The "PROPERTY_MAPPING_TYPE" table 
  * attribute (see {@link #C_STRUCTURE_RECORD_MAPPING} and {@link #C_RESOURCE_RECORD_MAPPING})
  * determines whether the value of the "PROPERTY_MAPPING_ID" attribute of the current row is
- * a structure or resource record ID..<p>
+ * a structure or resource record ID.<p>
+ * 
+ * Property objects are written to the database using {@link CmsDriverManager#writePropertyObjects(org.opencms.file.CmsRequestContext, String, List)}
+ * or {@link CmsDriverManager#writePropertyObject(org.opencms.file.CmsRequestContext, String, CmsProperty)}, no matter
+ * wheter you want to save a new (non-existing) property, update an existing property, or delete an
+ * existing property. To delete a property you woould write a property object with either the
+ * structure and/or resource record values set to {@link #C_DELETE_VALUE} to indicate that a
+ * property value should be deleted in the database.<p>
+ * 
+ * Use {@link #setCreatePropertyDefinition(boolean)} to set a boolean flag whether a missing property
+ * definition should be created implicitly for a resource type when a property is written to the database.
+ * The default value for this flag is <code>false</code>. Thus, you receive a CmsException if you try
+ * to write a property of a resource with a resource type which lacks a property definition for
+ * this resource type. It is not a good style to set {@link #setCreatePropertyDefinition(boolean)}
+ * on true to make writing properties to the database work in any case, because then you will loose
+ * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/04/01 06:24:58 $
+ * @version $Revision: 1.4 $ $Date: 2004/04/01 09:01:17 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -132,6 +147,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return the null property object
      */
     public static final CmsProperty getNullProperty() {
+
         return CmsProperty.C_NULL_PROPERTY;
     }
 
@@ -143,23 +159,24 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return a list of CmsProperty objects
      */
     public static List toList(Map map) {
+
         String key = null;
         String value = null;
         CmsProperty property = null;
-        List properties = (List) new ArrayList(map.size());
+        List properties = (List)new ArrayList(map.size());
         Object[] keys = null;
 
         keys = map.keySet().toArray();
         for (int i = 0; i < keys.length; i++) {
-            key = (String) keys[i];
-            value = (String) map.get(key);
+            key = (String)keys[i];
+            value = (String)map.get(key);
 
             property = new CmsProperty();
             property.m_key = key;
             property.m_structureValue = value;
             properties.add(property);
         }
-        
+
         return properties;
     }
 
@@ -171,6 +188,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return a map with compound (String) values keyed by property keys
      */
     public static Map toMap(List list) {
+
         Map result = null;
         String key = null;
         String value = null;
@@ -180,12 +198,12 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
             return Collections.EMPTY_MAP;
         }
 
-        result = (Map) new HashMap();
-        
+        result = (Map)new HashMap();
+
         // choose the fastest method to iterate the list
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
-                property = (CmsProperty) list.get(i);
+                property = (CmsProperty)list.get(i);
                 key = property.m_key;
                 value = property.getValue();
                 result.put(key, value);
@@ -193,10 +211,10 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
         } else {
             Iterator i = list.iterator();
             while (i.hasNext()) {
-                property = (CmsProperty) i.next();
+                property = (CmsProperty)i.next();
                 key = property.m_key;
                 value = property.getValue();
-                result.put(key, value);                
+                result.put(key, value);
             }
         }
 
@@ -210,6 +228,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return true, if the property definition for this property should be created implicitly on any write operation
      */
     public boolean createPropertyDefinition() {
+
         return m_createPropertyDefinition;
     }
 
@@ -220,6 +239,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @param value true, if the property definition for this property should be created implicitly on any write operation
      */
     public void setCreatePropertyDefinition(boolean value) {
+
         m_createPropertyDefinition = value;
     }
 
@@ -234,25 +254,26 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @see #setCreatePropertyDefinition(boolean)
      */
     public static final List setCreatePropertyDefinitions(List list, boolean value) {
+
         CmsProperty property = null;
 
         // choose the fastest method to traverse the list
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
-                property = (CmsProperty) list.get(i);
+                property = (CmsProperty)list.get(i);
                 property.m_createPropertyDefinition = value;
             }
         } else {
             Iterator i = list.iterator();
             while (i.hasNext()) {
-                property = (CmsProperty) i.next();
+                property = (CmsProperty)i.next();
                 property.m_createPropertyDefinition = value;
             }
         }
-        
+
         return list;
     }
-    
+
     /**
      * Checks if the resource value of this property should be deleted when this
      * property object is written to the database.<p>
@@ -261,6 +282,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @see CmsProperty#C_DELETE_VALUE
      */
     public boolean deleteResourceValue() {
+
         return (m_resourceValue != null && m_resourceValue.length() == 0);
     }
 
@@ -272,6 +294,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @see CmsProperty#C_DELETE_VALUE
      */
     public boolean deleteStructureValue() {
+
         return (m_structureValue != null && m_structureValue.length() == 0);
     }
 
@@ -282,6 +305,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return true, if the specified object is equal to this CmsProperty object
      */
     public boolean equals(Object object) {
+
         boolean isEqual = false;
 
         if (object == null || !(object instanceof CmsProperty)) {
@@ -290,23 +314,23 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
 
         // compare the key
         if (m_key == null) {
-            isEqual = (((CmsProperty) object).getKey() == null);
+            isEqual = (((CmsProperty)object).getKey() == null);
         } else {
-            isEqual = m_key.equals(((CmsProperty) object).getKey());
+            isEqual = m_key.equals(((CmsProperty)object).getKey());
         }
 
         // compare the structure value
         if (m_structureValue == null) {
-            isEqual &= (((CmsProperty) object).getStructureValue() == null);
+            isEqual &= (((CmsProperty)object).getStructureValue() == null);
         } else {
-            isEqual &= m_structureValue.equals(((CmsProperty) object).getStructureValue());
+            isEqual &= m_structureValue.equals(((CmsProperty)object).getStructureValue());
         }
 
         // compare the resource value
         if (m_resourceValue == null) {
-            isEqual &= (((CmsProperty) object).getResourceValue() == null);
+            isEqual &= (((CmsProperty)object).getResourceValue() == null);
         } else {
-            isEqual &= m_resourceValue.equals(((CmsProperty) object).getResourceValue());
+            isEqual &= m_resourceValue.equals(((CmsProperty)object).getResourceValue());
         }
 
         return isEqual;
@@ -318,6 +342,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return key name of this property
      */
     public String getKey() {
+
         return m_key;
     }
 
@@ -327,6 +352,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return the value of this property attached to the resource record
      */
     public String getResourceValue() {
+
         return m_resourceValue;
     }
 
@@ -336,6 +362,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return the value of this property attached to the structure record
      */
     public String getStructureValue() {
+
         return m_structureValue;
     }
 
@@ -349,6 +376,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return the compound value of this property
      */
     public String getValue() {
+
         return (m_structureValue != null) ? m_structureValue : m_resourceValue;
     }
 
@@ -356,7 +384,16 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return new StringBuffer().append(m_key).append("_").append(m_structureValue).append("_").append(m_resourceValue).toString().hashCode();
+
+        StringBuffer strBuf = new StringBuffer();
+
+        strBuf.append(m_key);
+        strBuf.append("_");
+        strBuf.append(m_structureValue);
+        strBuf.append("_");
+        strBuf.append(m_resourceValue);
+
+        return strBuf.toString().hashCode();
     }
 
     /**
@@ -365,6 +402,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @param key the key name of this property
      */
     public void setKey(String key) {
+
         m_key = key;
     }
 
@@ -374,6 +412,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @param resourceValue the value of this property attached to the resource record
      */
     public void setResourceValue(String resourceValue) {
+
         m_resourceValue = resourceValue;
     }
 
@@ -383,6 +422,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @param structureValue the value of this property attached to the structure record
      */
     public void setStructureValue(String structureValue) {
+
         m_structureValue = structureValue;
     }
 
@@ -392,6 +432,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @see java.lang.Object#toString()
      */
     public String toString() {
+
         StringBuffer strBuf = new StringBuffer();
 
         strBuf.append("[").append(getClass().getName()).append(": ");
@@ -403,7 +444,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
 
         return strBuf.toString();
     }
-    
+
     /**
      * Compares two CmsProperty objects by their key names.<p>
      *  
@@ -411,11 +452,12 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(Object object) {
+
         if (object instanceof CmsProperty) {
-            return m_key.compareTo(((CmsProperty) object).getKey());
+            return m_key.compareTo(((CmsProperty)object).getKey());
         }
 
         return 0;
-    }    
+    }
 
 }
