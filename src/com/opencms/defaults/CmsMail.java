@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/05/29 12:24:44 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -71,7 +71,7 @@ import java.util.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.8 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Name:  $ $Revision: 1.9 $ $Date: 2002/05/29 12:24:44 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -308,6 +308,48 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
         }
         c_BCC = users;
+    }
+
+    /**
+     * Create a new email object with given FROM, TO and BCC addresses.
+     *
+     * @see #CmsMail(CmsObject,String, String[], String, String, String)
+     *
+     * @param cms Cms object.
+     * @param from Address of sender.
+     * @param to Address of recipient.
+     * @param cc Address of copy recipient.
+     * @param isBcc dedined wheather the type of cc is a bcc or not.
+     * @param subject Subject of email.
+     * @param content Content of email.
+     * @param type ContentType of email.
+     */
+    public CmsMail(CmsObject cms, String from, String[] to, String[] cc, boolean isBcc, String subject, String content, String type) throws CmsException {
+        this(cms, from, to, subject, content, type);
+        Vector v = new Vector();
+        for(int i = 0;i < cc.length;i++) {
+            if(cc[i] == null) {
+                continue;
+            }
+            if(cc[i].equals("")) {
+                continue;
+            }
+            if(cc[i].indexOf("@") == -1 || cc[i].indexOf(".") == -1) {
+                continue;
+            }
+            v.addElement(cc[i]);
+        }
+        String users[] = new String[v.size()];
+        for(int i = 0;i < v.size();i++) {
+            users[i] = (String)v.elementAt(i);
+        }
+        if(users.length == 0) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
+        }
+        if (isBcc)
+            c_BCC = users;
+        else
+            c_CC=users;
     }
 
     /**
