@@ -78,7 +78,7 @@ import source.org.apache.java.util.*;
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
  * @author <a href="mailto:vt@freehold.crocodile.org">Vadim Tkachenko</a>
- * @version $Revision: 1.2 $ $Date: 2000/05/09 08:29:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/06/02 13:34:13 $
  */
 
 public class LogWriter 
@@ -394,9 +394,9 @@ public class LogWriter
 	{
 		long total=Runtime.getRuntime().totalMemory()/1024;
 		long free=Runtime.getRuntime().freeMemory()/1024;
-		return ("OpenCms Avail. Mem:"+total
-				+"k, Free Mem:"+free
-				+"k, Used Mem:"+(total-free)+"k");
+		return ("["+total
+				+"/"+free
+				+"/"+(total-free)+"]");
 	}
     
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/05/30 11:44:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/02 13:34:13 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/05/30 11:44:51 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/02 13:34:13 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -118,9 +118,9 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 			linkName =(String)parameters.get("file");
 			editFile = cms.readFile(linkName);
 			content = new String(editFile.getContents()); 
-			xmlTemplateDocument.setXmlData("LINKNAME", editFile.getName()); 
-			xmlTemplateDocument.setXmlData("LINK", editFile.getAbsolutePath());
-			xmlTemplateDocument.setXmlData("LINKVALUE", content);  
+			xmlTemplateDocument.setData("LINKNAME", editFile.getName()); 
+			xmlTemplateDocument.setData("LINK", editFile.getAbsolutePath());
+			xmlTemplateDocument.setData("LINKVALUE", content);  
 			template="change"; 
 		}	
         filename=cms.getRequestContext().getRequest().getParameter(C_PARA_FILE);
@@ -190,7 +190,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 		if (cancelUrl== null) {
 			cancelUrl = C_WP_EXPLORER_FILELIST;
 		}
-		xmlTemplateDocument.setXmlData("lasturl", cancelUrl); 
+		xmlTemplateDocument.setData("lasturl", cancelUrl); 
  
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,elementName,parameters,template);  
