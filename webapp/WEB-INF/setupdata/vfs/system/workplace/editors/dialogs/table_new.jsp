@@ -7,8 +7,10 @@
 	
 	String titleType = (String)request.getParameter("titleType");
 	String dialogTitle = wp.key("title.newtable");
+	String disabled = "";
 	if ("edit".equals(titleType)) {
 		dialogTitle = wp.key("title.edittable");
+		disabled = " disabled=\"disabled\" style=\"background-color: Menu;\"";
 	} 
 	
 %><%= wp.htmlStart(null, dialogTitle) %>
@@ -201,13 +203,13 @@ function checkField(elementId, checkFieldId) {
 <%= wp.dialogContentStart(dialogTitle) %>
 <form name="main" class="nomargin" onsubmit="checkValues(); return false;">
 
-<table border="0" cellpadding="3" cellspacing="0">
+<table border="0" cellpadding="3" cellspacing="0" width="100%">
 <tr>
 	<td style="white-space: nowrap;"><%= wp.key("input.rows") %>:</td>
-	<td><input id="NumRows" type="text" size="15" style="width: 140px;" name="NumRows" onkeypress="event.returnValue=IsDigit();"></td>
+	<td><input id="NumRows" type="text" size="15" style="width: 140px;" name="NumRows" onkeypress="event.returnValue=IsDigit();"<%= disabled %>></td>
 	<td class="maxwidth">&nbsp;</td>
 	<td style="white-space: nowrap;"><%= wp.key("input.width") %>:</td>
-	<td><select name="TableWidthMode" id="TableWidthMode" size="1" style="width: 150px;" onchange="checkField('TableWidthMode', 'TableWidth');">
+	<td><select name="TableWidthMode" id="TableWidthMode" size="1" style="width: 150px;" onchange="checkField('TableWidthMode', 'TableWidth');"<%= disabled %>>
   			<option value="" selected="selected"><%= wp.key("editor.dialog.table.notspecified") %></option>
       		<option value="%"> <%= wp.key("input.inpercent") %>
       		<option value="pixel"> <%= wp.key("input.inpixel") %>
@@ -216,10 +218,10 @@ function checkField(elementId, checkFieldId) {
 </tr>
 <tr>
 	<td style="white-space: nowrap;"><%= wp.key("input.columns") %>:</td>
-	<td><input id="NumCols" type="text" size="15" style="width: 140px;" name="NumCols" onkeypress="event.returnValue=IsDigit();"></td>
+	<td><input id="NumCols" type="text" size="15" style="width: 140px;" name="NumCols" onkeypress="event.returnValue=IsDigit();"<%= disabled %>></td>
 	<td class="maxwidth">&nbsp;</td>
 	<td style="white-space: nowrap;"><%= wp.key("input.height") %>:</td>
-	<td><select name="TableHeightMode" id="TableHeightMode" size="1" style="width: 150px;" onchange="checkField('TableHeightMode', 'TableHeight');">
+	<td><select name="TableHeightMode" id="TableHeightMode" size="1" style="width: 150px;" onchange="checkField('TableHeightMode', 'TableHeight');"<%= disabled %>>
   			<option value="" selected="selected"><%= wp.key("editor.dialog.table.notspecified") %></option>
       		<option value="%"> <%= wp.key("input.inpercent") %>
       		<option value="pixel"> <%= wp.key("input.inpixel") %>
@@ -228,13 +230,13 @@ function checkField(elementId, checkFieldId) {
 </tr>
 <tr>
 	<td style="white-space: nowrap;"><%= wp.key("input.title") %>:</td>
-  	<td colspan="2"><input type="text" size="15" style="width: 140px;" name="Caption"></td>
+  	<td colspan="2"><input type="text" size="15" style="width: 140px;" name="Caption"<%= disabled %>></td>
 	<td class="maxwidth">&nbsp;</td>
 	<td colspan="2">&nbsp;</td>  	
 </tr>
 <tr>
 	<td style="white-space: nowrap;"><%= wp.key("input.alignment") %>:</td>
-	<td><select id="TableAlignment" name="TableAlignment" size="1" style="width: 140px;">
+	<td><select id="TableAlignment" name="TableAlignment" size="1" style="width: 140px;"<%= disabled %>>
 			<option value="" selected="selected"><%= wp.key("editor.dialog.table.notspecified") %></option>
       		<option value="left"><%= wp.key("input.alignleft") %></option>
       		<option value="center"><%= wp.key("input.aligncenter") %></option>
