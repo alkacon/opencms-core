@@ -64,7 +64,7 @@
 			<type>folder</type>
 			<user>Admin</user>
 			<group>Administrators</group>
-			<access>95</access>
+			<access>127</access>
 			<properties/>
 		</file>
         <file>
