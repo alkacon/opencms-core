@@ -164,6 +164,10 @@ start();
 </contextmenue>
 
 <contextmenue name="backofficelock">
+    <contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+    <contextspacer/>
+    <contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+    <contextspacer/>
     <contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
     <contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
     <contextdisabled name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
@@ -172,13 +176,14 @@ start();
     <contextdisabled name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
     <contextdisabled name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
     <contextspacer/>
-    <contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
-    <contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
-    <contextspacer/>
     <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficelockuser">
+    <contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+    <contextspacer/>
+    <contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+    <contextspacer/>
     <contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
     <contextentry name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
     <contextentry name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
@@ -187,13 +192,14 @@ start();
     <contextentry name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
     <contextentry name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
     <contextspacer/>
-    <contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
-    <contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
-    <contextspacer/>
     <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficenolock">
+    <contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+    <contextspacer/>
+    <contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+    <contextspacer/>
     <contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
     <contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
     <contextdisabled name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
@@ -201,14 +207,15 @@ start();
     <contextdisabled name="explorer.context.chown" href="javascript:location.href=backofficeUrl+'?chmode=chown&amp;idpermissions='+kontextparam;"/>
     <contextdisabled name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
     <contextdisabled name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
-    <contextspacer/>
-    <contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
-    <contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
     <contextspacer/>
     <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficenolockchanged">
+    <contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+    <contextspacer/>
     <contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
     <contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
     <contextdisabled name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
@@ -216,9 +223,6 @@ start();
     <contextdisabled name="explorer.context.chown" href="javascript:location.href=backofficeUrl+'?chmode=chown&amp;idpermissions='+kontextparam;"/>
     <contextdisabled name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
     <contextdisabled name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
-    <contextspacer/>
-    <contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
-    <contextentry name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
     <contextspacer/>
     <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
