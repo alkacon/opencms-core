@@ -15,7 +15,7 @@ import java.util.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/28 17:10:17 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/01 08:30:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -23,6 +23,9 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     /** URL of the pics folder in the webserver's docroot */
     private String m_picsurl = null;
     
+    /** URL of the workplace main screen */
+    private String m_workplaceUrl = null;
+
     /**
      * Gets the key that should be used to cache the results of
      * this template class. 
@@ -85,5 +88,23 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
             m_picsurl = configFile.getPictureUrl();
         }
         return m_picsurl + tagcontent;
+    }
+
+    /**
+     * Gets the main URL of the OpenCms workplace 
+     * (e.g. <code>/system/workplace/action/index.html</code>).
+     * <P>
+     * Used for returning from classes to the workplace screen.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @return URL of the workplace.
+     * @exception CmsException
+     */
+    public String workplaceUrl(A_CmsObject cms) throws CmsException {
+        if(m_workplaceUrl == null || "".equals(m_workplaceUrl)) {
+            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+            m_workplaceUrl = configFile.getWorkplaceMainPath();
+        }
+        return m_workplaceUrl;
     }
 }
