@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/14 13:29:12 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/09/14 14:33:40 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.37 $ $Date: 2000/09/14 13:29:12 $
+ * @version $Revision: 1.38 $ $Date: 2000/09/14 14:33:40 $
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -3534,6 +3534,12 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName)
 			 } else {
 			  cmsResource = (CmsFile)readFileHeader(currentUser,currentProject,resourcename);
 		}
+		// check, if the resource is in the offline-project
+		if(cmsResource.getProjectId() != currentProject.getId()) {
+			// the resource is not in the current project and can't be locked - so ignore.
+			return;
+		}
+
 		// check, if the user may lock the resource
 		if( accessLock(currentUser, currentProject, cmsResource) ) {
 			
@@ -3768,11 +3774,11 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName)
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) throws CmsException {
-	if (CmsConstants.USE_MULTISITE)
+//	if (CmsConstants.USE_MULTISITE)
 		
 		// lookup the currentProject in the CMS_SITE_PROJECT table, and in the same call return it.
-		return m_dbAccess.getOnlineProject(currentProject.getId());
-	else
+//		return m_dbAccess.getOnlineProject(currentProject.getId());
+//	else
 		return readProject(currentUser, currentProject, C_PROJECT_ONLINE_ID);
 }
 	/**
