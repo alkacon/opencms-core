@@ -11,6 +11,8 @@ Legend:
 OpenCms 4.5.27 Chusuk       - xx December 2001
 * Bugfix in language files and templates: the tagname "link" was renamed to "linkto" because of problems with the
   registered HTML-tag "LINK".
+* Bugfix in PL/SQL-Package opencmsproject: when publishing a resource an exception is thrown if the parent folder
+  can not be found in online project
 ! The recovery password can be set by anybody who knows the users name and password.
 
 OpenCms 4.5.26 Chusuk       - 3 December 2001
