@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/08/02 07:51:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/09/22 11:44:36 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2004/08/02 07:51:55 $
+ * @version $Revision: 1.11 $ $Date: 2004/09/22 11:44:36 $
  * @since 5.3
  */
 public class CmsSetupTests extends Object implements Serializable, Cloneable {
@@ -265,10 +265,12 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
 
             // Xerces 1 and 2 APIs are different, let's see what we have...
             String versionStr = null;
+            int xercesVersion = 0;
             
             try {
                 doc.getClass().getMethod("getXmlEncoding", new Class[] {}).invoke(doc, new Object[] {});
                 versionStr = Version.getVersion();
+                xercesVersion = 2;
             } catch (Throwable t) {
                 // noop
             }
@@ -276,14 +278,35 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
                 try {
                     doc.getClass().getMethod("getEncoding", new Class[] {}).invoke(doc, new Object[] {});
                     versionStr = "Xerces version 1";
+                    xercesVersion = 1;
                 } catch (Throwable t) {
                     // noop
                 }
             }
 
-            testResult.setResult(versionStr);
-            testResult.setHelp("OpenCms requires Xerces version 1 or Xerces version 2 to run. Usually these should be available as part of the servlet environment.");
-            testResult.setGreen();
+            switch (xercesVersion) {
+                case 2:
+                    testResult.setResult(versionStr);
+                    testResult.setHelp("OpenCms 6.0 requires Xerces version 2 to run. Usually this should be available as part of the servlet environment.");
+                    testResult.setGreen();
+                    break;
+                case 1:
+                    testResult.setResult(versionStr);
+                    testResult.setRed();
+                    testResult.setInfo("OpenCms 6.0 requires Xerces version 2 to run, your Xerces version is 1. "
+                        + "Usually Xerces 2 should be installed by default as part of the servlet environment.");
+                    testResult.setHelp(testResult.getInfo());
+                    break;
+                default:
+                    if (versionStr == null) {
+                        versionStr = "Unknown version";
+                    }
+                    testResult.setResult(versionStr);
+                    testResult.setRed();
+                    testResult.setInfo("OpenCms 6.0 requires Xerces version 2 to run. "
+                        + "Usually Xerces 2 should be installed by default as part of the servlet environment.");
+                    testResult.setHelp(testResult.getInfo());
+            }
         } catch (Exception e) {
             testResult.setResult("Unable to test the XML parser!");
             testResult.setInfo(e.toString());
