@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/11 06:25:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/11 12:03:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -354,20 +354,23 @@ public class CmsExplorer extends CmsWorkplace {
             // position 4: type
             content.append(res.getType());
             content.append(",");
-            // position 5: size
+            // position 5: link type
+            content.append(i % 2);
+            content.append(",");            
+            // position 6: size
             if(res.isFolder() || (!showSize)) {
                 content.append("\"\",");
             }else {
                 content.append(res.getLength());
                 content.append(",");                
             }
-            // position 6: state
+            // position 7: state
             content.append(res.getState());
             content.append(",");            
-            // position 7: project
+            // position 8: project
             content.append(res.getProjectId());
             content.append(",");                             
-            // position 8: date of last modification
+            // position 9: date of last modification
             if(showDateLastModified){
                 content.append("\"");
                 content.append(getSettings().getMessages().getDateTime(res.getDateLastModified()));
@@ -376,7 +379,7 @@ public class CmsExplorer extends CmsWorkplace {
             }else{
                 content.append("\"\",");
             }
-            // position 9: user who last modified the resource
+            // position 10: user who last modified the resource
             if(showUserWhoLastModified){
                 content.append("\"");  
                 try {            
@@ -388,7 +391,7 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 content.append("\"\",");
             }
-            // position 10: date of creation
+            // position 11: date of creation
             if(showDateCreated){
                 content.append("\"");
                 content.append(getSettings().getMessages().getDateTime(res.getDateCreated()));
@@ -397,7 +400,7 @@ public class CmsExplorer extends CmsWorkplace {
             }else{
                 content.append("\"\",");
             }         
-            // position 11: user who created the resource
+            // position 12: user who created the resource
             if(showUserWhoCreated){
                 content.append("\"");                
                 try {
@@ -410,7 +413,7 @@ public class CmsExplorer extends CmsWorkplace {
             }else{
                 content.append("\"\",");
             }
-            // position 12: permissions
+            // position 13: permissions
             if(showPermissions){
                 content.append("\"");  
                 try {            
@@ -422,7 +425,7 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 content.append("\"\",");
             }     
-            // position 13: locked by
+            // position 14: locked by
             if(res.isLockedBy().isNullUUID()) {
                 content.append("\"\",");
             }else {
@@ -441,11 +444,11 @@ public class CmsExplorer extends CmsWorkplace {
             } catch(CmsException exc) {
                 // ignore the exception - this is an old project so ignore it
             }
-            // position 14: name of project where resource belongs to            
+            // position 15: name of project where resource belongs to            
             content.append("\"");
             content.append(lockedInProjectName);
             content.append("\",");
-            // position 15: id of project where resource belongs to
+            // position 16: id of project where resource belongs to
             content.append(lockedInProject);
             content.append(");\n");
         }
