@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/15 14:24:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -117,6 +117,24 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
     public final String getEditorResourceUri() {
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
     }
+        
+    /**
+     * @see org.opencms.workplace.editors.CmsDefaultPageEditor#escapeParams()
+     */
+    public void escapeParams() {
+        // This code fixes a very strange bug in the MS Dhtml Control.
+        // If the HTML source contains a link like this:
+        // <a href=
+        // "/some/url">Link</a>
+        // i.e. with a linebreak between the = and the " of the link href attribute, this 
+        // causes the Dhtml control to insert additional buggy attributes in the link.
+        // Solution: Remove the linebreak in this case on the server (see next lines).
+        String result = CmsStringUtil.substitute(getParamContent(), "\r\n", "\n");        
+        result = CmsStringUtil.substitute(result, "=\n\"", "=\"");    
+        // escape the content
+        result = CmsEncoder.escapeWBlanks(result, CmsEncoder.C_UTF8_ENCODING);
+        setParamContent(result);
+    }  
     
     /**
      * Manipulates the content String for the different editor views and the save operation.<p>
