@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.17 Chusuk       - xx November 2001
+! New property "description" for type image. The description can be inserted when uploading
+  a picture in the picturegallery.
+
 OpenCms 4.5.16 Chusuk       - 06 November 2001
 * Completing the generic master for modules in projectcycle.
 
