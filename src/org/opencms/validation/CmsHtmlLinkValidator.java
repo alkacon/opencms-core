@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/01/28 09:32:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/02 09:07:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2004/01/28 09:32:23 $
+ * @version $Revision: 1.9 $ $Date: 2004/02/02 09:07:07 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -164,9 +164,8 @@ public class CmsHtmlLinkValidator extends Object {
                 resourceName = resource.getRootPath();
                 resourceType = cms.getResourceType(resource.getType());
 
-                report.print("( " + (i + 1) + " / " + j + " ) ");
-                report.print(report.key("report.htmllink_validator.validating"), I_CmsReport.C_FORMAT_NOTE);
-                report.print(resourceName);
+                report.print("( " + (i + 1) + " / " + j + " ) " + report.key("report.htmllink_validator.validating"), I_CmsReport.C_FORMAT_NOTE);
+                report.print(cms.getRequestContext().removeSiteRoot(resourceName));
                 report.print(report.key("report.dots"));
 
                 links = ((I_CmsHtmlLinkValidatable) resourceType).findLinks(cms, resource);
