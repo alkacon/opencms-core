@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2003/05/05 07:50:52 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/05/16 11:52:57 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -25,7 +25,6 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
 
 package com.opencms.util;
 
@@ -51,19 +50,12 @@ import java.util.StringTokenizer;
  * <code>decodeURIComponent</code> functions wich are work properly with unicode characters.
  * These functions are supported in IE 5.5+ and NS 6+ only.
  *
- * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
 public class Encoder {
     
-    /** Flag to indicate if the Java 1.4 encoding method (with encoding parameter) is supported by the JVM */
-    private static boolean C_NEW_ENCODING_SUPPORTED = true;
-
-    /** Flag to indicate if the Java 1.4 decoding method (with encoding parameter) is supported by the JVM */
-    private static boolean C_NEW_DECODING_SUPPORTED = true;
-    
     /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard */
-    public static final String C_URI_ENCODING = "UTF-8";
+    public static final String C_UTF8_ENCODING = "UTF-8";
 
     /**
      * Constructor
@@ -77,44 +69,37 @@ public class Encoder {
      * 
      * In case you don't know what encoding to use, set the value of 
      * the <code>encoding</code> parameter to <code>null</code>. 
-     * This will use the default encoding, which is propably the right one.<p>
-     * 
-     * It also solves a backward compatiblity issue between Java 1.3 and 1.4,
-     * since 1.3 does not support an explicit encoding parameter and always uses
-     * the default system encoding.<p>
+     * This method will then default to UTF-8 encoding, which is propably the right one.<p>
      * 
      * @param source the String to encode
      * @param encoding the encoding to use (if null, the system default is used)
-     * @param fallbackToDefaultDecoding If true, the method will fallback to the default encoding (Java 1.3 style), 
-     * if false, the source String will be returned unencoded 
      * @return the encoded source String
      */
-    public static String encode(String source, String encoding, boolean fallbackToDefaultEncoding) {
+    public static String encode(String source, String encoding) {
         if (source == null) return null;
         if (encoding != null) {
-            if (C_NEW_ENCODING_SUPPORTED) {
-                try {
-                    return URLEncoder.encode(source, encoding); 
-                } 
-                catch (java.io.UnsupportedEncodingException e) {}
-                catch (java.lang.NoSuchMethodError n) {
-                    C_NEW_ENCODING_SUPPORTED = false;
-                }
-            }
-            if (! fallbackToDefaultEncoding) return source;
+            try {
+                return URLEncoder.encode(source, encoding); 
+            } catch (java.io.UnsupportedEncodingException e) {
+                // will fallback to default
+            } 
         }
-        // Fallback to default encoding
-        return URLEncoder.encode(source);
+        // fallback to default encoding
+        try {
+            return URLEncoder.encode(source, C_UTF8_ENCODING); 
+        } catch (java.io.UnsupportedEncodingException e) {}
+        return source;
     }
     
     /**
-     * Encodes a String using the default encoding.
+     * Encodes a String using UTF-8 encoding, which is the standard for http data transmission
+     * with GET ant POST requests.<p>
      * 
      * @param source the String to encode
      * @return String the encoded source String
      */
     public static String encode(String source) {
-        return encode(source, C_URI_ENCODING, true);
+        return encode(source, C_UTF8_ENCODING);
     }
 
     /**
@@ -124,44 +109,37 @@ public class Encoder {
      * 
      * In case you don't know what encoding to use, set the value of 
      * the <code>encoding</code> parameter to <code>null</code>. 
-     * This will use the default encoding, which is propably the right one.<p>
-     * 
-     * It also solves a backward compatiblity issue between Java 1.3 and 1.4,
-     * since 1.3 does not support an explicit encoding parameter and always uses
-     * the default system encoding.<p>
+     * This method will then default to UTF-8 encoding, which is propably the right one.<p>
      * 
      * @param source The string to decode
      * @param encoding The encoding to use (if null, the system default is used)
-     * @param fallbackToDefaultDecoding If true, the method will fallback to the default encoding (Java 1.3 style), 
-     * if false, the source String will be returned undecoded
      * @return The decoded source String
      */
-    public static String decode(String source, String encoding, boolean fallbackToDefaultDecoding) {
+    public static String decode(String source, String encoding) {
         if (source == null) return null;
         if (encoding != null) {
-            if (C_NEW_DECODING_SUPPORTED) {
-                try {
-                    return URLDecoder.decode(source, encoding); 
-                } 
-                catch (java.io.UnsupportedEncodingException e) {}
-                catch (java.lang.NoSuchMethodError n) {
-                    C_NEW_DECODING_SUPPORTED = false;
-                }
-            }
-            if (! fallbackToDefaultDecoding) return source;
+            try {
+                return URLDecoder.decode(source, encoding); 
+            } catch (java.io.UnsupportedEncodingException e) {
+                // will fallback to default
+            } 
         }
-        // Fallback to default decoding
-        return URLDecoder.decode(source);        
+        // fallback to default decoding
+        try {
+            return URLDecoder.decode(source, C_UTF8_ENCODING); 
+        } catch (java.io.UnsupportedEncodingException e) {}
+        return source;     
     }
     
     /**
-     * Decodes a String using the default encoding.
+     * Decodes a String using UTF-8 encoding, which is the standard for http data transmission
+     * with GET ant POST requests.<p>
      * 
      * @param source the String to decode
      * @return String the decoded source String
      */
     public static String decode(String source) {
-        return decode(source, C_URI_ENCODING, true);
+        return decode(source, C_UTF8_ENCODING);
     }    
 
     /**
@@ -175,7 +153,7 @@ public class Encoder {
 
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
         // encoding, except the blank which is not encoded into a %20.
-        String enc = encode(source, encoding, true);
+        String enc = encode(source, encoding);
         StringTokenizer t = new StringTokenizer(enc, "+");
         while(t.hasMoreTokens()) {
             ret.append(t.nextToken());
@@ -201,7 +179,7 @@ public class Encoder {
 
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
         // encoding, except the blank which is not encoded into a %20.
-        String enc = encode(source, encoding, true);
+        String enc = encode(source, encoding);
         for(int z = 0;z < enc.length();z++) {
             if(enc.charAt(z) == '+') {
                 ret.append("%20");
@@ -353,7 +331,7 @@ public class Encoder {
                 preparedSource.append(c);
             }
         }
-        return decode(preparedSource.toString(), encoding, true);
+        return decode(preparedSource.toString(), encoding);
     }
     
     /**
@@ -388,6 +366,6 @@ public class Encoder {
      */
     public static String redecodeUriComponent(String input) {
        if (input == null) return input;
-       return new String(changeEncoding(input.getBytes(), C_URI_ENCODING, A_OpenCms.getDefaultEncoding())); 
+       return new String(changeEncoding(input.getBytes(), C_UTF8_ENCODING, A_OpenCms.getDefaultEncoding())); 
     }
 }

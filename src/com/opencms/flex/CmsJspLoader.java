@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/05/16 11:53:14 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -414,7 +414,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             // add all the links to the current cms context
             StringTokenizer tok = new StringTokenizer(cmslinks, C_EXPORT_HEADER_SEP);
             while (tok.hasMoreTokens()) {
-                String link = Encoder.decode(tok.nextToken(), "UTF-8", true);
+                String link = Encoder.decode(tok.nextToken());
                 cms.getRequestContext().addLink(link);
                 if (DEBUG > 3) System.err.println("CmsJspLoader.exportJsp(): Extracted link " + link);
             }

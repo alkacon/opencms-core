@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/02/11 19:41:50 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/05/16 11:53:23 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2003/02/11 19:41:50 $
+ * @version $Revision: 1.43 $ $Date: 2003/05/16 11:53:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -176,7 +176,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
                 } catch (UnsupportedEncodingException e) {
                     content = new String(editFile.getContents());
                 }
-                content = Encoder.escapeWBlanks(content, Encoder.C_URI_ENCODING);
+                content = Encoder.escapeWBlanks(content, Encoder.C_UTF8_ENCODING);
                 parameters.put(C_PARA_CONTENT, content);
             }
 
@@ -184,7 +184,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
             // back to the database.
             if(saveRequested) {
                 try{
-                    String decodedContent = Encoder.unescape(content, Encoder.C_URI_ENCODING);
+                    String decodedContent = Encoder.unescape(content, Encoder.C_UTF8_ENCODING);
                     try {
                         editFile.setContents(decodedContent.getBytes(encoding));
                     } catch (UnsupportedEncodingException e) {
