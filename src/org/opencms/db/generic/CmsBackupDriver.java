@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/27 08:57:19 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2004/08/27 14:44:59 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.103 $ $Date: 2004/08/27 08:57:19 $
+ * @version $Revision: 1.104 $ $Date: 2004/08/27 14:44:59 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -184,7 +184,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_DELETEALL_BACKUP");
 
             for (int i = 0; i < count; i++) {
-                currentResource = (CmsBackupResource)existingBackups.get(size-i);
+                currentResource = (CmsBackupResource)existingBackups.get(i);
                 // delete the resource
                 stmt1.setString(1, currentResource.getStructureId().toString());
                 stmt1.setInt(2, currentResource.getTagId());
