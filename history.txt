@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/08 15:56:39 $
- * Version: $Revision: 1.447 $
+ * Date   : $Date: 2003/02/10 12:30:13 $
+ * Version: $Revision: 1.448 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,9 +20,16 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! Updated and improved english workplace online help available as separate module "org.opencms.help.en"
 * Fixed issue #55 from Bugzilla (compatibility.support.oldlocales not working if no new modules installed)
 * Fixed issue where an absolute link to the local machine with an URI outside of OpenCms
   was incorrectly treated as an OpenCms internal link by the link replacement engine
+- Some final touches where added to the JSP / XMLTemplate integration for easier including of sub - elements
+  or multiple body pages in JSP templates
+- Updated OpenCms TLD for modified options of the <cms:include> tag
+- The "bodyloader.xml" for the JSP / XMLTemplate integration is now a default part of the installation, 
+  located in the new /system/opt/ directory
+- Improved logging output if OpenCms can not be initialized properly
 
 OpenCms 5.0 "release candidate" (rc) 2  Kaitain - 04 February 2003
 ! Improved editor GUI (for both source code and WYSIWYG editor) 
