@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/09 18:57:30 $
- * Version: $Revision: 1.270 $
+ * Date   : $Date: 2003/10/09 19:14:32 $
+ * Version: $Revision: 1.271 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.270 $ $Date: 2003/10/09 18:57:30 $
+ * @version $Revision: 1.271 $ $Date: 2003/10/09 19:14:32 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8067,6 +8067,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         m_vfsDriver.writeResource(context.currentProject(), resource, filecontent, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
+        // mark the resource as modified in the current project
+        m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), resource);
 
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);

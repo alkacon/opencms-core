@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/10/09 18:57:30 $
- * Version: $Revision: 1.147 $
+ * Date   : $Date: 2003/10/09 19:14:32 $
+ * Version: $Revision: 1.148 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.147 $ $Date: 2003/10/09 18:57:30 $
+ * @version $Revision: 1.148 $ $Date: 2003/10/09 19:14:32 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -473,8 +473,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @see org.opencms.db.I_CmsVfsDriver#createFolder(java.sql.ResultSet, int, boolean)
      */
     public CmsFolder createFolder(ResultSet res, int projectId, boolean hasProjectIdInResultSet) throws SQLException {
-        int resProjectId = I_CmsConstants.C_UNKNOWN_ID;
-
+        
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
         CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
         CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_PARENT_ID")));
@@ -484,24 +483,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_FILE_ID")));
         int resourceState = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
         int structureState = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_STATE"));
-        CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_LOCKED_BY")));
         long dateCreated = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
-        int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+        int resProjectId = res.getInt("LOCKED_IN_PROJECT");
         int linkCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LINK_COUNT"));
-
-        // TODO VFS links: refactor all upper methods to support the VFS link type param 
-
-        if (!lockedBy.equals(CmsUUID.getNullUUID())) {
-            // resource is locked
-            resProjectId = lockedInProject;
-        } else {
-            // resource is not locked
-            resProjectId = projectId;
-            lockedInProject = projectId;
-        }
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
