@@ -1,36 +1,29 @@
 login Admin admin
+writeExportPath "c:/work/exportfiles/"
 addResourceType plain "1" ""
 addResourceType XMLTemplate "3" ""
 addResourceType page "3" ""
 addResourceType binary "1" ""
+addResourceType image "1" ""
 addResourceType script "1" ""
+addResourceType newspage "3" ""
 createMetadefinition "Title" "plain" "0"
 createMetadefinition "Title" "page" "0"
 createMetadefinition "Title" "XMLTemplate" "0"
 createMetadefinition "Title" "binary" "0"
 createMetadefinition "Title" "script" "0"
-createMetadefinition "NavTitle" "page" "0"
+createMetadefinition "Title" "image" "0"
+createMetadefinition "NavText" "page" "0"
 createMetadefinition "NavPos" "page" "0"
-createMetadefinition "NavTitle" "folder" "0"
+createMetadefinition "NavText" "folder" "0"
 createMetadefinition "NavPos" "folder" "0"
+createMetadefinition "Title" "folder" "0"
 createProject "__setupproj" "The project to setup the cms" Administrators Administrators
 setCurrentProject "__setupproj"
 copyResourceToProject "/"
-createFolder "/" system
-createFolder "/system/" workplace
-createFolder "/system/workplace/" pics
-createFolder "/" content
-lockResource "/content/"
-chgrp "/content/" Users
-unlockResource "/content/"
-createFolder "/content/" bodys
-lockResource "/content/bodys/"
-chgrp "/content/bodys/" Users
-unlockResource "/content/bodys/"
-createFolder "/content/" templates
-lockResource "/content/templates/"
-chgrp "/content/templates/" Users
-unlockResource "/content/templates/"
+lockResource "/"
+chgrp "/" Users
+unlockResource "/"
 importDb "config/workplace.dat" "/"
 publishProject "__setupproj"
 addMountPoint "/system/workplace/pics/" "C:/Programme/Apache/html/pics/" pics Guest Guests plain "383"
