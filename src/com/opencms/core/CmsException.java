@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2002/01/03 15:01:43 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2002/05/10 20:10:42 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import java.util.*;
  * This exception is thrown for security reasons in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.44 $ $Date: 2002/01/03 15:01:43 $
+ * @version $Revision: 1.45 $ $Date: 2002/05/10 20:10:42 $
  */
 public class CmsException extends Exception {
 
@@ -237,7 +237,21 @@ public class CmsException extends Exception {
      * Definition of error code for HTTP sreaming error
      */
     public final static int C_HTTPS_REQUEST_ERROR = 38;
-
+    
+    /**
+     * Error code for Flex cache
+     */
+    public final static int C_FLEX_CACHE = 39;    
+    /**
+     * Error code for Flex loader
+     */
+    public final static int C_FLEX_LOADER = 40;
+    /**
+     * Unspecified Flex error code
+     */
+    public final static int C_FLEX_OTHER = 41;
+    
+    
     public final static String C_EXTXT[] =  {
         "Unknown exception", "Access denied", "Not found",
         "Bad name", "Sql exception", "Folder not empty", "Admin access required",
@@ -253,7 +267,8 @@ public class CmsException extends Exception {
         "New password is too short", "Access denied to resource",
         "Resource deleted", "Resourcebroker-init error", "Registry error",
         "User already exists", "HTTP streaming error",
-        "Wrong scheme for http resource", "Wrong scheme for https resource"
+        "Wrong scheme for http resource", "Wrong scheme for https resource",
+        "Error in Flex cache", "Error in Flex loader", "Error in Flex engine"
     };
 
     /**
