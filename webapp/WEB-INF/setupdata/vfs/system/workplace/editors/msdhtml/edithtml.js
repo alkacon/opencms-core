@@ -42,19 +42,17 @@ function hasSelectedText() {
 	    selectedRange = range;
 	}
 	
-	if (typeof(range.tagName) != 'undefined') {
-		alert(range.tagName);
-	}
-
 	if ((selectedRange == null) || (selectedRange.htmlText == "") || (selectedRange.htmlText == null)) {
-		// no text selected, check if an image is selected
-		range = range.item(0);
-		if (typeof(range.tagName) != 'undefined') {
-			var imgTag = range.tagName;
-			if (imgTag == "IMG" || imgTag == "img") {
-				return true;	
+		// no text selected, check if an image is selected		
+		try {
+			range = range.item(0);
+			if (typeof(range.tagName) != 'undefined') {
+				var imgTag = range.tagName;
+				if (imgTag == "IMG" || imgTag == "img") {
+					return true;	
+				}
 			}
-		}
+		} catch (e) {}
 	    // no valid selection, display message
 	    return false;
 	} else {
