@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/03/25 19:34:22 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/03/26 13:43:59 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -91,7 +91,10 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      * Dumping the content is like calling "load" where the result is 
      * not written to the response stream, but to the returned byte array.
      * Dumping is different from an export because the export might actually require 
-     * that the content is handled or modified in a special way, or set special http headers.  
+     * that the content is handled or modified in a special way, or set special http headers.<p>
+     * 
+     * Moreover, if the page type is template based, calling "dump" will not trigger the 
+     * template but directly deliver the contents from the selected resource.<p>
      * 
      * @param cms used to access the OpenCms VFS
      * @param resource the reqested resource in the VFS
@@ -112,9 +115,13 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
     /**
      * Static exports the contents of the requested file and it's sub-elements.<p>
      *
-     * During static export, the resource content is written to 2 streams: 
+     * During static export, the resource content may be written to 2 streams: 
      * The export stream, and the http response output stream.
-     * This is required for "on demand" exporting of resources.<p> 
+     * Which stream is actually used depends wether the export is in "on demand" 
+     * or "after publish" mode. In "on demand" mode, the resource needs to 
+     * be written both to the response stream and to the file stream. In 
+     * "after publish" mode, it's usually only written to the file stream, 
+     * but sometimes it's required to write to the response stream as well.<p> 
      *
      * @param cms the initialized CmsObject which provides user permissions
      * @param resource the requested OpenCms VFS resource
