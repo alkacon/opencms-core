@@ -54,7 +54,7 @@ if (editElement != null) {
 --%><cms:template element="start_directedit_enabled">
 <!-- EDIT BLOCK START -->
 <div id="<%= editId %>" class="directedit_norm">
-<form name="form_<%= editId %>" method="post" action="<%= editLink %>" class="nomargin">
+<form name="form_<%= editId %>" id="form_<%= editId %>" method="post" action="<%= editLink %>" class="nomargin">
 <input type="hidden" name="resource" value="<%= editTarget %>">
 <input type="hidden" name="directedit" value="true">
 <input type="hidden" name="elementlanguage" value="<%= editLocale %>">
