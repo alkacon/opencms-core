@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupDb.java,v $
- * Date   : $Date: 2004/08/11 10:50:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/19 12:27:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.test.OpenCmsTestCase;
  * Tests the database creation / removal used during setup.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.5
  */
@@ -77,6 +77,11 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testCreateTables() {
         
+        if (C_DB_ORACLE.equals(getDatabaseProduct())) {
+            System.out.println("testDropDatabase not applicable for oracle.");
+            return;
+        }        
+        
         // use create method form superclass
         CmsSetupDb setupDb = createTables();     
         
@@ -91,6 +96,11 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      * Tests table removal.<p>
      */
     public void testDropTables() {
+        
+        if (C_DB_ORACLE.equals(getDatabaseProduct())) {
+            System.out.println("testDropDatabase not applicable for oracle.");
+            return;
+        }        
         
         // use drop method form superclass
         CmsSetupDb setupDb = dropTables();         
