@@ -7,7 +7,7 @@ create table CMS_PROPERTIES             (PROPERTY_NAME VARCHAR(40) not null,
                                          primary key(PROPERTY_NAME));
 
 create table CMS_USERS                  (USER_ID int not null auto_increment,
-                                         USER_NAME VARCHAR(16) not null,
+                                         USER_NAME VARCHAR(32) not null,
                                          USER_PASSWORD VARCHAR(32) not null,
                                          USER_DESCRIPTION VARCHAR(255) not null,
                                          primary key(USER_ID), unique(USER_NAME));
@@ -46,6 +46,8 @@ create table CMS_PROJECTS               (PROJECT_ID int not null auto_increment,
                                          PROJECT_FLAGS int not null,
 										 PROJECT_CREATEDATE datetime not null,
 										 PROJECT_PUBLISHDATE datetime,
+										 PROJECT_PUBLISHED_BY int not null,
+										 PROJECT_COUNT_LOCKED_RESOURCES int not null,
                                          primary key(PROJECT_ID), unique(PROJECT_NAME, PROJECT_CREATEDATE));
 
 create table CMS_METADEF                (METADEF_ID int not null auto_increment, 

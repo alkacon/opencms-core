@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/04/11 13:38:08 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/04/13 19:48:07 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/04/11 13:38:08 $
+ * @version $Revision: 1.17 $ $Date: 2000/04/13 19:48:07 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -562,6 +562,30 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
         return allResources;
     }
      
+	/**
+	 * Unlocks all resources in this project.
+	 * 
+	 * 
+	 * @param id The id of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void unlockProject(A_CmsProject project)
+		throws CmsException {
+        Vector resources;
+        String mountpoint;
+        I_CmsAccessFile accessFile=null;
+        
+        // initatite the unlocking process for all access modules
+        Enumeration e = m_mountpointStorage.keys();
+		while (e.hasMoreElements()) {
+			mountpoint=(String)e.nextElement();
+			accessFile=(I_CmsAccessFile)m_mountpointStorage.get(mountpoint);
+			// unlock the project
+			accessFile.unlockProject(project);
+		}
+	}
+	
     /**
      * Deletes all resources of a project.
      *

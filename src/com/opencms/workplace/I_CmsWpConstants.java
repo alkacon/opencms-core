@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/04/13 18:06:06 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2000/04/13 19:48:08 $
+ * Version: $Revision: 1.86 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.85 $ $Date: 2000/04/13 18:06:06 $
+ * @version $Revision: 1.86 $ $Date: 2000/04/13 19:48:08 $
  */
 public interface I_CmsWpConstants {
 
@@ -657,6 +657,9 @@ public interface I_CmsWpConstants {
     /** customized template value for the file list */
     public static final String C_FILELIST_CUSTOMTEMPLATE="customtemplate";
     
+    /** The name column*/
+    public final static String C_FILELIST_COLUMN_NAME="COLUMN_NAME";
+	
     /** The title column*/
     public final static String C_FILELIST_COLUMN_TITLE="COLUMN_TITLE";
     
@@ -786,6 +789,9 @@ public interface I_CmsWpConstants {
     /** Flag for displaying the locked column */
     public static final int C_FILELIST_LOCKED = 256;
   
+    /** Flag for displaying the name column */
+    public static final int C_FILELIST_NAME = 512;
+	
 	/** Parameter of user management */    
 	public static final String C_USERS_NAME = "USERNAME";
 	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
- * Date   : $Date: 2000/04/04 10:28:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/13 19:48:08 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/04/04 10:28:48 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/13 19:48:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -132,8 +132,13 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 		for(int i = 0; i < list.size(); i++) {
 			// get the actual project
 			A_CmsProject project = (A_CmsProject) list.elementAt(i);
-			// TODO: get the correct state of the project
-			// state = ???;
+
+			// get the correckt state
+			if( project.getCountLockedResources() == 0 ) {
+				state = C_PROJECTLIST_STATE_UNLOCKED;
+			} else {
+				state = C_PROJECTLIST_STATE_LOCKED;
+			}
 			  
 			// get the processed list.
 			
@@ -165,7 +170,13 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 										CmsXmlWpTemplateFile xmlFile, A_CmsProject project)
 		throws CmsException {
 		
-		String state = C_PROJECTLIST_STATE_UNLOCKED;
+		String state;
+		// get the correckt state
+		if( project.getCountLockedResources() == 0 ) {
+			state = C_PROJECTLIST_STATE_UNLOCKED;
+		} else {
+			state = C_PROJECTLIST_STATE_LOCKED;
+		}
 		xmlFile.setXmlData(C_PROJECTLIST_NAME, project.getName());
 		xmlFile.setXmlData(C_PROJECTLIST_NAME_ESCAPED, Encoder.escape(project.getName()));
 		xmlFile.setXmlData(C_PROJECTLIST_PROJECTID, project.getId() + "");

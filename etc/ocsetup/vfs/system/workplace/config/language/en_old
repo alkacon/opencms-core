@@ -427,6 +427,7 @@
 			<inactive>inactive</inactive>
 			<loading>Loading...</loading>
 			<propertydef>Property</propertydef>
+			<path>Folder</path>
 			<mimetype>MimeTyp</mimetype>
 			<name>Name</name>
 			<newsstate>News-State</newsstate>
@@ -440,6 +441,7 @@
 			<projectname>Project Name</projectname>
 			<publishedat>Published</publishedat>
 			<publishedby>Published by</publishedby>
+			<selectfolder>Select folder...</selectfolder>
 			<shorttext>Short description</shorttext>
 			<size>Size</size>
 			<state>State</state>
@@ -542,6 +544,18 @@
 				<message2>now?</message2>
 				<title>Release all locks for project</title>
 			</lockchange>
+			<resentfilelist>
+				<label>
+					<filter>Filter</filter>
+				</label>
+				<filter>
+					<all>All changes</all>
+					<new>New files</new>
+					<changed>Changed files</changed>
+					<deleted>Deleted files</deleted>
+					<locked>Locked files</locked>
+				</filter>
+			</resentfilelist>
 		</project>
 		
 		<select>
@@ -741,6 +755,7 @@ A new task was reactivated for you or your role.</content>
 			<chtype>Change File type</chtype>
 			<copy>Copy File</copy>
 			<copyfolder>Copy Folder</copyfolder>
+			<deleteproject>Delete project</deleteproject>
 			<deletepropdef>Delete the property definition</deletepropdef>
 			<deleteextension>Delete the association of file extension</deleteextension>
 			<editpropertyinfo>Edit Property of</editpropertyinfo>

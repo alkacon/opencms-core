@@ -27,7 +27,7 @@ function show_help()
 
 </head>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" topmargin=2 onLoad="window.top.body.tasks_head.location.href='tasks_head_2.html';" bgproperties=fixed>
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" topmargin=2 onLoad="window.top.body.tasks_head.location.href='tasks_head_2.html';" bgproperties=fixed onUnload="if(treewin!=null)treewin.close();">
 
 <center>
 <form id=TASKVIEW name=TASKVIEW>
@@ -354,7 +354,7 @@ function show_help()
 		<td class=dialogtxt nowrap>
 			<input type="text" class="textfeld" maxlength=10 value="]]><PROCESS>due</PROCESS><![CDATA[" name="DATE" id="DATE">
 		</td>
-		<td class=formular width=100%><a href="javascript:opensmallwin('../templates/timerrefresh.html', 'Kalender', 250, 350)"><img src="]]><METHOD name="picsUrl">ic_timer.gif</METHOD><![CDATA[" border=0 width=16 height=16 align=left hspace=0></a></td>
+		<td class=formular width=100%><a href="javascript:treewin=opensmallwin('timerrefresh.html', 'Kalender', 250, 350),treewin.focus();"><img alt="]]><LABEL value="task.label.selectdate"/><![CDATA[" src="]]><METHOD name="picsUrl">ic_timer.gif</METHOD><![CDATA[" border=0 width=16 height=16 align=left hspace=0></a></td>
 	</tr>
 	<!-- Ende Inhalt -->
 	

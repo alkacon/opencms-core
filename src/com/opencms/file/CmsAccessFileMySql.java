@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/04/11 13:38:08 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2000/04/13 19:48:07 $
+ * Version: $Revision: 1.51 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2000/04/11 13:38:08 $
+ * @version $Revision: 1.51 $ $Date: 2000/04/13 19:48:07 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -96,6 +96,14 @@ import com.opencms.util.*;
      */   
     private static final String C_PROJECT_DELETE_FILES = "DELETE FROM " + C_DATABASE_PREFIX + "FILES "
 														 + "WHERE PROJECT_ID = ?";
+	
+    /**
+     * SQL Command for unlocking all resources. 
+     * A resource includes all data of the fileheader.
+     */   
+    private static final String C_PROJECT_UNLOCK_RESOURCES ="UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
+															+"LOCKED_BY = " + C_UNKNOWN_ID
+															+"WHERE PROJECT_ID = ?";
 	
     /**
      * SQL Command for deleting all files in a project. 
@@ -1581,6 +1589,26 @@ import com.opencms.util.*;
            return resources;
     }
      
+	/**
+	 * Unlocks all resources in this project.
+	 * 
+	 * 
+	 * @param id The id of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void unlockProject(A_CmsProject project)
+		throws CmsException {
+		try {
+			// unlock all project-resources.
+			PreparedStatement statementUnlockProject = m_Con.prepareStatement(C_PROJECT_UNLOCK_RESOURCES);
+			statementUnlockProject.setInt(1,project.getId());
+			statementUnlockProject.executeQuery();
+		} catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
+	}
+	
     /**
      * Deletes a specified project
      *

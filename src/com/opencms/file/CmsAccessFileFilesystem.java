@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/04/12 13:06:29 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/04/13 19:48:07 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/04/12 13:06:29 $
+ * @version $Revision: 1.24 $ $Date: 2000/04/13 19:48:07 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -547,7 +547,6 @@ import com.opencms.core.*;
          throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILESYSTEM_ERROR);
      }
      
-
      /**
       * Deletes a file in the filesytem. 
       * 
@@ -1239,6 +1238,58 @@ import com.opencms.core.*;
         return resources;
     }
     
+	/**
+	 * Unlocks all resources in this project.
+	 * 
+	 * 
+	 * @param id The id of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void unlockProject(A_CmsProject project)
+		throws CmsException {
+		Vector files = new Vector();
+		Vector folders = new Vector();
+		
+		CmsFile file;
+		CmsFolder folder;
+		
+		try {
+		
+			// get the root-folder of this mountpoint
+			CmsFolder mp = readFolder(project, "");
+			// unlock the mountpoint, if needed.
+			if( mp.isLocked() ) {
+				mp.setLocked(C_UNKNOWN_ID);
+				writeFolder(project, mp, false);
+			}
+						
+			// get all resources
+			getAllResources(C_ROOT, project, files, folders);
+
+			// unlock all folders
+			for(int i = 0; i < folders.size(); i++) {
+				folder = (CmsFolder) folders.elementAt(i);
+				if( folder.isLocked() ) {
+					folder.setLocked(C_UNKNOWN_ID);
+					writeFolder(project, folder, false);
+				}
+			}
+		
+			// unlock all files
+			for(int i = 0; i < files.size(); i++) {
+				file = (CmsFile) files.elementAt(i);
+				if( file.isLocked() ) {
+					file.setLocked(C_UNKNOWN_ID);
+					writeFileHeader(project, null, file, false);
+				}
+			}
+		} catch( CmsException exc ) {
+			// the resources of this mountpoint are not in the overgiven project
+			// ignore the exception
+		}
+	}
+	
     /**
      * Deletes a specified project.
      *

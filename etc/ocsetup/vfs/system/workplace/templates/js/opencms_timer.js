@@ -68,26 +68,12 @@ function YearEntry(sText, sValue)
    }
 // arrays
 var aYear = new Array();
-var aMonth = new Array();
 
 for(var j=0; j<11; j++)
 {
 	help=aktJahr+j;
 	aYear[j] = new YearEntry(help,help);
 }
-
-aMonth[0] = new MonthEntry('Januar',1);
-aMonth[1] = new MonthEntry('Februar',2);
-aMonth[2] = new MonthEntry('März',3);
-aMonth[3] = new MonthEntry('April',4);
-aMonth[4] = new MonthEntry('Mai',5);
-aMonth[5] = new MonthEntry('Juni',6);
-aMonth[6] = new MonthEntry('Juli',7);
-aMonth[7] = new MonthEntry('August',8);
-aMonth[8] = new MonthEntry('September',9);
-aMonth[9] = new MonthEntry('Oktober',10);
-aMonth[10] = new MonthEntry('November',11);
-aMonth[11] = new MonthEntry('Dezember',12);
 
 txt1='<tr><td align=right>1</td><td align=right>2</td><td align=right>3</td><td align=right>4</td><td align=right>5</td><td align=right>6</td><td align=right>7</td></tr>';
 txt12='<tr><td align=right>8</td><td align=right>9</td><td align=right>10</td><td align=right>11</td><td align=right>12</td><td align=right>13</td><td align=right>14</td></tr>';
@@ -394,7 +380,7 @@ function selectDays(day, month, year)
 				break;
 			}
 	}
-	txt = '<table border=0 cellspacing=1 cellpadding=4><tr><td align=center>Mo</td><td align=center>Di</td><td align=center>Mi</td><td align=center>Do</td><td align=center>Fr</td><td align=center>Sa</td><td align=center>So</td></tr><tr><td colspan=7><hr></td></tr>'+txt+'</table>';
+	txt = '<table border=0 cellspacing=1 cellpadding=4><tr><td align=center>'+aWeekday[0]+'</td><td align=center>'+aWeekday[1]+'</td><td align=center>'+aWeekday[2]+'</td><td align=center>'+aWeekday[3]+'</td><td align=center>'+aWeekday[4]+'</td><td align=center>'+aWeekday[5]+'</td><td align=center>'+aWeekday[6]+'</td></tr><tr><td colspan=7><hr></td></tr>'+txt+'</table>';
 	eval(lyrtxt);
 	eval(layerzeigen_01+'days'+layerzeigen_02);
 	userYear=year;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/04/06 09:26:34 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/13 19:48:08 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/04/06 09:26:34 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/13 19:48:08 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -172,7 +172,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // set the default columns in the filelist
         int filelist=C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
         // HACK
-         filelist=4095;
+         filelist=4095 + 512;
         pref.put(C_USERPREF_FILELIST,new Integer(filelist));
         return pref;
     }

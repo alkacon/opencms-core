@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/13 18:06:06 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2000/04/13 19:48:07 $
+ * Version: $Revision: 1.65 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.64 $ $Date: 2000/04/13 18:06:06 $ 
+ * @version $Revision: 1.65 $ $Date: 2000/04/13 19:48:07 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -287,6 +287,18 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException { 
 		 return( c_rb.publishProject(m_context.currentUser(), 
 									 m_context.currentProject(), id) );
+	}
+	
+	/**
+	 * Unlocks all resources in this project.
+	 * 
+	 * @param id The id of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void unlockProject(int id)
+		throws CmsException {
+		c_rb.unlockProject(m_context.currentUser(), m_context.currentProject(), id);
 	}
 	
 	/**

@@ -5,8 +5,7 @@
 	<tr>
 		<td nowrap valign=top><A href="javascript:showkontext(']]><PROCESS>menu</PROCESS><![CDATA[',']]><PROCESS>id</PROCESS><![CDATA[',]]><PROCESS>idx</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_project_small.gif</METHOD><![CDATA[" width=16 height=16 border=0></a></td>
 		<td nowrap valign=top>]]><PROCESS>lockstate</PROCESS><![CDATA[</td>
-		<!-- <td nowrap valign=top><p class=einzug><a href="administration_content_projectresent_lock.html" class=task>]]><PROCESS>name</PROCESS><![CDATA[</a></td> -->
-		<td nowrap valign=top><p class=einzug>]]><PROCESS>name</PROCESS><![CDATA[</td>
+		<td nowrap valign=top><p class=einzug><a href="administration_content_projectresent_files.html?projectid=]]><PROCESS>id</PROCESS><![CDATA[" class=task>]]><PROCESS>name</PROCESS><![CDATA[</a></td>
 		<td><p class=einzug>]]><PROCESS>description</PROCESS><![CDATA[</td>
 		<td nowrap valign=top><p class=einzug>]]><PROCESS>state</PROCESS><![CDATA[</td>
 		<td nowrap valign=top><p class=einzug>]]><PROCESS>projectmanager</PROCESS><![CDATA[</td>

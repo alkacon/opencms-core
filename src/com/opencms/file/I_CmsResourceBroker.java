@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/13 18:06:06 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2000/04/13 19:48:08 $
+ * Version: $Revision: 1.59 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.58 $ $Date: 2000/04/13 18:06:06 $
+ * @version $Revision: 1.59 $ $Date: 2000/04/13 19:48:08 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -203,6 +203,21 @@ interface I_CmsResourceBroker {
 								 int id)
 		throws CmsException;
 
+	/**
+	 * Unlocks all resources in this project.
+	 * 
+	 * <B>Security</B>
+	 * Only the admin or the owner of the project can do this.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void unlockProject(A_CmsUser currentUser, A_CmsProject currentProject, int id)
+		throws CmsException;
+							
 	/**
 	 * Deletes a project.
 	 * 

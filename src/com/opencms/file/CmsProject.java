@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/04/04 10:28:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/13 19:48:08 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/04/04 10:28:47 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/13 19:48:08 $
  */
 public class CmsProject extends A_CmsProject implements I_CmsConstants,
                                                         Cloneable{
@@ -91,10 +91,20 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants,
 	 * The state of this project.
 	 */
 	private int m_flags = C_PROJECT_STATE_UNLOCKED;
+	
+	/**
+	 * The user-id of the publisher
+	 */
+	private int m_publishedBy = C_UNKNOWN_ID;
+	
+	/**
+	 * The counter of locked resources in this project.
+	 */
+	private int m_countLockedResources = 0;
 
 	CmsProject(int projectId, String name, String description, int taskId, 
 			   int ownerId, int groupId, int managergroupId, int flags, Timestamp createdate, 
-			   Timestamp publishingdate) {
+			   Timestamp publishingdate, int publishedBy, int countLockedResources) {
 		m_id = projectId;
 		m_name = name;
 		m_description = description;
@@ -103,6 +113,8 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants,
 		m_groupId = groupId;
 		m_managergroupId = managergroupId;
 		m_flags = flags;
+		m_publishedBy = publishedBy;
+		m_countLockedResources = countLockedResources;
 		if( createdate != null) {
 			m_createdate = createdate.getTime();
 		} else {
@@ -238,6 +250,57 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants,
 	}
 	
 	/**
+	 * Gets the published-by value.
+	 * 
+	 * @return the published-by value.
+	 */
+	int getPublishedBy() {
+		return m_publishedBy;
+	}
+	
+	/**
+	 * Sets the published-by value.
+	 * 
+	 * @param the published-by value.
+	 */
+	void setPublishedBy(int id) {
+		m_publishedBy = id;
+	}
+	
+	/**
+	 * Gets the counter for locked resources in this project.
+	 * 
+	 * @return the counter for locked resources in this project.
+	 */
+	public int getCountLockedResources() {
+		return m_countLockedResources;
+	}
+	
+	/**
+	 * Increments the counter for locked resources in this project.
+	 */
+	void incrementCountLockedResources() {
+		m_countLockedResources ++;
+	}
+	
+	/**
+	 * Decrements the counter for locked resources in this project.
+	 */
+	void decrementCountLockedResources() {
+		m_countLockedResources --;
+		if( m_countLockedResources < 0 ) {
+			m_countLockedResources = 0;
+		}
+	}
+	
+	/**
+	 * Clears the counter for locked resources in this project.
+	 */
+	void clearCountLockedResources() {
+		m_countLockedResources = 0;
+	}
+	
+	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
 	 * 
@@ -280,7 +343,8 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants,
                                        new String(m_description),this.m_taskId,
                                        this.m_ownerId,this.m_groupId,this.m_managergroupId,
                                        this.m_flags,new Timestamp(this.m_createdate),
-                                       new Timestamp(this.m_publishingdate));
+                                       new Timestamp(this.m_publishingdate),this.m_publishedBy,
+									   this.m_countLockedResources);
         return project;    
     }  
 }

@@ -31,10 +31,10 @@ function selectFolder(pathStr){
 </TEMPLATE>
 
 <TREELINE>
-<![CDATA[<tr><td valign=bottom align=left>]]><PROCESS>TREETAB</PROCESS><![CDATA[  ]]><PROCESS>TREESWITCH</PROCESS><![CDATA[ <a href="javascript:selectFolder(']]><PROCESS>TREEVAR</PROCESS><![CDATA[');"> ]]><PROCESS>TREEFOLDER</PROCESS><![CDATA[</a>&nbsp;<a href="javascript:selectFolder(']]><PROCESS>TREEVAR</PROCESS><![CDATA[');" class="]]><PROCESS>TREESTYLE</PROCESS><![CDATA[">]]><PROCESS>TREEENTRY</PROCESS><![CDATA[</a></td></tr>]]>
+<![CDATA[<tr><td valign=bottom align=left nowrap>]]><PROCESS>TREETAB</PROCESS><![CDATA[  ]]><PROCESS>TREESWITCH</PROCESS><![CDATA[ <a href="javascript:selectFolder(']]><PROCESS>TREEVAR</PROCESS><![CDATA[');"> ]]><PROCESS>TREEFOLDER</PROCESS><![CDATA[</a>&nbsp;<a href="javascript:selectFolder(']]><PROCESS>TREEVAR</PROCESS><![CDATA[');" class="]]><PROCESS>TREESTYLE</PROCESS><![CDATA[">]]><PROCESS>TREEENTRY</PROCESS><![CDATA[</a></td></tr>]]>
 </TREELINE>
 <TREELINEDISABLED>
-<![CDATA[<tr><td valign=bottom align=left>]]><PROCESS>TREETAB</PROCESS><![CDATA[  ]]><PROCESS>TREESWITCH</PROCESS><![CDATA[ <a href="#"> ]]><PROCESS>TREEFOLDER</PROCESS><![CDATA[</a>&nbsp;<a href="#" class="]]><PROCESS>TREESTYLE</PROCESS><![CDATA[">]]><PROCESS>TREEENTRY</PROCESS><![CDATA[</a></td></tr>]]>
+<![CDATA[<tr><td valign=bottom align=left nowrap>]]><PROCESS>TREETAB</PROCESS><![CDATA[  ]]><PROCESS>TREESWITCH</PROCESS><![CDATA[ <a href="#"> ]]><PROCESS>TREEFOLDER</PROCESS><![CDATA[</a>&nbsp;<a href="#" class="]]><PROCESS>TREESTYLE</PROCESS><![CDATA[">]]><PROCESS>TREEENTRY</PROCESS><![CDATA[</a></td></tr>]]>
 </TREELINEDISABLED>
 
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/13 18:06:06 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2000/04/13 19:48:08 $
+ * Version: $Revision: 1.102 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.101 $ $Date: 2000/04/13 18:06:06 $
+ * @version $Revision: 1.102 $ $Date: 2000/04/13 19:48:08 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -482,6 +482,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 // the project must be written to the cms.
 			 publishProject.setFlags(C_PROJECT_STATE_ARCHIVE);
 			 publishProject.setPublishingDate(new Date().getTime());
+			 publishProject.setPublishedBy(currentUser.getId());
 			 m_projectRb.writeProject(publishProject);
 			 
 			 // return the changed resources.
@@ -492,6 +493,40 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
 
+	/**
+	 * Unlocks all resources in this project.
+	 * 
+	 * <B>Security</B>
+	 * Only the admin or the owner of the project can do this.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void unlockProject(A_CmsUser currentUser, A_CmsProject currentProject,int id)
+		throws CmsException {
+
+		// read the project.
+		A_CmsProject project = m_projectRb.readProject(id);
+
+		// check the security
+		if( isAdmin(currentUser, currentProject) || 
+			isManagerOfProject(currentUser, project) || 
+			(project.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
+			
+			 // unlock all resources in the project
+			 m_fileRb.unlockProject(project);
+			 // update the counter of locked resources.
+			 project.clearCountLockedResources();
+			 m_projectRb.writeProject(project);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + id, 
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
 	/**
 	 * Deletes a project.
 	 * 
@@ -3008,6 +3043,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_fileRb.lockResource(currentUser, currentProject, 
 								  onlineProject(currentUser, currentProject), 
 								  resourcename, force);
+			// update counter of locked resources for the project.
+			currentProject.incrementCountLockedResources();
+			m_projectRb.writeProject(currentProject);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, 
 				CmsException.C_NO_ACCESS);
@@ -3045,6 +3083,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_fileRb.unlockResource(currentUser, currentProject, 
 								onlineProject(currentUser, currentProject), 
 								resourcename);		
+		// update counter of locked resources for the project.
+		currentProject.decrementCountLockedResources();
+		m_projectRb.writeProject(currentProject);
 	}
 		
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/04/13 18:06:06 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2000/04/13 19:48:07 $
+ * Version: $Revision: 1.64 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.63 $ $Date: 2000/04/13 18:06:06 $ 
+ * @version $Revision: 1.64 $ $Date: 2000/04/13 19:48:07 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -235,11 +235,21 @@ public abstract class A_CmsObject {
 	/**
 	 * Deletes a project.
 	 * 
-	 * @param name The name of the project to be published.
+	 * @param id The id of the project to be published.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	abstract public void deleteProject(int id)
+		throws CmsException;
+	
+	/**
+	 * Unlocks all resources in this project.
+	 * 
+	 * @param id The id of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	abstract public void unlockProject(int id)
 		throws CmsException;
 	
 	/**

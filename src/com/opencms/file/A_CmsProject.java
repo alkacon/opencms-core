@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsProject.java,v $
- * Date   : $Date: 2000/04/04 10:28:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/13 19:48:07 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,7 +33,7 @@ package com.opencms.file;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/04/04 10:28:47 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/13 19:48:07 $
  */
 abstract public class A_CmsProject
 {
@@ -131,6 +131,42 @@ abstract public class A_CmsProject
 	 * @param the publishing date of this project.
 	 */
     abstract void setPublishingDate(long publishingDate);
+	
+	/**
+	 * Gets the published-by value.
+	 * 
+	 * @return the published-by value.
+	 */
+	abstract int getPublishedBy();
+	
+	/**
+	 * Sets the published-by value.
+	 * 
+	 * @param the published-by value.
+	 */
+	abstract void setPublishedBy(int id);
+	
+	/**
+	 * Gets the counter for locked resources in this project.
+	 * 
+	 * @return the counter for locked resources in this project.
+	 */
+	public abstract int getCountLockedResources();
+	
+	/**
+	 * Increments the counter for locked resources in this project.
+	 */
+	abstract void incrementCountLockedResources();
+	
+	/**
+	 * Decrements the counter for locked resources in this project.
+	 */
+	abstract void decrementCountLockedResources();
+	
+	/**
+	 * Clears the counter for locked resources in this project.
+	 */
+	abstract void clearCountLockedResources();
 	
 	/**
 	 * Returns a string-representation for this object.

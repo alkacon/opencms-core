@@ -70,7 +70,7 @@ function show_help()
 								     <input type="text" name="selectallfolders" class="textfeld3" size=31>	
 								</td>
 								
-								<td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=PROJECTNEW&variable=selectallfolders', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="Durchsuchen"></a></td>
+								<td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=PROJECTNEW&variable=selectallfolders', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
 								
 							</tr>
 							<tr>

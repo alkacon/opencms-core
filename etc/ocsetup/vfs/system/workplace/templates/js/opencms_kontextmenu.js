@@ -293,7 +293,7 @@ function doPAction(action) // which action on layer Project is clicked
 	{
 		case 1:
 		{
-			location.href='administration_content_lockchange.html';
+			location.href='administration_content_lockchange.html?projectid=' + kontextparam;
 			break;
 		}
 		case 2:

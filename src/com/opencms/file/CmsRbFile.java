@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFile.java,v $
- * Date   : $Date: 2000/04/11 13:38:08 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/04/13 19:48:08 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/04/11 13:38:08 $
+ * @version $Revision: 1.22 $ $Date: 2000/04/13 19:48:08 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -941,6 +941,19 @@ import com.opencms.core.*;
         return  m_accessFile.publishProject(project,onlineProject);
     }
 
+	/**
+	 * Unlocks all resources in this project.
+	 * 
+	 * 
+	 * @param id The id of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void unlockProject(A_CmsProject project)
+		throws CmsException {
+		m_accessFile.unlockProject(project);
+	}
+		
     /**
      * Deletes all resources of a project.
      *

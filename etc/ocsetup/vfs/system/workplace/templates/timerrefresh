@@ -1,3 +1,9 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+
+
 <HTML>
 <HEAD>
 <meta http-equiv="refresh" content="0; URL=timer.html">
@@ -9,3 +15,7 @@
 
 </BODY>
 </HTML>
+
+]]>
+</TEMPLATE>
+</WORKPLACE>

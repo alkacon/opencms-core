@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/04/03 10:48:31 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/04/13 19:48:08 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2000/04/03 10:48:31 $
+ * @version $Revision: 1.31 $ $Date: 2000/04/13 19:48:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -385,6 +385,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      private CmsXmlWpTemplateFile checkDisplayedColumns(int filelist, 
                                                         CmsXmlWpTemplateFile template,
                                                         String suffix) {
+            if ((filelist & C_FILELIST_NAME) == 0) {
+                template.setXmlData(C_FILELIST_COLUMN_NAME+suffix,"");
+            }
             if ((filelist & C_FILELIST_TITLE) == 0) {
                 template.setXmlData(C_FILELIST_COLUMN_TITLE+suffix,"");
             }
@@ -719,7 +722,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         if (explorerSettings!=null) {
             filelist=new Integer(explorerSettings).intValue();
         } else {
-            filelist=C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
+            filelist=C_FILELIST_NAME+C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
         }
    
         return filelist;

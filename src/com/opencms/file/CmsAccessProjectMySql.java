@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessProjectMySql.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/13 19:48:07 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/13 19:48:07 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -100,9 +100,19 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	private static final String C_PROJECT_CREATEDATE = "PROJECT_CREATEDATE";
 	
 	/**
+	 * Column name
+	 */
+	private static final String C_PROJECT_PUBLISHED_BY = "PROJECT_PUBLISHED_BY";
+	
+	/**
+	 * Column name
+	 */
+	private static final String C_PROJECT_COUNT_LOCKED = "PROJECT_COUNT_LOCKED_RESOURCES";
+	
+	/**
      * SQL Command for creating projects.
      */    
-    private static final String C_PROJECT_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROJECTS VALUES(?,?,?,?,?,?,?,?,?,null)";
+    private static final String C_PROJECT_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROJECTS VALUES(?,?,?,?,?,?,?,?,?,null," + C_UNKNOWN_ID + ",0)";
 
 	/**
      * SQL Command for deleting projects.
@@ -120,7 +130,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 												   C_PROJECT_DESCRIPTION + " = ?, " +
 												   C_PROJECT_FLAGS + " = ?, " +
 												   C_PROJECT_CREATEDATE + " = ?, " +
-												   C_PROJECT_PUBLISHDATE + " = ? " +
+												   C_PROJECT_PUBLISHDATE + " = ?, " +
+												   C_PROJECT_PUBLISHED_BY + " = ?, " +
+												   C_PROJECT_COUNT_LOCKED + " = ? " +
 												   "where " + C_PROJECT_ID + " = ?";
 
 	/**
@@ -208,7 +220,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 									   result.getInt(C_MANAGERGROUP_ID),
 									   result.getInt(C_PROJECT_FLAGS),
 									   SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
-									   SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE));
+									   SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE),
+									   result.getInt(C_PROJECT_PUBLISHED_BY),
+									   result.getInt(C_PROJECT_COUNT_LOCKED));
 			 } else {
 				 // project not found!
 				 throw new CmsException("[" + this.getClass().getName() + "] " + id, 
@@ -277,7 +291,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 								   result.getInt(C_MANAGERGROUP_ID),
 								   result.getInt(C_PROJECT_FLAGS),
 								   SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
-								   SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE));
+								   SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE),
+								   result.getInt(C_PROJECT_PUBLISHED_BY),													 
+								   result.getInt(C_PROJECT_COUNT_LOCKED));
 		 } catch( Exception exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
@@ -310,7 +326,10 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 			 } else {
 				statementUpdateProject.setTimestamp(8,new Timestamp(project.getPublishingDate()));
 			 }
-			 statementUpdateProject.setInt(9,project.getId());
+			 statementUpdateProject.setInt(9,project.getPublishedBy());
+			 statementUpdateProject.setInt(10,project.getCountLockedResources());			 
+			 
+			 statementUpdateProject.setInt(11,project.getId());
 			 
 			 statementUpdateProject.executeUpdate();
 		 } catch( SQLException exc ) {
@@ -374,7 +393,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
 													 SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
-													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE)));
+													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE),
+													 result.getInt(C_PROJECT_PUBLISHED_BY),
+													 result.getInt(C_PROJECT_COUNT_LOCKED)));
 			 }
 			 return(projects);
 		 } catch( Exception exc ) {
@@ -414,7 +435,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
 													 SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
-													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE)));
+													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE),
+													 result.getInt(C_PROJECT_PUBLISHED_BY),
+													 result.getInt(C_PROJECT_COUNT_LOCKED)));
 			 }
 			 return(projects);
 		 } catch( Exception exc ) {
@@ -454,7 +477,10 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
 													 SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
-													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE)));
+													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE),
+													 result.getInt(C_PROJECT_PUBLISHED_BY),
+													 result.getInt(C_PROJECT_COUNT_LOCKED)));
+
 			 }
 			 return(projects);
 		 } catch( Exception exc ) {
@@ -494,7 +520,10 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
 													 SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
-													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE)));
+													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE),
+													 result.getInt(C_PROJECT_PUBLISHED_BY),
+													 result.getInt(C_PROJECT_COUNT_LOCKED)));
+
 			 }
 			 return(projects);
 		 } catch( Exception exc ) {

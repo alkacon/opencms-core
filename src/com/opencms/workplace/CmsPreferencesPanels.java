@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/04/11 13:38:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/13 19:48:08 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/04/11 13:38:09 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/13 19:48:08 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -436,7 +436,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Explorer filelist flags.
      */
     private int getExplorerSettings(Hashtable parameters) {
-        int explorerSettings=0;
+        int explorerSettings=C_FILELIST_NAME;
         if (parameters.get("CBTITLE")!= null) {
             explorerSettings+=C_FILELIST_TITLE;
         }

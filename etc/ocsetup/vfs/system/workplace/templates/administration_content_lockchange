@@ -8,7 +8,7 @@
 <!--
 function show_help()
 {
-	return '5_2_2_2_10.html';
+	return '5_2_2_2_9.html';
 }
 //-->
 </script>
@@ -21,19 +21,21 @@ function show_help()
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id=PDELETE name=PDELETE action="administration_content_delete_project.html?projectid=]]><PROCESS>id</PROCESS><![CDATA[" method="post">
+<form id=UEBERNEHMEN name=UEBERNEHMEN>
+<input type="hidden" name="projectid" value="]]><PROCESS>projectid</PROCESS>"><![CDATA[</input>
 <table cellspacing=0 cellpadding=0 border=2 width=300>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 			
 			<!-- Beginn Tabellenkopf blau-->
 			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="title.deleteproject"/><![CDATA[: ]]><PROCESS>name</PROCESS><![CDATA[</td>
+           		<td colspan=2 class="head">]]><label value="project.lockchange.title"/><![CDATA[</td>
 			</tr>
 			<!-- Ende Tabellenkopf blau-->
 			
@@ -42,44 +44,10 @@ function show_help()
            		<td colspan=2 class="leerzeile">&nbsp;</td>
 			</tr>
 			<!-- Ende Leerzeile-->
-			<tr>
-				<td class=dialogtxt colspan=2>
-				<table cellspacing=2 cellpadding=0 border=0>
-				<tr>
-					<td class=dialogtxt>]]><LABEL value="label.projectname" /><![CDATA[:</td>
-					<td class=dialogtxt>]]><PROCESS>name</PROCESS><![CDATA[</td>
-				</tr>
-				<tr>
-					<td class=dialogtxt>]]><LABEL value="label.description" /><![CDATA[:</td>
-					<td class=dialogtxt>]]><PROCESS>description</PROCESS><![CDATA[</td>
-				</tr>
-				<tr>
-					<td class=dialogtxt>]]><LABEL value="label.state" /><![CDATA[:</td>
-					<td class=dialogtxt>]]><PROCESS>state</PROCESS><![CDATA[</td>
-				</tr>
-				<tr>
-					<td class=dialogtxt>]]><LABEL value="label.groupsprojectmanager" /><![CDATA[:</td>
-					<td class=dialogtxt>]]><PROCESS>projectmanager</PROCESS><![CDATA[</td>
-				</tr>
-				<tr>
-					<td class=dialogtxt>]]><LABEL value="label.groupsprojectworker" /><![CDATA[:</td>
-					<td class=dialogtxt>]]><PROCESS>projectworker</PROCESS><![CDATA[</td>
-				</tr>
-				<tr>
-					<td class=dialogtxt>]]><LABEL value="label.datecreated" /><![CDATA[:</td>
-					<td class=dialogtxt>]]><PROCESS>datecreated</PROCESS><![CDATA[</td>
-				</tr>
-				<tr>
-					<td class=dialogtxt>]]><LABEL value="label.createdby" /><![CDATA[:</td>
-					<td class=dialogtxt>]]><PROCESS>owner</PROCESS><![CDATA[</td>
-				</tr>
-				</table>
-				</td>
-			</tr>
 			
 			<tr>
 				<td class=dialogtxt colspan=2>
-					  ]]><LABEL value="label.suredeletingproject1" /><![CDATA[ ]]><PROCESS>name</PROCESS><![CDATA[ ]]><LABEL value="label.suredeletingproject2" /><![CDATA[
+					  ]]><label value="project.lockchange.message1"/><![CDATA[ ]]><PROCESS>projectname</PROCESS><![CDATA[ ]]><label value="project.lockchange.message2"/><![CDATA[
 				</td>
 			</tr>
 			<tr>
@@ -110,11 +78,12 @@ function show_help()
 	</td></tr>
 </table>
 </form>
+  
 </td></tr>
 </table>
 
-<body>
-<html>
+</BODY>
+</html>
 
 ]]>
 </TEMPLATE>
@@ -150,7 +119,7 @@ function show_help()
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="error.title.deleteproject" message="error.message.deleteproject" reason="error.reason.deleteproject" suggestion="error.suggestion.deleteproject" ref="administration_content_projectresent.html"><process>details</process></ERRORPAGE><![CDATA[
+]]><ERRORPAGE title="error.title.projectlockchange" message="error.message.projectlockchange" reason="error.reason.projectlockchange" suggestion="error.suggestion.projectlockchange" ref="administration_content_projectresent.html" ><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 
