@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/16 09:02:52 $
-* Version: $Revision: 1.156 $
+* Date   : $Date: 2001/10/22 14:30:40 $
+* Version: $Revision: 1.157 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.156 $ $Date: 2001/10/16 09:02:52 $
+ * @version $Revision: 1.157 $ $Date: 2001/10/22 14:30:40 $
  *
  */
 
@@ -1775,14 +1775,15 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * <B>Security</B>
      * Only the admin or the owner of the project can do this.
      *
+     * @param cms The CmsObject.
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @param id The id of the project to be published.
-     * @return a vector of changed resources.
+     * @return CmsPublishedResources The object includes the vectors with changed resources.
      *
      * @exception CmsException Throws CmsException if something goes wrong.
      */
-    public Vector publishProject(CmsUser currentUser, CmsProject currentProject,
+    public CmsPublishedResources publishProject(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                                  int id)
         throws CmsException;
     /**

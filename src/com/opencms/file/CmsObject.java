@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/10/16 13:54:48 $
-* Version: $Revision: 1.194 $
+* Date   : $Date: 2001/10/22 14:30:57 $
+* Version: $Revision: 1.195 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.194 $ $Date: 2001/10/16 13:54:48 $
+ * @version $Revision: 1.195 $ $Date: 2001/10/22 14:30:57 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2098,10 +2098,14 @@ public CmsProject onlineProject() throws CmsException {
  */
 public void publishProject(int id) throws CmsException {
     clearcache();
+    CmsPublishedResources allChanged = new CmsPublishedResources();
     Vector changedResources = null;
+    Vector changedModuleMasters = null;
     boolean success = false;
     try{
-        changedResources = m_rb.publishProject(m_context.currentUser(), m_context.currentProject(), id);
+        allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id);
+        changedResources = allChanged.getChangedResources();
+        changedModuleMasters = allChanged.getChangedModuleMasters();
         getOnlineElementCache().cleanupCache(changedResources);
         clearcache();
         success = true;
