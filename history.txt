@@ -10,9 +10,10 @@ Legend:
 
 OpenCms 4.3.35 Bela Tegeuse - ?? July 2001
 * The calendar-window will now be closed after use.
-* Fixed Bug: The ressource-type binary will now be suggested in upload-dialogues.
+* Fixed bug: The ressource-type binary will now be suggested in upload-dialogues.
 * Fixed bug when publishing a deleted resource: have to copy the deleted folder in
   /content/bodys/ to the project, too
+* Fixed bug: No java-script errors when using the download-gallery contextmenus.
 
 OpenCms 4.3.34 Bela Tegeuse - 26 July 2001
 * Overwrought the import. Now the reource type classes import the resources.
