@@ -646,7 +646,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			}							
 			try {
 				//apply methods on content definition object
-				fieldEntry = (String) getMethod.invoke(entryObject, new Object[0]);
+				fieldEntry = getMethod.invoke(entryObject, new Object[0]).toString();
 			} catch (InvocationTargetException ite) {
 				if (A_OpenCms.isLogging()) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object throwed an InvocationTargetException!");
@@ -658,10 +658,12 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			}
 
 			//insert table entry
-			if (fieldEntry != null)
+			if (fieldEntry != null) {
 				entry += (template.getDataValue("tabledatabegin")) + (template.getDataValue("urlbegin")) + url + (template.getDataValue("urlend")) + fieldEntry + (template.getDataValue("tabledataend"));
+			} else {
+				entry += (template.getDataValue("tabledatabegin")) + "" +(template.getDataValue("urlend")) + fieldEntry + (template.getDataValue("tabledataend"));
+			}
 		}
-
 		//get the unique id belonging to an entry
 		try {
 			id = (String) cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class}).invoke(entryObject, new Object[] {cms});
@@ -775,10 +777,21 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		moduleName = moduleName.replace('.', '_'); //replace dots with underscores
 		//create new language file object
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+		
 		//get the dialog from the langauge file and set it in the template
-		template.setData("locktitle", lang.getLanguageValue("messagebox.title." + ls));
-		template.setData("lockstate", lang.getLanguageValue("messagebox.message1." + ls));
-
+		if (ls.equals("lock")) {
+			template.setData("locktitle", lang.getLanguageValue("messagebox.title.unlock"));
+			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.unlock"));
+		} 
+		if (ls.equals("nolock")){
+			template.setData("locktitle", lang.getLanguageValue("messagebox.title.lock"));
+			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lock"));
+		}
+		if (ls.equals("lockuser")){
+			template.setData("locktitle", lang.getLanguageValue("messagebox.title.lockchange"));
+			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lockchange"));
+		}
+			
 		//set the title of the selected entry 
 		template.setData("newsentry", id);
 
