@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2002/08/02 12:12:57 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/08/02 12:17:31 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2002/08/02 12:12:57 $
+ * @version $Revision: 1.10 $ $Date: 2002/08/02 12:17:31 $
  */
 public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
@@ -337,14 +337,14 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
      * @exception CmsException
      */
     public Object handleSelectTag(Element n, Object callingObject, Object userObj) throws CmsException {
-System.err.println("#userobj "+userObj);
+
         Hashtable parameters = (Hashtable)userObj;
 
         // Here the different select box options will be stored
         Vector values = new Vector();
         Vector names = new Vector();
 
-System.err.println("### "+parameters);
+
 
 
         // StringBuffer for the generated output *
@@ -391,7 +391,7 @@ System.err.println("### "+parameters);
         int selectedOption = 0;
         try {
 
-System.err.println("*** "+parameters);
+
 
             groupsMethod = callingObject.getClass().getMethod(selectMethod, new Class[] {
                 CmsObject.class, Vector.class, Vector.class, Hashtable.class

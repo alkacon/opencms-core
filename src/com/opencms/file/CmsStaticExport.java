@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/07/01 11:07:02 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/08/02 12:12:57 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.28 $ $Date: 2002/07/01 11:07:02 $
+ * @version $Revision: 1.29 $ $Date: 2002/08/02 12:12:57 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -223,9 +223,14 @@ public class CmsStaticExport implements I_CmsConstants{
                 Vector exportLinks = null;
                 if(m_afterPublish){
                     exportLinks = getChangedLinks(changedResources);
+
                 }else{
                     exportLinks = getStartLinks();
+
                 }
+
+
+
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                             "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
@@ -728,19 +733,27 @@ public class CmsStaticExport implements I_CmsConstants{
                 resToCheck.add(addVector.elementAt(i));
             }
         }
+
+
         addVector = changedResources.getChangedResources();
         if(addVector != null){
             for(int i=0; i<addVector.size(); i++){
                 resToCheck.add(addVector.elementAt(i));
             }
         }
+
+
         Vector returnValue = m_cms.getDependingExportLinks(resToCheck);
+
+
+
         // we also need all "new" files
         if(addVector != null){
             for(int i=0; i<addVector.size(); i++){
                 String res = Utils.getAbsolutePathForResource((String)addVector.elementAt(i));
                 if((!res.endsWith("/")) && (!returnValue.contains(res))){
                     returnValue.add(res);
+
                 }
             }
         }

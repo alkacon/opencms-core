@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2002/05/24 12:51:09 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2002/08/02 12:12:58 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.55 $ $Date: 2002/05/24 12:51:09 $
+ * @version $Revision: 1.56 $ $Date: 2002/08/02 12:12:58 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -735,6 +735,18 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         parser.getXmlText(tempDoc, out);
     }
 
+    //[added by Gridnine AB, 2002-06-17]
+    public void getXmlText(OutputStream out) {
+        parser.getXmlText(m_content, out);
+    }
+
+    //[added by Gridnine AB, 2002-06-17]
+    public void getXmlText(OutputStream out, Node n) {
+        Document tempDoc = (Document)m_content.cloneNode(false);
+        tempDoc.appendChild(parser.importNode(tempDoc, n));
+        parser.getXmlText(tempDoc, out);
+    }
+
     /**
      * Prints the XML parsed content of a given node and
      * its subnodes to a String
@@ -962,14 +974,18 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         m_filename = filename;
         parsedContent = loadCachedDocument(filename);
         if(parsedContent == null) {
-            String fileContent = new String(file.getContents());
-            if(fileContent == null || "".equals(fileContent.trim())) {
+            //[removed by Gridnine AB, 2002-06-13] String fileContent = new String(file.getContents());
+            byte[] fileContent = file.getContents();
+            //[removed by Gridnine AB, 2002-06-13] if(fileContent == null || "".equals(fileContent.trim())) {
+            if(fileContent == null || fileContent.length == 0) {
                 // The file content is empty. Possibly the file object is only
                 // a file header. Re-read the file object and try again
                 file = cms.readFile(filename);
-                fileContent = new String(file.getContents()).trim();
+                //[removed by Gridnine AB, 2002-06-13] fileContent = new String(file.getContents()).trim();
+                fileContent = file.getContents();
             }
-            if(fileContent == null || "".equals(fileContent.trim())) {
+            //[removed by Gridnine AB, 2002-06-13] if(fileContent == null || "".equals(fileContent.trim())) {
+            if(fileContent == null || fileContent.length == 0) {
 
                 // The file content is still emtpy.
                 // Start with an empty XML document.
@@ -1016,7 +1032,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         parsedContent = loadCachedDocument(filename);
         if(parsedContent == null) {
             CmsFile file = cms.readFile(filename);
-            parsedContent = parse(new String(file.getContents()));
+            //[removed by Gridnine AB, 2002-06-13] parsedContent = parse(new String(file.getContents()));
+            parsedContent = parse(file.getContents());
             m_filecache.put(currentProject + ":" + filename, parsedContent.cloneNode(true));
         }
         else {
@@ -1213,6 +1230,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         return tempNode.getChildNodes();
     }
 
+    //[added by Gridnine AB, 2002-06-13]
+    protected Document parse(byte[] content) throws CmsException {
+        return parse(new ByteArrayInputStream(content));
+    }
+
     /**
      * Starts the XML parser with the content of the given CmsFile object.
      * After parsing the document it is scanned for INCLUDE and DATA tags
@@ -1223,15 +1245,17 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @see #processNode
      * @see #firstRunParameters
      */
-    protected Document parse(String content) throws CmsException {
+    //[removed by Gridnine AB, 2002-06-13] protected Document parse(String content) throws CmsException {
+    protected Document parse(InputStream content) throws CmsException {
         Document parsedDoc = null;
-        StringReader reader = new StringReader(content);
+        //[removed by Gridnine AB, 2002-06-13] StringReader reader = new StringReader(content);
 
         // First parse the String for XML Tags and
 
         // get a DOM representation of the document
         try {
-            parsedDoc = parser.parse(reader);
+            //[removed by Gridnine AB, 2002-06-13] parsedDoc = parser.parse(reader);
+            parsedDoc = parser.parse(content);
         }
         catch(Exception e) {
 
@@ -1940,13 +1964,19 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * Writes the XML document back to the OpenCms system.
      * @exception CmsException
      */
+    //[modified by Gridnine AB, 2002-06-17]
     public void write() throws CmsException {
-
+        /*
         // Get the XML content as String
         StringWriter writer = new StringWriter();
         getXmlText(writer);
         byte[] xmlContent = writer.toString().getBytes();
-
+        */
+        
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        getXmlText(os);
+        byte[] xmlContent = os.toByteArray();
+        
         // Get the CmsFile object to write to
         String filename = getAbsoluteFilename();
         CmsFile file = m_cms.readFile(filename);

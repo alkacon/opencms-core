@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/07/22 11:47:10 $
-* Version: $Revision: 1.250 $
+* Date   : $Date: 2002/08/02 12:12:57 $
+* Version: $Revision: 1.251 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.250 $ $Date: 2002/07/22 11:47:10 $ *
+ * @version $Revision: 1.251 $ $Date: 2002/08/02 12:12:57 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -6877,7 +6877,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
     }
 
-    /**
+
+     /**
      * Reads all export links that depend on the resource.
      * @param res. The resourceName() of the resources that has changed (or the String
      *              that describes a contentdefinition).

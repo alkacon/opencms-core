@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlProjectXParser.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/08/02 12:12:58 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.8 $ $Date: 2002/08/02 12:12:58 $
  */
 public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
     
@@ -229,7 +229,8 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
      * @exception Exception
      */
     public Document parse(Reader in) throws Exception {
-        
+        //[removed by Gridnine AB, 2002-06-13]
+        /*
         //return DOMFactory.createParser(in, null).parseDocument();
         
         //DOMParser parser = new DOMParser();
@@ -248,6 +249,31 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
             }
         }
         return doc;
+        */
+        return parse(new InputSource(in));
+    }
+    
+    //[added by Gridnine AB, 2002-06-13]
+    public Document parse(InputStream in) throws Exception {
+        return parse(new InputSource(in));
+    }
+    
+    //[added by Gridnine AB, 2002-06-13], common internal method to actually parse input
+    protected Document parse(InputSource input) throws Exception {
+        Document doc = null;
+        try {
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            doc = docBuilder.parse(input);
+        }
+        catch(SAXException e) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()  && !c_xercesWarning) {
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] Cannot set parser feature for apache xerces XML parser.");
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] This is NOT critical, but you should better use xerces 1.0.3 or higher.");
+                c_xercesWarning = true;
+            }
+        }
+        return doc;
     }
     
     /**
@@ -256,5 +282,12 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
      */
     public String toString() {
         return "Sun ProjectX XML Parser";
+    }
+
+    //[added by Gridnine AB, 2002-06-17]
+    public String getOriginalEncoding(Document doc) {
+        // we didn't investigate the ability to get original encoding in this parser
+        // so just return the default XML encoding
+        return C_XML_ENCODING;
     }
 }

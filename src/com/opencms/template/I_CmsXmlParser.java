@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlParser.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/08/02 12:12:58 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,12 +39,13 @@ import org.w3c.dom.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.9 $ $Date: 2002/08/02 12:12:58 $
  */
 public interface I_CmsXmlParser {
     
     /** Encoding used for XML documents */
-    public final static String C_XML_ENCODING = "ISO-8859-1";
+    //[removed by Gridnine AB, 2002-06-13] public final static String C_XML_ENCODING = "ISO-8859-1";
+    public final static String C_XML_ENCODING = "utf-8";
     
     /** Line width used for XML documents */
     public final static int C_XML_LINE_WIDTH = 80;
@@ -86,7 +87,13 @@ public interface I_CmsXmlParser {
      * @exception Exception
      */
     public Document parse(Reader in) throws Exception;
-    
+
+    //[added by Gridnine AB, 2002-06-13]
+    public Document parse(InputStream in) throws Exception;
+
+    //[added by Gridnine AB, 2002-06-17]
+    public String getOriginalEncoding(Document doc);
+
     /**
      * Gets a description of the parser.
      * @return Parser description.

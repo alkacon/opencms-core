@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/07/24 15:59:08 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2002/08/02 12:12:57 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.45 $ $Date: 2002/07/24 15:59:08 $
+ * @version $Revision: 1.46 $ $Date: 2002/08/02 12:12:57 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -125,6 +125,8 @@ public CmsRegistry(String regFileName) throws CmsException {
         File xmlFile = new File(m_regFileName);
 
         // get a buffered reader
+        //[removed by Gridnine AB, 2002-06-13]
+        /*
         BufferedReader reader = new BufferedReader(new FileReader(xmlFile));
 
         StringBuffer content = new StringBuffer();
@@ -135,9 +137,11 @@ public CmsRegistry(String regFileName) throws CmsException {
         } while (buffer != null);
 
         reader.close();
-
+        */
         // parse the registry-xmlfile and store it.
-        m_xmlReg = parse(content.toString());
+        //[removed by Gridnine AB, 2002-06-13] m_xmlReg = parse(content.toString());
+        InputStream content = new FileInputStream(xmlFile);
+        m_xmlReg = parse(content);
         init();
     } catch (Exception exc) {
         throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
@@ -271,7 +275,14 @@ public void createModule(String modulename, String niceModulename, String descri
     moduleString += C_EMPTY_MODULE[4] + author;
     moduleString += C_EMPTY_MODULE[5] + createDate;
     moduleString += C_EMPTY_MODULE[6];
-    Document doc = parse(moduleString);
+    //[removed by Gridnine AB, 2002-06-13] Document doc = parse(moduleString);
+    Document doc;
+    try {
+        doc = parse(moduleString.getBytes(I_CmsXmlParser.C_XML_ENCODING));
+    } catch (UnsupportedEncodingException uee) {
+        // use default system encoding
+        doc = parse(moduleString.getBytes());
+    }
     m_xmlReg.getElementsByTagName("modules").item(0).appendChild(getXmlParser().importNode(m_xmlReg, doc.getFirstChild()));
     saveRegistry();
 }
@@ -637,6 +648,8 @@ private Element getModuleElementFromImport(String filename) {
         // read the minifest
         ZipEntry entry = importZip.getEntry("manifest.xml");
         InputStream stream = importZip.getInputStream(entry);
+        //[removed by Gridnine AB, 2002-06-13]
+        /*
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         String content = "";
         String buffer = "";
@@ -644,9 +657,11 @@ private Element getModuleElementFromImport(String filename) {
             content += buffer;
             buffer = reader.readLine();
         } while (buffer != null);
+        */
         // parse the manifest
-        Document manifest = parse(content);
-        reader.close();
+        //[removed by Gridnine AB, 2002-06-13] Document manifest = parse(content);
+        Document manifest = parse(stream);
+        //[removed by Gridnine AB, 2002-06-13] reader.close();
         importZip.close();
         // get the module-element
         return (Element)(manifest.getElementsByTagName("module").item(0));
