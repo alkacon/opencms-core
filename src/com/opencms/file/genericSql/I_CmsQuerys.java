@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/08 13:19:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/06/08 14:46:52 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,15 +32,23 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.20 $ $Date: 2000/06/08 13:19:11 $
+ * @version $Revision: 1.21 $ $Date: 2000/06/08 14:46:52 $
  */
 public interface I_CmsQuerys {
     
     // Common constants   
 	static String C_DATABASE_PREFIX = "CMS_";
 	
-	// Constants for Resources
+	// Constants for resources
+	public static final Integer C_RESOURCES_MAXID_KEY = new Integer(100);
+	public static final String C_RESOURCES_MAXID = "SELECT MAX(RESOURCE_ID) FROM " + C_DATABASE_PREFIX + "RESOURCES";	
+	public static final Integer C_RESOURCES_WRITE_KEY = new Integer(101);
+	public static final String C_RESOURCEES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    
 	
+	// Constants for files
+	public static final Integer C_FILES_MAXID_KEY = new Integer(150);
+	public static final String C_FILES_MAXID = "SELECT MAX(FILE_ID) FROM " + C_DATABASE_PREFIX + "FILES";	
 	
 	
 

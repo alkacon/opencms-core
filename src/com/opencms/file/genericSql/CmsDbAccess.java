@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/08 13:19:11 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/06/08 14:46:51 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.32 $ $Date: 2000/06/08 13:19:11 $ * 
+ * @version $Revision: 1.33 $ $Date: 2000/06/08 14:46:51 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -1944,6 +1944,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		}
 	}
 	
+	 
+	
 	/**
 	 * Deletes all properties for a project.
 	 * 
@@ -1957,14 +1959,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		//TODO implement this. 		
 	}
 
-
-
+	// methods working with resources
+	
 
 	/**
 	 * Private method to init all statements in the pool.
 	 */
 	private void initStatements() 
 		throws CmsException {
+		// init statements for resources
+		m_pool.initPreparedStatement(C_RESOURCES_MAXID_KEY,C_RESOURCES_MAXID);
+        m_pool.initPreparedStatement(C_FILES_MAXID_KEY,C_FILES_MAXID);
+        m_pool.initPreparedStatement(C_RESOURCES_MAXID_KEY,C_RESOURCES_MAXID);
+        	
         // init statements for groups
 		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);
         m_pool.initPreparedStatement(C_GROUPS_READGROUP_KEY,C_GROUPS_READGROUP);
@@ -2061,7 +2068,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		m_maxIds[C_TABLE_USERS] = initMaxId(C_USERS_MAXID_KEY);
 		m_maxIds[C_TABLE_SYSTEMPROPERTIES] = initMaxId(C_SYSTEMPROPERTIES_MAXID_KEY);
 		m_maxIds[C_TABLE_PROPERTYDEF] = initMaxId(C_PROPERTYDEF_MAXID_KEY);
-		m_maxIds[C_TABLE_PROPERTIES] = initMaxId(C_PROPERTIES_MAXID_KEY);		
+		m_maxIds[C_TABLE_PROPERTIES] = initMaxId(C_PROPERTIES_MAXID_KEY);
+		m_maxIds[C_TABLE_RESOURCES] = initMaxId(C_RESOURCES_MAXID_KEY);		
+		m_maxIds[C_TABLE_FILES] = initMaxId(C_FILES_MAXID_KEY);		
+
 	}
 	
 	/**
