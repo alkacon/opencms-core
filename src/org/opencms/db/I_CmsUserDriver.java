@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/17 16:25:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/20 16:18:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/17 16:25:36 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/20 16:18:31 $
  * @since 5.1
  */
 public interface I_CmsUserDriver {
@@ -132,7 +132,7 @@ public interface I_CmsUserDriver {
     String digest(String value);
     Vector getChild(String groupname) throws CmsException;
     Vector getGroups() throws CmsException;
-    Vector getGroupsOfUser(String name) throws CmsException;
+    Vector getGroupsOfUser(CmsUUID userId) throws CmsException;
     Vector getUsers(int type) throws CmsException;
     Vector getUsers(int type, String namefilter) throws CmsException;
     Vector getUsersByLastname(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException;
