@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/03/27 13:04:49 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/03/27 13:50:01 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2000/03/27 13:04:49 $
+ * @version $Revision: 1.24 $ $Date: 2000/03/27 13:50:01 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -470,7 +470,22 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 
         return ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + "/";
     }  
-        
+       
+	/** 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getFileUri(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+				
+		return cms.getRequestContext().getFileUri().getBytes();
+	}
+
+	
     /**
      * For debugging purposes only.
      * Prints out all parameters.
