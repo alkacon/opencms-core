@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2002/05/02 07:15:50 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2002/05/17 11:14:20 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2002/05/02 07:15:50 $
+ * @version $Revision: 1.40 $ $Date: 2002/05/17 11:14:20 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -128,6 +128,15 @@ public class CmsXmlWpConfigFile {
             // read the wp images from the webapps context
             return "/pics/system/";
         }
+    }
+
+    /**
+     * Gets the path for OpenCms workplace administration files.
+     * @return Path for OpenCms workplace administration files.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public String getLinkGalleryPath() throws CmsException {
+        return "/externallinks/";
     }
 
     public void getWorkplaceIniData(Vector names, Vector values, String tag, String element) throws CmsException {
