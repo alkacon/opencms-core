@@ -37,6 +37,7 @@
             <indentout>Unindent</indentout>
             <italic>Italic</italic>
             <linkto>Link</linkto>
+			<linkinternal>Internal Link</linkinternal>
             <linklist>External links gallery</linklist>
             <login>Login</login>
             <new>New</new>

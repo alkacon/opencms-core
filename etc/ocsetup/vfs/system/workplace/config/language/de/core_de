@@ -37,6 +37,7 @@
             <indentout>Einzug verkleinern</indentout>
             <italic>Kursiv</italic>
             <linkto>Link</linkto>
+			<linkinternal>Interner Link</linkinternal>
             <linklist>Externe Links-Galerie</linklist>
             <login>Anmelden</login>
             <new>Neu</new>
