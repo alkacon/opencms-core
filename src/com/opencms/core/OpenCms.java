@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/02/28 11:36:32 $
-* Version: $Revision: 1.116 $
+* Date   : $Date: 2003/03/05 16:02:40 $
+* Version: $Revision: 1.117 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.116 $ $Date: 2003/02/28 11:36:32 $
+ * @version $Revision: 1.117 $ $Date: 2003/03/05 16:02:40 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -596,15 +596,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms context      : " + context);
             
             // check for old webapp names and extend with context
-            ArrayList webAppName = (ArrayList)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
-            if (webAppName != null) {
-                if (! webAppName.contains(context)) {
-                    webAppName.add(context);
-                    setRuntimeProperty("compatibility.support.webAppNames", webAppName);
-                }
-            } else {
-                setRuntimeProperty("compatibility.support.webAppNames", new ArrayList());
-            }
+            ArrayList webAppNames = (ArrayList)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
+            if (webAppNames == null) {
+                webAppNames = new ArrayList();
+            } 
+            if (! webAppNames.contains(context)) {
+                webAppNames.add(context);
+                setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
+            }            
     
             // check for the JSP export URL runtime property
             String jspExportUrl = (String)getRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL);

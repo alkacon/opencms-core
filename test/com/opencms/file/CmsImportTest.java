@@ -22,28 +22,6 @@ public class CmsImportTest extends TestCase {
     }
 
     public void testSetDirectories() {
-        String content =         
-            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-            "<PAGE>\n" +
-            "    <class>com.opencms.template.CmsXmlTemplate</class>\n" +
-            "    <masterTemplate>/system/modules/de.alkacon.opencms.modules.lgt.frontend/templates/lgt_group_main</masterTemplate>\n" +
-            "    <ELEMENTDEF name=\"body\">\n" +
-            "        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n" +
-            "        <TEMPLATE>/content/bodys/group/de/index.html</TEMPLATE>\n" +
-            "    </ELEMENTDEF>\n" +
-            "</PAGE>";
-        
-        String result =         
-            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-            "<PAGE>\n" +
-            "    <class>com.opencms.template.CmsXmlTemplate</class>\n" +
-            "    <masterTemplate>/system/modules/de.alkacon.opencms.modules.lgt.frontend/templates/lgt_group_main</masterTemplate>\n" +
-            "    <ELEMENTDEF name=\"body\">\n" +
-            "        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n" +
-            "        <TEMPLATE>/system/bodies/group/de/index.html</TEMPLATE>\n" +
-            "    </ELEMENTDEF>\n" +
-            "</PAGE>";        
-        
         String[] rules = { 
             "s#/default/vfs/content/bodys/(.*)#/default/vfs/system/bodies/$1#",
             "s#/default/vfs/pics/system/(.*)#/default/vfs/system/workplace/resources/$1#",
@@ -57,9 +35,46 @@ public class CmsImportTest extends TestCase {
             "s#/default/vfs/system/workplace/css/(.*)#/default/vfs/system/workplace/resources/$1#",
             "s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#"
         };
-
+        
+        String content, result;
+        
+        content =         
+            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
+            "<PAGE>\n" +
+            "    <class>com.opencms.template.CmsXmlTemplate</class>\n" +
+            "    <masterTemplate>/system/modules/de.alkacon.opencms.modules.lgt.frontend/templates/lgt_group_main</masterTemplate>\n" +
+            "    <ELEMENTDEF name=\"body\">\n" +
+            "        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n" +
+            "        <TEMPLATE>/content/bodys/group/de/index.html</TEMPLATE>\n" +
+            "    </ELEMENTDEF>\n" +
+            "</PAGE>";
+        
+        result =         
+            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
+            "<PAGE>\n" +
+            "    <class>com.opencms.template.CmsXmlTemplate</class>\n" +
+            "    <masterTemplate>/system/modules/de.alkacon.opencms.modules.lgt.frontend/templates/lgt_group_main</masterTemplate>\n" +
+            "    <ELEMENTDEF name=\"body\">\n" +
+            "        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n" +
+            "        <TEMPLATE>/system/bodies/group/de/index.html</TEMPLATE>\n" +
+            "    </ELEMENTDEF>\n" +
+            "</PAGE>";        
+        
         content = CmsImport.setDirectories(content, rules);        
         assertEquals(content, result);        
+            
+        content =         
+            "<img src=\"{OpenCmsContext}/pics/test/\">\n" +
+            "picDir=/system/modules/li.castle.frontend/pics/\n" +
+            "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";
+        
+        result =         
+            "<img src=\"{OpenCmsContext}/system/galleries/pics/test/\">\n" +
+            "picDir=/system/modules/li.castle.frontend/pics/\n" +
+            "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/system/galleries/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";           
+        
+        content = CmsImport.setDirectories(content, rules);        
+        assertEquals(content, result);           
     }
 
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/03/04 08:37:11 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2003/03/05 16:02:40 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.82 $ $Date: 2003/03/04 08:37:11 $
+ * @version $Revision: 1.83 $ $Date: 2003/03/05 16:02:40 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -932,9 +932,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         // check the frametemplates
         if (filename.indexOf("frametemplates") != -1) {
             fileContent = scanFrameTemplate(fileContent);
-        }
-        // translate OpenCms 4.x paths to the new directory structure 
-        fileContent = setDirectories(fileContent, m_cms.getRequestContext().getDirectoryTranslator().getTranslations());
+        }    
         // scan content/bodys
         if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1
             || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
@@ -943,6 +941,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             }
             fileContent = convertPageBody(fileContent, filename);
         }
+        // translate OpenCms 4.x paths to the new directory structure 
+        fileContent = setDirectories(fileContent, m_cms.getRequestContext().getDirectoryTranslator().getTranslations());
         // create output ByteArray
         try {
             returnValue = fileContent.getBytes(encoding);
@@ -1045,7 +1045,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             // scan content for paths if the replace String is not present
             if (content.indexOf(replace) == -1 && content.indexOf(search) != -1) {
                 // ensure subdirectories of the same name are not replaced
-                search = "([>\"']\\s*)" + search;
+                search = "([}>\"'\\[]\\s*)" + search;
                 replace = "$1" + replace;
                 content = CmsStringSubstitution.substitute(content, search, replace);
             }
@@ -1055,7 +1055,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     
     /**
      * Searches for the webapps String and replaces it with a macro which is needed for the WYSIWYG editor,
-     * also reates missing &lt;edittemplate&gt; tags for exports of older OpenCms 4.x versions.<p>
+     * also creates missing &lt;edittemplate&gt; tags for exports of older OpenCms 4.x versions.<p>
      * 
      * @param content the filecontent 
      * @return String the modified filecontent
@@ -1139,7 +1139,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                             CmsStringSubstitution.substitute(
                                 editString,
                                 CmsStringSubstitution.escapePattern((String)m_webAppNames.get(k)),
-                                CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT));
+                                CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT + "/"));
                     }
                     editNodes.item(i).getFirstChild().setNodeValue(editString);
                 }
