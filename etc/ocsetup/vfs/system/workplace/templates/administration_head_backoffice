@@ -49,6 +49,11 @@
                 window.top.body.admin_content.Editor.submit();
                 break;
                 }
+        case 4: {
+                if(this.backofficepage)window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
+                window.top.body.admin_content.Editor.submit();
+                break;
+                }
           }
       }       
 </SCRIPT>
@@ -90,7 +95,7 @@
 
 <BOSELECTOR>
 <![CDATA[
-<td class=menu valign="center">]]><SELECT method="getSelectedPage" class="textfeld" name="backofficepage" id="backofficepage" width="auto" size="1" onchange="doEdit(3);"/><![CDATA[</td><!--window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;window.top.body.admin_content.Editor.submit()-->
+<td class=menu valign="center">]]><SELECT method="getSelectedPage" class="textfeld" name="backofficepage" id="backofficepage" width="auto" size="1" onchange="doEdit(4);"/><![CDATA[</td><!--window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;window.top.body.admin_content.Editor.submit()-->
 ]]>
 </BOSELECTOR>
 
