@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/07/14 11:05:23 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/15 09:31:38 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2003/07/14 11:05:23 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/15 09:31:38 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -67,6 +67,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
       * @param fileContent Then content of the file.
       * @param resourceLastModifiedBy The user who changed the file.
       * @param size The size of the file content.
+      * @deprecated user/group not valid any longer
       */
      public CmsFile(CmsUUID structureId, CmsUUID resourceId, CmsUUID parentId,
                         CmsUUID fileId, String resourceName, int resourceType,
@@ -90,6 +91,51 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         m_fileContent=fileContent;
 
    }
+
+   /**
+    * Constructor, creates a new CmsFile object.
+    *
+    * @param resourceId The database Id.
+    * @param parentId The database Id of the parent folder.
+    * @param fileId The id of the content.
+    * @param resourceName The name (including complete path) of the resouce.
+    * @param resourceType The type of this resource.
+    * @param rescourceFlags The flags of thei resource.
+    * @param projectId The project id this resource belongs to.
+    * @param accessFlags The access flags of this resource.
+    * @param state The state of this resource.
+    * @param lockedBy The user id of the user who has locked this resource.
+    * @param launcherType The launcher that is require to process this recource.
+    * @param launcherClassname The name of the Java class invoked by the launcher.
+    * @param dateCreated The creation date of this resource.
+    * @param dateLastModified The date of the last modification of the resource.
+    * @param fileContent Then content of the file.
+    * @param resourceLastModifiedBy The user who changed the file.
+    * @param size The size of the file content.
+    */
+   public CmsFile(CmsUUID structureId, CmsUUID resourceId, CmsUUID parentId,
+                      CmsUUID fileId, String resourceName, int resourceType,
+                      int resourceFlags,
+                      int projectId, int accessFlags, int state,
+                      CmsUUID lockedByUserId, int launcherType,
+                      String launcherClassname, long dateCreated,
+                      long dateLastModified,
+                      CmsUUID resourceLastModifiedByUserId,byte[] fileContent, int size, int lockedInProject, int vfsLinkType){
+
+      // create the CmsResource.
+      super(structureId, resourceId, parentId,
+            fileId,resourceName,resourceType,
+            resourceFlags,
+            projectId,accessFlags,state,
+            lockedByUserId,launcherType,
+            launcherClassname,dateCreated,
+            dateLastModified,resourceLastModifiedByUserId, size, lockedInProject, vfsLinkType);
+
+      // set content and size.
+      m_fileContent=fileContent;
+
+ }
+ 
     /**
     * Clones the CmsFile by creating a new CmsFolder.
     * @return Cloned CmsFile.
@@ -100,8 +146,8 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
 
         return new CmsFile(this.getId(), this.getResourceId(), this.getParentId(),
                              this.getFileId(),new String(this.getResourceName()),
-                             this.getType(), this.getFlags(), this.getOwnerId(),
-                             this.getGroupId(),this.getProjectId(),
+                             this.getType(), this.getFlags(), /* this.getOwnerId(), */
+                             /* this.getGroupId(), */this.getProjectId(),
                              this.getAccessFlags(),this.getState(), this.isLockedBy(),
                              this.getLauncherType(), new String(this.getLauncherClassname()),
                              this.getDateCreated(),this.getDateLastModified(),

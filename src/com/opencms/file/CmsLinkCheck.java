@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsLinkCheck.java,v $
-* Date   : $Date: 2003/07/14 20:12:41 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/07/15 09:31:38 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -125,11 +125,12 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
                         // add the failed link to the links of the owner
                         // first try to get the email
                         String ownerEmail = null;
-                        try{
-                            CmsUser owner = cms.readUser(linkElement.getOwnerId());
-                            ownerEmail = owner.getEmail();
-                        } catch (Exception e){
-                        }
+                        // TODO: remove this later
+                        // try{
+                        //    CmsUser owner = cms.readUser(linkElement.getOwnerId());
+                        //    ownerEmail = owner.getEmail();
+                        //} catch (Exception e){
+                        //}
 
                         if((ownerEmail == null) || ("".equals(ownerEmail.trim()))){
                             ownerEmail = (String)emailValues.get("mailto");

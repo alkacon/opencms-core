@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/14 18:43:54 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/07/15 09:31:38 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.21 $ $Date: 2003/07/14 18:43:54 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/15 09:31:38 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1359,7 +1359,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         }
                     }
                     
-                    CmsFile currentOnlineFile = m_driverManager.readFile(m_context,currentFile.getId(),false);
+                    CmsFile currentOnlineFile = m_driverManager.readFileInProject(m_context, onlineProject.getId(), currentFile.getId(), false);
                     
                     if (backupEnabled) {
                         Map props = m_driverManager.getVfsDriver().readProperties(m_context.currentProject().getId(), currentFile, currentFile.getType());

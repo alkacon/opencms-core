@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
-* Date   : $Date: 2003/07/14 11:05:23 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/07/15 09:31:38 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  * Describes a backup resource in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2003/07/14 11:05:23 $
+ * @version $Revision: 1.10 $ $Date: 2003/07/15 09:31:38 $
  */
 public class CmsBackupResource extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -93,6 +93,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
       * @param resourceLastModifiedBy The user who changed the file.
       * @param lastModifiedByName The name of user who changed the file.
       * @param size The size of the file content.
+      * @deprecated user/group is not valid any longer
       */
      public CmsBackupResource(int versionId, CmsUUID structureId, CmsUUID resourceId, CmsUUID parentId,
                               CmsUUID fileId, String resourceName, int resourceType,
@@ -106,7 +107,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
         // create the CmsResource.
         super(structureId, resourceId, parentId,
               fileId,resourceName,resourceType,
-              resourceFlags,userId,groupId,
+              resourceFlags,/* userId,groupId, */
               projectId,accessFlags,state,
               CmsUUID.getNullUUID(),launcherType,
               launcherClassname,dateCreated,
@@ -119,15 +120,67 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
         m_versionId = versionId;
 
         // set owner name
-        m_ownerName = userName;
+        // m_ownerName = userName;
 
         // set group name
-        m_groupName = groupName;
+        // m_groupName = groupName;
 
         // set lastModifiedByName
         m_lastModifiedByName = lastModifiedByName;
 
    }
+   
+   /**
+    * Constructor, creates a new CmsBackupResource object.
+    *
+    * @param versionId The versionId of the resource
+    * @param resourceId The database Id.
+    * @param parentId The database Id of the parent folder.
+    * @param fileId The id of the content.
+    * @param resourceName The name (including complete path) of the resouce.
+    * @param resourceType The type of this resource.
+    * @param rescourceFlags The flags of thei resource.
+    * @param projectId The project id this resource belongs to.
+    * @param accessFlags The access flags of this resource.
+    * @param state The state of this resource.
+    * @param lockedBy The user id of the user who has locked this resource.
+    * @param launcherType The launcher that is require to process this recource.
+    * @param launcherClassname The name of the Java class invoked by the launcher.
+    * @param dateCreated The creation date of this resource.
+    * @param dateLastModified The date of the last modification of the resource.
+    * @param fileContent Then content of the file.
+    * @param resourceLastModifiedBy The user who changed the file.
+    * @param lastModifiedByName The name of user who changed the file.
+    * @param size The size of the file content.
+    */
+   public CmsBackupResource(int versionId, CmsUUID structureId, CmsUUID resourceId, CmsUUID parentId,
+                            CmsUUID fileId, String resourceName, int resourceType,
+                            int resourceFlags, int projectId, int accessFlags,
+                            int state, int launcherType,
+                            String launcherClassname, long dateCreated,
+                            long dateLastModified, CmsUUID resourceLastModifiedByUserId,
+                            String lastModifiedByName,byte[] fileContent, int size, int lockedInProject, int vfsLinkType){
+
+      // create the CmsResource.
+      super(structureId, resourceId, parentId,
+            fileId,resourceName,resourceType,
+            resourceFlags,
+            projectId,accessFlags,state,
+            CmsUUID.getNullUUID(),launcherType,
+            launcherClassname,dateCreated,
+            dateLastModified,resourceLastModifiedByUserId, size, lockedInProject, vfsLinkType);
+
+      // set content and size.
+      m_fileContent=fileContent;
+
+      // set version id
+      m_versionId = versionId;
+
+      // set lastModifiedByName
+      m_lastModifiedByName = lastModifiedByName;
+
+ }
+ 
     /**
     * Clones the CmsFile by creating a new CmsFolder.
     * @return Cloned CmsFile.
@@ -139,8 +192,8 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
         return new CmsBackupResource(this.getVersionId(), this.getId(), this.getResourceId(),
                                      this.getParentId(), this.getFileId(),
                                      new String(this.getResourceName()), this.getType(), this.getFlags(),
-                                     this.getOwnerId(), this.getOwnerName(), this.getGroupId(),
-                                     this.getGroupName(), this.getProjectId(), this.getAccessFlags(),
+                                     /* this.getOwnerId(), this.getOwnerName(), this.getGroupId(), this.getGroupName(), */ 
+                                     this.getProjectId(), this.getAccessFlags(),
                                      this.getState(),
                                      this.getLauncherType(), new String(this.getLauncherClassname()),
                                      this.getDateCreated(),this.getDateLastModified(),

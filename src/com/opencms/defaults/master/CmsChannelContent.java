@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/14 11:05:23 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/07/15 09:31:38 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -25,7 +25,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
+// TODO: remove group/user
 package com.opencms.defaults.master;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.35 $
- * $Date: 2003/07/14 11:05:23 $
+ * $Revision: 1.36 $
+ * $Date: 2003/07/15 09:31:38 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -98,12 +98,12 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * The groupid of the channel
      */
-    private CmsUUID m_GroupId;
+    // private CmsUUID m_GroupId;
 
     /**
      * The userid of the channel
      */
-    private CmsUUID m_UserId;
+    // private CmsUUID m_UserId;
 
     /**
      * The accessflags of the channel
@@ -152,8 +152,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
             m_channel = (CmsResource) m_cms.readFolder(channelId, true);
             m_channelname = m_channel.getResourceName();
             m_parentchannel = m_channel.getParent();
-            m_GroupId = m_channel.getGroupId();
-            m_UserId = m_channel.getOwnerId();
+            // m_GroupId = m_channel.getGroupId();
+            // m_UserId = m_channel.getOwnerId();
             m_accessflags = m_channel.getAccessFlags();
             m_properties = m_cms.readProperties(cms.readAbsolutePath(m_channel));
             m_channelId = (String) m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
@@ -178,8 +178,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_channel = resource;
         m_channelname = resource.getResourceName();
         m_parentchannel = resource.getParent();
-        m_GroupId = resource.getGroupId();
-        m_UserId = resource.getOwnerId();
+        // m_GroupId = resource.getGroupId();
+        // m_UserId = resource.getOwnerId();
         m_accessflags = resource.getAccessFlags();
         try{
             m_properties = cms.readProperties(fullName);
@@ -202,8 +202,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_channelId = I_CmsConstants.C_UNKNOWN_ID+"";
         m_channelname = "";
         m_parentchannel = "";
-        m_GroupId = m_cms.getRequestContext().currentGroup().getId();
-        m_UserId = m_cms.getRequestContext().currentUser().getId();
+        // m_GroupId = m_cms.getRequestContext().currentGroup().getId();
+        // m_UserId = m_cms.getRequestContext().currentUser().getId();
         m_accessflags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         // create the resource object for the channel:
         // int resourceId, int parentId, int fileId, String resourceName, int resourceType,
@@ -213,8 +213,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
                                      CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "", I_CmsConstants.C_TYPE_FOLDER,
                                      0,
-                                     m_cms.getRequestContext().currentUser().getId(),
-                                     m_cms.getRequestContext().currentGroup().getId(),
+                                     /* m_cms.getRequestContext().currentUser().getId(), */
+                                     /* m_cms.getRequestContext().currentGroup().getId(), */
                                      m_cms.getRequestContext().currentProject().getId(), I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
                                      1,
                                      m_cms.getRequestContext().currentUser().getId(), I_CmsConstants.C_UNKNOWN_ID,
@@ -526,26 +526,27 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Gets the owner of this contentdefinition.
      */
     public CmsUUID getOwner() {
-        return m_UserId;
+        return CmsUUID.getNullUUID();
+        // return m_UserId;
     }
 
     /**
      * Sets the owner of this contentdefinition.
      */
     public void setOwner(CmsUUID id) {
-        m_UserId = id;
+        // m_UserId = id;
     }
 
     /**
      * Gets the groupname
      */
     public String getGroup() {
-        String groupname = "";
-        try{
-            groupname = m_cms.readGroup(this.getGroupId()).getName();
-        } catch (CmsException exc){
+        String groupname = "*NOT USED*";
+        // try{
+        //     groupname = m_cms.readGroup(this.getGroupId()).getName();
+        // } catch (CmsException exc){
             // nothing to do, return empty string
-        }
+        // }
         return groupname;
     }
 
@@ -553,14 +554,15 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Gets the groupid
      */
     public CmsUUID getGroupId() {
-        return m_GroupId;
+        return CmsUUID.getNullUUID();
+        // return m_GroupId;
     }
 
     /**
      * Sets the group.
      */
     public void setGroup(CmsUUID groupId) {
-        m_GroupId = groupId;
+        // m_GroupId = groupId;
     }
 
     /**

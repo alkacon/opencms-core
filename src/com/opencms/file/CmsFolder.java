@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2003/07/14 11:05:23 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/07/15 09:31:38 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2003/07/14 11:05:23 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/15 09:31:38 $
  */
 public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -58,6 +58,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
       * @param dateCreated The creation date of this resource.
       * @param dateLastModified The date of the last modification of the resource.
       * @param resourceLastModifiedBy The user who changed the file.
+      * @deprecated user/group not valid any longer
       */
      public CmsFolder(CmsUUID structureId, CmsUUID resourceId,CmsUUID parentId,
                         CmsUUID fileId, String resourceName, int resourceType,
@@ -75,6 +76,41 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
               I_CmsConstants.C_UNKNOWN_LAUNCHER,dateCreated,
               dateLastModified,resourceLastModifiedByUserId, -1, lockedInProject, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
    }
+   
+   /**
+    * Constructor, creates a new CmsFolder object.
+    *
+    * @param resourceId The database Id.
+    * @param parentId The database Id of the parent folder.
+    * @param fileId The id of the content.
+    * @param resourceName The name (including complete path) of the resouce.
+    * @param resourceType The type of this resource.
+    * @param rescourceFlags The flags of thei resource.
+    * @param projectId The project id this resource belongs to.
+    * @param accessFlags The access flags of this resource.
+    * @param state The state of this resource.
+    * @param lockedBy The user id of the user who has locked this resource.
+    * @param dateCreated The creation date of this resource.
+    * @param dateLastModified The date of the last modification of the resource.
+    * @param resourceLastModifiedBy The user who changed the file.
+    */
+   public CmsFolder(CmsUUID structureId, CmsUUID resourceId,CmsUUID parentId,
+                      CmsUUID fileId, String resourceName, int resourceType,
+                      int resourceFlags,
+                      int projectId, int accessFlags, int state,
+                      CmsUUID lockedByUserId, long dateCreated
+                      ,long dateLastModified, CmsUUID resourceLastModifiedByUserId, int lockedInProject){
+
+      // TODO VFS links: refactor all upper methods to support the VFS link type param
+      super(structureId, resourceId,parentId,fileId,
+            resourceName,resourceType,
+            resourceFlags,
+            projectId,accessFlags,state,
+            lockedByUserId,I_CmsConstants.C_UNKNOWN_LAUNCHER_ID,
+            I_CmsConstants.C_UNKNOWN_LAUNCHER,dateCreated,
+            dateLastModified,resourceLastModifiedByUserId, -1, lockedInProject, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+ }
+ 
     /**
     * Clones the CmsFolder by creating a new CmsFolder.
     * @return Cloned CmsFolder.
@@ -82,8 +118,8 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
     public Object clone() {
         return new CmsFolder(this.getId(), this.getResourceId(), this.getParentId(),
                              this.getFileId(),new String(this.getResourceName()),
-                             this.getType(), this.getFlags(), this.getOwnerId(),
-                             this.getGroupId(),this.getProjectId(),
+                             this.getType(), this.getFlags(), /* this.getOwnerId(), */
+                             /* this.getGroupId(), */this.getProjectId(),
                              this.getAccessFlags(),this.getState(),this.isLockedBy(),
                              this.getDateCreated(), this.getDateLastModified(),
                              this.getResourceLastModifiedBy(), this.getLockedInProject());

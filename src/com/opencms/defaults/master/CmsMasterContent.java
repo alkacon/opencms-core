@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/07/02 11:03:13 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/07/15 09:31:38 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.35 $
- * $Date: 2003/07/02 11:03:13 $
+ * $Revision: 1.36 $
+ * $Date: 2003/07/15 09:31:38 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -1001,6 +1001,8 @@ public abstract class CmsMasterContent
         CmsUser currentUser = cms.getRequestContext().currentUser();
 
         // check the rights for the current resource
+        return cms.hasPermissions(resource, I_CmsConstants.C_WRITE_ACCESS);
+        /*
         if( ! ( accessOther(C_ACCESS_PUBLIC_WRITE, resource) ||
                 accessOwner(cms, currentUser, C_PERMISSION_WRITE, resource) ||
                 accessGroup(cms, currentUser, C_ACCESS_GROUP_WRITE, resource) ) ) {
@@ -1008,6 +1010,7 @@ public abstract class CmsMasterContent
             return false;
         }
         return true;
+        */
     }
 
     /**
@@ -1019,7 +1022,7 @@ public abstract class CmsMasterContent
      * @param flags The flags to check.
      *
      * @return wether the user has access, or not.
-     */
+     *//*
     protected static boolean accessOwner(CmsObject cms, CmsUser currentUser,
                                     int flags, CmsResource resource) throws CmsException {
         // The Admin has always access
@@ -1034,7 +1037,7 @@ public abstract class CmsMasterContent
         }
         // the resource isn't accesible by the user.
         return false;
-    }
+    } */
 
     /**
      * Checks, if the group may access this resource.
@@ -1045,18 +1048,19 @@ public abstract class CmsMasterContent
      * @param flags The flags to check.
      *
      * @return wether the user has access, or not.
-     */
+     *//*
     protected static boolean accessGroup(CmsObject cms, CmsUser currentUser,
                                   int flags, CmsResource resource) throws CmsException {
+        return cms.
         // is the user in the group for the resource?
-        if(cms.userInGroup(currentUser.getName(), cms.readGroup(resource.getGroupId()).getName())) {
-            if( (resource.getAccessFlags() & flags) == flags ) {
-                return true;
-            }
-        }
+        // if(cms.userInGroup(currentUser.getName(), cms.readGroup(resource.getGroupId()).getName())) {
+        //     if( (resource.getAccessFlags() & flags) == flags ) {
+        //        return true;
+        //    }
+        //}
         // the resource isn't accesible by the user.
-        return false;
-    }
+        // return false;
+    }*/
 
     /**
      * Checks, if others may access this resource.
@@ -1066,12 +1070,12 @@ public abstract class CmsMasterContent
      * @param flags The flags to check.
      *
      * @return wether the user has access, or not.
-     */
+     *//*
     protected static boolean accessOther( int flags, CmsResource resource) throws CmsException {
         if ((resource.getAccessFlags() & flags) == flags) {
             return true;
         } else {
             return false;
         }
-    }
+    }*/
 }

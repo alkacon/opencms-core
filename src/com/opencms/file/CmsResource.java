@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/15 07:41:42 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2003/07/15 09:31:38 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.57 $ $Date: 2003/07/15 07:41:42 $
+ * @version $Revision: 1.58 $ $Date: 2003/07/15 09:31:38 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -183,6 +183,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
       * @param resourceLastModifiedByUserId the user who changed the file
       * @param size the file content size of the resource
       * @param lockedInProject id of the project the resource was last modified in
+      * @deprecated user/group is not valid any longer
       */
     public CmsResource(
         CmsUUID structureId, 
@@ -232,6 +233,78 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         
         m_fullResourceName = null;
      }
+
+    /**
+     * Constructor, creates a new CmsRecource object.<p>
+     *
+     * @param structureId the structure id of the resource
+     * @param resourceId the resource id of the resource
+     * @param parentId the id of the parent resource in the structure table
+     * @param fileId the file content id of the resource 
+     * @param resourceName the name (including complete path) of the resouce
+     * @param resourceType the type of the resource
+     * @param resourceFlags the flags of the resource
+     * @param userId the id of the user of this resource
+     * @param groupId the id of the group of this resource
+     * @param projectId the project id this resource belongs to
+     * @param accessFlags the access flags of this resource
+     * @param state the state of this resource
+     * @param lockedByUserId the user id of the user who has locked this resource
+     * @param launcherType the launcher that is require to process this recource
+     * @param launcherClassname the name of the Java class invoked by the launcher
+     * @param dateCreated the creation date of this resource
+     * @param dateLastModified the date of the last modification of the resource
+     * @param resourceLastModifiedByUserId the user who changed the file
+     * @param size the file content size of the resource
+     * @param lockedInProject id of the project the resource was last modified in
+     */
+   public CmsResource(
+       CmsUUID structureId, 
+       CmsUUID resourceId, 
+       CmsUUID parentId, 
+       CmsUUID fileId, 
+       String resourceName, 
+       int resourceType, 
+       int resourceFlags, 
+       int projectId,
+       int accessFlags, 
+       int state, 
+       CmsUUID lockedByUserId, 
+       int launcherType, 
+       String launcherClassname, 
+       long dateCreated, 
+       long dateLastModified, 
+       CmsUUID resourceLastModifiedByUserId, 
+       int size, 
+       int lockedInProject,
+       int vfsLinkType
+   ) {
+       m_structureId = structureId;
+       m_resourceId = resourceId;
+       m_parentId = parentId;
+       m_fileId = fileId;
+       m_resourceName=resourceName;
+       m_resourceType=resourceType;
+       m_resourceFlags=resourceFlags;
+       // m_userId=userId;
+       // m_groupId=groupId;
+       m_projectId=projectId;
+       m_accessFlags=accessFlags;
+       m_launcherType=launcherType;
+       m_launcherClassname=launcherClassname;
+       m_state=state;
+       m_lockedByUserId=lockedByUserId;
+       m_dateCreated=dateCreated;
+       m_dateLastModified=dateLastModified;
+       m_resourceLastModifiedByUserId = resourceLastModifiedByUserId;
+       m_size=size;
+       m_lockedInProject=lockedInProject;
+       m_isTouched = false;
+       m_vfsLinkType = vfsLinkType;
+        
+       m_fullResourceName = null;
+    }
+
     /**
      * @see java.lang.Object#clone()
      */

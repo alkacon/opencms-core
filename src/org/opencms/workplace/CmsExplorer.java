@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/14 11:05:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/15 09:31:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -400,18 +400,18 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"\",");
             }         
             // position 12: user who created the resource
-            if (showUserWhoCreated) {
-                content.append("\"");                
-                try {
-                    // TODO: Change this to user who created the resource
-                    content.append(getCms().readUser(res.getOwnerId()).getName());
-                } catch (CmsException e) {
-                    content.append(e.getMessage());
-                }
-                content.append("\",");                
-            } else {
-                content.append("\"\",");
-            }
+            // if (showUserWhoCreated) {
+            //    content.append("\"");                
+            //    try {
+            //        // TODO: Change this to user who created the resource
+            //        content.append(getCms().readUser(res.getOwnerId()).getName());
+            //    } catch (CmsException e) {
+            //        content.append(e.getMessage());
+            //    }
+            //    content.append("\",");                
+            //} else {
+            content.append("\"\",");
+            // }
             // position 13: permissions
             if (showPermissions) {
                 content.append("\"");  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 08:21:53 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2003/07/15 09:31:38 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.42 $ $Date: 2003/07/15 08:21:53 $
+ * @version $Revision: 1.43 $ $Date: 2003/07/15 09:31:38 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -5373,6 +5373,8 @@ public class CmsDriverManager extends Object {
     }
 
     public CmsFile readFile(CmsRequestContext context, CmsUUID structureId, boolean includeDeleted) throws CmsException {
+        return readFileInProject(context, context.currentProject().getId(), structureId, includeDeleted);
+        /*
         CmsFile cmsFile = null;
 
         try {
@@ -5387,6 +5389,7 @@ public class CmsDriverManager extends Object {
 
         // access to all subfolders was granted - return the file.
         return cmsFile;
+        */
     }
 
     /**
@@ -5448,6 +5451,42 @@ public class CmsDriverManager extends Object {
 
         // access to all subfolders was granted - return the file.
         return cmsFile;
+    }
+    
+    /**
+     * Reads a file from the Cms.<p>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read the resource</li>
+     * </ul>
+     *
+     * @param context the context (user/project) of this request
+     * @param projectId the id of the project to read the file from
+     * @param structureId the structure id of the file
+     * @param includeDeleted already deleted resources are found, too
+     *
+     * @return the file read from the VFS
+     *
+     * @throws CmsException if operation was not succesful
+     */    
+    public CmsFile readFileInProject(CmsRequestContext context, int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException {
+        CmsFile cmsFile = null;
+
+        try {
+            cmsFile = m_vfsDriver.readFile(projectId, includeDeleted, structureId);
+        } catch (CmsException exc) {
+            // the resource was not readable
+            throw exc;
+        }
+
+        // check if the user has read access to the file
+        checkPermissions(context, cmsFile, I_CmsConstants.C_READ_ACCESS);
+
+        // access to all subfolders was granted - return the file.
+        return cmsFile;    
     }
 
     /**
