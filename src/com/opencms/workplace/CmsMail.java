@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/08/24 09:25:39 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/08/29 15:13:25 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,8 +43,8 @@ import java.io.*;
 /**
  * This class is used to send a mail, it uses Threads to send it.
  *
- * @author $Author: m.stanke $
- * @version $Name:  $ $Revision: 1.10 $ $Date: 2000/08/24 09:25:39 $
+ * @author $Author: a.lucas $
+ * @version $Name:  $ $Revision: 1.11 $ $Date: 2000/08/29 15:13:25 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -59,7 +59,8 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	private final CmsObject c_CMS;
 	
 	private String m_defaultSender = null;
-	
+	private Vector attachContent = new Vector();
+	private Vector attachType = new Vector();
 	/**
 	 * Constructor, that creates an Email Object.
 	 * 
@@ -245,6 +246,10 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		c_TYPE=type;
 		c_CMS=cms;			
 	}
+	public void addAttachment(String content, String type) {
+		attachContent.addElement(content);
+		attachType.addElement(type);
+	}
 	/**
 	 * This method starts sending an email.
 	 */
@@ -270,7 +275,8 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 				v.addElement(enum.nextElement());
 			}		
 			int size=v.size();
-			if (size!=0) {
+			int numAttach = attachContent.size();
+			if (size!=0 || numAttach!=0) {
 				// create and fill the first message part
 				MimeBodyPart mbp1=new MimeBodyPart();
 				Multipart mp=new MimeMultipart();
@@ -281,10 +287,18 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 				}
 				mp.addBodyPart(mbp1);
 					
-				// create another message part					
-				// attach the file to the message				
-				//FileDataSource fds=new FileDataSource(c_PATH+c_FILE);
-				//mbp2.setDataHandler(new DataHandler(fds));
+				// Check, if there are any attachments
+				for(int i=0; i<numAttach; i++) {
+					// create another message part					
+				    // attach the file to the message				
+					MimeBodyPart mbpAttach = new MimeBodyPart();
+					if("text/html".equals((String)attachType.elementAt(i))) {
+				    	mbpAttach.setDataHandler(new DataHandler(new CmsByteArrayDataSource((String)attachContent.elementAt(i), "text/html")));
+				    } else {
+				    	mbpAttach.setText((String)attachContent.elementAt(i), "ISO-8859-1");
+				    }
+					mp.addBodyPart(mbpAttach);
+				}	
 					
 				for(int i=0;i<size;i++) {
 					String filename=(String)v.elementAt(i);
