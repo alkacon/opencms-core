@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/08/22 13:33:57 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2000/08/24 15:10:34 $
+ * Version: $Revision: 1.46 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,13 +42,15 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2000/08/22 13:33:57 $
+ * @version $Revision: 1.46 $ $Date: 2000/08/24 15:10:34 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
 																		I_CmsWpConstants {
 
 	private Hashtable m_wpTags = new Hashtable();
 	
+	private static Hashtable m_langFiles = new Hashtable();
+
 	/** Reference to the actual language file. */
 	private CmsXmlLanguageFile m_languageFile = null;
 	
@@ -243,7 +245,12 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	 * @exception CmsException
 	 */
 	public void init(CmsObject cms, CmsFile file) throws CmsException {
-		m_languageFile = new CmsXmlLanguageFile(cms);
+		String currentLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+		if(!m_langFiles.containsKey(currentLanguage)) {
+			m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
+		}
+
+		m_languageFile = (CmsXmlLanguageFile)m_langFiles.get(currentLanguage);        
 		super.init(cms, file);
 	}
 	/**
@@ -255,7 +262,13 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	 * @exception CmsException
 	 */
 	public void init(CmsObject cms, String filename) throws CmsException {
-		m_languageFile = new CmsXmlLanguageFile(cms);
+		String currentLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+		if(!m_langFiles.containsKey(currentLanguage)) {
+			m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
+		}
+
+		m_languageFile = (CmsXmlLanguageFile)m_langFiles.get(currentLanguage);        
+
 		super.init(cms, filename);
 	}
 	/**

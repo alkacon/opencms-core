@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/08/08 14:08:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/24 15:10:34 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/08/08 14:08:33 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/24 15:10:34 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,
 																   I_CmsWpConstants,
@@ -50,8 +50,7 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
 
 	/** Name of the class specific language section. */
 	private static String m_languagePath = null;
-	
-	
+
 	/**
 	 * Default constructor.
 	 */
@@ -126,6 +125,26 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
 	public String getContentDescription() {
 		return "Language definition file";
 	}
+ 	public static String getCurrentUserLanguage(CmsObject cms) throws CmsException {
+		 if(m_languagePath == null) {
+			 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);        
+			 m_languagePath = configFile.getLanguagePath();
+		 }
+		 
+		 // select the right language to use
+		 String currentLanguage=null;
+		 Hashtable startSettings=null;
+		 startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+		 // try to read it form the user additional info
+		 if (startSettings != null) {
+			 currentLanguage = (String)startSettings.get(C_START_LANGUAGE);  
+		 }
+		 // if no language was found so far, set it to default
+		 if (currentLanguage == null) {        
+			 currentLanguage = C_DEFAULT_LANGUAGE;
+		 }
+ 		return currentLanguage;
+ 	} 
 	/**
 	 * Overridden internal method for getting datablocks.
 	 * This method first checkes, if the requested value exists.
