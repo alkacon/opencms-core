@@ -1,0 +1,39 @@
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_edit.js"></SCRIPT>
+
+<script language="Javascript">
+var code ='<html><body>Hello World</body></html>';
+</script>
+
+</head>
+
+<body background="pics/bg_grau.gif" onLoad="setText();" bgproperties=fixed scroll=no leftmargin=5 topmargin=5 marginwidth = 5 marginheight = 5>
+
+<!-- Buttonleiste -->
+<form id=EDITTEXT name=EDITTEXT enctype="text/plain">
+<table cellspacing=0 cellpadding=0 border=0 width="100%">
+	<tr>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_saveclose');doEdit(2);" onmouseout="ChOff('bt_saveclose')" onmouseover="ChOn('bt_saveclose')" onmouseup="ChOn('bt_saveclose')"><IMG alt="Speichern und Schließen" border =0 name=bt_saveclose src="pics/bt_saveclose_off.gif" width=32 height=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_save');doEdit(3);" onmouseout="ChOff('bt_save')" onmouseover="ChOn('bt_save')" onmouseup="ChOn('bt_save')"><IMG alt=Speichern border=0 name=bt_save src="pics/bt_save_off.gif" width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 width=2 height=32 src="pics/gr_line.gif"></td>
+		<td class=menu><a href="javascript:openwin('help/de/3_1.html', 'Hilfe', 300, 600);" onMouseDown="ChPush('bt_hilfe')" onMouseUp="ChOn('bt_hilfe')" onMouseOver="ChOn('bt_hilfe')" onMouseOut="ChOff('bt_hilfe')"><img src="pics/bt_hilfe_off.gif" alt="Hilfe" name="bt_hilfe" border=0 width=32 height=32></a></td>
+		<td class=menu width="100%">&nbsp;</td>
+		<td class=menu align=right><A href="#" onmousedown="ChPush('bt_close');doEdit(1);" onmouseout="ChOff('bt_close')" onmouseover="ChOn('bt_close')" onmouseup="ChOn('bt_close')"><IMG alt=Schlie&szlig;en border=0 name=bt_close src="pics/bt_close_off.gif" width=32 height=32></a></td>
+	</tr>
+	<tr><td colspan="6" height="2"><spacer type="block" width=2 height=2></td></tr>	
+	</tr>
+</table>
+	
+
+
+<!-- Inhalt -->
+
+<center><textarea name="TextEditor" rows=34 cols= 120 wrap=virtual>
+</textarea></center>
+</form>
+</body>
+</html>
