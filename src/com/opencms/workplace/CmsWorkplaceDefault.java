@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/03/16 19:21:04 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.16 $ $Date: 2000/03/16 19:21:04 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -90,13 +90,13 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      */
     public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
         //Vector v = new Vector();
-        //A_CmsRequestContext reqContext = cms.getRequestContext();
+        A_CmsRequestContext reqContext = cms.getRequestContext();
         
         //v.addElement(templateFile);
         //v.addElement(parameters);
         //v.addElement(templateSelector);
         //return v;
-        String result = templateFile;
+        String result = reqContext.currentProject().getName() + templateFile;
         Enumeration keys = parameters.keys();
         while(keys.hasMoreElements()) {
             String key = (String)keys.nextElement();
@@ -294,6 +294,42 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     }
     
     /**
+     * Checks if the current project is <STRONG>not</STRONG> the "Online" project.
+     * <P>
+     * This method is used by workplace icons to decide whether the icon should 
+     * be activated or not. Icons will use this method if the attribute <code>method="isNotOnlineProject"</code>
+     * is defined in the <code>&lt;ICON&gt;</code> tag.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param lang reference to the currently valid language file <em>(not used here)</em>.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
+     * @exception CmsException if there were errors while accessing project data.
+     */
+    public Boolean isNotOnlineProject(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) 
+            throws CmsException {           
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        return new Boolean(!reqCont.currentProject().equals(cms.onlineProject()));
+    }    
+
+    /**
+     * Used by workplace icons to decide whether the icon should 
+     * be activated or not. Icons will use this method if the attribute <code>method="doNotShow"</code>
+     * is defined in the <code>&lt;ICON&gt;</code> tag.
+     * <P>
+     * This method always returns <code>false</code> thus icons controlled by
+     * this method will never be activated.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param lang reference to the currently valid language file <em>(not used here)</em>.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return <code>false</code>.
+     */
+    public Boolean doNotShow(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
+        return new Boolean(false);
+    }    
+    
+    /**
      * Help method used to fill the vectors returned to 
      * <code>CmsSelectBox</code> with constant values.
      * @param names Vector to be filled with the appropriate values in this method.
@@ -312,5 +348,5 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
                 names.addElement(value);
             }
         }
-    }
+    }            
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/16 10:04:45 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2000/03/16 19:20:59 $
+ * Version: $Revision: 1.63 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.62 $ $Date: 2000/03/16 10:04:45 $
+ * @version $Revision: 1.63 $ $Date: 2000/03/16 19:20:59 $
  */
 public interface I_CmsWpConstants {
 
@@ -322,6 +322,10 @@ public interface I_CmsWpConstants {
 
     /** href target of the icon */
     public static final String C_ICON_TARGET = "target";
+
+    /** method that should be used for deciding to (de)activate the icon */
+    public static final String C_ICON_METHOD = "method";
+
     
     // Parameters for labels
 

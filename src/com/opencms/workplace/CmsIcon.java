@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsIcon.java,v $
- * Date   : $Date: 2000/02/21 22:28:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/03/16 19:21:11 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,13 +36,14 @@ import com.opencms.template.*;
 import com.opencms.file.*;
 
 import java.util.*;
+import java.lang.reflect.*;
 
 /**
  * Class for building workplace icons. <BR>
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/02/21 22:28:01 $
+ * @version $Revision: 1.6 $ $Date: 2000/03/16 19:21:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -72,11 +73,43 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpCo
 		String iconAction = n.getAttribute(C_ICON_ACTION);
 		String iconHref = n.getAttribute(C_ICON_HREF);
 		String iconTarget = n.getAttribute(C_ICON_TARGET);
+        String iconMethod = n.getAttribute(C_ICON_METHOD);
+        
 		if(iconHref == null || "".equals(iconHref)) {
 		    iconHref = "";
 		}
         
-		// Get button definition and language values
+        // call the method for activation decision
+        boolean activate=true;
+        
+        if(iconMethod != null && ! "".equals(iconMethod))
+        {
+            Method groupsMethod = null;
+            try {
+                groupsMethod = callingObject.getClass().getMethod(iconMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
+                activate = ((Boolean)groupsMethod.invoke(callingObject, new Object[] {cms, lang, parameters})).booleanValue();
+            } catch(NoSuchMethodException exc) {
+            // The requested method was not found.
+            throwException("Could not find icon activation method " + iconMethod + " in calling class " + callingObject.getClass().getName() + " for generating icon.", CmsException.C_NOT_FOUND);
+            } catch(InvocationTargetException targetEx) {
+                // the method could be invoked, but throwed a exception
+                // itself. Get this exception and throw it again.              
+                Throwable e = targetEx.getTargetException();
+                if(!(e instanceof CmsException)) {
+                    // Only print an error if this is NO CmsException
+                    e.printStackTrace();
+                    throwException("Icon activation method " + iconMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                } else {
+                    // This is a CmsException
+                    // Error printing should be done previously.
+                    throw (CmsException)e;
+                }
+            } catch(Exception exc2) {
+                throwException("Icon activation method " + iconMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
+            }
+        }
+                
+        // Get button definition and language values
 		CmsXmlWpTemplateFile icondef = getIconDefinitions(cms);
 		StringBuffer iconLabelBuffer = new StringBuffer(
 			lang.getLanguageValue(C_LANG_ICON + "." + iconLabel) );
@@ -92,6 +125,10 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpCo
 		icondef.setXmlData(C_ICON_ACTION, iconAction);
 		icondef.setXmlData(C_ICON_HREF, iconHref);
 		icondef.setXmlData(C_ICON_TARGET, iconTarget);
-		return icondef.getProcessedXmlDataValue("defaulticon", callingObject);
+        if(activate) {
+            return icondef.getProcessedXmlDataValue("defaulticon", callingObject);
+        } else {
+            return icondef.getProcessedXmlDataValue("deactivatedicon", callingObject);
+        }
     }           
 }
