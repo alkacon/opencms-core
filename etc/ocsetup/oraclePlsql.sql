@@ -764,6 +764,14 @@ CREATE INDEX ONLINEMEDIA_MASTERID ON
 CREATE INDEX MEDIA_MASTERID ON 
   CMS_MODULE_MEDIA(MASTER_ID);
 
+CREATE TYPE type_folderinfo AS OBJECT (resource_name VARCHAR2(248));
+/
+CREATE TYPE type_fileinfo AS OBJECT (resource_name VARCHAR2(248), file_id NUMBER);
+/
+CREATE TYPE plsqltable_folderinfo IS TABLE OF type_folderinfo;
+/
+CREATE TYPE plsqltable_fileinfo IS TABLE OF type_fileinfo;
+/
 prompt 'package_usertypes';
 @./oracleplsql/package_usertypes.sql;
 
