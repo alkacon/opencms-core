@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessGroup.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/03/29 15:13:12 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.6 $ $Date: 2000/03/29 15:13:12 $
  */
 interface I_CmsAccessGroup {
 		
@@ -162,6 +162,15 @@ interface I_CmsAccessGroup {
 	public void removeUserFromGroup(int  userid, int groupid)
 		throws CmsException;
 
+	/**
+	 * Removes a user.
+	 * 
+	 * @param userid The id of the user that is to be added to the group.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void deleteUser(int userid)
+         throws CmsException;
+								 
 	/**
 	 * Returns all groups<P/>
 	 * 

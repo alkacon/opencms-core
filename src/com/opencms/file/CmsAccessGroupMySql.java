@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessGroupMySql.java,v $
- * Date   : $Date: 2000/02/29 16:44:46 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/03/29 15:13:12 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/02/29 16:44:46 $
+ * @version $Revision: 1.19 $ $Date: 2000/03/29 15:13:12 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -95,6 +95,11 @@ import com.opencms.core.*;
     */   
     private static final String C_REMOVEUSERFROMGROUP = "DELETE FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
     
+    /**
+    * SQL Command for removing a user.
+    */   
+    private static final String C_REMOVEUSER = "DELETE FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE USER_ID = ?";
+	
     /**
     * SQL Command for check if user is in a group.
     */   
@@ -494,6 +499,26 @@ import com.opencms.core.*;
 		}
      }
 
+	/**
+	 * Removes a user.
+	 * 
+	 * @param userid The id of the user that is to be added to the group.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void deleteUser(int userid)
+         throws CmsException {
+         try {
+			 // create statement
+			 PreparedStatement statementRemoveUserFromGroup =
+				m_Con.prepareStatement(C_REMOVEUSER);
+			 
+			 statementRemoveUserFromGroup.setInt(1,userid);
+			 statementRemoveUserFromGroup.executeUpdate();
+         } catch (SQLException e){
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
+     }
+	 
 	/**
 	 * Returns all groups<P/>
 	 * 

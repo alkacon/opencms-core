@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessUserGroup.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/03/29 15:13:12 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.15 $ $Date: 2000/03/29 15:13:12 $
  */
  class CmsAccessUserGroup implements I_CmsAccessUserGroup, I_CmsConstants {
 
@@ -321,6 +321,8 @@ import com.opencms.core.*;
              userId=user.getId();
              m_accessUser.deleteUser(username);
              m_accessUserInfo.deleteUserInformation(userId);
+			 // delete the user-information from the groupusers-table, too
+			 m_accessGroup.deleteUser(userId);
          } else {
              throw new CmsException("["+this.getClass().getName()+"]"+username,CmsException.C_NOT_FOUND);
          }
