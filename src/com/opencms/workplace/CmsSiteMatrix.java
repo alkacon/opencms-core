@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSiteMatrix.java,v $
- * Date   : $Date: 2000/09/26 15:09:48 $
+ * Date   : $Date: 2000/10/02 13:53:54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -112,61 +112,87 @@ private static Object[] createMatrix(Vector categories, Vector sites)
  */
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException
 {
+	Hashtable country_map = new Hashtable();
+	Hashtable category_map = new Hashtable();
+	Hashtable siteinfo = null;
+	String country_key = null, country_place = null, category_place = null, lsname = null, csname = null;
+	StringBuffer lines = null, nodes = null;
+	CmsCategory category = null;
+	int country_count = 0;
+	CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+	Vector sites = cms.getSiteMatrixInfo();
+	Vector categories = cms.getAllCategories();
+
+	// Map categories to rows in the matrix
+	lines = new StringBuffer();
+	for (int i = 0; i < categories.size(); i++)
+	{
+		category = (CmsCategory) categories.elementAt(i);
+		category_place = "" + i;
+		category_map.put(new Integer(category.getId()), category_place);
+		xmlTemplateDocument.setData("y", category_place);
+		xmlTemplateDocument.setData("name", category.getName());
+		lines.append(xmlTemplateDocument.getProcessedDataValue("category"));
+	}
+	xmlTemplateDocument.setData("categories", lines.toString());
+
+	// Map countries and languages to columns in the matrix and find out the width of the matrix
 	/* Reminder of how a site hashtable was created
+	Hashtable a = new Hashtable();
 	a.put("siteid", new Integer(res.getInt("SITE_ID")));
+	a.put("sitename", res.getString("SITE_NAME"));
 	a.put("categoryid", new Integer(res.getInt("CATEGORY_ID")));
 	a.put("langid", new Integer(res.getInt("LANGUAGE_ID")));
 	a.put("countryid", new Integer(res.getInt("COUNTRY_ID")));
-	a.put("langname", res.getString("LANG_NAME"));
-	a.put("countryname", res.getString("COUNTRY_NAME"));
+	
+	shortname = res.getString("LANG_SNAME");
+	if (shortname != null) a.put("lang_sname", shortname);
+	a.put("lang_name", res.getString("LANG_NAME"));
+	
+	shortname = res.getString("COUNTRY_SNAME");
+	if (shortname != null) a.put("country_sname", shortname);
+	a.put("country_name", res.getString("COUNTRY_NAME"));
+	siteinfo.addElement(a);
 	*/
-	CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-	Vector sitelist = cms.getSiteMatrixInfo();
-	Vector categories = cms.getAllCategories();
-	Object[] matrixinfo = createMatrix(categories, sitelist);
-	Vector country_names = (Vector) matrixinfo[0];
-	Hashtable[][] matrix = (Hashtable[][]) matrixinfo[1];
-	StringBuffer line = null;
-	StringBuffer matrixbuffer = null;
-
-	//
-	xmlTemplateDocument.setData("domaincount", "" + country_names.size());
-	xmlTemplateDocument.setData("categorycount", "" + categories.size());
-
-	//
-	line = new StringBuffer();
-	for (int i = 0; i < country_names.size(); i++)
+	lines = new StringBuffer();
+	nodes = new StringBuffer();
+	country_count = 0;
+	for (int i = 0; i < sites.size(); i++)
 	{
-		xmlTemplateDocument.setData("domainname", (String) country_names.elementAt(i));
-		line.append(xmlTemplateDocument.getProcessedDataValue("domaindot"));
-	}
-	xmlTemplateDocument.setData("domains", line.toString());
-	xmlTemplateDocument.setData("domainlist", xmlTemplateDocument.getProcessedDataValue("domainrow"));
-
-	//
-	matrixbuffer = new StringBuffer();
-	for (int i = 0; i < categories.size(); i++)
-	{
-		line = new StringBuffer();
-		xmlTemplateDocument.setData("categoryname", ((CmsCategory) categories.elementAt(i)).getName());
-		for (int j = 0; j < country_names.size(); j++)
+		siteinfo = (Hashtable) sites.elementAt(i);
+		country_key = siteinfo.get("countryid").toString() + "x" + siteinfo.get("langid").toString();
+		if (!country_map.containsKey(country_key))
 		{
-			if (matrix[i][j] != null)
-			{
-				// set some data for the site in question
-				Hashtable site = matrix[i][j];
-				xmlTemplateDocument.setData("id", ""+((Integer)site.get("siteid")).intValue());
-				line.append(xmlTemplateDocument.getProcessedDataValue("activedot"));
-			}
-			else
-			{
-				line.append(xmlTemplateDocument.getProcessedDataValue("emptydot"));
-			}
+			country_place = "" + country_count++;
+			country_map.put(country_key, country_place);
 		}
-		xmlTemplateDocument.setData("dots", line.toString());
-		matrixbuffer.append(xmlTemplateDocument.getProcessedDataValue((i == 0) ? "firstrow" : "row"));
+		else
+		{
+			country_place = (String) country_map.get(country_key);
+		}
+		category_place = (String) category_map.get(siteinfo.get("categoryid"));
+
+		//
+		xmlTemplateDocument.setData("x", country_place);
+		xmlTemplateDocument.setData("y", category_place);
+		lsname = (String) siteinfo.get("lang_sname");
+		if (lsname == null)
+			lsname = (String) siteinfo.get("lang_name");
+		csname = (String) siteinfo.get("country_sname");
+		if (csname == null)
+			csname = (String) siteinfo.get("country_name");
+		//
+		xmlTemplateDocument.setData("shortname", csname + " (" + lsname + ")");
+		xmlTemplateDocument.setData("name", (String) siteinfo.get("country_name") + " (" + (String) siteinfo.get("lang_name") + ")");
+		lines.append(xmlTemplateDocument.getProcessedDataValue("domain"));
+
+		//
+		xmlTemplateDocument.setData("id", ""+((Integer) siteinfo.get("siteid")).intValue());
+		xmlTemplateDocument.setData("name", (String) siteinfo.get("sitename"));
+		nodes.append(xmlTemplateDocument.getProcessedDataValue("sitenode"));
 	}
-	xmlTemplateDocument.setData("lines", matrixbuffer.toString());
+	xmlTemplateDocument.setData("domains", lines.toString());
+	xmlTemplateDocument.setData("sites", nodes.toString());
 
 	//
 	return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
