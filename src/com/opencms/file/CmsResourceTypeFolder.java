@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/23 11:14:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2001/07/23 14:03:53 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -509,6 +509,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 	public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
         CmsFolder res = cms.doCreateFolder(folder, name, properties);
         cms.lockResource(folder+name+"/");
+        res.setLocked(cms.getRequestContext().currentUser().getId());
 		return res;
     }
 
