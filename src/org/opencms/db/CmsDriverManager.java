@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/23 10:56:01 $
- * Version: $Revision: 1.308 $
+ * Date   : $Date: 2004/01/23 14:59:37 $
+ * Version: $Revision: 1.309 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.308 $ $Date: 2004/01/23 10:56:01 $
+ * @version $Revision: 1.309 $ $Date: 2004/01/23 14:59:37 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5294,7 +5294,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     try {
                         getVfsDriver().readFolder(I_CmsConstants.C_PROJECT_ONLINE_ID, parentID);
                     } catch (CmsException e) {
-                        report.println("Parent folder not published for resource " + directPublishResource.getName(), I_CmsReport.C_FORMAT_WARNING);
+                        report.println("Parent folder not published for resource " + directPublishResource.getName(), I_CmsReport.C_FORMAT_ERROR);
                         return;
                     }
                 }
