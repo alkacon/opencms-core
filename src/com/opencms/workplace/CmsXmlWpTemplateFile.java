@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/05/05 09:16:13 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/05/12 07:43:56 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2000/05/05 09:16:13 $
+ * @version $Revision: 1.42 $ $Date: 2000/05/12 07:43:56 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -249,6 +249,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     */
     public void fastSetXmlData(String tag, String data) {
         fastSetData(tag, data);
+        //setXmlData(tag,data);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsContextmenue.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/05/12 07:43:56 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.8 $ $Date: 2000/05/12 07:43:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,
@@ -74,8 +74,9 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         // Read Contextmenue parameters
         String name = n.getAttribute("name");
-		String output;
+		String output="++ missing context ++";
      
+        if (name!= null) {
         // get the current langueag
         Hashtable startSettings=null;
         String currentLanguage=null;
@@ -130,7 +131,7 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,
             output=result.toString();
             m_storage.put(currentLanguage+name,output);            
         }
-        
+        }
 		// rerun the result
 		return output;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/04/05 08:45:55 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/05/12 07:43:56 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,11 +36,12 @@ import org.xml.sax.*;
 import java.util.*;
 import java.io.*;
 
+
 /**
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2000/04/05 08:45:55 $
+ * @version $Revision: 1.19 $ $Date: 2000/05/12 07:43:56 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/05/09 10:02:57 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/05/12 07:43:55 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,9 +39,12 @@ import org.xml.sax.*;
 
 import com.opencms.launcher.*;
 
-import org.apache.xerces.*;
-import org.apache.xerces.dom.*;
-import org.apache.xerces.parsers.*;
+import com.sun.xml.*;
+import com.sun.xml.tree.*;
+                  
+//import org.apache.xerces.*;
+//import org.apache.xerces.dom.*;
+//import org.apache.xerces.parsers.*;
 
 /** 
  * Abstract class for OpenCms files with XML content.
@@ -72,7 +75,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2000/05/09 10:02:57 $
+ * @version $Revision: 1.24 $ $Date: 2000/05/12 07:43:55 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -144,6 +147,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 
  	/** XML parser */   
     private static I_CmsXmlParser parser = new CmsXmlXercesParser();
+    // private static I_CmsXmlParser parser = new CmsXmlProjectXParser();
 
 	/** Constructor for creating a new instance of this class */    
     public A_CmsXmlContent() {
@@ -294,7 +298,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         m_cms = cms;
         m_filename = filename;
         try {
-            m_content = parser.createEmptyDocument(getXmlDocumentTagName());
+            m_content =parser.createEmptyDocument(getXmlDocumentTagName());
         } catch(Exception e) {
             e.printStackTrace();
             throwException("Cannot create empty XML document for file " + m_filename + ". ", CmsException.C_XML_PARSING_ERROR);
@@ -685,6 +689,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */    
     protected void processNode(Node n, Hashtable keys, Method defaultMethod,
                                    Object callingObject, Object userObj) throws CmsException {
+        
         // Node currently processed
         Node child = null;
         
@@ -1654,7 +1659,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         String currentProject = m_cms.getRequestContext().currentProject().getName();
         Document lookup = (Document)m_filecache.get(currentProject + ":" + filename);
         if(lookup != null) {
-            cachedDoc = lookup.cloneNode(true).getOwnerDocument();
+            try {
+                cachedDoc = lookup.cloneNode(true).getOwnerDocument();
+            } catch (Exception e) {
+                lookup=null;
+                cachedDoc = null;
+            }
         }
         if(C_DEBUG && cachedDoc != null && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Re-used previously parsed XML file " + getFilename() + ".");

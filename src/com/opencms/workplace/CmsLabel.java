@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLabel.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/05/12 07:43:56 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;LABEL&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.7 $ $Date: 2000/05/12 07:43:56 $
  */
 public class CmsLabel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -69,11 +69,16 @@ public class CmsLabel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         String labelValue = n.getAttribute(C_LABEL_VALUE);
         String outputValue=null;
+        String result="+++missing+++";
         
-        CmsXmlWpLabelDefFile labeldef = getLabelDefinitions(cms);
-        outputValue = lang.getLanguageValue(labelValue);
-        
-        String result = labeldef.getLabel(outputValue);
+        if (labelValue != null) {
+     
+            CmsXmlWpLabelDefFile labeldef = getLabelDefinitions(cms);
+            outputValue = lang.getLanguageValue(labelValue);
+
+            result = labeldef.getLabel(outputValue);
+        }
+       
         return result; 
     }                    
 }
