@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/03/19 13:54:17 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsObject {
 
@@ -3782,7 +3782,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void writeProperty(String name, String property, String value) throws CmsException {
-        m_driverManager.writeProperty(m_context, addSiteRoot(name), property, value);
+        m_driverManager.writeProperty(m_context, addSiteRoot(name), property, value, false);
     }
 
     /**
