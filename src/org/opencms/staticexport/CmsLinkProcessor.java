@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/01/12 10:06:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/16 09:34:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -310,8 +310,9 @@ public class CmsLinkProcessor extends NodeVisitor {
             }
 
             // if we are in the desired site, relative links are generated
+            // if the link is processed for editing purposes, relative links are generated, too
             // otherwise, links are generated as absolute links
-            if (m_cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
+            if (m_cms.getRequestContext().getSiteRoot().equals(siteRoot) || m_processEditorLinks) {
                 return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());
             } else {
                 return site.getUrl() + OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());

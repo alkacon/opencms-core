@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/01/14 17:08:22 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/01/16 09:34:50 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsLinkManager {
     
@@ -242,7 +242,15 @@ public class CmsLinkManager {
         // relative uri starting with opencms context
         String context = OpenCms.getOpenCmsContext();
         if (context != null && path.startsWith(context)) {
-            return cms.getRequestContext().addSiteRoot(path.substring(context.length())) + fragment + query;
+            String siteRoot = CmsSiteManager.getSiteRoot(relativePath);
+            // relative path contains a site root
+            // so, we are in the root site and have to add this path as site prefix
+            if (siteRoot != null) {
+                return siteRoot + path.substring(context.length()) + fragment + query;
+            } else {
+                // site root is added with standard mechanism
+                return cms.getRequestContext().addSiteRoot(path.substring(context.length())) + fragment + query;
+            }
         }
         
         // uri with relative path is relative to the given relativePath if available and in a site, otherwise invalid
