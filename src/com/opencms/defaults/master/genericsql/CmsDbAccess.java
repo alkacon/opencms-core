@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/06/30 22:32:48 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/07/05 02:09:34 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -482,7 +482,10 @@ public class CmsDbAccess {
                 cms.setContextToVfs();
                 if(resources.size() >= 1) {
                     // add the name of the channel to the ret-value
-                    retValue.add(((CmsResource)resources.get(0)).getAbsolutePath());
+                    CmsResource resource = (CmsResource)resources.get(0);
+                    if (resource.getState() != resource.C_STATE_DELETED) {
+                        retValue.add(resource.getAbsolutePath());
+                    }
                 }
             }
         } catch(SQLException exc) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/06/28 16:22:09 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/07/05 02:09:34 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.21 $
- * $Date: 2002/06/28 16:22:09 $
+ * $Revision: 1.22 $
+ * $Date: 2002/07/05 02:09:34 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -861,13 +861,15 @@ public abstract class CmsMasterContent
         Vector subChannels = cms.getResourcesInFolder("//cos" + channel);
         for (int i=0; i < subChannels.size(); i++) {
             CmsResource resource = (CmsResource)subChannels.get(i);
-            String folder = resource.getAbsolutePath();
-            Vector v = getAllSubChannelsOf(cms, folder);
-            if (v.size() == 0 && hasWriteAccess(cms, resource)) {
-                allChannels.add(folder);
-            }else {
-                for (int j=0; j < v.size(); j++) {
-                    allChannels.add(v.get(j));
+            if (resource.getState() != resource.C_STATE_DELETED) {            
+                String folder = resource.getAbsolutePath();
+                Vector v = getAllSubChannelsOf(cms, folder);
+                if (v.size() == 0 && hasWriteAccess(cms, resource)) {
+                    allChannels.add(folder);
+                }else {
+                    for (int j=0; j < v.size(); j++) {
+                        allChannels.add(v.get(j));
+                    }
                 }
             }
         }
@@ -895,13 +897,15 @@ public abstract class CmsMasterContent
         int offset = rootChannel.length()-1;
         for (int i=0; i < subChannels.size(); i++) {
             CmsResource resource = (CmsResource)subChannels.get(i);
-            String folder = resource.getAbsolutePath();
-            Vector v = getAllSubChannelsOf(cms, folder);
-            if (v.size() == 0 && hasWriteAccess(cms, resource)) {
-                allChannels.add(folder.substring(offset));
-            } else {
-                for (int j=0; j < v.size(); j++) {
-                    allChannels.add(((String)v.get(j)).substring(offset));
+            if (resource.getState() != resource.C_STATE_DELETED) {
+                String folder = resource.getAbsolutePath();
+                Vector v = getAllSubChannelsOf(cms, folder);
+                if (v.size() == 0 && hasWriteAccess(cms, resource)) {
+                    allChannels.add(folder.substring(offset));
+                } else {
+                    for (int j=0; j < v.size(); j++) {
+                        allChannels.add(((String)v.get(j)).substring(offset));
+                    }
                 }
             }
         }
