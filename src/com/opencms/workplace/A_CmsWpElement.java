@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
- * Date   : $Date: 2000/02/19 10:18:16 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/02/20 17:54:08 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/02/19 10:18:16 $
+ * @version $Revision: 1.18 $ $Date: 2000/02/20 17:54:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -69,7 +69,12 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * Reference to projectlist definition file
      */
     protected static CmsXmlWpTemplateFile m_tasklistdef = null;
-	
+    
+    /**
+     * Reference to taskdocu definition file
+     */
+    protected static CmsXmlWpTemplateFile m_taskdocudef = null;    
+    
 	/**
      * Reference to projectlist definition file
      */
@@ -296,6 +301,23 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
         return m_radiodef;
     }
      
+     /**
+     * Reads the task docu definition file.
+     * @param cms The actual cms object
+     * @return Reference to the list defintion file.
+     * @exception CmsException
+     */
+    public CmsXmlWpTemplateFile getTaskDocuDefinitions(A_CmsObject cms) throws CmsException {
+        //if(m_taskdocudef == null) {
+            if(m_workplaceElementPath == null) {
+                CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+                m_workplaceElementPath = configFile.getWorkplaceElementPath();
+            }
+            m_taskdocudef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_TASKDOCU_TEMPLATEFILE);
+        //}
+        return m_taskdocudef;
+    }
+   
      
     /**
      * Help method to print nice classnames in error messages

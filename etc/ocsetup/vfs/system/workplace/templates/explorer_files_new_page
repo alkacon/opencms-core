@@ -37,12 +37,12 @@ function show_help()
 	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
 	<tr>
 		<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-    	<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="40" action="onfocus='NEU.WEITER.disabled=false;'"/><![CDATA[</td>
+    	<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100" action="onfocus='NEU.WEITER.disabled=false;'"/><![CDATA[</td>
 	
 	</tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="40" /><![CDATA[</td>
+		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>
 	
 	</tr>
 	<tr>
@@ -91,12 +91,12 @@ function show_help()
 	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
 	<tr>
 		<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-		<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="40"  action="onfocus='LINK.WEITER.disabled=false;'"/><![CDATA[</td>
+		<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100"  action="onfocus='LINK.WEITER.disabled=false;'"/><![CDATA[</td>
 	
 	</tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="40" /><![CDATA[</td>
+		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>
 	</tr>
 	<tr>
 			<td class=formular>]]><LABEL value="input.template" /><![CDATA[:</td>
@@ -110,7 +110,7 @@ function show_help()
 	<tr><td colspan=2 class=leerzeile><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=10px</td></tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.navtitle" /><![CDATA[:</td>
-		<td class=dialogtxt>]]><INPUTFIELD name="LINKNAME" class="textfeld2" size="40" length="40" /><![CDATA[</td>
+		<td class=dialogtxt>]]><INPUTFIELD name="LINKNAME" class="textfeld2" size="100" length="40" /><![CDATA[</td>
 	</tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.insert" /><![CDATA[</td>

@@ -233,7 +233,7 @@
 <contextmenue name="page">
 	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
-	<contextdisabled name="explorer.context.edit"/>
+	<contextdisabled name="explorer.context.pageedit"/>
 	<contextdisabled name="explorer.context.editcontrolfile" />
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
@@ -253,7 +253,7 @@
 <contextmenue name="pagelock">
 	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
-	<contextdisabled name="explorer.context.edit"/>
+	<contextdisabled name="explorer.context.pageedit"/>
     <contextdisabled name="explorer.context.editcontrolfile" />
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
@@ -273,7 +273,7 @@
 <contextmenue name="pagelockuser">
 	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_TEMPLATEEDIT)"/>
+	<contextentry name="explorer.context.pageedit" href="javascript:doAction(DO_TEMPLATEEDIT)"/>
 	<contextentry name="explorer.context.editcontrolfile" href="javascript:doAction(DO_EDIT)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>

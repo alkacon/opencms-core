@@ -169,7 +169,7 @@ function checklyrheight(welche)
 	        }
 			default:
 			{
-			 return 81;
+			 return 220;
 			 break;
 	        }
         }
