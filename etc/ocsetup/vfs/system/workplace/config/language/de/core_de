@@ -408,6 +408,7 @@
                 <htmledit>Seite bearbeiten</htmledit>
                 <lock>Sperren</lock>
                 <move>Verschieben</move>
+				<noaccess>Keine ausreichenden Zugriffsrechte</noaccess>
                 <newsedit>News bearbeiten</newsedit>
                 <overridelock>Sperrung übernehmen</overridelock>
                 <pageedit>Seite bearbeiten</pageedit>
@@ -1046,6 +1047,7 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <rename>Datei umbenennen</rename>
             <renamefolder>Verzeichnis umbenennen</renamefolder>
             <rootfolder>Hauptverzeichnis</rootfolder>
+       		<setup>Setup</setup>
             <size>Größe</size>
             <state>Status</state>
             <title>Titel</title>
