@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2001/08/15 09:24:21 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.28 $ $Date: 2001/08/15 09:24:21 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -217,7 +217,11 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                         }
                         // create the folder
                         CmsFolder folder = cms.createFolder(currentFilelist, newFolder);
-                        cms.lockResource(folder.getAbsolutePath());
+                        try{
+                            cms.lockResource(folder.getAbsolutePath());
+                        }catch(CmsException e){
+                            //folder is already locked, do nothing
+                        }
                         cms.writeProperties(folder.getAbsolutePath(), allProperties);
                         // create the folder in content bodys
                         try{
