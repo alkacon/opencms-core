@@ -183,7 +183,7 @@
 				<chpwd2>Please enter the old password again.</chpwd2>
 				<chtype>Please contact your system administrator.</chtype>
 				<delete>Please try again later, or contact your system administrator.</delete>
-				<deleteextension>Please contact your system administrator.<deleteextension>
+				<deleteextension>Please contact your system administrator.</deleteextension>
 				<deleteuser>Please contact your system administrator.</deleteuser>
 				<deletegroup>Please contact your system administrator.</deletegroup>
 				<database>You must have Admin permissions to export or import the database.</database>
