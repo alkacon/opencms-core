@@ -25,9 +25,9 @@ function inputOK() {
         return false;
     }
     if (document.NEU.NAME.value=="")
-    {   
+    {
         return false;
-    } 
+    }
     if (document.NEU.TITLE.value=="")
     {
         return false;
@@ -41,25 +41,25 @@ function checkFormData(form,field,lyr)
         alert("]]><LABEL value="error.message.datamissing" /><![CDATA[");
         return false;
     }
-    
+
     var result=true;
     var at_pos, entry, strLength;
-    
+
     if (ie || lyr==null)
         entry = eval('document.' + form +'.'+ field + '.value');
-    else if (ns && lyr!=null) 
+    else if (ns && lyr!=null)
         entry = eval('document["'+lyr+'"].document.forms["'+form+'"].'+ field +'.value');
-    
+
     strLength=entry.length;
-    
-    for (i=0; i < strLength; i++) 
+
+    for (i=0; i < strLength; i++)
     {
         if (charList.indexOf(entry.charAt(i))==-1)
         {
             alert("]]><LABEL value="error.message.badcharacter" /><![CDATA[: "+ entry.charAt(i));
             if (ie || lyr==null)
                 eval('document.' + form +'.'+ field + '.focus()');
-            else if (ns && lyr!=null) 
+            else if (ns && lyr!=null)
                 eval('document["'+lyr+'"].document.forms["'+form+'"].'+ field + '.focus()');
             return false;
         }
@@ -75,18 +75,18 @@ function checkFormData(form,field,lyr)
 
 <title>OpenCms</title>
 
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 </head>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed onLoad="window.top.body.admin_head.admincontenturl='administration_content_downgalleries.html'" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed onLoad="window.top.body.admin_head.admincontenturl='administration_content_downgalleries.html'" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 <!-- Beginn neue Datei Anlegen -->
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
 <form id="NEU" name="NEU" action="administration_content_downgalleries.html" onSubmit="return checkFormData('NEU','NAME',null)">
-<input type=hidden name="action" value="new"> 
+<input type=hidden name="action" value="new">
 <table border=2 cellspacing=0 cellpadding=0 width=555px>
 <tr><td><table cellspacing=0 cellpadding=5 border=0 width=100%>
 <tr><td colspan=2 class=head>]]><LABEL value="title.newdowngal" /><![CDATA[</td></tr>
@@ -99,13 +99,13 @@ function checkFormData(form,field,lyr)
         <td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
         <td class=dialogtxt><INPUT type="text" size=40 maxlength="255" class="textfeld2" id="TITLE" name="TITLE" size=20 ></td>
     </tr>
-    
+
     <tr><td colspan=2 class=leerzeile><img src="pics/empty.gif" border=0 width=1 height=10px</td></tr>
     <tr>
         <td class=formular>]]><LABEL value="input.galadmin" /><![CDATA[:</td>
         <td class=dialogtxt> ]]>
             <SELECT class="textfeld" name="GROUP" width="330" method="getGroups" style="WIDTH: 330px" />
-            <![CDATA[ 
+            <![CDATA[
         </td>
     </tr>
     <tr>
@@ -131,9 +131,9 @@ function checkFormData(form,field,lyr)
 </td>
 </tr>
 </table>
-</form> 
+</form>
 </td></tr>
-</table>  
+</table>
 </body>
 </HTML>
 ]]>

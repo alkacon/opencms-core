@@ -170,7 +170,7 @@
 <table align=center> 
 <tr>
 <td>
-<A HREF="edit_html_selcolor.html"><IMG SRC="]]><METHOD name="picsUrl">colortable.gif</METHOD><![CDATA[" BORDER=0 ISMAP></A>
+<A HREF="edit_html_selcolor.html"><IMG SRC="]]><METHOD name="resourcesUri">colortable.gif</METHOD><![CDATA[" BORDER=0 ISMAP></A>
 </td>
 </tr>
 </table>

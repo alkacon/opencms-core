@@ -5,7 +5,7 @@
 <HTML>
 
 <!-- Include external JavaScripts-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
@@ -17,10 +17,10 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
-<body onLoad="window.top.body.admin_head.location.href='head_module2.html';" bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body onLoad="window.top.body.admin_head.location.href='head_module2.html';" bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 <!-- Beginn neue Datei Anlegen -->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
@@ -38,12 +38,12 @@ top.help_url='Administration/Modulverwaltung/index.html';
                     <table border=0 width=100%>
                         <tr>
                             <td align=middle width=5%><INPUT type="radio" id=M_UPLOAD name=M_UPLOAD checked value="local"></td>
-                            <td align=middle width=10%><IMG name="folder" src="]]><METHOD name="picsUrl">ic_local.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
+                            <td align=middle width=10%><IMG name="folder" src="]]><METHOD name="resourcesUri">ic_local.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
                             <td align=left>]]><LABEL value="module.lable.local"/><![CDATA[</td>
                         </tr>
                         <tr>
                             <td align=middle><INPUT type="radio" id=M_UPLOAD name=M_UPLOAD value="server"></td>
-                            <td align=middle><IMG src="]]><METHOD name="picsUrl">ic_server.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
+                            <td align=middle><IMG src="]]><METHOD name="resourcesUri">ic_server.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
                             <td align=left>]]><LABEL value="module.lable.server"/><![CDATA[</td>
                         </tr>
                     </table>
@@ -82,13 +82,13 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <![CDATA[
 <HTML>
 <!-- Include external JavaScripts-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 <head>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
     <title>OpenCms</title>
-    <link rel=stylesheet type="text/css" href="../../css/format.css">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
-<body onLoad="" bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body onLoad="" bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=2 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
@@ -98,19 +98,19 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="module.lable.uploadserver"/><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=0 width=100%>
@@ -125,7 +125,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
                                 </td>
                             </tr>
                             <!-- Beginn Leerzeile-->
-                            <tr> 
+                            <tr>
                                 <td class="leerzeile" colspan=2>&nbsp;</td>
                             </tr>
                             <!-- Ende Leerzeile-->
@@ -133,10 +133,10 @@ top.help_url='Administration/Modulverwaltung/index.html';
                     </td></tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt>
-                <table cellspacing=0 width=100% align=center>               
+                <table cellspacing=0 width=100% align=center>
                 <tr>
                     <td class=formular width=33%><center><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=OK name=OK onClick="location='module_new.html';"></td>
                     <td class=formular width=33%><center><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=OK name=OK></td>
@@ -146,7 +146,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
@@ -168,13 +168,13 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <![CDATA[
 <HTML>
 <!-- Include external JavaScripts-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 <head>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
     <title>OpenCms</title>
-    <link rel=stylesheet type="text/css" href="../../css/format.css">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
-<body onLoad="" bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body onLoad="" bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
@@ -232,14 +232,14 @@ top.help_url='Administration/Modulverwaltung/index.html';
         <frame src="../../action/frame_leer.html" name="left7" scrolling="no">
     </frameset>
     <frameset rows="*,27,23,35,270,60,*" frameborder=0 border=0>
-        <frame src="../../action/frame_leer.html" name="head1" scrolling="no">  
+        <frame src="../../action/frame_leer.html" name="head1" scrolling="no">
         <frame src="../../action/frame_mitte1.html" name="head2" scrolling="no">
         <frame src="../../action/frame_leer.html" name="title" scrolling="no">
         <frame src="../../action/frame_leer.html" name="text" scrolling="no">
         <frame src="overwrfiles_mitte_mitte.html" name="content">
         <frame src="overwrfiles_unten.html" name="buttons" scrolling="no">
         <frame src="../../action/frame_leer.html" name="down" scrolling="no">
-    </frameset> 
+    </frameset>
     <frameset rows="*,27,23,35,270,60,*" frameborder=0 border=0>
         <frame src="../../action/frame_leer.html" name="right1" scrolling="no">
         <frame src="../../action/frame_rechts1.html" name="right2" scrolling="no">
@@ -263,7 +263,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
@@ -275,12 +275,12 @@ top.help_url='Administration/Modulverwaltung/index.html';
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="head">]]><LABEL value="module.error.replace" /><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
@@ -298,7 +298,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
                 </td>
             </tr>
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
@@ -330,9 +330,9 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>Dialog</title>
-<link rel=stylesheet type="text/css" href="../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
-<BODY bgcolor="#ffffff"  background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+<BODY bgcolor="#ffffff"  background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
@@ -342,16 +342,16 @@ top.help_url='Administration/Modulverwaltung/index.html';
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="head">]]><LABLE value="module.error.dependences" /><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            <tr><td class=dialogtxt rowspan=3 valign=top><img src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" border=0 width=32 height=32></td>
+            <tr><td class=dialogtxt rowspan=3 valign=top><img src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" border=0 width=32 height=32></td>
                 <td class=dialogtxt>]]><LABEL value="label.modulname"/><![CDATA[:  ]]><PROCESS>name</PROCESS><![CDATA[&nbsp&nbsp&nbsp&nbsp&nbsp ]]><LABEL value="label.version"/><![CDATA[: ]]><PROCESS>version</PROCESS><![CDATA[</td>
             </tr>
             <tr><td class=dialogtxt>]]><LABEL value="module.error.precondition" /><![CDATA[
@@ -359,7 +359,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
             </td></tr>
             <tr><td class=dialogtxt>&nbsp</td></tr>
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
@@ -391,14 +391,14 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <![CDATA[
 <HTML>
 <HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 </HEAD>
 <BODY onload="window.top.head.location.href='../../action/head.html'; parent.frames[1].location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/module/'">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -420,7 +420,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <![CDATA[
 <HTML>
 <HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 <SCRIPT LANGUAGE="Javascript">
 function reload()
 {
@@ -433,7 +433,7 @@ location.href="module_new.html?step=working&time=]]><PROCESS>time</PROCESS><![CD
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -447,7 +447,7 @@ location.href="module_new.html?step=working&time=]]><PROCESS>time</PROCESS><![CD
 <!-- End please wait text -->
 <table cellspacing=0 cellpadding=0 border=0>
     <tr><br><br>
-        <td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
+        <td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="resourcesUri">pixel_blue.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 </CENTER>
@@ -456,4 +456,4 @@ location.href="module_new.html?step=working&time=]]><PROCESS>time</PROCESS><![CD
 ]]>
 </TEMPLATE>
 
-</WORKPLACE> 
+</WORKPLACE>

@@ -7,10 +7,10 @@
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">   
-    
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+
     ]]><ELEMENT name="edit_options"/><![CDATA[
 
     // which button is clicked
@@ -58,25 +58,25 @@
             break;
         }
     }
-    
+
     <!-- Sets the Document Source-Code for later including into the editor -->
     var text="]]><METHOD name="setText"/><![CDATA[";
 
     <!-- URL for pictures -->
-    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
-    
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+
     <!-- Filename -->
     var filename="]]><PROCESS>file</PROCESS><![CDATA[";
-    
+
     <!-- Needed space for additional toolbar -->
     var space=75;
 
     var NS = null;
     var IE = null;
-    
+
     NS = (document.layers)? true:false;
     IE = (document.all)? true:false;
-    
+
     var LANG_CUT = "]]><LABEL value="editor.context.cut"/><![CDATA[";
     var LANG_COPY = "]]><LABEL value="editor.context.copy"/><![CDATA[";
     var LANG_PASTE = "]]><LABEL value="editor.context.paste"/><![CDATA[";
@@ -90,7 +90,7 @@
     var LANG_SPLITCELL = "]]><LABEL value="editor.context.splitcell"/><![CDATA[";
 </SCRIPT>
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_]]><PROCESS>editor</PROCESS><![CDATA[.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri" /><![CDATA[opencms_]]><PROCESS>editor</PROCESS><![CDATA[.js"></SCRIPT>
 
 <!-- Update the Font display on change -->
 <SCRIPT LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="DisplayChanged">
@@ -144,7 +144,7 @@ End Sub
 
 </head>
 
-<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed scroll=no onLoad="setText();initStyles();" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5>
+<body background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed scroll=no onLoad="setText();initStyles();" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5>
 
 <table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%"> <tr> <td valign="top">
 <form name=EDITOR id=EDITOR METHOD=POST>
@@ -156,8 +156,8 @@ End Sub
                 <td class=dialogtxt>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;]]> <INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[</td>
                 <td class=dialogtxt><p class=tab>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;]]><SELECT class="textfeld" name="editor" width="200" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
 
-                <script language="JavaScript">                  
-                if (USE_TEMPLATESELECTOR && (! USE_BODYSELECTOR)) {            
+                <script language="JavaScript">
+                if (USE_TEMPLATESELECTOR && (! USE_BODYSELECTOR)) {
                     document.write('<td class=dialogtxt><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
                     document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="220" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>');
                 } else if (! USE_TEMPLATESELECTOR) {
@@ -170,32 +170,32 @@ End Sub
                 </script>
 
                 <td class=menu align=right width="100%">]]><BUTTON href="#" name="bt_docpreview" action="javascript:doTemplSubmit(5);" alt="preview"/><![CDATA[</td>
-                
-                <script language="JavaScript">                  
-                if (USE_BODYSELECTOR && USE_TEMPLATESELECTOR) {            
+
+                <script language="JavaScript">
+                if (USE_BODYSELECTOR && USE_TEMPLATESELECTOR) {
                     document.write('</tr></table></td></tr><tr><td><hr></td></tr><tr><td><table><tr>');
                 }
                 </script>
-        
-                ]]><!-- FLEX: Removed static body select entries and replaced them with dynamic entries:    
+
+                ]]><!-- FLEX: Removed static body select entries and replaced them with dynamic entries:
                 <td class=menu><p class=tab>]]><BUTTON href="javascript:doTemplSubmit(6);" name="bt_newdoc" action="" alt="newbody"/><![CDATA[</td>
                 --><![CDATA[
-                                    
-                <script language="JavaScript">                  
-                if (USE_TEMPLATESELECTOR && USE_BODYSELECTOR) {            
+
+                <script language="JavaScript">
+                if (USE_TEMPLATESELECTOR && USE_BODYSELECTOR) {
                     document.write('<td class=dialogtxt>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
                     document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="220" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>');
-                }                
+                }
                 if (USE_BODYSELECTOR) {
                     document.write('<td class=dialogtxt><p class=tab>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
                     document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[</td>');
                 }
                 if (USE_BODYSELECTOR && USE_NEWBODYOPTION) {
                     document.write('<td class=dialogtxt><p class=tab>&nbsp;]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle"/><![CDATA[</td>');
-                    document.write('<td class=menu><A href="javascript:doTemplSubmit(6);" onmousedown="ChPush(\'bt_newdoc\');" onmouseout="ChOff(\'bt_newdoc\')" onmouseover="ChOn(\'bt_newdoc\')" onmouseup="ChOn(\'bt_newdoc\')"><IMG alt="]]><LABEL value="button.newbody"/><![CDATA[" width=32 border=0 name=bt_newdoc src="/opencms/pics/system/bt_newdoc_off.gif" ></a></td>');
-                }        
+                    document.write('<td class=menu><A href="javascript:doTemplSubmit(6);" onmousedown="ChPush(\'bt_newdoc\');" onmouseout="ChOff(\'bt_newdoc\')" onmouseover="ChOn(\'bt_newdoc\')" onmouseup="ChOn(\'bt_newdoc\')"><IMG alt="]]><LABEL value="button.newbody"/><![CDATA[" width=32 border=0 name=bt_newdoc src="]]><METHOD name="resourcesUri">bt_newdoc_off.gif</METHOD><![CDATA[" ></a></td>');
+                }
                 </script>
-                <td class=menu width="100%" align=right>&nbsp;</td>                                           
+                <td class=menu width="100%" align=right>&nbsp;</td>
             </tr>
         </table>
 </td></tr>
@@ -204,11 +204,11 @@ End Sub
 
   ]]><ELEMENT name="editor"/><![CDATA[
     <INPUT TYPE=HIDDEN NAME="content">
-    <INPUT TYPE=HIDDEN NAME="action">   
-    <INPUT TYPE=HIDDEN NAME="file" value="]]><PROCESS>file</PROCESS><![CDATA[">             
+    <INPUT TYPE=HIDDEN NAME="action">
+    <INPUT TYPE=HIDDEN NAME="file" value="]]><PROCESS>file</PROCESS><![CDATA[">
 </form>
-<form 
-    name=PREVIEW 
+<form
+    name=PREVIEW
     id=PREVIEW
     TARGET="PREVIEW"
     METHOD=POST>
@@ -221,7 +221,7 @@ End Sub
     <INPUT TYPE=HIDDEN name="template">
     <INPUT TYPE=HIDDEN name="editor">
     <INPUT TYPE=HIDDEN NAME="content">
-    <INPUT TYPE=HIDDEN NAME="file">     
+    <INPUT TYPE=HIDDEN NAME="file">
 </form>
 </td></tr>
 </table>
@@ -243,6 +243,6 @@ End Sub
 <ELEMENTDEF name="edit_options">
     <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
     <TEMPLATE>/system/workplace/templates/edit_options</TEMPLATE>
-</ELEMENTDEF> 
+</ELEMENTDEF>
 
 </workplace>

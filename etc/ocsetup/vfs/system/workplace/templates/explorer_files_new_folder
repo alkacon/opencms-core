@@ -71,7 +71,7 @@
 
 </script>
 
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </head>
 
@@ -172,7 +172,7 @@
     <table border=2 cellspacing=0 cellpadding=0 width=530px align=center>
         <tr>
             <td>
-    
+
                 <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
                     <tr>
                         <td colspan=2 class=head>
@@ -210,7 +210,7 @@
                             ]]><LABEL value="input.navtext" /><![CDATA[:
                         </td>
                         <td class=dialogtxt>
-                            <input type="textfield" id="navtext" maxlength=100 style="width:400px;" class="textfeld2"> 
+                            <input type="textfield" id="navtext" maxlength=100 style="width:400px;" class="textfeld2">
                         </td>
                     </tr>
                     <tr>
@@ -256,9 +256,9 @@
 
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 <script language=JavaScript>
 <!--
 var SelColorWindow = null;
@@ -275,7 +275,7 @@ function setColor(arr){
   if (arr != -1) {
       colorFor.value=arr;
       window.clearInterval(CheckColor);
-      SelColor=-1; 
+      SelColor=-1;
     }
 }
 
@@ -316,44 +316,44 @@ function closeAllWindows(){
 </script>
 
 </HEAD>
-<BODY bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 onunload="javascript:closeAllWindows();">
+<BODY bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 onunload="javascript:closeAllWindows();">
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
     <tr>
         <td align="center" valign="middle">
             <table border="2" cellpadding="0" cellspacing="0" width="500px">
                 <tr>
-                    <td class="formular" align="center" valign="middle">                        
+                    <td class="formular" align="center" valign="middle">
                         <table border="0" cellpadding="5" cellspacing="0" width="500px">
                             <tr>
-                                <td class="head" colspan="6"> 
+                                <td class="head" colspan="6">
                                     ]]><PROCESS>frameTitle</PROCESS><![CDATA[
                                 </td>
                             </tr>
                             <tr>
-                                <td class="leerzeile" colspan="6">&nbsp;</td>                   
+                                <td class="leerzeile" colspan="6">&nbsp;</td>
                             </tr>
                             <form name="NAVPROP" id="NAVPROP" action="explorer_files_new_folder.html?step=2" method="post">
                             <tr>
                                 <td class="formular">
                                     <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                    
+
                                         ]]><PROCESS>displayFolderLogo</PROCESS><![CDATA[
                                         <tr>
                                             <td height="40" class="formular" width="140" valign="middle">
         ]]><LABEL value="label.eblogo" /><![CDATA[
                                             </td>
                                             <td align="right" class="dialogtxt" width="30" valign="middle">
-                                                <a href="javascript:goPictureSet(document.NAVPROP.mlogopic);"><img src="]]><METHOD name="picsUrl">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
+                                                <a href="javascript:goPictureSet(document.NAVPROP.mlogopic);"><img src="]]><METHOD name="resourcesUri">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
                                             </td>
-                                            <td align="right" class="dialogtxt" width="135" valign="middle">                                                
+                                            <td align="right" class="dialogtxt" width="135" valign="middle">
                                                 <input type="text" class="textfeld" size="15" style="width:150px" name="mlogopic" id="mlogopic" value ="]]><PROCESS>mlogopic</PROCESS><![CDATA[">
                                             </td>
                                             <td width="30">&nbsp;</td>
                                             <td class="dialogtxt" width="135" valign="middle">
-                                                <input type="text" class="textfeld" size="15" style="width:150px" name="mlogolink" id="mlogolink" value ="]]><PROCESS>mlogolink</PROCESS><![CDATA[">                                            
+                                                <input type="text" class="textfeld" size="15" style="width:150px" name="mlogolink" id="mlogolink" value ="]]><PROCESS>mlogolink</PROCESS><![CDATA[">
                                             </td>
                                             <td class="dialogtxt" width="30" valign="middle">
-                                                <a href="javascript:goLinkSet('mlogolink');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
+                                                <a href="javascript:goLinkSet('mlogolink');"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
                                             </td>
                                         </tr>
                                         ]]><PROCESS>displaySektLogo</PROCESS><![CDATA[
@@ -367,12 +367,12 @@ function closeAllWindows(){
                                             </td>
                                             <td width="30">&nbsp;</td>
                                             <td class="dialogtxt" width="135" valign="middle">
-                                                <input type="text" class="textfeld" size="15" style="width:150px" name="statlink" id="statlink" value ="]]><PROCESS>statlink</PROCESS><![CDATA[">                                           
+                                                <input type="text" class="textfeld" size="15" style="width:150px" name="statlink" id="statlink" value ="]]><PROCESS>statlink</PROCESS><![CDATA[">
                                             </td>
                                             <td class="dialogtxt" width="30" valign="middle">
-                                                <a href="javascript:goLinkSet('statlink');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
+                                                <a href="javascript:goLinkSet('statlink');"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
                                             </td>
-                                        </tr>       
+                                        </tr>
                                         <tr>
                                             <td colspan="6">&nbsp;</td>
                                         </tr>
@@ -384,16 +384,16 @@ function closeAllWindows(){
         ]]><LABEL value="label.ebtemplatecolor" /><![CDATA[
                                             </td>
                                             <td align="right" class="dialogtxt" width="30" valign="middle">
-                                                    <a href="javascript:goColorSet(document.NAVPROP.bcoldyn);"><img src="]]><METHOD name="picsUrl">bt_color_off_small.gif</METHOD><![CDATA["  border="0"></a>
+                                                    <a href="javascript:goColorSet(document.NAVPROP.bcoldyn);"><img src="]]><METHOD name="resourcesUri">bt_color_off_small.gif</METHOD><![CDATA["  border="0"></a>
                                             </td>
-                                            <td align="left" class="dialogtxt" width="135" valign="middle">                                             
+                                            <td align="left" class="dialogtxt" width="135" valign="middle">
                                                 <input type="text" class="textfeld" size="10" style="width:100px" name="bcoldyn" id="bcoldyn" maxlength="7" value ="]]><PROCESS>bcoldyn</PROCESS><![CDATA[">
                                             </td>
                                             <td width="30">
-                                                <a href="javascript:goColorSet(document.NAVPROP.tcoldyn);"><img src="]]><METHOD name="picsUrl">bt_fontcolor_off_small.gif</METHOD><![CDATA[" border="0"></a>
+                                                <a href="javascript:goColorSet(document.NAVPROP.tcoldyn);"><img src="]]><METHOD name="resourcesUri">bt_fontcolor_off_small.gif</METHOD><![CDATA[" border="0"></a>
                                             </td>
                                             <td align="left" class="dialogtxt" width="135" valign="middle">
-                                                <input type="text" class="textfeld" size="10" style="width:100px" name="tcoldyn" id="tcoldyn" maxlength="7" value ="]]><PROCESS>tcoldyn</PROCESS><![CDATA[">                                            
+                                                <input type="text" class="textfeld" size="10" style="width:100px" name="tcoldyn" id="tcoldyn" maxlength="7" value ="]]><PROCESS>tcoldyn</PROCESS><![CDATA[">
                                             </td>
                                             <td class="dialogtxt" width="30" valign="middle">&nbsp;</td>
                                         </tr>
@@ -403,24 +403,24 @@ function closeAllWindows(){
                                             </td>
                                             <td align="right" class="dialogtxt" width="30" valign="middle">
                                             </td>
-                                            <td align="left" class="dialogtxt" width="135" valign="middle">                                             
+                                            <td align="left" class="dialogtxt" width="135" valign="middle">
                                             </td>
                                             <td width="30">
-                                                <a href="javascript:goColorSet(document.NAVPROP.tcollink);"><img src="]]><METHOD name="picsUrl">bt_fontcolor_off_small.gif</METHOD><![CDATA[" border="0"></a>
+                                                <a href="javascript:goColorSet(document.NAVPROP.tcollink);"><img src="]]><METHOD name="resourcesUri">bt_fontcolor_off_small.gif</METHOD><![CDATA[" border="0"></a>
                                             </td>
                                             <td class="dialogtxt" width="135" valign="middle">
-                                                <input type="text" class="textfeld" size="10" style="width:100px" name="tcollink" id="tcollink" maxlength="7" value ="]]><PROCESS>tcollink</PROCESS><![CDATA[">                                         
+                                                <input type="text" class="textfeld" size="10" style="width:100px" name="tcollink" id="tcollink" maxlength="7" value ="]]><PROCESS>tcollink</PROCESS><![CDATA[">
                                             </td>
                                             <td class="dialogtxt" width="30" valign="middle">&nbsp;</td>
-                                        </tr>   
+                                        </tr>
                                         <tr>
                                             <td class="dialogtxt" width="140" height="30">
         ]]><LABEL value="label.ebnavborder" /><![CDATA[
                                             </td>
                                             <td align="right" class="dialogtxt" width="30" valign="middle">
-                                                <a href="javascript:goColorSet(document.NAVPROP.bcolemail);"><img src="]]><METHOD name="picsUrl">bt_color_off_small.gif</METHOD><![CDATA[" border="0"></a>
+                                                <a href="javascript:goColorSet(document.NAVPROP.bcolemail);"><img src="]]><METHOD name="resourcesUri">bt_color_off_small.gif</METHOD><![CDATA[" border="0"></a>
                                             </td>
-                                            <td align="left" class="dialogtxt" width="135" valign="middle">                                             
+                                            <td align="left" class="dialogtxt" width="135" valign="middle">
                                                 <input type="text" class="textfeld" size="10" style="width:100px" name="bcolemail" id="bcolemail" maxlength="7" value ="]]><PROCESS>bcolemail</PROCESS><![CDATA[">
                                             </td>
                                             <td width="30">
@@ -428,15 +428,15 @@ function closeAllWindows(){
                                             <td class="dialogtxt" width="135" valign="middle">
                                             </td>
                                             <td class="dialogtxt" width="30" valign="middle">&nbsp;</td>
-                                        </tr>   
+                                        </tr>
                                         <tr>
                                             <td class="dialogtxt" width="140" height="30">
         ]]><LABEL value="label.ebborder" /><![CDATA[
                                             </td>
                                             <td align="right" class="dialogtxt" width="30" valign="middle">
-                                                    <a href="javascript:goColorSet(document.NAVPROP.bcolsearch);"><img src="]]><METHOD name="picsUrl">bt_color_off_small.gif</METHOD><![CDATA[" border="0"></a>
+                                                    <a href="javascript:goColorSet(document.NAVPROP.bcolsearch);"><img src="]]><METHOD name="resourcesUri">bt_color_off_small.gif</METHOD><![CDATA[" border="0"></a>
                                             </td>
-                                            <td align="left" class="dialogtxt" width="135" valign="middle">                                             
+                                            <td align="left" class="dialogtxt" width="135" valign="middle">
                                                 <input type="text" class="textfeld" size="10" style="width:100px" name="bcolsearch" id="bcolsearch" maxlength="7" value ="]]><PROCESS>bcolsearch</PROCESS><![CDATA[">
                                             </td>
                                             <td width="30">
@@ -444,10 +444,10 @@ function closeAllWindows(){
                                             <td class="dialogtxt" width="135" valign="middle">
                                             </td>
                                             <td class="dialogtxt" width="30" valign="middle">&nbsp;</td>
-                                        </tr>                                           
+                                        </tr>
                                     </table>
                                 </td>
-                            </tr>   
+                            </tr>
                             <tr>
                                 <td>&nbsp;</td>
                             </tr>
@@ -466,9 +466,9 @@ function closeAllWindows(){
                                 </td>
                             </tr>
                             </form>
-                        </table>                        
+                        </table>
                     </td>
-                </tr>               
+                </tr>
             </table>
         </td>
     </tr>
@@ -484,17 +484,17 @@ function closeAllWindows(){
         ]]><LABEL value="label.ebfolderlogo" /><![CDATA[
                                             </td>
                                             <td align="right" class="dialogtxt" width="30" valign="middle">
-                                                <a href="javascript:goPictureSet(document.NAVPROP.flogopic);"><img src="]]><METHOD name="picsUrl">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
+                                                <a href="javascript:goPictureSet(document.NAVPROP.flogopic);"><img src="]]><METHOD name="resourcesUri">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
                                             </td>
-                                            <td align="right" class="dialogtxt" width="135" valign="middle">                                                
+                                            <td align="right" class="dialogtxt" width="135" valign="middle">
                                                 <input type="text" class="textfeld" size="15" style="width:150px" name="flogopic" id="flogopic" value ="]]><PROCESS>flogopic</PROCESS><![CDATA[">
                                             </td>
                                             <td width="30">&nbsp;</td>
                                             <td class="dialogtxt" width="135" valign="middle">
-                                                <input type="text" class="textfeld" size="15" style="width:150px" name="flogolink" id="flogolink" value ="]]><PROCESS>flogolink</PROCESS><![CDATA[">                                            
+                                                <input type="text" class="textfeld" size="15" style="width:150px" name="flogolink" id="flogolink" value ="]]><PROCESS>flogolink</PROCESS><![CDATA[">
                                             </td>
                                             <td class="dialogtxt" width="30" valign="middle">
-                                                <a href="javascript:goLinkSet('flogolink');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
+                                                <a href="javascript:goLinkSet('flogolink');"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
                                             </td>
                                         </tr>]]>
 </folderLogo>
@@ -505,17 +505,17 @@ function closeAllWindows(){
             ]]><LABEL value="label.ebsecpic" /><![CDATA[
             </td>
             <td align="right" class="dialogtxt" width="30" valign="middle">
-                <a href="javascript:goPictureSet(document.NAVPROP.slogopic);"><img src="]]><METHOD name="picsUrl">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
+                <a href="javascript:goPictureSet(document.NAVPROP.slogopic);"><img src="]]><METHOD name="resourcesUri">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
             </td>
-            <td align="right" class="dialogtxt" width="135" valign="middle">                                                
+            <td align="right" class="dialogtxt" width="135" valign="middle">
                 <input type="text" class="textfeld" size="15" style="width:150px" name="slogopic" id="slogopic" value ="]]><PROCESS>slogopic</PROCESS><![CDATA[">
             </td>
             <td width="30">&nbsp;</td>
             <td class="dialogtxt" width="135" valign="middle">
-                <input type="text" class="textfeld" size="15" style="width:150px" name="slogolink" id="slogolink" value ="]]><PROCESS>slogolink</PROCESS><![CDATA[">                                            
+                <input type="text" class="textfeld" size="15" style="width:150px" name="slogolink" id="slogolink" value ="]]><PROCESS>slogolink</PROCESS><![CDATA[">
             </td>
             <td class="dialogtxt" width="30" valign="middle">
-                <a href="javascript:goLinkSet('slogolink');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
+                <a href="javascript:goLinkSet('slogolink');"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
             </td>
         </tr>]]>
 </SektLogo>
@@ -527,9 +527,9 @@ function closeAllWindows(){
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
     updateFrame('body.explorer_content.explorer_files','explorer_files.html');
@@ -542,7 +542,7 @@ function closeAllWindows(){
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -566,7 +566,7 @@ function closeAllWindows(){
     <head>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
     <title>OpenCms</title>
-    <link rel=stylesheet type="text/css" href="../css/format.css">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
     <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
 
         top.window.frames[1].frames[1].frames[0].document.forms[0].url.value="]]><PROCESS>indexlocation</PROCESS><![CDATA[";

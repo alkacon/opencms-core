@@ -15,7 +15,7 @@
             function sendVfsLink(linkurl){
                 sendURLString('EDITOR','URL',linkurl);
             }
-            
+
             function sendLinkWithText(linktext, linkurl, linktarget, linkanchor, linkstyle, linkstyleclass){
                 var sel = top.window.opener.self.document.EDITOR.EDIT_HTML.DOM.selection;
                 if(linktext.length == 0){
@@ -33,25 +33,25 @@
                       if(linkurl.length > 0) {
                         thelink += "href='"+linkurl+"' ";
                       }
-                      if(linktarget.length > 0) {             
+                      if(linktarget.length > 0) {
                         thelink += "target='"+linktarget+"' ";
-                      }                   
-                      if(linkanchor.length > 0) {             
+                      }
+                      if(linkanchor.length > 0) {
                         thelink += "name='"+linkanchor+"' ";
                       }
-                      if(linkstyle.length > 0) {          
+                      if(linkstyle.length > 0) {
                         thelink += "style='"+linkstyle+"' ";
-                      }                   
-                      if(linkstyleclass.length > 0) {         
+                      }
+                      if(linkstyleclass.length > 0) {
                         thelink += "class='"+linkstyleclass+"' ";
-                      } 
-                      thelink += ">" + linktext + "</a>";             
-                                          
+                      }
+                      thelink += ">" + linktext + "</a>";
+
                       rng.pasteHTML(thelink);
                     }
-                }   
+                }
             }
-            
+
             function checkforchars(whichform){
                 checkok=true;
                 for(i=0;i<whichform.value.length;i++){
@@ -69,9 +69,9 @@
                     }
                 }
                 if(checkok && check_fields()){
-                    sendLinkWithText(document.NEU.NEUNAME.value, document.NEU.neulink.value, 
+                    sendLinkWithText(document.NEU.NEUNAME.value, document.NEU.neulink.value,
                     document.NEU.linktarget.options[document.NEU.linktarget.selectedIndex].value,
-                    document.NEU.linkanchor.value, document.NEU.linkstyle.value, 
+                    document.NEU.linkanchor.value, document.NEU.linkstyle.value,
                     document.NEU.linkstyleclass.value);
                     window.close();
                 }
@@ -85,50 +85,50 @@
                 }
                 return true;
             }
-            
-            
+
+
             /* Checks if the selected Text is an hyperlink */
             function checkSelection() {
-              
+
               // get all links in editor
               var coll = opener.document.EDIT_HTML.DOM.all.tags("A");
-              
+
               // get the current selection
-              var sel = opener.document.EDIT_HTML.DOM.selection;    
-          
+              var sel = opener.document.EDIT_HTML.DOM.selection;
+
               // only if text is selected
               if("Text" == sel.type) {
                 var range = sel.createRange();
 
                 for(i = 0; i < coll.length; i++) {
-                  
+
                   //create range on whole text
-                  var mainrange = opener.document.EDIT_HTML.DOM.body.createTextRange();                
-                  
+                  var mainrange = opener.document.EDIT_HTML.DOM.body.createTextRange();
+
                   //and move range to the current A-element
                   mainrange.moveToElementText(coll[i]);
-                  
+
                   // compare the selection with the current range
                   if(range.isEqual(mainrange)) {
-                    
+
                     // it is the same!
                     fillTextfields(coll[i], range.text);
                     break;
                   }
                 }
                 document.forms["NEU"].elements["NEUNAME"].value = range.text;
-              }                       
+              }
             }
-            
-            
+
+
             function fillTextfields(el, linkname) {
-             
+
               document.forms["NEU"].elements["NEUNAME"].value = linkname;
               document.forms["NEU"].elements["neulink"].value = el.href;
               document.forms["NEU"].elements["linkanchor"].value = el.name;
               document.forms["NEU"].elements["linkstyle"].value = el.style.cssText;
               document.forms["NEU"].elements["linkstyleclass"].value = el.className;
-              
+
               if(el.target == "_self") {
                 document.forms["NEU"].elements["linktarget"].selectedIndex = 0;
               }
@@ -138,20 +138,20 @@
               else if(el.target == "_top") {
                 document.forms["NEU"].elements["linktarget"].selectedIndex = 2;
               }
-                                                              
-            
+
+
             }
         //-->
         </script>
 
         <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
         <title>]]><LABEL value="title.newlink" /><![CDATA[</title>
-        <link rel=stylesheet type="text/css" href="../css/format.css">
-        <script language="JavaScript" type="text/javascript" src="../templates/js/opencms.js"></script>
-        <script language="JavaScript" type="text/javascript" src="../templates/js/opencms_edithtml.js"></script>
+        <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+        <script language="JavaScript" type="text/javascript" src="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
+        <script language="JavaScript" type="text/javascript" src="]]><method name="scriptsUri">opencms_edithtml.js</method><![CDATA["></script>
     </head>
 
-    <body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 onLoad="self.focus();checkSelection();" onUnload="if(treewin!=null)treewin.close();">
+    <body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 onLoad="self.focus();checkSelection();" onUnload="if(treewin!=null)treewin.close();">
         <form name=NEU >
             <table border=0 cellspacing=0 cellpadding=5 width=100% height=100%>
                 <tr>
@@ -162,36 +162,36 @@
                     <td class=dialogtxt>
                         <input type="text" name="NEUNAME" class="textfeld3" size="30" />
                     </td>
-                                        <td class=formular>&nbsp;</td>                          
+                                        <td class=formular>&nbsp;</td>
                 </tr>
                 <tr>
                     <td class=formular>]]><LABEL value="input.linkto" /><![CDATA[:</td>
                     <td class=dialogtxt>
-                        <input type="text" name="neulink" class="textfeld3" size="30" value="http://" />   
+                        <input type="text" name="neulink" class="textfeld3" size="30" value="http://" />
                     </td>
-                    <td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=NEU&variable=neulink&onlineselect=yes&viewfile=yes', 'explorer_viewer', 300, 400),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>                           
+                    <td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=NEU&variable=neulink&onlineselect=yes&viewfile=yes', 'explorer_viewer', 300, 400),treewin.focus();"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
                 </tr>
             <tr>
                     <td class=formular>]]><LABEL value="input.linkanchor" /><![CDATA[:</td>
                     <td class=dialogtxt>
-                        <input type="text" name="linkanchor" class="textfeld3" size="15" />   
+                        <input type="text" name="linkanchor" class="textfeld3" size="15" />
                     </td>
-                    <td class=formular>&nbsp;</td>                          
-                </tr>               
+                    <td class=formular>&nbsp;</td>
+                </tr>
             <tr>
                     <td class=formular>]]><LABEL value="input.linkstyle" /><![CDATA[:</td>
                     <td class=dialogtxt>
-                        <input type="text" name="linkstyle" class="textfeld3" size="15"  />   
+                        <input type="text" name="linkstyle" class="textfeld3" size="15"  />
                     </td>
                                         <td class=formular>&nbsp;</td>
-                                </tr>                           
+                                </tr>
                 <tr>
                     <td class=formular>]]><LABEL value="input.linkstyleclass" /><![CDATA[:</td>
                     <td class=dialogtxt>
-                        <input type="text" name="linkstyleclass" class="textfeld3" size="15" />   
+                        <input type="text" name="linkstyleclass" class="textfeld3" size="15" />
                     </td>
-                                        <td class=formular>&nbsp;</td>                          
-                </tr>                                           
+                                        <td class=formular>&nbsp;</td>
+                </tr>
                 <tr>
                     <td class=formular>]]><LABEL value="input.linktarget" /><![CDATA[:</td>
                     <td class=dialogtxt>
@@ -201,8 +201,8 @@
                         <option value="_top">]]><LABEL value="input.linktargettop" /><![CDATA[</option>
                       </select>
                     </td>
-                                        <td class=formular>&nbsp;</td>                          
-                </tr>               
+                                        <td class=formular>&nbsp;</td>
+                </tr>
                 <tr>
                     <td colspan=3 class=leerzeile>&nbsp;</td>
                 </tr>

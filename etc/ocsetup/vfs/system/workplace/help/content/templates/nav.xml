@@ -3,7 +3,7 @@
 <TEMPLATE>
 <![CDATA[
 <html>
-<head><link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/help.css"></head><body>
+<head><link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">help.css</method><![CDATA["></head><body>
 ]]>
 <element name="nav"/>
 <![CDATA[</body></html> ]]>

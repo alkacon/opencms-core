@@ -1,0 +1,762 @@
+/*  usual               */
+BODY
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+P
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-INDENT: 15px
+}
+P.aktordner
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-INDENT: 5px;
+    FONT-WEIGHT: bold;
+}
+.allgtext
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+TD
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+SELECT
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+H2
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 14px;
+    FONT-WEIGHT: bold;
+}
+H2.darkblue
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 14px;
+    FONT-WEIGHT: bold;
+    COLOR:#000066;
+}
+H3
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-STYLE: normal
+}
+A
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: none
+}
+A:link
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: none
+}
+A:aktive
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: none
+}
+A:visited
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: none
+}
+
+/* menu and button documents        */
+TD.menu
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+TD.menubold
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-WEIGHT: bold;
+}
+TD.untermenu
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+TD.untermenubold
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif
+}
+
+/* styles for documents with content        */
+TD.head
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: white;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: bold
+}
+TD.formular
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: bold
+}
+TD.dialogtxt
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal
+}
+TD.wizardbig
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 14px;
+    FONT-WEIGHT: normal
+}
+TD.wizard
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal
+}
+TD.wizardbold
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: bold;
+}
+TD.leerzeile
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    HEIGHT: 3px;
+    PADDING-BOTTOM: 0px;
+    PADDING-LEFT: 11px;
+    PADDING-RIGHT: 11px
+}
+TD.texteditor
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: black;
+    FONT-FAMILY: fixedsys, monospace;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+}
+
+input{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+}
+
+INPUT.button
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    WIDTH: 100px;
+}
+INPUT.textfeld
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    HEIGHT: 20px;
+    WIDTH: 150px
+}
+INPUT.textfeld1
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    HEIGHT: 20px;
+    WIDTH: 200px
+}
+INPUT.textfeld2
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    WIDTH: 425px
+}
+INPUT.textfeld3
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    WIDTH: 300px
+}
+INPUT.textfeld4
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    WIDTH: 500px
+}
+TEXTAREA.textarea
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    WIDTH: 300px
+}
+TEXTAREA.textarea1
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    WIDTH: 500px
+}
+a.reiterinaktiv
+{
+    COLOR: #ffffff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: none;
+    FONT-WEIGHT: bold;
+}
+a:visited.reiterinaktiv
+{
+    COLOR: #ffffff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: none;
+    FONT-WEIGHT: bold;
+}
+P.einzug
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-INDENT: 5px
+}
+P.normal
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-INDENT: 0px;
+}
+P.leftmargin
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-INDENT: 0px;
+    MARGIN-LEFT: 5px;
+}
+P.tab
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-INDENT: 15px
+}
+/* Tasks                    */
+TD.taskalert
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+TD.taskalertok
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+TD.taskok
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+/* Tasksview                    */
+TD.taskviewhead
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: #000066;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: bold
+}
+TD.taskviewhead2
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: #000066;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: bold;
+}
+TD.taskviewheadactive
+{
+    BACKGROUND-COLOR: blue;
+    COLOR: #ffffff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: bold;
+}
+TD.taskviewheadnew
+{
+    BACKGROUND-COLOR: #b1c7ff;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: bold;
+}
+TD.taskviewheadalert
+{
+    BACKGROUND-COLOR: #ff0000;
+    COLOR: #ffffff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: bold
+}
+TD.taskviewheadok
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: bold;
+}
+TD.taskviewbold
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: bold
+}
+TD.taskviewtxt
+{
+    BACKGROUND-COLOR: #cccccc;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal
+}
+TD.taskviewtxtred
+{
+    BACKGROUND-COLOR: #cccccc;
+    COLOR: #ff0000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal
+}
+TD.taskviewbackblue
+{
+    BACKGROUND-COLOR: blue;
+    COLOR: #ffffff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal
+}
+TD.taskviewbackblack
+{
+    BACKGROUND-COLOR: black;
+    COLOR: #ffffff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal
+}
+TD.taskviewleerzeile
+{
+    BACKGROUND-COLOR: #ffffff;
+    HEIGHT: 2px;
+    PADDING-BOTTOM: 0px;
+    PADDING-LEFT: 11px;
+    PADDING-RIGHT: 11px
+}
+TD.projectdescr
+{
+    BACKGROUND-COLOR: #ffffff;
+    PADDING-LEFT: 5px;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+INPUT.taskviewbutton
+{
+    /*BACKGROUND-COLOR: #FFEBC5;*/
+    /*COLOR: #000066;*/
+    BACKGROUND-COLOR: #C0C0C0;
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    WIDTH: 100px
+}
+
+a.task
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a:visited.task
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a:hover.task
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: white;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a.taskok
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+a:visited.taskok
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+a:hover.taskok
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: white;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+a.taskalert
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+a:visited.taskalert
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+a:hover.taskalert
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: #00ffff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+a.taskalertok
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+a:visited.taskalertok
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+a:hover.taskalertok
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: #00ffff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+
+/* styles for the tree                      */
+a.treefolder
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a:visited.treefolder
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a:hover.treefolder
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: white;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a.treefoldernip
+{
+    COLOR: silver;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a:visited.treefoldernip
+{
+    COLOR: silver;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a:hover.treefoldernip
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: silver;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+
+/* styles for the filelist                  */
+TD.dateingeandert
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: none
+}
+TD.dateigeloescht
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through
+}
+TD.dateigeaendert
+{
+    COLOR: #B40000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+TD.dateineu
+{
+    COLOR: #0000ff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+TD.dateintprojekt
+{
+    COLOR: silver;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a.dateingeandert
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a:visited.dateingeandert
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a:hover.dateingeandert
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: white;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a.dateigeloescht
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+a:visited.dateigeloescht
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+a:hover.dateigeloescht
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: white;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: line-through;
+}
+a.dateigeaendert
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+a:visited.dateigeaendert
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+a:hover.dateigeaendert
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: #00ffff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+a.dateineu
+{
+    COLOR: #0000ff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+a:visited.dateineu
+{
+    COLOR: #0000ff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+a:hover.dateineu
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: #ffff00;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+a.dateintprojekt
+{
+    COLOR: silver;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a:visited.dateintprojekt
+{
+    COLOR: silver;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+a:hover.dateintprojekt
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: #silver;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+/* Layer Filecontextmenu        */
+DIV.kontextmenu
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    POSITION: absolute;
+    TOP: 0px;
+    LEFT: 0px;
+    width: 150px;
+    TEXT-INDENT: 2px;
+    BACKGROUND-COLOR: #c0c0c0;
+    VISIBILITY: hidden;   
+    Z-INDEX: 100;
+}
+TABLE.filekontext
+{
+    width: 150px;
+    BACKGROUND-COLOR: #c0c0c0;
+    /*BORDER-BOTTOM: #c0c0c0 outset 1px;
+    BORDER-LEFT: #c0c0c0 outset 1px;
+    BORDER-RIGHT: #c0c0c0 outset 1px;
+    BORDER-TOP: #c0c0c0 outset 1px;*/   
+}
+TABLE.picturebrowser
+{
+    
+    background-image:url(pics/bg_grauekachel.gif);
+    //background-color:red;
+    /*BORDER-BOTTOM: #c0c0c0 outset 1px;
+    BORDER-LEFT: #c0c0c0 outset 1px;
+    BORDER-RIGHT: #c0c0c0 outset 1px;
+    BORDER-TOP: #c0c0c0 outset 1px;*/   
+}
+A.kontextlink
+{
+    background-color:#c0c0c0;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: none;
+}
+A:hover.kontextlink
+{
+    color:#ffffff;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    TEXT-DECORATION: none;
+}
+TD.inaktiv
+{
+    COLOR: #838383;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+/*============================================*/
+/* Styles for timer                           */
+/*============================================*/
+DIV.timer_day
+{
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    LEFT: 60px;
+    TOP: 100px;
+    VISIBILITY: hidden;
+    Z-INDEX: 1;
+}
+/*============================================*/
+/* Styles for preferences scroller            */
+/*============================================*/
+#divCont{position:absolute; top:80; left:245; width:470; height:350; overflow:hidden; clip:rect(0,465,350,0); visibility:hidden; z-index:100}
+#divText{position:absolute; top:0; left:10; z-index:10}
+#frame{position:absolute; left:220; top:0; width:500; height:350; clip:rect(0,500,502,0); z-index:1}

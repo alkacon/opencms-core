@@ -18,7 +18,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -32,19 +32,19 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <table cellspacing=0 cellpadding=0 border=2 width=300>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
               <td class="head" colspan=10>]]><LABEL value="title.chmod" /><![CDATA[:  ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile"  colspan=10>&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <tr>
                 <td class=dialogtxt  colspan=10>
                     ]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
@@ -53,7 +53,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
                     ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
                 </td>
             </tr>
-            <tr> 
+            <tr>
                 <td class="leerzeile"  colspan=10>&nbsp;</td>
             </tr>
             <!-- Beginn Inhalt-->
@@ -87,13 +87,13 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
                 <TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="PV" ]]><PROCESS>CHECKPV</PROCESS><![CDATA[></TD>
                 <TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="IR" ]]><PROCESS>CHECKIF</PROCESS><![CDATA[></TD>
             </TR>
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=10 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt colspan=10>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -105,7 +105,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
@@ -135,7 +135,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -149,19 +149,19 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <table cellspacing=0 cellpadding=0 border=2 width=300>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
               <td class="head" colspan=10>]]><LABEL value="title.chmod" /><![CDATA[:  ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile"  colspan=10>&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <tr>
                 <td class=dialogtxt  colspan=10>
                     ]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
@@ -170,7 +170,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
                     ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
                 </td>
             </tr>
-            <tr> 
+            <tr>
                 <td class="leerzeile"  colspan=10>&nbsp;</td>
             </tr>
             <!-- Beginn Inhalt-->
@@ -204,16 +204,16 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
                 <TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="PV" ]]><PROCESS>CHECKPV</PROCESS><![CDATA[></TD>
                 <TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="IR" ]]><PROCESS>CHECKIF</PROCESS><![CDATA[></TD>
             </TR>
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=10 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=10 class="dialogtxt"><INPUT type="checkbox" id=ALL name=ALL >]]><LABEL value="input.changesubresources" /><![CDATA[</td>
             </tr>
-            <tr> 
+            <tr>
                 <td colspan=10 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Beginn Buttonleisete-->
@@ -227,7 +227,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>

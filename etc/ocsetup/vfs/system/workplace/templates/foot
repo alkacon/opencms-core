@@ -13,11 +13,11 @@
     ]]><process>message</process><![CDATA[
     </script>
 <title>opencms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </head>
 
-<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed onload="JavaScript:window.setTimeout('location.reload();',300000);">
-<form 
+<body background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed onload="JavaScript:window.setTimeout('location.reload();',300000);">
+<form
     name="form1"
     id="form1"
     method=get>
@@ -30,7 +30,7 @@
         <td class=dialogtxt nowrap valign=top>
             ]]><SELECT class="textfeld" name="group" width="150" method="getGroups" onchange="javascript:document.all.form1.submit()"/><![CDATA[
         </td>
-        <td class=formular nowrap><img="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 height=30 width=2></td>
+        <td class=formular nowrap><img="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" border=0 height=30 width=2></td>
     </tr>
 </table>
 

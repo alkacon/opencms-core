@@ -5,10 +5,10 @@
 
     <!-- The version-number ${version.number} is automatically set to the
     current date and time. For official builds this should be set to a proper
-    value at the commandline.
+    value at the command line.
     Set it like this: ant all -Dversion.number=4.3.28     
     You can also uncomment the line below. -->
-    <property name="version.number"             value="5.0_beta_1"/>
+    <property name="version.number"             value="5.0_beta_2"/>
     
     <property name="version.name"               value="Kaitain"/>
     <property name="app.name"                   value="opencms"/>
@@ -39,7 +39,7 @@
     <property name="build.inputlib.tidy"        value="${build.inputlib}/Tidy.jar"/>
     
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
-    <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/workplace/templates/js/version.js"/>
+    <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/login/version.js"/>
     <property name="build.version.setupfile"    value="${build.web}/ocsetup/versions.txt"/>
     
     <property name="db.url"                     value="jdbc:mysql://localhost:3306/opencms"/>

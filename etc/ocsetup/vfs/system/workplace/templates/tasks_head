@@ -10,31 +10,31 @@
 
 <title>OpenCms</title>
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- End Style -->
 
 <!-- Beginn JavaScript -->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 <!-- Beginn JavaScript -->
 <script language="JavaScript">
 
 <!-- URL for pictures -->
-var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
 
 </script>
 </head>
 
 <!-- Beginn Navigation Task -->
-<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed  bgproperties=fixed>
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed  bgproperties=fixed>
 
 <table cellspacing=0 cellpadding=0 border=0>
 <form action="tasks_head.html" method=post id=form1 name=form1>
     <tr valign=center>
-        <td class=menu valign=middle><a href="#"><img src="]]><METHOD name="picsUrl">bt_back_in.gif</METHOD><![CDATA[" alt="" border=0 width=32 heigth=32></a></td>
+        <td class=menu valign=middle><a href="#"><img src="]]><METHOD name="resourcesUri">bt_back_in.gif</METHOD><![CDATA[" alt="" border=0 width=32 heigth=32></a></td>
         <td class=menubold><p class=einzug>]]><label value="task.label.filter"/><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
         <td class=menu>
             <p class=einzug>
-            
+
             ]]><SELECT class="textfeld" name="filter" width="210" method="getFilters" onchange="document.form1.submit();updateFrame('body.tasks_body', 'tasks_content.html');"/><![CDATA[
             </p>
         </td>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2002/10/18 16:54:03 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2002/11/02 10:37:24 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.34 $ $Date: 2002/10/18 16:54:03 $
+ * @version $Revision: 1.35 $ $Date: 2002/11/02 10:37:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -316,7 +316,6 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             parameters.put(C_PARA_FOLDER, folder);
         }
 
-        //String picsUrl = getConfigFile(cms).getCommonPictureUrl();
         HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
         String hostName = ""; // no need for host information in editor any more
         String picsUrl = cms.getRequestContext().getRequest().getServletUrl() + folder;

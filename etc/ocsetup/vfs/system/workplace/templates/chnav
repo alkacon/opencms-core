@@ -8,12 +8,12 @@
 <script language="JavaScript">
 <!--
     function setValues(){
-    	var navText = decodeURIComponent(']]><PROCESS>navtitle</PROCESS><![CDATA[');
-    	document.navigation.navtitle.value = navText;
+        var navText = decodeURIComponent(']]><PROCESS>navtitle</PROCESS><![CDATA[');
+        document.navigation.navtitle.value = navText;
     }
-//-->  
+//-->
 </script>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </head>
 <body onLoad="javascript:setValues();">
 <form name="navigation">
@@ -36,7 +36,7 @@
                             ]]><LABEL value="input.navtext" /><![CDATA[:
                         </td>
                         <td class=dialogtxt>
-                            <input type="textfield" id="navtitle" name="navtitle" maxlength=100 style="width:300px;" class="textfeld2" > 
+                            <input type="textfield" id="navtitle" name="navtitle" maxlength=100 style="width:300px;" class="textfeld2" >
                         </td>
                     </tr>
                     <tr>
@@ -52,16 +52,16 @@
                         </td>
                     </tr>
                     <tr>
-                    	<td class=dialogtxt colspan=2 align=center>
-                    		<table>
-                    			<tr>
-                        			<td class=dialogtxt align=center>
-                        				<input type="hidden" id="action" name="action" value="save">
-                            			<input class=button type="submit" value="]]><LABEL value="button.ok" /><![CDATA[">
-                            			<input class=button type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" onClick="location='explorer_files.html';">
-                        			</td>
-                        		</tr>
-                        	</table>
+                        <td class=dialogtxt colspan=2 align=center>
+                            <table>
+                                <tr>
+                                    <td class=dialogtxt align=center>
+                                        <input type="hidden" id="action" name="action" value="save">
+                                        <input class=button type="submit" value="]]><LABEL value="button.ok" /><![CDATA[">
+                                        <input class=button type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" onClick="location='explorer_files.html';">
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                 </table>

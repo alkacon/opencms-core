@@ -8,7 +8,7 @@
 
 <title>]]><METHOD name="userName" /><![CDATA[ - ]]><process>pathName</process><process>fileName</process><![CDATA[</title>
 <!-- Beginn Styles und Scripte -->
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <script language=JavaScript>
 <!--
      function show_help(){
@@ -29,7 +29,7 @@
 
 <!-- Beginn Aufbau Inhalt fuer Browser ohne Frameversion -->
 <body>
-<p><img src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA[" border=0 alt="opencms">
+<p><img src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA[" border=0 alt="opencms">
 <p>Leider unterstützt Ihr Browser keine Frames.
 <p>Wir achten stets darauf, daß in diesem Produkt die neueste Technik verwendet wird.
 <p>Bitte laden Sie sich die aktuelle Version von

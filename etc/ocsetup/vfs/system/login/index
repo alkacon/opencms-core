@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMLTEMPLATE>
+
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+
+<title>]]><METHOD name="getTitle"/><![CDATA[</title>
+<meta http-equiv="Content-Type" content="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<!-- Begin Styles and Scripts -->
+<style type="text/css">
+<!--
+body { color: #000000; font-family: sans-serif; font-size: 11px; }
+p { font-family: sans-serif; font-size: 11px; text-indent: 15px; }
+td.head { background-color: #000066; color: white; font-family: sans-serif; font-size: 11px; font-weight: bold; }
+td.dialogtxt { background-color: #c0c0c0; color: #000000; font-family: sans-serif; font-size: 11px; font-weight: normal; }
+td.formular { background-color: #c0c0c0; color: black; font-family: sans-serif; font-size: 11px; font-weight: bold; }
+input.textfeld { background-color: white; color: black; font-family: sans-serif; font-size: 11px; font-weight: normal; height: 20px; width: 150px }
+input.button { color: black; font-family: sans-serif; font-size: 11px; font-weight: normal; width: 100px; }
+-->
+</style>
+
+<script language="JavaScript" TYPE="text/javascript" SRC="]]><LINK>version.js</LINK><![CDATA["></script>
+<script language=JavaScript>
+function simpleEscape(text) {
+    return text.replace(/\//g, "%2F");
+}
+
+function encodeUrl(url) {
+    encodedurl = url
+    asteriskIdx = url.indexOf("?");
+    if(asteriskIdx > -1 && asteriskIdx < (url.length-1)) {
+        encodedurl = url.substring(0, asteriskIdx) + "?" + simpleEscape(url.substring(asteriskIdx + 1));
+    }
+    return encodedurl;
+}
+
+var workplace;
+function openwin(url, name, w, h) //opens a new window with parameter URL, Windowname (free choosable), width and height
+{
+    if (url != '#') {
+        if(w==0) w=screen.availWidth-20;
+        if(h==0) h=screen.availHeight-100;
+        encodedurl = encodeUrl(url);
+        workplace = window.open(encodedurl,name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width='+w+',height='+h);
+        workplace.moveTo(0,0);
+        if(workplace != null) {
+              if (workplace.opener == null)
+              {
+                 workplace.opener = self;
+              }
+              workplace.focus();
+        }        
+    }
+    return workplace;
+}
+
+function init() {
+    if(navigator.appName.substring(0,9) == "Microsoft") {
+        document.LOGIN.NAME.focus();    
+    }    
+	var theURL=window.location.href;
+	var pos=theURL.indexOf('submit=true');        
+	if(pos!=-1) {
+   		openwin(']]><LINK>/system/workplace/action/index.html</LINK><![CDATA[', 'opencms]]><PROCESS>ID</PROCESS><![CDATA[', 0, 0); 
+    	if(window.name != 'opencms]]><PROCESS>ID</PROCESS><![CDATA[') {
+    		window.close();
+	    }
+	}  
+}
+</script>
+
+<!-- End Styles and Scripts -->
+
+</head>
+
+<!-- Begin content login -->
+<body bgcolor="#ffffff" marginwidth = 0 marginheight = 20 leftmargin=0 topmargin=20 onload="init();">
+
+<form action="]]><LINK>index.html?submit=true</LINK><![CDATA[" method=post id=LOGIN name=LOGIN>
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+    <tr>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><LINK>login_logo.gif</LINK><![CDATA["></td>
+    </tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin login -->
+<table cellspacing=0 cellpadding=0 border=2>
+<tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+        <tr> 
+            <td colspan=2 class="head">]]><LABEL value="title.login" /><![CDATA[</td>                  
+        </tr>
+        <tr> 
+            <td colspan=2 class=dialogtxt> 
+            ]]><LABEL value="message.login1" /><![CDATA[<br>
+            ]]><LABEL value="message.login2" /><![CDATA[
+            </td>
+        </tr>
+        <tr>
+            <td width=35% class=formular>]]><LABEL value="input.username" /><![CDATA[:</td>
+            <td class=formular><input class="textfeld" value="" size=15 maxlength=32 name="NAME" id="NAME" ></td>
+        </tr>
+         <tr>
+            <td class=formular>]]><LABEL value="input.password" /><![CDATA[:</td>   
+            <td class=formular><input type ="password" class="textfeld" size=15 maxlength=32 name="PASSWORD" id="PASSWORD"></td>
+        </tr>
+        <tr>
+            <td colspan=2 align=middle class=formular><input type="submit" class="button" width=100 value="]]><LABEL value="button.login" /><![CDATA[" name="LOGIN" id="LOGIN" onClick=""></td>
+        </tr>
+        </table>    
+</td></tr>
+</table>
+<!-- End login -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+    if(version != "]]><METHOD name="version"/><![CDATA[") {
+        document.write('<p>&nbsp;<p><table cellpadding=5><tr><td align="right" bgcolor="#ff6666"><font size=2 color="white">');
+        document.write("<b>]]><LABEL value="message.login3" /><![CDATA[</b><p><b>Workplace:</b> " + version + "<br><b>Classes:</b> ]]><METHOD name="version"/><![CDATA[");
+        document.write("</font></td></tr></table>");
+    }
+</SCRIPT>    
+</CENTER>
+</form>
+
+</body>
+<!-- End content login -->
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<![CDATA[
+]]><ERRORPAGE title="error.title.login" message="error.message.login" reason="error.reason.login" suggestion="error.suggestion.login" ref="login.html" ><process>details</process></ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+</XMLTEMPLATE>

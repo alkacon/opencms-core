@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsResourceTranslator.java,v $
- * Date   : $Date: 2002/10/30 10:26:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/11/02 10:32:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,13 +57,16 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * The default directory translation setting is:<br>
  * <pre>
  * directory.translation.rules=s#/default/vfs/content/bodys/(.*)#/default/vfs/system/bodies/$1#, \ 
- * s#/default/vfs/pics/system/(.*)#/default/vfs/system/pics/$1#, \ 
+ * s#/default/vfs/pics/system/(.*)#/default/vfs/system/workplace/resources/$1#, \ 
  * s#/default/vfs/pics/(.*)#/default/vfs/system/galleries/pics/$1#, \ 
  * s#/default/vfs/download/(.*)#/default/vfs/system/galleries/download/$1#, \ 
  * s#/default/vfs/externallinks/(.*)#/default/vfs/system/galleries/externallinks/$1#, \ 
  * s#/default/vfs/htmlgalleries/(.*)#/default/vfs/system/galleries/htmlgalleries/$1#, \ 
  * s#/default/vfs/content/(.*)#/default/vfs/system/modules/default/$1#, \ 
- * s#/default/vfs/moduledemos/(.*)#/default/vfs/system/moduledemos/$1#
+ * s#/default/vfs/moduledemos/(.*)#/default/vfs/system/moduledemos/$1#, \ 
+ * s#/default/vfs/system/workplace/config/language/(.*)#/default/vfs/system/workplace/locales/$1#, \ 
+ * s#/default/vfs/system/workplace/css/(.*)#/default/vfs/system/workplace/resources/$1#, \
+ * s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#
  * </pre><p>
  * 
  * The default file name translation setting is:<br>
@@ -75,7 +78,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator implements I_CmsLogChannels {
@@ -145,7 +148,9 @@ public class CmsResourceTranslator implements I_CmsLogChannels {
                     if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_DEBUG) ) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "["+this.getClass().getName()+"] Resource translation: " + resourceName + " --> " + result);
                     }                    
-                    if (DEBUG > 0) System.out.println(this.getClass().getName()+"] Resource translation: " + resourceName + " --> " + result);
+                    if (DEBUG > 0) {
+                        System.out.println("Translation: " + resourceName + "\n        ---> " + result + "\n");
+                    }
                     if (m_continueMatching) {
                         // Continue matching
                         resourceName = result.toString();

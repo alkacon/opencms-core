@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
- 
+
 <TEMPLATE><![CDATA[
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
@@ -8,8 +8,8 @@
   <!-- TEMPLATE :  help_Frameset //-->
 
 
-  <HEAD><TITLE>OpenCms Online-Hilfe</TITLE>  
-   <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/help.css">
+  <HEAD><TITLE>OpenCms Online-Hilfe</TITLE>
+   <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">help.css</method><![CDATA[">
 <SCRIPT language="JavaScript">
 //  alert(window.opener.top.show_help());
 function updateContent() {
@@ -34,7 +34,7 @@ function updateContent() {
 <TEMPLATE name="top_Frame">
 <![CDATA[
 <HTML><HEAD>
-  <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/help.css">
+  <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">help.css</method><![CDATA[">
   <style type="text/css">
      body { background-color:#C0C0C0; }
   </style>
@@ -42,14 +42,14 @@ function updateContent() {
   <BODY >]]><ELEMENT name="HeadFrame"/><![CDATA[
   </BODY>
 </HTML>]]>
-</TEMPLATE>    
+</TEMPLATE>
 
 
 <TEMPLATE name="content_Frame">
 
 <![CDATA[
 <HTML><HEAD>
-  <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/help.css"></HEAD>
+  <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">help.css</method><![CDATA["></HEAD>
   <BODY>]]><ELEMENT name="ContentFrame"/><![CDATA[
   </BODY>
 </HTML>

@@ -8,7 +8,7 @@
 </head>
 
 
-<BODY background="]]><METHOD name="picsUrl">bg_mitte_rechts.gif</METHOD><![CDATA[" bgcolor="#000000">
+<BODY background="]]><METHOD name="resourcesUri">bg_mitte_rechts.gif</METHOD><![CDATA[" bgcolor="#000000">
 
 
 </BODY>

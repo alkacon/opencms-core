@@ -16,12 +16,12 @@ top.help_url='Administration/statischerExport.html';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT> 
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 
 </HEAD>
-<BODY bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../action/administration_head.html';">
+<BODY bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -32,26 +32,26 @@ top.help_url='Administration/statischerExport.html';
 <table cellspacing=0 cellpadding=0 border=2 width=450>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="staticexport.label.titleexport"/><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
                             <td class=formular>]]><LABEL value="staticexport.label.exportadd" /><![CDATA[</td>
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
                     <tr><td class=dialogtxt>
                         <table border=0 width=100%>
-                            <tr> 
+                            <tr>
                                 <td class=formular valign=middle>]]><LABEL value="input.exportresources" /><![CDATA[:</td>
                                 <td class=dialogtxt>
                                     <select name="new_ressources" id="new_ressources" style="width:300px" size=5 width="300" multiple disabled>
@@ -59,25 +59,25 @@ top.help_url='Administration/statischerExport.html';
                                     </select>
                                 </td>
                                 <td valign=middle>
-                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle> 
+                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle>
                                         <tr>
                                         </tr>
                                     </table>
                                 </td>
                             </tr>
-                            <tr> 
+                            <tr>
                                 <td>&nbsp;</td>
                                 <td class=formular>
-                                    <input type="hidden" name="tempFolder" id="tempFolder"> 
+                                    <input type="hidden" name="tempFolder" id="tempFolder">
                                     <input type="hidden" name="ALLRES" id="ALLRES" value="">
                                 </td>
                             </tr>
                             <tr>
                                 <td class=formular width=10%>]]><LABEL value="staticexport.label.filename"/><![CDATA[<a href="index.html?action=dynPrint">:</a></td>
-                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="250" disabled name="filename" id="VNAME" value="]]><PROCESS>path</PROCESS><![CDATA["></td> 
+                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="250" disabled name="filename" id="VNAME" value="]]><PROCESS>path</PROCESS><![CDATA["></td>
                             </tr>
                             <!-- Beginn Leerzeile-->
-                            <tr> 
+                            <tr>
                                 <td class="leerzeile" colspan=3>&nbsp;</td>
                             </tr>
                             <!-- Ende Leerzeile-->
@@ -85,7 +85,7 @@ top.help_url='Administration/statischerExport.html';
                     </td></tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -98,7 +98,7 @@ top.help_url='Administration/statischerExport.html';
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
@@ -122,15 +122,15 @@ top.help_url='Administration/statischerExport.html';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT> 
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 <script language=JavaScript>
 <!--
 function setValues() {
     var thelink = decodeURIComponent(']]><PROCESS>link</PROCESS><![CDATA[');
     var theregexp = decodeURIComponent(']]><PROCESS>regExpr</PROCESS><![CDATA[');
     var theresult = decodeURIComponent(']]><PROCESS>result</PROCESS><![CDATA[');
-    
+
     document.DBEXPORT.link.value=thelink;
     document.DBEXPORT.regExpr.value=theregexp;
     document.DBEXPORT.filename.value=theresult;
@@ -140,7 +140,7 @@ function setValues() {
 
 
 </HEAD>
-<BODY bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../action/administration_head.html';setValues();">
+<BODY bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../action/administration_head.html';setValues();">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -151,56 +151,56 @@ function setValues() {
 <table cellspacing=0 cellpadding=0 border=2 width=450>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="staticexport.label.titleexport"/><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <td class=formular>]]><LABEL value="staticexport.label.testtitle"/><![CDATA[</td>
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
                     <tr><td class=dialogtxt>
                         <table border=0 width=100%>
-                            <tr> 
+                            <tr>
                                 <td class=formular valign=middle>]]><LABEL value="staticexport.label.testlink"/><![CDATA[</td>
-                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="250" name="link" id="link" value=""></td> 
+                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="250" name="link" id="link" value=""></td>
                                 <td valign=middle>
-                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle> 
+                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle>
                                         <tr>
                                         </tr>
                                     </table>
                                 </td>
                             </tr>
-                            <tr> 
+                            <tr>
                                 <td class=formular valign=middle>]]><LABEL value="staticexport.label.testregexp"/><![CDATA[</td>
-                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="250" name="regExpr" id="regExpr" value=""></td> 
+                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="250" name="regExpr" id="regExpr" value=""></td>
                                 <td valign=middle>
-                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle> 
+                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle>
                                         <tr>
                                         </tr>
                                     </table>
                                 </td>
                             </tr>
-                            <tr> 
+                            <tr>
                                 <td>&nbsp;</td>
                                 <td class=formular>
                                 </td>
                             </tr>
                             <tr>
                                 <td class=formular width=10%>]]><LABEL value="staticexport.label.testresult"/><![CDATA[</td>
-                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="250" disabled name="filename" id="filename" value=""></td> 
+                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="250" disabled name="filename" id="filename" value=""></td>
                             </tr>
                             <!-- Beginn Leerzeile-->
-                            <tr> 
+                            <tr>
                                 <td class="leerzeile" colspan=3>&nbsp;</td>
                             </tr>
                             <!-- Ende Leerzeile-->
@@ -208,7 +208,7 @@ function setValues() {
                     </td></tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -220,7 +220,7 @@ function setValues() {
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
@@ -244,7 +244,7 @@ function setValues() {
 <![CDATA[
 <HTML>
 <HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <SCRIPT LANGUAGE="Javascript">
 function reload()
@@ -260,7 +260,7 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -274,7 +274,7 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <!-- End please wait text -->
 <table cellspacing=0 cellpadding=0 border=0>
     <tr><br><br>
-        <td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
+        <td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="resourcesUri">pixel_blue.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 </CENTER>
@@ -288,14 +288,14 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <![CDATA[
 <HTML>
 <HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 </HEAD>
 <BODY onload="parent.admin_content.location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/';">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -316,17 +316,17 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <TEMPLATE name="showresult">
 <![CDATA[
 <HTML>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
  var pageStart="<HTML><head>"+
                     "<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=iso-8859-1'>"+
-                    "<link rel=stylesheet type='text/css' href='../../css/format.css'>"+
+                    "<link rel=stylesheet type='text/css' href=']]><method name="resourcesUri">format.css</method><![CDATA['>"+
                 "</HEAD>"+
                 "<BODY bgcolor='#ffffff' marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload=\"window.scrollTo(0,100000);\">";
  var pageEnd="</BODY></HTML>";
- 
+
  var pageBody="";
 
  /**
@@ -361,7 +361,7 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="initiate();">
@@ -373,19 +373,19 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <table cellspacing=0 cellpadding=0 border=1 width=950>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="staticexport.label.titleexport" /><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=0 width=100%>
@@ -402,7 +402,7 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
                             </tr>
                         </table>
                     </td></tr>
-            
+
                     <!-- Beginn Buttonleiste-->
                     <tr><td class=dialogtxt>
                         <table cellspacing=0 border=0 cellpadding=5 width=100%>

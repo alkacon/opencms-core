@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2002/04/29 09:36:32 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/11/02 10:35:44 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -109,7 +109,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsCo
         jsOutput.append(" this.actDirId;\n} \n");
 
         // function initialize_resources
-        jsOutput.append("function initialize_resources() {\n vi.iconPath=\"" + (String)picsUrl(cms, "", null, null) + "\";\n");
+        jsOutput.append("function initialize_resources() {\n vi.iconPath=\"" + (String)resourcesUri(cms, "", null, null) + "\";\n");
 
         // get the resources from /system/workplace/restypes/
         Vector resTypes = cms.getFilesInFolder(C_RESTYPES_FOLDER);

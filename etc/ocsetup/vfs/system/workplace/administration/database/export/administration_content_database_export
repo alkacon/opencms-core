@@ -4,7 +4,7 @@
 <contentage>(not set)</contentage>
 <currenttime>(not set)</currenttime>
 <nounchangedbox><![CDATA[
-                            <tr> 
+                            <tr>
                                 <td>&nbsp;</td>
                                 <td class=formular>
                                     <input type=checkbox name="nounchanged" value="nounchanged">]]><LABEL value="database.label.nounchanged"/><![CDATA[
@@ -14,7 +14,7 @@
 
 <userdata></userdata>
 <userdatabox><![CDATA[
-                            <tr> 
+                            <tr>
                                 <td>&nbsp;</td>
                                 <td class=formular>
                                     <input type=checkbox name="userdata" value="userdata" checked>]]><LABEL value="database.label.userdata"/><![CDATA[
@@ -23,9 +23,9 @@
 ]]></userdatabox>
 
 <contentagedata><![CDATA[
-                            <tr> 
+                            <tr>
                                 <td class=formular width=10%>]]><LABEL value="database.label.contentage"/><![CDATA[:</td>
-                                <td class=formular><input type="text" class="textfeld3" maxlength="30" name="contentageinput" value="12-31-1970 12:00:00" size="30" maxsize="30"><input type="hidden" name="contentage"></td>                                
+                                <td class=formular><input type="text" class="textfeld3" maxlength="30" name="contentageinput" value="12-31-1970 12:00:00" size="30" maxsize="30"><input type="hidden" name="contentage"></td>
                             </tr>
 ]]></contentagedata>
 
@@ -44,14 +44,14 @@ top.help_url='Administration/datenbankverwaltung/exportieren.html';
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT> 
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
 //------------------------------------------------------------------------------------
-// checkFormData(formField) 
-// 
+// checkFormData(formField)
+//
 // author:  Matthias Schreiber
 // company: mindfact interaktive medien ag
 // date:    13.03.2000
@@ -59,28 +59,28 @@ top.help_url='Administration/datenbankverwaltung/exportieren.html';
 //
 // Method checkFormData performs a client-side check of form fields containing names.
 // Form can be surrounded by <DIV>-section (layer).
-// 
+//
 // @param form Name of the form where the field to be checked is situated
 // @param field Name of the field to be checked
 // @param lyr Name of the layer in which the form is embedded. If there's no layer set it to null.
-// 
+//
 //------------------------------------------------------------------------------------
 
 function checkFormData()
 {
     var result=true;
     var at_pos, entry, strLength;
-   	      
+
     if(document.DBEXPORT.ALLRES.value.length < 1){
         alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
         return false;
     }
-    
+
     if (! checkContentAge()) {
         alert(']]><LABEL value="error.message.contentage" /><![CDATA[');
-    	return false
-   	}
-   	
+        return false
+    }
+
     entry = document.DBEXPORT.VNAME.value;
     strLength=entry.length;
     if (strLength < 1){
@@ -88,19 +88,19 @@ function checkFormData()
         document.DBEXPORT.VNAME.focus;
         return false;
     }
-          
-    for (i=0; i < strLength; i++) 
+
+    for (i=0; i < strLength; i++)
     {
         if (charList.indexOf(entry.charAt(i))==-1)
-        {   
+        {
             alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + entry.charAt(i));
             document.DBEXPORT.VNAME.focus;
             return false;
         }
     }
-        
+
     return result;
-}               
+}
 
 function checkContentAge() {
   var validdate = true;
@@ -110,7 +110,7 @@ function checkContentAge() {
     document.DBEXPORT.contentage.value = "(none)"
   } else {
     d = new Date(d);
-    if (!isNaN(d)) { 
+    if (!isNaN(d)) {
       document.DBEXPORT.contentage.value = d.getTime();
     } else {
       validdate = false;
@@ -123,19 +123,19 @@ function checkContentAge() {
 function deleteAnItem(theList,itemNo) {
 var n=theList.length;
 if ((n > 0) && (itemNo > -1)) {
-    theList.options[itemNo]=null; 
+    theList.options[itemNo]=null;
 }
 }
 
-function addFolder(theList, item) {  
+function addFolder(theList, item) {
     if (item != null && item != "") {
-        newOption = new Option(item, item, false, false); 
+        newOption = new Option(item, item, false, false);
         theList.options[theList.length] = newOption;
         document.DBEXPORT.selectallfolders.value='';
     }
 }
 
-function copySelection() { 
+function copySelection() {
     addFolder(document.DBEXPORT.new_ressources, document.DBEXPORT.tempFolder.value);
 }
 
@@ -149,8 +149,8 @@ function selectAll(theList) {
     if (n>0) {
         for (i=0; i<n; i++) {
             allResources = allResources + theList.options[i].value + ';';
-        } 
-    } 
+        }
+    }
     document.DBEXPORT.ALLRES.value=allResources;
 }
 
@@ -158,7 +158,7 @@ function selectAll(theList) {
 </script>
 
 </HEAD>
-<BODY bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';" onUnload="if(treewin!=null)treewin.close();">
+<BODY bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';" onUnload="if(treewin!=null)treewin.close();">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -169,19 +169,19 @@ function selectAll(theList) {
 <table cellspacing=0 cellpadding=0 border=2 width=450>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="database.label.titleexport"/><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
@@ -189,43 +189,43 @@ function selectAll(theList) {
                         <table border=0 width=100%>
                             <tr>
                                 <td class=formular>]]><LABEL value="input.exportadd" /><![CDATA[:</td>
-                                <td class=dialogtxt> 
+                                <td class=dialogtxt>
                                 <input type="text" name="selectallfolders" class="textfeld3" size=31 value=""
-                                       onSubmit=""> 
+                                       onSubmit="">
 
-                                </td> 
-                                <td class=formular valign=bottom> 
-                                    <a href="javascript:addFolder(document.DBEXPORT.new_ressources, document.DBEXPORT.selectallfolders.value);" ><img src="]]><METHOD name="picsUrl">ic_admin_enter.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.addnew" /><![CDATA[" border=0 width=16 heigth=16></a> 
-                                </td>                                
+                                </td>
+                                <td class=formular valign=bottom>
+                                    <a href="javascript:addFolder(document.DBEXPORT.new_ressources, document.DBEXPORT.selectallfolders.value);" ><img src="]]><METHOD name="resourcesUri">ic_admin_enter.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.addnew" /><![CDATA[" border=0 width=16 heigth=16></a>
+                                </td>
                             </tr>
-                            <tr> 
+                            <tr>
                                 <td class=formular valign=middle>]]><LABEL value="input.exportresources" /><![CDATA[:</td>
                                 <td class=dialogtxt>
                                     <select name="new_ressources" id="new_ressources" style="width:300px" size=5 width="300" multiple></select>
                                 </td>
                                 <td valign=middle>
-                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle> 
+                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle>
                                         <tr>
-                                            <td class=formular><a href="javascript:treewin=opensmallwin('../../../action/folder_tree.html?foldertree=/&formname=DBEXPORT&variable=tempFolder&viewfile=yes', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
-                                            <td class=formular><a href="javascript:deleteAnItem(document.DBEXPORT.new_ressources , document.DBEXPORT.new_ressources.selectedIndex);"><img src="]]><METHOD name="picsUrl">ic_admin_deleteext.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.delete" /><![CDATA[" border=0 width=16 heigth=16></a></td>
+                                            <td class=formular><a href="javascript:treewin=opensmallwin('../../../action/folder_tree.html?foldertree=/&formname=DBEXPORT&variable=tempFolder&viewfile=yes', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
+                                            <td class=formular><a href="javascript:deleteAnItem(document.DBEXPORT.new_ressources , document.DBEXPORT.new_ressources.selectedIndex);"><img src="]]><METHOD name="resourcesUri">ic_admin_deleteext.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.delete" /><![CDATA[" border=0 width=16 heigth=16></a></td>
                                         </tr>
                                     </table>
                                 </td>
                             </tr>
-                            <tr> 
+                            <tr>
                                 <td>&nbsp;</td>
                                 <td class=formular>
                                     <input type=checkbox name="nosystem" value="nosystem" checked>]]><LABEL value="database.label.nosystem"/><![CDATA[
-                                    <input type="hidden" name="tempFolder" id="tempFolder"> 
+                                    <input type="hidden" name="tempFolder" id="tempFolder">
                                     <input type="hidden" name="ALLRES" id="ALLRES" value="">
                                 </td>
                             </tr>
                             ]]><PROCESS>userdata</PROCESS><![CDATA[
                             ]]><PROCESS>nounchanged</PROCESS><![CDATA[
-							]]><PROCESS>contentagedata</PROCESS><![CDATA[                            
+                            ]]><PROCESS>contentagedata</PROCESS><![CDATA[
                             <tr>
                                 <td class=formular width=10%>]]><LABEL value="database.label.filename"/><![CDATA[:</td>
-                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="30" name="filename" id="VNAME"></td> 
+                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="30" name="filename" id="VNAME"></td>
                             </tr>
                             <tr>
                                 <td class=formular>]]><LABEL value="database.label.files"/><![CDATA[:</td>
@@ -234,7 +234,7 @@ function selectAll(theList) {
                                 </td>
                             </tr>
                             <!-- Beginn Leerzeile-->
-                            <tr> 
+                            <tr>
                                 <td class="leerzeile" colspan=3>&nbsp;</td>
                             </tr>
                             <!-- Ende Leerzeile-->
@@ -242,7 +242,7 @@ function selectAll(theList) {
                     </td></tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -254,7 +254,7 @@ function selectAll(theList) {
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
@@ -278,7 +278,7 @@ function selectAll(theList) {
 <![CDATA[
 <HTML>
 <HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <SCRIPT LANGUAGE="Javascript">
 function reload()
@@ -294,7 +294,7 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -308,7 +308,7 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <!-- End please wait text -->
 <table cellspacing=0 cellpadding=0 border=0>
     <tr><br><br>
-        <td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
+        <td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="resourcesUri">pixel_blue.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 </CENTER>
@@ -322,14 +322,14 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <![CDATA[
 <HTML>
 <HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 </HEAD>
 <BODY onload="parent.admin_content.location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/database/';">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -350,17 +350,17 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <TEMPLATE name="showresult">
 <![CDATA[
 <HTML>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
  var pageStart="<HTML><head>"+
                     "<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=iso-8859-1'>"+
-                    "<link rel=stylesheet type='text/css' href='../../../css/format.css'>"+
+                    "<link rel=stylesheet type='text/css' href=']]><method name="resourcesUri">format.css</method><![CDATA['>"+
                 "</HEAD>"+
                 "<BODY bgcolor='#ffffff' marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload=\"window.scrollTo(0,100000);\">";
  var pageEnd="</BODY></HTML>";
- 
+
  var pageBody="";
 
  /**
@@ -397,12 +397,12 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="initiate();">
 
-<!-- Content age data: 
+<!-- Content age data:
 ]]><process>contentage</process><![CDATA[ (Selected content age)
 ]]><process>currenttime</process><![CDATA[ (Java system time)
 -->
@@ -414,19 +414,19 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <table cellspacing=0 cellpadding=0 border=1 width=950>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="database.label.titleexport" /><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=0 width=100%>
@@ -443,7 +443,7 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
                             </tr>
                         </table>
                     </td></tr>
-            
+
                     <!-- Beginn Buttonleiste-->
                     <tr><td class=dialogtxt>
                         <table cellspacing=0 border=0 cellpadding=5 width=100%>

@@ -68,8 +68,8 @@
             <url>/system/workplace/action/tasks.html</url>
         </view>
         <exportpoint>
-            <source>/system/pics/</source>
-            <destination>pics/system/</destination>
+            <source>/system/workplace/resources/</source>
+            <destination>resources/</destination>
         </exportpoint>
         <smtpserver>my.smtp.server</smtpserver>
         <smtpserver2>alternative.smtp.server</smtpserver2>

@@ -39,7 +39,7 @@
                 <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
                 <!-- Ende Leerzeile-->
                 <tr> 
-                    <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+                    <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
                 <td class=dialogtxt>]]><PROCESS>message</PROCESS><![CDATA[</td>
                 </tr>   
                 <tr><td class=dialogtxt><BR>]]><PROCESS>msgreason</PROCESS><![CDATA[:<BR>]]><PROCESS>reason</PROCESS><![CDATA[<BR>]]><PROCESS>suggestion</PROCESS><![CDATA[</td></tr>

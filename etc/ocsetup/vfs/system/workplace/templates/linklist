@@ -27,7 +27,7 @@
             var rng = sel.createRange();
             if(rng != null){
                 if("" == rng.text){
-                    var thelink = "<a href='"+linkname+"'>" + linkcontent + "</a>";                   
+                    var thelink = "<a href='"+linkname+"'>" + linkcontent + "</a>";
                     rng.pasteHTML(thelink);
                 } else {
                     sendURLString('EDITOR','URL',linkname);
@@ -35,12 +35,12 @@
             }
         }
     }
-            
+
     function sendLink(linkcontent, linkname){
-        sendExternalLinkWithText(linkcontent, linkname);    
+        sendExternalLinkWithText(linkcontent, linkname);
     }
 //-->
-</script> 
+</script>
 <head>
 
 
@@ -49,18 +49,18 @@
 <title>OpenCms</title>
 
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 <!-- Beginn Script -->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></script>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_choosebrowser.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_kontextmenu.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_edithtml.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_choosebrowser.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_kontextmenu.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_edithtml.js</method><![CDATA["></SCRIPT>
 <!-- Ende Script -->
 
 </head>
 
-<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="start();">
+<body bgcolor="#FFFFFF" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="start();">
 
 <!-- begin content list with galleries-->
 <table cellspacing=1 cellpadding=1 border=0>]]>

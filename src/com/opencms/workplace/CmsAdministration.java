@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2002/09/02 07:50:02 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/11/02 10:34:16 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.19 $ $Date: 2002/09/02 07:50:02 $
+ * @version $Name:  $ $Revision: 1.20 $ $Date: 2002/11/02 10:34:16 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -73,7 +73,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                     String iconActiveMethod, String iconVisibleMethod, String accessVisible) throws CmsException {
 
         boolean hasAccessVisible = (new Boolean(accessVisible)).booleanValue();
-        String iconPicPath = (String)picsUrl(cms, "", null, null);
+        String iconPicPath = (String)resourcesUri(cms, "", null, null);
         if(sender.startsWith("/system/modules")) {
 
             // change the iconPicPath if the point is from a module
@@ -221,7 +221,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
         CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
         String navPos = (String)session.getValue(C_SESSION_ADMIN_POS);
-        templateDocument.setData("emptyPic", (String)picsUrl(cms, "empty.gif", null, null));
+        templateDocument.setData("emptyPic", (String)resourcesUri(cms, "empty.gif", null, null));
         CmsXmlWpConfigFile confFile = new CmsXmlWpConfigFile(cms);
         String sendBy = (String)parameters.get("sender");
         if(sendBy == null) {

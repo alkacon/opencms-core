@@ -1,29 +1,25 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <WORKPLACE>
 <TEMPLATE>
+
 <![CDATA[
 <html>
 
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
-
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
-
-<SCRIPT LANGUAGE="JavaScript">
-    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
-</SCRIPT>
+<script language="JavaScript" TYPE="text/javascript" SRC="]]><LINK>/system/workplace/scripts/_button.js</LINK><![CDATA["></script>
+<script language="JavaScript">
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+</script>
 </head>
 
-<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed>
-<!--ksjfdlskjdf-->
-<table cellspacing=0 cellpadding=0 border=0>
-    <tr valign=center>
-        <td class=menu valign=middle> ]]><BACKBUTTON> </BACKBUTTON><![CDATA[</td>
-    </tr>
-</table>
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA[" bgproperties="fixed">
+<table cellspacing=0 cellpadding=0 border=0><tr>
+    <td valign=middle>]]><BACKBUTTON/><![CDATA[</td>
+</tr></table>
 </body>
 </html>
 ]]>
+
 </TEMPLATE>
 </WORKPLACE>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2002/10/18 16:54:03 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2002/11/02 10:39:36 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.43 $ $Date: 2002/10/18 16:54:03 $
+ * @version $Revision: 1.44 $ $Date: 2002/11/02 10:39:36 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -108,7 +108,7 @@ public class CmsXmlWpConfigFile {
      */
 
     public String getLanguagePath() throws CmsException {
-        return "/system/workplace/config/language/";
+        return I_CmsWpConstants.C_LOCALES_PATH;
     }
 
     /**
@@ -128,6 +128,13 @@ public class CmsXmlWpConfigFile {
     public String getWorkplaceAdministrationPath() throws CmsException {
         return "/system/workplace/administration/";
     }
+    
+    /** Flag to indicate what setting the value of "UseWpPicturesFromVFS" in the registry.xml is */    
+    private static boolean m_useWpPicturesFromVFS = true;
+    /** Path in the VFS if "UseWpPicturesFromVFS" is true */
+    private static String m_useWpPicturesFromVFSPath = null;
+    /** URI of the resources, including application context and servlet name (if required) */
+    private static String m_resourceUri = null;
 
     /**
      * Gets the path for system picture files.
@@ -135,13 +142,17 @@ public class CmsXmlWpConfigFile {
      * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
     public String getWpPicturePath() throws CmsException {
-        if(new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS")).booleanValue()) {
-            // read the wp images from the vfs - so add the servlet url to the return value
-            return m_cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_SYSTEM_PICS_PATH;
-        } else {
-            // read the wp images from the webapps context
-            return "/pics/system/";
+        if (m_useWpPicturesFromVFSPath == null) {
+            // Check registry for setting of workplace images
+            m_useWpPicturesFromVFS = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
+            m_useWpPicturesFromVFSPath = m_cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_SYSTEM_PICS_PATH;
+            if (m_useWpPicturesFromVFS) {
+                m_resourceUri = m_useWpPicturesFromVFSPath;
+            } else {
+                m_resourceUri = m_cms.getRequestContext().getRequest().getWebAppUrl() + I_CmsWpConstants.C_SYSTEM_PICS_EXPORT_PATH;
+            }
         }
+        return m_resourceUri;
     }
 
     public void getWorkplaceIniData(Vector names, Vector values, String tag, String element) throws CmsException {

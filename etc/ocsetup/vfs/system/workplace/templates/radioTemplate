@@ -13,7 +13,7 @@
 		<td align=left nowrap>]]><PROCESS>name</PROCESS><![CDATA[</td><td>&nbsp;&nbsp;&nbsp;</td>
 		]]>
 		</rowentry>
-		<optionalimage><![CDATA[<td align=middle width=10%><IMG src="]]><METHOD name="picsUrl"><PROCESS>image</PROCESS></METHOD><![CDATA[" border=0 width=16 heigth=16></td>]]></optionalimage>
+		<optionalimage><![CDATA[<td align=middle width=10%><IMG src="]]><METHOD name="resourcesUri"><PROCESS>image</PROCESS></METHOD><![CDATA[" border=0 width=16 heigth=16></td>]]></optionalimage>
 		<optionalselected>checked </optionalselected>
 	</radiobuttons>	
 </WORKPLACE>

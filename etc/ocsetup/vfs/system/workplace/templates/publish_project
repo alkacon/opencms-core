@@ -16,7 +16,7 @@ top.help_url='ExplorerAnsicht/header.html';
 
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -31,19 +31,19 @@ top.help_url='ExplorerAnsicht/header.html';
 <table cellspacing=0 cellpadding=0 border=2 width=300>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
         <td colspan=2 class="head">]]><label value="project.publish.title"/><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
         <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <tr>
                 <td class=dialogtxt colspan=2>
                      ]]><label value="project.publish.message1"/><![CDATA[ ]]><PROCESS>projectname</PROCESS><![CDATA[ ]]><label value="project.publish.message2"/><![CDATA[
@@ -55,11 +55,11 @@ top.help_url='ExplorerAnsicht/header.html';
                 </td>
             </tr>
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt colspan=2>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -93,7 +93,7 @@ top.help_url='ExplorerAnsicht/header.html';
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
@@ -106,13 +106,13 @@ top.help_url='ExplorerAnsicht/header.html';
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="head">]]><label value="project.lockchange.title"/><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
@@ -127,7 +127,7 @@ top.help_url='ExplorerAnsicht/header.html';
                 </td>
             </tr>
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
@@ -169,7 +169,7 @@ top.help_url='ExplorerAnsicht/header.html';
 <![CDATA[
 <HTML>
 <HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 <SCRIPT LANGUAGE="Javascript">
 function reload()
 {
@@ -182,7 +182,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -196,7 +196,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <!-- End please wait text -->
 <table cellspacing=0 cellpadding=0 border=0>
     <tr><br><br>
-        <td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
+        <td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="resourcesUri">pixel_blue.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 </CENTER>
@@ -219,19 +219,19 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <HTML>
 
 <!-- Include external JavaScripts-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
  var pageStart="<HTML><head>"+
                     "<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=iso-8859-1'>"+
-                    "<link rel=stylesheet type='text/css' href='../css/format.css'>"+
+                    "<link rel=stylesheet type='text/css' href=']]><method name="resourcesUri">format.css</method><![CDATA['>"+
                 "</HEAD>"+
                 "<BODY bgcolor='#ffffff' marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload=\"window.scrollTo(0,100000);\">";
  var pageEnd="</BODY></HTML>";
- 
+
  var pageBody="";
- 
+
  var actionParameter="]]><process>actionParameter</process><![CDATA[";
 
  function getActionParameter(){
@@ -276,7 +276,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="initiate();">
@@ -288,19 +288,19 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <table cellspacing=0 cellpadding=0 border=1 width=950>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="project.publish.title" /><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=0 width=100%>
@@ -317,7 +317,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
                             </tr>
                         </table>
                     </td></tr>
-            
+
                     <!-- Beginn Buttonleiste-->
                     <tr><td class=dialogtxt>
                         <table cellspacing=0 border=0 cellpadding=5 width=100%>

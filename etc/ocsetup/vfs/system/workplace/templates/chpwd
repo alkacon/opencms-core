@@ -14,12 +14,12 @@
 
 <title>OpenCms</title>
 
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 </HEAD>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 leftmargin=0 topmargin=0>
+<body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 leftmargin=0 topmargin=0>
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
@@ -37,7 +37,7 @@
                 <td class=formular nowrap>]]><LABEL value="input.oldpwd" /><![CDATA[:</td>
                 <!--<td class=dialogtxt><INPUT type="password" class=textfeld id=APWD name=APWD maxlength=8></td>-->
                 <td class=formular>]]><PASSWORD name="oldpwd" class="textfeld" size="15" length="16" /><![CDATA[</td>
-    
+
             </tr>
             <tr>
                 <td class=formular nowrap>]]><LABEL value="input.newpwd" /><![CDATA[:</td>
@@ -49,7 +49,7 @@
                 <!--<td class=dialogtxt><INPUT type="password" class=textfeld id=PWDB name=PWDB maxlength=8></td>-->
                 <td class=formular>]]><PASSWORD name="newpwdrepeat" class="textfeld" size="15" length="16" /><![CDATA[</td>
             </tr>
-            
+
             <tr><td class=leerzeile colspan=2>&nbsp;</td></tr>
             <tr><td class=formular colspan=2>
             <table cellspacing=0 cellpadding=5 width=100%>
@@ -90,15 +90,15 @@
     <head>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
-    <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
     <style type="text/css">
     #errormain{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:10; }
     #errordetails{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:100}
     </style>
 
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js"></SCRIPT>
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_choosebrowser.js"></SCRIPT>
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_dialogscroll.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_choosebrowser.js</method><![CDATA["></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_dialogscroll.js</method><![CDATA["></SCRIPT>
 
     </HEAD>
     <BODY onLoad="errorinit();" bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -111,17 +111,17 @@
             <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 
                 <!-- Beginn Tabellenkopf blau-->
-                <tr> 
+                <tr>
                     <td colspan=2 class="head">]]><LABEL value="error.title.chpwd" /><![CDATA[</td>
                 </tr>
                 <!-- Ende Tabellenkopf blau-->
                 <!-- Beginn Leerzeile-->
                 <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
                 <!-- Ende Leerzeile-->
-                <tr> 
-                    <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><method name="picsUrl">ic_caution.gif</method><![CDATA[" width=32 height=32></td>
+                <tr>
+                    <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><method name="resourcesUri">ic_caution.gif</method><![CDATA[" width=32 height=32></td>
                 <td class=dialogtxt>]]><LABEL value="error.message.chpwd" /><![CDATA[</td>
-                </tr>   
+                </tr>
                 <tr><td class=dialogtxt><BR>]]><LABEL value="message.reason" /><![CDATA[:<BR>]]><PROCESS>reasonOfError</PROCESS><![CDATA[<BR>]]><LABEL value="error.suggestion.adduser" /><![CDATA[</td></tr>
                 <!-- Beginn Leerzeile-->
                 <tr> <td class="leerzeile">&nbsp;</td></tr>
@@ -138,14 +138,14 @@
                 </td>
                 </tr>
                 </table>
-                <!-- Ende Buttonleisete-->  
+                <!-- Ende Buttonleisete-->
         </td></tr>
     </table>
     </form>
     </div>
 
     <div id="errordetails">
-    <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
     <form id=DETAILS name=DETAILS>
     <table cellspacing=0 cellpadding=0 border=2 width=350>
         <tr><td class=dialogtxt>
@@ -158,7 +158,7 @@
         </td></tr>
     </table>
     </form>
-    </div> 
+    </div>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     </BODY>

@@ -12,7 +12,7 @@
 
 var imgEndOn = "_on.gif";
 var imgEndOff = "_off.gif";
-var pfad="]]><method name="picsUrl"/><![CDATA[";
+var pfad="]]><method name="resourcesUri" /><![CDATA[";
 
 
 function ChOn(imgID) //changes a imageobject on mouseover
@@ -41,22 +41,22 @@ document.images[imgID].src = src;
 
   <TD width=27>
     <a href="JavaScript:history.back();" onMouseover="ChOn('bt_back')" onMouseout="ChOff('bt_back')">
-    <IMG border=0 alt="Zurück" name="bt_back" src="]]><method name="picsUrl">bt_back_off.gif</method><![CDATA["></a>
+    <IMG border=0 alt="Zur?ck" name="bt_back" src="]]><method name="resourcesUri">bt_back_off.gif</method><![CDATA["></a>
   </TD>
   
   <TD width=27>
     <a href="JavaScript:history.forward();" onMouseover="ChOn('bt_forward')" onMouseout="ChOff('bt_forward')">
-    <IMG border=0 alt="Vor" name="bt_forward" src="]]><method name="picsUrl">bt_forward_off.gif</method><![CDATA["></a>
+    <IMG border=0 alt="Vor" name="bt_forward" src="]]><method name="resourcesUri">bt_forward_off.gif</method><![CDATA["></a>
   </TD>
   
   <TD width=27>
     <a target="contentFrame" href="Navigation.html" onMouseover="ChOn('bt_help_content')" onMouseout="ChOff('bt_help_content')">
-    <IMG border=0 alt="Index" name="bt_help_content" src="]]><method name="picsUrl">bt_help_content_off.gif</method><![CDATA["></a>
+    <IMG border=0 alt="Index" name="bt_help_content" src="]]><method name="resourcesUri">bt_help_content_off.gif</method><![CDATA["></a>
   </TD>
 
   <TD width=27>
     <a href="javascript:top.close();" onMouseover="ChOn('bt_close')" onMouseout="ChOff('bt_close')">
-    <IMG border=0 alt="Schliessen" name="bt_close" src="]]><method name="picsUrl">bt_close_off.gif</method><![CDATA["></a>
+    <IMG border=0 alt="Schliessen" name="bt_close" src="]]><method name="resourcesUri">bt_close_off.gif</method><![CDATA["></a>
   </TD>
   
   <TD width="*"></TD> 

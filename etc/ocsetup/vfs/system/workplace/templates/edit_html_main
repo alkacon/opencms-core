@@ -35,18 +35,18 @@
 
 		<script language="JavaScript">					
 		if (USE_IMPORTBUTTONS) {
-			document.write('<td class=menu width=2><IMG border=0 src="]]><method name="picsUrl">gr_line.gif</method><![CDATA[" height=32 width=2></td>');
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileimport\');doEditHTML(12);" onmouseout="ChOff(\'bt_fileimport\')" onmouseover="ChOn(\'bt_fileimport\')" onmouseup="ChOn(\'bt_fileimport\')"><IMG alt="]]><LABEL value="button.fileimport"/><![CDATA[" width=32 border=0 name=bt_fileimport src="]]><method name="picsUrl">bt_fileimport_off.gif</method><![CDATA["></a></td>');
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexport\');doEditHTML(13);" onmouseout="ChOff(\'bt_fileexport\')" onmouseover="ChOn(\'bt_fileexport\')" onmouseup="ChOn(\'bt_fileexport\')"><IMG alt="]]><LABEL value="button.fileexport"/><![CDATA[" width=32 border=0 name=bt_fileexport src="]]><method name="picsUrl">bt_fileexport_off.gif</method><![CDATA["></a></td>');
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexportas\');doEditHTML(14);" onmouseout="ChOff(\'bt_fileexportas\')" onmouseover="ChOn(\'bt_fileexportas\')" onmouseup="ChOn(\'bt_fileexportas\')"><IMG alt="]]><LABEL value="button.fileexportas"/><![CDATA[" width=32 border=0 name=bt_fileexportas src="]]><method name="picsUrl">bt_fileexportas_off.gif</method><![CDATA["></a></td>');
+			document.write('<td class=menu width=2><IMG border=0 src="]]><method name="resourcesUri">gr_line.gif</method><![CDATA[" height=32 width=2></td>');
+			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileimport\');doEditHTML(12);" onmouseout="ChOff(\'bt_fileimport\')" onmouseover="ChOn(\'bt_fileimport\')" onmouseup="ChOn(\'bt_fileimport\')"><IMG alt="]]><LABEL value="button.fileimport"/><![CDATA[" width=32 border=0 name=bt_fileimport src="]]><method name="resourcesUri">bt_fileimport_off.gif</method><![CDATA["></a></td>');
+			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexport\');doEditHTML(13);" onmouseout="ChOff(\'bt_fileexport\')" onmouseover="ChOn(\'bt_fileexport\')" onmouseup="ChOn(\'bt_fileexport\')"><IMG alt="]]><LABEL value="button.fileexport"/><![CDATA[" width=32 border=0 name=bt_fileexport src="]]><method name="resourcesUri">bt_fileexport_off.gif</method><![CDATA["></a></td>');
+			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexportas\');doEditHTML(14);" onmouseout="ChOff(\'bt_fileexportas\')" onmouseover="ChOn(\'bt_fileexportas\')" onmouseup="ChOn(\'bt_fileexportas\')"><IMG alt="]]><LABEL value="button.fileexportas"/><![CDATA[" width=32 border=0 name=bt_fileexportas src="]]><method name="resourcesUri">bt_fileexportas_off.gif</method><![CDATA["></a></td>');
 		}
 		if (USE_PRINTBUTTON) {
-			document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><method name="picsUrl">gr_line.gif</method><![CDATA[" width=2></td>');
-			document.write('<td class=menu><A href="" onmousedown="ChPush(\'bt_print\');doEditHTML(15);" onmouseout="ChOff(\'bt_print\')" onmouseover="ChOn(\'bt_print\')" onmouseup="ChOn(\'bt_print\')"><IMG alt="]]><LABEL value="button.print"/><![CDATA[" width=32 border=0 name=bt_print src="]]><method name="picsUrl">bt_print_off.gif</method><![CDATA["></a></td>');
+			document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><method name="resourcesUri">gr_line.gif</method><![CDATA[" width=2></td>');
+			document.write('<td class=menu><A href="" onmousedown="ChPush(\'bt_print\');doEditHTML(15);" onmouseout="ChOff(\'bt_print\')" onmouseover="ChOn(\'bt_print\')" onmouseup="ChOn(\'bt_print\')"><IMG alt="]]><LABEL value="button.print"/><![CDATA[" width=32 border=0 name=bt_print src="]]><method name="resourcesUri">bt_print_off.gif</method><![CDATA["></a></td>');
 		}
 		if (USE_HELPBUTTON) {
-			document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><method name="picsUrl">gr_line.gif</method><![CDATA[" width=2></td>');
-			document.write('<td class=menu><A href="javascript:treewin=opensmallwin(\'../help/de/index.html\', \'Hilfe\', 300, 600),treewin.focus();" onmousedown="ChPush(\'bt_hilfe\');" onmouseout="ChOff(\'bt_hilfe\')" onmouseover="ChOn(\'bt_hilfe\')" onmouseup="ChOn(\'bt_hilfe\')"><IMG alt="]]><LABEL value="button.help"/><![CDATA[" width=32 border=0 name=bt_hilfe src="]]><method name="picsUrl">bt_hilfe_off.gif</method><![CDATA[" ></a></td>');
+			document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><method name="resourcesUri">gr_line.gif</method><![CDATA[" width=2></td>');
+			document.write('<td class=menu><A href="javascript:treewin=opensmallwin(\'../help/de/index.html\', \'Hilfe\', 300, 600),treewin.focus();" onmousedown="ChPush(\'bt_hilfe\');" onmouseout="ChOff(\'bt_hilfe\')" onmouseover="ChOn(\'bt_hilfe\')" onmouseup="ChOn(\'bt_hilfe\')"><IMG alt="]]><LABEL value="button.help"/><![CDATA[" width=32 border=0 name=bt_hilfe src="]]><method name="resourcesUri">bt_hilfe_off.gif</method><![CDATA[" ></a></td>');
 		}
 		</script>		
 		
@@ -99,13 +99,13 @@
 		
 		<script language="JavaScript">					
 		if (USE_FONTCOLOR || USE_BGCOLOR) {
-			document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><method name="picsUrl">gr_line.gif</method><![CDATA[" width=2></td>');
+			document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><method name="resourcesUri">gr_line.gif</method><![CDATA[" width=2></td>');
 		}
 		if (USE_FONTCOLOR) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fontcolor\');doEditHTML(38);" onmouseout="ChOff(\'bt_fontcolor\')" onmouseover="ChOn(\'bt_fontcolor\')" onmouseup="ChOn(\'bt_fontcolor\')"><IMG alt="]]><LABEL value="button.fontcolor"/><![CDATA[" width=32 border=0 name=bt_fontcolor src="]]><method name="picsUrl">bt_fontcolor_off.gif</method><![CDATA[" ></a></td>');
+			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fontcolor\');doEditHTML(38);" onmouseout="ChOff(\'bt_fontcolor\')" onmouseover="ChOn(\'bt_fontcolor\')" onmouseup="ChOn(\'bt_fontcolor\')"><IMG alt="]]><LABEL value="button.fontcolor"/><![CDATA[" width=32 border=0 name=bt_fontcolor src="]]><method name="resourcesUri">bt_fontcolor_off.gif</method><![CDATA[" ></a></td>');
 		}
 		if (USE_BGCOLOR) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_color\');doEditHTML(39);" onmouseout="ChOff(\'bt_color\')" onmouseover="ChOn(\'bt_color\')" onmouseup="ChOn(\'bt_color\')"><IMG alt="]]><LABEL value="button.color"/><![CDATA[" width=32 border=0 name=bt_color src="]]><method name="picsUrl">bt_color_off.gif</method><![CDATA[" ></a></td>');
+			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_color\');doEditHTML(39);" onmouseout="ChOff(\'bt_color\')" onmouseover="ChOn(\'bt_color\')" onmouseup="ChOn(\'bt_color\')"><IMG alt="]]><LABEL value="button.color"/><![CDATA[" width=32 border=0 name=bt_color src="]]><method name="resourcesUri">bt_color_off.gif</method><![CDATA[" ></a></td>');
 		}
 		</script>
 				
@@ -121,9 +121,9 @@
 				
 		<script language="JavaScript">			
 		if (USE_WORKINGLINKDIALOG) {
-	        document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_link\');doEditHTML(50);" onmouseout="ChOff(\'bt_link\')" onmouseover="ChOn(\'bt_link\')" onmouseup="ChOn(\'bt_link\')"><IMG alt="]]><LABEL value="button.linkto"/><![CDATA[" width=32 border=0 name=bt_link src="]]><method name="picsUrl">bt_link_off.gif</method><![CDATA[" ></a></td>');
+	        document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_link\');doEditHTML(50);" onmouseout="ChOff(\'bt_link\')" onmouseover="ChOn(\'bt_link\')" onmouseup="ChOn(\'bt_link\')"><IMG alt="]]><LABEL value="button.linkto"/><![CDATA[" width=32 border=0 name=bt_link src="]]><method name="resourcesUri">bt_link_off.gif</method><![CDATA[" ></a></td>');
 		} else {	
-		    document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_vfslink\');doEditHTML(46);" onmouseout="ChOff(\'bt_vfslink\')" onmouseover="ChOn(\'bt_vfslink\')" onmouseup="ChOn(\'bt_vfslink\')"><IMG alt="]]><LABEL value="button.linkinternal"/><![CDATA[" width=32 border=0 name=bt_vfslink src="]]><method name="picsUrl">bt_vfslink_off.gif</method><![CDATA[" ></a></td>');
+		    document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_vfslink\');doEditHTML(46);" onmouseout="ChOff(\'bt_vfslink\')" onmouseover="ChOn(\'bt_vfslink\')" onmouseup="ChOn(\'bt_vfslink\')"><IMG alt="]]><LABEL value="button.linkinternal"/><![CDATA[" width=32 border=0 name=bt_vfslink src="]]><method name="resourcesUri">bt_vfslink_off.gif</method><![CDATA[" ></a></td>');
 		}				
 		</script>
 		
@@ -143,16 +143,16 @@
 
 		<script language="JavaScript">					
 		if (USE_IMAGEGALS) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_imagelist\');doEditHTML(43);" onmouseout="ChOff(\'bt_imagelist\')" onmouseover="ChOn(\'bt_imagelist\')" onmouseup="ChOn(\'bt_imagelist\')"><IMG alt="]]><LABEL value="button.imagelist"/><![CDATA[" width=32 border=0 name=bt_imagelist src="]]><method name="picsUrl">bt_imagelist_off.gif</method><![CDATA[" ></a></td>');
+			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_imagelist\');doEditHTML(43);" onmouseout="ChOff(\'bt_imagelist\')" onmouseover="ChOn(\'bt_imagelist\')" onmouseup="ChOn(\'bt_imagelist\')"><IMG alt="]]><LABEL value="button.imagelist"/><![CDATA[" width=32 border=0 name=bt_imagelist src="]]><method name="resourcesUri">bt_imagelist_off.gif</method><![CDATA[" ></a></td>');
 		}
 		if (USE_DOWNLOADGALS) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_download\');doEditHTML(44);" onmouseout="ChOff(\'bt_download\')" onmouseover="ChOn(\'bt_download\')" onmouseup="ChOn(\'bt_download\')"><IMG alt="]]><LABEL value="button.downloadlist"/><![CDATA[" width=32 border=0 name=bt_download src="]]><method name="picsUrl">bt_download_off.gif</method><![CDATA[" ></a></td>');
+			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_download\');doEditHTML(44);" onmouseout="ChOff(\'bt_download\')" onmouseover="ChOn(\'bt_download\')" onmouseup="ChOn(\'bt_download\')"><IMG alt="]]><LABEL value="button.downloadlist"/><![CDATA[" width=32 border=0 name=bt_download src="]]><method name="resourcesUri">bt_download_off.gif</method><![CDATA[" ></a></td>');
 		}
 		if (USE_EXTERNLINKGALS) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_extlinkgallery\');window.open(\'linkbrowser.html?initial=true\',\'LinkBrowser\', \'width=550, height=500, resizable=yes, top=200, left=450\');" onmouseout="ChOff(\'bt_extlinkgallery\')" onmouseover="ChOn(\'bt_extlinkgallery\')" onmouseup="ChOn(\'bt_extlinkgallery\')"><IMG alt="]]><LABEL value="button.linklist"/><![CDATA[" width=32 border=0 name=bt_extlinkgallery src="]]><method name="picsUrl">bt_extlinkgallery_off.gif</method><![CDATA[" ></a></td>');
+			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_extlinkgallery\');window.open(\'linkbrowser.html?initial=true\',\'LinkBrowser\', \'width=550, height=500, resizable=yes, top=200, left=450\');" onmouseout="ChOff(\'bt_extlinkgallery\')" onmouseover="ChOn(\'bt_extlinkgallery\')" onmouseup="ChOn(\'bt_extlinkgallery\')"><IMG alt="]]><LABEL value="button.linklist"/><![CDATA[" width=32 border=0 name=bt_extlinkgallery src="]]><method name="resourcesUri">bt_extlinkgallery_off.gif</method><![CDATA[" ></a></td>');
 		}
 		if (USE_HTMLGALS) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_htmlgallery\');window.open(\'htmlbrowser.html?initial=true\',\'HtmlBrowser\', \'width=550, height=500, resizable=yes, top=200, left=450\');" onmouseout="ChOff(\'bt_htmlgallery\')" onmouseover="ChOn(\'bt_htmlgallery\')" onmouseup="ChOn(\'bt_htmlgallery\')"><IMG alt="]]><LABEL value="button.htmllist"/><![CDATA[" width=32 border=0 name=bt_htmlgallery src="]]><method name="picsUrl">bt_htmlgallery_off.gif</method><![CDATA[" ></a></td>');
+			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_htmlgallery\');window.open(\'htmlbrowser.html?initial=true\',\'HtmlBrowser\', \'width=550, height=500, resizable=yes, top=200, left=450\');" onmouseout="ChOff(\'bt_htmlgallery\')" onmouseover="ChOn(\'bt_htmlgallery\')" onmouseup="ChOn(\'bt_htmlgallery\')"><IMG alt="]]><LABEL value="button.htmllist"/><![CDATA[" width=32 border=0 name=bt_htmlgallery src="]]><method name="resourcesUri">bt_htmlgallery_off.gif</method><![CDATA[" ></a></td>');
 		}
 		</script>
 						

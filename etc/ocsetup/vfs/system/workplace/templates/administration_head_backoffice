@@ -5,9 +5,9 @@
 
 <preview><![CDATA[
 <td class=menu nowrap  valign=top  width = "100%" align = right>
-    <a href="#"  
+    <a href="#"
         onMouseDown="ChPush('bt_docpreview');openwinfull(']]><method name="getServletPath"/><PROCESS>link</PROCESS><![CDATA[');" onMouseUp="ChOn('bt_docpreview')" onMouseOver="ChOn('bt_docpreview')" onMouseOut="ChOff('bt_docpreview')">
-         <img align=top src="]]><method name="picsUrl">bt_docpreview_off.gif</method><![CDATA[" name="bt_docpreview" alt="]]><LABEL value="button.preview"/><![CDATA[" border=0 width=32 heigth=32> 
+         <img align=top src="]]><method name="resourcesUri">bt_docpreview_off.gif</method><![CDATA[" name="bt_docpreview" alt="]]><LABEL value="button.preview"/><![CDATA[" border=0 width=32 heigth=32>
     </a>
 </td>
 ]]></preview>
@@ -19,20 +19,20 @@
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <SCRIPT LANGUAGE="JavaScript">
-    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
      function doEdit(para) {
            var backofficepagevalue="";
            if(document.getElementById("backofficepage")){
             backofficepagevalue=document.getElementById("backofficepage").value;
            }
        if(window.top.body.admin_content.doUpdate!=null)window.top.body.admin_content.doUpdate();
-     
+
              switch(para) {
-             
+
              case 1: {
                      parent.frames[1].document.getElementById("Editor").action.value = "exit";
                      if(parent.frames[1].document.getElementById("Editor").backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepagevalue;
@@ -57,7 +57,7 @@
                      break;
                      }
                }
-           }         
+           }
 </SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -77,7 +77,7 @@
 
 </head>
 
-<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed>
+<body bgcolor="#E0E0E0" background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed>
 <!--ksjfdlskjdf-->
 <table cellspacing=0 cellpadding=0 border=0>
     <tr valign=center>

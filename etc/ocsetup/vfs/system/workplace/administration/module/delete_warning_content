@@ -7,7 +7,7 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <script language=JavaScript>
 <!--
     function getTitle()
@@ -32,18 +32,18 @@
             for (i=0; i < document.forms[0].elements.length; i++){
                 document.forms[0].elements[i].checked = fCheck;
                         }
-                
+
         }
 //-->
 </script>
 
 </HEAD>
-    <body background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" onload="parent.title.location.href='../../action/frame_title.html';parent.text.location.href='../../action/frame_text.html';">
-    
-    
+    <body background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" onload="parent.title.location.href='../../action/frame_title.html';parent.text.location.href='../../action/frame_text.html';">
+
+
     <table>
     <tr>
-        
+
         <td>
             <form id=FILES name=FILES action="delete_warning_content.html?step=]]><PROCESS>step</PROCESS><![CDATA[" method="post">
                 ]]><PROCESS>windowcontent</PROCESS><![CDATA[
@@ -51,7 +51,7 @@
         </td>
     </tr>
     </table>
-    
+
     </body>
 </html>
 ]]>
@@ -81,6 +81,6 @@
 ]]>
 </TEMPLATE>
 
-</WORKPLACE> 
-    
+</WORKPLACE>
+
 

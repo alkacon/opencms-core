@@ -7,7 +7,7 @@
     <tr>
         <td class=menu>]]><BUTTON href="javascript:doEdit(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="javascript:doEdit(3);" name="bt_save" action="" alt="save"/><![CDATA[</td>
-        
+
         <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_undo" action="doEdit(4);" alt="undo"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_redo" action="doEdit(5);" alt="redo"/><![CDATA[</td>
@@ -16,63 +16,63 @@
         <td class=menu>]]><BUTTON href="#" name="bt_search" action="doEdit(6);" alt="search"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_searchreplace" action="doEdit(7);" alt="searchreplace"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_goto" action="doEdit(8);" alt="goto"/><![CDATA[</td>
-        
+
         <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_cut" action="doEdit(9);" alt="cut"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_copy" action="doEdit(10);" alt="copy"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_paste" action="doEdit(11);" alt="paste"/><![CDATA[</td>
 
-        ]]><!-- FLEX: Removed static button entries and replaced them with dynamic entries:     
+        ]]><!-- FLEX: Removed static button entries and replaced them with dynamic entries:
         <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_fileimport" action="doEdit(12);" alt="fileimport"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_fileexport" action="doEdit(13);" alt="fileexport"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_fileexportas" action="doEdit(14);" alt="fileexportas"/><![CDATA[</td>
         --><![CDATA[
 
-        <script language="JavaScript">                  
+        <script language="JavaScript">
         if (USE_IMPORTBUTTONS) {
-            document.write('<td class=menu width=2><IMG border=0 height=32 src="/opencms/pics/system/gr_line.gif" width=2></td>');
-            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileimport\');doEdit(12);" onmouseout="ChOff(\'bt_fileimport\')" onmouseover="ChOn(\'bt_fileimport\')" onmouseup="ChOn(\'bt_fileimport\')"><IMG alt="]]><LABEL value="button.fileimport"/><![CDATA[" width=32 border=0 name=bt_fileimport src="/opencms/pics/system/bt_fileimport_off.gif" ></a></td>');
-            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexport\');doEdit(13);" onmouseout="ChOff(\'bt_fileexport\')" onmouseover="ChOn(\'bt_fileexport\')" onmouseup="ChOn(\'bt_fileexport\')"><IMG alt="]]><LABEL value="button.fileexport"/><![CDATA[" width=32 border=0 name=bt_fileexport src="/opencms/pics/system/bt_fileexport_off.gif" ></a></td>');
-            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexportas\');doEdit(14);" onmouseout="ChOff(\'bt_fileexportas\')" onmouseover="ChOn(\'bt_fileexportas\')" onmouseup="ChOn(\'bt_fileexportas\')"><IMG alt="]]><LABEL value="button.fileexportas"/><![CDATA[" width=32 border=0 name=bt_fileexportas src="/opencms/pics/system/bt_fileexportas_off.gif" ></a></td>');
+            document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><METHOD name="resourcesUri">gr_line.gif</METHOD><![CDATA[" width=2></td>');
+            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileimport\');doEdit(12);" onmouseout="ChOff(\'bt_fileimport\')" onmouseover="ChOn(\'bt_fileimport\')" onmouseup="ChOn(\'bt_fileimport\')"><IMG alt="]]><LABEL value="button.fileimport"/><![CDATA[" width=32 border=0 name=bt_fileimport src="]]><METHOD name="resourcesUri">bt_fileimport_off.gif</METHOD><![CDATA[" ></a></td>');
+            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexport\');doEdit(13);" onmouseout="ChOff(\'bt_fileexport\')" onmouseover="ChOn(\'bt_fileexport\')" onmouseup="ChOn(\'bt_fileexport\')"><IMG alt="]]><LABEL value="button.fileexport"/><![CDATA[" width=32 border=0 name=bt_fileexport src="]]><METHOD name="resourcesUri">bt_fileexport_off.gif</METHOD><![CDATA[" ></a></td>');
+            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexportas\');doEdit(14);" onmouseout="ChOff(\'bt_fileexportas\')" onmouseover="ChOn(\'bt_fileexportas\')" onmouseup="ChOn(\'bt_fileexportas\')"><IMG alt="]]><LABEL value="button.fileexportas"/><![CDATA[" width=32 border=0 name=bt_fileexportas src="]]><METHOD name="resourcesUri">bt_fileexportas_off.gif</METHOD><![CDATA[" ></a></td>');
         }
         </script>
-                
+
         <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
         <td class=menu>]]><BUTTON name="bt_print" action="doEdit(15);" alt="print"/><![CDATA[</td>
-        
+
         <td class=menu width=2>]]><!--<BUTTONSEPARATOR/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="javascript:treewin=opensmallwin('../help/de/index.html', 'Hilfe', 300, 600),treewin.focus();;" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
 
         ]]>--><![CDATA[<td class=menu width="100%" align=right>]]><BUTTON href="javascript:doEdit(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>
     </tr>
-    <tr><td colspan=22><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=2 height=2></td></tr>
+    <tr><td colspan=22><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" border=0 width=2 height=2></td></tr>
 </table>
-</td></tr>  
+</td></tr>
 
 
 <!-- Inhalt -->
 <tr>
     <td class="texteditor" colspan=23 height="100%" width=100%>
-        <OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02 
+        <OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02
             height=100% id=edit1 name=edit1 width=100% onFocus="setTextDelayed();">
-            <PARAM NAME="_Version" VALUE="131083">  
+            <PARAM NAME="_Version" VALUE="131083">
             <PARAM NAME="_ExtentX" VALUE="22887">
-            <PARAM NAME="_ExtentY" VALUE="7223">    
+            <PARAM NAME="_ExtentY" VALUE="7223">
             <PARAM NAME="_StockProps" VALUE="125">
-            <PARAM NAME="Text" VALUE="Loading .....">   
+            <PARAM NAME="Text" VALUE="Loading .....">
             <PARAM NAME="ForeColor" VALUE="0">
-            <PARAM NAME="BackColor" VALUE="16777215">   
+            <PARAM NAME="BackColor" VALUE="16777215">
             <PARAM NAME="BorderStyle" VALUE="1">
-            <PARAM NAME="Enabled" VALUE="-1">   
+            <PARAM NAME="Enabled" VALUE="-1">
             <PARAM NAME="AutoIndent" VALUE="-1">
             <PARAM NAME="BackColorSelected" VALUE="8388608">
-            <PARAM NAME="BookmarksMax" VALUE="16">  
+            <PARAM NAME="BookmarksMax" VALUE="16">
             <PARAM NAME="CanChangeFile" VALUE="0">
-            <PARAM NAME="CanChangeFont" VALUE="0">  
+            <PARAM NAME="CanChangeFont" VALUE="0">
             <PARAM NAME="CaretWidth" VALUE="0">
             <PARAM NAME="DefaultSelection" VALUE="-1">
-            <PARAM NAME="ExtraComments" VALUE="0">  
+            <PARAM NAME="ExtraComments" VALUE="0">
             <PARAM NAME="Item2AsComment" VALUE="0">
             <PARAM NAME="UnixStyleSave" VALUE="0">
             <PARAM NAME="CurrentWordAsText" VALUE="0">
@@ -84,27 +84,27 @@
             <PARAM NAME="FileMask" VALUE="/All Files/*.*/">
             <PARAM NAME="FileName" VALUE="+">
             <PARAM NAME="ForeColorSelected" VALUE="16777215">
-            <PARAM NAME="HasFile" VALUE="-1">   
+            <PARAM NAME="HasFile" VALUE="-1">
             <PARAM NAME="HasMenu" VALUE="0">
-            <PARAM NAME="Highlight" VALUE="0">  
+            <PARAM NAME="Highlight" VALUE="0">
             <PARAM NAME="InsertMode" VALUE="1">
-            <PARAM NAME="ScrollBars" VALUE="3"> 
+            <PARAM NAME="ScrollBars" VALUE="3">
             <PARAM NAME="Syntax" VALUE="">
-            <PARAM NAME="PaintMode" VALUE="0">  
+            <PARAM NAME="PaintMode" VALUE="0">
             <PARAM NAME="TabStopSize" VALUE="4">
-            <PARAM NAME="ReadOnly" VALUE="0">   
+            <PARAM NAME="ReadOnly" VALUE="0">
             <PARAM NAME="UndoDepth" VALUE="-1">
-            <PARAM NAME="InitializeType" VALUE="0"> 
+            <PARAM NAME="InitializeType" VALUE="0">
             <PARAM NAME="GroupNumber" VALUE="0">
-            <PARAM NAME="StartInComments" VALUE="0">    
+            <PARAM NAME="StartInComments" VALUE="0">
             <PARAM NAME="MacStyleSave" VALUE="0">
-            <PARAM NAME="WantTab" VALUE="-1">   
+            <PARAM NAME="WantTab" VALUE="-1">
             <PARAM NAME="WordWrap" VALUE="0">
-            <PARAM NAME="WordWrapAuto" VALUE="-1">  
+            <PARAM NAME="WordWrapAuto" VALUE="-1">
             <PARAM NAME="WordWrapRMargin" VALUE="0">
-            <PARAM NAME="WordWrapWidth" VALUE="0">  
+            <PARAM NAME="WordWrapWidth" VALUE="0">
             <PARAM NAME="NoPrintDialog" VALUE="0">
-            <PARAM NAME="NoPrintProgress" VALUE="0">    
+            <PARAM NAME="NoPrintProgress" VALUE="0">
             <PARAM NAME="WrapKeys" VALUE="0">
             <PARAM NAME="BackColorPrint" VALUE="16777215">
             <PARAM NAME="PrintJobName" VALUE="Document">
@@ -148,8 +148,8 @@
         document.write(str);
     //-->
     </script>
-    
-    
+
+
 ]]>
 </TEMPLATE>
 </WORKPLACE>

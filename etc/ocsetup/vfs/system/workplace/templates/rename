@@ -18,7 +18,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -32,19 +32,19 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <table cellspacing=0 cellpadding=0 border=2 width=300px>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Begin tablehead blue -->
-            <tr> 
+            <tr>
                 <td colspan=2 class="head">]]><LABEL value="title.rename" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- End tablehead blue -->
-            
+
             <!-- Begin empty row -->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende empty row -->
-            
+
             <tr>
                 <td class=dialogtxt colspan=2>
                     ]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
@@ -53,21 +53,21 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
                     ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
                 </td>
             </tr>
-            
+
             <!-- Begin Textfield -->
             <tr>
                 <td class=formular width=10%>
                     ]]><LABEL value="input.name" /><![CDATA[:</td>
-                <td class=dialogtxt>]]><INPUTFIELD name="name" class="textfeld" size="31" length="100" method="setValue" /><![CDATA[</td>               
+                <td class=dialogtxt>]]><INPUTFIELD name="name" class="textfeld" size="31" length="100" method="setValue" /><![CDATA[</td>
                 </tr>
             <!-- End Textfield -->
 
             <!-- Begin empty row -->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- End empty row -->
-            
+
             <!-- Begin buttons -->
             <tr><td class=dialogtxt colspan=2>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -79,7 +79,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             </td>
             </tr>
             <!-- End buttons -->
-            
+
             </table>
     </td></tr>
 </table>
@@ -105,7 +105,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -119,19 +119,19 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <table cellspacing=0 cellpadding=0 border=2 width=300px>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Begin tablehead blue -->
-            <tr> 
+            <tr>
                 <td colspan=2 class="head">]]><LABEL value="title.renamefolder" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- End tablehead blue -->
-            
+
             <!-- Begin empty row -->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende empty row -->
-            
+
             <tr>
                 <td class=dialogtxt colspan=2>
                     ]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
@@ -140,21 +140,21 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
                     ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
                 </td>
             </tr>
-            
+
             <!-- Begin Textfield -->
             <tr>
                 <td class=formular width=10%>
                     ]]><LABEL value="input.name" /><![CDATA[:</td>
-                <td class=dialogtxt>]]><INPUTFIELD name="name" class="textfeld" size="31" length="100" method="setValue" /><![CDATA[</td>               
+                <td class=dialogtxt>]]><INPUTFIELD name="name" class="textfeld" size="31" length="100" method="setValue" /><![CDATA[</td>
                 </tr>
             <!-- End Textfield -->
 
             <!-- Begin empty row -->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- End empty row -->
-            
+
             <!-- Begin buttons -->
             <tr><td class=dialogtxt colspan=2>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -166,7 +166,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             </td>
             </tr>
             <!-- End buttons -->
-            
+
             </table>
     </td></tr>
 </table>
@@ -185,18 +185,18 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <SCRIPT LANGUAGE=JavaScript>
 function update_frames()
 {
     var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
     location.href=lasturl;
-    
+
     //if (window.top.body.explorer_tree)
-        //window.top.body.explorer_tree.location.href='explorer_tree.html'; 
+        //window.top.body.explorer_tree.location.href='explorer_tree.html';
 }
 </SCRIPT>
 
@@ -206,7 +206,7 @@ function update_frames()
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -231,9 +231,9 @@ function update_frames()
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload="location.href='rename.html?action=ok'">
@@ -241,7 +241,7 @@ function update_frames()
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->

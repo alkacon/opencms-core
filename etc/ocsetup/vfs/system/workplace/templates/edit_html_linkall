@@ -7,8 +7,8 @@ Based on previous versions of the OpenCms link dialog.
 Author : Alexander Kandzior (a.kandzior@alkacon.com)
 
 File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/Attic/edit_html_linkall,v $
-Date   : $Date: 2002/10/11 15:55:40 $
-Version: $Revision: 1.4 $
+Date   : $Date: 2002/11/02 10:24:01 $
+Version: $Revision: 1.5 $
 
 -->
 <WORKPLACE>
@@ -285,9 +285,9 @@ Version: $Revision: 1.4 $
 
         <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
         <title>]]><LABEL value="title.newlink" /><![CDATA[</title>
-        <link rel=stylesheet type="text/css" href="../css/format.css">
-        <script language="JavaScript" type="text/javascript" src="../templates/js/opencms.js"></script>
-        <script language="JavaScript" type="text/javascript" src="../templates/js/opencms_edithtml.js"></script>
+        <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+        <script language="JavaScript" type="text/javascript" src="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
+        <script language="JavaScript" type="text/javascript" src="]]><method name="scriptsUri">opencms_edithtml.js</method><![CDATA["></script>
     </head>
 
     <body bgcolor="#c0c0c0" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 onLoad="init();" onUnload="if(treewin!=null)treewin.close();">
@@ -301,7 +301,7 @@ Version: $Revision: 1.4 $
                     <td class=dialogtxt>
                         <input type="text" name="neulink" class="textfeld3" size="30" value="" onchange="checkLinkUrl();" />
                     </td>
-                    <td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=NEU&variable=neulink&onlineselect=yes&viewfile=yes', 'explorer_viewer', 300, 400),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
+                    <td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=NEU&variable=neulink&onlineselect=yes&viewfile=yes', 'explorer_viewer', 300, 400),treewin.focus();"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
                 </tr>
             <tr>
                     <td class=formular>]]><LABEL value="input.linkanchor" /><![CDATA[:</td>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2002/10/18 16:54:03 $
-* Version: $Revision: 1.114 $
+* Date   : $Date: 2002/11/02 10:39:57 $
+* Version: $Revision: 1.115 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.114 $ $Date: 2002/10/18 16:54:03 $
+ * @version $Revision: 1.115 $ $Date: 2002/11/02 10:39:57 $
  */
 
 public interface I_CmsWpConstants {
@@ -84,8 +84,19 @@ public interface I_CmsWpConstants {
 
     /** Path to system image folder */
     // Resource translation project:
-    public static final String C_SYSTEM_PICS_PATH = C_NEW_VFS_STRUCTURE?"/system/pics/":"/pics/system/";
+    public static final String C_SYSTEM_PICS_PATH = C_NEW_VFS_STRUCTURE?"/system/workplace/resources/":"/pics/system/";
 
+    /** Path to exported system image folder */
+    // Resource translation project:
+    public static final String C_SYSTEM_PICS_EXPORT_PATH = C_NEW_VFS_STRUCTURE?"/resources/":"/pics/system/";
+
+    /** Path to locales */
+    // Resource translation project:    
+    public static final String C_LOCALES_PATH = C_NEW_VFS_STRUCTURE?"/system/workplace/locales/":"/system/workplace/config/language/";
+
+    /** Path to scripts */
+    // Resource translation project:    
+    public static final String C_SCRIPTS_PATH = C_NEW_VFS_STRUCTURE?"/system/workplace/scripts/":"/system/workplace/templates/js/";
 
     /** Parameter for content templates folder */
     public static final String C_TEMPLATEDIR = "templates/";

@@ -7,7 +7,7 @@
 <script language=JavaScript>
 <!--
 //-->
-</script> 
+</script>
 <head>
 
 
@@ -16,13 +16,13 @@
 <title>OpenCms</title>
 
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 <!-- Beginn Script -->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></script>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_choosebrowser.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_kontextmenu.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_edithtml.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_choosebrowser.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_kontextmenu.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_edithtml.js</method><![CDATA["></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
 var disableKontext = true;
 </SCRIPT>
@@ -30,11 +30,11 @@ var disableKontext = true;
 
 </head>
 
-<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="start();">
+<body bgcolor="#FFFFFF" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="start();">
 
 <!-- begin content list with galleries-->
 <table cellspacing=1 cellpadding=1 border=0>
-]]><FILELIST method="getFiles" template="/system/workplace/templates/explorerFilelistTemplate" customtemplate="/system/workplace/templates/downBrowserTemplate"/><![CDATA[ 
+]]><FILELIST method="getFiles" template="/system/workplace/templates/explorerFilelistTemplate" customtemplate="/system/workplace/templates/downBrowserTemplate"/><![CDATA[
 </table>
 <!-- end Inhalt Aufgaben Projektbezogen -->
 

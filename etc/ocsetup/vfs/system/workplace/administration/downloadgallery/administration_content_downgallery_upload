@@ -16,13 +16,13 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 
 </HEAD>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
@@ -81,12 +81,12 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>OpenCms</title>
 
-<link rel=stylesheet type="text/css" href="../../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 </HEAD>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 
 <!-- Beginn upload Datei Folgeseite 1 -->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -99,7 +99,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
     <tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
     <tr><td colspan=3 class=leerzeile>]]><LABEL value="label.upload" /><![CDATA[ : ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td></tr>
     <tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
-    
+
     <tr>
         <td class=leerzeile width=5%>&nbsp;</td>
         <td class=leerzeile>]]><LABEL value="input.suggestfiletype" /><![CDATA[ :</td>
@@ -148,34 +148,34 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 <TEMPLATE name="overwrite">
 <![CDATA[
 <HTML>
-    
+
     <script language=JavaScript>
     <!--
     top.help_url='Administration/downloadgallerien/dateienHochladen.html';
     var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
     //-->
     </script>
-    
+
     <head>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  1">
-    
+
     <title>OpenCms</title>
-    <link rel=stylesheet type="text/css" href="../../css/format.css">
-    
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
     </HEAD>
     <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
-    
+
     <!-- table to center the page-->
     <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
     <tr><td align=middle valign=center>
-    
+
     <!-- table to set up the dialog box-->
     <form id=OVERWRITE name=OVERWRITE>
     ]]><MESSAGEBOX title="messagebox.title.overwrite" message1="messagebox.message1.overwrite" message2="messagebox.message2.overwrite" button1="button.ok" button2="button.cancel" link1="administration_content_downgallery_upload.html" link2="administration_content_downgallery_upload.html"><PROCESS>FILENAME</PROCESS></MESSAGEBOX><![CDATA[
     </td></tr>
     </form>
     </table>
-        
+
     </BODY>
     </html>
     ]]>
@@ -219,12 +219,12 @@ function check_text_local()
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  1">
 <title>OpenCms</title>
 
-<link rel=stylesheet type="text/css" href="../../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 </HEAD>
 
-<body  bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 leftmargin=0 topmargin=0>
+<body  bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 leftmargin=0 topmargin=0>
 
 <!-- Beginn neue Datei Docloader und EMailformulareditor Anlegen -->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -258,7 +258,7 @@ function check_text_local()
         <td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
         <td class=dialogtxt><INPUT class="textfeld2" id=title name=title onfocus="UPLOADPIC.FERTIG.disabled=false;"></td>
     </tr>
-                                
+
     <!--Beginn Buttons-->
     <tr><td colspan=2 class=formular>
             <table cellspacing=0 cellpadding=5 width=100%>
@@ -269,7 +269,7 @@ function check_text_local()
                 <td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl;"></td>
             </tr>
             </table>
-        </td>               
+        </td>
     </tr>
     </table>
 </TD></TR>
@@ -302,15 +302,15 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
     <title>OpenCms - Datei hochladen</title>
 
-    <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
     <style type="text/css">
     #errormain{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:10; }
     #errordetails{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:100}
     </style>
 
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js"></SCRIPT>
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_choosebrowser.js"></SCRIPT>
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_dialogscroll.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_choosebrowser.js</method><![CDATA["></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_dialogscroll.js</method><![CDATA["></SCRIPT>
 
     </HEAD>
     <BODY onLoad="errorinit();" bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -323,17 +323,17 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
             <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 
                 <!-- Beginn Tabellenkopf blau-->
-                <tr> 
+                <tr>
                     <td colspan=2 class="head">]]><LABEL value="error.title.upload" /><![CDATA[</td>
                 </tr>
                 <!-- Ende Tabellenkopf blau-->
                 <!-- Beginn Leerzeile-->
                 <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
                 <!-- Ende Leerzeile-->
-                <tr> 
-                    <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><method name="picsUrl">ic_caution.gif</method><![CDATA[" width=32 height=32></td>
+                <tr>
+                    <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><method name="resourcesUri">ic_caution.gif</method><![CDATA[" width=32 height=32></td>
                 <td class=dialogtxt>]]><LABEL value="error.message.upload" /><![CDATA[</td>
-                </tr>   
+                </tr>
                 <tr><td class=dialogtxt><BR>]]><LABEL value="message.reason" /><![CDATA[:<BR>]]><LABEL value="error.reason.newextension" /><![CDATA[<BR>]]><LABEL value="error.suggestion.upload" /><![CDATA[</td></tr>
                 <!-- Beginn Leerzeile-->
                 <tr> <td class="leerzeile">&nbsp;</td></tr>
@@ -350,14 +350,14 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
                 </td>
                 </tr>
                 </table>
-                <!-- Ende Buttonleisete-->  
+                <!-- Ende Buttonleisete-->
         </td></tr>
     </table>
     </form>
     </div>
 
     <div id="errordetails">
-    <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
     <form id=DETAILS name=DETAILS>
     <table cellspacing=0 cellpadding=0 border=2 width=350>
         <tr><td class=dialogtxt>
@@ -370,7 +370,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
         </td></tr>
     </table>
     </form>
-    </div> 
+    </div>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     </BODY>

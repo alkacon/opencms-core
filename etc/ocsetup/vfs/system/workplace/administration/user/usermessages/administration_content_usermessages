@@ -2,7 +2,7 @@
 <WORKPLACE>
 
 <line>
-<![CDATA[   
+<![CDATA[
     <tr>
         <td nowrap valign=top><p class=einzug>]]><process>username</process><![CDATA[</p></td>
         <td nowrap valign=top><p class=einzug>]]><process>firstname</process><![CDATA[</p></td>
@@ -12,7 +12,7 @@
         <td nowrap valign=top><p class=einzug>]]><process>currentproject</process><![CDATA[</p></td>
         <td nowrap valign=top><p class=einzug>]]><process>messagepending</process><![CDATA[</p></td>
     </tr>
-]]> 
+]]>
 </line>
 
 <TEMPLATE>
@@ -20,8 +20,7 @@
 
 <HTML>
 <!-- Include internal JavaScripts -->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript"
-SRC="../../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
@@ -33,11 +32,11 @@ top.help_url='Administration/Benutzerverwaltung/BenutzerMessages.html';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" background="]]><METHOD
-name="picsUrl">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">
+name="resourcesUri">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">
 
 <table cellspacing=1 cellpadding=1 border=0>
     <!-- Beginn Kopf Kontent Aufgaben-->
@@ -50,10 +49,10 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_he
         <td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><label value="label.project"/><![CDATA[</p></td>
         <td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><label value="label.messagepending"/><![CDATA[</p></td>
     </tr>
-    
+
     ]]><process>all_lines</process><![CDATA[
-    
-    
+
+
 </table>
 
 <form name=message method=post>
@@ -68,6 +67,6 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_he
 </html>
 ]]>
 </TEMPLATE>
- 
- 
+
+
 </WORKPLACE>

@@ -4,7 +4,7 @@
 <![CDATA[
 <HTML>
 <!-- Include external JavaScripts-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
@@ -20,7 +20,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
 
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onUnload="javascript:top.closeTreeWin();">
@@ -33,19 +33,19 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Begin tablehead blue -->
-            <tr> 
+            <tr>
                 <td colspan=3 class="head">]]><LABEL value="title.move" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- Ende tablehead blue -->
-            
+
             <!-- Begin empty row -->
-            <tr> 
+            <tr>
                 <td colspan=3 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- End empty row -->
-            
+
             <tr>
                 <td class=dialogtxt colspan=3>
                     ]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
@@ -54,26 +54,26 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
                     ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
                 </td>
             </tr>
-            
+
             <!-- Begin dropdown-->
             <tr>
-                <td class=formular>]]><LABEL value="input.moveto" /><![CDATA[:</td>             
+                <td class=formular>]]><LABEL value="input.moveto" /><![CDATA[:</td>
                 <td class=dialogtxt>
-                    <input type="text" name="folder" class="textfeld" size=31>  
+                    <input type="text" name="folder" class="textfeld" size=31>
                 </td>
-<td class=formular><a href="javascript:top.openTreeCopyWin();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>    
+<td class=formular><a href="javascript:top.openTreeCopyWin();"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
             </tr>
             <!-- End dropdown-->
-            <tr> 
+            <tr>
                 <td colspan=3 class="dialogtxt"><INPUT type="checkbox" id=RIGHT name=RIGHT checked>]]><LABEL value="input.keeprights" /><![CDATA[</td>
             </tr>
-            
+
             <!-- Begin empty row -->
-            <tr> 
+            <tr>
                 <td colspan=3 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- End empty row -->
-            
+
             <!-- Begin buttons -->
             <tr><td class=dialogtxt colspan=3>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -87,7 +87,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
             </td>
             </tr>
             <!-- End buttons -->
-            
+
             </table>
     </td></tr>
 </table>
@@ -104,7 +104,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
 <![CDATA[
 <HTML>
 <!-- Include external JavaScripts-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
@@ -126,7 +126,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onUnload="javascript:top.closeTreeWin();">
@@ -139,19 +139,19 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Begin tablehead blue -->
-            <tr> 
+            <tr>
                 <td colspan=3 class="head">]]><LABEL value="title.movefolder" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- Ende tablehead blue -->
-            
+
             <!-- Begin empty row -->
-            <tr> 
+            <tr>
                 <td colspan=3 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- End empty row -->
-            
+
             <tr>
                 <td class=dialogtxt colspan=3>
                     ]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
@@ -160,26 +160,26 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
                     ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
                 </td>
             </tr>
-            
+
             <!-- Begin dropdown-->
             <tr>
-                <td class=formular>]]><LABEL value="input.moveto" /><![CDATA[:</td>             
+                <td class=formular>]]><LABEL value="input.moveto" /><![CDATA[:</td>
                 <td class=dialogtxt>
-                    <input onKeyUp="SubmitIfCR(this.form,event.which);" type="text" name="folder" class="textfeld" size=31> 
+                    <input onKeyUp="SubmitIfCR(this.form,event.which);" type="text" name="folder" class="textfeld" size=31>
                 </td>
-<td class=formular><a href="javascript:top.openTreeCopyWin();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>    
+<td class=formular><a href="javascript:top.openTreeCopyWin();"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
             </tr>
             <!-- End dropdown-->
-            <tr> 
+            <tr>
                 <td colspan=3 class="dialogtxt"><INPUT type="checkbox" id=RIGHT name=RIGHT checked>]]><LABEL value="input.keeprights" /><![CDATA[</td>
             </tr>
-            
+
             <!-- Begin empty row -->
-            <tr> 
+            <tr>
                 <td colspan=3 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- End empty row -->
-            
+
             <!-- Begin buttons -->
             <tr><td class=dialogtxt colspan=3>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -191,7 +191,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             </td>
             </tr>
             <!-- End buttons -->
-            
+
             </table>
     </td></tr>
 </table>
@@ -211,18 +211,18 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <SCRIPT LANGUAGE=JavaScript>
 function update_frames()
 {
     var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
     location.href=lasturl;
-    
+
     //if (window.top.body.explorer_tree)
-        //window.top.body.explorer_tree.location.href='explorer_tree.html'; 
+        //window.top.body.explorer_tree.location.href='explorer_tree.html';
 }
 </SCRIPT>
 
@@ -232,7 +232,7 @@ function update_frames()
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -257,9 +257,9 @@ function update_frames()
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 
 </HEAD>
@@ -268,7 +268,7 @@ function update_frames()
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->

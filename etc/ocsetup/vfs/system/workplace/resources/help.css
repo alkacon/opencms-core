@@ -1,0 +1,87 @@
+/* 	usual				*/
+BODY
+{
+    Background: #F3F3F3;
+	COLOR: #303030;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt
+}
+P
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-INDENT: 15px
+}
+.allgtext
+{
+    COLOR: #303030;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+TD
+{
+    COLOR: #303030;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt
+}
+SELECT
+{
+    COLOR: #303030;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
+}
+H3
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, 'sans serif';
+    FONT-SIZE: 10pt;
+    FONT-STYLE: normal
+}
+A
+{
+	COLOR: #004444;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+A:link
+{
+	COLOR: #004444;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+A:aktive
+{
+	COLOR: #004444;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+A:visited
+{
+	COLOR: #004444;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+A:hover
+{
+	COLOR: #662222;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+	FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+A.Level2
+{
+	COLOR: #222266;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+	FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+A.Level1
+{
+	COLOR: #004444;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}

@@ -9,14 +9,14 @@
 
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
-    <body background="]]><METHOD name="picsUrl">bg_mitte4.gif</METHOD><![CDATA[">
-    
-    
+    <body background="]]><METHOD name="resourcesUri">bg_mitte4.gif</METHOD><![CDATA[">
+
+
 </body>
 </html>
 ]]>
 </TEMPLATE>
-</WORKPLACE> 
+</WORKPLACE>

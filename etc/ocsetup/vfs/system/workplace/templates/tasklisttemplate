@@ -18,19 +18,19 @@
 	
 	<!-- Priorities -->
 	<priority0></priority0>
-	<priority1><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_priohigh.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.high" /><![CDATA[">]]></priority1>
+	<priority1><![CDATA[<img src="]]><METHOD name="resourcesUri">ic_task_priohigh.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.high" /><![CDATA[">]]></priority1>
 	<priority2></priority2>
-	<priority3><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_priolow.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.low" /><![CDATA[">]]></priority3>
+	<priority3><![CDATA[<img src="]]><METHOD name="resourcesUri">ic_task_priolow.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.low" /><![CDATA[">]]></priority3>
 	
 	
 	
 	
 	<!-- States --> 
-	<new><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_task_new.gif  </METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.new"/><![CDATA[">]]></new>  
-	<activ><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_task_activ.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.activ" /><![CDATA[">]]></activ>
-	<alert><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_task_alert.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alert" /><![CDATA[">]]></alert>
-	<ok><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_task_ok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.ok" /><![CDATA[">]]></ok>
-	<alertok><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_task_alertok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alertok" /><![CDATA[">]]></alertok>
+	<new><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_task_new.gif  </METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.new"/><![CDATA[">]]></new>  
+	<activ><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_task_activ.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.activ" /><![CDATA[">]]></activ>
+	<alert><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_task_alert.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alert" /><![CDATA[">]]></alert>
+	<ok><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_task_ok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.ok" /><![CDATA[">]]></ok>
+	<alertok><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_task_alertok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alertok" /><![CDATA[">]]></alertok>
  
  
 	<!-- style classes -->

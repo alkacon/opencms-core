@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -20,12 +20,12 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 
 
 </HEAD>
-<BODY bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+<BODY bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -36,25 +36,25 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="title.property" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                     ]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
                     ]]><LABEL value="input.state" /><![CDATA[: ]]><PROCESS>STATE</PROCESS><![CDATA[<br>
                     ]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>OWNER</PROCESS><![CDATA[<br>
-                    ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[             
+                    ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
             </tr>
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
@@ -67,7 +67,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
                     </td></tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -78,7 +78,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
@@ -101,17 +101,17 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <script>
 function checkSelect()
 {
     if (document.META.selectproperty.selectedIndex==-1)
-    {       
+    {
     return false;
-    }   
+    }
     else
     {
     return true;
@@ -130,32 +130,32 @@ function checkSelect()
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="title.property" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                                 ]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
                                 ]]><LABEL value="input.state" /><![CDATA[: ]]><PROCESS>STATE</PROCESS><![CDATA[<br>
                                 ]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>OWNER</PROCESS><![CDATA[<br>
-                                ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[             
+                                ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
             </tr>
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
                     <tr><td class=dialogtxt>
                         <table border=0 width=100% height=200px>
                             <tr><td class=dialogtxt>
-                            ]]><SELECT class="textfeld" name="selectproperty" size="10" width="330" method="getProperty" /><![CDATA[                            
+                            ]]><SELECT class="textfeld" name="selectproperty" size="10" width="330" method="getProperty" /><![CDATA[
                             </td></tr>
                             <tr><td class=dialogtxt>
                                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -171,7 +171,7 @@ function checkSelect()
                     </td></tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleiste-->
                         <tr><td class=dialogtxt>
                             <table cellspacing=0 cellpadding=5 width=100%>
@@ -182,7 +182,7 @@ function checkSelect()
                         </td>
                         </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
@@ -206,10 +206,10 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -223,31 +223,31 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="title.editpropertyinfo" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 ]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
                 ]]><LABEL value="input.state" /><![CDATA[: ]]><PROCESS>STATE</PROCESS><![CDATA[<br>
                 ]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>OWNER</PROCESS><![CDATA[<br>
-                ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[             
+                ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
             </tr>
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
                     <tr><td class=dialogtxt>
                         <table border=0 width=100% height=200>
-                        
+
                             <tr>
                                 <td class=formular width=10%>]]><LABEL value="label.propertydef" /><![CDATA[:</td>
                                 <td class=dialogtxt>]]><PROCESS>PROPERTYDEF</PROCESS><![CDATA[</td>
@@ -256,13 +256,13 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
                                 <td class=formular colspan=2>]]><LABEL value="input.editpropertyinfo" /><![CDATA[:</td>
                             </tr>
                             <tr>
-                            <td class=dialogtxt valign=top colspan=2>]]><INPUTFIELD name="EDITEDPROPERTY" class="textfeld2" size="50" length="255" method="getPropertyValue" /><![CDATA[</td> 
+                            <td class=dialogtxt valign=top colspan=2>]]><INPUTFIELD name="EDITEDPROPERTY" class="textfeld2" size="50" length="255" method="getPropertyValue" /><![CDATA[</td>
                             </tr>
                         </table>
                     </td></tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -275,12 +275,12 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
 </form>
-    
+
 </td></tr>
 </table>
 
@@ -300,10 +300,10 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -333,10 +333,10 @@ top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -350,36 +350,36 @@ top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="title.newpropertyinfo" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
            <tr><td class=dialogtxt>
                             ]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
                             ]]><LABEL value="input.state" /><![CDATA[: ]]><PROCESS>STATE</PROCESS><![CDATA[<br>
                             ]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>OWNER</PROCESS><![CDATA[<br>
-                            ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[             
+                            ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>GROUP</PROCESS><![CDATA[
             </tr>
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
                     <tr><td class=dialogtxt>
                         <table border=0 width=100% height=200px>
-                        
+
                             <tr>
                                 <td class=formular width=50%>]]><LABEL value="input.propertydef" /><![CDATA[:</td>
                             </tr>
                             <tr><td class=dialogtxt valign=top>
-                            ]]><SELECT class="textfeld" name="selectproperty" size="8" width="450" method="getPropertydef" /><![CDATA[                          
+                            ]]><SELECT class="textfeld" name="selectproperty" size="8" width="450" method="getPropertydef" /><![CDATA[
                             </td>
                             </tr>
                             <tr>
@@ -392,7 +392,7 @@ top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
                     </td></tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -405,12 +405,12 @@ top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
 </form>
-    
+
 </td></tr>
 </table>
 
@@ -430,10 +430,10 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -447,24 +447,24 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="title.newpropertydef" /><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
                     <tr><td class=dialogtxt>
                         <table border=0 width=100% height=220>
-                        
+
                             <tr>
                                 <td class=formular width=50%>]]><LABEL value="input.newpropertydef" /><![CDATA[:</td>
                                 <td class=formular>]]><LABEL value="input.activepropertydef" /><![CDATA[:</td>
@@ -472,17 +472,17 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
                             <tr>
                                 <td class=dialogtxt valign=top><INPUT class=textfeld id=NEWPROPERTYDEF name=NEWPROPERTYDEF onfocus="METAORG.OK.disabled=false;"></td>
                                 <td class=dialogtxt valign=top rowspan=4>
-                               ]]><SELECT class="textfeld" name="selectproperty" size="10" width="200" method="getAllPropertydef" /><![CDATA[                                                                                       
+                               ]]><SELECT class="textfeld" name="selectproperty" size="10" width="200" method="getAllPropertydef" /><![CDATA[
                             </td>
                             </tr>
-                            
-                            <tr><td class="leerzeile"><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" width=1 height=80></td></tr>
-                            
+
+                            <tr><td class="leerzeile"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width=1 height=80></td></tr>
+
                         </table>
                     </td></tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -495,12 +495,12 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
 </form>
-   
+
 </td></tr>
 </table>
 </BODY>
@@ -514,6 +514,6 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 
 <TEMPLATE name="newerror">
 <ERRORPAGE title="error.title.newprop" message="error.message.newprop" reason="error.reason.newprop" suggestion="error.suggestion.newprop" ref="property.html?ORGANIZE=Organisieren..." ><PROCESS>NEWDETAILS</PROCESS></ERRORPAGE>
-</TEMPLATE> 
+</TEMPLATE>
 
 </WORKPLACE>

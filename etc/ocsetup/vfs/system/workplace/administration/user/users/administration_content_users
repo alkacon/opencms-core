@@ -5,8 +5,7 @@
 
 <HTML>
 <!-- Include internal JavaScripts -->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript"
-SRC="../../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
@@ -18,11 +17,11 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" background="]]><METHOD
-name="picsUrl">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">
+name="resourcesUri">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -34,19 +33,19 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_he
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="label.user" /><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
@@ -70,23 +69,23 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_he
                     </td></tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleiste-->
             <tr><td class=dialogtxt>
                 <table cellspacing=0 cellpadding=5 width=100%>
                 <tr>
-                    <td class=formular align=center width=50%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK" onClick="location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/user/'"></td> 
-                </tr> 
+                    <td class=formular align=center width=50%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK" onClick="location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/user/'"></td>
+                </tr>
                 </table>
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
 </form>
- 
+
 </td></tr>
 </table>
 
@@ -94,15 +93,14 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_he
 </html>
 ]]>
 </TEMPLATE>
- 
- 
+
+
 <TEMPLATE name="changeuser">
 <![CDATA[
 
 <HTML>
 <!-- Include internal JavaScripts -->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript"
-SRC="../../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
@@ -114,11 +112,11 @@ top.help_url='Administration/Benutzerverwaltung/BenutzerBearbeiten.html';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff"  background="]]><METHOD
-name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">
+name="resourcesUri">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -130,19 +128,19 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="task.label.changeuser"/><![CDATA[  ]]><PROCESS>USER</PROCESS><![CDATA[ </td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
@@ -172,7 +170,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                                  ]]><LABEL value="input.street"/><![CDATA[:</td>
                                  <td class=dialogtxt><input type="text" value="]]><PROCESS>USERSTREET</PROCESS><![CDATA[" maxlength=100 class="textfeld" name="USERSTREET" id="USERSTREET"></td>
                             </tr>
-                         
+
                             <tr>
                                  <td class=formular>
                                  ]]><LABEL value="input.zipcode"/><![CDATA[:</td>
@@ -181,20 +179,20 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                                 <td class=formular>
                                 ]]><LABEL value="input.city"/><![CDATA[:</td>
                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>TOWN</PROCESS><![CDATA[" class="textfeld" name="TOWN" id="TOWN"></td>
-            
+
                             </tr>
                             <tr>
                                 <td class=formular>
                                 ]]><LABEL value="input.password"/><![CDATA[:</td>
                                 <td class=dialogtxt><input type="password" value="]]><PROCESS>PWD</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD" id="PWD"></td>
- 
+
                                 <td class=formular>
                                 ]]><LABEL value="input.newpwdrepeat"/><![CDATA[:</td>
                                 <td class=dialogtxt><input type="password" value="]]><PROCESS>PWD2</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD2" id="PWD2"></td>
                             </tr>
-                             
+
                         </table>
-                                                            
+
                         <table border=0 width=100%>
                             <tr>
                                 <td class=formular colspan=2>
@@ -207,7 +205,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                                     <table border=0 width=100%>
                                         <tr>
                                             <td>
-                                            ]]><SELECT class="textfeld" name="selectgroup" size="6" width="150" 
+                                            ]]><SELECT class="textfeld" name="selectgroup" size="6" width="150"
                                             method="getSelectedGroups" onchange=""/><![CDATA[</td>
                                         </tr>
                                         <tr>
@@ -216,10 +214,10 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                                         </tr>
                                         <tr>
                                             <td>
-                                            ]]><SELECT class="textfeld" name="selectgroup" size="4" width="150" 
+                                            ]]><SELECT class="textfeld" name="selectgroup" size="4" width="150"
                                             method="getIndirectGroups" onchange=""/><![CDATA[</td>
                                         </tr>
-                                        
+
                                     </table>
                                 </td>
                                 <td class=dialogtxt valign=top>
@@ -230,7 +228,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                                 value="]]><LABEL value="button.remove"/>"<![CDATA[ width="100" type="button">
                                 </td>
                                 <td class=dialogtxt valign=top>]]>
-                                <SELECT class="textfeld" name="notselectgroup" size="12" width="150" 
+                                <SELECT class="textfeld" name="notselectgroup" size="12" width="150"
                                 method="getNotSelectedGroups" onchange=""/><![CDATA[
                                 </td>
                             </tr>
@@ -240,9 +238,9 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                                 <td></td>
                                 <td></td>
                             </tr>
-                            <tr> 
+                            <tr>
                                     <td class=dialogtxt align=left valign=top>
-                                    ]]><SELECT class="textfeld" name="DEFAULTGROUP" width="150" 
+                                    ]]><SELECT class="textfeld" name="DEFAULTGROUP" width="150"
                                     method="getGroupsOfUser" onchange=""/><![CDATA[
                                     </td>
                                     <td></td>
@@ -251,11 +249,11 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                                     value="DISABLED">]]><LABEL value="input.lockuser"/><![CDATA[
                                 </td>
                             </tr>
-                            
-                        </table>        
-                         
+
+                        </table>
+
                 </td></tr>
-            
+
             <!-- Beginn Buttonleiste-->
                 <tr><td class=dialogtxt>
                     <table cellspacing=0 cellpadding=5 width=100%>
@@ -267,7 +265,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                     </td>
                 </tr>
             <!-- Ende Buttonleisete-->
-                                            
+
         </table>
     </td></tr>
 </table>
@@ -276,23 +274,23 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
 </table>
 </form>
 </table>
-                                
+
 </BODY>
 </html>
 ]]>
 </TEMPLATE>
- 
- 
- 
- 
- 
+
+
+
+
+
 <TEMPLATE name="newuser">
-<![CDATA[ 
+<![CDATA[
 
 <HTML>
- 
+
 <!-- Include external JavaScripts-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
@@ -304,7 +302,7 @@ function checkFormData(a,b)
     var at_pos, entry, strLength;
 
     form=b;
-    
+
     entry = form.value;
     strLength=entry.length;
 
@@ -342,7 +340,7 @@ function checkForm(){
 
     if(a==0)return true;
     else return false;
-    
+
     //document.USERNEW.submit();
 
 }
@@ -356,10 +354,10 @@ function checkForm(){
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
-</HEAD> 
-<BODY bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">  <!-- Tabelle um vertikal und horizontal zu zentrieren-->
+</HEAD>
+<BODY bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">  <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
@@ -369,19 +367,19 @@ function checkForm(){
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="label.createnewuser"/><![CDATA[:</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
@@ -419,19 +417,19 @@ function checkForm(){
                                 <td class=formular>
                                 ]]><LABEL value="input.city"/><![CDATA[:</td>
                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>TOWN</PROCESS><![CDATA[" class="textfeld" name="TOWN" id="TOWN"></td>
-            
+
                             </tr>
                             <tr>
                                 <td class=formular>
                                 ]]><LABEL value="input.password"/><![CDATA[:</td>
                                 <td class=dialogtxt><input type="password" value="]]><PROCESS>PWD</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD" id="PWD"></td>
- 
+
                                 <td class=formular>
                                 ]]><LABEL value="input.newpwdrepeat"/><![CDATA[:</td>
                                 <td class=dialogtxt><input type="password" value="]]><PROCESS>PWD2</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD2" id="PWD2"></td>
                             </tr>
                         </table>
-                            
+
                         <table border=0 width=100%>
                             <tr>
                                 <td class=formular colspan=2>
@@ -444,7 +442,7 @@ function checkForm(){
                                     <table border=0 width=100%>
                                         <tr>
                                             <td>
-                                            ]]><SELECT class="textfeld" name="selectgroup" size="6" width="150" 
+                                            ]]><SELECT class="textfeld" name="selectgroup" size="6" width="150"
                                             method="getSelectedGroups" onchange=""/><![CDATA[</td>
                                         </tr>
                                         <tr>
@@ -453,10 +451,10 @@ function checkForm(){
                                         </tr>
                                         <tr>
                                             <td>
-                                            ]]><SELECT class="textfeld" name="selectgroup" size="4" width="150" 
+                                            ]]><SELECT class="textfeld" name="selectgroup" size="4" width="150"
                                             method="getIndirectGroups" onchange=""/><![CDATA[</td>
                                         </tr>
-                                        
+
                                     </table>
                                 </td>
                                 <td class=dialogtxt valign=top>
@@ -467,7 +465,7 @@ function checkForm(){
                                 value="]]><LABEL value="button.remove"/>"<![CDATA[ width="100" type="button">
                                 </td>
                                 <td class=dialogtxt valign=top>]]>
-                                <SELECT class="textfeld" name="notselectgroup" size="12" width="150" 
+                                <SELECT class="textfeld" name="notselectgroup" size="12" width="150"
                                 method="getNotSelectedGroups" onchange=""/><![CDATA[
                                 </td>
                             </tr>
@@ -477,18 +475,18 @@ function checkForm(){
                                 <td></td>
                                 <td></td>
                             </tr>
-                            <tr> 
+                            <tr>
                                     <td class=dialogtxt align=left valign=top>
-                                    ]]><SELECT class="textfeld" name="DEFAULTGROUP" width="150" 
+                                    ]]><SELECT class="textfeld" name="DEFAULTGROUP" width="150"
                                     method="getGroupsOfUser" onchange=""/><![CDATA[
                                     </td>
                                     <td></td>
                                     <td></td>
                             </tr>
-                            
-                        </table>     
+
+                        </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleiste-->
             <tr><td class=dialogtxt>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -500,14 +498,14 @@ function checkForm(){
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
 </td></tr>
-</table> 
+</table>
 </form>
-    
+
 </td></tr>
 </table>
 
@@ -517,27 +515,27 @@ function checkForm(){
 </TEMPLATE>
 
 <TEMPLATE name="RUsureDelete">
-<![CDATA[ 
- 
+<![CDATA[
+
 <HTML>
-  
+
 <!-- Include external JavaScripts-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
- 
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
 <script language=JavaScript>
 <!--
 top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 //-->
 </script>
 
- 
+
 <HEAD>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
-</HEAD> 
+</HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="parent.frames[0].location.href='../../../action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
@@ -551,32 +549,32 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 <table cellspacing=0 cellpadding=0 border=2 width=300>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="head">]]><LABEL value="title.deleteuser"/><![CDATA[:  ]]><PROCESS>USER</PROCESS><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <tr>
                 <td class=dialogtxt colspan=2>
                 ]]><LABEL value="messagebox.message6"/><![CDATA[
-                     
+
                 </td>
             </tr>
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td colspan=2 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt colspan=2>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -588,11 +586,11 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
-</form> 
+</form>
 </td></tr>
 </table>
 
@@ -600,8 +598,8 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 </html>
 ]]>
 </TEMPLATE>
- 
- 
+
+
 <TEMPLATE name="deleteerror">
 <![CDATA[
 ]]><ERRORPAGE title="error.title.deleteuser" message="error.message.deleteuser" reason="error.reason.deleteuser" suggestion="error.suggestion.deleteuser" ref="index.html" ><PROCESS>DELETEDETAILS</PROCESS></ERRORPAGE>
@@ -638,15 +636,15 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
     <head>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
-    <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
     <style type="text/css">
     #errormain{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:10; }
     #errordetails{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:100}
     </style>
 
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js"></SCRIPT>
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_choosebrowser.js"></SCRIPT>
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_dialogscroll.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_choosebrowser.js</method><![CDATA["></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_dialogscroll.js</method><![CDATA["></SCRIPT>
 
     </HEAD>
     <BODY onLoad="errorinit();" bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -659,17 +657,17 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
             <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 
                 <!-- Beginn Tabellenkopf blau-->
-                <tr> 
+                <tr>
                     <td colspan=2 class="head">]]><LABEL value="error.title.changeuser" /><![CDATA[</td>
                 </tr>
                 <!-- Ende Tabellenkopf blau-->
                 <!-- Beginn Leerzeile-->
                 <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
                 <!-- Ende Leerzeile-->
-                <tr> 
-                    <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><method name="picsUrl">ic_caution.gif</method><![CDATA[" width=32 height=32></td>
+                <tr>
+                    <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><method name="resourcesUri">ic_caution.gif</method><![CDATA[" width=32 height=32></td>
                 <td class=dialogtxt>]]><LABEL value="error.message.changeuser" /><![CDATA[</td>
-                </tr>   
+                </tr>
                 <tr><td class=dialogtxt><BR>]]><LABEL value="message.reason" /><![CDATA[:<BR>]]><PROCESS>reasonOfError</PROCESS><![CDATA[<BR>]]><LABEL value="error.suggestion.adduser" /><![CDATA[</td></tr>
                 <!-- Beginn Leerzeile-->
                 <tr> <td class="leerzeile">&nbsp;</td></tr>
@@ -686,14 +684,14 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
                 </td>
                 </tr>
                 </table>
-                <!-- Ende Buttonleisete-->  
+                <!-- Ende Buttonleisete-->
         </td></tr>
     </table>
     </form>
     </div>
 
     <div id="errordetails">
-    <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
     <form id=DETAILS name=DETAILS>
     <table cellspacing=0 cellpadding=0 border=2 width=350>
         <tr><td class=dialogtxt>
@@ -706,7 +704,7 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
         </td></tr>
     </table>
     </form>
-    </div> 
+    </div>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     </BODY>
@@ -755,14 +753,14 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 <![CDATA[
 <HTML>
 <HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 </HEAD>
 <BODY onload="window.top.head.location.reload(); parent.frames[0].location.reload()">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->

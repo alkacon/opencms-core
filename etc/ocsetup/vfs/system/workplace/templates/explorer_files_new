@@ -16,12 +16,12 @@ top.help_url='FunkButtonNeu/index.html';
 
 <title>OpenCms</title>
 
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 </HEAD>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 
 
 <!-- Begin new resource -->
@@ -60,7 +60,7 @@ top.help_url='FunkButtonNeu/index.html';
                             }
                         </script>
                             <tr><td align=middle width=5%><INPUT type=radio id=R_NEU name=R_NEU value='explorer_files_new_upload.html'>
-                            </td><td align=middle width=10%><IMG src=']]><METHOD name="picsUrl">ic_file_upload.gif</METHOD><![CDATA[' border=0 width=16 heigth=16></td><td align=left>]]><LABEL value="fileicon.upload" /><![CDATA[</td></tr>
+                            </td><td align=middle width=10%><IMG src=']]><METHOD name="resourcesUri">ic_file_upload.gif</METHOD><![CDATA[' border=0 width=16 heigth=16></td><td align=left>]]><LABEL value="fileicon.upload" /><![CDATA[</td></tr>
                     </table>
                 </td></tr>
             </table>

@@ -21,7 +21,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/undochanges.html';
 
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
@@ -33,19 +33,19 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/undochanges.html';
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Begin tablehead blue -->
-            <tr> 
+            <tr>
                 <td colspan=3 class="head">]]><LABEL value="messagebox.title.undochanges" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
             </tr>
             <!-- Ende tablehead blue -->
-            
+
             <!-- Begin empty row -->
-            <tr> 
+            <tr>
                 <td colspan=3 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- End empty row -->
-            
+
             <tr>
                 <td class=dialogtxt colspan=3>
                     ]]><LABEL value="messagebox.message1.undochanges" /><![CDATA[ ]]><PROCESS>FILENAME</PROCESS><![CDATA[<br>
@@ -56,11 +56,11 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/undochanges.html';
             </tr>
 
             <!-- Begin empty row -->
-            <tr> 
+            <tr>
                 <td colspan=3 class="leerzeile">&nbsp;</td>
             </tr>
             <!-- End empty row -->
-            
+
             <!-- Begin buttons -->
             <tr><td class=dialogtxt colspan=3>
                 <table cellspacing=0 cellpadding=5 width=100%>
@@ -72,7 +72,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/undochanges.html';
             </td>
             </tr>
             <!-- End buttons -->
-            
+
             </table>
     </td></tr>
 </table>
@@ -92,15 +92,15 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/undochanges.html';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload="location.href='undochanges.html?action=ok'">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->

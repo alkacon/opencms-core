@@ -5,7 +5,7 @@
 <HTML>
 
 <!-- Include external JavaScripts-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
@@ -17,11 +17,11 @@ top.help_url='Administration/linkmanagement.html';
 <!--
  var pageStart="<HTML><head>"+
                     "<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=iso-8859-1'>"+
-                    "<link rel=stylesheet type='text/css' href='../../css/format.css'>"+
+                    "<link rel=stylesheet type='text/css' href=']]><method name="resourcesUri">format.css</method><![CDATA['>"+
                 "</HEAD>"+
                 "<BODY bgcolor='#ffffff' marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload=\"window.scrollTo(0,100000);\">";
  var pageEnd="</BODY></HTML>";
- 
+
  var pageBody="";
 
  /**
@@ -56,7 +56,7 @@ top.help_url='Administration/linkmanagement.html';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../action/administration_head.html';initiate();">
@@ -68,19 +68,19 @@ top.help_url='Administration/linkmanagement.html';
 <table cellspacing=0 cellpadding=0 border=1 width=950>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
                 <td class="head">]]><LABEL value="linkmanagement.label.title" /><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=0 width=100%>
@@ -97,7 +97,7 @@ top.help_url='Administration/linkmanagement.html';
                             </tr>
                         </table>
                     </td></tr>
-            
+
                     <!-- Beginn Buttonleiste-->
                     <tr><td class=dialogtxt>
                         <table cellspacing=0 border=0 cellpadding=5 width=100%>

@@ -30,7 +30,7 @@ location.href="result.html?action=working" ;
 }
 </SCRIPT>
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="]]><process>autoUpdate</process><![CDATA[update();]]><process>endMethod</process><![CDATA[">

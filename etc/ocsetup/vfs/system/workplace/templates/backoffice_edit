@@ -6,7 +6,7 @@
 
 <template name="enter your name here">
 <PROCESS>TEMPLATE_START</PROCESS>
-<![CDATA[ 
+<![CDATA[
 ]]>
 <PROCESS>TEMPLATE_END</PROCESS>
 </template>
@@ -37,19 +37,19 @@
 <![CDATA[
 <SCRIPT language="JavaScript">
     ]]><PROCESS>preview</PROCESS><![CDATA[
-    
+
 function setMediaAction(para) {
-  
+
   //window.top.body.admin_content.Editor.backofficepage.value=window.top.body.admin_head.backofficepage.value;
   parent.frames[1].document.getElementById("Editor").backofficepage.value=parent.frames[0].document.getElementById("backofficepage").value;
-  
+
   switch(para) {
   case 1: {
     document.Editor.media_action.value = "delPicture";
     document.Editor.submit();
     break;
     }
-  case 2: { 
+  case 2: {
     document.Editor.media_action.value = "editPicture";
     document.Editor.submit();
     break;
@@ -70,7 +70,7 @@ function setMediaAction(para) {
     break;
     }
     }
-    
+
 }
 </script>
 
@@ -91,7 +91,7 @@ function setMediaAction(para) {
     </td>
     <td>
         ]]><select name="media_position" width="150" style="width:150px" method="getMediaPosition"/><![CDATA[
-    </td>    
+    </td>
 </tr>
 <tr>
     <td colspan=5>
@@ -177,7 +177,7 @@ function setMediaAction(para) {
 <!-- channel backoffice template remove it if not used -->
 <TEMPLATE name="Channels">
 <PROCESS>TEMPLATE_START</PROCESS>
-<![CDATA[ 
+<![CDATA[
 <table cellpadding="3" cellspacing="2" border="0" align="center">
 <tr>
     <td class="formular">]]><LABEL value="input.channelselected"/><![CDATA[</td><td></td><td class="formular">]]><LABEL value="input.channelavailable"/><![CDATA[</td>
@@ -210,7 +210,7 @@ function setMediaAction(para) {
 <TEMPLATE name="done">
 <![CDATA[
 <HEAD>
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../../workplace/templates/js/opencms.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 </HEAD>
 <HTML>
     <BODY onLoad="window.top.body.admin_head.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[';">
@@ -228,9 +228,9 @@ function setMediaAction(para) {
  <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
     <title>Comments Backoffice</title>
-    <link rel=stylesheet type="text/css" href="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/css/format.css">     
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
     <script language="JavaScript">
-    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";      
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
      function doEdit(para) {
         switch(para) {
         case 1: {
@@ -238,7 +238,7 @@ function setMediaAction(para) {
                 document.Editor.submit();
                 break;
                 }
-        case 2: {   
+        case 2: {
                 document.Editor.action.value = "saveexit";
                 document.Editor.submit();
                 break;
@@ -249,10 +249,10 @@ function setMediaAction(para) {
                 break;
                 }
           }
-      }       
+      }
      </script>
-     <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_channelbackoffice.js"></script>  
-     <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js""></script>
+     <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_channelbackoffice.js</method><![CDATA["></script>
+     <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
 </head>
 ]]>
 </BOHEAD>
@@ -284,15 +284,15 @@ function setMediaAction(para) {
 <![CDATA[
 <html>
 ]]><PROCESS>BOHEAD</PROCESS><![CDATA[
-<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed scroll=auto marginwidth="5" marginheight="5" leftmargin=5 topmargin=5
+<body background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed scroll=auto marginwidth="5" marginheight="5" leftmargin=5 topmargin=5
 onLoad="javascript:(window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head_backoffice.html');">
 
 <form name=Editor id=Editor method=post ENCTYPE="multipart/form-data">
 
 <input type="hidden" name="action" id="action">
 
-<!-- Buttons -->  
-]]><PROCESS>BOBUTTONS</PROCESS><![CDATA[ 
+<!-- Buttons -->
+]]><PROCESS>BOBUTTONS</PROCESS><![CDATA[
 
 <!-- Error messages -->
 ]]><PROCESS>BOERROR</PROCESS>

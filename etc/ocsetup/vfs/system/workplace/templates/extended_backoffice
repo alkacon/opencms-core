@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<WORKPLACE>	
+<WORKPLACE>
 
 <tabledatabegin><![CDATA[<td nowrap class=]]></tabledatabegin>
 <tabledataend><![CDATA[</a></td>]]></tabledataend>
@@ -7,14 +7,14 @@
 <tablerowend><![CDATA[</tr>]]></tablerowend>
 <url><![CDATA[<a href="]]><method name="getServletPath"/><method name="getUrl"/><![CDATA[?parentId=]]><PROCESS>uniqueid</PROCESS><![CDATA[" target="admin_head">]]></url>
 
-<lockuser><![CDATA[<td><img src="]]><METHOD name="picsUrl">ic_lockuser.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.lockedby"/><![CDATA[ ]]><PROCESS>isLockedBy</PROCESS><![CDATA[" border=0 width=16 height=16></td>]]></lockuser>
-<lock><![CDATA[<td><img src="]]><METHOD name="picsUrl">ic_lock.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.lockedby"/><![CDATA[ ]]><PROCESS>isLockedBy</PROCESS><![CDATA[" border=0 width=16 height=16></td>]]></lock>
-<noaccess><![CDATA[<td><img src="]]><METHOD name="picsUrl">ic_noaccess.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.context.noaccess"/><![CDATA[" border=0 width=16 height=16></td>]]></noaccess>
+<lockuser><![CDATA[<td><img src="]]><METHOD name="resourcesUri">ic_lockuser.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.lockedby"/><![CDATA[ ]]><PROCESS>isLockedBy</PROCESS><![CDATA[" border=0 width=16 height=16></td>]]></lockuser>
+<lock><![CDATA[<td><img src="]]><METHOD name="resourcesUri">ic_lock.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.lockedby"/><![CDATA[ ]]><PROCESS>isLockedBy</PROCESS><![CDATA[" border=0 width=16 height=16></td>]]></lock>
+<noaccess><![CDATA[<td><img src="]]><METHOD name="resourcesUri">ic_noaccess.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.context.noaccess"/><![CDATA[" border=0 width=16 height=16></td>]]></noaccess>
 <nolock><![CDATA[<td></td>]]></nolock>
 
 <noproject><![CDATA[<td></td>]]></noproject>
-<thisproject><![CDATA[<td><img src="]]><METHOD name="picsUrl">ic_inthisproject.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.altbelongto"/><![CDATA[ ]]><PROCESS>isInProject</PROCESS><![CDATA[" border=0 width=16 height=16></td>]]></thisproject>
-<otherproject><![CDATA[<td><img src="]]><METHOD name="picsUrl">ic_inanotherproject.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.altbelongto"/><![CDATA[ ]]><PROCESS>isInProject</PROCESS><![CDATA[" border=0 width=16 height=16></td>]]></otherproject>
+<thisproject><![CDATA[<td><img src="]]><METHOD name="resourcesUri">ic_inthisproject.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.altbelongto"/><![CDATA[ ]]><PROCESS>isInProject</PROCESS><![CDATA[" border=0 width=16 height=16></td>]]></thisproject>
+<otherproject><![CDATA[<td><img src="]]><METHOD name="resourcesUri">ic_inanotherproject.gif</METHOD><![CDATA[" alt="]]><LABEL value="explorer.altbelongto"/><![CDATA[ ]]><PROCESS>isInProject</PROCESS><![CDATA[" border=0 width=16 height=16></td>]]></otherproject>
 
 <selectoption><![CDATA[<option ]]><process>check</process><![CDATA[ value="]]><process>value</process><![CDATA[">]]><process>name</process></selectoption>
 
@@ -24,15 +24,15 @@
 <nowand><![CDATA[]]></nowand>
 <wand><![CDATA[
 <td class=menu nowrap width=32px valign=top>
-	<a href="]]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[?id=new" target="admin_content"  
-		onMouseDown="ChPush('bt_new')" onMouseUp="ChOn('bt_new')" onMouseOver="ChOn('bt_new')" onMouseOut="ChOff('bt_new')">
-		 <img align=top src="]]><method name="picsUrl">bt_new_off.gif</method><![CDATA[" name="bt_new" alt="]]><LABEL value="title.new"/><![CDATA[" border=0 width=32 heigth=32> 
-	</a>
+    <a href="]]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[?id=new" target="admin_content"
+        onMouseDown="ChPush('bt_new')" onMouseUp="ChOn('bt_new')" onMouseOver="ChOn('bt_new')" onMouseOut="ChOff('bt_new')">
+         <img align=top src="]]><method name="resourcesUri">bt_new_off.gif</method><![CDATA[" name="bt_new" alt="]]><LABEL value="title.new"/><![CDATA[" border=0 width=32 heigth=32>
+    </a>
 </td>
 ]]></wand>
 <deactivwand><![CDATA[
 <td class=menu nowrap width=32px valign=top>
-    <IMG SRC="]]><method name="picsUrl">bt_new_in.gif</method><![CDATA[" name="bt_new" alt="]]><LABEL value="title.new"/><![CDATA[" border=0 width=32 heigth=32> 
+    <IMG SRC="]]><method name="resourcesUri">bt_new_in.gif</method><![CDATA[" name="bt_new" alt="]]><LABEL value="title.new"/><![CDATA[" border=0 width=32 heigth=32>
 </td>
 ]]></deactivwand>
 
@@ -40,10 +40,10 @@
 <nosetup><![CDATA[]]></nosetup>
 <setup><![CDATA[
 <td class=menu nowrap  valign=top  width = "100%" align = right>
-	<a href="]]><method name="getServletPath"/><method name="getSetupUrl"/><![CDATA[?id=new" target="admin_content"  
-		onMouseDown="ChPush('bt_setup')" onMouseUp="ChOn('bt_setup')" onMouseOver="ChOn('bt_setup')" onMouseOut="ChOff('bt_setup')">
-		 <img align=top src="]]><method name="picsUrl">bt_setup_off.gif</method><![CDATA[" name="bt_setup" alt="]]><LABEL value="title.setup"/><![CDATA[" border=0 width=32 heigth=32> 
-	</a>
+    <a href="]]><method name="getServletPath"/><method name="getSetupUrl"/><![CDATA[?id=new" target="admin_content"
+        onMouseDown="ChPush('bt_setup')" onMouseUp="ChOn('bt_setup')" onMouseOver="ChOn('bt_setup')" onMouseOut="ChOff('bt_setup')">
+         <img align=top src="]]><method name="resourcesUri">bt_setup_off.gif</method><![CDATA[" name="bt_setup" alt="]]><LABEL value="title.setup"/><![CDATA[" border=0 width=32 heigth=32>
+    </a>
 </td>
 ]]></setup>
 
@@ -59,37 +59,37 @@
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>OpenCms</title>
 
-<link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_edithtml.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_edithtml.js</method><![CDATA["></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">admincontenturl="administration_content_top.html";</SCRIPT>
 
 <SCRIPT LANGUAGE="JavaScript">
-	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
-	var admincontenturl="administration_content_top.html";
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+    var admincontenturl="administration_content_top.html";
 </SCRIPT>
 
 </head>
 
 <!-- onload="window.top.body.admin_content.location.href='backoffice.html'" -->
-<body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed onload="window.top.body.admin_content.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[?action=list']]><process>setfocus</process><![CDATA[">  
+<body bgcolor="#C0C0C0" background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed onload="window.top.body.admin_content.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[?action=list']]><process>setfocus</process><![CDATA[">
 
-	<table border="0" cellspacing=0 cellpadding=0 valign=bottom>
-	
-	<tr>
-		<td class=menu nowrap width=32px valign=top>
-			<a href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');parent.frames[1].location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_content_top.html?sender=/system/workplace/administration/'">
-				<IMG align=top alt="]]><label value="button.back"/><![CDATA[" width=32 border=0 name=bt_back src="]]><method name="picsUrl">bt_back_off.gif</method><![CDATA[" >
-			</a>
-		</td>	
-			
-		]]><PROCESS>createbutton</PROCESS>	
-		   <PROCESS>insertFilter</PROCESS>
-		   <PROCESS>setupbutton</PROCESS>	<![CDATA[
+    <table border="0" cellspacing=0 cellpadding=0 valign=bottom>
+
+    <tr>
+        <td class=menu nowrap width=32px valign=top>
+            <a href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');parent.frames[1].location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_content_top.html?sender=/system/workplace/administration/'">
+                <IMG align=top alt="]]><label value="button.back"/><![CDATA[" width=32 border=0 name=bt_back src="]]><method name="resourcesUri">bt_back_off.gif</method><![CDATA[" >
+            </a>
+        </td>
+
+        ]]><PROCESS>createbutton</PROCESS>
+           <PROCESS>insertFilter</PROCESS>
+           <PROCESS>setupbutton</PROCESS>   <![CDATA[
     </tr>
-    
+
     </table>
-    
+
 </body>
 </html>
 
@@ -107,19 +107,19 @@
 <!--
 function show_help()
 {
-	return '5_2_2_2.html';
+    return '5_2_2_2.html';
 }
 //-->
 </script>
 
 <!-- this is necessary, because methods can´t be used within the context-entry -->
 <SCRIPT LANGUAGE="JavaScript">
-	var editUrl="]]><Method name="getServletPath"/><METHOD name="getEditUrl"/><![CDATA[";
-	var backofficeUrl="]]><Method name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[";
-	var deleteUrl="]]><Method name="getServletPath"/><METHOD name="getDeleteUrl"/><![CDATA[";
-	var publishUrl="]]><Method name="getServletPath"/><METHOD name="getPublishUrl"/><![CDATA[";
-	var historyUrl="]]><Method name="getServletPath"/><METHOD name="getHistoryUrl"/><![CDATA[";
-	var undeleteUrl="]]><Method name="getServletPath"/><METHOD name="getUndeleteUrl"/><![CDATA[";
+    var editUrl="]]><Method name="getServletPath"/><METHOD name="getEditUrl"/><![CDATA[";
+    var backofficeUrl="]]><Method name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[";
+    var deleteUrl="]]><Method name="getServletPath"/><METHOD name="getDeleteUrl"/><![CDATA[";
+    var publishUrl="]]><Method name="getServletPath"/><METHOD name="getPublishUrl"/><![CDATA[";
+    var historyUrl="]]><Method name="getServletPath"/><METHOD name="getHistoryUrl"/><![CDATA[";
+    var undeleteUrl="]]><Method name="getServletPath"/><METHOD name="getUndeleteUrl"/><![CDATA[";
 </SCRIPT>
 
 <head>
@@ -128,12 +128,12 @@ function show_help()
 <title>OpenCms</title>
 
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 <!-- Beginn Script -->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><Method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js"></script>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><Method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_choosebrowser.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><Method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_kontextmenu.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_choosebrowser.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_kontextmenu.js</method><![CDATA["></SCRIPT>
 
 <SCRIPT>
 start();
@@ -142,13 +142,13 @@ start();
 <!-- Ende Script -->
 </head>
 
-<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed>
-					   
+<body bgcolor="#FFFFFF" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed>
+
 <!-- Begin Content-->
 <table cellspacing=1 cellpadding=1 border=0>
-	<tr bgcolor="#c0c0c0" nowrap><td width=9 colspan=3 nowrap></td>
-	]]><PROCESS>tableheadline</PROCESS><![CDATA[</tr>
-	<tr bgcolor="#FFFFFF">]]><PROCESS>tablecontent</PROCESS><![CDATA[</tr>
+    <tr bgcolor="#c0c0c0" nowrap><td width=9 colspan=3 nowrap></td>
+    ]]><PROCESS>tableheadline</PROCESS><![CDATA[</tr>
+    <tr bgcolor="#FFFFFF">]]><PROCESS>tablecontent</PROCESS><![CDATA[</tr>
 </table>
 <!-- End Content -->
 
@@ -157,85 +157,85 @@ start();
 </html>
 ]]>
 
-<contextmenue name="backofficeedit"> 
-	<contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
-	<contextentry name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
-	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
+<contextmenue name="backofficeedit">
+    <contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
+    <contextentry name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
+    <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
-<contextmenue name="backofficelock"> 
-	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
-	<contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
-	<contextdisabled name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
-	<contextspacer/>
-	<contextdisabled name="explorer.context.chown" href="javascript:location.href=backofficeUrl+'?chmode=chown&amp;idpermissions='+kontextparam;"/>
-	<contextdisabled name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
-	<contextdisabled name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
-	<contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
-</contextmenue>
-		
-<contextmenue name="backofficelockuser"> 
-	<contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
-	<contextentry name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
-	<contextentry name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.chown" href="javascript:location.href=backofficeUrl+'?chmode=chown&amp;idpermissions='+kontextparam;"/>
-	<contextentry name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
-	<contextentry name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
-	<contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
+<contextmenue name="backofficelock">
+    <contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
+    <contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
+    <contextdisabled name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
+    <contextspacer/>
+    <contextdisabled name="explorer.context.chown" href="javascript:location.href=backofficeUrl+'?chmode=chown&amp;idpermissions='+kontextparam;"/>
+    <contextdisabled name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
+    <contextdisabled name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+    <contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
-<contextmenue name="backofficenolock"> 
-	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
-	<contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
-	<contextdisabled name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
-	<contextspacer/>
-	<contextdisabled name="explorer.context.chown" href="javascript:location.href=backofficeUrl+'?chmode=chown&amp;idpermissions='+kontextparam;"/>
-	<contextdisabled name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
-	<contextdisabled name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
-	<contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
+<contextmenue name="backofficelockuser">
+    <contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
+    <contextentry name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
+    <contextentry name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.chown" href="javascript:location.href=backofficeUrl+'?chmode=chown&amp;idpermissions='+kontextparam;"/>
+    <contextentry name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
+    <contextentry name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+    <contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
-<contextmenue name="backofficenolockchanged"> 
-	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
-	<contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
-	<contextdisabled name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
-	<contextspacer/>
-	<contextdisabled name="explorer.context.chown" href="javascript:location.href=backofficeUrl+'?chmode=chown&amp;idpermissions='+kontextparam;"/>
-	<contextdisabled name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
-	<contextdisabled name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
-	<contextentry name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
+<contextmenue name="backofficenolock">
+    <contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
+    <contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
+    <contextdisabled name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
+    <contextspacer/>
+    <contextdisabled name="explorer.context.chown" href="javascript:location.href=backofficeUrl+'?chmode=chown&amp;idpermissions='+kontextparam;"/>
+    <contextdisabled name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
+    <contextdisabled name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+    <contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
-<contextmenue name="backofficenoaccess"> 
-	<contextdisabled name="explorer.context.noaccess" href="#"/>	
+<contextmenue name="backofficenolockchanged">
+    <contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
+    <contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
+    <contextdisabled name="explorer.context.copy" href="javascript:location.href=backofficeUrl+'?idcopy='+kontextparam;"/>
+    <contextspacer/>
+    <contextdisabled name="explorer.context.chown" href="javascript:location.href=backofficeUrl+'?chmode=chown&amp;idpermissions='+kontextparam;"/>
+    <contextdisabled name="explorer.context.chgrp" href="javascript:location.href=backofficeUrl+'?chmode=chgrp&amp;idpermissions='+kontextparam;"/>
+    <contextdisabled name="explorer.context.access" href="javascript:location.href=backofficeUrl+'?chmode=chmod&amp;idpermissions='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+    <contextentry name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
-<contextmenue name="backofficeonline"> 
-	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
+<contextmenue name="backofficenoaccess">
+    <contextdisabled name="explorer.context.noaccess" href="#"/>
 </contextmenue>
 
-<contextmenue name="backofficedeleted"> 
-	<contextentry name="explorer.context.undelete" href="javascript:location.href=undeleteUrl+'?idundelete='+kontextparam;"/>
-	<contextentry name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
-	<contextspacer/>
-	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
+<contextmenue name="backofficeonline">
+    <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
+</contextmenue>
+
+<contextmenue name="backofficedeleted">
+    <contextentry name="explorer.context.undelete" href="javascript:location.href=undeleteUrl+'?idundelete='+kontextparam;"/>
+    <contextentry name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+    <contextspacer/>
+    <contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
 </TEMPLATE>
@@ -246,11 +246,11 @@ start();
 <![CDATA[
 <HTML>
 
-<SCRIPT LANGUAGE="JavaScript">							  
+<SCRIPT LANGUAGE="JavaScript">
 <!--
 function show_help()
 {
-	return '5_2_2_1.html';
+    return '5_2_2_1.html';
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -260,10 +260,10 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -271,58 +271,58 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form name="DELETE" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
-	<tr><td>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Begin tablehead blue -->
-			<tr> 
-           		<td colspan=3 class="head">]]><PROCESS>locktitle</PROCESS><![CDATA[: ]]><PROCESS>newsentry</PROCESS><![CDATA[</td>
-			</tr>
-			<!-- Ende tablehead blue -->
-			
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
-		
-						
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 
-			<tr>
-				<td class=dialogtxt colspan=3 align=center>
-					]]><PROCESS>lockstate</PROCESS><![CDATA[<br>
-				</td>
-			</tr>
+            <!-- Begin tablehead blue -->
+            <tr>
+                <td colspan=3 class="head">]]><PROCESS>locktitle</PROCESS><![CDATA[: ]]><PROCESS>newsentry</PROCESS><![CDATA[</td>
+            </tr>
+            <!-- Ende tablehead blue -->
+
+            <!-- Begin empty row -->
+            <tr>
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
 
 
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
-			
-			<!-- Begin buttons -->
-			<tr><td class=dialogtxt colspan=3>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
-						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
-						onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
-					</td>			
-				</tr>
-				</table>
-				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
-			</td>
-			</tr>
-			<!-- End buttons -->			
-			</table>
-	</td></tr>
+            <!-- Begin empty row -->
+            <tr>
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
+
+            <tr>
+                <td class=dialogtxt colspan=3 align=center>
+                    ]]><PROCESS>lockstate</PROCESS><![CDATA[<br>
+                </td>
+            </tr>
+
+
+            <!-- Begin empty row -->
+            <tr>
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
+
+            <!-- Begin buttons -->
+            <tr><td class=dialogtxt colspan=3>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button"
+                        value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL
+                        onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
+                    </td>
+                </tr>
+                </table>
+                <INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+            </td>
+            </tr>
+            <!-- End buttons -->
+            </table>
+    </td></tr>
 </table>
 </form>
 </td></tr>
@@ -340,11 +340,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <![CDATA[
 <HTML>
 
-<SCRIPT LANGUAGE="JavaScript">							  
+<SCRIPT LANGUAGE="JavaScript">
 <!--
 function show_help()
 {
-	return '5_2_2_1.html';
+    return '5_2_2_1.html';
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -354,10 +354,10 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -365,63 +365,63 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form name="DELETE" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
-	<tr><td>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Begin tablehead blue -->
-			<tr> 
-           		<td colspan=3 class="head">]]><PROCESS>deletetitle</PROCESS><![CDATA[: ]]><PROCESS>newsentry</PROCESS><![CDATA[</td>
-			</tr>
-			<!-- Ende tablehead blue -->
-			
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
-			
-			<tr>
-				<td class=dialogtxt colspan=3>
-				<br>
-				</td>
-			</tr>
-						
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 
-			<tr>
-				<td class=dialogtxt colspan=3 align=center>
-					]]><PROCESS>deletedialog</PROCESS><![CDATA[<br>
-				</td>
-			</tr>
+            <!-- Begin tablehead blue -->
+            <tr>
+                <td colspan=3 class="head">]]><PROCESS>deletetitle</PROCESS><![CDATA[: ]]><PROCESS>newsentry</PROCESS><![CDATA[</td>
+            </tr>
+            <!-- Ende tablehead blue -->
+
+            <!-- Begin empty row -->
+            <tr>
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
+
+            <tr>
+                <td class=dialogtxt colspan=3>
+                <br>
+                </td>
+            </tr>
+
+            <!-- Begin empty row -->
+            <tr>
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
+
+            <tr>
+                <td class=dialogtxt colspan=3 align=center>
+                    ]]><PROCESS>deletedialog</PROCESS><![CDATA[<br>
+                </td>
+            </tr>
 
 
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
-			
-			<!-- Begin buttons -->
-			<tr><td class=dialogtxt colspan=3>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="delete" width="100" action="" /><![CDATA[</td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
-						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
-						onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
-					</td>
-				</tr>
-				</table>
-				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
-			</td>
-			</tr>
-			<!-- End buttons -->			
-			</table>
-	</td></tr>
+            <!-- Begin empty row -->
+            <tr>
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
+
+            <!-- Begin buttons -->
+            <tr><td class=dialogtxt colspan=3>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="delete" width="100" action="" /><![CDATA[</td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button"
+                        value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL
+                        onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
+                    </td>
+                </tr>
+                </table>
+                <INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+            </td>
+            </tr>
+            <!-- End buttons -->
+            </table>
+    </td></tr>
 </table>
 </form>
 
@@ -440,11 +440,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <![CDATA[
 <HTML>
 
-<SCRIPT LANGUAGE="JavaScript">							  
+<SCRIPT LANGUAGE="JavaScript">
 <!--
 function show_help()
 {
-	return '5_2_2_1.html';
+    return '5_2_2_1.html';
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -454,10 +454,10 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -465,64 +465,64 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form name="PUBLISH" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
-	<tr><td>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Begin tablehead blue -->
-			<tr> 
-           		<td colspan=3 class="head">]]><PROCESS>publishtitle</PROCESS><![CDATA[: ]]><PROCESS>newsentry</PROCESS><![CDATA[</td>
-			</tr>
-			<!-- Ende tablehead blue -->
-			
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
-			
-			<tr>
-				<td class=dialogtxt colspan=3>
-				<br>
-				</td>
-			</tr>
-						
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 
-			<tr>
-				<td class=dialogtxt colspan=3 align=center>
-					]]><PROCESS>publishdialog1</PROCESS><![CDATA[<br>
-					]]><PROCESS>publishdialog2</PROCESS><![CDATA[<br>
-				</td>
-			</tr>
+            <!-- Begin tablehead blue -->
+            <tr>
+                <td colspan=3 class="head">]]><PROCESS>publishtitle</PROCESS><![CDATA[: ]]><PROCESS>newsentry</PROCESS><![CDATA[</td>
+            </tr>
+            <!-- Ende tablehead blue -->
+
+            <!-- Begin empty row -->
+            <tr>
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
+
+            <tr>
+                <td class=dialogtxt colspan=3>
+                <br>
+                </td>
+            </tr>
+
+            <!-- Begin empty row -->
+            <tr>
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
+
+            <tr>
+                <td class=dialogtxt colspan=3 align=center>
+                    ]]><PROCESS>publishdialog1</PROCESS><![CDATA[<br>
+                    ]]><PROCESS>publishdialog2</PROCESS><![CDATA[<br>
+                </td>
+            </tr>
 
 
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
-			
-			<!-- Begin buttons -->
-			<tr><td class=dialogtxt colspan=3>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
-						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
-						onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
-					</td>
-				</tr>
-				</table>
-				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
-			</td>
-			</tr>
-			<!-- End buttons -->			
-			</table>
-	</td></tr>
+            <!-- Begin empty row -->
+            <tr>
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
+
+            <!-- Begin buttons -->
+            <tr><td class=dialogtxt colspan=3>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button"
+                        value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL
+                        onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
+                    </td>
+                </tr>
+                </table>
+                <INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+            </td>
+            </tr>
+            <!-- End buttons -->
+            </table>
+    </td></tr>
 </table>
 </form>
 
@@ -540,11 +540,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <TEMPLATE name="history">
 <![CDATA[
 <HTML>
-<SCRIPT LANGUAGE="JavaScript">							  
+<SCRIPT LANGUAGE="JavaScript">
 <!--
 function show_help()
 {
-	return '5_2_2_1.html';
+    return '5_2_2_1.html';
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -554,10 +554,10 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
@@ -567,57 +567,57 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form name="HIST" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2 width=500>
-	<tr><td>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td class="head">]]><LABEL value="title.history" /><![CDATA[ : ]]><PROCESS>id</PROCESS><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			
-			<!-- Beginn Leerzeile-->
-			<tr> 
-           		<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-					
-			<tr><td class=dialogtxt>
-				<table border=1 width=100%>
-					<tr><td class=dialogtxt>
-						<table border=0 width=100% height=200>
-						    <tr><td class=dialogtxt>]]><LABEL value="label.historyheader" /><![CDATA[</td></tr>
-							<tr><td class=dialogtxt>
-							]]><SELECT class="textfeld" size="10" name="version" width="400" method="getHistory" /><![CDATA[
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="title.history" /><![CDATA[ : ]]><PROCESS>id</PROCESS><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <tr><td class=dialogtxt>
+                <table border=1 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 width=100% height=200>
+                            <tr><td class=dialogtxt>]]><LABEL value="label.historyheader" /><![CDATA[</td></tr>
+                            <tr><td class=dialogtxt>
+                            ]]><SELECT class="textfeld" size="10" name="version" width="400" method="getHistory" /><![CDATA[
                             </td></tr>
-							<tr><td class=dialogtxt>
-								<table cellspacing=0 cellpadding=5 width=100%>
-								<tr>
-								<td class=formular align=middle width=20%>]]><SUBMITBUTTON class="button" name="ok" value="detail" width="100" action="" /><![CDATA[</td>
-								</tr>
-								</table>
-								<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
-								<INPUT type="hidden" name="idhistory" value="]]><PROCESS>id</PROCESS><![CDATA[">
-							</td></tr>
-						</table>
-					</td></tr>
-				</table>
-			</td></tr>
-			
-			<!-- Beginn Buttonleisete-->
-			<tr><td class=dialogtxt>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=center><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK 
-					onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
-				</tr>
-				</table>
-			</td>
-			</tr>
-			<!-- Ende Buttonleisete-->
-			
-			</table>
-	</td></tr>
+                            <tr><td class=dialogtxt>
+                                <table cellspacing=0 cellpadding=5 width=100%>
+                                <tr>
+                                <td class=formular align=middle width=20%>]]><SUBMITBUTTON class="button" name="ok" value="detail" width="100" action="" /><![CDATA[</td>
+                                </tr>
+                                </table>
+                                <INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+                                <INPUT type="hidden" name="idhistory" value="]]><PROCESS>id</PROCESS><![CDATA[">
+                            </td></tr>
+                        </table>
+                    </td></tr>
+                </table>
+            </td></tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK
+                    onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
 </table>
 </form>
 </td></tr>
@@ -632,11 +632,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <TEMPLATE name="historydetail">
 <![CDATA[
 <HTML>
-<SCRIPT LANGUAGE="JavaScript">							  
+<SCRIPT LANGUAGE="JavaScript">
 <!--
 function show_help()
 {
-	return '5_2_2_1.html';
+    return '5_2_2_1.html';
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -646,10 +646,10 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
@@ -659,86 +659,86 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form name="HIST" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2 width=500>
-	<tr><td>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td class="head">]]><LABEL value="title.historydetails" /><![CDATA[ : ]]><PROCESS>histid</PROCESS><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			
-			<!-- Beginn Leerzeile-->
-			<tr> 
-           		<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<!-- Beginn Inhalt-->
-			<tr><td class=dialogtxt>]]><LABEL value="label.project" /><![CDATA[ : ]]><PROCESS>histproject</PROCESS><![CDATA[</td></tr>
-			
-			<tr><td class=dialogtxt>
-				<table border=1 width=100%>
-					<tr><td class=dialogtxt>
-						<table border=0 width=100% height=200>
-							<tr>
-								<td class=formular width=25%>]]><LABEL value="label.name" /><![CDATA[:</td>
-								<td class=dialogtxt width=25%>]]><PROCESS>histid</PROCESS><![CDATA[</td>
-								<td class=formular width=25%>&nbsp;</td>
-								<td class=dialogtxt width=25%>&nbsp;</td>
-							</tr>
-							<tr>
-								<td class=formular>]]><LABEL value="label.title" /><![CDATA[:</td>
-								<td class=dialogtxt>]]><PROCESS>histtitle</PROCESS><![CDATA[</td>
-							</tr>
-							<tr>
-								<td class=formular>]]><LABEL value="label.editedat" /><![CDATA[:</td>
-								<td class=dialogtxt>]]><PROCESS>histlastmodified</PROCESS><![CDATA[</td>
-								<td class=formular>]]><LABEL value="label.publishedat" /><![CDATA[:</td>
-								<td class=dialogtxt>]]><PROCESS>histpublished</PROCESS><![CDATA[</td>
-							</tr>
-							<tr>
-								<td class=formular>]]><LABEL value="label.editedby" /><![CDATA[:</td>
-								<td class=dialogtxt>]]><PROCESS>histmodifiedby</PROCESS><![CDATA[</td>
-							</tr>
-							<tr>
-								<td class=formular colspan=4 height=30px>&nbsp;</td>												
-							</tr>							
-							<tr>
-								<td class=formular colspan=4 >]]><LABEL value="label.projectdescription" /><![CDATA[:</td>
-							</tr>
-							<tr>
-								<td class=dialogtxt colspan=4 >]]><PROCESS>histdescription</PROCESS><![CDATA[</td>
-							</tr>
-						</table>
-						</td>						
-					</tr>
-				</table>
-				</td>				
-			</tr>
-			
-			<!-- Beginn Buttonleisete-->
-			<tr><td class=dialogtxt>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=dialogtxt align=center>
-						]]><PROCESS>BUTTONRESTORE</PROCESS><![CDATA[
-						<INPUT class=button width = 200 type="button" value="]]><LABEL value="label.histdetailok" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[?idhistory=]]><PROCESS>id</PROCESS><![CDATA[';">
-					</td>
-				</tr>
-				</table>
-				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
-				<INPUT type="hidden" name="version" value="]]><PROCESS>version</PROCESS><![CDATA[">
-				<INPUT type="hidden" name="idhistory" value="]]><PROCESS>id</PROCESS><![CDATA[">
-			</td>
-			</tr>
-			<!-- Ende Buttonleisete-->
-			
-			</table>
-	</td></tr>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="title.historydetails" /><![CDATA[ : ]]><PROCESS>histid</PROCESS><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Inhalt-->
+            <tr><td class=dialogtxt>]]><LABEL value="label.project" /><![CDATA[ : ]]><PROCESS>histproject</PROCESS><![CDATA[</td></tr>
+
+            <tr><td class=dialogtxt>
+                <table border=1 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 width=100% height=200>
+                            <tr>
+                                <td class=formular width=25%>]]><LABEL value="label.name" /><![CDATA[:</td>
+                                <td class=dialogtxt width=25%>]]><PROCESS>histid</PROCESS><![CDATA[</td>
+                                <td class=formular width=25%>&nbsp;</td>
+                                <td class=dialogtxt width=25%>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class=formular>]]><LABEL value="label.title" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>histtitle</PROCESS><![CDATA[</td>
+                            </tr>
+                            <tr>
+                                <td class=formular>]]><LABEL value="label.editedat" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>histlastmodified</PROCESS><![CDATA[</td>
+                                <td class=formular>]]><LABEL value="label.publishedat" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>histpublished</PROCESS><![CDATA[</td>
+                            </tr>
+                            <tr>
+                                <td class=formular>]]><LABEL value="label.editedby" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>histmodifiedby</PROCESS><![CDATA[</td>
+                            </tr>
+                            <tr>
+                                <td class=formular colspan=4 height=30px>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class=formular colspan=4 >]]><LABEL value="label.projectdescription" /><![CDATA[:</td>
+                            </tr>
+                            <tr>
+                                <td class=dialogtxt colspan=4 >]]><PROCESS>histdescription</PROCESS><![CDATA[</td>
+                            </tr>
+                        </table>
+                        </td>
+                    </tr>
+                </table>
+                </td>
+            </tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=dialogtxt align=center>
+                        ]]><PROCESS>BUTTONRESTORE</PROCESS><![CDATA[
+                        <INPUT class=button width = 200 type="button" value="]]><LABEL value="label.histdetailok" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[?idhistory=]]><PROCESS>id</PROCESS><![CDATA[';">
+                    </td>
+                </tr>
+                </table>
+                <INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+                <INPUT type="hidden" name="version" value="]]><PROCESS>version</PROCESS><![CDATA[">
+                <INPUT type="hidden" name="idhistory" value="]]><PROCESS>id</PROCESS><![CDATA[">
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
 </table>
 </form>
-    
+
 </td></tr>
 </table>
 
@@ -754,11 +754,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <TEMPLATE name="chown">
 <![CDATA[
 <HTML>
-<SCRIPT LANGUAGE="JavaScript">							  
+<SCRIPT LANGUAGE="JavaScript">
 <!--
 function show_help()
 {
-	return '5_2_2_1.html';
+    return '5_2_2_1.html';
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -768,10 +768,10 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
@@ -781,64 +781,64 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form name="PERMISSION" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2>
-	<tr><td>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td class="head">]]><LABEL value="title.chown" /><![CDATA[ ]]><process>id</process><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			
-			<!-- Beginn Leerzeile-->
-			<tr> 
-           		<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<tr>
-				<td class=dialogtxt colspan=2>
-					]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>username</PROCESS><![CDATA[<br>
-					]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>groupname</PROCESS><![CDATA[
-				</td>
-			</tr>
-			
-			<!-- Beginn Inhalt-->
-			
-			<tr><td class=dialogtxt>
-				<table border=0 width=100%>
-					<tr>
-						<td class=formular width=30%>]]><LABEL value="input.newowner" /><![CDATA[:</td>				
-						<td class=dialogtxt>
-							<select class="textfeld" name="owner" style="width:200px">]]><process>users</process><![CDATA[</select>
-						</td>
-					</tr>
-				</table>
-				</td>				
-			</tr>
-			
-			<!-- Beginn Buttonleisete-->
-			<tr><td class=dialogtxt>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
-						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
-						onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
-					</td>					
-				</tr>
-				</table>
-				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
-				<INPUT type="hidden" name="idpermissions" value="]]><PROCESS>id</PROCESS><![CDATA[">
-			</td>
-			</tr>
-			<!-- Ende Buttonleisete-->
-			
-			</table>
-	</td></tr>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="title.chown" /><![CDATA[ ]]><process>id</process><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <tr>
+                <td class=dialogtxt colspan=2>
+                    ]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>username</PROCESS><![CDATA[<br>
+                    ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>groupname</PROCESS><![CDATA[
+                </td>
+            </tr>
+
+            <!-- Beginn Inhalt-->
+
+            <tr><td class=dialogtxt>
+                <table border=0 width=100%>
+                    <tr>
+                        <td class=formular width=30%>]]><LABEL value="input.newowner" /><![CDATA[:</td>
+                        <td class=dialogtxt>
+                            <select class="textfeld" name="owner" style="width:200px">]]><process>users</process><![CDATA[</select>
+                        </td>
+                    </tr>
+                </table>
+                </td>
+            </tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button"
+                        value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL
+                        onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
+                    </td>
+                </tr>
+                </table>
+                <INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+                <INPUT type="hidden" name="idpermissions" value="]]><PROCESS>id</PROCESS><![CDATA[">
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
 </table>
 </form>
-    
+
 </td></tr>
 </table>
 
@@ -853,11 +853,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <TEMPLATE name="chgrp">
 <![CDATA[
 <HTML>
-<SCRIPT LANGUAGE="JavaScript">							  
+<SCRIPT LANGUAGE="JavaScript">
 <!--
 function show_help()
 {
-	return '5_2_2_1.html';
+    return '5_2_2_1.html';
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -867,10 +867,10 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
@@ -880,64 +880,64 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form name="PERMISSION" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2>
-	<tr><td>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td class="head">]]><LABEL value="title.chgrp" /><![CDATA[ ]]><process>id</process><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			
-			<!-- Beginn Leerzeile-->
-			<tr> 
-           		<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<tr>
-				<td class=dialogtxt colspan=2>
-					]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>username</PROCESS><![CDATA[<br>
-					]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>groupname</PROCESS><![CDATA[
-				</td>
-			</tr>
-			
-			<!-- Beginn Inhalt-->
-			
-			<tr><td class=dialogtxt>
-				<table border=0 width=100%>
-					<tr>
-						<td class=formular>]]><LABEL value="input.newgroup" /><![CDATA[:</td>
-						<td class=dialogtxt>
-							<select class="textfeld" name="groupId" style="width:200px">]]><process>groups</process><![CDATA[</select>
-						</td>
-					</tr>
-				</table>
-				</td>				
-			</tr>
-			
-			<!-- Beginn Buttonleisete-->
-			<tr><td class=dialogtxt>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
-						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
-						onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
-					</td>
-				</tr>
-				</table>
-				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
-				<INPUT type="hidden" name="idpermissions" value="]]><PROCESS>id</PROCESS><![CDATA[">
-			</td>
-			</tr>
-			<!-- Ende Buttonleisete-->
-			
-			</table>
-	</td></tr>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="title.chgrp" /><![CDATA[ ]]><process>id</process><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <tr>
+                <td class=dialogtxt colspan=2>
+                    ]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>username</PROCESS><![CDATA[<br>
+                    ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>groupname</PROCESS><![CDATA[
+                </td>
+            </tr>
+
+            <!-- Beginn Inhalt-->
+
+            <tr><td class=dialogtxt>
+                <table border=0 width=100%>
+                    <tr>
+                        <td class=formular>]]><LABEL value="input.newgroup" /><![CDATA[:</td>
+                        <td class=dialogtxt>
+                            <select class="textfeld" name="groupId" style="width:200px">]]><process>groups</process><![CDATA[</select>
+                        </td>
+                    </tr>
+                </table>
+                </td>
+            </tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button"
+                        value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL
+                        onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
+                    </td>
+                </tr>
+                </table>
+                <INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+                <INPUT type="hidden" name="idpermissions" value="]]><PROCESS>id</PROCESS><![CDATA[">
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
 </table>
 </form>
-    
+
 </td></tr>
 </table>
 
@@ -952,11 +952,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <TEMPLATE name="chmod">
 <![CDATA[
 <HTML>
-<SCRIPT LANGUAGE="JavaScript">							  
+<SCRIPT LANGUAGE="JavaScript">
 <!--
 function show_help()
 {
-	return '5_2_2_1.html';
+    return '5_2_2_1.html';
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -966,10 +966,10 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
@@ -979,90 +979,90 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form name="PERMISSION" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2>
-	<tr><td>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td class="head">]]><LABEL value="title.chmod" /><![CDATA[ ]]><process>id</process><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			
-			<!-- Beginn Leerzeile-->
-			<tr> 
-           		<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			<tr>
-				<td class=dialogtxt>
-					]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>username</PROCESS><![CDATA[<br>
-					]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>groupname</PROCESS><![CDATA[
-				</td>
-			</tr>
-			<!-- Beginn Inhalt-->
-			
-			<tr><td class=dialogtxt>
-				<table border=0 width=100%>
-					<!-- Beginn ACCESS FLAGS-->
-					<tr>
-						<td class=dialogtxt colspan=2>
-							<table border=0 cellspacing=10 cellpadding=0>
-								<tr>
-									<td align=center class=formular colspan=3>]]><LABEL value="input.owner" /><![CDATA[</td>
-									<td align=center class=formular colspan=3>]]><LABEL value="input.group" /><![CDATA[</td>
-									<td align=center class=formular colspan=3>]]><LABEL value="input.unknown" /><![CDATA[</td>
-								</tr>
-								<tr>
-									<td align=center class=dialogtxt>r</td>
-									<td align=center class=dialogtxt>w</td>
-									<td align=center class=dialogtxt>v</td>
-									<td align=center class=dialogtxt>r</td>
-									<td align=center class=dialogtxt>w</td>
-									<td align=center class=dialogtxt>v</td>
-									<td align=center class=dialogtxt>r</td>
-									<td align=center class=dialogtxt>w</td>
-									<td align=center class=dialogtxt>v</td>
-								</tr>
-								<tr>
-									<td align=center class=dialogtxt><input type="checkbox" name="permission_0" ]]><PROCESS>permission_0</PROCESS><![CDATA[></td>
-									<td align=center class=dialogtxt><input type="checkbox" name="permission_1" ]]><PROCESS>permission_1</PROCESS><![CDATA[></td>
-									<td align=center class=dialogtxt><input type="checkbox" name="permission_2" ]]><PROCESS>permission_2</PROCESS><![CDATA[></td>
-									<td align=center class=dialogtxt><input type="checkbox" name="permission_3" ]]><PROCESS>permission_3</PROCESS><![CDATA[></td>
-									<td align=center class=dialogtxt><input type="checkbox" name="permission_4" ]]><PROCESS>permission_4</PROCESS><![CDATA[></td>
-									<td align=center class=dialogtxt><input type="checkbox" name="permission_5" ]]><PROCESS>permission_5</PROCESS><![CDATA[></td>
-									<td align=center class=dialogtxt><input type="checkbox" name="permission_6" ]]><PROCESS>permission_6</PROCESS><![CDATA[></td>
-									<td align=center class=dialogtxt><input type="checkbox" name="permission_7" ]]><PROCESS>permission_7</PROCESS><![CDATA[></td>
-									<td align=center class=dialogtxt><input type="checkbox" name="permission_8" ]]><PROCESS>permission_8</PROCESS><![CDATA[></td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
-				</td>				
-			</tr>
-			
-			<!-- Beginn Buttonleisete-->
-			<tr><td class=dialogtxt>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
-						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
-						onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
-					</td>					
-				</tr>
-				</table>
-				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
-				<INPUT type="hidden" name="idpermissions" value="]]><PROCESS>id</PROCESS><![CDATA[">
-			</td>
-			</tr>
-			<!-- Ende Buttonleisete-->
-			
-			</table>
-	</td></tr>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="title.chmod" /><![CDATA[ ]]><process>id</process><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+            <tr>
+                <td class=dialogtxt>
+                    ]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>username</PROCESS><![CDATA[<br>
+                    ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>groupname</PROCESS><![CDATA[
+                </td>
+            </tr>
+            <!-- Beginn Inhalt-->
+
+            <tr><td class=dialogtxt>
+                <table border=0 width=100%>
+                    <!-- Beginn ACCESS FLAGS-->
+                    <tr>
+                        <td class=dialogtxt colspan=2>
+                            <table border=0 cellspacing=10 cellpadding=0>
+                                <tr>
+                                    <td align=center class=formular colspan=3>]]><LABEL value="input.owner" /><![CDATA[</td>
+                                    <td align=center class=formular colspan=3>]]><LABEL value="input.group" /><![CDATA[</td>
+                                    <td align=center class=formular colspan=3>]]><LABEL value="input.unknown" /><![CDATA[</td>
+                                </tr>
+                                <tr>
+                                    <td align=center class=dialogtxt>r</td>
+                                    <td align=center class=dialogtxt>w</td>
+                                    <td align=center class=dialogtxt>v</td>
+                                    <td align=center class=dialogtxt>r</td>
+                                    <td align=center class=dialogtxt>w</td>
+                                    <td align=center class=dialogtxt>v</td>
+                                    <td align=center class=dialogtxt>r</td>
+                                    <td align=center class=dialogtxt>w</td>
+                                    <td align=center class=dialogtxt>v</td>
+                                </tr>
+                                <tr>
+                                    <td align=center class=dialogtxt><input type="checkbox" name="permission_0" ]]><PROCESS>permission_0</PROCESS><![CDATA[></td>
+                                    <td align=center class=dialogtxt><input type="checkbox" name="permission_1" ]]><PROCESS>permission_1</PROCESS><![CDATA[></td>
+                                    <td align=center class=dialogtxt><input type="checkbox" name="permission_2" ]]><PROCESS>permission_2</PROCESS><![CDATA[></td>
+                                    <td align=center class=dialogtxt><input type="checkbox" name="permission_3" ]]><PROCESS>permission_3</PROCESS><![CDATA[></td>
+                                    <td align=center class=dialogtxt><input type="checkbox" name="permission_4" ]]><PROCESS>permission_4</PROCESS><![CDATA[></td>
+                                    <td align=center class=dialogtxt><input type="checkbox" name="permission_5" ]]><PROCESS>permission_5</PROCESS><![CDATA[></td>
+                                    <td align=center class=dialogtxt><input type="checkbox" name="permission_6" ]]><PROCESS>permission_6</PROCESS><![CDATA[></td>
+                                    <td align=center class=dialogtxt><input type="checkbox" name="permission_7" ]]><PROCESS>permission_7</PROCESS><![CDATA[></td>
+                                    <td align=center class=dialogtxt><input type="checkbox" name="permission_8" ]]><PROCESS>permission_8</PROCESS><![CDATA[></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                </td>
+            </tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button"
+                        value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL
+                        onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
+                    </td>
+                </tr>
+                </table>
+                <INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+                <INPUT type="hidden" name="idpermissions" value="]]><PROCESS>id</PROCESS><![CDATA[">
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
 </table>
 </form>
-    
+
 </td></tr>
 </table>
 
@@ -1077,11 +1077,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <TEMPLATE name="copy">
 <![CDATA[
 <HTML>
-<SCRIPT LANGUAGE="JavaScript">							  
+<SCRIPT LANGUAGE="JavaScript">
 <!--
 function show_help()
 {
-	return '5_2_2_1.html';
+    return '5_2_2_1.html';
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -1091,10 +1091,10 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </HEAD>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
@@ -1104,49 +1104,49 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form name="COPY" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2>
-	<tr><td>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td class="head">]]><LABEL value="title.copy" /><![CDATA[ ]]><process>id</process><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			
-			<!-- Beginn Leerzeile-->
-			<tr> 
-           		<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			<tr>
-				<td class=dialogtxt>
-					]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>username</PROCESS><![CDATA[<br>
-					]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>groupname</PROCESS><![CDATA[
-				</td>
-			</tr>
-			
-			<!-- Beginn Buttonleisete-->
-			<tr><td class=dialogtxt>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
-						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
-						onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
-					</td>					
-				</tr>
-				</table>
-				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
-				<INPUT type="hidden" name="idcopy" value="]]><PROCESS>id</PROCESS><![CDATA[">
-			</td>
-			</tr>
-			<!-- Ende Buttonleisete-->
-			
-			</table>
-	</td></tr>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="title.copy" /><![CDATA[ ]]><process>id</process><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+            <tr>
+                <td class=dialogtxt>
+                    ]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>username</PROCESS><![CDATA[<br>
+                    ]]><LABEL value="input.group" /><![CDATA[: ]]><PROCESS>groupname</PROCESS><![CDATA[
+                </td>
+            </tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button"
+                        value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL
+                        onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
+                    </td>
+                </tr>
+                </table>
+                <INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+                <INPUT type="hidden" name="idcopy" value="]]><PROCESS>id</PROCESS><![CDATA[">
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
 </table>
 </form>
-    
+
 </td></tr>
 </table>
 
@@ -1164,11 +1164,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <html>
 <head>
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 </head>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -1176,44 +1176,44 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form id="ERROR" name="ERROR">
 <table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
-	<tr><td class=dialogtxt>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			<!-- Beginn Leerzeile-->
-			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
-			<!-- Ende Leerzeile-->
-			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=left>]]><LABEL value="input.filter"/><![CDATA[ ]]><PROCESS>filtername</PROCESS><![CDATA[:
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>	
-			<tr>
-				<td class=dialogtxt align=left>]]><PROCESS>filtererror</PROCESS><![CDATA[
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>
-				<!-- Beginn Leerzeile-->
-			<tr> 
-				<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<!-- Begin Buttons-->
-			<tr><td class=dialogtxt colspan=2>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=center><INPUT class=button width = 100                        
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
-				</table>
-			</td>
-			</tr>
-			</table>
-			<!-- End Buttons-->	
-	</td></tr>
+    <tr><td class=dialogtxt>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+            <!-- Beginn Leerzeile-->
+            <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+            <!-- Ende Leerzeile-->
+            <tr>
+                <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+                <td class=dialogtxt align=left>]]><LABEL value="input.filter"/><![CDATA[ ]]><PROCESS>filtername</PROCESS><![CDATA[:
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td class=dialogtxt align=left>]]><PROCESS>filtererror</PROCESS><![CDATA[
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+                <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Begin Buttons-->
+            <tr><td class=dialogtxt colspan=2>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center><INPUT class=button width = 100
+                        type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+                </table>
+            </td>
+            </tr>
+            </table>
+            <!-- End Buttons-->
+    </td></tr>
 </table>
 </form>
 
@@ -1233,11 +1233,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <html>
 <head>
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 </head>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -1245,45 +1245,45 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form id="ERROR" name="ERROR">
 <table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
-	<tr><td class=dialogtxt>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			<!-- Beginn Leerzeile-->
-			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
-			<!-- Ende Leerzeile-->
-			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.delete"/><![CDATA[
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>	
-			<tr>
-				<td class=dialogtxt align=left>]]><PROCESS>deleteerror</PROCESS><![CDATA[!
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>
-				<!-- Beginn Leerzeile-->
-			<tr> 
-				<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<!-- Begin Buttons-->
-			<tr><td class=dialogtxt colspan=2>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=center><INPUT class=button width = 100                       
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
-				</tr>
-				</table>
-			</td>
-			</tr>
-			</table>
-			<!-- End Buttons-->	
-	</td></tr>
+    <tr><td class=dialogtxt>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+            <!-- Beginn Leerzeile-->
+            <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+            <!-- Ende Leerzeile-->
+            <tr>
+                <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+                <td class=dialogtxt align=left>]]><LABEL value="explorer.context.delete"/><![CDATA[
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td class=dialogtxt align=left>]]><PROCESS>deleteerror</PROCESS><![CDATA[!
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+                <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Begin Buttons-->
+            <tr><td class=dialogtxt colspan=2>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center><INPUT class=button width = 100
+                        type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            </table>
+            <!-- End Buttons-->
+    </td></tr>
 </table>
 </form>
 
@@ -1304,11 +1304,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <html>
 <head>
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 </head>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -1316,45 +1316,45 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form id="ERROR" name="ERROR">
 <table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
-	<tr><td class=dialogtxt>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			<!-- Beginn Leerzeile-->
-			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
-			<!-- Ende Leerzeile-->
-			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.undelete"/><![CDATA[
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>	
-			<tr>
-				<td class=dialogtxt align=left>]]><PROCESS>undeleteerror</PROCESS><![CDATA[!
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>
-				<!-- Beginn Leerzeile-->
-			<tr> 
-				<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<!-- Begin Buttons-->
-			<tr><td class=dialogtxt colspan=2>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=center><INPUT class=button width = 100                       
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
-				</tr>
-				</table>
-			</td>
-			</tr>
-			</table>
-			<!-- End Buttons-->	
-	</td></tr>
+    <tr><td class=dialogtxt>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+            <!-- Beginn Leerzeile-->
+            <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+            <!-- Ende Leerzeile-->
+            <tr>
+                <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+                <td class=dialogtxt align=left>]]><LABEL value="explorer.context.undelete"/><![CDATA[
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td class=dialogtxt align=left>]]><PROCESS>undeleteerror</PROCESS><![CDATA[!
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+                <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Begin Buttons-->
+            <tr><td class=dialogtxt colspan=2>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center><INPUT class=button width = 100
+                        type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            </table>
+            <!-- End Buttons-->
+    </td></tr>
 </table>
 </form>
 
@@ -1374,11 +1374,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <html>
 <head>
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 </head>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -1386,45 +1386,45 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form id="ERROR" name="ERROR">
 <table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
-	<tr><td class=dialogtxt>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			<!-- Beginn Leerzeile-->
-			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
-			<!-- Ende Leerzeile-->
-			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.publish"/><![CDATA[
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>	
-			<tr>
-				<td class=dialogtxt align=left>]]><PROCESS>publisherror</PROCESS><![CDATA[!
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>
-				<!-- Beginn Leerzeile-->
-			<tr> 
-				<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<!-- Begin Buttons-->
-			<tr><td class=dialogtxt colspan=2>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=center><INPUT class=button width = 100                       
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
-				</tr>
-				</table>
-			</td>
-			</tr>
-			</table>
-			<!-- End Buttons-->	
-	</td></tr>
+    <tr><td class=dialogtxt>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+            <!-- Beginn Leerzeile-->
+            <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+            <!-- Ende Leerzeile-->
+            <tr>
+                <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+                <td class=dialogtxt align=left>]]><LABEL value="explorer.context.publish"/><![CDATA[
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td class=dialogtxt align=left>]]><PROCESS>publisherror</PROCESS><![CDATA[!
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+                <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Begin Buttons-->
+            <tr><td class=dialogtxt colspan=2>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center><INPUT class=button width = 100
+                        type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            </table>
+            <!-- End Buttons-->
+    </td></tr>
 </table>
 </form>
 
@@ -1444,11 +1444,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <html>
 <head>
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 </head>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -1456,45 +1456,45 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form id="ERROR" name="ERROR">
 <table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
-	<tr><td class=dialogtxt>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			<!-- Beginn Leerzeile-->
-			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
-			<!-- Ende Leerzeile-->
-			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.history"/><![CDATA[
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>	
-			<tr>
-				<td class=dialogtxt align=left>]]><PROCESS>historyerror</PROCESS><![CDATA[!
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>
-				<!-- Beginn Leerzeile-->
-			<tr> 
-				<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<!-- Begin Buttons-->
-			<tr><td class=dialogtxt colspan=2>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=center><INPUT class=button width = 100                       
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
-				</tr>
-				</table>
-			</td>
-			</tr>
-			</table>
-			<!-- End Buttons-->	
-	</td></tr>
+    <tr><td class=dialogtxt>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+            <!-- Beginn Leerzeile-->
+            <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+            <!-- Ende Leerzeile-->
+            <tr>
+                <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+                <td class=dialogtxt align=left>]]><LABEL value="explorer.context.history"/><![CDATA[
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td class=dialogtxt align=left>]]><PROCESS>historyerror</PROCESS><![CDATA[!
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+                <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Begin Buttons-->
+            <tr><td class=dialogtxt colspan=2>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center><INPUT class=button width = 100
+                        type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            </table>
+            <!-- End Buttons-->
+    </td></tr>
 </table>
 </form>
 
@@ -1514,11 +1514,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <html>
 <head>
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 </head>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -1526,45 +1526,45 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form id="ERROR" name="ERROR">
 <table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
-	<tr><td class=dialogtxt>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			<!-- Beginn Leerzeile-->
-			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
-			<!-- Ende Leerzeile-->
-			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.access"/><![CDATA[
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>	
-			<tr>
-				<td class=dialogtxt align=left>]]><PROCESS>permissionserror</PROCESS><![CDATA[!
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>
-				<!-- Beginn Leerzeile-->
-			<tr> 
-				<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<!-- Begin Buttons-->
-			<tr><td class=dialogtxt colspan=2>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=center><INPUT class=button width = 100                       
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
-				</tr>
-				</table>
-			</td>
-			</tr>
-			</table>
-			<!-- End Buttons-->	
-	</td></tr>
+    <tr><td class=dialogtxt>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+            <!-- Beginn Leerzeile-->
+            <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+            <!-- Ende Leerzeile-->
+            <tr>
+                <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+                <td class=dialogtxt align=left>]]><LABEL value="explorer.context.access"/><![CDATA[
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td class=dialogtxt align=left>]]><PROCESS>permissionserror</PROCESS><![CDATA[!
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+                <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Begin Buttons-->
+            <tr><td class=dialogtxt colspan=2>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center><INPUT class=button width = 100
+                        type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            </table>
+            <!-- End Buttons-->
+    </td></tr>
 </table>
 </form>
 
@@ -1584,11 +1584,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <html>
 <head>
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 </head>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -1596,45 +1596,45 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form id="ERROR" name="ERROR">
 <table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
-	<tr><td class=dialogtxt>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			<!-- Beginn Leerzeile-->
-			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
-			<!-- Ende Leerzeile-->
-			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.lock"/><![CDATA[
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>	
-			<tr>
-				<td class=dialogtxt align=left>]]><PROCESS>lockerror</PROCESS><![CDATA[!
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>
-				<!-- Beginn Leerzeile-->
-			<tr> 
-				<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<!-- Begin Buttons-->
-			<tr><td class=dialogtxt colspan=2>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=center><INPUT class=button width = 100                        
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
-				</tr>
-				</table>
-			</td>
-			</tr>
-			</table>
-			<!-- End Buttons-->	
-	</td></tr>
+    <tr><td class=dialogtxt>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+            <!-- Beginn Leerzeile-->
+            <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+            <!-- Ende Leerzeile-->
+            <tr>
+                <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+                <td class=dialogtxt align=left>]]><LABEL value="explorer.context.lock"/><![CDATA[
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td class=dialogtxt align=left>]]><PROCESS>lockerror</PROCESS><![CDATA[!
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+                <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Begin Buttons-->
+            <tr><td class=dialogtxt colspan=2>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center><INPUT class=button width = 100
+                        type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            </table>
+            <!-- End Buttons-->
+    </td></tr>
 </table>
 </form>
 
@@ -1654,11 +1654,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <html>
 <head>
 <!-- Beginn Style -->
-<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <!-- Ende Style -->
 </head>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
 onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -1666,45 +1666,45 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <form id="ERROR" name="ERROR">
 <table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
-	<tr><td class=dialogtxt>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Beginn Tabellenkopf blau-->
-			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
-			</tr>
-			<!-- Ende Tabellenkopf blau-->
-			<!-- Beginn Leerzeile-->
-			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
-			<!-- Ende Leerzeile-->
-			<tr> 
-           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
-				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.copy"/><![CDATA[
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>	
-			<tr>
-				<td class=dialogtxt align=left>]]><PROCESS>copyerror</PROCESS><![CDATA[!
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			</tr>
-				<!-- Beginn Leerzeile-->
-			<tr> 
-				<td class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- Ende Leerzeile-->
-			
-			<!-- Begin Buttons-->
-			<tr><td class=dialogtxt colspan=2>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=center><INPUT class=button width = 100                        
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
-				</tr>
-				</table>
-			</td>
-			</tr>
-			</table>
-			<!-- End Buttons-->	
-	</td></tr>
+    <tr><td class=dialogtxt>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+            <!-- Beginn Leerzeile-->
+            <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+            <!-- Ende Leerzeile-->
+            <tr>
+                <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+                <td class=dialogtxt align=left>]]><LABEL value="explorer.context.copy"/><![CDATA[
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td class=dialogtxt align=left>]]><PROCESS>copyerror</PROCESS><![CDATA[!
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+                <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Begin Buttons-->
+            <tr><td class=dialogtxt colspan=2>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center><INPUT class=button width = 100
+                        type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            </table>
+            <!-- End Buttons-->
+    </td></tr>
 </table>
 </form>
 
@@ -1722,11 +1722,11 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <TEMPLATE name="done">
 <![CDATA[
 <HEAD>
-	<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><Method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 </HEAD>
 <HTML>
-	<BODY onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
-	</BODY>
+    <BODY onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
+    </BODY>
 </HTML>
 ]]>
 </TEMPLATE>
@@ -1735,36 +1735,36 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 <!-- Begin processed data -->
 <singlerow>
-	<![CDATA[
-	<td valign=middle width=18 nowrap>
-		<A href="javascript:showkontext(']]><PROCESS>backofficecontextmenue</PROCESS><![CDATA[',']]><PROCESS>uniqueid</PROCESS><![CDATA[',']]><PROCESS>uniqueid</PROCESS><![CDATA[')";>
-		<IMG border=0  src="]]><method name="picsUrl">ic_file_page.gif</method><![CDATA[" width=16 height=16>
-		</A>
-	</td>
-	]]><PROCESS>lockedby</PROCESS><![CDATA[
-	]]><PROCESS>projectflag</PROCESS><![CDATA[	
-	]]><PROCESS>entry</PROCESS>
+    <![CDATA[
+    <td valign=middle width=18 nowrap>
+        <A href="javascript:showkontext(']]><PROCESS>backofficecontextmenue</PROCESS><![CDATA[',']]><PROCESS>uniqueid</PROCESS><![CDATA[',']]><PROCESS>uniqueid</PROCESS><![CDATA[')";>
+        <IMG border=0  src="]]><method name="resourcesUri">ic_file_page.gif</method><![CDATA[" width=16 height=16>
+        </A>
+    </td>
+    ]]><PROCESS>lockedby</PROCESS><![CDATA[
+    ]]><PROCESS>projectflag</PROCESS><![CDATA[
+    ]]><PROCESS>entry</PROCESS>
 </singlerow>
 
 <singleSelectbox><![CDATA[
-	<form name=swl valign=top method="get" >
+    <form name=swl valign=top method="get" >
         <td nowrap valign="center">
-               
+
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
         </td>
-		<td nowrap valign="center">
+        <td nowrap valign="center">
                 <input type=hidden name="setaction" value="filterchange"/> ]]>
-        		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" width="auto" size="1" onchange="document.swl.submit()"/><![CDATA[
-               
+                <SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" width="auto" size="1" onchange="document.swl.submit()"/><![CDATA[
+
         </td>
     </form>]]>
 </singleSelectbox>
 
 <noSelectbox><![CDATA[
-	<td nowrap valign="center">           
+    <td nowrap valign="center">
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
      </td>
-	<td nowrap valign="center">
+    <td nowrap valign="center">
         <input type=hidden name="selectbox"value="0"> ]]>
         <PROCESS>filtername</PROCESS><![CDATA[
     </td>
@@ -1772,55 +1772,55 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 </noSelectbox>
 
 <noSelectboxWithParam><![CDATA[
-	<form name=swl valign=top method="get">
-        <td nowrap valign="center">           
-        	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
-     	</td>
-		<td nowrap valign="center">
-	        <input type=hidden name="setaction" value="filterchange">
-       	 	<input type=hidden name="selectbox" value="0"> ]]>
-        	<PROCESS>filtername</PROCESS><![CDATA[
-   		 </td>
-        <td nowrap valign="center">        
+    <form name=swl valign=top method="get">
+        <td nowrap valign="center">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
+        </td>
+        <td nowrap valign="center">
+            <input type=hidden name="setaction" value="filterchange">
+            <input type=hidden name="selectbox" value="0"> ]]>
+            <PROCESS>filtername</PROCESS><![CDATA[
+         </td>
+        <td nowrap valign="center">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterparameterlabel</PROCESS><![CDATA[:&nbsp;&nbsp;&nbsp;</b>
-		</td>
-		<td nowrap valign="center">
-   				<input type=hidden name="setaction" value="setaction">
+        </td>
+        <td nowrap valign="center">
+                <input type=hidden name="setaction" value="setaction">
                 <input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA[">
-		</td>
-		<td>	
-				&nbsp;&nbsp
-				<a href="javascript:window.document.swl.submit()" onMouseDown="ChPush('ic_admin_enter')" onMouseUp="ChOn('ic_admin_enter')" onMouseOver="ChOn('ic_admin_enter')" onMouseOut="ChOff('ic_admin_enter')">
-				<img align="center" name="ic_admin_enter" src="]]><method name="picsUrl">ic_admin_enter_off.gif</method><![CDATA[" alt="]]><LABEL value="button.reload"/><![CDATA[" border=0 width=32 heigth=32>
-				</a>
-                  
+        </td>
+        <td>
+                &nbsp;&nbsp
+                <a href="javascript:window.document.swl.submit()" onMouseDown="ChPush('ic_admin_enter')" onMouseUp="ChOn('ic_admin_enter')" onMouseOver="ChOn('ic_admin_enter')" onMouseOut="ChOff('ic_admin_enter')">
+                <img align="center" name="ic_admin_enter" src="]]><method name="resourcesUri">ic_admin_enter_off.gif</method><![CDATA[" alt="]]><LABEL value="button.reload"/><![CDATA[" border=0 width=32 heigth=32>
+                </a>
+
         </td>
         </form>]]>
 </noSelectboxWithParam>
 
 <selectboxWithParam><![CDATA[
-	<form name=swl valign=top method="get">
-        <td nowrap valign="center">                          
+    <form name=swl valign=top method="get">
+        <td nowrap valign="center">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
-		</td>
-		<td nowrap valign="center">
-                <input type=hidden name="setaction" value="filterchange"> ]]>
-        		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" width="auto" size="1" onchange="self.document.swl.submit()" /><![CDATA[
-               
         </td>
-        <td nowrap valign="center">        
+        <td nowrap valign="center">
+                <input type=hidden name="setaction" value="filterchange"> ]]>
+                <SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" width="auto" size="1" onchange="self.document.swl.submit()" /><![CDATA[
+
+        </td>
+        <td nowrap valign="center">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterparameterlabel</PROCESS><![CDATA[:&nbsp;&nbsp;&nbsp;</b>
-		</td>
-		<td nowrap valign="center">
-   				<input type=hidden name="setaction" value="setaction">
+        </td>
+        <td nowrap valign="center">
+                <input type=hidden name="setaction" value="setaction">
                 <input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA[">
-		</td>
-		<td>	
-				&nbsp;&nbsp
-				<a href="javascript:window.document.swl.submit()" onMouseDown="ChPush('ic_admin_enter')" onMouseUp="ChOn('ic_admin_enter')" onMouseOver="ChOn('ic_admin_enter')" onMouseOut="ChOff('ic_admin_enter')">
-				<img align="center" name="ic_admin_enter" src="]]><method name="picsUrl">ic_admin_enter_off.gif</method><![CDATA[" alt="]]><LABEL value="button.reload"/><![CDATA[" border=0 width=32 heigth=32>
-				</a>
-                  
+        </td>
+        <td>
+                &nbsp;&nbsp
+                <a href="javascript:window.document.swl.submit()" onMouseDown="ChPush('ic_admin_enter')" onMouseUp="ChOn('ic_admin_enter')" onMouseOver="ChOn('ic_admin_enter')" onMouseOut="ChOff('ic_admin_enter')">
+                <img align="center" name="ic_admin_enter" src="]]><method name="resourcesUri">ic_admin_enter_off.gif</method><![CDATA[" alt="]]><LABEL value="button.reload"/><![CDATA[" border=0 width=32 heigth=32>
+                </a>
+
         </td>
         </form>]]>
 </selectboxWithParam>

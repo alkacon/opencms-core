@@ -5,7 +5,7 @@
 <HTML>
 
 <!-- Include external JavaScripts-->
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><PROCESS>pathCorrection</PROCESS><![CDATA[../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <script language=JavaScript>
 <!--
@@ -19,13 +19,13 @@ top.help_url='Administration/projektverwaltung/Projekterstellen.html';
 function deleteAnItem(theList,itemNo) {
 var n=theList.length;
 if ((n > 0) && (itemNo > -1)) {
-    theList.options[itemNo]=null; 
+    theList.options[itemNo]=null;
 }
 }
 
-function addFolder(theList, item) { 
+function addFolder(theList, item) {
     if (item != null && item != "") {
-        newOption = new Option(item, item, false, false); 
+        newOption = new Option(item, item, false, false);
         theList.options[theList.length] = newOption;
         document.PROJECTNEW.selectallfolders.value='';
     }
@@ -33,12 +33,12 @@ function addFolder(theList, item) {
 
 function addChannel(theList, item) {
     if (item != null && item != "") {
-        newOption = new Option(item, item, false, false); 
+        newOption = new Option(item, item, false, false);
         theList.options[theList.length] = newOption;
     }
 }
 
-function copySelection() { 
+function copySelection() {
     addFolder(document.PROJECTNEW.new_ressources, document.PROJECTNEW.tempFolder.value);
 }
 
@@ -56,8 +56,8 @@ function selectAll(theFolders, theChannels) {
     if (n>0) {
         for (i=0; i<n; i++) {
             allResources = allResources + theFolders.options[i].value + ';';
-        } 
-    } 
+        }
+    }
     document.PROJECTNEW.ALLRES.value=allResources;
     // now the channels
     var m=theChannels.length;
@@ -69,9 +69,9 @@ function selectAll(theFolders, theChannels) {
     if (m>0) {
         for (i=0; i<m; i++) {
             allChannels = allChannels + theChannels.options[i].value + ';';
-        } 
-    } 
-    document.PROJECTNEW.ALLCHAN.value=allChannels;    
+        }
+    }
+    document.PROJECTNEW.ALLCHAN.value=allChannels;
 }
 
 var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
@@ -83,7 +83,7 @@ var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><PROCESS>pathCorrection</PROCESS><![CDATA[../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="]]><PROCESS>doThis</PROCESS><PROCESS>dontDoIt</PROCESS><![CDATA[window.top.body.admin_head.location.href='../../../action/administration_head.html';" onUnload="if(treewin!=null)treewin.close();">
@@ -98,19 +98,19 @@ var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
 <table cellspacing=0 cellpadding=0 border=1 width=500>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-            
+
             <!-- Beginn Tabellenkopf blau-->
-            <tr> 
+            <tr>
         <td class="head">]]><LABEL value="label.createnewproject" /><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
-            
+
             <!-- Beginn Leerzeile-->
-            <tr> 
+            <tr>
         <td class="leerzeile">&nbsp;</td>
             </tr>
             <!-- Ende Leerzeile-->
-            
+
             <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=0 width=100%>
@@ -119,7 +119,7 @@ var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
                             <tr>
                                 <td class=formular width=10%>]]><LABEL value="label.projectname" /><![CDATA[:</td>
                                 <td class=dialogtxt><input type="text" name="NAME" class="textfeld3" size=31 maxlength=16 value="]]><PROCESS>new_project_name</PROCESS><![CDATA["> </td>
-                                <td class=formular><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" width="50" height="1" alt="" border="0"></td>
+                                <td class=formular><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="50" height="1" alt="" border="0"></td>
                             </tr>
                             <tr>
                                 <td class=formular valign=top>]]><LABEL value="label.description" /><![CDATA[:</td>
@@ -130,46 +130,46 @@ var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
                             </tr>
                             <tr>
                                 <td class=formular>&nbsp;</td>
-                                <td class=dialogtxt> 
+                                <td class=dialogtxt>
                                 <input type="text" name="selectallfolders" class="textfeld3" size=31 value=""
-                                     onSubmit="">   
+                                     onSubmit="">
 
-                                </td> 
-                                <td class=formular valign=bottom> 
-                                    <a href="javascript:addFolder(document.PROJECTNEW.new_ressources, document.PROJECTNEW.selectallfolders.value);" ><img src="]]><METHOD name="picsUrl">ic_admin_enter.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.addnew" /><![CDATA[" border=0 width=16 heigth=16></a> 
-                                </td>                                
+                                </td>
+                                <td class=formular valign=bottom>
+                                    <a href="javascript:addFolder(document.PROJECTNEW.new_ressources, document.PROJECTNEW.selectallfolders.value);" ><img src="]]><METHOD name="resourcesUri">ic_admin_enter.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.addnew" /><![CDATA[" border=0 width=16 heigth=16></a>
+                                </td>
                             </tr>
-                            <tr> 
+                            <tr>
                                 <td class=formular valign=top>]]><LABEL value="label.allfolders" /><![CDATA[:</td>
                                 <td class=dialogtxt>
                                     <select name="new_ressources" id="new_ressources" style="width:300px" size=5 width="300" multiple></select>
                                 </td>
                                 <td valign=middle>
-                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle> 
+                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle>
                                         <tr>
-                                            <td class=formular><a href="javascript:treewin=opensmallwin(']]><PROCESS>pathCorrection</PROCESS><![CDATA[../action/folder_tree.html?foldertree=/&formname=PROJECTNEW&variable=tempFolder&onlineselect=yes&viewfile=no', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
-                                            <td class=formular><a href="javascript:deleteAnItem(document.PROJECTNEW.new_ressources , document.PROJECTNEW.new_ressources.selectedIndex);"><img src="]]><METHOD name="picsUrl">ic_admin_deleteext.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.delete" /><![CDATA[" border=0 width=16 heigth=16></a></td>
+                                            <td class=formular><a href="javascript:treewin=opensmallwin(']]><PROCESS>pathCorrection</PROCESS><![CDATA[../action/folder_tree.html?foldertree=/&formname=PROJECTNEW&variable=tempFolder&onlineselect=yes&viewfile=no', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
+                                            <td class=formular><a href="javascript:deleteAnItem(document.PROJECTNEW.new_ressources , document.PROJECTNEW.new_ressources.selectedIndex);"><img src="]]><METHOD name="resourcesUri">ic_admin_deleteext.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.delete" /><![CDATA[" border=0 width=16 heigth=16></a></td>
                                         </tr>
                                     </table>
                                 </td>
                             </tr>
-                            <input type="hidden" name="tempFolder" id="tempFolder" > 
+                            <input type="hidden" name="tempFolder" id="tempFolder" >
                             <input type="hidden" name="ALLRES" id="ALLRES" value="">
-                            <tr> 
+                            <tr>
                                 <td class=formular valign=top>]]><LABEL value="label.allchannels" /><![CDATA[:</td>
                                 <td class=dialogtxt>
                                     <select name="new_channels" id="new_channels" style="width:300px" size=5 width="300" multiple></select>
                                 </td>
                                 <td valign=middle>
-                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle> 
+                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle>
                                         <tr>
-                                            <td class=formular><a href="javascript:treewin=opensmallwin(']]><PROCESS>pathCorrection</PROCESS><![CDATA[../action/channel_tree.html?foldertree=/&formname=PROJECTNEW&variable=tempChannel&onlineselect=yes&viewfile=no', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
-                                            <td class=formular><a href="javascript:deleteAnItem(document.PROJECTNEW.new_channels , document.PROJECTNEW.new_channels.selectedIndex);"><img src="]]><METHOD name="picsUrl">ic_admin_deleteext.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.delete" /><![CDATA[" border=0 width=16 heigth=16></a></td>
+                                            <td class=formular><a href="javascript:treewin=opensmallwin(']]><PROCESS>pathCorrection</PROCESS><![CDATA[../action/channel_tree.html?foldertree=/&formname=PROJECTNEW&variable=tempChannel&onlineselect=yes&viewfile=no', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
+                                            <td class=formular><a href="javascript:deleteAnItem(document.PROJECTNEW.new_channels , document.PROJECTNEW.new_channels.selectedIndex);"><img src="]]><METHOD name="resourcesUri">ic_admin_deleteext.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.delete" /><![CDATA[" border=0 width=16 heigth=16></a></td>
                                         </tr>
                                     </table>
                                 </td>
                             </tr>
-                            <input type="hidden" name="tempChannel" id="tempChannel" > 
+                            <input type="hidden" name="tempChannel" id="tempChannel" >
                             <input type="hidden" name="ALLCHAN" id="ALLCHAN" value="">
                             <tr>
                                 <td colspan=3 class=leerzeile>&nbsp;</td>
@@ -188,16 +188,16 @@ var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
                                 </td>
                                 <td class=formular>&nbsp;</td>
                             </tr>
-                            <tr> 
+                            <tr>
                                 <td class=formular width=10%>&nbsp;</td>
                                 <td class=formular>
                                 <input type=checkbox name="projecttype" value="projecttype">]]><LABEL value="label.projecttype"/><![CDATA[
                                 </td>
                                 <td class=formular>&nbsp;</td>
-                            </tr>                        
+                            </tr>
                 </table>
             </td></tr>
-            
+
             <!-- Beginn Buttonleisete-->
             <tr><td class=dialogtxt>
                 <table cellspacing=0 border=0 cellpadding=5 width=100%>
@@ -209,7 +209,7 @@ var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
             </td>
             </tr>
             <!-- Ende Buttonleisete-->
-            
+
             </table>
     </td></tr>
 </table>
@@ -246,7 +246,7 @@ var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
 <![CDATA[
 <HTML>
 <HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><PROCESS>pathCorrection</PROCESS><![CDATA[../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <SCRIPT LANGUAGE="Javascript">
 function reload(){
@@ -260,7 +260,7 @@ function reload(){
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
     <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
     </tr>
 </table>
 <!-- End Logo opencms -->
@@ -293,7 +293,7 @@ function reload(){
     <head>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
     <title>OpenCms</title>
-    <link rel=stylesheet type="text/css" href="../css/format.css">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
     </head>
     <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
     <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -303,14 +303,14 @@ function reload(){
         <tr><td>
             <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
                 <!-- Begin tablehead blue -->
-                <tr> 
+                <tr>
                     <td colspan=3 class="head">]]><LABEL value="explorer.context.project" /><![CDATA[</td>
                 </tr>
                 <!-- Ende tablehead blue -->
-                <tr> 
+                <tr>
                     <td colspan=3 class="leerzeile">&nbsp;</td>
                 </tr>
-                <tr> 
+                <tr>
                     <td colspan=3 class="leerzeile">&nbsp;</td>
                 </tr>
                 <tr>
@@ -318,7 +318,7 @@ function reload(){
                         ]]><LABEL value="error.message.createasproject"/><![CDATA[<br>
                     </td>
                 </tr>
-                <tr> 
+                <tr>
                     <td colspan=3 class="leerzeile">&nbsp;</td>
                 </tr>
                 <!-- Begin buttons -->

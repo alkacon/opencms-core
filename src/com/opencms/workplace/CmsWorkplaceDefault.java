@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2002/09/03 11:57:07 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2002/11/02 10:39:18 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,15 +44,17 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.47 $ $Date: 2002/09/03 11:57:07 $
+ * @version $Revision: 1.48 $ $Date: 2002/11/02 10:39:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
 
+    /** URL of the pics folder in the webserver's docroot */
+    private static String m_resourcesUri = null;
 
     /** URL of the pics folder in the webserver's docroot */
-    private String m_picsurl = null;
+    private static String m_scriptsUri = null;
 
 
     /** URL of the help folder */
@@ -525,38 +527,61 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     }
 
     /**
-     * User method to generate an URL for the system pics folder.
-     * <P>
-     * All pictures should reside in the docroot of the webserver for
+     * User method to generate an URI for the system resources folder.<p>
+     * 
+     * All pictures and style sheets should reside in the docroot of the webserver for
      * performance reasons. This folder can be mounted into the OpenCms system to
-     * make it accessible for the OpenCms explorer.
-     * <P>
-     * The path to the docroot can be set in the workplace ini.
-     * <P>
+     * make it accessible for the OpenCms explorer.<p>
+     * 
+     * The path to the docroot can be set in the workplace ini.<p>
+     * 
      * In any workplace template file, this method can be invoked by
-     * <code>&lt;METHOD name="picsUrl"&gt;<em>PictureName</em>&lt;/METHOD&gt;</code>.
-     * <P>
-     * <b>Warning:</b> Using this method, only workplace pictures, usually residing
-     * in the <code>pics/system/</code> folder, can be accessed. In any workplace class
-     * template pictures can be accessed via <code>commonPicsUrl</code>.
+     * <code>&lt;METHOD name="resourcesUri"&gt;<em>PictureName</em>&lt;/METHOD&gt;</code>.<p>
+     * 
+     * <b>Warning:</b> Using this method, only workplace resources, usually residing
+     * in the <code>/system/workplace/resources</code> folder, can be accessed. 
      *
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XML document <em>(not used here)</em>.
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
-     * @return String with the pics URL.
-     * @exception CmsException
-     * @see #commonPicsUrl
+     * @return String with the resources URI
+     * @throws CmsException
      */
-
-    public Object picsUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        if(m_picsurl == null) {
+    public Object resourcesUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
+        if(m_resourcesUri == null) {
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
-            m_picsurl = configFile.getWpPicturePath();
+            m_resourcesUri = configFile.getWpPicturePath();
         }
-        return cms.getRequestContext().getRequest().getWebAppUrl() + m_picsurl + tagcontent;
+        if (tagcontent == null) return m_resourcesUri;
+        return m_resourcesUri + tagcontent;
+    }
+    
+    /**
+     * User method to generate an URI for the system scripts folder.<p>
+     * 
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XML document <em>(not used here)</em>.
+     * @param userObj Hashtable with parameters <em>(not used here)</em>.
+     * @return String with the scripts URI
+     * @throws CmsException
+     */
+    public Object scriptsUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
+        if(m_scriptsUri == null) {
+            m_scriptsUri = cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_SCRIPTS_PATH;
+        }
+        if (tagcontent == null) return m_scriptsUri;
+        return m_scriptsUri + tagcontent;
     }
 
+    /**
+     * @deprecated use {@link #resourcesUri(CmsObject, String, A_CmsXmlContent, Object)} instead
+     */
+    public Object picsUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
+        return resourcesUri(cms, tagcontent, doc, userObj);
+    }
+    
     /**
      * Starts the processing of the given template file by calling the
      * <code>getProcessedTemplateContent()</code> method of the content defintition

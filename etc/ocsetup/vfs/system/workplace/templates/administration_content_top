@@ -10,7 +10,7 @@ top.help_url='Administration/index.html';
 //-->
 </script>
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <head>
 
@@ -18,10 +18,10 @@ top.help_url='Administration/index.html';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </head>
 
-<body onLoad="parent.frames[0].location.href='administration_head.html'" bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed>
+<body onLoad="parent.frames[0].location.href='administration_head.html'" bgcolor="#FFFFFF" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed>
 
 ]]><PROCESS>iconTable</PROCESS><![CDATA[
 </body>
@@ -40,7 +40,7 @@ top.help_url='Administration/index.html';
 <td align=center><a href="javascript:document.location.href=']]><PROCESS>linkTo</PROCESS><![CDATA['"> <img src="]]><PROCESS>picture</PROCESS><![CDATA[" border=0 width=32 height=32 vspace=4><br>]]><PROCESS>linkName</PROCESS><![CDATA[ </a></td>
 </tr>
 </table>
-</div>]]> 
+</div>]]>
 </defaulticon>
 
 <deactivatedicon><![CDATA[
@@ -50,7 +50,7 @@ top.help_url='Administration/index.html';
 <td align=center><img src="]]><PROCESS>picture</PROCESS><![CDATA[" border=0 width=32 height=32 vspace=4><br><font color="silver">]]><PROCESS>linkName</PROCESS><![CDATA[ </font></td>
 </tr>
 </table>
-</div>]]> 
+</div>]]>
 </deactivatedicon>
 
 <noicon></noicon>

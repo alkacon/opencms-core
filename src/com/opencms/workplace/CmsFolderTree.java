@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2002/10/23 14:08:32 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2002/11/02 10:36:01 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2002/10/23 14:08:32 $
+ * @version $Revision: 1.41 $ $Date: 2002/11/02 10:36:01 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -273,26 +273,19 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
      */
 
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
-        String icon = null;
-        String filename = config.getWpPicturePath() + C_ICON_PREFIX + type.getResourceTypeName() + C_ICON_EXTENSION;
-        CmsResource iconFile;
-
         // check if this icon is in the cache already
-        icon = (String)m_iconCache.get(type.getResourceTypeName());
-
+        String icon = (String)m_iconCache.get(type.getResourceTypeName());
         // no icon was found, so check if there is a icon file in the filesystem
         if(icon == null) {
+            String filename = C_ICON_PREFIX + type.getResourceTypeName() + C_ICON_EXTENSION;
             try {
-
                 // read the icon file
-                iconFile = cms.readFileHeader(filename);
-
+                CmsResource iconFile = cms.readFileHeader(I_CmsWpConstants.C_SYSTEM_PICS_PATH + filename);
                 // add the icon to the cache
-                icon = C_ICON_PREFIX + type.getResourceTypeName() + C_ICON_EXTENSION;
+                icon = filename;
                 m_iconCache.put(type.getResourceTypeName(), icon);
             }
             catch(CmsException e) {
-
                 // no icon was found, so use the default
                 icon = C_ICON_DEFAULT;
                 m_iconCache.put(type.getResourceTypeName(), icon);
@@ -481,7 +474,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 else {
                     I_CmsResourceType type = cms.getResourceType(res.getType());
                     String icon = getIcon(cms, type, configFile);
-                    template.setData("icon", cms.getRequestContext().getRequest().getServletUrl() + configFile.getWpPicturePath() + icon);
+                    template.setData("icon", configFile.getWpPicturePath() + icon);
                     folderimg = template.getProcessedDataValue("TREEIMG_FILE", this);
                 }
 
