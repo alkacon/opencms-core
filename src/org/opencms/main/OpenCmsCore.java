@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/26 10:33:41 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2003/12/04 11:21:44 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,26 +31,6 @@
 
 package org.opencms.main;
 
-import org.opencms.cron.CmsCronEntry;
-import org.opencms.cron.CmsCronScheduleJob;
-import org.opencms.cron.CmsCronScheduler;
-import org.opencms.cron.CmsCronTable;
-import org.opencms.db.CmsDefaultUsers;
-import org.opencms.db.CmsDriverManager;
-import org.opencms.flex.CmsFlexCache;
-import org.opencms.loader.CmsJspLoader;
-import org.opencms.loader.CmsLoaderManager;
-import org.opencms.loader.I_CmsResourceLoader;
-import org.opencms.monitor.CmsMemoryMonitor;
-import org.opencms.security.CmsSecurityException;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
-import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.staticexport.CmsStaticExportManager;
-import org.opencms.util.CmsResourceTranslator;
-import org.opencms.util.CmsUUID;
-import org.opencms.workplace.I_CmsDialogHandler;
-
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.CmsMain;
 import com.opencms.boot.CmsSetupUtils;
@@ -71,6 +51,28 @@ import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResource;
 import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
+
+import org.opencms.cron.CmsCronEntry;
+import org.opencms.cron.CmsCronScheduleJob;
+import org.opencms.cron.CmsCronScheduler;
+import org.opencms.cron.CmsCronTable;
+import org.opencms.db.CmsDefaultUsers;
+import org.opencms.db.CmsDriverManager;
+import org.opencms.flex.CmsFlexCache;
+import org.opencms.loader.CmsJspLoader;
+import org.opencms.loader.CmsLoaderManager;
+import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.security.CmsSecurityException;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.util.CmsResourceTranslator;
+import org.opencms.util.CmsUUID;
+import org.opencms.workplace.I_CmsDialogHandler;
+import org.opencms.workplace.editor.CmsEditorSelector;
+import org.opencms.workplace.editor.I_CmsEditorHandler;
 
 import java.io.IOException;
 import java.util.*;
@@ -100,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1296,6 +1298,25 @@ public final class OpenCmsCore {
             }
             // any exception here is fatal and will cause a stop in processing
             throw e;
+        }
+        
+        // initialize "editorhandler" registry class
+        try {
+            List editorHandlerClasses = OpenCms.getRegistry().getEditorHandler();
+            String currentClass = (String)editorHandlerClasses.get(0);                
+                I_CmsEditorHandler handler = (I_CmsEditorHandler)Class.forName(currentClass).newInstance();            
+                setRuntimeProperty(CmsEditorSelector.EDITOR_SELECT, handler);
+                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).info(". Editor handler class : " + currentClass + " instanciated");
+                }
+       
+        } catch (Exception e) {
+            if (getLog(this).isInfoEnabled()) {
+                //getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "8", e);
+                getLog(CmsLog.CHANNEL_INIT).info(". Editor handler class : non-critical error initializing editor handler");
+            }
+            // any exception here is fatal and will cause a stop in processing
+            // TODO: activate throwing exception: throw e;
         }
         
         // initialize the Thread store

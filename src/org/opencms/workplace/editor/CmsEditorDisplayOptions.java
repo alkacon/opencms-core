@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2003/12/03 16:47:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/12/04 11:21:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Properties;
  * /system/workplace/jsp/editors/edit_options.properties.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.14
  */
@@ -63,9 +63,11 @@ public class CmsEditorDisplayOptions {
      * @param cms the CmsObject
      */
     public CmsEditorDisplayOptions(CmsObject cms) {
-        if (m_displayOptions == null) {
-            // display options were not read, so initialize them
-            init(cms);
+        synchronized (m_displayOptions) {
+            if (m_displayOptions == null) {
+                // display options were not read, so initialize them
+                init(cms);
+            }
         }
     }
     
@@ -76,9 +78,11 @@ public class CmsEditorDisplayOptions {
      * @param forceInit if true, display options will always be read new
      */
     public CmsEditorDisplayOptions(CmsObject cms, boolean forceInit) {
-        if (forceInit || m_displayOptions == null) {
-            // display options were not read or forced to be read, so initialize them
-            init(cms);
+        synchronized (m_displayOptions) {
+            if (forceInit || m_displayOptions == null) {
+                // display options were not read or forced to be read, so initialize them
+                init(cms);
+            }
         }
     }
     

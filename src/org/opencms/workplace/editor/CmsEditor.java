@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2003/12/02 16:25:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/12/04 11:21:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editor;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
@@ -375,8 +376,18 @@ public abstract class CmsEditor extends CmsDialog {
      * @return the brwoser type
      */
     public String getBrowserType() {
+        return getBrowserType(getCms()); 
+    }
+    
+    /**
+     * Returns the browser type currently used by the client.<p>
+     * 
+     * @param cms the CmsObject
+     * @return the brwoser type
+     */
+    public String getBrowserType(CmsObject cms) {
         if (m_browserType == null) {
-            HttpServletRequest orgReq = (HttpServletRequest)getCms().getRequestContext().getRequest().getOriginalRequest();
+            HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
             String browser = orgReq.getHeader("user-agent");
             if (browser.indexOf("MSIE") > -1) {
                 m_browserType = BROWSER_IE;

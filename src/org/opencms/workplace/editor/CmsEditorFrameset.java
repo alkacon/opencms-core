@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2003/12/02 16:25:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/12/04 11:21:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,13 +52,20 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
-public class CmsEditorFrameset extends CmsEditor {
+public class CmsEditorFrameset extends CmsEditor implements I_CmsEditorHandler {
     
-     /**
+    /**
+     * Default constructor needed for editor handler implementation.<p>
+     */
+    public CmsEditorFrameset() {
+        super(null);
+    }
+    
+    /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
@@ -76,13 +83,13 @@ public class CmsEditorFrameset extends CmsEditor {
     }
     
     /**
-     * Returns the URI of the editor which will be used for the selected resource.<p>
-     * 
-     * The returned URI depends on the selected resource type, the used browser and the users preferences.<p>
-     * 
-     * @return URI of the editor which will be used for the selected resource
+     * @see org.opencms.workplace.editor.I_CmsEditorHandler#getEditorUri(java.lang.String, com.opencms.flex.jsp.CmsJspActionElement)
      */
-    public String getEditorUri() {
+    public String getEditorUri(String resource, CmsJspActionElement jsp) {
+        // first try to get the "edit as text" and "noactivex" parameters from the request
+        setParamEditastext(jsp.getRequest().getParameter("editastext"));
+        setParamNoactivex(jsp.getRequest().getParameter("noactivex"));
+        // initialize resource type with -1 (unknown resource type)
         int resTypeId = -1;
         if ("true".equals(getParamEditastext())) {
             // the resource should be treated as text, set the id
@@ -90,7 +97,7 @@ public class CmsEditorFrameset extends CmsEditor {
         } else {
             try {
                 // get the type of the edited resource
-                CmsResource res = getCms().readFileHeader(getParamResource());
+                CmsResource res = jsp.getCmsObject().readFileHeader(resource);
                 resTypeId = res.getType();
             } catch (CmsException e) {
                 // do nothing here
@@ -109,7 +116,7 @@ public class CmsEditorFrameset extends CmsEditor {
         case CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID:
         default:
             // resource is text or xml type, return ledit editor or simple text editor
-            if (BROWSER_IE.equals(getBrowserType()) && !"true".equals(getParamNoactivex())) {
+            if (BROWSER_IE.equals(getBrowserType(jsp.getCmsObject())) && !"true".equals(getParamNoactivex())) {
                 return C_PATH_EDITORS + "ledit/editor.html";
             } else {
                 return C_PATH_EDITORS + "simple/editor.html";
@@ -121,16 +128,16 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.editor.CmsEditor#actionExit()
      */
-    public void actionExit() { }
+    public final void actionExit() { }
     
     /**
      * @see org.opencms.workplace.editor.CmsEditor#actionSave()
      */
-    public void actionSave() { }
+    public final void actionSave() { }
     
     /**
      * @see org.opencms.workplace.editor.CmsEditor#initContent()
      */
-    protected void initContent() { }
+    protected final void initContent() { }
     
 }
