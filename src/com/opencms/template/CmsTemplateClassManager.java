@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2000/08/21 10:10:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/08/22 11:53:25 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * be cached and re-used. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/08/21 10:10:21 $
+ * @version $Revision: 1.15 $ $Date: 2000/08/22 11:53:25 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels { 
 	
@@ -50,6 +50,9 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
 	 * Hashtable for caching the template class
 	 */
 	private static Hashtable instanceCache = new Hashtable();
+
+	private static CmsClassLoader m_loader=null;
+
 
 	/**
 	 * Clears the cache for template class instances.
@@ -124,8 +127,10 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
 		}
 		
 		if(instanceCache.containsKey(classname)) {
+			System.err.println("---- GOT FROM INSTANCE CACHE:"+classname);
 			o = instanceCache.get(classname);
 		} else {
+			System.err.println("---- REQUEST FROM CLASSLOADER:"+classname);
 			Vector repositories = new Vector();
 			String[] repositoriesFromConfigFile = null;
 			String[] repositoriesFromRegistry = null;
@@ -147,9 +152,17 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
 				repositories.addElement(repositoriesFromRegistry[i]);
 						
 			try {
+				if (m_loader == null) {
+					m_loader = new CmsClassLoader(cms, repositories, null);
+				}
+
+				Class c=m_loader.loadClass(classname);
+
+				/*
 				CmsClassLoader loader = new CmsClassLoader(cms, repositories, null);
 				Class c = loader.loadClass(classname);        
-			
+				*/
+				
 				// Now we have to look for the constructor
 				Constructor con = c.getConstructor(parameterTypes); 
 				o = con.newInstance(callParameters);

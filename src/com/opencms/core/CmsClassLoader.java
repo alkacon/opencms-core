@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
- * Date   : $Date: 2000/08/08 14:08:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/22 11:53:25 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -111,7 +111,7 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:20 $
+ * @version $Revision: 1.10 $ $Date: 2000/08/22 11:53:25 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -135,7 +135,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 	 * Cache of the loaded classes. This contains Classes keyed
 	 * by class names.
 	 */
-	private Hashtable cache;
+	private static Hashtable cache;
 
 	/**
 	 * The classpath which this classloader searches for class definitions.
@@ -144,7 +144,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 	private Vector repository;
 	
 	private CmsObject m_cms;
-	
+
 	/**
 	 * Creates a new class loader that will load classes from specified
 	 * class repositories.
@@ -199,6 +199,12 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 		this.generation = generationCounter++;
 		
 		this.m_cms = cms;        
+	}
+	/**
+	* Clears the internal class cache
+	*/
+	public void clearcache(){
+		cache.clear();
 	}
 	/**
 	 * Loads all the bytes of an InputStream.
@@ -280,9 +286,11 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 				
 		// first try to load the class using the parent class loader.
 		try {
+			System.err.println("Try parent:"+name);
 			c = Class.forName(name);
 		} catch(ClassNotFoundException e) {
 			// to continue set c back to null
+			System.err.println("Parent failed");
 			c = null;
 		}
 			
@@ -292,9 +300,10 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 			  
 		// OK. The parent loader didn't find the class.
 		// Let's have a look in our own class cache
-		
-		c = (Class)cache.get(name);
+		System.err.println("Try cache:"+name);
+		c = (Class)cache.get(name);		
 		if(c != null) {
+			System.err.println("Found in cache");
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_DEBUG, "BINGO! Class " + name + "was found in cache.");
 			}
@@ -308,7 +317,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(C_OPENCMS_DEBUG,"Class " + name + "was NOT found in cache.");
 		}
-		
+		System.err.println("Load class:"+name);
 		// No class found.
 		// Then we have to search in the OpenCMS System.
 	   
@@ -318,6 +327,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 		
 		while(allRepositories.hasMoreElements()) {
 			filename = (String)allRepositories.nextElement();
+			System.err.println("****"+filename);
 			
 			if (isZipOrJarArchive(filename)) {
 				try {
@@ -331,7 +341,15 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 			}
 			else {
 				//filename = filename + className;
+				// check if the repository name is just a path.
+				// if so, add the complete classname and the fileextension ".class"
+				if (filename.endsWith("/")) {
+					String classname=name.replace('.','/');
+					filename=filename+classname+".class";
+				}
 				try {
+					System.err.println("Try to load class from "+filename);
+					System.err.println("Requested class is "+name);
 					classFile = m_cms.readFile(filename);
 					myClassData = classFile.getContents();
 				} catch(Exception e) {
@@ -339,6 +357,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 					classFile = null;
 					myClassData = null;
 				}
+				System.err.println("Class "+classFile);
 				if(classFile == null) {
 					throw new ClassNotFoundException(name);
 				}
@@ -356,7 +375,8 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 			} catch(Error e) {
 				throw new ClassNotFoundException("Something really bad happened while loading class " + filename);
 			} 
-			
+
+			System.err.println(" ==> Put into cache "+name);
 			cache.put(name, c);
 			if(resolve) {
 				resolveClass(c);
