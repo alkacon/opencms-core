@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/01/24 09:43:31 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2001/01/30 08:50:00 $
+* Version: $Revision: 1.40 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2001/01/24 09:43:31 $
+ * @version $Revision: 1.40 $ $Date: 2001/01/30 08:50:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -192,11 +192,12 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         int numBodys = allBodys.size();
         for(int i = 0;i < numBodys;i++) {
             String bodyname = (String)allBodys.elementAt(i);
+            String encodedBodyname = makeHtmlEntities(bodyname);
             if(bodyname.equals(currentBodySection)) {
                 currentBodySectionIndex = loop;
             }
-            values.addElement(bodyname);
-            names.addElement(bodyname);
+            values.addElement(encodedBodyname);
+            names.addElement(encodedBodyname);
             loop++;
         }
         return new Integer(currentBodySectionIndex);
@@ -323,6 +324,15 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             title = cms.readProperty(file, C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
+            }
+
+            // We don't want the user to go on and create any temporary
+            // files, if he has insufficient rights. Check this now.            
+            if(!cms.accessWrite(file)) {
+                throw new CmsException(getClassName() + "Insufficient rights for editing the file " + file, CmsException.C_NO_ACCESS);                
+            }
+            if(!cms.accessWrite(bodyElementFilename)) {
+                throw new CmsException(getClassName() + "Insufficient rights for editing the file " + bodyElementFilename, CmsException.C_NO_ACCESS);                
             }
             
             // Okay. All values are initialized. Now we can create            
@@ -700,7 +710,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     public String setBodyTitle(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String title = (String)session.getValue("te_oldbodytitle");
-        return title;
+        return makeHtmlEntities(title);
     }
     
     public Object setText(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
@@ -740,6 +750,16 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String name = (String)session.getValue("te_title");
-        return name;
+        return makeHtmlEntities(name);
     }
+
+
+    private String makeHtmlEntities(String s) {
+        int idx = s.indexOf("\"");
+        while(idx > -1) {
+            s = s.substring(0, idx) + "&quot;" + s.substring(idx + 1);
+            idx = s.indexOf("\"");
+        }
+        return s;
+    }   
 }
