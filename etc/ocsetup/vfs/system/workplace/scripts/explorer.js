@@ -326,7 +326,7 @@ var ns,ie,gecko;
      var frameStr1 =
          '<html>' +
          "<head><script language=JavaScript> <!-- function show_help() {    return explorer_content.show_help(); } //--> </script> </head>"+
-         '<frameset border=2 frameborder=yes framespacing=2 cols=20%,80%>' +
+         '<frameset border=2 frameborder=yes framespacing=2 cols=25%,75%>' +
          '<frame name=explorer_tree id=explorer_tree src="about:blank">' +
          '<frame name=explorer_content id=explorer_content src="about:blank">' +
          '</frameset>' +
@@ -1070,14 +1070,14 @@ showKontext(doc, welche, id,x,y);
              "td.inactive{ color:#8c8c8c; } "+
              "/"+"/"+"--></style></head>";
     var returnplace=wo.location.href;
-    if(openfolderMethod == "openthisfolderflat" || projectView){
+    
+    if((openfolderMethod != "openthisfolderflat") && (!projectView)){
+        returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/explorer_files.html";
+    }
         returnplace=returnplace.replace(/\?/g, "%3F");
         returnplace=returnplace.replace(/\&/g, "%26");
         returnplace=returnplace.replace(/\=/g, "%3D");
-    } else {
-        returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/explorer_files.html";
-    }
-    returnplace=simpleEscape(returnplace);
+    returnplace=returnplace.replace(/\//g, "%2F");
 
     wo.open();
     wo.writeln(temp);
