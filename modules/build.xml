@@ -6,7 +6,7 @@
  	<property name="opencms.setup.input" 				location="${opencms.input}/webapp/setup" />
  	<property name="opencms.config.input" 				location="${opencms.input}/webapp/WEB-INF/config" />
     <property name="opencms.input.libs" 				location="${opencms.input}/webapp/WEB-INF/lib" />
-	<property name="additional.modules" 				location="${opencms.output}/zip" />
+    <property name="opencms.output.distfiles"           location="${opencms.output}/zip" />    
     <property name="excludes"                  			value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
 	
 	<!-- 
@@ -203,6 +203,7 @@
 		<mkdir dir="${opencms.output}/build/zips-modules" />
 
 		<!-- get the jars and zips -->
+		<echo>${opencms.output.distfiles}</echo>
 		<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     		<if>
@@ -216,7 +217,7 @@
     			</then>		
      		</if>
            <copy todir="${opencms.output}/build/zips-modules" >   
-		    <fileset dir="${additional.modules}">
+		    <fileset dir="${opencms.output.distfiles}">
 		      <include name="@{module}_*.zip"/>
 		    </fileset>
            </copy>
