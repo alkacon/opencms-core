@@ -192,7 +192,7 @@
                 <editorsave>Sorry, the file could not be saved.</editorsave>
                 <foldercreate>Sorry, the new folder could not be created.</foldercreate>
                 <gallerynoright>Sorry, the new gallery could not be created.</gallerynoright>
-                <histproperties>Sorry, there was an error when executing this action.</histproperties>
+                <histproperties>Sorry, an error occured when executing this action.</histproperties>
                 <htmlbrowser>Sorry, you can't use the HTML browser yet.</htmlbrowser>                                
                 <changeuser>Sorry, the user data could not be changed.</changeuser>
                 <adduser> Sorry, the user could not be created.</adduser>
@@ -249,7 +249,7 @@
                 <deleteuser>The users Admin and Guest can not be deleted.</deleteuser>
                 <deleteextension>see details</deleteextension>
                 <deletegroup>There are still users in the group.</deletegroup>
-                <database>There was a system error.</database>
+                <database>A system error occured.</database>
                 <datamissing>The fields User, Name and Email must be filled out.</datamissing> 
                 <disadmin>A user in the group Administrators can not be disabled.</disadmin>
                 <downbrowser>The folder for the download galleries doesn't exist.</downbrowser> 
@@ -271,7 +271,7 @@
                 <picdatamissing>You need to pic a foldername and a caretaker of the gallery.</picdatamissing>
                 <picnogallery>There is no image gallery yet.</picnogallery>
                 <projectdatamissing>The fields Project name and Folders need to be filled in.</projectdatamissing>
-                <projectlockchange>There was an error.</projectlockchange>
+                <projectlockchange>An error occured.</projectlockchange>
                 <namemissing>The field Name must be filled out.</namemissing>
                 <titlemissing>The field Title must be filled out.</titlemissing>
                 <newproject>The entered project data is invalid.</newproject>
