@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.27 Chusuk       - xx December 2001
+* Bugfix in language files and templates: the tagname "link" was renamed to "linkto" because of problems with the
+  registered HTML-tag "LINK".
+! The recovery password can be set by anybody who knows the users name and password.
+
 OpenCms 4.5.26 Chusuk       - 3 December 2001
 ! Changes in picturegallery and downloadgallery: the resources can now be edited by the menu
 * Bugfix when reading module parameters from registry: now the given default value is returned if the
