@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
- * Date   : $Date: 2000/02/15 17:53:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/02/19 10:18:16 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/02/15 17:53:49 $
+ * @version $Revision: 1.17 $ $Date: 2000/02/19 10:18:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -119,9 +119,9 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
     public CmsXmlWpConfigFile getConfigFile(A_CmsObject cms) throws CmsException {
-        if(m_configFile == null) {
+        //if(m_configFile == null) {
             m_configFile = new CmsXmlWpConfigFile(cms);
-        }
+        //}
         return m_configFile;
     }
     
@@ -133,13 +133,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
     public CmsXmlWpButtonsDefFile getButtonDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_buttondef == null) {
+        //if(m_buttondef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
             m_buttondef = new CmsXmlWpButtonsDefFile(cms, m_workplaceElementPath + C_BUTTONTEMPLATE);
-        }
+        //}
         return m_buttondef;
     }
     
@@ -150,13 +150,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
     public CmsXmlWpTemplateFile getIconDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_icondef == null) {
+        //if(m_icondef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
             m_icondef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_ICON_TEMPLATEFILE);
-        }
+        //}
         return m_icondef;
     }
 	
@@ -167,13 +167,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
     public CmsXmlWpTemplateFile getProjectlistDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_projectlistdef == null) {
+        //if(m_projectlistdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
             m_projectlistdef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_PROJECTLIST_TEMPLATEFILE);
-        }
+        //}
         return m_projectlistdef;
     }
 	
@@ -184,13 +184,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
     public CmsXmlWpTemplateFile getTaskListDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_tasklistdef == null) {
+        //if(m_tasklistdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
             m_tasklistdef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_TASKLIST_TEMPLATEFILE);
-        }
+        //}
         return m_tasklistdef;
     }
 	
@@ -201,13 +201,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
     public CmsXmlWpTemplateFile getContextmenueDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_contextdef == null) {
+        //if(m_contextdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
             m_contextdef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_CONTEXTMENUE_TEMPLATEFILE);
-        }
+        //}
         return m_contextdef;
     }	
 	
@@ -218,13 +218,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
      public CmsXmlWpLabelDefFile getLabelDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_labeldef == null) {
+        //if(m_labeldef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
             m_labeldef = new CmsXmlWpLabelDefFile(cms, m_workplaceElementPath + C_LABELTEMPLATE);
-        }
+        //}
         return m_labeldef;
     }
      
@@ -235,13 +235,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
      public CmsXmlWpInputDefFile getInputDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_inputdef == null) {
+        //if(m_inputdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
             m_inputdef = new CmsXmlWpInputDefFile(cms, m_workplaceElementPath + C_INPUTTEMPLATE);  
-        }
+        //}
         return m_inputdef;
     }
      
@@ -252,13 +252,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
      public CmsXmlWpErrorDefFile getErrorDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_errordef == null) {
+        //if(m_errordef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
             m_errordef = new CmsXmlWpErrorDefFile(cms, m_workplaceElementPath + C_ERRORTEMPLATE);  
-        }
+        //}
         return m_errordef;
     }
 
@@ -269,13 +269,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
      public CmsXmlWpBoxDefFile getBoxDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_boxdef == null) {
+        //if(m_boxdef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
             m_boxdef = new CmsXmlWpBoxDefFile(cms, m_workplaceElementPath + C_BOXTEMPLATE);  
-        }
+        //}
         return m_boxdef;
     }
   
@@ -286,13 +286,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @exception CmsException
      */
      public CmsXmlWpRadioDefFile getRadioDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_radiodef == null) {
+        //if(m_radiodef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
             m_radiodef = new CmsXmlWpRadioDefFile(cms, m_workplaceElementPath + C_RADIOTEMPLATE);  
-        }
+        //}
         return m_radiodef;
     }
      
