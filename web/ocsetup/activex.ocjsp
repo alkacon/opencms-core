@@ -53,18 +53,13 @@ However, the OpenCms Team is currently not aware of an open source applet that c
 Should anyone know of an open source applet or have even written one that can be used as a WYSIWYG or source text editor, we would, of course, be more than happy to hear about it.
 -----------------------------------------------------------------------
 
-
---------------------Installing ActiveX controls------------------------
+--------------Configuring Microsoft Internet Explorer 5.x Clients------
 First step is the installation of the neccessary controls. The are two ActiveX controls needed by OpenCms: 
 
 1. For the WYSIWYG editor, the "Dynamic HTML Edit Control" is used. This control is part of all MS IE installations since version 5.0, which means you must make sure the IE you use is version 5.0 or later. 
 2. The code editor is a component developed by AY Software and it's called LeEdit OCX Control. You can download the shareware version of this control at http://www.aysoft.com/ledit.htm. This control must be installed on all clients that need access to the code editor functionality. 
 
 The second step is configuring the ActiveX settings so that the controls work properly. 
------------------------------------------------------------------------
-
-
---------------Configuring Microsoft Internet Explorer 5.x Clients------
 Open IEs "Internet options." Then do the following: 
 
 1. On the tab "Security", select "Trusted site zones" from the drop-down menu and click on "Add Sites" to add the URL (e.g. http://opencms.mycompany.com - ask your system administrator for the exact URL) of the zone's OpenCms server. Deactivate the radio button "Require server verification (https:) for all sites in this zone." 
