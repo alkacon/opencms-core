@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/07/07 18:01:08 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -138,7 +138,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 CmsObject cms = null;            
                 CmsStaticExportData exportData = null;
                 try {
-                    cms = OpenCmsCore.getInstance().initCmsObject(null, null, OpenCms.getDefaultUsers().getUserExport(), null);            
+                    cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());            
                     exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
                 } catch (CmsException e) {
                     // unlikley to happen 
@@ -186,7 +186,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         String handlerUri = "/system/handler/handle" + errorCode + ".html";
         CmsObject cms = null;            
         try {
-            cms = OpenCmsCore.getInstance().initCmsObject(null, null, OpenCms.getDefaultUsers().getUserGuest(), null);  
+            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());  
             cms.getRequestContext().setUri(handlerUri);
         } catch (CmsException e) {
             // unlikley to happen 

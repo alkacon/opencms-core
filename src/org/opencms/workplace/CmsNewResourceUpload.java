@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.3.3
  */
@@ -346,9 +346,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
      * Creates the HTML code of the file upload applet with all required parameters.<p>
      * 
      * @return string containing the applet HTML code
-     * @throws CmsException if reading file extensions goes wrong
      */
-    public String createAppletCode() throws CmsException {
+    public String createAppletCode() {
         
         StringBuffer applet = new StringBuffer(2048);
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.130 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.131 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,6 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
-import org.opencms.cron.CmsCronEntry;
-import org.opencms.cron.CmsCronScheduleJob;
-import org.opencms.cron.CmsCronScheduler;
-import org.opencms.cron.CmsCronTable;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsObject;
@@ -60,6 +56,7 @@ import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
@@ -105,13 +102,10 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.130 $
+ * @version $Revision: 1.131 $
  * @since 5.1
  */
 public final class OpenCmsCore {
-
-    /** Prefix for error messages for initialization errors. */
-    private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";
     
     /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
     public static final String C_FILE_HTML_MESSAGES = "org/opencms/main/htmlmsg.properties";
@@ -119,8 +113,14 @@ public final class OpenCmsCore {
     /** Prefix for a critical init error. */
     public static final String C_MSG_CRITICAL_ERROR = "Critical init error/";
 
+    /** Prefix for error messages for initialization errors. */
+    private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";
+
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
+    
+    /** Lock object for synchronization. */
+    private static Object m_lock = new Object();
 
     /** The session manager. */
     private static OpenCmsSessionManager m_sessionManager;
@@ -130,9 +130,6 @@ public final class OpenCmsCore {
     
     /** The configuration manager that contains the information from the XML configuration. */
     private CmsConfigurationManager m_configurationManager;
-
-    /** The cron table to use with the scheduler. */
-    private CmsCronTable m_cronTable;
 
     /** Array of configured default file names (for faster access). */
     private String[] m_defaultFilenames;
@@ -161,9 +158,6 @@ public final class OpenCmsCore {
     /** The link manager to resolve links in &lt;link&gt; tags. */
     private CmsLinkManager m_linkManager;
 
-    /** The resource manager. */
-    private CmsResourceManager m_resourceManager;
-
     /** The locale manager used for obtaining the current locale. */
     private CmsLocaleManager m_localeManager;
 
@@ -185,14 +179,17 @@ public final class OpenCmsCore {
     /** Member variable to store instances to modify resources. */
     private List m_resourceInitHandlers;
 
+    /** The resource manager. */
+    private CmsResourceManager m_resourceManager;
+
     /** The runlevel of this OpenCmsCore object instance. */
     private int m_runLevel;
 
     /** A Map for the storage of various runtime properties. */
     private Map m_runtimeProperties;
 
-    /**  The cron scheduler to schedule the cronjobs. */
-    private CmsCronScheduler m_scheduler;
+    /** The configured scheduler manager. */
+    private CmsScheduleManager m_scheduleManager;
 
     /** The search manager provides indexing and searching. */
     private CmsSearchManager m_searchManager;
@@ -223,7 +220,8 @@ public final class OpenCmsCore {
      * @throws CmsInitException in case of errors during the initialization
      */
     private OpenCmsCore() throws CmsInitException {
-        synchronized (this) {
+        
+        synchronized (m_lock) {
             if (m_instance != null && (m_instance.getRunLevel() > 0)) {
                 throw new CmsInitException("OpenCms already initialized!");
             }
@@ -378,38 +376,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Starts a scheduled job with a correct instantiated CmsObject.<p>
-     * 
-     * @param entry the CmsCronEntry to start.
-     */
-    public void startScheduleJob(CmsCronEntry entry) {
-        try {
-            // TODO: Maybe implement site root as a parameter in cron job table 
-            CmsObject cms = initCmsObject(null, entry.getUserName(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
-            // create a new ScheduleJob and start it
-            CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
-            job.start();
-        } catch (Exception exc) {
-            if (getLog(this).isErrorEnabled()) {
-                getLog(this).error("Error initialising cron job for " + entry, exc);
-            }
-        }
-    }
-
-    /**
-     * Reads the current cron entries from the database and updates the Crontable.<p>
-     */
-    public void updateCronTable() {
-        try {
-            m_cronTable.update();
-        } catch (Exception exc) {
-            if (getLog(this).isErrorEnabled()) {
-                getLog(this).error("Crontable is corrupt, Cron scheduler has been disabled", exc);
-            }
-        }
-    }
-
-    /**
      * Add a cms event listener that listens to all events.<p>
      *
      * @param listener the listener to add
@@ -469,44 +435,46 @@ public final class OpenCmsCore {
     /**
      * Destroys this OpenCms instance, called if the servlet (or shell) is shut down.<p> 
      */
-    protected synchronized void destroy() {
+    protected void destroy() {
 
-        if (m_runLevel > 1) {
-            // runlevel 0 or 1 does not require any shutdown handling
-            System.err.println("\n\nShutting down OpenCms, version " + getSystemInfo().getVersionName() + " in web application '" + getSystemInfo().getWebApplicationName() + "'");
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(".");
-                getLog(CmsLog.CHANNEL_INIT).info(".");
-                getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
-                getLog(CmsLog.CHANNEL_INIT).info(". Performing shutdown  : OpenCms version " + getSystemInfo().getVersionName());
-                getLog(CmsLog.CHANNEL_INIT).info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
+        synchronized (m_lock) {
+            if (m_runLevel > 1) {
+                // runlevel 0 or 1 does not require any shutdown handling
+                System.err.println("\n\nShutting down OpenCms, version " + getSystemInfo().getVersionName() + " in web application '" + getSystemInfo().getWebApplicationName() + "'");
+                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).info(".");
+                    getLog(CmsLog.CHANNEL_INIT).info(".");
+                    getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
+                    getLog(CmsLog.CHANNEL_INIT).info(". Performing shutdown  : OpenCms version " + getSystemInfo().getVersionName());
+                    getLog(CmsLog.CHANNEL_INIT).info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
+                }
+                try {
+                    if (m_threadStore != null) {
+                        m_threadStore.shutDown();
+                    }
+                    if (m_scheduleManager != null) {
+                        m_scheduleManager.shutDown();
+                    }
+                    if (m_driverManager != null) {
+                        m_driverManager.destroy();
+                    }
+                } catch (Throwable e) {
+                    if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                        getLog(CmsLog.CHANNEL_INIT).error(". Error during shutdown: " + e.toString(), e);
+                    }
+                }
+        
+                String runtime = CmsStringSubstitution.formatRuntime(getSystemInfo().getRuntime());
+                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).info(". OpenCms stopped!     : Total uptime was " + runtime);
+                    getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
+                    getLog(CmsLog.CHANNEL_INIT).info(".");
+                    getLog(CmsLog.CHANNEL_INIT).info(".");
+                }
+                System.err.println("Shutdown completed, total uptime was " + runtime + ".\n");
             }
-            try {
-                if (m_threadStore != null) {
-                    m_threadStore.shutDown();
-                }
-                if (m_scheduler != null) {
-                    m_scheduler.shutDown();
-                }
-                if (m_driverManager != null) {
-                    m_driverManager.destroy();
-                }
-            } catch (Throwable e) {
-                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).error(". Error during shutdown: " + e.toString(), e);
-                }
-            }
-    
-            String runtime = CmsStringSubstitution.formatRuntime(getSystemInfo().getRuntime());
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". OpenCms stopped!     : Total uptime was " + runtime);
-                getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
-                getLog(CmsLog.CHANNEL_INIT).info(".");
-                getLog(CmsLog.CHANNEL_INIT).info(".");
-            }
-            System.err.println("Shutdown completed, total uptime was " + runtime + ".\n");
+            m_instance = null;
         }
-        m_instance = null;
     }
 
     /**
@@ -584,15 +552,6 @@ public final class OpenCmsCore {
      */
     protected CmsLinkManager getLinkManager() {
         return m_linkManager;
-    }
-
-    /**
-     * Returns the resource manager.<p>
-     * 
-     * @return the resource manager
-     */
-    protected CmsResourceManager getResourceManager() {
-        return m_resourceManager;
     }
 
     /**
@@ -674,6 +633,15 @@ public final class OpenCmsCore {
         return (I_CmsRequestHandler)m_requestHandlers.get(name);
     }
 
+    /**
+     * Returns the resource manager.<p>
+     * 
+     * @return the resource manager
+     */
+    protected CmsResourceManager getResourceManager() {
+        return m_resourceManager;
+    }
+
     /** 
      * Returns the runlevel of this OpenCmsCore object instance.<p>
      * 
@@ -703,6 +671,16 @@ public final class OpenCmsCore {
      */
     protected Map getRuntimePropertyMap() {
         return m_runtimeProperties;
+    }
+
+    /**
+     * Returns the configured schedule manager.<p>
+     *
+     * @return the configured schedule manager
+     */
+    protected CmsScheduleManager getScheduleManager() {
+
+        return m_scheduleManager;
     }
 
     /**
@@ -784,7 +762,7 @@ public final class OpenCmsCore {
      * @return a cms context that has been initialized with "Guest" permissions
      * @throws CmsException in case the CmsObject could not be initialized
      */
-    protected CmsObject initCmsObject(
+    private CmsObject initCmsObject(
         HttpServletRequest req, 
         HttpServletResponse res,
         String user,
@@ -821,15 +799,14 @@ public final class OpenCmsCore {
      * @return the initialized CmsObject
      * @throws CmsException in case something goes wrong
      */
-    protected CmsObject initCmsObject(
+    private CmsObject initCmsObject(
         HttpServletRequest req, 
         String userName,
         String currentSite, 
         int projectId, 
         CmsSessionInfoManager sessionStorage
     ) throws CmsException {
-        CmsObject cms = new CmsObject();
-
+        
         CmsUser user = m_driverManager.readUser(userName);
         CmsProject project = m_driverManager.readProject(projectId);
         
@@ -858,8 +835,8 @@ public final class OpenCmsCore {
         Locale locale = null;
         String encoding = null;
         CmsI18nInfo i18nInfo;
-        if (getLocaleManager() != null) {
-            // locale manager is initialized
+        if (m_localeManager.isInitialized()) {
+            // locale manager must be initialized
             if (requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE) 
             || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_MODULES) 
             || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
@@ -910,42 +887,127 @@ public final class OpenCmsCore {
         // decode the requested resource, always using UTF-8
         requestedResource = CmsEncoder.decode(requestedResource);
         
-        // now create the context and init the CmsObject
-        CmsRequestContext context = new CmsRequestContext(user, project, requestedResource, currentSite, locale, encoding, remoteAddr, m_directoryTranslator, m_fileTranslator);
+        // initialize the context info
+        CmsContextInfo contextInfo = new CmsContextInfo(
+            user, 
+            project,
+            requestedResource, 
+            currentSite,
+            locale,
+            encoding,
+            remoteAddr);
+
+        // now generate and return the CmsObject
+        return initCmsObject(contextInfo, sessionStorage);        
+    }
+    
+    /**
+     * Initializes a CmsObject with the given context information.<p>
+     * 
+     * @param contextInfo the information for the CmsObject context to create
+     * @param sessionStorage the session storage for this OpenCms instance
+     * 
+     * @return the initialized CmsObject
+     * 
+     * @throws CmsException if something goes wrong
+     */    
+    private CmsObject initCmsObject(
+        CmsContextInfo contextInfo, 
+        CmsSessionInfoManager sessionStorage
+    ) throws CmsException {
+        
+        CmsUser user = contextInfo.getUser();        
+        if (user == null) {
+            user = m_driverManager.readUser(contextInfo.getUserName());
+        }
+                          
+        CmsProject project = contextInfo.getProject();
+        if (project == null) {
+            project = m_driverManager.readProject(contextInfo.getProjectName());
+        }
+        
+        // first create the request context
+        CmsRequestContext context = 
+            new CmsRequestContext(
+                user,
+                project,
+                contextInfo.getRequestedUri(), 
+                contextInfo.getSiteRoot(), 
+                contextInfo.getLocale(), 
+                contextInfo.getEncoding(), 
+                contextInfo.getRemoteAddr(),
+                m_directoryTranslator, 
+                m_fileTranslator);
+
+        // now initialize and return the CmsObject
+        CmsObject cms = new CmsObject();
         cms.init(m_driverManager, context, sessionStorage);
         return cms;
     }
 
     /**
      * Returns an initialized CmsObject with the user initialized as provided,
-     * with the "online" project selected and "/" set as the current site root.<p>
+     * with the "Online" project selected and "/" set as the current site root.<p>
      * 
      * Note: Only the default users 'Guest' and 'Export' can initialized with 
-     * this method, all other user names will throw a RuntimeException.<p>
+     * this method, all other user names will throw an Exception.<p>
      * 
      * @param user the user name to initialize, can only be 
      *        {@link org.opencms.db.CmsDefaultUsers#getUserGuest()} or
      *        {@link org.opencms.db.CmsDefaultUsers#getUserExport()}
-     * @return an initialized CmsObject with "Guest" user permissions
+     * 
+     * @return an initialized CmsObject with the given users permissions
+     * 
+     * @throws CmsException if an invalid user name was provided, or if something else goes wrong
+     * 
      * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
+     * @see OpenCms#initCmsObject(String)
+     * @see #initCmsObject(CmsObject, CmsContextInfo)
      */
-    protected CmsObject initCmsObject(String user) {
-        if (user == null) {
-            user = getDefaultUsers().getUserGuest();
-        } else if (!user.equalsIgnoreCase(getDefaultUsers().getUserGuest()) 
-                && !user.equalsIgnoreCase(getDefaultUsers().getUserExport())) {
-            throw new RuntimeException("Invalid user for default CmsObject initialization: " + user);
-        }
-        try {
-            return initCmsObject(null, null, user, null);
-        } catch (CmsException e) {
-            // should not happen since the guest user can always be created like this
-            if (getLog(this).isWarnEnabled()) {
-                getLog(this).warn("Unable to initialize CmsObject for user " + user, e);
+    protected CmsObject initCmsObject(String user) throws CmsException {
+        
+        return initCmsObject(null, new CmsContextInfo(user));
+    }
+    
+    /**
+     * Returns an initialized CmsObject with the user and context initialized as provided.<p>
+     * 
+     * Note: Only if the provided <code>adminCms</code> CmsObject has admin permissions, 
+     * this method allows the creation a CmsObject for any existing user. Otherwise
+     * only the default users 'Guest' and 'Export' can initialized with 
+     * this method, all other user names will throw an Exception.<p>
+     * 
+     * @param adminCms must either be initialized with "Admin" permissions, or null
+     * @param contextInfo the context info to create a CmsObject for
+     * 
+     * @return an initialized CmsObject with the given users permissions
+     * 
+     * @throws CmsException if an invalid user name was provided, or if something else goes wrong
+     * 
+     * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
+     * @see org.opencms.db.CmsDefaultUsers#getUserExport()
+     * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
+     * @see #initCmsObject(String)
+     */    
+    protected CmsObject initCmsObject(CmsObject adminCms, CmsContextInfo contextInfo) throws CmsException {
+        
+        String user = contextInfo.getUserName();
+        
+        if (adminCms == null || !adminCms.isAdmin()) {
+            if (!user.equals(getDefaultUsers().getUserGuest()) 
+             && !user.equals(getDefaultUsers().getUserExport())) {
+             // if no admin object is provided, only "Guest" or "Export" user can be generated
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("Invalid access to user '" + user + "' attempted" 
+                        + ((adminCms!=null)?(" by " + adminCms.getRequestContext().currentUser().getName()):""));
+                }                    
+                throw new CmsSecurityException("Invalid user for default CmsObject initialization: " + user, 
+                    CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
             }
-            return new CmsObject();
         }
+        
+        return initCmsObject(contextInfo, null);        
     }
 
     /**
@@ -982,13 +1044,6 @@ public final class OpenCmsCore {
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info(". System file.encoding : " + systemEncoding);
         }
-//        if (!defaultEncoding.equals(systemEncoding)) {
-//            String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + "' not equal to OpenCms encoding '" + defaultEncoding + "'";
-//            if (getLog(this).isFatalEnabled()) {
-//                getLog(this).fatal(OpenCmsCore.C_MSG_CRITICAL_ERROR + "1: " + msg);
-//            }
-//            throw new Exception(msg);
-//        }
         getSystemInfo().setDefaultEncoding(defaultEncoding);
 
         // read server ethernet address (MAC) and init UUID generator
@@ -1063,6 +1118,9 @@ public final class OpenCmsCore {
         getSystemInfo().setSynchronizeSettings(new CmsSynchronizeSettings());       
         m_resourceInitHandlers = systemConfiguration.getResourceInitHandlers();
         
+        // set the scheduler manager
+        m_scheduleManager = systemConfiguration.getScheduleManager();        
+        
         // get the VFS configuration
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(CmsVfsConfiguration.class);
         m_resourceManager = vfsConfiguation.getResourceManager();        
@@ -1091,28 +1149,6 @@ public final class OpenCmsCore {
             }
             // any exception here is fatal and will cause a stop in processing
             throw new CmsException("Database init failed", CmsException.C_RB_INIT_ERROR, e);
-        }
-
-        try {
-            // if the System property opencms.disableScheduler is set to true, don't start scheduling
-            if (!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
-                // now initialise the OpenCms scheduler to launch cronjobs
-                m_cronTable = new CmsCronTable();
-                m_scheduler = new CmsCronScheduler(this, m_cronTable);
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". OpenCms scheduler    : enabled");
-                }
-            } else {
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". OpenCms scheduler    : disabled");
-                }
-            }
-        } catch (Exception e) {
-            if (getLog(this).isErrorEnabled()) {
-                getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "5", e);
-            }
-            // any exception here is fatal and will cause a stop in processing
-            throw e;
         }
 
         // initialize the Thread store
@@ -1191,6 +1227,9 @@ public final class OpenCmsCore {
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
 
+        // initialize the scheduler
+        m_scheduleManager.initialize(adminCms);
+        
         // initialize the workplace manager
         m_workplaceManager.initialize(adminCms);
         
@@ -1362,14 +1401,18 @@ public final class OpenCmsCore {
     /**
      * Initialize member variables.<p>
      */
-    protected synchronized void initMembers() {
-        m_log = new CmsLog();
-        m_passwordValidatingClass = "";
-        m_resourceInitHandlers = new ArrayList();
-        m_eventListeners = new HashMap();
-        m_requestHandlers = new HashMap();
-        m_systemInfo = new CmsSystemInfo();
-        m_exportPoints = Collections.EMPTY_SET;
+    protected void initMembers() {
+        synchronized (m_lock) {
+            m_log = new CmsLog();
+            m_passwordValidatingClass = "";
+            m_resourceInitHandlers = new ArrayList();
+            m_eventListeners = new HashMap();
+            m_requestHandlers = new HashMap();
+            m_systemInfo = new CmsSystemInfo();
+            m_exportPoints = Collections.EMPTY_SET;
+            m_defaultUsers = new CmsDefaultUsers();
+            m_localeManager = new CmsLocaleManager(Locale.ENGLISH);
+        }
     }
 
     /**
@@ -1382,15 +1425,17 @@ public final class OpenCmsCore {
      * 
      * @param servlet the OpenCms servlet
      */
-    protected synchronized void initServlet(OpenCmsServlet servlet) {
-        // add the servlets request handler
-        addRequestHandler(servlet);
-        // output the final 'startup is finished' message
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms is running!  : Total startup time was " + CmsStringSubstitution.formatRuntime(getSystemInfo().getRuntime()));
-            getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
-            getLog(CmsLog.CHANNEL_INIT).info(".");
-        }        
+    protected void initServlet(OpenCmsServlet servlet) {
+        synchronized (m_lock) {
+            // add the servlets request handler
+            addRequestHandler(servlet);
+            // output the final 'startup is finished' message
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". OpenCms is running!  : Total startup time was " + CmsStringSubstitution.formatRuntime(getSystemInfo().getRuntime()));
+                getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
+                getLog(CmsLog.CHANNEL_INIT).info(".");
+            }        
+        }
     }
 
     /**
@@ -1491,21 +1536,24 @@ public final class OpenCmsCore {
      * @param configuration the configuration
      * @return the initialized OpenCmsCore
      */
-    protected synchronized OpenCmsCore upgradeRunlevel(ExtendedProperties configuration) {
-        if ((m_instance != null) && (getRunLevel() == 2)) {
-            // instance already in runlevel 2
+    protected OpenCmsCore upgradeRunlevel(ExtendedProperties configuration) {
+        
+        synchronized (m_lock) {
+            if ((m_instance != null) && (getRunLevel() == 2)) {
+                // instance already in runlevel 2
+                return m_instance;
+            }
+            setRunLevel(2);
+            try {
+                m_instance.initConfiguration(configuration);
+            } catch (Throwable t) {
+                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", t);
+                }
+                m_instance = null;
+            }
             return m_instance;
         }
-        setRunLevel(2);
-        try {
-            m_instance.initConfiguration(configuration);
-        } catch (Throwable t) {
-            if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", t);
-            }
-            m_instance = null;
-        }
-        return m_instance;
     }
 
     /**
@@ -1515,29 +1563,32 @@ public final class OpenCmsCore {
      * @param context the context
      * @return the initialized OpenCmsCore
      */
-    protected synchronized OpenCmsCore upgradeRunlevel(ServletContext context) {
-        if ((m_instance != null) && (getRunLevel() == 3)) {
-            // instance already in runlevel 3
+    protected OpenCmsCore upgradeRunlevel(ServletContext context) {
+        
+        synchronized (m_lock) {
+            if ((m_instance != null) && (getRunLevel() == 3)) {
+                // instance already in runlevel 3
+                return m_instance;
+            }
+            try {
+                setRunLevel(3);
+                m_instance.initContext(context);
+            } catch (CmsInitException e) {
+                if (e.getType() != CmsInitException.C_INIT_WIZARD_ENABLED) {
+                    // do not output the "wizard enabled" message on the log
+                    if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                        getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", e);
+                    }
+                }
+                m_instance = null;
+            } catch (Throwable t) {
+                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", t);
+                }
+                m_instance = null;
+            }
             return m_instance;
         }
-        try {
-            setRunLevel(3);
-            m_instance.initContext(context);
-        } catch (CmsInitException e) {
-            if (e.getType() != CmsInitException.C_INIT_WIZARD_ENABLED) {
-                // do not output the "wizard enabled" message on the log
-                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", e);
-                }
-            }
-            m_instance = null;
-        } catch (Throwable t) {
-            if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", t);
-            }
-            m_instance = null;
-        }
-        return m_instance;
     }
 
     /**
@@ -2028,5 +2079,4 @@ public final class OpenCmsCore {
             }
         }
     }
-
 }

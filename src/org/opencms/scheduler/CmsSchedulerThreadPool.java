@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2004/07/05 15:35:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/07 18:01:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,33 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * 
+ * This library is based to some extend on code from the 
+ * OpenSymphony Quartz project. Original copyright notice:
+ * 
+ * Copyright James House (c) 2001-2004
+ * 
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 1.
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer. 2. Redistributions in
+ * binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or other
+ * materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.opencms.scheduler;
@@ -39,9 +66,11 @@ import org.quartz.spi.ThreadPool;
 /**
  * Simple thread pool used for the Quartz scheduler in OpenCms.<p>
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author James House
+ * @author Juergen Donnerstag
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsSchedulerThreadPool implements ThreadPool {
@@ -57,7 +86,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
     private boolean m_isShutdown;
 
     private boolean m_makeThreadsDaemons;
-    
+
     private int m_maxThreadCount;
 
     private Runnable m_nextRunnable;
@@ -67,7 +96,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
     private ThreadGroup m_threadGroup;
 
     private String m_threadNamePrefix;
-    
+
     private int m_threadPriority;
 
     private CmsSchedulerThread[] m_workers;
@@ -81,10 +110,10 @@ public class CmsSchedulerThreadPool implements ThreadPool {
      * @see #CmsSchedulerThreadPool(int, int, int)
      */
     public CmsSchedulerThreadPool() {
-        
+
         this(0, 10, Thread.NORM_PRIORITY);
     }
-    
+
     /**
      * Create a new <code>CmsSchedulerThreadPool</code> with the specified number
      * of threads that have the given priority.
@@ -103,7 +132,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
      * @see java.lang.Thread
      */
     public CmsSchedulerThreadPool(int initialThreadCount, int maxThreadCount, int threadPriority) {
-        
+
         m_inheritGroup = true;
         m_inheritLoader = true;
         m_nextRunnableLock = new Object();
@@ -119,7 +148,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
      * @see org.quartz.spi.ThreadPool#getPoolSize()
      */
     public int getPoolSize() {
-        
+
         return m_currentThreadCount;
     }
 
@@ -127,9 +156,9 @@ public class CmsSchedulerThreadPool implements ThreadPool {
      * Returns the thread priority of the threads in the scheduler pool.<p>
      * 
      * @return the thread priority of the threads in the scheduler pool 
-     */    
+     */
     public int getThreadPriority() {
-        
+
         return m_threadPriority;
     }
 
@@ -142,8 +171,9 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             throw new SchedulerConfigException("Maximum thread count for scheduler must be > 0 and <= 200");
         }
         if (m_initialThreadCount < 0 || m_initialThreadCount > m_maxThreadCount) {
-            throw new SchedulerConfigException("Initial thread count for scheduler must be > -1 and <= configured maximum");
-        }        
+            throw new SchedulerConfigException(
+                "Initial thread count for scheduler must be > -1 and <= configured maximum");
+        }
         if (m_threadPriority <= 0 || m_threadPriority > 9) {
             throw new SchedulerConfigException("Scheduler thread priority must be > 0 and <= 9");
         }
@@ -185,13 +215,13 @@ public class CmsSchedulerThreadPool implements ThreadPool {
      * @return true if the <code>Runnable</code> was run
      */
     public boolean runInThread(Runnable runnable) {
-        
+
         if (runnable == null) {
             return false;
         }
 
         if (m_isShutdown) {
-            OpenCms.getLog(this).error("Scheduler thread pool was already shut down, could not execute runnable.");                       
+            OpenCms.getLog(this).error("Scheduler thread pool was already shut down, could not execute runnable.");
             return false;
         }
 
@@ -199,7 +229,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             // try to grow the thread pool since other runnables are already waiting
             growThreadPool();
         }
-        
+
         synchronized (m_nextRunnableLock) {
 
             // wait until a worker thread has taken the previous Runnable
@@ -225,18 +255,25 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         // note: the synchronized section should be as short (time) as
         // possible as starting a new thread is not a quick action
         if (m_isShutdown) {
-            new CmsSchedulerThread(this, m_threadGroup, m_threadNamePrefix + "(final)", m_threadPriority, false, runnable);
+            new CmsSchedulerThread(
+                this,
+                m_threadGroup,
+                m_threadNamePrefix + "(final)",
+                m_threadPriority,
+                false,
+                runnable);
         }
 
         return true;
     }
-    
+
     /**
      * Terminate any worker threads in this thread group.<p>
      * 
      * Jobs currently in progress will be allowed to complete.<p>
      */
     public void shutdown() {
+
         shutdown(true);
     }
 
@@ -246,7 +283,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
      * @param waitForJobsToComplete if true,, all current jobs will be allowed to complete
      */
     public void shutdown(boolean waitForJobsToComplete) {
-        
+
         m_isShutdown = true;
 
         // signal each scheduler thread to shut down
@@ -304,7 +341,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
      * @throws InterruptedException if something goes wrong
      */
     protected Runnable getNextRunnable() throws InterruptedException {
-        
+
         Runnable toRun = null;
 
         // Wait for new Runnable (see runInThread()) and notify runInThread()
@@ -329,17 +366,20 @@ public class CmsSchedulerThreadPool implements ThreadPool {
      * has not been reached.<p>
      */
     private void growThreadPool() {
+
         if (m_currentThreadCount < m_maxThreadCount) {
             // if maximum number is not reached grow the thread pool
             synchronized (m_nextRunnableLock) {
-                m_workers[m_currentThreadCount] = new CmsSchedulerThread(
-                    this,
-                    m_threadGroup,
-                    m_threadNamePrefix + m_currentThreadCount,
-                    m_threadPriority,
-                    m_makeThreadsDaemons);
+                m_workers[m_currentThreadCount] = 
+                    new CmsSchedulerThread(
+                        this, 
+                        m_threadGroup, 
+                        m_threadNamePrefix + m_currentThreadCount, 
+                        m_threadPriority, 
+                        m_makeThreadsDaemons);
                 if (m_inheritLoader) {
-                    m_workers[m_currentThreadCount].setContextClassLoader(Thread.currentThread().getContextClassLoader());
+                    m_workers[m_currentThreadCount].setContextClassLoader(Thread.currentThread()
+                        .getContextClassLoader());
                 }
                 // increas the current size
                 m_currentThreadCount++;

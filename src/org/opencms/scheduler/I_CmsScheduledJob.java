@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/Attic/I_CmsSchedulerJob.java,v $
- * Date   : $Date: 2004/07/05 15:35:12 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/I_CmsScheduledJob.java,v $
+ * Date   : $Date: 2004/07/07 18:01:08 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -43,10 +43,10 @@ import org.apache.commons.collections.ExtendedProperties;
  * @version $Revision: 1.1 $
  * @since 5.3
  */
-public interface I_CmsSchedulerJob {
+public interface I_CmsScheduledJob {
 
     /**
-     * This method will be called when the scheduled job is executed.<p>
+     * This method will be called when a scheduled job is executed.<p>
      * 
      * Depending on the configuration of the job, a new instance of 
      * this class will be instanciated every time the job is run, 
@@ -60,7 +60,8 @@ public interface I_CmsSchedulerJob {
      *  
      * @throws Exception if something goes wrong
      * 
-     * @see CmsSchedulerEntry#setReuseInstance(boolean)
+     * @see CmsScheduledJobInfo
+     * @see CmsScheduledJobInfo#setReuseInstance(boolean)
      */
     String launch(CmsObject cms, ExtendedProperties parameters) throws Exception;    
 }

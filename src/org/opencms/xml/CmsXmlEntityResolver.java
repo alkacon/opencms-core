@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2004/06/13 23:43:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.page.CmsXmlPage;
@@ -56,7 +57,7 @@ import org.xml.sax.InputSource;
  * Resolves XML entities (e.g. external DTDs) in the OpenCms VFS.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -113,7 +114,12 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         // required for unit tests where no OpenCms is available
         if (OpenCms.getRunLevel() > 1) {
             
-            m_cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());  
+            try {
+                m_cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+            } catch (CmsException e) {
+                // this should never happen
+                OpenCms.getLog(this).error("Unable to initialize default guest user");
+            }
             
             if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
                 // map must be of type "LRUMap" so that memory monitor can acecss all information

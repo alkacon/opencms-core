@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/07/07 14:12:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.search;
 
-import org.opencms.cron.I_CmsCronJob;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
@@ -41,6 +40,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
 import java.io.IOException;
@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
@@ -61,12 +62,12 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.22 $ $Date: 2004/07/07 14:12:30 $
+ * @version $Revision: 1.23 $ $Date: 2004/07/07 18:01:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
-public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
+public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /** Configured analyzers for languages using &lt;analyzer&gt;. */
     private HashMap m_analyzers;
@@ -287,19 +288,21 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * Method for automatically rebuilding indexes configured with <rebuild>auto</rebuild>.<p>
      * 
      * @param cms the cms object
-     * @param parameter a parameter string for the cron job (currently unused)
+     * @param parameters the parameters for the scheduled job
      * @return the finish message
      * @throws Exception if something goes wrong
      */
-    public final String launch(CmsObject cms, String parameter) throws Exception {
+    public final String launch(CmsObject cms, ExtendedProperties parameters) throws Exception {
 
         // Note: launch is normally called with uninitialized object data,
         // so we have to create our own instance
         CmsSearchManager manager = OpenCms.getSearchManager();
 
         I_CmsReport report = null;
-        if (parameter != null && parameter.indexOf("log=on") >= 0) {
-            report = new CmsLogReport("com.alkacon.search.workplace", cms.getRequestContext().getLocale(), getClass());
+        boolean writeLog = parameters.getBoolean("writeLog", false);
+        
+        if (writeLog) {
+            report = new CmsLogReport(I_CmsReport.C_BUNDLE_NAME, cms.getRequestContext().getLocale(), getClass());
         }
 
         manager.updateIndex(report);

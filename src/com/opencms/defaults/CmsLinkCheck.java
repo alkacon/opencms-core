@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2004/07/06 09:33:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/07 17:59:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package com.opencms.defaults;
 
-import org.opencms.cron.I_CmsCronJob;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.util.CmsMail;
 
 import com.opencms.template.CmsXmlTemplate;
@@ -62,10 +62,12 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.apache.commons.collections.ExtendedProperties;
+
 /**
  * This class contains the functionaility for checking the validity of external links.<p>
  */
-public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
+public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
 
     /** The defintion of the filename to store the serialized hashtable in the rfs. */
     static final String LINKTABLE_FILENAME = OpenCms.getSystemInfo().getPackagesRfsPath() + "linkcheck";
@@ -264,11 +266,12 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
      * This method is called by the cron scheduler.<p>
      * 
      * @param cms a OpenCms context object
-     * @param parameter link check parameters
+     * @param parameters link check parameters
      * @return the String that is written to the OpenCms log
      * @throws CmsException if something goes wrong 
      */
-    public String launch(CmsObject cms, String parameter) throws CmsException {
+    public String launch(CmsObject cms, ExtendedProperties parameters) throws CmsException {
+        String parameter = parameters.getString((String)parameters.getKeys().next(), "");
         linksUrlCheck(cms, parameter);
         return "CmsLinkCheck.launch(): Links checked.";
     }

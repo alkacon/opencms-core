@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/06/14 15:50:10 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 package org.opencms.monitor;
 
 import org.opencms.cache.CmsLruCache;
-import org.opencms.cron.I_CmsCronJob;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -47,6 +46,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.main.OpenCmsSessionManager;
+import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsDateUtil;
@@ -69,13 +69,13 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.29 $ $Date: 2004/06/14 15:50:10 $
+ * @version $Revision: 1.30 $ $Date: 2004/07/07 18:01:09 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
-public class CmsMemoryMonitor implements I_CmsCronJob {
+public class CmsMemoryMonitor implements I_CmsScheduledJob {
     
     /** Set interval for clearing the caches to 10 minutes. */
     private static final int C_INTERVAL_CLEAR = 1000 * 60 * 10;
@@ -519,9 +519,9 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     }
     
     /**
-     * @see org.opencms.cron.I_CmsCronJob#launch(org.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, org.apache.commons.collections.ExtendedProperties)
      */
-    public String launch(CmsObject cms, String params) throws Exception {
+    public String launch(CmsObject cms, ExtendedProperties parameters) throws Exception {
         
         CmsMemoryMonitor monitor = OpenCms.getMemoryMonitor();
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1555,12 +1555,8 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @return true if the current user has write-access to the registry
      */
     private boolean hasAccess() {
-        try {
-            return m_cms.isAdmin();
-        } catch (CmsException exc) {
-            // ignore the exception - no access granted
-        }
-        return false;
+        
+        return m_cms.isAdmin();
     }
 
     /**

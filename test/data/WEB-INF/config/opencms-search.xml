@@ -5,7 +5,9 @@
 	<search>
 		<cache>8</cache>
 		<directory>index</directory>
-		<timeout>60000</timeout>		
+		<timeout>60000</timeout>	
+		<excerpt>1024</excerpt>
+		<highlighter>org.opencms.search.documents.CmsHtmlHighlighter</highlighter>			
 		<documenttypes>		
 			<documenttype>
 				<name>xmlpage</name>

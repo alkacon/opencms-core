@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/06/25 16:40:20 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/07/07 18:01:08 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -363,7 +363,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @return the CmsFlexCacheKey data structure found for the resource
      */
     public CmsFlexCacheKey getCachedKey(String key, CmsObject cms) {
-        if (! isEnabled() || ! isAdmin(cms)) {
+        if (! isEnabled() || ! cms.isAdmin()) {
             return null;
         }
         Object o = m_keyCache.get(key);
@@ -385,7 +385,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @return a Set of cached resource names (which are of type String)
      */
     public Set getCachedResources(CmsObject cms) {
-        if (! isEnabled() || ! isAdmin(cms)) {
+        if (! isEnabled() || ! cms.isAdmin()) {
             return null;
         }
         return m_keyCache.keySet();
@@ -406,7 +406,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @return a Set of cached variations (which are of type String)
      */
     public Set getCachedVariations(String key, CmsObject cms) {
-        if (! isEnabled() || ! isAdmin(cms)) {
+        if (! isEnabled() || ! cms.isAdmin()) {
             return null;
         }
         Object o = m_keyCache.get(key);
@@ -672,7 +672,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (! isEnabled()) {
             return;
         }
-        if (! isAdmin(cms)) {
+        if (! cms.isAdmin()) {
             return;
         }
         if (DEBUG > 0) {
@@ -746,7 +746,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (! isEnabled()) {
             return;
         }
-        if (! isAdmin(cms)) {
+        if (! cms.isAdmin()) {
             return;
         }
         if (DEBUG > 0) {
@@ -780,7 +780,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (! isEnabled()) {
             return;
         }
-        if (! isAdmin(cms)) {
+        if (! cms.isAdmin()) {
             return;
         }
         if (DEBUG > 0) {
@@ -804,7 +804,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (! isEnabled()) {
             return;
         }
-        if (! isAdmin(cms)) {
+        if (! cms.isAdmin()) {
             return;
         }
         if (DEBUG > 0) {
@@ -827,7 +827,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (! isEnabled()) {
             return;
         }
-        if (! isAdmin(cms)) {
+        if (! cms.isAdmin()) {
             return;
         }
         if (DEBUG > 0) {
@@ -851,29 +851,13 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (! isEnabled()) {
             return;
         }
-        if (! isAdmin(cms)) {
+        if (! cms.isAdmin()) {
             return;
         }
         if (DEBUG > 0) {
             System.err.println("FlexCache: Clearing online entries");
         }
         clearAccordingToSuffix(C_CACHE_ONLINESUFFIX, true);
-    }
-    
-    /**
-     * Internal method to determine if a user has Administration permissions.<p>
-     * 
-     * @param cms the context to check 
-     * @return <code>true</code> if the current user has Administration permissions
-     */
-    private boolean isAdmin(CmsObject cms) {
-        boolean result;
-        try {
-            result = cms.isAdmin();
-        } catch (Exception e) {
-            result = false;
-        }
-        return result;
     }
     
     /**
@@ -921,7 +905,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @param cms the CmsObject used for user authorization
      */
     private synchronized void purgeJspRepository(CmsObject cms) {
-        if (!isAdmin(cms) && !cms.getRequestContext().isEventControlled()) {
+        if (!cms.isAdmin() && !cms.getRequestContext().isEventControlled()) {
             return;
         }
         if (DEBUG > 0) {

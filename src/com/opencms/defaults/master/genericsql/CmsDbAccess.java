@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2004/07/07 17:59:45 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -824,12 +824,8 @@ public class CmsDbAccess {
             // online project id or the offline project id
 
             // the owner and the administrtor has always access
-            try {
-                if ((cms.getRequestContext().currentUser().getId().equals(dataset.m_userId)) || cms.isAdmin()) {
-                    return offlineProjectId;
-                }
-            } catch (CmsException exc) {
-                // ignore the exception -> we are not admin
+            if ((cms.getRequestContext().currentUser().getId().equals(dataset.m_userId)) || cms.isAdmin()) {
+                return offlineProjectId;
             }
             
             return offlineProjectId;

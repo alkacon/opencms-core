@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
     
@@ -78,13 +78,16 @@ public class CmsLocaleManager implements I_CmsEventListener {
     private I_CmsLocaleHandler m_localeHandler;
     
     /** A cache for accelerated locale lookup, this should never get so large to require a "real" cache. */
-    // must initialize this or some test cases won't run
-    private static Map m_localeCache = new LRUMap();
+    private static Map m_localeCache;
+    
+    /** Indicates if the locale manager is fully initialized. */
+    private boolean m_initialized;
     
     /**
      * Initializes a new CmsLocaleManager, called from the configuration.<p>
      */    
     public CmsLocaleManager() {
+        
         m_availableLocales = new ArrayList();
         m_defaultLocales = new ArrayList();
         m_localeHandler = new CmsDefaultLocaleHandler();
@@ -99,12 +102,31 @@ public class CmsLocaleManager implements I_CmsEventListener {
             // map must be of type "LRUMap" so that memory monitor can acecss all information
             monitor.register(this.getClass().getName() + "." + "m_localeCache", lruMap);
         }
-        
+
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {
                 I_CmsEventListener.EVENT_CLEAR_CACHES
-        });
+        });        
     }
+    
+    /**
+     * Initializes a new CmsLocaleManager, used for OpenCms runlevel 1 (unit tests) only.<p>
+     * 
+     * @param defaultLocale the default locale to use
+     */    
+    public CmsLocaleManager(Locale defaultLocale) {
+        
+        m_initialized = false;
+        
+        m_availableLocales = new ArrayList();
+        m_defaultLocales = new ArrayList();
+        m_localeHandler = new CmsDefaultLocaleHandler();
+        m_localeCache = Collections.synchronizedMap(new LRUMap());   
+        
+        m_defaultLocale = defaultLocale;
+        m_defaultLocales.add(defaultLocale);
+        m_availableLocales.add(defaultLocale);
+    }    
     
     /**
      * Adds a locale to the list of available locales.<p>
@@ -262,6 +284,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_localeHandler.initHandler(cms);
         // set default locale 
         m_defaultLocale = (Locale)m_defaultLocales.get(0);
+        // set initialized status
+        m_initialized = true;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". i18n configuration   : vfs access initialized");
         }              
@@ -522,5 +546,19 @@ public class CmsLocaleManager implements I_CmsEventListener {
             
         }       
         return result;
+    }
+    
+    /**
+     * Returns <code>true</code> if this locale manager is fully initialized.<p>
+     *
+     * This is required to prevent errors during unit tests,
+     * simple unit tests will usually not have a fully
+     * initialized locale manager available.<p>
+     *
+     * @return true if the locale manager is fully initialized
+     */
+    public boolean isInitialized() {
+
+        return m_initialized;
     }
 }

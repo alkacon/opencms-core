@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportCronJob.java,v $
- * Date   : $Date: 2004/05/24 17:03:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,18 @@
  
 package org.opencms.staticexport;
 
-import org.opencms.cron.I_CmsCronJob;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.scheduler.I_CmsScheduledJob;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * A Cms cron job to write a complete static export (e.g. nightly exports).<p>
@@ -53,14 +55,14 @@ import javax.servlet.ServletException;
  * </pre>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
-public class CmsStaticExportCronJob extends Object implements I_CmsCronJob {
-
+public class CmsStaticExportCronJob implements I_CmsScheduledJob {
+    
     /**
-     * @see org.opencms.cron.I_CmsCronJob#launch(org.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, org.apache.commons.collections.ExtendedProperties)
      */
-    public String launch(CmsObject cms, String parameter) throws Exception {
+    public String launch(CmsObject cms, ExtendedProperties parameter) throws Exception {
 
         I_CmsReport report = null;
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/06/21 11:45:21 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
@@ -57,26 +58,28 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public final class OpenCms {
-    
+
     /**
      * The public contructor is hidden to prevent generation of instances of this class.<p> 
      */
     private OpenCms() {
+
         // empty
     }
-    
+
     /**
      * Add a cms event listener that listens to all events.<p>
      *
      * @param listener the listener to add
      */
     public static void addCmsEventListener(I_CmsEventListener listener) {
+
         OpenCmsCore.getInstance().addCmsEventListener(listener);
     }
-    
+
     /**
      * Add a cms event listener that listens only to particular events.<p>
      *
@@ -84,6 +87,7 @@ public final class OpenCms {
      * @param eventTypes the events to listen for
      */
     public static void addCmsEventListener(I_CmsEventListener listener, int[] eventTypes) {
+
         OpenCmsCore.getInstance().addCmsEventListener(listener, eventTypes);
     }
 
@@ -97,6 +101,7 @@ public final class OpenCms {
      * @param event a CmsEvent
      */
     public static void fireCmsEvent(CmsEvent event) {
+
         OpenCmsCore.getInstance().fireCmsEvent(event);
     }
 
@@ -112,9 +117,10 @@ public final class OpenCms {
      * @param data event data
      */
     public static void fireCmsEvent(CmsObject cms, int type, java.util.Map data) {
+
         OpenCms.fireCmsEvent(new CmsEvent(cms, type, data));
     }
-    
+
     /**
      * Returns the configured list of default directory file names.<p>
      *  
@@ -123,17 +129,20 @@ public final class OpenCms {
      * @return the configured list of default directory file names
      */
     public static List getDefaultFilenames() {
+
         return OpenCmsCore.getInstance().getDefaultFilenames();
     }
-    
+
     /**
      * Returns the default user and group name configuration.<p>
      * 
      * @return the default user and group name configuration
      */
     public static CmsDefaultUsers getDefaultUsers() {
+
         return OpenCmsCore.getInstance().getDefaultUsers();
     }
+
     /**
      * Returns the configured export points,
      * the returned set being an unmodifiable set.<p>
@@ -141,9 +150,10 @@ public final class OpenCms {
      * @return an unmodifiable set of the configured export points
      */
     public static Set getExportPoints() {
+
         return OpenCmsCore.getInstance().getExportPoints();
     }
-    
+
     /**
      * Returns the initialized import/export manager, 
      * which contains information about how to handle imported resources.<p> 
@@ -151,25 +161,18 @@ public final class OpenCms {
      * @return the initialized import/export manager
      */
     public static CmsImportExportManager getImportExportManager() {
+
         return OpenCmsCore.getInstance().getImportExportManager();
-    }    
-    
+    }
+
     /**
      * Returns the link manager to resolve links in &lt;link&gt; tags.<p>
      * 
      * @return  the link manager to resolve links in &lt;link&gt; tags
      */
     public static CmsLinkManager getLinkManager() {
-        return OpenCmsCore.getInstance().getLinkManager();        
-    }
 
-    /**
-     * Returns the resource manager.<p>
-     * 
-     * @return the resource manager
-     */
-    public static CmsResourceManager getResourceManager() {
-        return OpenCmsCore.getInstance().getResourceManager();
+        return OpenCmsCore.getInstance().getLinkManager();
     }
 
     /**
@@ -178,18 +181,20 @@ public final class OpenCms {
      * @return the locale manager
      */
     public static CmsLocaleManager getLocaleManager() {
+
         return OpenCmsCore.getInstance().getLocaleManager();
     }
-    
+
     /**
      * Returns the lock manager used for the locking mechanism.<p>
      * 
      * @return the lock manager used for the locking mechanism
      */
     public static CmsLockManager getLockManager() {
+
         return OpenCmsCore.getInstance().getLockManager();
     }
-    
+
     /**
      * Returns the log for the selected object.<p>
      * 
@@ -199,8 +204,9 @@ public final class OpenCms {
      *  
      * @param obj the object channel to use
      * @return the log for the selected object channel
-     */      
+     */
     public static Log getLog(Object obj) {
+
         return OpenCmsCore.getInstance().getLog(obj);
     }
 
@@ -210,6 +216,7 @@ public final class OpenCms {
      * @return the memory monitor
      */
     public static CmsMemoryMonitor getMemoryMonitor() {
+
         return OpenCmsCore.getInstance().getMemoryMonitor();
     }
 
@@ -219,6 +226,7 @@ public final class OpenCms {
      * @return the Class that is used for the password validation
      */
     public static String getPasswordValidatingClass() {
+
         return OpenCmsCore.getInstance().getPasswordValidatingClass();
     }
 
@@ -231,9 +239,20 @@ public final class OpenCms {
      * @return the registry
      */
     public static CmsRegistry getRegistry() {
+
         return OpenCmsCore.getInstance().getRegistry();
     }
-    
+
+    /**
+     * Returns the resource manager.<p>
+     * 
+     * @return the resource manager
+     */
+    public static CmsResourceManager getResourceManager() {
+
+        return OpenCmsCore.getInstance().getResourceManager();
+    }
+
     /**
      * Returns the current OpenCms run level.<p>
      * 
@@ -252,6 +271,7 @@ public final class OpenCms {
      * @return the OpenCms run level
      */
     public static int getRunLevel() {
+
         return OpenCmsCore.getInstance().getRunLevel();
     }
 
@@ -262,7 +282,18 @@ public final class OpenCms {
      * @return the value for the key, or null if the key was not found
      */
     public static Object getRuntimeProperty(Object key) {
+
         return OpenCmsCore.getInstance().getRuntimeProperty(key);
+    }
+
+    /**
+     * Returns the configured schedule manager.<p>
+     *
+     * @return the configured schedule manager
+     */
+    public static CmsScheduleManager getScheduleManager() {
+
+        return OpenCmsCore.getInstance().getScheduleManager();
     }
 
     /**
@@ -272,6 +303,7 @@ public final class OpenCms {
      * @return the initialized search manager
      */
     public static CmsSearchManager getSearchManager() {
+
         return OpenCmsCore.getInstance().getSearchManager();
     }
 
@@ -281,6 +313,7 @@ public final class OpenCms {
      * @return the session info storage for all active users
      */
     public static CmsSessionInfoManager getSessionInfoManager() {
+
         return OpenCmsCore.getInstance().getSessionInfoManager();
     }
 
@@ -291,48 +324,40 @@ public final class OpenCms {
      * @return the initialized site manager
      */
     public static CmsSiteManager getSiteManager() {
+
         return OpenCmsCore.getInstance().getSiteManager();
     }
-    
+
     /**
      * Returns the properties for the static export.<p>
      * 
      * @return the properties for the static export
      */
     public static CmsStaticExportManager getStaticExportManager() {
+
         return OpenCmsCore.getInstance().getStaticExportManager();
     }
-    
+
     /**
      * Returns the system information storage.<p> 
      * 
      * @return the system information storage
      */
     public static CmsSystemInfo getSystemInfo() {
+
         return OpenCmsCore.getInstance().getSystemInfo();
-    }    
-    
-    /**
-     * Returns the cron manager.<p>
-     * 
-     * @return the cron manager
-     */
-    /*
-    public static CmsCronManager getCronManager() {
-        // TODO enable the cron manager
-        return OpenCmsCore.getInstance().getCronManager();
     }
-    */
-    
+
     /**
      * Returns the OpenCms Thread store.<p>
      * 
      * @return the OpenCms Thread store
      */
     public static CmsThreadStore getThreadStore() {
+
         return OpenCmsCore.getInstance().getThreadStore();
     }
-    
+
     /**
      * Returns the initialized workplace manager, 
      * which contains information about the global workplace settings.<p> 
@@ -340,25 +365,58 @@ public final class OpenCms {
      * @return the initialized workplace manager
      */
     public static CmsWorkplaceManager getWorkplaceManager() {
+
         return OpenCmsCore.getInstance().getWorkplaceManager();
     }
-    
+
     /**
      * Returns an initialized CmsObject with the user initialized as provided,
-     * with the "online" project selected and "/" set as the current site root.<p>
+     * with the "Online" project selected and "/" set as the current site root.<p>
      * 
      * Note: Only the default users 'Guest' and 'Export' can initialized with 
-     * this method, all other user names will throw a RuntimeException.<p>
+     * this method, all other user names will throw an Exception.<p>
      * 
      * @param user the user name to initialize, can only be 
      *        {@link org.opencms.db.CmsDefaultUsers#getUserGuest()} or
      *        {@link org.opencms.db.CmsDefaultUsers#getUserExport()}
-     * @return an initialized CmsObject with "Guest" user permissions
+     * 
+     * @return an initialized CmsObject with the given users permissions
+     * 
+     * @throws CmsException if an invalid user name was provided, or if something else goes wrong
+     * 
      * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
-     */     
-    public static CmsObject initCmsObject(String user) {
+     * @see OpenCms#initCmsObject(String)
+     * @see #initCmsObject(CmsObject, CmsContextInfo)
+     */
+    public static CmsObject initCmsObject(String user) throws CmsException {
+
         return OpenCmsCore.getInstance().initCmsObject(user);
+    }
+    
+    /**
+     * Returns an initialized CmsObject with the user and context initialized as provided.<p>
+     * 
+     * Note: Only if the provided <code>adminCms</code> CmsObject has admin permissions, 
+     * this method allows the creation a CmsObject for any existing user. Otherwise
+     * only the default users 'Guest' and 'Export' can initialized with 
+     * this method, all other user names will throw an Exception.<p>
+     * 
+     * @param adminCms must either be initialized with "Admin" permissions, or null
+     * @param contextInfo the context info to create a CmsObject for
+     * 
+     * @return an initialized CmsObject with the given users permissions
+     * 
+     * @throws CmsException if an invalid user name was provided, or if something else goes wrong
+     * 
+     * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
+     * @see org.opencms.db.CmsDefaultUsers#getUserExport()
+     * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
+     * @see #initCmsObject(String)
+     */        
+    public static CmsObject initCmsObject(CmsObject adminCms, CmsContextInfo contextInfo) throws CmsException {
+        
+        return OpenCmsCore.getInstance().initCmsObject(adminCms, contextInfo);
     }
 
     /**
@@ -367,6 +425,7 @@ public final class OpenCms {
      * @param listener the listener to remove
      */
     public static void removeCmsEventListener(I_CmsEventListener listener) {
+
         OpenCmsCore.getInstance().removeCmsEventListener(listener);
     }
 
@@ -379,6 +438,7 @@ public final class OpenCms {
      * @param value the value of the Object to add
      */
     public static void setRuntimeProperty(Object key, Object value) {
+
         OpenCmsCore.getInstance().setRuntimeProperty(key, value);
-    }    
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1504,7 +1504,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         Set scrubedFolders = new HashSet();
         Set scrubedFiles = new HashSet();
         // get a export user cms context        
-        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+        CmsObject cms;
+        try {
+            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+        } catch (CmsException e) {
+            // this should never happen
+            OpenCms.getLog(this).error("Could not init CmsObject with default export user");
+            return;
+        }
         List publishedResources;
         try {
             publishedResources = cms.readPublishedResources(publishHistoryId);

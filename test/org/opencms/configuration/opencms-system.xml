@@ -20,6 +20,27 @@
 			<mailhost name="alternative.smtp.server"/>
 			<mailhost name="another.alternative.smtp.server"/>
 		</mail>
+		<scheduler>
+			<job>
+				<name>Test job name</name>
+				<class>org.opencms.scheduler.TestScheduledJob</class>
+				<reuseinstance>false</reuseinstance>
+				<cronexpression><![CDATA[0/2 * * * * ?]]> </cronexpression>
+				<context>
+					<user>Admin</user>
+					<project>Offline</project>
+					<siteroot>/sites/default</siteroot>
+					<requesteduri>/index.html</requesteduri>
+					<locale>en</locale>
+					<encoding>UTF-8</encoding>
+					<remoteaddr>127.0.0.1</remoteaddr>
+				</context>
+				<parameters>
+					<param name="param1">value1</param>
+					<param name="param2">value2</param>
+				</parameters>
+			</job>
+		</scheduler>			
 	   	<versionhistory enabled="true" count="10"/>
 		<resourceinit />
 	</system>

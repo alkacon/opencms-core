@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2004/03/06 18:48:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,32 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $ $Date: 2004/03/06 18:48:09 $
+ * @version $Revision: 1.19 $ $Date: 2004/07/07 18:01:09 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
 
+    /** Default name for the "Admin" user. */
+    public static final String C_DEFAULT_USER_ADMIN = "Admin";
+    
+    /** Default name for the "Export" user. */
+    public static final String C_DEFAULT_USER_EXPORT = "Export";
+    
+    /** Default name for the "Guest" user. */
+    public static final String C_DEFAULT_USER_GUEST = "Guest";
+    
+    /** Default name for the "Administrators" group. */
+    public static final String C_DEFAULT_GROUP_ADMINISTRATORS = "Administrators";
+
+    /** Default name for the "Projectmanagers" group. */
+    public static final String C_DEFAULT_GROUP_PROJECTMANAGERS = "Projectmanagers";
+
+    /** Default name for the "Guests" group. */
+    public static final String C_DEFAULT_GROUP_GUESTS = "Guests";
+    
+    /** Default name for the "Users" group. */
+    public static final String C_DEFAULT_GROUP_USERS = "Users";
+    
     // member variables    
     private String m_groupAdministrators;
     private String m_groupGuests;
@@ -55,6 +76,21 @@ public class CmsDefaultUsers {
     private String m_userAdmin;
     private String m_userExport;
     private String m_userGuest;
+    
+    /**
+     * Constructor that initializes all names with default values.<p>
+     * 
+     * See the constants of this class for the defaule values that are uses.<p> 
+     */
+    public CmsDefaultUsers() {
+        m_userAdmin = C_DEFAULT_USER_ADMIN;
+        m_userGuest = C_DEFAULT_USER_GUEST;
+        m_userExport = C_DEFAULT_USER_EXPORT;        
+        m_groupAdministrators = C_DEFAULT_GROUP_ADMINISTRATORS;
+        m_groupProjectmanagers = C_DEFAULT_GROUP_PROJECTMANAGERS;
+        m_groupUsers = C_DEFAULT_GROUP_USERS;
+        m_groupGuests = C_DEFAULT_GROUP_GUESTS;
+    } 
     
     /**
      * Public constructor with name array.<p>

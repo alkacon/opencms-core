@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/06/30 08:50:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/07 18:01:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,12 @@
 package org.opencms.configuration;
 
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
+import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.scheduler.CmsScheduleManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,15 +55,24 @@ import org.dom4j.Element;
  * @since 5.3
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+
+    /** The node name for a job class. */
+    protected static final String N_CLASS = "class";   
     
-    /** The name of the DTD for this configuration. */
-    private static final String C_CONFIGURATION_DTD_NAME = "opencms-system.dtd";
+    /** The node name for the job context. */
+    protected static final String N_CONTEXT = "context"; 
     
-    /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";    
+    /** The node name for the job cron expression. */
+    protected static final String N_CRONEXPRESSION = "cronexpression"; 
+    
+    /** The node name for the context encoding. */
+    protected static final String N_ENCODING = "encoding";     
     
     /** The node name for the internationalization node. */
     protected static final String N_I18N = "internationalization";
+    
+    /** The node name for a job. */
+    protected static final String N_JOB = "job";
     
     /** The node name for individual locales. */
     protected static final String N_LOCALE = "locale";
@@ -83,17 +95,50 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the "mail host" node. */
     protected static final String N_MAILHOST = "mailhost";
     
+    /** The node name for a job name. */
+    protected static final String N_NAME = "name";
+    
+    /** The node name for the job parameters. */
+    protected static final String N_PARAMETERS = "parameters";     
+    
+    /** The node name for the context project name. */
+    protected static final String N_PROJECT = "project";         
+    
+    /** The node name for the context remote addr. */
+    protected static final String N_REMOTEADDR = "remoteaddr";     
+    
+    /** The node name for the context requested uri. */
+    protected static final String N_REQUESTEDURI = "requesteduri";   
+    
     /** The node name for the resource init classes. */
     protected static final String N_RESOURCEINIT = "resourceinit";
     
     /** The node name for the resource init classes. */
     protected static final String N_RESOURCEINITHANDLER = "resourceinithandler";
     
+    /** The node name for the job "reuseinstance" value. */
+    protected static final String N_REUSEINSTANCE = "reuseinstance";  
+    
+    /** The node name for the scheduler. */
+    protected static final String N_SCHEDULER = "scheduler";
+
+    /** The node name for the context site root. */
+    protected static final String N_SITEROOT = "siteroot"; 
+    
     /** The main system configuration node name. */
     protected static final String N_SYSTEM = "system";
+    
+    /** The node name for the context user name. */
+    protected static final String N_USERNAME = "user";     
         
     /** The node name for the version history. */
     protected static final String N_VERSIONHISTORY = "versionhistory";
+    
+    /** The name of the DTD for this configuration. */
+    private static final String C_CONFIGURATION_DTD_NAME = "opencms-system.dtd";
+    
+    /** The name of the default XML file for this configuration. */
+    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";    
     
     /** The configured locale manager for multi language support. */
     private CmsLocaleManager m_localeManager;
@@ -103,6 +148,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     
     /** A list of instanciated resource init handler classes. */
     private List m_resourceInitHandlers;
+    
+    /** The configured schedule manager. */
+    private CmsScheduleManager m_scheduleManager;
     
     /** The temporary file project id. */
     private int m_tempFileProjectId;
@@ -163,9 +211,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_I18N, CmsLocaleManager.class);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_I18N, "setLocaleManager");
         
+        // add locale handler creation rule
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_I18N + "/" + N_LOCALEHANDLER, A_CLASS, CmsConfigurationException.class);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_I18N + "/" + N_LOCALEHANDLER, "setLocaleHandler");
 
+        // add locale rules
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_I18N + "/" + N_LOCALESCONFIGURED + "/" + N_LOCALE, "addAvailableLocale", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_I18N + "/" + N_LOCALESDEFAULT + "/" + N_LOCALE, "addDefaultLocale", 0);
         
@@ -187,6 +237,34 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 3, A_USER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 4, A_PASSWORD);
 
+        // add scheduler creation rule
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SCHEDULER, CmsScheduleManager.class);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER, "setScheduleManager");
+        
+        // add scheduler job creation rule
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB, CmsScheduledJobInfo.class);
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_NAME, "jobName");
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CLASS, "className");
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CRONEXPRESSION, "cronExpression");
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_REUSEINSTANCE, "reuseInstance");
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB, "addSchedulerEntry");
+        
+        // add job context creation rule
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT, CmsContextInfo.class);
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_USERNAME, "userName");
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_PROJECT, "projectName");
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_SITEROOT, "siteRoot");
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_REQUESTEDURI, "requestedUri");
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_LOCALE, "localeName");
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_ENCODING);
+        digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_REMOTEADDR, "remoteAddr");
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT, "setContextInfo");        
+        
+        // add generic parameter rules (used for jobs)
+        digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
+        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);         
+        
         // add resource init classes
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER, "addResourceInitHandler", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER, 0, A_CLASS);    
@@ -282,6 +360,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
     
     /**
+     * Returns the configured schedule manager.<p>
+     *
+     * @return the configured schedule manager
+     */
+    public CmsScheduleManager getScheduleManager() {
+
+        return m_scheduleManager;
+    }
+    
+    /**
      * Returns temporary file project id.<p>
      * 
      * @return temporary file project id
@@ -342,6 +430,19 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_mailSettings = mailSettings;
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Mail settings set " + m_mailSettings);
+        }          
+    }
+    
+    /**
+     * Sets the configured schedule manager.<p>
+     * 
+     * @param scheduleManager the configured schedule manager to set
+     */
+    public void setScheduleManager(CmsScheduleManager scheduleManager) {
+        
+        m_scheduleManager = scheduleManager;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Scheduler config     : finished");
         }          
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2004/07/05 15:42:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/07 18:02:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@
 
 package org.opencms.scheduler;
 
+import org.opencms.main.CmsContextInfo;
+import org.opencms.main.OpenCms;
+
 import java.util.Date;
 import java.util.Properties;
 
@@ -49,7 +52,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * Test cases for the OpenCms scheduler thread pool.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -168,14 +171,15 @@ public class TestCmsScheduler extends TestCase {
         JobDetail jobDetail = new JobDetail(
             "cmsLaunch",
             Scheduler.DEFAULT_GROUP, 
-            CmsScheduledJob.class);
+            CmsScheduleManager.class);
         
-        CmsSchedulerEntry entry = new CmsSchedulerEntry();
-        entry.setUserName("Admin");
-        entry.setClassName(TestScheduledJob.class.getName());  
+        CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
+        CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
+        jobInfo.setContextInfo(contextInfo);
+        jobInfo.setClassName(TestScheduledJob.class.getName());  
         
         JobDataMap jobData = new JobDataMap();      
-        jobData.put(CmsScheduledJob.C_SCHEDULER_JOB_ENTRY, entry);
+        jobData.put(CmsScheduleManager.C_SCHEDULER_JOB_ENTRY, jobInfo);
         
         jobDetail.setJobDataMap(jobData);
         
@@ -215,15 +219,18 @@ public class TestCmsScheduler extends TestCase {
         System.out.println("Trying to run an OpenCms job 5x with the OpenCms scheduler.");
         TestScheduledJob.m_runCount = 0;
         
-        CmsSchedulerManager manager = new CmsSchedulerManager();
+        CmsScheduleManager manager = new CmsScheduleManager();
                 
-        CmsSchedulerEntry entry = new CmsSchedulerEntry();
-        entry.setUserName("Admin");
-        entry.setClassName(TestScheduledJob.class.getName());
-        entry.setCronExpression("0/2 * * * * ?");
+        CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
+        CmsContextInfo contextInfo = new CmsContextInfo();
+        contextInfo.setUserName(OpenCms.getDefaultUsers().getUserAdmin());
+        jobInfo.setContextInfo(contextInfo);
+        jobInfo.setClassName(TestScheduledJob.class.getName());  
+        
+        jobInfo.setCronExpression("0/2 * * * * ?");
         
         // add the job to the manager
-        manager.addSchedulerEntry(null, entry);
+        manager.addSchedulerEntry(null, jobInfo);
         
         // initialize the manager, this will start the scheduled jobs
         manager.initialize(null);
@@ -264,16 +271,17 @@ public class TestCmsScheduler extends TestCase {
         System.out.println("Trying to run a persistent OpenCms job 5x with the OpenCms scheduler.");
         TestScheduledJob.m_runCount = 0;
         
-        CmsSchedulerManager manager = new CmsSchedulerManager();
+        CmsScheduleManager manager = new CmsScheduleManager();
                 
-        CmsSchedulerEntry entry = new CmsSchedulerEntry();
-        entry.setUserName("Admin");
-        entry.setClassName(TestScheduledJob.class.getName());
-        entry.setReuseInstance(true);
-        entry.setCronExpression("0/2 * * * * ?");
+        CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
+        CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
+        jobInfo.setContextInfo(contextInfo);
+        jobInfo.setClassName(TestScheduledJob.class.getName());
+        jobInfo.setReuseInstance(true);
+        jobInfo.setCronExpression("0/2 * * * * ?");
         
         // add the job to the manager
-        manager.addSchedulerEntry(null, entry);
+        manager.addSchedulerEntry(null, jobInfo);
         
         // initialize the manager, this will start the scheduled jobs
         manager.initialize(null);

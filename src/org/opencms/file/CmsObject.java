@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  */
 public class CmsObject {
 
@@ -1184,6 +1184,51 @@ public class CmsObject {
         
         return m_driverManager.isInsideCurrentProject(m_context, addSiteRoot(resourcename));
     }      
+    
+    
+    /**
+     * Checks if the current user has "Administrator" permissions.<p>
+     * 
+     * Administrator permissions means that the user is a member of the 
+     * administrators group, which per default is called "Administrators".<p>
+     *
+     * @return true, if the current user has "Administrator" permissions
+     */
+    public boolean isAdmin() {
+        
+        return m_driverManager.isAdmin(m_context);
+    }    
+    
+    /**
+     * Checks if the current user has management access to the project.<p>
+     *
+     * Please note: This is NOT the same as the {@link CmsObject#isProjectManager()} 
+     * check. If the user has management access to a project depends on the
+     * project settings.<p>
+     *
+     * @return true if the user has management access to the project
+     * @see #isProjectManager()
+     */
+    public boolean isManagerOfProject() {
+        
+        return m_driverManager.isManagerOfProject(m_context);
+    }
+    
+    /**
+     * Checks if the current user is a member of the project manager group.<p>
+     *
+     * Please note: This is NOT the same as the {@link CmsObject#isManagerOfProject()} 
+     * check. If the user is a member of the project manager group, 
+     * he can create new projects.<p>
+     *
+     * @return true if the user is a member of the project manager group
+     * @see #isManagerOfProject()
+     */    
+    public boolean isProjectManager() {
+        
+        return m_driverManager.isProjectManager(m_context);
+    }    
+        
 
     
     //-----------------------------------------------------------------------------------
@@ -2725,18 +2770,6 @@ public class CmsObject {
     public Vector getGroupsOfUser(String username, String remoteAddress) throws CmsException {
         return m_driverManager.getGroupsOfUser(m_context, username, remoteAddress);
     }       
-    
-    /**
-     * Checks, if the users current group is the admin-group.<p>
-     *
-     *
-     * @return <code>true</code>, if the users current group is the admin-group; <code>false</code> otherwise.
-     * @throws CmsException if operation was not successful.
-     */
-    public boolean isAdmin() throws CmsException {
-        return m_driverManager.isAdmin(m_context);
-    }
-    
 
     /**
      * Logs a user into the Cms, if the password is correct.<p>
@@ -3182,37 +3215,7 @@ public class CmsObject {
     public CmsPublishList getPublishList(I_CmsReport report) throws Exception {
         return getPublishList(null, false, report);
     }        
-    
-    /**
-     * Checks if the user has management access to the project.
-     *
-     * Please note: This is NOT the same as the {@link CmsObject#isProjectManager()} 
-     * check. If the user has management access to a project depends on the
-     * project settings.<p>
-     *
-     * @return true if the user has management access to the project
-     * @throws CmsException if operation was not successful.
-     * @see #isProjectManager()
-     */
-    public boolean isManagerOfProject() throws CmsException {
-        return m_driverManager.isManagerOfProject(m_context);
-    }
-    
-    /**
-     * Checks if the user is a member of the project manager group.<p>
-     *
-     * Please note: This is NOT the same as the {@link CmsObject#isManagerOfProject()} 
-     * check. If the user is a member of the project manager group, 
-     * he can create new projects.<p>
-     *
-     * @return true if the user is a member of the project manager group
-     * @throws CmsException if operation was not successful.
-     * @see #isManagerOfProject()
-     */    
-    public boolean isProjectManager() throws CmsException {
-        return m_driverManager.isProjectManager(m_context);
-    }    
-    
+
     //-----------------------------------------------------------------------------------
     // VFS access methods:
     private int warning7; 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/07/05 15:36:34 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/07/07 18:02:28 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.3.5
  */
@@ -154,7 +154,7 @@ public class OpenCmsTestCase extends TestCase {
     public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
         
         // output a message 
-        System.out.println("\n\n\n-----  Importing OpenCms VFS data -----");
+        System.out.println("\n\n\n----- Starting test case: Importing OpenCms VFS data -----");
         
         // create a new database first
         setupDatabase();

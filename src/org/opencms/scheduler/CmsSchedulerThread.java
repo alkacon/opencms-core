@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThread.java,v $
- * Date   : $Date: 2004/07/05 15:35:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/07 18:01:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsSchedulerThread extends Thread {
@@ -117,7 +117,7 @@ public class CmsSchedulerThread extends Thread {
                     m_runnable.run();
                 }
             } catch (InterruptedException e) {
-                OpenCms.getLog(this).error("Scheduler thread '" + getName() + "' interrupted", e);                
+                OpenCms.getLog(this).error("Scheduler thread '" + getName() + "' interrupted", e);
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Scheduler error in thread '" + getName() + "' while executing", t);
             } finally {

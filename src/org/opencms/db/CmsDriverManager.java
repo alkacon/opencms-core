@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.396 $
+ * Date   : $Date: 2004/07/07 18:01:09 $
+ * Version: $Revision: 1.397 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.396 $ $Date: 2004/07/05 16:32:42 $
+ * @version $Revision: 1.397 $ $Date: 2004/07/07 18:01:09 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2657,6 +2657,101 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         return CmsProject.isInsideProject(projectResources, resourcename);
     }    
     
+    /**
+     * Checks if the current user has "Administrator" permissions.<p>
+     * 
+     * Administrator permissions means that the user is a member of the 
+     * administrators group, which per default is called "Administrators".<p>
+     *
+     * @param context the current request context
+     * @return true, if the current user has "Administrator" permissions
+     * 
+     * @see CmsObject#isAdmin()
+     */
+    public boolean isAdmin(CmsRequestContext context) {
+        try {
+            return userInGroup(
+                context, 
+                context.currentUser().getName(), 
+                OpenCms.getDefaultUsers().getGroupAdministrators());
+        } catch (CmsException e) {
+            // any exception: result is false
+            return false;
+        }
+    }    
+    
+    /**
+     * Checks if the current user has management access to the project.<p>
+     *
+     * Please note: This is NOT the same as the {@link #isProjectManager(CmsRequestContext)} 
+     * check. If the user has management access to a project depends on the
+     * project settings.<p>
+     * 
+     * @param context the current request context
+     *
+     * @return true if the user has management access to the project
+     * 
+     * @see CmsObject#isManagerOfProject()
+     * @see #isProjectManager(CmsRequestContext)
+     */
+    public boolean isManagerOfProject(CmsRequestContext context) {
+        
+        if (isAdmin(context)) {
+            // user is Admin
+            return true;
+        }
+        if (context.currentUser().getId().equals(context.currentProject().getOwnerId())) {
+            // user is the owner of the current project
+            return true;
+        }
+        
+        // get all groups of the user
+        Vector groups;
+        try { 
+            groups = getGroupsOfUser(context, context.currentUser().getName());
+        } catch (CmsException e) {
+            // any exception: result is false
+            return false;
+        }
+
+        for (int i = 0; i < groups.size(); i++) {
+            // check if the user is a member in the current projects manager group
+            if (((CmsGroup)groups.elementAt(i)).getId().equals(context.currentProject().getManagerGroupId())) {
+                // this group is manager of the project
+                return true;
+            }
+        }
+
+        // the user is not manager of the current project
+        return false;
+    }
+
+    /**
+     * Checks if the current user is a member of the project manager group.<p>
+     *
+     * Please note: This is NOT the same as the {@link #isManagerOfProject(CmsRequestContext)} 
+     * check. If the user is a member of the project manager group, 
+     * he can create new projects.<p>
+     *
+     * @param context the current request context
+     * 
+     * @return true if the user is a member of the project manager group
+     * 
+     * @see CmsObject#isProjectManager()
+     * @see #isManagerOfProject(CmsRequestContext)
+     */      
+    public boolean isProjectManager(CmsRequestContext context) {
+        try {
+            return userInGroup(
+                context, 
+                context.currentUser().getName(), 
+                OpenCms.getDefaultUsers().getGroupProjectmanagers());
+        } catch (CmsException e) {
+            // any exception: result is false
+            return false;
+        }
+    }    
+    
     //-----------------------------------------------------------------------------------
     private int warning1;
     
@@ -4957,19 +5052,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Determines, if the users current group is the admin-group.<p>
-     *
-     * All users are granted.
-     *
-     * @param context the current request context
-     * @return true, if the users current group is the admin-group, else it returns false
-     * @throws CmsException if operation was not succesful
-     */
-    public boolean isAdmin(CmsRequestContext context) throws CmsException {
-        return userInGroup(context, context.currentUser().getName(), OpenCms.getDefaultUsers().getGroupAdministrators());
-    }
-
-    /**
      * 
      * Proves if a resource is locked.<p>
      * 
@@ -4982,53 +5064,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public boolean isLocked(CmsRequestContext context, String resourcename) throws CmsException {
         return m_lockManager.isLocked(this, context, resourcename);
-    }
-
-    /**
-     * Determines, if the users may manage a project.<p>
-     * Only the manager of a project may publish it.
-     *
-     * All users are granted.
-     *
-     * @param context the current request context
-     * @return true, if the user manage this project
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public boolean isManagerOfProject(CmsRequestContext context) throws CmsException {
-        // is the user owner of the project?
-        if (context.currentUser().getId().equals(context.currentProject().getOwnerId())) {
-            // YES
-            return true;
-        }
-        if (isAdmin(context)) {
-            return true;
-        }
-        // get all groups of the user
-        Vector groups = getGroupsOfUser(context, context.currentUser().getName());
-
-        for (int i = 0; i < groups.size(); i++) {
-            // is this a managergroup for this project?
-            if (((CmsGroup)groups.elementAt(i)).getId().equals(context.currentProject().getManagerGroupId())) {
-                // this group is manager of the project
-                return true;
-            }
-        }
-
-        // this user is not manager of this project
-        return false;
-    }
-
-    /**
-     * Determines if the user is a member of the "Projectmanagers" group.<p>
-     *
-     * All users are granted.
-     *
-     * @param context the current request context
-     * @return true, if the users current group is the projectleader-group, else it returns false
-     * @throws CmsException if operation was not succesful
-     */
-    public boolean isProjectManager(CmsRequestContext context) throws CmsException {
-        return userInGroup(context, context.currentUser().getName(), OpenCms.getDefaultUsers().getGroupProjectmanagers());
     }
 
     /**

@@ -11,6 +11,7 @@
 <!ELEMENT system (
 	internationalization,
 	mail,
+	scheduler,
 	versionhistory,
 	resourceinit? )>
 
@@ -52,3 +53,76 @@
 <!ELEMENT resourceinit (resourceinithandler*)>
 <!ELEMENT resourceinithandler EMPTY>
 <!ATTLIST resourceinithandler class CDATA #REQUIRED>
+
+<!--
+# Scheduler settings:
+# The scheduler settings provide information for the OpenCms scheduler. 
+# The OpenCms scheduler is comparable with the CRON facility in Unix systems.
+# 
+# The scheduler has a list of <job> subnodes.
+# Most important for a job is the <class> name to be executed,
+# and the <cronexpression> that controls the excution time. 
+-->
+
+<!ELEMENT scheduler (job*)>
+
+<!ELEMENT job (name?, class, reuseinstance?, cronexpression, context, parameters?)>
+
+<!--
+# The job name is optional and used for information purposes only (e.g. in the log file).
+# If no job name is provided, the class name is used as the job name.
+-->
+<!ELEMENT name (#PCDATA)>
+
+<!--
+# The job class name to execute at the scheduled time.
+# This class _must_ implement the org.opencms.scheduler.I_CmsSchedulerJob interface.
+-->
+<!ELEMENT class (#PCDATA)>
+
+<!--
+# Optional configuration that controls if a new instance of the job class is created 
+# every time the job is run, or if an instance is created only for the first time and
+# re-used for every later job execution. 
+#
+# The #PCDATA value will be evaluated with Boolean.valueOf(#PCDATA).booleanValue().
+# If the result is "true", the class instance will be re-used.
+-->
+<!ELEMENT reuseinstance (#PCDATA)>
+
+<!--
+# The cron expression to use for the job schedule.
+# Please refer to the JavaDoc of the class org.opencms.scheduler.CmsScheduledJob
+# for a full description of the possible options.
+-->
+<!ELEMENT cronexpression (#PCDATA)>
+
+<!--
+# Each job will be provided with an initialized instance of a CmsObject.
+# The settings in the <context> node control the request context settings of this object.
+# 
+# The defaults for the optional elements are:
+# siteroot:   /
+# requesturi: /
+# locale:     the first locale configured as default locale
+# encoding:   the configures system encoding
+# remoteaddr: 127.0.0.1
+-->
+<!ELEMENT context (user, project, siteroot?, requesteduri?, locale?, encoding?, remoteaddr?)>
+
+<!ELEMENT user (#PCDATA)>
+<!ELEMENT project (#PCDATA)>
+<!ELEMENT siteroot (#PCDATA)>
+<!ELEMENT requesteduri (#PCDATA)>
+<!ELEMENT encoding (#PCDATA)>
+<!ELEMENT remoteaddr (#PCDATA)>
+
+<!-- 
+Each job can have an optional list of parameters.
+-->
+
+<!ELEMENT parameters (param*)>
+
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA #REQUIRED>
+

@@ -20,6 +20,7 @@
 			<mailhost name="alternative.smtp.server"/>
 			<mailhost name="another.alternative.smtp.server"/>
 		</mail>
+		<scheduler />
 	   	<versionhistory enabled="true" count="10"/>		   	
 		<resourceinit />
 	</system>

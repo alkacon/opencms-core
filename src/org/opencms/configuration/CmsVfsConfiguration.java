@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/07/07 18:01:08 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -175,8 +175,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         
         // extension mapping rules
         digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
-        digester.addCallParam ("*/" +  N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, 0, A_SUFFIX);
-        
+        digester.addCallParam ("*/" +  N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, 0, A_SUFFIX);       
         
         // generic <param> parameter rules
         digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
