@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/03/22 07:24:53 $
-* Version: $Revision: 1.86 $
+* Date   : $Date: 2003/03/25 00:14:35 $
+* Version: $Revision: 1.87 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.86 $ $Date: 2003/03/22 07:24:53 $
+ * @version $Revision: 1.87 $ $Date: 2003/03/25 00:14:35 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -198,6 +198,20 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         }
     }
     
+    /**
+     * Imports resources, used for importing module data.<p>
+     * 
+     * The XML Document end the import environment will be set up in the module
+     * data import.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param importPath the import path
+     * @param docXml the XML Document for the import 
+     * @param report the report to print out the progess information to
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsImportModuledata
+     */
     public CmsImport(
         CmsObject cms, 
         String importPath,

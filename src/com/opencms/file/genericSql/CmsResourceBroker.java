@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/22 07:24:54 $
-* Version: $Revision: 1.370 $
+* Date   : $Date: 2003/03/25 00:14:35 $
+* Version: $Revision: 1.371 $
 
 *
 * This library is part of OpenCms -
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.370 $ $Date: 2003/03/22 07:24:54 $
+ * @version $Revision: 1.371 $ $Date: 2003/03/25 00:14:35 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2854,7 +2854,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
     public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms)
         throws CmsException {
         if(isAdmin(currentUser, currentProject)) {
-            new CmsExport(exportFile, exportPaths, cms);
+            new CmsExport(cms, exportFile, exportPaths, false, false);
         } else {
              throw new CmsException("[" + this.getClass().getName() + "] exportResources",
                  CmsException.C_NO_ACCESS);
@@ -2879,7 +2879,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
     public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged)
         throws CmsException {
         if(isAdmin(currentUser, currentProject)) {
-            new CmsExport(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged);
+            new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged);
         } else {
              throw new CmsException("[" + this.getClass().getName() + "] exportResources",
                  CmsException.C_NO_ACCESS);
@@ -2907,7 +2907,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
     public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, boolean exportUserdata, long contentAge, I_CmsReport report)
         throws CmsException {
         if(isAdmin(currentUser, currentProject)) {
-            new CmsExport(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null, exportUserdata, contentAge, report);
+            new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged, null, exportUserdata, contentAge, report);
         } else {
              throw new CmsException("[" + this.getClass().getName() + "] exportResources",
                  CmsException.C_NO_ACCESS);
@@ -2932,7 +2932,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
     public void exportModuledata(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportChannels, String[] exportModules, CmsObject cms, I_CmsReport report)
         throws CmsException {
         if(isAdmin(currentUser, currentProject)) {
-            new CmsExportModuledata(exportFile, exportChannels, exportModules, cms, report);
+            new CmsExportModuledata(cms, exportFile, exportChannels, exportModules, report);
         } else {
              throw new CmsException("[" + this.getClass().getName() + "] exportModuledata",
                  CmsException.C_NO_ACCESS);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/03/07 20:53:10 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2003/03/25 00:14:35 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.71 $ $Date: 2003/03/07 20:53:10 $
+ * @version $Revision: 1.72 $ $Date: 2003/03/25 00:14:35 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -723,7 +723,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             }
         }                      
         // export the module using the standard export        
-        new CmsExport(fileName, resources, m_cms, false, false, moduleCopy, false, 0, report);
+        new CmsExport(m_cms, fileName, resources, false, false, moduleCopy, false, 0, report);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/03/22 07:24:54 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/03/25 00:14:35 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,39 +38,32 @@ import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
+
 /**
  * This class holds the functionaility to export channels and modulemasters from the cms
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.15 $ $Date: 2003/03/22 07:24:54 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.16 $ $Date: 2003/03/25 00:14:35 $
  */
-public class CmsExportModuledata implements I_CmsConstants, Serializable{
+public class CmsExportModuledata extends CmsExport implements I_CmsConstants, Serializable{
 
-    /**
-     * The tags for the manifest
-     */
-    public static String C_EXPORT_TAG_CHANNELS = "channels";
-    public static String C_EXPORT_TAG_MASTERS = "masters";
+    // the tags for the manifest or dataset xml files
     public static String C_EXPORT_TAG_MASTER = "master";
     public static String C_EXPORT_TAG_MASTER_SUBID = "sub_id";
     public static String C_EXPORT_TAG_MASTER_DATASET = "dataset";
@@ -104,81 +97,60 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
     public static String C_EXPORT_TAG_MEDIA_NAME = "media_name";
     public static String C_EXPORT_TAG_MEDIA_DESCRIPTION = "media_description";
     public static String C_EXPORT_TAG_MEDIA_CONTENT = "media_content";
-
-    /**
-     * The export-zipfile to store resources to
-     */
-    private String m_exportFile;
-
-    /**
-     * The export-stream (zip) to store resources to
-     */
-    private ZipOutputStream m_exportZipStream = null;
-
-    /**
-     * The cms-object to do the operations.
-     */
-    private CmsObject m_cms;
-
-    /**
-     * The xml manifest-file.
-     */
-    private Document m_docXml;
-
-    /**
-     * The xml-element to store fileinformations to.
-     */
-    private Element m_filesElement;
-
-    /**
-     * The xml-element to store mastersinformations to.
-     */
-    private Element m_mastersElement;
-
-    /**
-     * Cache for previously added super folders
-     */
-    private Vector m_superChannels;
-
-    /**
-     * The channelid and the resourceobject of the exported channels
-     */
-    private Hashtable m_channelIds = new Hashtable();
     
-    /**
-     * Holds information about contents that have already been exported
-     */
+    /** Holds information about contents that have already been exported */
     private Vector m_exportedMasters = new Vector();
-
-    /** Report for the output */
-    private I_CmsReport m_report;
 
     /**
      * This constructs a new CmsExportModuledata-object which exports the channels and modulemasters.
      *
-     * @param exportFile the zip-file to export to.
-     * @param exportModules the modules to write into the exportFile
-     * @param exportChannels the paths of channels to write into the exportFile
-     * @param cms the cms-object to work with.
-     * @throws CmsException the CmsException is thrown if something goes wrong.
+     * @param cms the cms-object to work with
+     * @param exportFile the filename of the zip to export to
+     * @param resourcesToExport the cos folders (channels) to export
+     * @param modulesToExport the modules to export
+     * @param report to write the progress information to
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public CmsExportModuledata(String exportFile, String[] exportChannels, String[] exportModules, CmsObject cms, I_CmsReport report) throws CmsException {
+    public CmsExportModuledata(
+        CmsObject cms, 
+        String exportFile, 
+        String[] resourcesToExport, 
+        String[] modulesToExport, 
+        I_CmsReport report
+    ) throws CmsException {
+        m_cms = cms;
         m_exportFile = exportFile;
         m_cms = cms;
         m_report = report;
         
-        // open the import resource
-        getExportResource();
-        // create the xml-config file
-        getXmlConfigFile();
+        // indicate that module date is exported to the export super class
+        m_exportingModuleData = true;
+        
+        // open the export file
+        openExportFile(null);
+         
+        // export the cos folders (ie. channels)               
+        m_report.println(m_report.key("report.export_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);        
+        try {
+            m_cms.setContextToCos();    
+            // export all the resources
+            exportAllResources(resourcesToExport);
+           
+        } catch (Exception e) {
+            throw new CmsException("Error exporting COS channels", e);        
+        } finally {
+            m_cms.setContextToVfs();
+        }
+        m_report.println(m_report.key("report.export_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);
 
         // get the modules to export
         Vector modules = new Vector();
         Vector moduleNames = new Vector();
-        for (int i=0; i<exportModules.length; i++) {
-            String modName = exportModules[i];
+        for (int i=0; i<modulesToExport.length; i++) {
+            String modName = modulesToExport[i];
             if(modName != null && !"".equals(modName)){
-                moduleNames.addElement(exportModules[i]);
+                moduleNames.addElement(modulesToExport[i]);
             }
         }
         Hashtable moduleExportables = new Hashtable();
@@ -186,7 +158,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         // if there was no module selected then select all exportable modules,
         // else get only the modules from Hashtable that were selected
         if(moduleNames.size() == 0){
-            if(exportChannels.length > 0){
+            if(resourcesToExport.length > 0){
                 Enumeration modElements = moduleExportables.elements();
                 while(modElements.hasMoreElements()){
                     modules.add(modElements.nextElement());
@@ -194,426 +166,52 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             }
         } else {
              modules = moduleNames;
-        }
-        // get the channels for export
-        Vector channelNames = new Vector();
-        for (int i=0; i<exportChannels.length; i++) {
-            channelNames.addElement(exportChannels[i]);
-        }
-        if(channelNames.size() != 0){
-            // remove the possible redundancies in the list of paths
-            checkRedundancies(channelNames);
-        } else {
-            // select the channels from the selected modules
-            Enumeration enumModules = modules.elements();
-            while(enumModules.hasMoreElements()){
-                String classname = (String)enumModules.nextElement();
-                CmsMasterContent cd = getContentDefinition(classname, new Class[]{CmsObject.class}, new Object[]{m_cms});
-                String rootName = cd.getRootChannel();
-                if(rootName != null && !"".equals(rootName)){
-                    channelNames.add(rootName);
-                }
-            }
-            // remove the possible redundancies in the list of paths
-            checkRedundancies(channelNames);
-        }
-        // export the channels and return a vector with the channel-id
-        exportAllChannels(channelNames);
-        // now do the export for all modules with the given channel-ids
+        }                
+                        
+        // now do the export for all modules with the given channel ids
         Enumeration enumModules = modules.elements();
         while(enumModules.hasMoreElements()){
             // get the name of the content definition class
             String classname = (String)enumModules.nextElement();
-            this.exportData(classname, m_channelIds);
+            this.exportData(classname, m_exportedChannelIds);
         }
-        // write the document to the zip-file
-        writeXmlConfigFile( );
-
-        try {
-            m_exportZipStream.close();
-        } catch(IOException exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
+        
+        // close the export file
+        closeExportFile();
     }
 
-    /** Check whether some of the resources are redundant because a superfolder has also
-     *  been selected and change the parameter Vectors
-     *
-     * @param channelNames contains the full pathnames of all channels
-     */
-    private void checkRedundancies(Vector channelNames) {
-        int i, j;
-        if (channelNames == null) {
-            return;
-        }
-        Vector redundant = new Vector();
-        int n = channelNames.size();
-        if (n > 1) {
-            // otherwise no check needed, because there is only one resource
-            for (i = 0; i < n; i++) {
-                redundant.addElement(new Boolean(false));
-            }
-            for (i = 0; i < n - 1; i++) {
-                for (j = i + 1; j < n; j++) {
-                    if (((String) channelNames.elementAt(i)).length() < ((String) channelNames.elementAt(j)).length()) {
-                        if (((String) channelNames.elementAt(j)).startsWith((String) channelNames.elementAt(i))) {
-                            redundant.setElementAt(new Boolean(true), j);
-                        }
-                    } else {
-                        if (((String) channelNames.elementAt(i)).startsWith((String) channelNames.elementAt(j))) {
-                            redundant.setElementAt(new Boolean(true), i);
-                        }
-                    }
-                }
-            }
-            for (i = n - 1; i >= 0; i--) {
-                if (((Boolean) redundant.elementAt(i)).booleanValue()) {
-                    channelNames.removeElementAt(i);
-                }
-            }
-        }
-    }
 
     /**
-     * Creates the xml-file and appends the initial tags to it.
+     * Exports the content definition data,
+     * only content definition data from selected channels will be exported.<p>
+     * 
+     * @param classname name of the content definition class 
+     * @param exportedChannelIds set of channels that have been exported
+     * 
      */
-    private void getXmlConfigFile() throws CmsException {
-        try {
-            // creates the document
-            m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_MODULEXPORT);
-
-            // add the info element. it contains all infos for this export
-            Element info = m_docXml.createElement(C_EXPORT_TAG_INFO);
-            m_docXml.getDocumentElement().appendChild(info);
-            addElement(m_docXml, info, C_EXPORT_TAG_CREATOR, m_cms.getRequestContext().currentUser().getName());
-            addElement(m_docXml, info, C_EXPORT_TAG_OC_VERSION, A_OpenCms.getVersionName());
-            addElement(m_docXml, info, C_EXPORT_TAG_DATE, Utils.getNiceDate(new Date().getTime()));
-            addElement(m_docXml, info, C_EXPORT_TAG_PROJECT, m_cms.getRequestContext().currentProject().getName());
-            addElement(m_docXml, info, C_EXPORT_TAG_VERSION, C_EXPORT_VERSION);
-            // add the root element for the channels
-            m_filesElement = m_docXml.createElement(C_EXPORT_TAG_CHANNELS);
-            m_docXml.getDocumentElement().appendChild(m_filesElement);
-            // add the root element for the masters
-            m_mastersElement = m_docXml.createElement(C_EXPORT_TAG_MASTERS);
-            m_docXml.getDocumentElement().appendChild(m_mastersElement);
-        } catch(Exception exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-
-    /**
-     * Gets the import resource and stores it in object-member.
-     */
-    private void getExportResource()
-        throws CmsException {
-        try {
-            // add zip-extension, if needed
-            if( !m_exportFile.toLowerCase().endsWith(".zip") ) {
-                m_exportFile += ".zip";
-            }
-
-            // create the export-zipstream
-            m_exportZipStream = new ZipOutputStream(new FileOutputStream(m_exportFile));
-
-        } catch(Exception exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-
-    /**
-     * Adds a element to the xml-document.
-     * @param element The element to add the subelement to.
-     * @param name The name of the new subelement.
-     * @param value The value of the element.
-     */
-    private void addCdataElement(Document xmlDoc, Element element, String name, String value) {
-        Element newElement = xmlDoc.createElement(name);
-        element.appendChild(newElement);
-        CDATASection text = xmlDoc.createCDATASection(value);
-        newElement.appendChild(text);
-    }
-    /**
-     * Adds a element to the xml-document.
-     * @param element The element to add the subelement to.
-     * @param name The name of the new subelement.
-     * @param value The value of the element.
-     */
-    private void addElement(Document xmlDoc, Element element, String name, String value) {
-        Element newElement = xmlDoc.createElement(name);
-        element.appendChild(newElement);
-        Text text = xmlDoc.createTextNode(value);
-        newElement.appendChild(text);
-    }
-
-    /**
-     * Exports the channels from a vector with the given channelnames
-     * @param channelNames The vector with the channelNames
-     * @param channelId A vector that contains the channelid of each channel
-     */
-    private void exportAllChannels(Vector channelNames) throws CmsException{        
-        m_report.println(m_report.key("report.export_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);                      
-        for(int i = 0; i < channelNames.size(); i++){
-            String curChannel = (String)channelNames.elementAt(i);
-            // add the channelid to the vector of channel-ids
-            m_cms.setContextToCos();
-            try{
-                String channelId = m_cms.readProperty(curChannel, I_CmsConstants.C_PROPERTY_CHANNELID);
-                if(channelId != null){
-                    if(!m_channelIds.contains(channelId)) {
-                        // This channelid was not added previously. Add it now.
-                        m_channelIds.put(channelId, curChannel);
-                    }
-                }
-            } catch (CmsException e){
-                m_report.println(e);
-                throw e;
-            } finally {
-                m_cms.setContextToVfs();
-            }
-            // first add all superchannels
-            addSuperChannels(curChannel);
-            // get all subFolders
-            // walk through all subfolders and export them
-            exportChannel(curChannel);
-        }
-        m_report.println(m_report.key("report.export_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);                                            
-    }
-
-    /**
-     * Adds the superchannels of path to the config file,
-     * starting at the top, excluding the root folder
-     * @param path The path of the channel in the filesystem
-     */
-    private void addSuperChannels(String path) throws CmsException {
-        // Initialize the "previously added folder cache"
-        if(m_superChannels == null) {
-            m_superChannels = new Vector();
-        }
-        Vector superChannels = new Vector();
-
-        // Check, if the path is really a folder
-        if(path.lastIndexOf(C_ROOT) != (path.length()-1)) {
-            path = path.substring(0, path.lastIndexOf(C_ROOT)+1);
-        }
-        while (path.length() > C_ROOT.length()) {
-            superChannels.addElement(path);
-            path = path.substring(0, path.length() - 1);
-            path = path.substring(0, path.lastIndexOf(C_ROOT)+1);
-        }
-        try{
-            m_cms.setContextToCos();
-            for (int i = superChannels.size()-1; i >= 0; i--) {
-                String addChannel = (String)superChannels.elementAt(i);
-                if(!m_superChannels.contains(addChannel)) {
-                    // This super folder was NOT added previously. Add it now!
-                    m_cms.setContextToCos();
-                    CmsFolder channel = m_cms.readFolder(addChannel);
-                    writeXmlEntrys(channel);
-                    // Remember that this folder was added
-                    m_superChannels.addElement(addChannel);
-                }
-            }
-        } catch (CmsException e){
-            m_report.println(e);
-            throw e;
-        } finally {
-            m_cms.setContextToVfs();
-        }
-    }
-
-    /**
-     * Exports all subchannels of the channel
-     * @param channelname The name of the channel to export
-     */
-     private void exportChannel(String channelname) throws CmsException{
-        m_cms.setContextToCos();
-        Vector subChannels = m_cms.getSubFolders(channelname);
-        m_cms.setContextToVfs();
-        for(int i = 0; i < subChannels.size(); i++) {
-            CmsResource curChannel = (CmsResource) subChannels.elementAt(i);
-            if(curChannel.getState() != C_STATE_DELETED){
-                // add the channelid to the vector of channel-ids
-                try{
-                    m_cms.setContextToCos();
-                    String channelId = m_cms.readProperty(curChannel.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CHANNELID);
-                    if(!m_channelIds.contains(channelId)) {
-                        // This channelid was not added previously. Add it now.
-                        m_channelIds.put(channelId, curChannel);
-                    }
-                } catch (CmsException e){
-                    throw e;
-                } finally {
-                    m_cms.setContextToVfs();
-                }
-                // export this folder
-                writeXmlEntrys(curChannel);
-                // export all resources in this folder
-                exportChannel(curChannel.getAbsolutePath());
-            }
-        }
-     }
-
-    /**
-     * Writes the data for a resources (like acces-rights) to the manifest-xml-file.
-     * @param resource The resource to get the data from.
-     * @throws throws a CmsException if something goes wrong.
-     */
-    private void writeXmlEntrys(CmsResource resource) throws CmsException {
-        // output something to the report for the resource
-        m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-        m_report.print(resource.getAbsolutePath());
-                
-        String source, type, user, group, access, lastmodified;
-
-        // get all needed informations from the resource
-        source = getSourceFilename(resource.getAbsolutePath());
-        type = m_cms.getResourceType(resource.getType()).getResourceTypeName();
-        user = m_cms.readOwner(resource).getName();
-        group = m_cms.readGroup(resource).getName();
-        access = resource.getAccessFlags() + "";
-        lastmodified = Long.toString(resource.getDateLastModified());
-
-        // write these informations to the xml-manifest
-        Element file = m_docXml.createElement(C_EXPORT_TAG_FILE);
-        m_filesElement.appendChild(file);
-
-        addElement(m_docXml, file, C_EXPORT_TAG_DESTINATION, source);
-        addElement(m_docXml, file, C_EXPORT_TAG_TYPE, type);
-        addElement(m_docXml, file, C_EXPORT_TAG_USER, user);
-        addElement(m_docXml, file, C_EXPORT_TAG_GROUP, group);
-        addElement(m_docXml, file, C_EXPORT_TAG_ACCESS, access);
-        addElement(m_docXml, file, C_EXPORT_TAG_LASTMODIFIED, lastmodified); 
-
-        // append the node for properties
-        Element properties = m_docXml.createElement(C_EXPORT_TAG_PROPERTIES);
-        file.appendChild(properties);
-
-        // read the properties
-        Map fileProperties = new HashMap();
-        try{
-            m_cms.setContextToCos();
-            fileProperties = m_cms.readProperties(resource.getAbsolutePath());
-        } catch (CmsException e){
-            throw e;
-        } finally {
-            m_cms.setContextToVfs();
-        }
-        Iterator i = fileProperties.keySet().iterator();
-
-        // create xml-elements for the properties
-        while(i.hasNext()) {
-            // append the node for a property
-            String key = (String) i.next();
-            if(!key.equals(I_CmsConstants.C_PROPERTY_CHANNELID)){
-                Element property = m_docXml.createElement(C_EXPORT_TAG_PROPERTY);
-                properties.appendChild(property);
-
-                String value = (String) fileProperties.get(key);
-                String propertyType = m_cms.readPropertydefinition(key, type).getType() + "";
-
-                addElement(m_docXml, property, C_EXPORT_TAG_NAME, key);
-                addElement(m_docXml, property, C_EXPORT_TAG_TYPE, propertyType);
-                addCdataElement(m_docXml, property, C_EXPORT_TAG_VALUE, value);
-            }
-        }
-                             
-        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
-        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-    }
-
-    /**
-     * Writes the xml-config file (manifest) to the zip-file.
-     */
-    private void writeXmlConfigFile()
-        throws CmsException {
-        try {
-            ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
-            m_exportZipStream.putNextEntry(entry);
-            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream, null);
-            m_exportZipStream.closeEntry();
-        } catch(Exception exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-
-    /**
-     * Gets the content definition class method constructor
-     * @return content definition object
-     */
-    protected CmsMasterContent getContentDefinition(String classname, Class[] classes, Object[] objects) {
-        CmsMasterContent cd = null;
-        try {
-            Class cdClass = Class.forName(classname);
-            Constructor co = cdClass.getConstructor(classes);
-            cd = (CmsMasterContent)co.newInstance(objects);
-        } catch (InvocationTargetException ite) {
-            m_report.println(ite);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: Invocation target exception!");
-            }
-        } catch (NoSuchMethodException nsm) {
-            m_report.println(nsm);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: Requested method was not found!");
-            }
-        } catch (InstantiationException ie) {
-            m_report.println(ie);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: the reflected class is abstract!");
-            }
-        } catch (Exception e) {
-            m_report.println(e);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: Other exception! "+e);
-            }
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, e.getMessage() );
-            }
-        }
-        return cd;
-    }
-
-    /**
-     * Substrings the source-filename, so it is shrinked to the needed part for
-     * import/export.
-     * @param absoluteName The absolute path of the resource.
-     * @return The shrinked path.
-     */
-    private String getSourceFilename(String absoluteName) {
-        String path = absoluteName; // keep absolute name to distinguish resources
-        if (path.startsWith("/")) {
-            path = path.substring(1);
-        }
-        if(path.endsWith("/")) {
-            path = path.substring(0, path.length() - 1);
-        }
-        return path;
-    }
-
-    /**
-     * Export the content definitions in the specified channels.
-     * @param cms The CmsObject
-     * @param zipfile The zip file to store the data
-     * @param manifest The document where the maindata of the master are stored
-     * @param channelId The Vector that includes the exported channels
-     */
-    private void exportData(String classname, Hashtable exportedChannels) throws CmsException {
+    private void exportData(
+        String classname, 
+        Set exportedChannelIds
+    ) throws CmsException {
         // output something to the report for the data
         m_report.print(m_report.key("report.export_moduledata_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         m_report.print("<i>" + classname + "</i>", I_CmsReport.C_FORMAT_HEADLINE);        
         m_report.println(m_report.key("report.dots"), I_CmsReport.C_FORMAT_HEADLINE);        
                                 
-        Enumeration keys = exportedChannels.keys();
+        Iterator keys = exportedChannelIds.iterator();
         // get the subId of the module
         int subId = getContentDefinition(classname, new Class[]{CmsObject.class}, new Object[]{m_cms}).getSubId();
         // the number for identifying each master
         int masterNr = 1;
-        while(keys.hasMoreElements()){
-            int channelId = Integer.parseInt((String) keys.nextElement());
+        while(keys.hasNext()){
+            int channelId;
+            String key = (String)keys.next();
+            try {                
+                channelId = Integer.parseInt(key);
+            } catch (NumberFormatException nfe) {
+                m_report.println(nfe);
+                continue;
+            }
             try{
                 Vector allDatasets = new Vector();
                 // execute the static method readAllByChannel of the content definition class
@@ -651,10 +249,21 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
     }
 
     /**
-     * Write the XML-entries and Documents of a contentdefinition
-     */
-    private void writeExportManifestEntries(String classname, CmsMasterDataSet dataset, int masterNr, int subId)
-        throws CmsException{            
+     * Export a single content definition.<P>
+     *
+     * @param classname name of the content definition class
+     * @param dataset data for the content definition object instance
+     * @param masterNr id of master
+     * @param subId id of content definition
+     * 
+     * @throws CmsException if something goes wrong
+     */    
+    private void writeExportManifestEntries(
+        String classname, 
+        CmsMasterDataSet dataset, 
+        int masterNr, 
+        int subId
+    ) throws CmsException{            
         // output something to the report for the resource
         m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
         m_report.print("'" + dataset.m_title + "' (id: " + dataset.m_masterId + ")");                          
@@ -697,10 +306,68 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
     }
 
     /**
-     * Write the XML-entries and Documents of the dataset of a contentdefinition
+     * Returns a master content definition object instance created with the reflection API.<p>
+     * 
+     * @param classname name of the content definition class
+     * @param classes required for constructor generation 
+     * @param objects instances to be used as parameters for class instance generation
+     * 
+     * @return a master content definition object instance created with the reflection API
      */
-    private void writeExportDataset(CmsMasterDataSet dataset, String filename, int masterNr, int subId)
-        throws CmsException{
+    private CmsMasterContent getContentDefinition(
+        String classname, 
+        Class[] classes, 
+        Object[] objects
+    ) {
+        CmsMasterContent cd = null;
+        try {
+            Class cdClass = Class.forName(classname);
+            Constructor co = cdClass.getConstructor(classes);
+            cd = (CmsMasterContent)co.newInstance(objects);
+        } catch (InvocationTargetException ite) {
+            m_report.println(ite);
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: Invocation target exception!");
+            }
+        } catch (NoSuchMethodException nsm) {
+            m_report.println(nsm);
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: Requested method was not found!");
+            }
+        } catch (InstantiationException ie) {
+            m_report.println(ie);
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: the reflected class is abstract!");
+            }
+        } catch (Exception e) {
+            m_report.println(e);
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: Other exception! "+e);
+            }
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, e.getMessage() );
+            }
+        }
+        return cd;
+    }
+    
+    /**
+     * Exports a content definition content in a "dataset_xxx.xml" file and a number of 
+     * "datayyy_xxx.dat" files.<p>
+     * 
+     * @param dataset data for the content definition object instance
+     * @param filename name of the zip file for the module data export
+     * @param masterNr id of master
+     * @param subId id of content definition
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void writeExportDataset(
+        CmsMasterDataSet dataset, 
+        String filename, 
+        int masterNr, 
+        int subId
+    ) throws CmsException{
         // creates the XML-document
         Document xmlDoc = null;
         try{
@@ -733,7 +400,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_FEEDID, ""+dataset.m_feedId);
         addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_FEEDREFERENCE, ""+dataset.m_feedReference);
         addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_FEEDFILENAME, dataset.m_feedFilename);
-        addElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_TITLE, dataset.m_title);
+        addCdataElement(xmlDoc, elementDataset, C_EXPORT_TAG_MASTER_TITLE, dataset.m_title);
         // get the values of data_big from the string array
         for(int i=0; i< dataset.m_dataBig.length; i++){
             String value = dataset.m_dataBig[i];
@@ -794,10 +461,23 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
     }
 
     /**
-     * Write the XML-entries and Documents of the dataset of a contentdefinition
+     * Exports a media object, creates a "media_xxx.xml" and a "mediacontent_xxx.dat" data file.<p> 
+     * 
+     * @param media data for the media object instance
+     * @param filename name of the xml file for the media data export
+     * @param masterNr id of master
+     * @param subId id of content definition
+     * @param mediaId if od media object
+     * 
+     * @throws CmsException if something goes wrong
      */
-    private void writeExportMediaset(CmsMasterMedia media, String filename, int masterNr, int subId, int mediaId)
-        throws CmsException{
+    private void writeExportMediaset(
+        CmsMasterMedia media, 
+        String filename, 
+        int masterNr, 
+        int subId, 
+        int mediaId
+    ) throws CmsException{
         // creates the XML-document
         Document xmlDoc = null;
         try{
@@ -815,9 +495,9 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_SIZE, ""+media.getSize());
         addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_MIMETYPE, media.getMimetype());
         addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_TYPE, ""+media.getType());
-        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_TITLE, media.getTitle());
+        addCdataElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_TITLE, media.getTitle());
         addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_NAME, media.getName());
-        addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_DESCRIPTION, media.getDescription());
+        addCdataElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_DESCRIPTION, media.getDescription());
         // now add the name of the file where the media content is stored and write this file
         String contentFilename = "mediacontent_"+subId+"_"+masterNr+"_"+mediaId+".dat";
         addElement(xmlDoc, elementMedia, C_EXPORT_TAG_MEDIA_CONTENT, contentFilename);
@@ -835,9 +515,15 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
     }
 
     /**
-     * Write the XML-entries and Documents of the media of a contentdefinition
+     * Writes a binary content to a "*.dat" file in the export zip.<p>
+     * 
+     * @param filename name of the file, usually ends with .dat
+     * @param content contents to write to the file
      */
-    private void writeExportContentFile(String filename, byte[] content){
+    private void writeExportContentFile(
+        String filename, 
+        byte[] content
+    ) {
         try{
             // store the userinfo in zip-file
             ZipEntry entry = new ZipEntry(filename);

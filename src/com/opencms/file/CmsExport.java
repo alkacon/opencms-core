@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/03/19 08:43:10 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2003/03/25 00:14:35 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,25 +69,15 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.51 $ $Date: 2003/03/19 08:43:10 $
+ * @version $Revision: 1.52 $ $Date: 2003/03/25 00:14:35 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
-    /** The export ZIP file to store resources in */
-    private String m_exportFile;
-
-    /** The export ZIP stream to write resources to */
-    private ZipOutputStream m_exportZipStream = null;
-
-    /** The CmsObject to do the operations */
-    private CmsObject m_cms;
-
-    /** The xml manifest-file */
-    private Document m_docXml;
-
-    /** The xml element to store file information in */
-    private Element m_filesElement;
-
+    // the tags for the manifest
+    public static String C_EXPORT_TAG_FILES = "files";    
+    public static String C_EXPORT_TAG_CHANNELS = "channels";
+    public static String C_EXPORT_TAG_MASTERS = "masters";
+    
     /** The xml elemtent to store user data and further information in */
     private Element m_userdataElement;
 
@@ -108,9 +98,6 @@ public class CmsExport implements I_CmsConstants, Serializable {
 
     /** Cache for previously added super folders */
     private Vector m_superFolders;
-
-    /** The report for the log messages */
-    private I_CmsReport m_report = null;
     
     /** Set to store the names of page files in, required for later page body file export */
     private Set m_exportedPageFiles = null;
@@ -120,102 +107,91 @@ public class CmsExport implements I_CmsConstants, Serializable {
     
     /** Stores the id of the "page" resource type to save lookup time */
     private int m_pageType;
+        
+    /** Indicates if module data is exported */
+    protected boolean m_exportingModuleData = false;   
 
+    /** The export ZIP file to store resources in */
+    protected String m_exportFile;
+
+    /** The export ZIP stream to write resources to */
+    protected ZipOutputStream m_exportZipStream = null;
+
+    /** The CmsObject to do the operations */
+    protected CmsObject m_cms;
+
+    /** The xml manifest-file */
+    protected Document m_docXml;
+
+    /** The xml element to store file information in */
+    protected Element m_filesElement;
+
+    /** The xml-element to store masters information in */
+    protected Element m_mastersElement;
+    
+    /** The report for the log messages */
+    protected I_CmsReport m_report = null;
+     
+    /** The channelid and the resourceobject of the exported channels */
+    protected Set m_exportedChannelIds = new HashSet();
+    
     /**
-     * Constructs a new export.<p>
-     *
-     * @param importFile the file or folder to import from
-     * @param importPath the path to the cms to import into
-     * @param cms the cmsObject to work with
-     * @throws CmsException if something goes wrong
+     * Constructs a new uninitialized export, required for the module data export.<p>
+     * 
+     * @see CmsExportModuledata
      */
-    public CmsExport(String exportFile, String[] exportPaths, CmsObject cms)
-        throws CmsException {
-        this(exportFile, exportPaths, cms, false, false);
-    }
+    public CmsExport() {
+        // empty constructor
+    }    
     
     /**
      * Constructs a new export.<p>
      *
-     * @param importFile the file or folder to import from
-     * @param importPath the path to the cms to import into
      * @param cms the cmsObject to work with
-     * @param Node moduleNode module informations in a Node for module-export.
-     * @throws CmsException if something goes wrong
-     */
-    public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, Node moduleNode)
-        throws CmsException {
-        this(exportFile, exportPaths, cms, false, false, moduleNode);
-    }
-    
-    /**
-     * Constructs a new export.<p>
-     *
-     * @param importFile the file or folder to import from
-     * @param exportPaths the paths of folders and files to write into the exportFile
-     * @param cms the cmsObject to work with
-     * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
-     *        exportPaths are included
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     * @throws CmsException if something goes wrong
-     */
-    public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged) throws CmsException {
-        this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null);
-    }
-    
-    /**
-     * Constructs a new export.<p>
-     *
-     * @param importFile the file or folder to import from
-     * @param exportPaths the paths of folders and files to write into the exportFile
-     * @param cms the cmsObject to work with
-     * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
-     *        exportPaths are included
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     * @param Node moduleNode module informations in a Node for module-export
-     * @throws CmsException if something goes wrong
-     */
-    public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, Node moduleNode)
-        throws CmsException {
-        this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, moduleNode, false);
-    }
-    
-    /**
-     * Constructs a new export.<p>
-     *
-     * @param importFile the file or folder to import from
-     * @param exportPaths the paths of folders and files to write into the exportFile
-     * @param cms the cmsObject to work with
-     * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
-     *        exportPaths are included
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param excludeSystem if true, the system folder is excluded, if false all the resources in
+     *        resourcesToExport are included
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded
-     * @param Node moduleNode module informations in a Node for module-export
-     * @param exportUserdata if true, the userdata and groupdata are exported
+     * 
      * @throws CmsException if something goes wrong
      */
-    public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem
-                            , boolean excludeUnchanged, Node moduleNode, boolean exportUserdata)
-                        throws CmsException {
-        this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, moduleNode, exportUserdata, 0,
-                new CmsShellReport());
+    public CmsExport(
+        CmsObject cms, 
+        String exportFile, 
+        String[] resourcesToExport, 
+        boolean excludeSystem, 
+        boolean excludeUnchanged
+    ) throws CmsException {
+        this(cms, exportFile, resourcesToExport, excludeSystem, excludeUnchanged, null, false, 0, new CmsShellReport());
     }
 
     /**
      * Constructs a new export.<p>
      *
-     * @param importFile the file or folder to import from
-     * @param exportPaths the paths of folders and files to write into the exportFile
      * @param cms the cmsObject to work with
-     * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
-     *        exportPaths are included
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param excludeSystem if true, the system folder is excluded, if false all the resources in
+     *        resourcesToExport are included
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded
-     * @param Node moduleNode module informations in a Node for module-export
-     * @param exportUserdata if true, the userdata and groupdata are exported
-     * @param report the cmsReport to handle the log messages
+     * @param Node moduleNode module informations in a Node for module export
+     * @param exportUserdata if true, the user and grou pdata will also be exported
+     * @param report to handle the log messages
+     * 
      * @throws CmsException if something goes wrong
      */
-    public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, Node moduleNode, boolean exportUserdata, long contentAge, I_CmsReport report)
-        throws CmsException {
+    public CmsExport(
+        CmsObject cms, 
+        String exportFile, 
+        String[] resourcesToExport, 
+        boolean excludeSystem, 
+        boolean excludeUnchanged, 
+        Node moduleNode, 
+        boolean exportUserdata, 
+        long contentAge, 
+        I_CmsReport report
+    ) throws CmsException {                       
 
         m_exportFile = exportFile;
         m_cms = cms;
@@ -225,32 +201,81 @@ public class CmsExport implements I_CmsConstants, Serializable {
         m_isOnlineProject = cms.getRequestContext().currentProject().isOnlineProject();
         m_contentAge = contentAge;
         m_report = report;
+        m_exportingModuleData = false;
 
-        Vector folderNames = new Vector();
-        Vector fileNames = new Vector();
-        for (int i=0; i<exportPaths.length; i++) {
-            if (exportPaths[i].endsWith(C_ROOT)) {
-                folderNames.addElement(exportPaths[i]);
-            } else {
-                fileNames.addElement(exportPaths[i]);
-            }
+        openExportFile(moduleNode);
+
+        // export all the resources
+        exportAllResources(resourcesToExport);
+
+        // export userdata and groupdata if desired
+        if(m_exportUserdata){
+            exportGroups();
+            exportUsers();
         }
-
+                
+        closeExportFile();
+    }
+        
+    /**
+     * Opens the export ZIP file and initializes the internal XML document for the manifest.<p>
+     * 
+     * @param moduleNode optional modul node if a module is to be exported
+     * @throws CmsException if something goes wrong
+     */
+    protected void openExportFile(Node moduleNode) throws CmsException {
         // open the export resource
         getExportResource();
 
         // create the xml-config file
-        getXmlConfigFile(moduleNode);
+        getXmlConfigFile(moduleNode);        
+    }
+    
+    /**
+     * Closes the export ZIP file and saves the internal XML document for the manifest.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */    
+    protected void closeExportFile() throws CmsException {
+        // write the document to the zip-file
+        writeXmlConfigFile();
 
-        // remove the possible redundancies in the list of paths
+        try {
+            m_exportZipStream.close();
+        } catch(IOException exc) {
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }        
+    }
+        
+    /**
+     * Exports all resources and possible sub-folders form the provided list of resources.
+     * 
+     * @param resourcesToExport the list of resources to export
+     * @throws CmsException if something goes wrong
+     */
+    protected void exportAllResources(String[] resourcesToExport) throws CmsException {
+                 
+        // distinguish folder and file names   
+        Vector folderNames = new Vector();
+        Vector fileNames = new Vector();
+        for (int i=0; i<resourcesToExport.length; i++) {
+            if (resourcesToExport[i].endsWith(C_FOLDER_SEPARATOR)) {
+                folderNames.addElement(resourcesToExport[i]);
+            } else {
+                fileNames.addElement(resourcesToExport[i]);
+            }
+        }
+                
+        // remove the possible redundancies in the list of resources
         checkRedundancies(folderNames, fileNames);
         
         // init sets required for the body file exports 
         m_exportedPageFiles = new HashSet();
         m_exportedResources = new HashSet();
+        
         // set the "page" file resource type id
-        m_pageType = cms.getResourceType("page").getResourceType();
-
+        m_pageType = m_cms.getResourceType("page").getResourceType();
+                
         // export the folders
         for (int i=0; i<folderNames.size(); i++) {
             String path = (String) folderNames.elementAt(i);
@@ -264,57 +289,136 @@ public class CmsExport implements I_CmsConstants, Serializable {
         addSingleFiles(fileNames);
 
         // export all body files that have not already been exported
-        addPageBodyFiles();
-
-        // export userdata and groupdata if desired
-        if(m_exportUserdata){
-            exportGroups();
-            exportUsers();
-        }
+        addPageBodyFiles();        
+    }        
         
-        // write the document to the zip-file
-        writeXmlConfigFile();
-
-        try {
-            m_exportZipStream.close();
-        } catch(IOException exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-    
     /**
      * Adds a CDATA element to the XML document.<p>
      * 
+     * @param docXml Document to create the new element in
      * @param element the element to add the subelement to
      * @param name the name of the new subelement
      * @param value the value of the element
      */
-    private void addCdataElement(Element element, String name, String value) {
-        Element newElement = m_docXml.createElement(name);
+    protected void addCdataElement(Document docXml, Element element, String name, String value) {
+        Element newElement = docXml.createElement(name);
         element.appendChild(newElement);
-        CDATASection text = m_docXml.createCDATASection(value);
+        CDATASection text = docXml.createCDATASection(value);
         newElement.appendChild(text);
     }
     
     /**
      * Adds a text element to the XML document.<p>
      * 
-     * @param element the element to add the subelement to.
+     * @param docXml Document to create the new element in
+     * @param element the element to add the subelement to
      * @param name the name of the new subelement
      * @param value the value of the element
      */
-    private void addElement(Element element, String name, String value) {
-        Element newElement = m_docXml.createElement(name);
+    protected void addElement(Document docXml, Element element, String name, String value) {
+        Element newElement = docXml.createElement(name);
         element.appendChild(newElement);
-        Text text = m_docXml.createTextNode(value);
+        Text text = docXml.createTextNode(value);
         newElement.appendChild(text);
+    }
+    
+    /**
+     * Creates the export XML file and appends the initial tags to it.<p>
+     * 
+     * @param moduleNode a node with module informations
+     * @throws CmsException if something goes wrong
+     */
+    private void getXmlConfigFile(Node moduleNode) throws CmsException {
+
+        try {
+            // creates the document
+            m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_EXPORT);
+            // abbends the initital tags
+            Node exportNode = m_docXml.getFirstChild();
+
+            // add the info element. it contains all infos for this export
+            Element info = m_docXml.createElement(C_EXPORT_TAG_INFO);
+            m_docXml.getDocumentElement().appendChild(info);
+            addElement(m_docXml, info, C_EXPORT_TAG_CREATOR, m_cms.getRequestContext().currentUser().getName());
+            addElement(m_docXml, info, C_EXPORT_TAG_OC_VERSION, A_OpenCms.getVersionName());
+            addElement(m_docXml, info, C_EXPORT_TAG_DATE, Utils.getNiceDate(new Date().getTime()));
+            addElement(m_docXml, info, C_EXPORT_TAG_PROJECT, m_cms.getRequestContext().currentProject().getName());
+            addElement(m_docXml, info, C_EXPORT_TAG_VERSION, C_EXPORT_VERSION);
+
+            if (moduleNode != null) {
+                // this is a module export - import module informations here
+                exportNode.appendChild(A_CmsXmlContent.getXmlParser().importNode(m_docXml, moduleNode));
+                // now remove the unused file informations
+                NodeList files = ((Element)exportNode).getElementsByTagName("files");
+                if (files.getLength() == 1) {
+                    files.item(0).getParentNode().removeChild(files.item(0));
+                }
+            }
+            if (m_exportingModuleData) {
+                // add the root element for the channels
+                m_filesElement = m_docXml.createElement(C_EXPORT_TAG_CHANNELS);
+                m_docXml.getDocumentElement().appendChild(m_filesElement);
+                // add the root element for the masters
+                m_mastersElement = m_docXml.createElement(C_EXPORT_TAG_MASTERS);
+                m_docXml.getDocumentElement().appendChild(m_mastersElement);
+            } else {
+                // standard export, add not for the files
+                m_filesElement = m_docXml.createElement(C_EXPORT_TAG_FILES);
+                m_docXml.getDocumentElement().appendChild(m_filesElement);
+                
+            }
+            if (m_exportUserdata) {
+                // add userdata
+                m_userdataElement = m_docXml.createElement(C_EXPORT_TAG_USERGROUPDATA);
+                m_docXml.getDocumentElement().appendChild(m_userdataElement);
+            }
+        } catch (Exception exc) {
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
+    }
+    
+    /**
+     * Writes the <code>manifex.xml</code> configuration file to the esport zip file.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void writeXmlConfigFile() throws CmsException {
+        try {
+            ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
+            m_exportZipStream.putNextEntry(entry);
+            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream, A_OpenCms.getDefaultEncoding());
+            m_exportZipStream.closeEntry();
+        } catch (Exception exc) {
+            m_report.println(exc);
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
     }
 
     /**
-     * Exports all page body files that have not explicityl been
-     * added by the user.<p>
+     * Gets the export resource and stores it in a member variable.<p>
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public void addPageBodyFiles() throws CmsException {
+    private void getExportResource() throws CmsException {
+        try {
+            // add zip-extension, if needed
+            if (!m_exportFile.toLowerCase().endsWith(".zip")) {
+                m_exportFile += ".zip";
+            }
+            // create the export-zipstream
+            m_exportZipStream = new ZipOutputStream(new FileOutputStream(m_exportFile));
+        } catch (Exception exc) {
+            m_report.println(exc);
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
+    }
+
+    /**
+     * Exports all page body files that have not explicityl been added by the user.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void addPageBodyFiles() throws CmsException {
         Iterator i;   
         
         Vector bodyFileNames = new Vector();
@@ -336,9 +440,10 @@ public class CmsExport implements I_CmsConstants, Serializable {
     /**
      * Adds all files with names in fileNames to the xml-config file.<p>
      * 
-     * @param fileNames Vector of path Strings, e.g. /folder/index.html
+     * @param fileNames Vector of path Strings, e.g. <code>/folder/index.html</code>
+     * @throws CmsException if something goes wrong
      */
-    public void addSingleFiles(Vector fileNames) throws CmsException {
+    private void addSingleFiles(Vector fileNames) throws CmsException {
         if (fileNames != null) {
             for (int i = 0; i < fileNames.size(); i++) {
                 String fileName = (String) fileNames.elementAt(i);
@@ -346,7 +451,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
                     CmsFile file = m_cms.readFile(fileName);
                     if((file.getState() != C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
                         addSuperFolders(fileName);
-                        exportFile(file);
+                        exportResource(file);
                         m_exportedResources.add(fileName);
                     }
                 } catch(CmsException exc) {
@@ -362,9 +467,10 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * Adds the superfolders of path to the config file, starting at the top, 
      * excluding the root folder.<p>
      * 
-     * @param path the path of the folder in the filesystem
+     * @param path the path of the folder in the virtual files system (VFS) 
+     * @throws CmsException if something goes wrong
      */
-    public void addSuperFolders(String path) throws CmsException {
+    private void addSuperFolders(String path) throws CmsException {
         // Initialize the "previously added folder cache"
         if (m_superFolders == null) {
             m_superFolders = new Vector();
@@ -468,7 +574,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @param file the file to be exported
      * @throws CmsException if something goes wrong
      */
-    private void exportFile(CmsFile file) throws CmsException {
+    private void exportResource(CmsFile file) throws CmsException {
         String source = getSourceFilename(file.getAbsolutePath());
 
         m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
@@ -501,6 +607,17 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @throws CmsException if something goes wrong
      */
     private void exportResources(String path) throws CmsException {
+        
+        if (m_exportingModuleData) {
+            // collect channel id information if required
+            String channelId = m_cms.readProperty(path, I_CmsConstants.C_PROPERTY_CHANNELID);
+            if (channelId != null) {
+                if(! m_exportedChannelIds.contains(channelId)) {
+                    m_exportedChannelIds.add(channelId);
+                }
+            }
+        }
+                
         // get all subFolders
         Vector subFolders = m_cms.getSubFolders(path);
         // get all files in folder
@@ -514,7 +631,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
 
             if (m_isOnlineProject || (!m_excludeUnchanged) || state == C_STATE_NEW || state == C_STATE_CHANGED) {
                 if ((state != C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
-                    exportFile(m_cms.readFile(file.getAbsolutePath()));
+                    exportResource(m_cms.readFile(file.getAbsolutePath()));
                 }
             }
             // release file header memory
@@ -562,25 +679,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
             subFolders.set(i, null);
         }
     }
-    
-    /**
-     * Gets the export resource and stores it in a member variable.<p>
-     */
-    private void getExportResource() throws CmsException {
-        try {
-            // add zip-extension, if needed
-            if (!m_exportFile.toLowerCase().endsWith(".zip")) {
-                m_exportFile += ".zip";
-            }
-
-            // create the export-zipstream
-            m_exportZipStream = new ZipOutputStream(new FileOutputStream(m_exportFile));
-
-        } catch (Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-    
+        
     /**
      * Substrings the source filename, so it is shrinked to the needed part for export.<p>
      * 
@@ -596,63 +695,6 @@ public class CmsExport implements I_CmsConstants, Serializable {
             path = path.substring(0, path.length() - 1);
         }
         return path;
-    }
-    
-    /**
-     * Creates the export XML file and appends the initial tags to it.<p>
-     * 
-     * @param moduleNode a node with module informations
-     */
-    private void getXmlConfigFile(Node moduleNode) throws CmsException {
-
-        try {
-            // creates the document
-            m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_EXPORT);
-            // abbends the initital tags
-            Node exportNode = m_docXml.getFirstChild();
-
-            // add the info element. it contains all infos for this export
-            Element info = m_docXml.createElement(C_EXPORT_TAG_INFO);
-            m_docXml.getDocumentElement().appendChild(info);
-            addElement(info, C_EXPORT_TAG_CREATOR, m_cms.getRequestContext().currentUser().getName());
-            addElement(info, C_EXPORT_TAG_OC_VERSION, A_OpenCms.getVersionName());
-            addElement(info, C_EXPORT_TAG_DATE, Utils.getNiceDate(new Date().getTime()));
-            addElement(info, C_EXPORT_TAG_PROJECT, m_cms.getRequestContext().currentProject().getName());
-            addElement(info, C_EXPORT_TAG_VERSION, C_EXPORT_VERSION);
-
-            if (moduleNode != null) {
-                // this is a module export - import module informations here
-                exportNode.appendChild(A_CmsXmlContent.getXmlParser().importNode(m_docXml, moduleNode));
-                // now remove the unused file informations
-                NodeList files = ((Element)exportNode).getElementsByTagName("files");
-                if (files.getLength() == 1) {
-                    files.item(0).getParentNode().removeChild(files.item(0));
-                }
-            }
-            m_filesElement = m_docXml.createElement(C_EXPORT_TAG_FILES);
-            m_docXml.getDocumentElement().appendChild(m_filesElement);
-            // add userdata
-            if (m_exportUserdata) {
-                m_userdataElement = m_docXml.createElement(C_EXPORT_TAG_USERGROUPDATA);
-                m_docXml.getDocumentElement().appendChild(m_userdataElement);
-            }
-        } catch (Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-    
-    /**
-     * Writes the <code>manifex.xml</code> configuration file to the esport zip file.<p>
-     */
-    private void writeXmlConfigFile() throws CmsException {
-        try {
-            ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
-            m_exportZipStream.putNextEntry(entry);
-            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream, A_OpenCms.getDefaultEncoding());
-            m_exportZipStream.closeEntry();
-        } catch (Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
     }
     
     /**
@@ -679,7 +721,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
 
         // only write source if resource is a file
         if (resource.isFile()) {
-            addElement(file, C_EXPORT_TAG_SOURCE, source);
+            addElement(m_docXml, file, C_EXPORT_TAG_SOURCE, source);
         } else {
             // output something to the report for the folder
             m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
@@ -687,16 +729,16 @@ public class CmsExport implements I_CmsConstants, Serializable {
             m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
-        addElement(file, C_EXPORT_TAG_DESTINATION, source);
-        addElement(file, C_EXPORT_TAG_TYPE, type);
-        addElement(file, C_EXPORT_TAG_USER, user);
-        addElement(file, C_EXPORT_TAG_GROUP, group);
-        addElement(file, C_EXPORT_TAG_ACCESS, access);
-        addElement(file, C_EXPORT_TAG_LASTMODIFIED, lastModified);
+        addElement(m_docXml, file, C_EXPORT_TAG_DESTINATION, source);
+        addElement(m_docXml, file, C_EXPORT_TAG_TYPE, type);
+        addElement(m_docXml, file, C_EXPORT_TAG_USER, user);
+        addElement(m_docXml, file, C_EXPORT_TAG_GROUP, group);
+        addElement(m_docXml, file, C_EXPORT_TAG_ACCESS, access);
+        addElement(m_docXml, file, C_EXPORT_TAG_LASTMODIFIED, lastModified);
         if (launcherStartClass != null
             && !"".equals(launcherStartClass)
             && !C_UNKNOWN_LAUNCHER.equals(launcherStartClass)) {
-            addElement(file, C_EXPORT_TAG_LAUNCHER_START_CLASS, launcherStartClass);
+            addElement(m_docXml, file, C_EXPORT_TAG_LAUNCHER_START_CLASS, launcherStartClass);
         }
 
         // append the node for properties
@@ -709,19 +751,21 @@ public class CmsExport implements I_CmsConstants, Serializable {
 
         // create xml-elements for the properties
         while (i.hasNext()) {
-            // append the node for a property
-            Element property = m_docXml.createElement(C_EXPORT_TAG_PROPERTY);
-            properties.appendChild(property);
-
             String key = (String)i.next();
-            String value = (String)fileProperties.get(key);
-            String propertyType = m_cms.readPropertydefinition(key, type).getType() + "";
-
-            addElement(property, C_EXPORT_TAG_NAME, key);
-            addElement(property, C_EXPORT_TAG_TYPE, propertyType);
-            addCdataElement(property, C_EXPORT_TAG_VALUE, value);
+            // make sure channel id property is not exported with module data
+            if ((! m_exportingModuleData) || (! I_CmsConstants.C_PROPERTY_CHANNELID.equals(key))) {            
+                // append the node for a property
+                Element property = m_docXml.createElement(C_EXPORT_TAG_PROPERTY);
+                properties.appendChild(property);
+    
+                String value = (String)fileProperties.get(key);
+                String propertyType = m_cms.readPropertydefinition(key, type).getType() + "";
+    
+                addElement(m_docXml, property, C_EXPORT_TAG_NAME, key);
+                addElement(m_docXml, property, C_EXPORT_TAG_TYPE, propertyType);
+                addCdataElement(m_docXml, property, C_EXPORT_TAG_VALUE, value);
+            }
         }
-
     }
 
     /**
@@ -729,8 +773,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
      *
      * @throws CmsException if something goes wrong
      */
-    private void exportGroups()
-        throws CmsException {
+    private void exportGroups() throws CmsException {
         Vector allGroups = m_cms.getGroups();
         for (int i = 0; i < allGroups.size(); i++){
             exportGroup((CmsGroup)allGroups.elementAt(i));
@@ -742,8 +785,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
      *
      * @throws CmsException if something goes wrong
      */
-    private void exportUsers()
-        throws CmsException {
+    private void exportUsers() throws CmsException {
         Vector allUsers = m_cms.getUsers();
         for (int i = 0; i < allUsers.size(); i++){
             exportUser((CmsUser)allUsers.elementAt(i));
@@ -814,10 +856,10 @@ public class CmsExport implements I_CmsConstants, Serializable {
         Element groupdata = m_docXml.createElement(C_EXPORT_TAG_GROUPDATA);
         m_userdataElement.appendChild(groupdata);
 
-        addElement(groupdata, C_EXPORT_TAG_NAME, name);
-        addCdataElement(groupdata, C_EXPORT_TAG_DESCRIPTION, description);
-        addElement(groupdata, C_EXPORT_TAG_FLAGS, flags);
-        addElement(groupdata, C_EXPORT_TAG_PARENTGROUP, parentgroup);
+        addElement(m_docXml, groupdata, C_EXPORT_TAG_NAME, name);
+        addCdataElement(m_docXml, groupdata, C_EXPORT_TAG_DESCRIPTION, description);
+        addElement(m_docXml, groupdata, C_EXPORT_TAG_FLAGS, flags);
+        addElement(m_docXml, groupdata, C_EXPORT_TAG_PARENTGROUP, parentgroup);
     }
 
     /**
@@ -855,24 +897,24 @@ public class CmsExport implements I_CmsConstants, Serializable {
         Element userdata = m_docXml.createElement(C_EXPORT_TAG_USERDATA);
         m_userdataElement.appendChild(userdata);
 
-        addElement(userdata, C_EXPORT_TAG_NAME, name);
+        addElement(m_docXml, userdata, C_EXPORT_TAG_NAME, name);
         //Encode the info value, using any base 64 decoder
         enc = new sun.misc.BASE64Encoder();
         String passwd = new String(enc.encodeBuffer(password.getBytes()));
-        addCdataElement(userdata, C_EXPORT_TAG_PASSWORD, passwd);
+        addCdataElement(m_docXml, userdata, C_EXPORT_TAG_PASSWORD, passwd);
         enc = new sun.misc.BASE64Encoder();
         String recPasswd = new String(enc.encodeBuffer(recoveryPassword.getBytes()));
-        addCdataElement(userdata, C_EXPORT_TAG_RECOVERYPASSWORD, recPasswd);
+        addCdataElement(m_docXml, userdata, C_EXPORT_TAG_RECOVERYPASSWORD, recPasswd);
 
-        addCdataElement(userdata, C_EXPORT_TAG_DESCRIPTION, description);
-        addElement(userdata, C_EXPORT_TAG_FIRSTNAME, firstname);
-        addElement(userdata, C_EXPORT_TAG_LASTNAME, lastname);
-        addElement(userdata, C_EXPORT_TAG_EMAIL, email);
-        addElement(userdata, C_EXPORT_TAG_FLAGS, flags);
-        addElement(userdata, C_EXPORT_TAG_DEFAULTGROUP, defaultGroup);
-        addCdataElement(userdata, C_EXPORT_TAG_ADDRESS, address);
-        addElement(userdata, C_EXPORT_TAG_SECTION, section);
-        addElement(userdata, C_EXPORT_TAG_TYPE, type);
+        addCdataElement(m_docXml, userdata, C_EXPORT_TAG_DESCRIPTION, description);
+        addElement(m_docXml, userdata, C_EXPORT_TAG_FIRSTNAME, firstname);
+        addElement(m_docXml, userdata, C_EXPORT_TAG_LASTNAME, lastname);
+        addElement(m_docXml, userdata, C_EXPORT_TAG_EMAIL, email);
+        addElement(m_docXml, userdata, C_EXPORT_TAG_FLAGS, flags);
+        addElement(m_docXml, userdata, C_EXPORT_TAG_DEFAULTGROUP, defaultGroup);
+        addCdataElement(m_docXml, userdata, C_EXPORT_TAG_ADDRESS, address);
+        addElement(m_docXml, userdata, C_EXPORT_TAG_SECTION, section);
+        addElement(m_docXml, userdata, C_EXPORT_TAG_TYPE, type);
         // serialize the hashtable and write the info into a file
         try {
             datfileName = "/~" + C_EXPORT_TAG_USERINFO + "/" + name + ".dat";
@@ -890,7 +932,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
             m_report.println(ioex);
         }
         // create tag for userinfo
-        addCdataElement(userdata, C_EXPORT_TAG_USERINFO, datfileName);
+        addCdataElement(m_docXml, userdata, C_EXPORT_TAG_USERINFO, datfileName);
 
         // append the node for groups of user
         Element usergroup = m_docXml.createElement(C_EXPORT_TAG_USERGROUPS);
@@ -899,7 +941,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
             String groupName = ((CmsGroup)userGroups.elementAt(i)).getName();
             Element group = m_docXml.createElement(C_EXPORT_TAG_GROUPNAME);
             usergroup.appendChild(group);
-            addElement(group, C_EXPORT_TAG_NAME, groupName);
+            addElement(m_docXml, group, C_EXPORT_TAG_NAME, groupName);
         }
     }
 }
