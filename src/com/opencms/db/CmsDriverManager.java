@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/05/28 16:46:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/02 10:58:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,11 +61,54 @@ import org.w3c.dom.Document;
 
 import source.org.apache.java.util.Configurations;
 
+import com.opencms.boot.CmsBase;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.db.generic.CmsProjectDriver;
+import com.opencms.db.generic.CmsUserDriver;
+import com.opencms.file.CmsBackupProject;
+import com.opencms.file.CmsBackupResource;
+import com.opencms.file.CmsExport;
+import com.opencms.file.CmsExportLink;
+import com.opencms.file.CmsExportModuledata;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsImport;
+import com.opencms.file.CmsImportFolder;
+import com.opencms.file.CmsImportModuledata;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsProject;
+import com.opencms.file.CmsPropertydefinition;
+import com.opencms.file.CmsPublishedResources;
+import com.opencms.file.CmsRegistry;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeLink;
+import com.opencms.file.CmsStaticExport;
+import com.opencms.file.CmsTask;
+import com.opencms.file.CmsTaskLog;
+import com.opencms.file.CmsUser;
+import com.opencms.file.I_CmsRegistry;
+import com.opencms.file.I_CmsResourceType;
+import com.opencms.flex.util.CmsLruHashMap;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.report.I_CmsReport;
+import com.opencms.security.CmsAccessControlEntry;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Utils;
+import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
+
+/**
+ * @version $Revision: 1.7 $ $Date: 2003/06/02 10:58:55 $
+ * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
+ */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.6 $ $Date: 2003/05/28 16:46:34 $
+ * @version $Revision: 1.7 $ $Date: 2003/06/02 10:58:55 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -1424,6 +1467,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
         if( accessWrite(currentUser, currentProject, resource) &&
             ( (resource.getOwnerId().equals(currentUser.getId())) ||
               isAdmin(currentUser, currentProject))) {
+        	CmsUUID oldGroupId = resource.getGroupId();
             CmsGroup group = readGroup(currentUser, currentProject, newGroup);
             resource.setGroupId(group.getId());
             // write-acces  was granted - write the file.
@@ -1442,6 +1486,12 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
                 // update the cache
                 this.clearResourceCache(filename, currentProject, currentUser);
             }
+            
+			// change the access control entry for the primary group of this resource
+			CmsAccessControlEntry oldAce = m_userDriver.readAccessControlEntry(resource.getResourceId(), oldGroupId);
+			CmsAccessControlEntry newAce = createAccessControlEntry(resource,group.getId(),oldAce.getAllowedPermissions(), oldAce.getDeniedPermissions(),0);
+			m_userDriver.removeAccessControlEntry(resource.getResourceId(),oldGroupId);
+			
             // inform about the file-system-change
             fileSystemChanged(false);
         } else {
@@ -1511,6 +1561,18 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
                 // update the cache
                 this.clearResourceCache(filename, currentProject, currentUser);
             }
+            
+			// change the access control entry for the owner of this resource
+			CmsAccessControlEntry ace;
+			ace = m_userDriver.readAccessControlEntry(resource.getResourceId(),resource.getOwnerId());
+			ace.setAllowedPermissions(flags&C_ACCESS_OWNER);
+			m_userDriver.writeAccessControlEntry(ace);
+			
+			// change the access control entry for the primary group of this resource			
+			ace = m_userDriver.readAccessControlEntry(resource.getResourceId(),resource.getGroupId());
+			ace.setAllowedPermissions(flags&C_ACCESS_GROUP);
+			m_userDriver.writeAccessControlEntry(ace);			
+
             m_accessCache.clear();
             // inform about the file-system-change
             fileSystemChanged(false);
@@ -1556,6 +1618,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
     if (((resource.getOwnerId().equals(currentUser.getId())) || isAdmin(currentUser, currentProject)) &&
             (resource.isLockedBy().equals(currentUser.getId()) &&
              resource.getLockedInProject() == currentProject.getId())) {
+        CmsUUID oldOwnerId = resource.getOwnerId();
         CmsUser owner = readUser(currentUser, currentProject, newOwner);
         resource.setUserId(owner.getId());
         // write-acces  was granted - write the file.
@@ -1574,6 +1637,12 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // update the cache
             this.clearResourceCache(filename, currentProject, currentUser);
         }
+        
+		// change the access control entry for the owner of this resource
+		CmsAccessControlEntry oldAce = m_userDriver.readAccessControlEntry(resource.getResourceId(), oldOwnerId);
+		CmsAccessControlEntry newAce = createAccessControlEntry(resource,owner.getId(),oldAce.getAllowedPermissions(), oldAce.getDeniedPermissions(),0);
+		m_userDriver.removeAccessControlEntry(resource.getResourceId(),oldOwnerId);
+
         m_accessCache.clear();
         // inform about the file-system-change
         fileSystemChanged(false);
@@ -1804,9 +1873,17 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 
                 this.clearResourceCache(foldername + filename, currentProject, currentUser);
                 // copy the metainfos
-                lockResource(currentUser, currentProject, destination, true);
+                CmsResource newResource = lockResource(currentUser, currentProject, destination, true);
                 writeProperties(currentUser,currentProject, destination,
                             readProperties(currentUser, currentProject, file.getResourceName(), null, false));
+
+				// copy the access control entries of this resource
+				ListIterator aceList = m_userDriver.getAccessControlEntries(file.getResourceId()).listIterator();
+				while (aceList.hasNext()) {
+					CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
+					createAccessControlEntry(newResource, ace.getPrincipal(), ace.getAllowedPermissions(), ace.getDeniedPermissions(),0);
+				}
+				
                 m_accessCache.clear();
                 // inform about the file-system-change
                 fileSystemChanged(file.isFolder());
@@ -1859,9 +1936,17 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 m_vfsDriver.createFolder(currentUser,currentProject, onlineProject(currentUser, currentProject), folder,cmsFolder.getResourceId(),destination);
                 this.clearResourceCache(destination, currentProject, currentUser);
                 // copy the properties
-                lockResource(currentUser, currentProject, destination, true);
+				CmsResource newResource = lockResource(currentUser, currentProject, destination, true);
                 writeProperties(currentUser,currentProject, destination,
                             readProperties(currentUser, currentProject, folder.getResourceName(), null, false));
+                            
+				// copy the access control entries of this resource
+				ListIterator aceList = m_userDriver.getAccessControlEntries(folder.getResourceId()).listIterator();
+				while (aceList.hasNext()) {
+					CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
+					createAccessControlEntry(newResource, ace.getPrincipal(), ace.getAllowedPermissions(), ace.getDeniedPermissions(),0);
+				}
+					                            
                 m_resourceListCache.clear();
                 m_accessCache.clear();
                 // inform about the file-system-change
@@ -2032,18 +2117,23 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                                                contents,
                                                getResourceType(currentUser, currentProject, type));
 
-            // update the access flags
-            Hashtable startSettings=null;
-            Integer accessFlags=null;
-            startSettings=(Hashtable)currentUser.getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+            // create the default access control entries
+			Hashtable startSettings=null;
+			Integer accessFlags=null;
+			startSettings=(Hashtable)currentUser.getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+            
             if (startSettings != null) {
                 accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
                 if (accessFlags != null) {
+//					TODO: remove old access flags
                     file.setAccessFlags(accessFlags.intValue());
+					m_userDriver.createAccessControlEntry(file.getResourceId(),currentUser.getId(),accessFlags.intValue()&C_ACCESS_OWNER,0,0);
                 }
             }
             if(currentGroup != null) {
+//				TODO: remove old group
                 file.setGroupId(currentGroup.getId());
+				m_userDriver.createAccessControlEntry(file.getResourceId(),currentGroup.getId(),accessFlags.intValue()&C_ACCESS_GROUP,0,0);
             }
 
             m_vfsDriver.writeFileHeader(currentProject, file,false);
@@ -2063,6 +2153,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         }
 
      }
+     
     /**
      * Creates a new folder.
      *
@@ -2114,18 +2205,21 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                                                           CmsUUID.getNullUUID(),
                                                           newFolderName,
                                                           0);
-            // update the access flags
+			// create the default access control entries
             Hashtable startSettings=null;
             Integer accessFlags=null;
             startSettings=(Hashtable)currentUser.getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
             if (startSettings != null) {
                 accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
                 if (accessFlags != null) {
+                	//TODO: remove old access flags
                     newFolder.setAccessFlags(accessFlags.intValue());
+					m_userDriver.createAccessControlEntry(newFolder.getResourceId(),currentUser.getId(),accessFlags.intValue()&C_ACCESS_OWNER,0,0);
                 }
             }
             if(currentGroup != null) {
                 newFolder.setGroupId(currentGroup.getId());
+				m_userDriver.createAccessControlEntry(newFolder.getResourceId(),currentGroup.getId(),accessFlags.intValue()&C_ACCESS_GROUP,0,0);
             }
             newFolder.setState(C_STATE_NEW);
 
@@ -2221,6 +2315,10 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             this.clearResourceCache(newResourceName, currentProject, currentUser);
             // write metainfos for the folder
             m_vfsDriver.writeProperties(propertyinfos, currentProject.getId(), newResource, newResource.getType(), true);
+
+			// create the access control entries
+			m_userDriver.createAccessControlEntry(newResource.getResourceId(),owner.getId(),newResource.getAccessFlags()&C_ACCESS_OWNER,0,0);
+			m_userDriver.createAccessControlEntry(newResource.getResourceId(),group.getId(),newResource.getAccessFlags()&C_ACCESS_GROUP,0,0);
 
             // inform about the file-system-change
             fileSystemChanged(true);
@@ -2616,9 +2714,12 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 // the onlinefile dosent exist => remove the file realy!
                 deleteAllProperties(currentUser,currentProject,file.getResourceName());
                 m_vfsDriver.removeFile(currentProject.getId(), filename);
+				// remove the access control entries
+				m_userDriver.removeAllAccessControlEntries(file.getResourceId());
             } else {
                 m_vfsDriver.deleteFile(currentProject, filename);
-
+				// delete the access control entries
+				m_userDriver.deleteAllAccessControlEntries(file.getResourceId());
             }
             // update the cache
             this.clearResourceCache(filename, currentProject, currentUser);
@@ -2636,6 +2737,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 CmsException.C_NO_ACCESS);
         }
     }
+    
      /**
      * Deletes a folder in the Cms.<br>
      *
@@ -2680,8 +2782,12 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 // the onlinefile dosent exist => remove the file realy!
                 deleteAllProperties(currentUser,currentProject, cmsFolder.getResourceName());
                 m_vfsDriver.removeFolder(currentProject.getId(),cmsFolder);
+				// remove the access control entries
+				m_userDriver.removeAllAccessControlEntries(cmsFolder.getResourceId());
             } else {
                 m_vfsDriver.deleteFolder(currentProject,cmsFolder);
+				// delete the access control entries
+				m_userDriver.deleteAllAccessControlEntries(cmsFolder.getResourceId());
             }
             // update cache
             this.clearResourceCache(foldername, currentProject, currentUser);
@@ -2744,6 +2850,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 // update the cache
                 this.clearResourceCache(filename, currentProject, currentUser);
             }
+            // undelete access control entries
+			m_userDriver.undeleteAllAccessControlEntries(resource.getResourceId());
             // inform about the file-system-change
             fileSystemChanged(isFolder);
         } else {
@@ -2820,6 +2928,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                     m_vfsDriver.deleteAllProperties(id, currentFile.getResourceId());
                     // delete the file
                     m_vfsDriver.removeFile(id, currentFile.getResourceName());
+                    // remove the access control entries
+                    m_userDriver.removeAllAccessControlEntries(currentFile.getResourceId());
                 } else if (currentFile.getState() == C_STATE_CHANGED){
                     if(!currentFile.isLocked()){
                         // lock the resource
@@ -2868,6 +2978,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             for (int i = deletedFolders.size() - 1; i > -1; i--){
                 CmsFolder delFolder = ((CmsFolder) deletedFolders.elementAt(i));
                 m_vfsDriver.removeFolder(id, delFolder);
+                // remove the access control entries
+                m_userDriver.removeAllAccessControlEntries(delFolder.getResourceId());
             }
             // unlock all resources in the project
             m_projectDriver.unlockProject(deleteProject);
@@ -4625,12 +4737,14 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param currentProject The current project of the user.
      * @param resource The complete path to the resource to lock.
      * @param force If force is true, a existing locking will be oberwritten.
+     * 
+     * @return the UUID of the resource if it was locked successfully
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      * It will also be thrown, if there is a existing lock
      * and force was set to false.
      */
-    public void lockResource(CmsUser currentUser, CmsProject currentProject,
+    public CmsResource lockResource(CmsUser currentUser, CmsProject currentProject,
                              String resourcename, boolean force)
         throws CmsException {
 
@@ -4647,7 +4761,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         // check, if the resource is in the offline-project
         if(cmsResource.getProjectId() != currentProject.getId()) {
             // the resource is not in the current project and can't be locked - so ignore.
-            return;
+            return (CmsResource)null;
         }
         // check, if the user may lock the resource
         if( accessLock(currentUser, currentProject, cmsResource) ) {
@@ -4657,7 +4771,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                     throw new CmsException("["+getClass().getName()+"] "+resourcename,CmsException.C_LOCKED);
                 }
             }
-
+			
             // lock the resource
             cmsResource.setLocked(currentUser.getId());
             cmsResource.setLockedInProject(currentProject.getId());
@@ -4698,6 +4812,8 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             throw new CmsException("[" + this.getClass().getName() + "] " + resourcename,
                 CmsException.C_NO_ACCESS);
         }
+        
+        return cmsResource;
     }
     //  Methods working with user and groups
 
@@ -7719,10 +7835,13 @@ protected void validName(String name, boolean blank) throws CmsException {
         if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
 
             // write-acces  was granted - write the file.
-
             m_vfsDriver.writeFile(currentProject,
                                onlineProject(currentUser, currentProject), file, true, currentUser.getId());
 
+			// write the access control entries
+			m_userDriver.writeAccessControlEntry(new CmsAccessControlEntry(currentUser.getId(),currentUser.getId(),file.getAccessFlags()&C_ACCESS_OWNER,0,0));
+			m_userDriver.writeAccessControlEntry(new CmsAccessControlEntry(file.getResourceId(),file.getGroupId(),file.getAccessFlags()&C_ACCESS_GROUP,0,0));
+			
             if (file.getState()==C_STATE_UNCHANGED) {
                 file.setState(C_STATE_CHANGED);
             }
@@ -7805,6 +7924,10 @@ protected void validName(String name, boolean blank) throws CmsException {
             m_vfsDriver.writeResource(currentProject, resource, filecontent, true, currentUser.getId());
             // write the properties
             m_vfsDriver.writeProperties(properties, currentProject.getId(),resource, resource.getType(),true);
+            // write the access control entries
+			m_userDriver.writeAccessControlEntry(new CmsAccessControlEntry(currentUser.getId(),currentUser.getId(),resource.getAccessFlags()&C_ACCESS_OWNER,0,0));
+			m_userDriver.writeAccessControlEntry(new CmsAccessControlEntry(resource.getResourceId(),resource.getGroupId(),resource.getAccessFlags()&C_ACCESS_GROUP,0,0));
+
             // update the cache
             this.clearResourceCache(resource.getResourceName(), currentProject, currentUser);
             m_accessCache.clear();
@@ -7879,6 +8002,10 @@ protected void validName(String name, boolean blank) throws CmsException {
         if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
             // write-acces  was granted - write the file.
             m_vfsDriver.writeFileHeader(currentProject, file,true, currentUser.getId());
+			// write the access control entries
+			m_userDriver.writeAccessControlEntry(new CmsAccessControlEntry(currentUser.getId(),currentUser.getId(),file.getAccessFlags()&C_ACCESS_OWNER,0,0));
+			m_userDriver.writeAccessControlEntry(new CmsAccessControlEntry(file.getResourceId(),file.getGroupId(),file.getAccessFlags()&C_ACCESS_GROUP,0,0));
+
             if (file.getState()==C_STATE_UNCHANGED) {
                 file.setState(C_STATE_CHANGED);
             }
@@ -9034,4 +9161,67 @@ protected void validName(String name, boolean blank) throws CmsException {
         return m_backupDriver;
     }
 
+	//
+	//	Access Control Entry
+	//
+
+	/**
+	 * Creates a new access control entry for a given resource.
+	 * 
+	 * @param resource	the resource 
+	 * @param principal	the id of a group or a user any other entity
+	 * @param allowed	the set of granted permissions
+	 * @param denied	the set of forbidden permissions
+	 * @return	 	 
+	 */
+	public CmsAccessControlEntry createAccessControlEntry(CmsResource resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException {
+		
+		m_userDriver.createAccessControlEntry(resource.getResourceId(), principal, allowed, denied, flags);
+		return new CmsAccessControlEntry(resource.getResourceId(), principal, allowed, denied, flags); 
+	}
+	
+	/**
+	 * Marks all access control entries belonging to a resource as deleted
+	 * 
+	 * @param resource			the resource
+	 * @throws CmsException
+	 */
+	public void deleteAllAccessControlEntries(CmsResource resource) throws CmsException {
+		
+		m_userDriver.deleteAllAccessControlEntries(resource.getResourceId());
+	}
+	
+	/**
+	 * Writes an access control entry to the cms.
+	 * 
+	 * @param acEntry the entry to write
+	 */
+	public void writeAccessControlEntry(CmsAccessControlEntry acEntry) throws CmsException {
+
+		m_userDriver.writeAccessControlEntry(acEntry);
+	}
+	
+	/**
+	 * Reads an access control entry from the cms.
+	 * 
+	 * @param resource	the resource
+	 * @param principal	the id of a group or a user any other entity
+	 * @return			an access control entry that defines the permissions of the entity for the given resource
+	 */
+	public CmsAccessControlEntry readAccessControlEntry(CmsResource resource, CmsUUID principal) throws CmsException {
+
+		return m_userDriver.readAccessControlEntry(resource.getResourceId(), principal);
+	}
+	
+	/**
+	 * Reads all relevant access control entries for a given resource.
+	 * 
+	 * @param resource	the resource
+	 * @return			a vector of access control entries defining all permissions for the given resource
+	 */
+	public Vector getAccessControlEntries(CmsResource resource) throws CmsException {
+		
+		return m_userDriver.getAccessControlEntries(resource.getResourceId());
+	}
+	
 }

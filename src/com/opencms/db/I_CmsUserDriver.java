@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/02 10:59:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,22 @@
  
 package com.opencms.db;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsUser;
-import com.opencms.flex.util.CmsUUID;
-
 import java.util.Hashtable;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
 
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsUser;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.security.CmsAccessControlEntry;
+
 /**
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/02 10:59:04 $
  * @since 5.1.2
  */
 public interface I_CmsUserDriver {
@@ -85,4 +86,76 @@ public interface I_CmsUserDriver {
     void writeGroup(CmsGroup group) throws CmsException;
     void writeUser(CmsUser user) throws CmsException;
     
+	/**
+	 * Creates an access control entry.
+	 * 
+	 * @param acEntry the new entry to write
+	 */
+	public void createAccessControlEntry(CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException;
+	
+	/**
+	 * Writes an access control entry to the cms.
+	 * 
+	 * @param acEntry the entry to write
+	 */
+	public void writeAccessControlEntry(CmsAccessControlEntry acEntry) throws CmsException;
+
+	/**
+	 * Removes an access control entry from the database
+	 * 
+	 * @param resource		the id of the resource	
+	 * @param principal		the id of the principal
+	 * @throws CmsException
+	 */
+	//public void deleteAccessControlEntry(CmsUUID resource, CmsUUID principal) throws CmsException;
+		
+	/**
+	 * Deletes all access control entries belonging to a resource
+	 * 
+	 * @param resource	the id of the resource
+	 * @throws CmsException
+	 */
+	public void deleteAllAccessControlEntries(CmsUUID resource) throws CmsException;
+
+	/**
+	 * Undeletes all access control entries belonging to a resource
+	 * 
+	 * @param resource	the id of the resource
+	 * @throws CmsException
+	 */
+	public void undeleteAllAccessControlEntries(CmsUUID resource) throws CmsException;
+	
+	/**
+	 * Removes an access control entry from the database
+	 * 
+	 * @param resource		the id of the resource	
+	 * @param principal		the id of the principal
+	 * @throws CmsException
+	 */
+	public void removeAccessControlEntry(CmsUUID resource, CmsUUID principal) throws CmsException;
+	
+	/**
+	 * Removes all access control entries belonging to a resource from the database
+	 * 
+	 * @param resource 		the id of the resource
+	 * @throws CmsException
+	 */
+	public void removeAllAccessControlEntries(CmsUUID resource) throws CmsException;
+	
+	/**
+	 * Reads an access control entry from the cms.
+	 * 
+	 * @param resource	the id of the resource
+	 * @param principal	the id of a group or a user any other entity
+	 * @return			an access control entry that defines the permissions of the entity for the given resource
+	 */	
+	public CmsAccessControlEntry readAccessControlEntry(CmsUUID resource, CmsUUID principal) throws CmsException;
+	
+	/**
+	 * Reads all relevant access control entries for a given resource.
+	 * 
+	 * @param resource	the id of the resource
+	 * @return			a vector of access control entries defining all permissions for the given resource
+	 */
+	public Vector getAccessControlEntries(CmsUUID resource) throws CmsException;	
 }

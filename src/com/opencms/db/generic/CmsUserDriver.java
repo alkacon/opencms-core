@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/02 10:58:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,6 @@
  
 package com.opencms.db.generic;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.db.CmsDriverManager;
-import com.opencms.db.I_CmsUserDriver;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.util.SqlHelper;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -62,11 +50,24 @@ import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
 
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.db.CmsDriverManager;
+import com.opencms.db.I_CmsUserDriver;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsUser;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.security.CmsAccessControlEntry;
+import com.opencms.util.SqlHelper;
+
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/05/23 16:26:47 $
+ * @version $Revision: 1.6 $ $Date: 2003/06/02 10:58:21 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {
@@ -1351,5 +1352,286 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
+
+	//
+	//	Access Control Entry
+	//
+	
+	/**
+	 * Creates an access control entry.
+	 * 
+	 * @param acEntry the new entry to write
+	 */
+	public void createAccessControlEntry(CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException {
+		
+		PreparedStatement stmt = null;
+		Connection conn = null;
+
+		try {
+			conn = m_sqlManager.getConnection();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_CREATE");
+
+			stmt.setString(1, resource.toString());
+			stmt.setString(2, principal.toString());
+			stmt.setInt(3, allowed);
+			stmt.setInt(4, denied);
+			stmt.setInt(5, flags);
+
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}
+	}
+
+	/**
+	 * Deletes all access control entries belonging to a resource
+	 * 
+	 * @param resource	the id of the resource
+	 * @throws CmsException
+	 */
+	public void deleteAllAccessControlEntries(CmsUUID resource) throws CmsException {
+		
+		PreparedStatement stmt = null;
+		Connection conn = null;
+
+		try {
+			conn = m_sqlManager.getConnection();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_SETFLAGS_ALL");
+
+			stmt.setString(1, resource.toString());
+			stmt.setInt(2, I_CmsConstants.C_ACCESSFLAGS_DELETED);
+			
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}		
+	}
+
+	/**
+	 * Undeletes all access control entries belonging to a resource
+	 * 
+	 * @param resource	the id of the resource
+	 * @throws CmsException
+	 */
+	public void undeleteAllAccessControlEntries(CmsUUID resource) throws CmsException {
+		
+		PreparedStatement stmt = null;
+		Connection conn = null;
+
+		try {
+			conn = m_sqlManager.getConnection();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_RESETFLAGS_ALL");
+
+			stmt.setString(1, resource.toString());
+			stmt.setInt(2, ~I_CmsConstants.C_ACCESSFLAGS_DELETED);
+			
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}		
+	}
+	
+	/**
+	 * Removes an access control entry from the database
+	 * 
+	 * @param resource		the id of the resource	
+	 * @param principal		the id of the principal
+	 * @throws CmsException
+	 */
+	public void removeAccessControlEntry(CmsUUID resource, CmsUUID principal) throws CmsException {
+
+		PreparedStatement stmt = null;
+		Connection conn = null;
+	
+		try {
+			conn = m_sqlManager.getConnection();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_REMOVE");
+	
+			stmt.setString(1, resource.toString());
+			stmt.setString(2, principal.toString());
+				
+			stmt.executeUpdate();
+	
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}							
+	}
+	
+	/**
+	 * Removes all access control entries belonging to a resource from the database
+	 * 
+	 * @param resource 		the id of the resource
+	 * @throws CmsException
+	 */
+	public void removeAllAccessControlEntries(CmsUUID resource) throws CmsException {
+		
+		PreparedStatement stmt = null;
+		Connection conn = null;
+
+		try {
+			conn = m_sqlManager.getConnection();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_REMOVE_ALL");
+
+			stmt.setString(1, resource.toString());
+			
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}			
+	}
+	
+	/**
+	 * Writes an access control entry to the cms.
+	 * If the entry already exists in the database, it is updated with new values
+	 * 
+	 * @param acEntry the entry to write
+	 */
+	public void writeAccessControlEntry(CmsAccessControlEntry acEntry) throws CmsException {
+		
+		PreparedStatement stmt = null;
+		Connection conn = null;
+		ResultSet res = null;
+		
+		try {
+			conn = m_sqlManager.getConnection();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_READ_ENTRY");
+
+			stmt.setString(1, acEntry.getResource().toString());
+			stmt.setString(2, acEntry.getPrincipal().toString());
+
+			res = stmt.executeQuery();
+			if (!res.next()) {
+				
+				createAccessControlEntry(acEntry.getResource(),acEntry.getPrincipal(),acEntry.getAllowedPermissions(),acEntry.getDeniedPermissions(),acEntry.getFlags());
+				return;
+			}
+
+			// otherwise update the already existing entry
+
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_UPDATE");
+
+			stmt.setInt(1, acEntry.getAllowedPermissions());
+			stmt.setInt(2, acEntry.getDeniedPermissions());
+			stmt.setInt(3, acEntry.getFlags());
+			stmt.setString(4, acEntry.getResource().toString());
+			stmt.setString(5, acEntry.getPrincipal().toString());
+
+
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}
+	}
+	
+	/**
+	 * Reads an access control entry from the cms.
+	 * 
+	 * @param resource	the id of the resource
+	 * @param principal	the id of a group or a user any other entity
+	 * @return			an access control entry that defines the permissions of the entity for the given resource
+	 */	
+	public CmsAccessControlEntry readAccessControlEntry(CmsUUID resource, CmsUUID principal) throws CmsException {
+		
+		CmsAccessControlEntry ace = null;
+		PreparedStatement stmt = null;
+		Connection conn = null;
+		ResultSet res = null;
+		
+		try {
+			conn = m_sqlManager.getConnection();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_READ_ENTRY");
+
+			stmt.setString(1, resource.toString());
+			stmt.setString(2, principal.toString());
+
+			res = stmt.executeQuery();
+
+			// create new CmsAccessControlEntry
+			if (res.next()) {
+				ace = createAceFromResultSet(res);
+			} else {
+				res.close();
+				res = null;
+				throw new CmsException("[" + this.getClass().getName() + "]", CmsException.C_NOT_FOUND);
+			}
+			
+			return ace;
+			
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}
+	}
+	
+	/**
+	 * Reads all relevant access control entries for a given resource.
+	 * 
+	 * @param resource	the id of the resource
+	 * @return			a vector of access control entries defining all permissions for the given resource
+	 */
+	public Vector getAccessControlEntries(CmsUUID resource) throws CmsException {
+
+		Vector aceList = new Vector();
+		PreparedStatement stmt = null;
+		Connection conn = null;
+		ResultSet res = null;
+		
+		try {
+			conn = m_sqlManager.getConnection();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_ACCESS_READ_ENTRIES");
+
+			stmt.setString(1, resource.toString());
+
+			res = stmt.executeQuery();
+
+			// create new CmsAccessControlEntry and add to list
+			while(res.next()) {
+				aceList.add(createAceFromResultSet(res));
+			}
+		
+			return aceList;
+
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, null);
+		}
+	}
+	
+	/**
+	 * Internal helper method to create an access control entry from a database record
+	 * 
+	 * @param res resultset of the current query
+	 * @return a new CmsAccessControlEntry initialized with the values from the current database record.
+	 */
+	private CmsAccessControlEntry createAceFromResultSet(ResultSet res) throws SQLException {
+		// this method is final to allow the java compiler to inline this code!
+
+		return new CmsAccessControlEntry(
+			new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_RESOURCE_ID"))),
+			new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))),
+			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")),
+			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")),
+			res.getInt(m_sqlManager.get(""))
+		);
+	}
 
 }

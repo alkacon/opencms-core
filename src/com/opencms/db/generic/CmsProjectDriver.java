@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/05/28 16:46:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/02 10:58:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import source.org.apache.java.util.Configurations;
  * This is the generic project driver to execute operations requested by the Cms
  * using the underlying drivers. This code is still messy like a living space.
  *
- * @version $Revision: 1.5 $ $Date: 2003/05/28 16:46:34 $
+ * @version $Revision: 1.6 $ $Date: 2003/06/02 10:58:12 $
  * @since 5.1.2
  */
 public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
@@ -741,12 +741,20 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, rootFolder, false);
+		// create the access control entries
+		// not yet since theres no online/offline difference 
+		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
 
         // create the folder for the default site
         rootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, rootFolder.getResourceId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, rootFolder, false);
+		// create the access control entries
+		//		not yet since theres no online/offline difference
+		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
         siteRootId = rootFolder.getResourceId();
 
         // create the folder for the virtual file system
@@ -754,12 +762,20 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, rootFolder, false);
+		// create the access control entries
+		//		not yet since theres no online/offline difference
+		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
 
         // create the folder for the context objects system
         rootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, siteRootId, CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_COS + I_CmsConstants.C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, rootFolder, false);
+		// create the access control entries
+		//		not yet since theres no online/offline difference
+		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
 
         // create the task for the setup project
         task = m_driverManager.getWorkflowDriver().createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(), "_setupProject", new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
@@ -770,6 +786,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
+		// create the access control entries
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
 
         // create the folder for the default site
         rootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, rootFolder.getResourceId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOT, 0);
@@ -777,18 +796,28 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
         siteRootId = rootFolder.getResourceId();
+		// create the access control entries
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
 
         // create the folder for the virtual file system
         rootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS + I_CmsConstants.C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
+		// create the access control entries
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
 
         // create the folder for the context objects system
         rootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_COS + I_CmsConstants.C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
+		// create the access control entries
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
+		m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
+
     }
 
     protected void finalize() throws Throwable {
