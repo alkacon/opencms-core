@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2000/02/11 18:44:19 $
+ * @version $Revision: 1.32 $ $Date: 2000/02/13 12:36:16 $
  */
 public interface I_CmsWpConstants {
 
@@ -202,9 +202,21 @@ public interface I_CmsWpConstants {
     public static final String C_LABEL_VALUE = "value";
     
     // Parameters for radiobuttons
+  
+    /** Name of the radio buttons */
+    public static final String C_RADIO_RADIONAME = "radioname";
     
-    /** Name of the icon */
+    /** Name of the radio button value */
     public static final String C_RADIO_NAME = "name";
+
+    /** Name of the radio button link */
+    public static final String C_RADIO_LINK = "link";
+  
+    /** Name of the radio button image */
+    public static final String C_RADIO_IMAGE = "image";
+    
+    /** Method of the radio buttons */
+    public static final String C_RADIO_METHOD = "method";
 
     // Parameters for input fields
     

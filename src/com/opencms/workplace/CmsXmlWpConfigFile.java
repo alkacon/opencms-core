@@ -13,7 +13,8 @@ import java.util.*;
  * Content definition for "/workplace/workplace.ini".
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/11 18:44:19 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.10 $ $Date: 2000/02/13 12:36:16 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -176,7 +177,7 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
      * @param values Vector to be filled with the appropriate values in this method.
      * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
-    public void getViews(Vector names, Vector values) throws CmsException {
+   /* public void getViews(Vector names, Vector values) throws CmsException {
         
         // Check the tag "WORKPLACEVIEWS" in the config file
         if(!hasData("workplaceviews")) {
@@ -209,18 +210,51 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
             names.addElement(name);
             values.addElement(link);
         }
-    }
+    } */
      
-    
-    public void getNewResource(Vector names, Vector values, String tag) throws CmsException {
-        // Check if the requested tag is in the config file
+     /**
+     * Gets the available workplace tag elements defined in the config file.
+     * Names of the elements will be stored in <code>names</code>,
+     * the corresponding values will be stored in <code>values</code>.
+     * 
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param tag The tag requested form the workplace config file.
+     * @param element The name of the emelemtn to be read.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public void getWorkplaceIniData(Vector names, Vector values, String tag, String element) throws CmsException {
+        // Check the tag "tag" in the config file
         if(!hasData(tag)) {
             throwException("Tag \""+tag+"\" missing in workplace configuration file.", CmsException.C_XML_TAG_MISSING);
-        }   
+        }
         Element viewsElement = getData(tag);
         
-        // Now get a NodeList of all available views
-        NodeList allViews = viewsElement.getElementsByTagName("RESOURCE");        
+        // Now get a NodeList of all available element
+        NodeList allViews = viewsElement.getElementsByTagName(element);
+
+        // Check the existance of at least one view.
+        int numViews = allViews.getLength();        
+        if(numViews == 0) {
+            throwException("No elements defined workplace configuration file.", CmsException.C_XML_TAG_MISSING);
+        }
+                
+        // Everything is fine.
+        // Now loop through the available views and fill the result
+        // vectors.
+        for(int i=0; i<numViews; i++) {
+            Element currentView = (Element)allViews.item(i);
+            String name = currentView.getAttribute("name");
+            if(name == null || "".equals(name)) {
+                name = "View " + i;
+            }
+            String link = getTagValue(currentView);
+            if(link == null || "".equals(link)) {
+                throwException("View \"" + name + "\" has no value defined workplace configuration file.", CmsException.C_XML_TAG_MISSING);
+            }
+            names.addElement(name);
+            values.addElement(link);
+        }
     }
     
     

@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/02/11 18:44:19 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/13 12:36:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -304,6 +304,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     template.setXmlData(C_NAME_VALUE,folder.getName());
                     template.setXmlData(C_NAME_FILEFOLDER,template.getProcessedXmlDataValue(getName(cms,folder),this));     
                     // set the folder title
+                    title="";
                     try {
                         title=cms.readMetainformation(folder.getAbsolutePath(),C_METAINFO_TITLE);
                     } catch (CmsException e) {
@@ -367,6 +368,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     template.setXmlData(C_NAME_FILEFOLDER,template.getProcessedXmlDataValue(getName(cms,file),this));     
                    
                     // set the file title
+                    title="";
                     try {
                         title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
                     } catch (CmsException e) {

@@ -15,7 +15,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/02/07 08:55:50 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/13 12:36:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -228,7 +228,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             m_viewLinks = new Vector();
 
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);            
-            configFile.getViews(m_viewNames, m_viewLinks);            
+            configFile.getWorkplaceIniData(m_viewNames, m_viewLinks,"WORKPLACEVIEWS","VIEW");            
         }
         
         // OK. Now m_viewNames and m_viewLinks contail all available

@@ -2,11 +2,17 @@
 <WP_RADIO>	
 	<radiobuttons>
 		<entry><![CDATA[<tr>
-		<td align=middle width=5%><INPUT type ="radio" id=]]><PROCESS>name</PROCESS><![CDATA[ name=]]><PROCESS>name</PROCESS><![CDATA[ value="a"</td>
-		<td align=middle width=10%><IMG name="a" src="" border=0 width=16 heigth=16</td>
-		<td align=left>a</td>
+		<td align=middle width=5%><INPUT type ="radio" id=]]><PROCESS>radioname</PROCESS><![CDATA[ name=]]><PROCESS>radioname</PROCESS><![CDATA[ value="]]><PROCESS>link</PROCESS><![CDATA["></td>
+		<td align=middle width=10%><IMG src="]]><METHOD name="picsUrl"><PROCESS>image</PROCESS></METHOD><![CDATA[" border=0 width=16 heigth=16</td>
+		<td align=left>]]><PROCESS>name</PROCESS><![CDATA[</td>
 		</tr>]]>
 		</entry>
+		<entryselected><![CDATA[<tr>
+		<td align=middle width=5%><INPUT type ="radio" id=]]><PROCESS>radioname</PROCESS><![CDATA[ name=]]><PROCESS>radioname</PROCESS><![CDATA[ value="]]><PROCESS>link</PROCESS><![CDATA[" checked></td>
+		<td align=middle width=10%><IMG src="]]><METHOD name="picsUrl"><PROCESS>image</PROCESS></METHOD><![CDATA[" border=0 width=16 heigth=16</td>
+		<td align=left>]]><PROCESS>name</PROCESS><![CDATA[</td>
+		</tr>]]>
+		</entryselected>
 	</radiobuttons>	
 </WP_RADIO>
 

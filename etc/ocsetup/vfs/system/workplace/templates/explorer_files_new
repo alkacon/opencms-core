@@ -39,44 +39,7 @@ function show_help()
 			<table border=1 width=100%>
 				<tr><td class=wizard>
 					<table border=0 width=100%>
-						<tr>
-							<td align=middle width=5%><INPUT type="radio" id=R_NEU name=R_NEU checked value="explorer_files_neu_ordner.html"></td>
-							<td align=middle width=10%><IMG name="folder" src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
-							<td align=left>Ordner</td>
-						</tr>
-						<tr>
-							<td align=middle><INPUT type="radio" id=R_NEU name=R_NEU value="explorer_files_neu_seite.html"></td>
-							<td align=middle><IMG src="]]><METHOD name="picsUrl">ic_file_plain.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
-							<td align=left>Seite</td>
-						</tr>
-						<tr>
-							<td align=middle><INPUT type="radio" id=R_NEU name=R_NEU value="explorer_files_neu_othertype.html"></td>
-							<td align=middle><IMG src="]]><METHOD name="picsUrl">ic_file_othertype.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
-							<td align=left>anderer Typ</td>
-						</tr>
-<!-- not nescessary for Cebit implementation
-						<tr>
-							<td align=middle><INPUT type="radio" id=R_NEU name=R_NEU value="explorer_files_neu_docloader.html"></td>
-							<td align=middle><IMG src="]]><METHOD name="picsUrl">ic_file_docloader.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
-							<td align=left>Docloader</td>
-						</tr>
-						<tr>
-							<td align=middle><INPUT type="radio" id=R_NEU name=R_NEU value="explorer_files_neu_email.html"></td>
-							<td align=middle><IMG src="]]><METHOD name="picsUrl">ic_file_maileditor.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
-							<td align=left>EMail Formular</td>
-						</tr>
-						<tr>
-							<td align=middle><INPUT type="radio" id=R_NEU name=R_NEU value="explorer_files_neu_section.html"></td>
-							<td align=middle><IMG src="]]><METHOD name="picsUrl">ic_file_binary.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
-							<td align=left>Sektion</td>
-						</tr>
--->
-						<tr>
-							<td align=middle width=5%><INPUT type="radio" id=R_NEU name=R_NEU value="explorer_files_upload.html"></td>
-							<td align=middle width=10%><IMG src="]]><METHOD name="picsUrl">ic_file_upload.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
-							<td>Neue Datei hochladen</td>
-						</tr>
-						]]><RADIOBUTTON name="R_NEU"  /><![CDATA[
+						]]><RADIOBUTTON name="R_NEU" method="getResources" /><![CDATA[
 					</table>
 				</td></tr>
 			</table>
@@ -89,7 +52,7 @@ function show_help()
 			<tr>
 				<td class=formular align=right width=60%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK></td>
 				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER onClick="loc=check_radio('NEU', 'R_NEU', 7); location=loc"></td>
-				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files_projekt.html';"></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 			</tr>
 			</table>
 		</td>

@@ -14,7 +14,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/02/11 18:44:19 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/13 12:36:16 $
  */
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                      I_CmsConstants {
@@ -63,7 +63,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
      
      /** Definition of the Datablock  LINK_VALUE */
      private final static String C_LINK_VALUE="LINK_VALUE";   
-     
+        
     /**
      * Indicates if the results of this class are cacheable.
      * 
@@ -247,5 +247,6 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
              currentFilelist=cms.getRequestContext().currentFolder().getAbsolutePath();
         } 
       return currentFilelist;
-    }
+    }   
+    
 }

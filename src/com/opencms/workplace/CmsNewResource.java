@@ -14,10 +14,13 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/11 18:55:28 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/13 12:36:16 $
  */
 public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
+    
+    private Vector m_names = null;
+    private Vector m_values = null;
  
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -66,5 +69,39 @@ public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConsta
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     
     }
+    
+     /**
+      * Gets the resources displayed in the Radiobutton group on the new resource dialog.
+      * @param cms The CmsObject.
+      * @param lang The langauge definitions.
+      * @param names The names of the new rescources.
+      * @param values The links that are connected with each resource.
+      * @param parameters Hashtable of parameters (not used yet).
+      * @returns The vectors names and values are filled with the information found in the 
+      * workplace.ini.
+      * @exception Throws CmsException if something goes wrong.
+      */
+      public void getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+            throws CmsException {
 
+           // Check if the list of available resources is not yet loaded from the workplace.ini
+            if(m_names == null || m_values == null) {
+                m_names = new Vector();
+                m_values = new Vector();
+
+            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);            
+            configFile.getWorkplaceIniData(m_names, m_values,"NEWRESOURCES","RESOURCE");
+            }
+            
+            // OK. Now m_names and m_values contain all available
+            // resource information.
+            // Loop through the vectors and fill the result vectors.
+            int numViews = m_names.size();        
+            for(int i=0; i<numViews; i++) {
+                String loopValue = (String)m_values.elementAt(i);
+                String loopName = (String)m_names.elementAt(i);
+                values.addElement(loopValue);
+                names.addElement(loopName);
+            }
+      }
 }

@@ -10,10 +10,10 @@ import org.xml.sax.*;
 import java.util.*;
 
 /**
- *  Content definition for the workplace radiobutton element definition file.
+ * Content definition for the workplace radiobutton element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/11 18:55:28 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/13 12:36:16 $
  */
 public class CmsXmlWpRadioDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -67,15 +67,37 @@ public class CmsXmlWpRadioDefFile extends A_CmsXmlContent implements I_CmsLogCha
     
     /**
      * Gets the processed data for a radio button.
-     * @param name The name of this radio button.
-
+     * @param radioname The name of this radio button.
+     * @param name The name displayed for this radio button.
+     * @param link The link for this radio button.
+     * @param icon The icon displayed for this radio button.
      * @return Processed radio buttons.
      * @exception CmsException
      */
-    public String getRadio(String name)
+    public String getRadio(String radioname,String name,String link, String icon,Object callingObject)
         throws CmsException {
-        setData(C_RADIO_NAME, name);
-        return getProcessedDataValue("radiobuttons.entry");                
+        setData(C_RADIO_RADIONAME, radioname);
+        setData(C_RADIO_NAME,name);
+        setData(C_RADIO_LINK,link);
+        setData(C_RADIO_IMAGE,"ic_file_"+icon+".gif");
+        return getProcessedDataValue("radiobuttons.entry",callingObject);  
      }  
 
+    /**
+     * Gets the processed data for a selected radio button.
+     * @param radioname The name of this radio button.
+     * @param name The name displayed for this radio button.
+     * @param link The link for this radio button.
+     * @param icon The icon displayed for this radio button.
+     * @return Processed radio buttons.
+     * @exception CmsException
+     */
+    public String getRadioSelected(String radioname,String name,String link, String icon,Object callingObject)
+        throws CmsException {
+        setData(C_RADIO_RADIONAME, radioname);
+        setData(C_RADIO_NAME,name);
+        setData(C_RADIO_LINK,link);
+        setData(C_RADIO_IMAGE,"ic_file_"+icon+".gif");
+        return getProcessedDataValue("radiobuttons.entryselected",callingObject);  
+     }  
 }
