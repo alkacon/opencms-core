@@ -49,7 +49,7 @@
 				<td height="375" align="center" valign="middle">
 					<p><b>OpenCms setup finished.</b><br>					
 					The wizard is now locked. To use the wizard again reset the flag in the "opencms.properties".</p>
-					<p>To start OpenCms click <a target="_blank" href="<%= request.getContextPath() %>/engine/system/workplace/action/login.html">here</a>.</p>
+					<p>To start OpenCms click <a target="_blank" href="<%= request.getContextPath() %>/opencms/system/workplace/action/login.html">here</a>.</p>
 				</td>
 			</tr>			
 			<tr>

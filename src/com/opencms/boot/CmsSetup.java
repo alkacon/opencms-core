@@ -1082,4 +1082,24 @@ public class CmsSetup {
   }
 
 
+  public boolean getWizardEnabled()  {
+      Object temp =  m_extProp.get("wizard.enabled");
+      if(temp != null)  {
+          if(temp.toString().equals("true"))  {
+              return true;
+          }
+          else  {
+              return false;
+          }
+      }
+      else  {
+        return true;
+      }
+  }
+
+  public void lockWizard()  {
+      setProperties("wizard.enabled","false");
+  }
+
+
 }
