@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
- * Date   : $Date: 2003/07/23 23:26:21 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/08/04 17:49:36 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * Does the dynamic link replacement for the link tags.<p> 
  * 
  * @author Hanjo Riege
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public final class LinkSubstitution {
 
@@ -207,7 +207,7 @@ public final class LinkSubstitution {
                     if (!retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])) {
                         // this is not an exported file 
                         int pos = retValue.indexOf(siteRoot);
-                        if (pos > 0) {
+                        if (pos >= 0) {
                             retValue = retValue.substring(0, pos) + retValue.substring(pos + siteRoot.length());
                         }
                     }
@@ -233,7 +233,7 @@ public final class LinkSubstitution {
         if (!retValue.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])) {
             // this is not an exported file 
             int pos = retValue.indexOf(siteRoot);
-            if (pos > 0) {
+            if (pos >= 0) {
                 retValue = retValue.substring(0, pos) + retValue.substring(pos + siteRoot.length());
             }
         }
