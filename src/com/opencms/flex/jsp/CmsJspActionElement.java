@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/04/14 06:36:38 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/04/14 12:13:51 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package com.opencms.flex.jsp;
 
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
@@ -47,6 +49,7 @@ import com.opencms.launcher.CmsLinkLauncher;
 import com.opencms.launcher.CmsXmlLauncher;
 import com.opencms.launcher.I_CmsLauncher;
 import com.opencms.template.CmsXmlTemplate;
+import com.opencms.util.Utils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -55,6 +58,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -77,7 +81,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.0 beta 2
  */
@@ -107,6 +111,9 @@ public class CmsJspActionElement {
     /** Error message in case bean was not properly initialized */
     public final static String C_NOT_INITIALIZED = "+++ CmsJspActionElement not initialized +++";
 
+    /** DEBUG flag */
+    private static final int DEBUG = 0;
+    
     /**
      * Empty constructor, required for every JavaBean.
      */
@@ -167,8 +174,11 @@ public class CmsJspActionElement {
      * <code>false</code> if they will be thrown and have to be handled by the calling class.<p>
      * 
      * The default is <code>true</code>.
-     * If set to <code>false</code> all Exceptions that occur internally will be wrapped into
+     * If set to <code>false</code> Exceptions that occur internally will be wrapped into
      * a RuntimeException and thrown to the calling class instance.<p>
+     * 
+     * <b>Important:</b> Exceptions that occur during a call to {@link #includeSilent(String, String, Map)}
+     * will NOT be handled.
      * 
      * @return <code>true</code> if Exceptions are handled by the class instace, or
      *      <code>false</code> if they will be thrown and have to be handled by the calling class
@@ -184,6 +194,9 @@ public class CmsJspActionElement {
      * The default is <code>true</code>.
      * If set to <code>false</code> all Exceptions that occur internally will be wrapped into
      * a RuntimeException and thrown to the calling class instance.<p>
+     * 
+     * <b>Important:</b> Exceptions that occur during a call to {@link #includeSilent(String, String, Map)}
+     * will NOT be handled.
      * 
      * @param the value to set the Exception handing to
      */
@@ -250,7 +263,7 @@ public class CmsJspActionElement {
      *
      * @see com.opencms.flex.jsp.CmsJspTagInclude
      */
-    public void include(String target) {
+    public void include(String target) throws JspException {
         this.include(target, null, null);
     }
     
@@ -264,7 +277,7 @@ public class CmsJspActionElement {
      *
      * @see com.opencms.flex.jsp.CmsJspTagInclude
      */    
-    public void include(String target, String element) {
+    public void include(String target, String element) throws JspException {
         this.include(target, element, null);
     }
 
@@ -282,6 +295,9 @@ public class CmsJspActionElement {
      * The handling of the <code>element</code> parameter depends on the 
      * included file type. Most often it is used as template selector.<p>
      * 
+     * <b>Important:</b> Exceptions that occur in the include process are NOT
+     * handled even if {@link #setHandleExceptions(boolean)} was set to <code>true</code>.
+     * 
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
      * @param parameterMap a map of the request parameters
@@ -289,36 +305,69 @@ public class CmsJspActionElement {
      * 
      * @see com.opencms.flex.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, Map parameterMap) {
+    public void include(String target, String element, Map parameterMap) throws JspException {
         if (m_notInitialized) return;
-        try {
-            if (parameterMap != null) {
-                try {
-                    HashMap modParameterMap = new HashMap(parameterMap.size());
-                    // ensure parameters are always of type String[] not just String
-                    Iterator i = parameterMap.keySet().iterator();
-                    while (i.hasNext()) {
-                        String key = (String)i.next();
-                        Object value = parameterMap.get(key);
-                        if (value instanceof String[]) {
-                            modParameterMap.put(key, value);
-                        } else {
-                            if (value == null)
-                                value = "null";
-                            String[] newValue = new String[] { value.toString()};
-                            modParameterMap.put(key, newValue);
-                        }
+        if (parameterMap != null) {
+            try {
+                HashMap modParameterMap = new HashMap(parameterMap.size());
+                // ensure parameters are always of type String[] not just String
+                Iterator i = parameterMap.keySet().iterator();
+                while (i.hasNext()) {
+                    String key = (String)i.next();
+                    Object value = parameterMap.get(key);
+                    if (value instanceof String[]) {
+                        modParameterMap.put(key, value);
+                    } else {
+                        if (value == null)
+                            value = "null";
+                        String[] newValue = new String[] { value.toString()};
+                        modParameterMap.put(key, newValue);
                     }
-                    parameterMap = modParameterMap;
-                } catch (UnsupportedOperationException e) {
-                    // parameter map is immutable, just use it "as is"
                 }
+                parameterMap = modParameterMap;
+            } catch (UnsupportedOperationException e) {
+                // parameter map is immutable, just use it "as is"
             }
-            CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
-        } catch (Throwable t) {
-            handleException(t);
         }
+        CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
     }
+    
+    /**
+     * Includes a named sub-element supressing all Exceptions that occur during the include,
+     * otherwise the same as using {@link #include(String, String, Map null)}.<p>
+     * 
+     * This is a convenience method that allows to include elements on a page without checking 
+     * if they exist or not. If the target element does not exist, nothing is printed to 
+     * the JSP output.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     */
+    public void includeSilent(String target, String element) {
+        try {
+            include(target, element, null);
+        } catch (Throwable t) {
+        }
+    }  
+        
+    /**
+     * Includes a named sub-element supressing all Exceptions that occur during the include,
+     * otherwise the same as using {@link #include(String, String, Map)}.<p>
+     * 
+     * This is a convenience method that allows to include elements on a page without checking 
+     * if they exist or not. If the target element does not exist, nothing is printed to 
+     * the JSP output.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * @param parameterMap a map of the request parameters
+     */
+    public void includeSilent(String target, String element, Map parameterMap) {
+        try {
+            include(target, element, parameterMap);
+        } catch (Throwable t) {
+        }
+    }    
             
     /**
      * Calculate a link with the OpenCms link management,
@@ -747,10 +796,14 @@ public class CmsJspActionElement {
      * @param e the exception that was catched
      */
     private void handleException(Throwable t) {
-        if (m_handleExceptions) {            
-            System.err.println("Exception in " + this.getClass().getName() + ":");
-            t.printStackTrace(System.err);
-        } else {
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) {
+            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, Utils.getStackTrace(t));
+        } 
+        if (! (m_handleExceptions || getRequestContext().currentProject().isOnlineProject())) {    
+            if (DEBUG > 0) {        
+                System.err.println("Exception in " + this.getClass().getName() + ":");
+                if (DEBUG > 1) t.printStackTrace(System.err);
+            }
             throw new RuntimeException("Exception in " + this.getClass().getName(), t);
         }
     }
