@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/09/08 18:21:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/09/11 12:04:49 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.CmsException;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.flex.util.CmsStringSubstitution;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
@@ -350,7 +351,19 @@ public class CmsDialog extends CmsWorkplace {
      * @return the default action for a "cancel" button
      */
     public String buttonActionCancel() {
+        if (getSettings().isViewAdministration()) {
+            return "onclick=\"location.href='"+ getJsp().link(getAdministrationBackLink()) + "';\"";
+        }
         return "onClick=\"location.href='" + getExplorerFileListFullUri() + "';\"";
+    }
+    
+    /**
+     * Returns the link URL to get back one folder in the administration view.<p>
+     * 
+     * @return the link URL to get back one folder in the administration view
+     */
+    protected String getAdministrationBackLink() {
+        return I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_content_top.html" + "?sender=" + CmsResource.getParent(getJsp().getRequestContext().getFolderUri());
     }
 
     /**
@@ -829,11 +842,11 @@ public class CmsDialog extends CmsWorkplace {
      * 
      * This overloads the default method of the parent class.<p>
      * 
-     * @param helpKey the key for the online help to include on the page
+     * @param helpUrl the key for the online help to include on the page
      * @return the start html of the page
      */
-    public String htmlStart(String helpKey) {
-        return pageHtml(HTML_START, helpKey);
+    public String htmlStart(String helpUrl) {
+        return pageHtml(HTML_START, helpUrl);
     }
     
     /**
@@ -855,18 +868,20 @@ public class CmsDialog extends CmsWorkplace {
      * This overloads the default method of the parent class.<p>
      * 
      * @param segment the HTML segment (START / END)
-     * @param helpKey the key for the online help to include on the page
+     * @param helpUrl the url for the online help to include on the page
      * @return the start html of the page
      */
-    public String pageHtml(int segment, String helpKey) {        
+    public String pageHtml(int segment, String helpUrl) {        
         if (segment == HTML_START) {
             StringBuffer result = new StringBuffer(super.pageHtml(segment, null));
-            result.append("<script type=\"text/javascript\" src=\"");
-            result.append(getSkinUri());
-            result.append("files/explorer.js\"></script>\n");
-            if (helpKey != null) {                result.append("<script language=\"JavaScript\">\n");
+            if (getSettings().isViewExplorer()) {
+                result.append("<script type=\"text/javascript\" src=\"");
+                result.append(getSkinUri());
+                result.append("files/explorer.js\"></script>\n");
+            }
+            if (helpUrl != null) {                result.append("<script type=\"text/javascript\">\n");
                 result.append("top.head.helpUrl='");
-                result.append(key(helpKey));
+                result.append(helpUrl);
                 result.append("';\n</script>\n");
             }
             return result.toString();

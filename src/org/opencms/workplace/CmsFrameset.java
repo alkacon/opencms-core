@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/09/10 07:20:04 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/09/11 12:04:49 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1
  */
@@ -91,7 +91,7 @@ public class CmsFrameset extends CmsWorkplace {
         // check if the user requested a view change
         String newView = request.getParameter("wpView");
         if (newView != null) {
-            settings.setCurrentView(newView);
+            settings.setViewUri(newView);
         }
         
         // check if the user requested a site change
@@ -326,7 +326,7 @@ public class CmsFrameset extends CmsWorkplace {
                 options.add(key(loopName));
                 values.add(loopLink);
 
-                if (loopLink.equals(getSettings().getCurrentView())) {
+                if (loopLink.equals(getSettings().getViewUri())) {
                     selectedIndex = i;
                 }
             }

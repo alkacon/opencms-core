@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/08/27 11:59:01 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/09/11 12:04:49 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,17 +44,17 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
-    
+        
     private String m_language;
     private CmsWorkplaceMessages m_messages;
     private int m_project;
     private CmsUser m_user; 
-    private String m_currentView;
+    private String m_viewUri;
     private String m_explorerResource;
     private String m_explorerMode;
     private String m_explorerProjectFilter;
@@ -114,23 +114,41 @@ public class CmsWorkplaceSettings {
     
 
     /**
-     * Returns the current view selected in the workplace.<p>
+     * Returns the current view Uri selected in the workplace.<p>
      * 
-     * @return the current view selected in the workplace 
+     * @return the current view Uri selected in the workplace 
      */
-    public synchronized String getCurrentView() {
-        return m_currentView;
+    public synchronized String getViewUri() {
+        return m_viewUri;
     }
 
     /**
-     * Sets the view for the workplace.<p>
+     * Sets the view Uri for the workplace.<p>
      * 
-     * @param string the view for the workplace
+     * @param string the view Uri for the workplace
      */
-    public synchronized void setCurrentView(String string) {
-        m_currentView = string;
+    public synchronized void setViewUri(String string) {
+        m_viewUri = string;
     }
     
+    /**
+     * Checks if the current view is the explorer view.<p>
+     * 
+     * @return true if the current view is the explorer view, otherwise false 
+     */
+    public boolean isViewExplorer() {
+        return getViewUri().endsWith("/system/workplace/jsp/explorer_fs.html");
+    }
+    
+    /**
+     * Checks if the current view is the administration view.<p>
+     * 
+     * @return true if the current view is the administration view, otherwise false 
+     */
+    public boolean isViewAdministration() {
+        return (getViewUri().endsWith("/system/workplace/action/administration.html") 
+                || getViewUri().endsWith("/system/workplace/action/tasks.html"));
+    }
 
     /**
      * Returns the current site for the user.<p>
