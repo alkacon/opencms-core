@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsIndexingReport.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/16 17:07:51 $
+ * Version: $Revision: 1.3 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -57,9 +57,11 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
+ * Implements methods for <code>CmsReport</code> to display the indexing progress.<p>
+ * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.2 $
- * @since 5.1.11
+ * @version $Revision: 1.3 $
+ * @since 5.3.1
  */
 public class CmsIndexingReport extends CmsReport {
         

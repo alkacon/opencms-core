@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/02/13 13:41:45 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2004/02/16 17:07:51 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.52 $
- * $Date: 2004/02/13 13:41:45 $
+ * $Revision: 1.53 $
+ * $Date: 2004/02/16 17:07:51 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -910,28 +910,32 @@ public abstract class CmsMasterContent
             throws CmsException {
         Vector allChannels = new Vector();
         Vector subChannels = new Vector();
+        String siteRoot = cms.getRequestContext().getSiteRoot();
         try {
+            cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
             subChannels = cms.getResourcesInFolder(channel);
-            //subChannels = cms.getResourcesInFolder(I_CmsConstants.VFS_FOLDER_COS + channel);
-        } catch (CmsException e) {
-            // the channel is not present, so return empty Vector.
-            return allChannels;
-        }
-        for (int i=0; i < subChannels.size(); i++) {
-            CmsResource resource = (CmsResource)subChannels.get(i);
-            if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {            
-                String folder = cms.readAbsolutePath(resource);
-                Vector v = getAllSubChannelsOf(cms, folder);
-                if (v.size() == 0 && hasWriteAccess(cms, resource)) {
-                    allChannels.add(folder);
-                }else {
-                    for (int j=0; j < v.size(); j++) {
-                        allChannels.add(v.get(j));
+
+            for (int i=0; i < subChannels.size(); i++) {
+                CmsResource resource = (CmsResource)subChannels.get(i);
+                if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {            
+                    String folder = cms.readAbsolutePath(resource);
+                    Vector v = getAllSubChannelsOf(cms, folder);
+                    if (v.size() == 0) {
+                        allChannels.add(folder);
+                    }else {
+                        for (int j=0; j < v.size(); j++) {
+                            allChannels.add(v.get(j));
+                        }
                     }
                 }
             }
-        }
 
+        } catch (CmsException e) {
+            // the channel is not present, so return empty Vector.
+        } finally {
+            cms.getRequestContext().setSiteRoot(siteRoot);
+        }
+        
         return allChannels;
     }
 

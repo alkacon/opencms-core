@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexException.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/16 17:07:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,13 @@ package org.opencms.search;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that an attempt to open a resource in the VFS denoted by a specified 
- * pathname has failed. This exception is thrown by various Cms driver classes 
- * in the org.opencms.db package and its sub-packages.
+ * Signals an error during an indexing operation.<p> 
+ * This exception is thrown by various classes 
+ * in the <code>org.opencms.search</code> package.
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:45 $
- * @since 5.1.2
+ * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.3 $ $Date: 2004/02/16 17:07:51 $
+ * @since 5.3.1
  */
 public class CmsIndexException extends CmsException {
 

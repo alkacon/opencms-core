@@ -34,7 +34,7 @@ top.head.helpUrl='administration/index.html';
 %>
 <h1>Search index overview</h1>
 <table border="1">
-<tr><th>Name</th><th>RebuildMode</th><th>Project</th><th>Site</th><th>Language</th><th>Documenttypes</th></tr>
+<tr><th>Name</th><th>RebuildMode</th><th>Project</th><th>Site</th><th>Language</th></tr>
 <%
     // Iterate through configured indexes
     for (Iterator i = searchManager.getIndexNames().iterator(); i.hasNext(); ) {
@@ -46,12 +46,15 @@ top.head.helpUrl='administration/index.html';
 <td><%=index.getProject()%></td>
 <td><%=index.getSite()%></td>
 <td><%=index.getLanguage()%></td>
-<td>
-<% 
-    // Iterate through documenttypes for index
-    for (Iterator d = index.getDocumenttypes().iterator(); d.hasNext(); ) {
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td colspan="5">
+<%
+    // Iterate through vfs sources for index
+    for (Iterator s = index.getFolders().iterator(); s.hasNext(); ) {
 %>
-    <%= (String)d.next() %><%= (d.hasNext()) ? ", " : "" %>
+    <%= (String)s.next() %><%= (s.hasNext()) ? ", " : "" %>
 <%
     }
 %>
@@ -61,8 +64,8 @@ top.head.helpUrl='administration/index.html';
 <td>&nbsp;</td>
 <td colspan="5">
 <%
-    // Iterate through sources for index
-    for (Iterator s = index.getSources().iterator(); s.hasNext(); ) {
+    // Iterate through cos sources for index
+    for (Iterator s = index.getChannels().iterator(); s.hasNext(); ) {
 %>
     <%= (String)s.next() %><%= (s.hasNext()) ? ", " : "" %>
 <%

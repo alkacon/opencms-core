@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/16 17:07:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/16 17:07:51 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCosDocument implements I_CmsDocumentFactory {
@@ -52,14 +52,10 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
     /* Matches anything that is not a number, hex-number, uuid or whitespace */
     private static final Pattern C_NON_NUM_UUID_WS = Pattern.compile("[^a-fA-F0-9\\-_\\s]");
     
-    /**
-     * The cms object
-     */
+    /** The cms object */
     protected CmsObject m_cms;
     
-    /**
-     * Name of the documenttype
-     */
+    /** Name of the documenttype*/
     protected String m_name;
     
     /**
@@ -75,6 +71,9 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
 
     /**
      * Returns the raw text content of a given resource.<p>
+     * The contents of a cos object are accessed using the class <code>CmsMasterDataSet</code>.
+     * For indexing purposes, the contents of the arrays <code>m_dataSmall</code>, <code>m_dataMedium</code> 
+     * and <code>m_dataBig</code> are collected in a string.
      * 
      * @param indexResource the resource
      * @param language the language requested

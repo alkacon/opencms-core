@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/16 17:07:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,14 @@
 package org.opencms.search;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
+
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 
@@ -47,25 +49,33 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
 /**
- * Package to implement indexing of cos data.<p>
+ * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/16 17:07:51 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @since 5.3.1
  */
 public class CmsCosIndexer extends CmsMasterContent {
-
+    
+    /** cms object */
     private CmsObject m_cms;
     
+    /** index writer */
     private IndexWriter m_writer;
     
+    /** current index */
     private CmsSearchIndex m_index;
     
+    /** report */
     private I_CmsReport m_report;
     
+    /** the thrad manager */
     private CmsIndexingThreadManager m_threadManager;
     
+    /** id for identifying module content */
     private int m_subId;
     
+    /** general class to handle module content */
     private CmsMasterContent m_contentDefinition;
     
     /**
@@ -111,20 +121,39 @@ public class CmsCosIndexer extends CmsMasterContent {
      * @throws CmsIndexException if something goes wrong
      */
     public void updateIndex(String channel) throws CmsIndexException {
+        updateIndex (channel, channel);
+    }
+    
+    /**
+     * Creates new index entries for all cos resources below the given path.<p>
+     * 
+     * @param channel the channel to index
+     * @param root the root channel
+     * @throws CmsIndexException if something goes wrong
+     */    
+    public void updateIndex(String channel, String root) throws CmsIndexException {
         
         boolean channelReported = false;
         
         try {
             String channelId = getChannelId(channel).toString();
+            Vector subChannels = CmsMasterContent.getAllSubChannelsOf(m_cms, channel);
             
+            // index subchannels
+            for (int i = 0; i < subChannels.size(); i++) {
+                
+                String subChannel = (String)subChannels.get(i);                   
+                updateIndex(subChannel, root);
+            } 
+                
+            // now index channel
             Vector resources = readAllByChannel(m_cms, channelId, m_subId);
-            
             for (Iterator i = resources.iterator(); i.hasNext();) {
                 
                 CmsMasterDataSet ds = (CmsMasterDataSet)i.next();
                 
                 if (m_report != null && !channelReported) {
-                    m_report.print(m_report.key("search.indexing_folder"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(m_report.key("search.indexing_channel"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(channel, I_CmsReport.C_FORMAT_DEFAULT);
                     channelReported = true;
                 }
@@ -138,10 +167,22 @@ public class CmsCosIndexer extends CmsMasterContent {
                     m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
                 }
                 
-                CmsIndexResource ires = new CmsIndexResource(ds, "path", channel, m_contentDefinition.getClass().getName());
+                String path = m_index.getChannelDisplayUri(root)
+                    + "?" + m_index.getChannelDisplayparam(root)
+                    + "=" + ds.m_masterId;
+                
+                CmsIndexResource ires = new CmsIndexResource(ds, path, channel, m_contentDefinition.getClass().getName());
                 m_threadManager.createIndexingThread(m_writer, ires, m_index);
             }
         } catch (Exception exc) {
+            
+            if (m_report != null) {
+                m_report.println(m_report.key("search.indexing_folder_failed"), I_CmsReport.C_FORMAT_WARNING);
+            }
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Failed to index " + channel, exc);
+            }
+            
             throw new CmsIndexException("Indexing contents of " + channel + " failed.", exc);
         }
     }

@@ -158,21 +158,40 @@
                 <lang>it</lang>
             </analyzer>
             <index>
-                <name>default</name>
+                <name>default (Online)</name>
                 <rebuild>auto</rebuild>
-                <incremental>false</incremental>
                 <project>online</project>
                 <site>/sites/default/</site>
                 <lang>en</lang>
-                <source>/</source>
-                <documenttype>xmlpage</documenttype>
-                <documenttype>page</documenttype>
-                <documenttype>text</documenttype>
-                <documenttype>pdf</documenttype>
-                <documenttype>msword</documenttype>
-                <documenttype>msexcel</documenttype>
-                <documenttype>image</documenttype>
-                <documenttype>generic</documenttype>
+                <folder>
+                	<source>/</source>
+                	<documenttype>xmlpage</documenttype>
+                	<documenttype>page</documenttype>
+                	<documenttype>text</documenttype>
+                	<documenttype>pdf</documenttype>
+                	<documenttype>msword</documenttype>
+                	<documenttype>msexcel</documenttype>
+                	<documenttype>image</documenttype>
+                	<documenttype>generic</documenttype>
+                 </folder>
+            </index>
+            <index>
+                <name>default (Offline)</name>
+                <rebuild>auto</rebuild>
+                <project>offline</project>
+                <site>/sites/default/</site>
+                <lang>en</lang>
+                <folder>
+                	<source>/</source>
+                	<documenttype>xmlpage</documenttype>
+                	<documenttype>page</documenttype>
+                	<documenttype>text</documenttype>
+                	<documenttype>pdf</documenttype>
+                	<documenttype>msword</documenttype>
+                	<documenttype>msexcel</documenttype>
+                	<documenttype>image</documenttype>
+                	<documenttype>generic</documenttype>
+                 </folder>
             </index>
             <index>
                 <name>system</name>
@@ -180,12 +199,14 @@
                 <project>online</project>
                 <site>/</site>
                 <lang>en</lang>
-                <source>/system/</source>
-                <documenttype>xmlpage</documenttype>
-                <documenttype>page</documenttype>
-                <documenttype>text</documenttype>
-                <documenttype>jsp</documenttype>
-                <documenttype>generic</documenttype>                
+                <folder>
+                	<source>/system/</source>
+                	<documenttype>xmlpage</documenttype>
+                	<documenttype>page</documenttype>
+                	<documenttype>text</documenttype>
+                	<documenttype>jsp</documenttype>
+                	<documenttype>generic</documenttype>
+               	</folder>                
             </index>
         </search>
 		<crontab>

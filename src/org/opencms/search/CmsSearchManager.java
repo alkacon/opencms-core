@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/16 17:07:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,9 +31,12 @@
 package org.opencms.search;
 
 import org.opencms.cron.I_CmsCronJob;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.I_CmsResourceType;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
@@ -43,24 +46,17 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
-import org.opencms.file.I_CmsResourceType;
 
 import java.io.IOException;
-import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.LRUMap;
@@ -68,49 +64,42 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2004/02/13 13:41:45 $
+ * Implements the general management of the search and indexing facilities in OpenCms.<p>
+ * 
+ * @version $Revision: 1.4 $ $Date: 2004/02/16 17:07:51 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @since 5.3.1
  */
 public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
 
-    /*
-     * Configured analyzers for languages using <analyzer> 
-     */
+    /** Configured analyzers for languages using <analyzer> */
     private HashMap m_analyzer;
 
-    /*
-     * The cms object
-     */
+    /** The cms object */
     private CmsObject m_cms;
     
-    /*
-     * Configuration of the index manager
-     */
+    /** Configuration of the index manager */
     private Map m_config;
     
-    /*
-     * Configured documenttypes for indexing using <documenttype>
-     */
-    private HashMap m_documenttypes;
+    /** Configured documenttypes for indexing using <documenttype> */
+    private Map m_documenttypes;
+    
+    /** Configured resourcetype lists per documenttype */
+    private Map m_resourcetypes;
+    
+    /** Configured mimetype lists per documenttype */
+    private Map m_mimetypes;
            
-    /*
-     * Configured indexes using <index>
-     */
+    /** Configured indexes using <index> */
     private List m_indexes;
 
-    /*
-     * Path to index files
-     */
+    /** Path to index files */
     private String m_path;
 
-    /*
-     * Timeout for abandoning indexing thread
-     */
+    /** Timeout for abandoning indexing thread */
     private String m_timeout;
 
-    /*
-     * The cache for storing search results
-     */
+    /** The cache for storing search results */
     private static Map m_resultCache = null;
 
     /*
@@ -125,10 +114,8 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * @param configuration configuration properties
      * @param cms the cms object
      * @return a new instance of the index manager
-     * 
-     * @throws CmsException if something goes wrong
      */
-    public static CmsSearchManager initialize(ExtendedProperties configuration, CmsObject cms) throws CmsException {
+    public static CmsSearchManager initialize(ExtendedProperties configuration, CmsObject cms) {
         // configuration currently not used
         if (false) {
             configuration.get(null);
@@ -149,9 +136,8 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * The new manager is initialized based on the registry configuration.
      * 
      * @param cms the cms object
-     * @throws CmsException if the configuration is invalid
      */
-    public CmsSearchManager(CmsObject cms) throws CmsException {
+    public CmsSearchManager(CmsObject cms) {
         
         List documenttypes;
         List analyzers;
@@ -161,50 +147,56 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Initializing CmsSearchManager");
         }
-        
-        CmsRegistry registry = m_cms.getRegistry();
-        m_config = registry.getSubNodeValues(registry.getSystemElement(), "search");
-        
-        if ((documenttypes = (List)m_config.get("documenttype")) == null) {
-            throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No documenttypes defined");
-        } else {
-            readDocumenttypes(documenttypes);
-        }
-        
-        if ((analyzers = (List)m_config.get("analyzer")) == null) {
-            throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No analyzer defined");
-        } else {
-            readAnalyzer(analyzers);
-        }
-        
-        if ((m_path = (String)m_config.get("directory")) == null) {
-            throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Directory for storing index data not defined");
-        }
-        
-        if ((m_timeout = (String)m_config.get("timeout")) == null) {
-            m_timeout = "20000";
-        }
-        
-        // currently not used    
-        // m_mergeFactor = (String)m_config.get("mergefactor");
-        
-        String cacheSize = null;
-        if ((cacheSize = (String)m_config.get("cache")) == null) {
-            cacheSize="8";
-        }
-        
-        if (m_resultCache == null) {
-            LRUMap hashMap = new LRUMap(Integer.parseInt(cacheSize));
-            m_resultCache = Collections.synchronizedMap(hashMap);
-            if (OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resultCache", hashMap);
-            }
-        }
-        
+
         try {
-            m_indexes = (List)m_config.get("index");
-        } catch (ClassCastException exc) {
-            m_indexes = Arrays.asList(new Map[] {(Map) m_config.get("index")});
+            CmsRegistry registry = m_cms.getRegistry();
+            m_config = registry.getSubNodeValues(registry.getSystemElement(), "search");
+            
+            if ((documenttypes = (List)m_config.get("documenttype")) == null) {
+                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No documenttypes defined");
+            } else {
+                readDocumenttypes(documenttypes);
+            }
+            
+            if ((analyzers = (List)m_config.get("analyzer")) == null) {
+                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No analyzer defined");
+            } else {
+                readAnalyzer(analyzers);
+            }
+            
+            if ((m_path = (String)m_config.get("directory")) == null) {
+                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Directory for storing index data not defined");
+            }
+            
+            if ((m_timeout = (String)m_config.get("timeout")) == null) {
+                m_timeout = "20000";
+            }
+            
+            // currently not used    
+            // m_mergeFactor = (String)m_config.get("mergefactor");
+            
+            String cacheSize = null;
+            if ((cacheSize = (String)m_config.get("cache")) == null) {
+                cacheSize="8";
+            }
+            
+            if (m_resultCache == null) {
+                LRUMap hashMap = new LRUMap(Integer.parseInt(cacheSize));
+                m_resultCache = Collections.synchronizedMap(hashMap);
+                if (OpenCms.getMemoryMonitor().enabled()) {
+                    OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resultCache", hashMap);
+                }
+            }
+            
+            try {
+                m_indexes = (List)m_config.get("index");
+            } catch (ClassCastException exc) {
+                m_indexes = Arrays.asList(new Map[] {(Map) m_config.get("index")});
+            }
+        } catch (CmsException exc) {
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Index configuration failed", exc);
+            }
         }
         
         // register this object as event listener
@@ -246,196 +238,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
         }    
         return finishMessage;
     }
-
-    /**
-     * Updates all indexes that are configured in the registry.<p>
-     * An index will be updated only if rebuild mode is set to auto.
-     * 
-     * @param report the report object to write messages or null
-     * @throws CmsException if something goes wrong
-     */
-    public void updateIndex(I_CmsReport report) throws CmsException {
-        
-        for (Iterator i = getIndexNames().iterator(); i.hasNext();) {
-            
-            CmsSearchIndex index = getIndex((String)i.next());
-            
-            if ("auto".equals(index.getRebuildMode())) {            
-                updateIndex(index.getName(), report);
-            }
-        }    
-    } 
-    
-    /**
-     * Updates the index belonging to the passed name.<p>
-     * If the index is not already created, it will be created, too.
-     * If the rebuild flag is set to true, it will be rebuild ignoring 
-     * the value of the rebuild configuration entry in the registry
-     * Further configuration information about this index must be available 
-     * in the registry.
-     * 
-     * @param indexName the name of the index
-     * @throws CmsException if something goes wrong
-     */
-    public void updateIndex(String indexName) throws CmsException {
-        
-        updateIndex(indexName, null);
-    }
-          
-    /**
-     * Creates new index entries for all vfs resources below the given path.<p>
-     * 
-     * @param writer the write used to write to the index
-     * @param path the path to the root of the subtree to index
-     * @param index the current index
-     * @param report report for writi9ng out information or null
-     * @param threadManager the thread manager for controlling the indexing threads
-     * @throws CmsIndexException if something goes wrong
-     */
-    private void createVfsSubtreeIndex(IndexWriter writer, String path, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) throws CmsIndexException {
-        
-        boolean folderReported = false;
-        
-        try {
-            Vector resources = m_cms.getResourcesInFolder(path);
-            CmsResource res;
-            
-            // process resources
-            for (int i = 0; i < resources.size(); i++) {
-                
-                res = (CmsResource)resources.get(i);
-                if (res instanceof CmsFolder) {                    
-                    createVfsSubtreeIndex(writer, m_cms.getRequestContext().removeSiteRoot(res.getRootPath()), index, report, threadManager);
-                    continue;
-                } 
-
-                if (report != null && !folderReported) {
-                    report.print(report.key("search.indexing_folder"), I_CmsReport.C_FORMAT_NOTE);
-                    report.println(path, I_CmsReport.C_FORMAT_DEFAULT);
-                    folderReported = true;
-                }
-
-                if (report != null) {
-                    report.print("( " + (threadManager.getCounter()+1) + " )", I_CmsReport.C_FORMAT_NOTE);
-                    report.print(report.key("search.indexing_file_begin"), I_CmsReport.C_FORMAT_NOTE);
-                    report.print(res.getName(), I_CmsReport.C_FORMAT_DEFAULT);
-                    report.print(report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
-                }
-                
-                CmsIndexResource ires = new CmsIndexResource(res); 
-                threadManager.createIndexingThread(writer, ires, index);
-            }
-                                
-        } catch (CmsIndexException exc) {
-                                
-            if (report != null) {
-                report.println();
-                report.println(report.key("search.indexing_file_failed") + " : " + exc.getMessage(), 
-                    I_CmsReport.C_FORMAT_WARNING);
-            }
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Failed to index " + path, exc);
-            }
-
-        } catch (CmsException exc) {
-                                
-            if (report != null) {
-                report.println(report.key("search.indexing_folder") + path + report.key("search.indexing_folder_failed") + " : " + exc.getMessage(), 
-                    I_CmsReport.C_FORMAT_WARNING);
-            }
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Failed to index " + path, exc);
-            }
-
-        } catch (Exception exc) {
-            
-            if (report != null) {
-                report.println(report.key("search.indexing.folder.failed"), I_CmsReport.C_FORMAT_WARNING);
-            }
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Failed to index " + path, exc);
-            }
-                            
-            throw new CmsIndexException("Indexing contents of " + path + " failed.", exc);
-        }
-    }
-    
-    /**
-     * Writes the index for a single file.<p>
-     * 
-     * @param writer the writer to write out index data
-     * @param res the resource
-     * @param fileCounter array of progress counters
-     * @param report the report for progress reporting
-     *//*
-    private void indexFile(IndexWriter writer, CmsResource res, I_CmsReport report, int fileCounter[]) {
-    
-        CmsIndexingThread thread = new CmsIndexingThread(this, writer, res, report);
-
-        try {
-            thread.start();
-            thread.join(Long.parseLong(m_timeout));
-            
-            if (thread.isAlive()) {
-                
-                if (OpenCms.getLog(this).isDebugEnabled())
-                    OpenCms.getLog(this).debug("Timeout while indexing file " + res.getRootPath() + ", abandoning thread");
-                   
-                report.println();
-                report.println(report.key("search.indexing_file_failed") + " : " + "Timeout while indexing file " + res.getRootPath() + ", abandoning thread",
-                    I_CmsReport.C_FORMAT_WARNING);
-                    
-                thread.interrupt();
-                fileCounter[1]++;
-            }
-            
-            fileCounter[0]++;
-                      
-        } catch (InterruptedException exc) {
-            // noop
-        }
-    }
-    */
-/*    
-    private void indexFile(IndexWriter writer, CmsResource res, I_CmsReport report) {
-
-        I_CmsDocumentFactory documentFactory = getDocumentFactory(res);
-                
-        if (report != null) {
-            report.print(report.key("search.indexing_file_begin"), I_CmsReport.C_FORMAT_NOTE);
-            report.print(res.getName(), I_CmsReport.C_FORMAT_DEFAULT);
-            report.print(report.key("search.dots"), I_CmsReport.C_FORMAT_NOTE);
-        }
-                        
-        if (OpenCms.getLog(this).isDebugEnabled())
-            OpenCms.getLog(this).debug("Indexing " + res.getRootPath());
-                    
-        if (documentFactory != null) {
-            try {
-                        
-                writer.addDocument(documentFactory.newInstance(res));
-                if (report != null)
-                    report.println(report.key("search.indexing_file_end"), I_CmsReport.C_FORMAT_OK);
-                        
-            } catch (Exception exc) {
-                        
-                if (report != null) {
-                    report.println(report.key("search.indexing_file_failed") + " : " + exc.getLocalizedMessage(), 
-                        I_CmsReport.C_FORMAT_WARNING);
-                }    
-                if (OpenCms.getLog(this).isWarnEnabled())
-                    OpenCms.getLog(this).warn("Failed to index " + res.getRootPath(), exc);
-            }
-        } else {
-    
-            if (report != null)
-                report.println(report.key("search.indexing_file_skipped"), I_CmsReport.C_FORMAT_NOTE);
-                        
-            if (OpenCms.getLog(this).isWarnEnabled())
-                OpenCms.getLog(this).warn("Skipped " + res.getRootPath() + ", no matching documenttype");
-        }          
-    }
-*/    
+             
     /**
      * Returns an analyzer for the given language.<p>
      * The analyzer is selected according to the analyzer configuration.
@@ -598,85 +401,131 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * Reads the documenttype configuration.<p>
      * 
      * @param documenttypes the list of documenttype configurations
-     * @throws CmsIndexException if a documenttype configuration is invalid
      */
-    private void readDocumenttypes(List documenttypes) throws CmsIndexException {
+    private void readDocumenttypes(List documenttypes) {
         
         m_documenttypes = new HashMap();
+        m_resourcetypes = new HashMap();
+        m_mimetypes = new HashMap();
         
         for (Iterator i = documenttypes.iterator(); i.hasNext();) {
             Map documenttype = (Map)i.next();
             String name = (String)documenttype.get("name");
-            String className = (String)documenttype.get("class");
-            I_CmsDocumentFactory documentFactory = null;
-            List resourceTypes;
-            List mimeTypes;
             
-            try {
-                resourceTypes = (List)documenttype.get("resourcetype");
-            } catch (ClassCastException exc) {
-                resourceTypes = Arrays.asList(new String[] {(String)documenttype.get("resourcetype")});   
-            }
-            
-            try {
-                mimeTypes = (List)documenttype.get("mimetype");
-            } catch (ClassCastException exc) {
-                mimeTypes = Arrays.asList(new String[] {(String)documenttype.get("mimetype")});
-            }
-            
-            if (name == null) {
-                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No name defined for documenttype");
-            }
-            if (className == null) {
-                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No class defined for documenttype");
-            }
-                
-            if (resourceTypes == null) {
-                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No resourcetype defined for documenttype");
-            }
-
-            try {
-                Class c = Class.forName(className);
-                documentFactory = (I_CmsDocumentFactory)c.getConstructor(new Class[]{m_cms.getClass(), String.class}).newInstance(new Object[]{m_cms, name});
-            } catch (ClassNotFoundException exc) {
-                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Documentclass " + className + " not found", exc);
-            } catch (Exception exc) {
-                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Instanciation of documentclass " + className + " failed", exc);
-            }
-            
-            for (Iterator r = resourceTypes.iterator(); r.hasNext();) {
-           
-                String resourceType = (String)r.next();
-                String resourceTypeId;
+            try {    
+                String className = (String)documenttype.get("class");
+                I_CmsDocumentFactory documentFactory = null;
+                List resourceTypes;
+                List mimeTypes;
                 
                 try {
-                    if (documentFactory instanceof CmsCosDocument) {
-                        resourceTypeId = "COS" + ((CmsMasterContent)Class.forName(resourceType).newInstance()).getSubId();
-                    } else {
-                        resourceTypeId = "VFS" + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getResourceType();
-                    }
-                } catch (Exception exc) {
-                    throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Instanciation of resource type" + resourceType + " failed", exc);    
+                    resourceTypes = (List)documenttype.get("resourcetype");
+                } catch (ClassCastException exc) {
+                    resourceTypes = Arrays.asList(new String[] {(String)documenttype.get("resourcetype")});   
                 }
                 
-                if (mimeTypes != null) {
-                    for (Iterator m = mimeTypes.iterator(); m.hasNext();) {
-                        
-                        String mimeType = (String)m.next();
+                try {
+                    mimeTypes = (List)documenttype.get("mimetype");
+                } catch (ClassCastException exc) {
+                    mimeTypes = Arrays.asList(new String[] {(String)documenttype.get("mimetype")});
+                }
+                
+                if (name == null) {
+                    throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No name defined for documenttype");
+                }
+                if (className == null) {
+                    throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No class defined for documenttype");
+                }
+                    
+                if (resourceTypes == null) {
+                    throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No resourcetype/moduletype defined for documenttype");
+                }
     
-                        if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug("Configured document class: " + className + " for " + resourceType + ":" + mimeType);
+                try {
+                    Class c = Class.forName(className);
+                    documentFactory = (I_CmsDocumentFactory)c.getConstructor(new Class[]{m_cms.getClass(), String.class}).newInstance(new Object[]{m_cms, name});
+                } catch (ClassNotFoundException exc) {
+                    throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Documentclass " + className + " not found", exc);
+                } catch (Exception exc) {
+                    throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Instanciation of documentclass " + className + " failed", exc);
+                }
+    
+                m_resourcetypes.put(name, resourceTypes);
+                m_mimetypes.put(name, mimeTypes);
+                
+                for (Iterator r = resourceTypes.iterator(); r.hasNext();) {
+               
+                    String resourceType = (String)r.next();
+                    String resourceTypeId;
+                    
+                    try {
+                        if (documentFactory instanceof CmsCosDocument) {
+                            resourceTypeId = "COS" + ((CmsMasterContent)Class.forName(resourceType).newInstance()).getSubId();
+                        } else {
+                            resourceTypeId = "VFS" + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getResourceType();
                         }
-                                
-                        m_documenttypes.put(resourceTypeId + ":" + mimeType, documentFactory);
+                    } catch (Exception exc) {
+                        throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Instanciation of resource type" + resourceType + " failed", exc);    
                     }
-                } else {
-                    m_documenttypes.put(resourceTypeId + "", documentFactory);
+                    
+                    if (mimeTypes != null) {
+                        for (Iterator m = mimeTypes.iterator(); m.hasNext();) {
+                            
+                            String mimeType = (String)m.next();
+        
+                            if (OpenCms.getLog(this).isDebugEnabled()) {
+                                OpenCms.getLog(this).debug("Configured document class: " + className + " for " + resourceType + ":" + mimeType);
+                            }
+                                    
+                            m_documenttypes.put(resourceTypeId + ":" + mimeType, documentFactory);
+                        }
+                    } else {
+                        m_documenttypes.put(resourceTypeId + "", documentFactory);
+                    }
+                }
+            } catch (CmsException exc) {
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("Configuration of documenttype " + name  + " failed", exc);
                 }
             }
         }                       
     }   
 
+    /**
+     * Updates all indexes that are configured in the registry.<p>
+     * An index will be updated only if rebuild mode is set to auto.
+     * 
+     * @param report the report object to write messages or null
+     * @throws CmsException if something goes wrong
+     */
+    public void updateIndex(I_CmsReport report) throws CmsException {
+        
+        for (Iterator i = getIndexNames().iterator(); i.hasNext();) {
+            
+            CmsSearchIndex index = getIndex((String)i.next());
+            
+            if ("auto".equals(index.getRebuildMode())) {            
+                updateIndex(index.getName(), report);
+            }
+        }    
+    } 
+    
+    /**
+     * Updates the index belonging to the passed name.<p>
+     * If the index is not already created, it will be created, too.
+     * If the rebuild flag is set to true, it will be rebuild ignoring 
+     * the value of the rebuild configuration entry in the registry
+     * Further configuration information about this index must be available 
+     * in the registry.
+     * 
+     * @param indexName the name of the index
+     * @throws CmsException if something goes wrong
+     */
+    public void updateIndex(String indexName) throws CmsException {
+        
+        updateIndex(indexName, null);
+    }
+    
     /**
      * Updates the index belonging to the passed name.<p>
      * If the index is not already created, it will be created, too.
@@ -707,10 +556,11 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
         
         CmsRequestContext context = m_cms.getRequestContext();
         int currentProject = context.currentProject().getId();
+        int indexProject = m_cms.readProject(index.getProject()).getId();
         
         String currentSiteRoot = context.getSiteRoot();
         context.setSiteRoot(index.getSite());
-        context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        context.setCurrentProject(indexProject);
         if (report != null) {
             report.println(report.key("search.indexing_context") + context.getSiteRoot() + ", " + context.currentProject().getName(), I_CmsReport.C_FORMAT_NOTE);
         }
@@ -718,12 +568,20 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
         try {
             
             CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(this, report, Long.parseLong(m_timeout));
-            List sources = index.getSources();
             writer = index.getIndexWriter();
             
-            for (Iterator i = sources.iterator(); i.hasNext();) {
+            List folders = index.getFolders();
+            for (Iterator i = folders.iterator(); i.hasNext();) {
                 String vfsPath = (String)i.next();
-                createVfsSubtreeIndex(writer, vfsPath, index, report, threadManager);
+                new CmsVfsIndexer(m_cms, writer, index, report, threadManager).updateIndex(vfsPath);
+            }
+            
+            List channels = index.getChannels();
+            for (Iterator i = channels.iterator(); i.hasNext();) {
+                String cosChannel = (String)i.next();
+                String documenttype = (String)(index.getDocumenttypes(cosChannel).toArray())[0];
+                String resourcetype = (String)((List)m_resourcetypes.get(documenttype)).get(0);
+                new CmsCosIndexer(m_cms, resourcetype, writer, index, report, threadManager).updateIndex(cosChannel);
             }
             
             threadManager.reportStatistics();

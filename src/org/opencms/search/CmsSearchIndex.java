@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/16 17:07:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,71 +65,59 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2004/02/13 13:41:45 $
+ * Implements the search within an index and the management of the index configuration.<p>
+ *  
+ * @version $Revision: 1.7 $ $Date: 2004/02/16 17:07:51 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @since 5.3.1
  */
 public class CmsSearchIndex {
   
-    /*
-     * Manual rebuild as default value
-     */
+    /** Manual rebuild as default value */
     private static String C_DEFAULT_REBUILD = "manual";
 
-    /*
-     * The cms object
-     */
+    /** The cms object */
     private CmsObject m_cms;
 
-    /*
-     * The incremental mode for this index
-     */
+    /** The incremental mode for this index */
     private boolean m_incremental;
 
-    /*
-     * The index manager
-     */
+    /** The index manager */
     private CmsSearchManager m_indexManager;
     
-    /*
-     * The language filter of this index
-     */
+    /** The language filter of this index */
     private String m_language;
     
-    /*
-     * The name of this index
-     */
+    /** The name of this index */
     private String m_name;
                 
-    /*
-     * Path to index data
-     */
+    /** Path to index data */
     private String m_path;
     
-    /*
-     * The project of this index
-     */
+    /** The project of this index */
     private String m_project;
 
-    /*
-     * The rebuild mode for this index
-     */
+    /** The rebuild mode for this index */
     private String m_rebuild;
 
-    /*
-     * The site of this index
-     */    
+    /** The site of this index */    
     private String m_site;
       
-    /*
-     * The list of vfs paths to index
-     */
-    private List m_sources;
+    /** The list of vfs paths to index */
+    private List m_vfsSources;
+
+    /** The list of cos channels to index */
+    private List m_cosSources;
     
-    /*
-     * Names of documenttypes to index
-     */
-    private Set m_documenttypes;
-             
+    /** Documenttypes of folders/channels */
+    private Map m_documenttypes;
+    
+    /** Displayuri of channel content */
+    private Map m_cosDisplayuri;
+    
+    /** Displayparam of channel content */
+    private Map m_cosDisplayparam;
+    
     /**
      * Constructor to create a new index instance.<p>
      * 
@@ -141,6 +131,11 @@ public class CmsSearchIndex {
        
         m_cms = cms;
         m_indexManager = indexManager;
+        m_vfsSources = new ArrayList();
+        m_cosSources = new ArrayList();
+        m_documenttypes = new HashMap();
+        m_cosDisplayuri = new HashMap();
+        m_cosDisplayparam = new HashMap();
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("[" + this.getClass().getName() + "] " + "Initializing");
@@ -157,22 +152,25 @@ public class CmsSearchIndex {
         if ((m_site = (String)configuration.get("site")) == null) {
             throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Site undefined");
         }
-        
-        m_sources = null;
+
+        List folders = null;
         try {
-            m_sources = (List)configuration.get("source");
+            folders = (List)configuration.get("folder");
         } catch (ClassCastException exc) {
-            m_sources = Arrays.asList(new String[] {(String)configuration.get("source") });
+            folders = Arrays.asList(new Map[] {(Map)configuration.get("folder")});
         }
-        if (m_sources == null) {
-            throw new CmsIndexException("[" + this.getClass().getName() + "] " + "No source defined");
+        if (folders != null) {
+            readFolders(folders);
         }
         
-        m_documenttypes = null;
+        List channels = null;
         try {
-            m_documenttypes = new HashSet((List)configuration.get("documenttype"));
+            channels = (List)configuration.get("channel");
         } catch (ClassCastException exc) {
-            m_documenttypes = new HashSet(Arrays.asList(new String[] {(String)configuration.get("documenttype") }));
+            channels = Arrays.asList(new Map[] {(Map)configuration.get("channel")});
+        }
+        if (channels != null) {
+            readChannels(channels);
         }
         
         if ((m_rebuild = (String)configuration.get("rebuild")) == null) {
@@ -188,6 +186,83 @@ public class CmsSearchIndex {
         m_path = OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(path + "/" + m_name);
     }   
 
+    /**
+     * Reads the folder configuration.<p>
+     * 
+     * @param folders the list of folder configurations
+     * @throws CmsIndexException if something goes wrong
+     */
+    private void readFolders(List folders) throws CmsIndexException {
+        
+        for (Iterator i = folders.iterator(); i.hasNext();) {
+            Map folder = (Map)i.next();
+            
+            String source;
+            if ((source = (String)folder.get("source")) == null) {
+                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Folder source undefined");
+            }
+            
+            Set documenttypes;
+            try {
+                documenttypes = new HashSet((List)folder.get("documenttype"));
+            } catch (ClassCastException exc) {
+                documenttypes = new HashSet(Arrays.asList(new String[] {(String)folder.get("documenttype") }));
+            }
+            
+            m_vfsSources.add(source);
+            m_documenttypes.put(source, documenttypes);
+            
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Configured folder: " + source);
+            }            
+        }
+    }
+
+    /**
+     * Reads the channel configuration.<p>
+     * 
+     * @param channels the list of folder configurations
+     * @throws CmsIndexException if something goes wrong
+     */
+    private void readChannels(List channels) throws CmsIndexException {
+        
+        for (Iterator i = channels.iterator(); i.hasNext();) {
+            Map folder = (Map)i.next();
+            
+            String source;
+            if ((source = (String)folder.get("source")) == null) {
+                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Channel source undefined");
+            }
+            
+            String documenttype;
+            if ((documenttype = (String)folder.get("documenttype")) == null) {
+                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Channel documenttype undefined");
+            }            
+            
+            String displayuri;
+            if ((displayuri = (String)folder.get("displayuri")) == null) {
+                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Channel displayuri undefined");
+            }  
+            
+            String displayparam;
+            if ((displayparam = (String)folder.get("displayparam")) == null) {
+                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Channel displayparam undefined");
+            }              
+                        
+            HashSet dtSet = new HashSet();
+            dtSet.add(documenttype);
+            m_documenttypes.put(source, dtSet);
+
+            m_cosSources.add(source);
+            m_cosDisplayuri.put(source, displayuri);
+            m_cosDisplayparam.put(source, displayparam);
+            
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Configured channel: " + source);
+            }            
+        }
+    }
+    
     /**
      * Returns the excerpt of a given resource.<p>
      *  
@@ -329,23 +404,61 @@ public class CmsSearchIndex {
     }
         
     /**
-     * Gets the path list of this index.<p>
+     * Gets the vfs path list of this index.<p>
      * The list contains Strings with the startpoints for indexing. 
      * 
-     * @return the path list of the index
+     * @return the vfs path list of the index
      */
-    public List getSources() {
-        return m_sources;
+    public List getFolders() {
+        return (m_vfsSources != null) ? m_vfsSources : new ArrayList();
+    }
+    
+    /**
+     * Gets the set of documenttypes of a folder or channel.<p>
+     * The set contains Strings with the names of the documenttypes.
+     * 
+     * @param path path of the folder or channel
+     * @return the name set of documenttypes of a folder
+     */
+    public Set getDocumenttypes(String path) {
+        Set documenttypes = null;
+        if (m_documenttypes != null) {
+            documenttypes = (Set)m_documenttypes.get(path);
+        }
+        if (documenttypes == null) {
+            documenttypes = m_indexManager.getDocumenttypes();
+        }
+        return documenttypes;
     }
 
     /**
-     * Gets the set of documenttypes of this index.<p>
-     * The set contains Strings with the names of the documenttypes.
+     * Gets the cos channel list of this index.<p>
+     * The list contains the cos channels for indexing.
      * 
-     * @return the name set of documenttypes of this index
+     * @return the cos channel list of the index
      */
-    public Set getDocumenttypes() {
-        return (m_documenttypes != null) ? m_documenttypes : m_indexManager.getDocumenttypes();
+    public List getChannels() {
+        return (m_cosSources != null) ? m_cosSources : new ArrayList();
+    }
+    
+    /**
+     * Gets the display uri of contents assigned to the given channel.<p>
+     * 
+     * @param channel the channel name
+     * @return the display uri for contents
+     */
+    public String getChannelDisplayUri(String channel) {
+        return (String)m_cosDisplayuri.get(channel);
+    }
+    
+    /**
+     * Get the display param of contents assigned to the given channel.<p>
+     * 
+     * @param channel the channel name
+     * @return the display param for contents
+     */
+    public String getChannelDisplayparam(String channel) {
+        return (String)m_cosDisplayparam.get(channel);
     }
     
     /**
@@ -388,7 +501,7 @@ public class CmsSearchIndex {
         CmsProject currentProject = context.currentProject();
         context.saveSiteRoot();
         context.setSiteRoot(m_site);
-        context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        context.setCurrentProject(m_cms.readProject(m_project).getId());
         
         Searcher searcher = null;
 
