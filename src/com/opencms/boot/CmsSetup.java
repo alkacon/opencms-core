@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/09/29 11:08:50 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,12 +60,12 @@ public class CmsSetup {
     /** 
      * Contains the properties from the opencms.properties file 
      */
-    private ExtendedProperties m_ExtProperties;
+    private ExtendedProperties m_extProperties;
 
     /** 
      * properties from dbsetup.properties 
      */
-    private Properties m_DbProperties;
+    private Properties m_dbProperties;
 
     /** Contains the absolute path to the opencms home directory */
     private String m_basePath;
@@ -95,13 +95,15 @@ public class CmsSetup {
      * and sets the CmsSetup properties with the matching values.
      * This method should be called when the first page of the OpenCms
      * Setup Wizard is called, so the input fields of the wizard are pre-defined
+     * 
+     * @param props path to the properties file
      */
     public void initProperties(String props) {
         String path = getConfigFolder() + props;
         try {
-            m_ExtProperties = CmsSetupUtils.loadProperties(path);
-            m_DbProperties = new Properties();
-            m_DbProperties.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
+            m_extProperties = CmsSetupUtils.loadProperties(path);
+            m_dbProperties = new Properties();
+            m_dbProperties.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
         } catch (Exception e) {
             e.printStackTrace();
             errors.add(e.toString());
@@ -146,17 +148,19 @@ public class CmsSetup {
      * @param value The value of the property
      */
     public void setExtProperty(String key, String value) {
-        m_ExtProperties.put(key, value);
+        m_extProperties.put(key, value);
     }
 
     /**
      * Returns the value for a given key from the extended properties.
+     * 
+     * @param key the property key
      * @return the string value for a given key
      */
     public String getExtProperty(String key) {
         Object value = null;
 
-        return ((value = m_ExtProperties.get(key)) != null) ? value.toString() : "";
+        return ((value = m_extProperties.get(key)) != null) ? value.toString() : "";
     }
 
     /** 
@@ -165,19 +169,25 @@ public class CmsSetup {
      * @param value The value of the property
      */
     public void setDbProperty(String key, String value) {
-        m_DbProperties.put(key, value);
+        m_dbProperties.put(key, value);
     }
 
     /**
      * Returns the value for a given key from the database properties.
+     * 
+     * @param key the property key
      * @return the string value for a given key
      */
     public String getDbProperty(String key) {
         Object value = null;
-        return ((value = m_DbProperties.get(key)) != null) ? value.toString() : "";
+        return ((value = m_dbProperties.get(key)) != null) ? value.toString() : "";
     }
 
-    /** Sets the path to the OpenCms home directory */
+    /** 
+     * Sets the path to the OpenCms home directory 
+     *
+     * @param basePath path to OpenCms home directory
+     */
     public void setBasePath(String basePath) {
         m_basePath = basePath;
         if (!m_basePath.endsWith(File.separator)) {
@@ -187,29 +197,49 @@ public class CmsSetup {
         }
     }
 
-    /** Returns the absolute path to the OpenCms home directory */
+    /** 
+     * Returns the absolute path to the OpenCms home directory
+     * 
+     * @return the path to the OpenCms home directory 
+     */
     public String getBasePath() {
         return m_basePath.replace('\\', '/').replace('/', File.separatorChar);
     }
 
-    /** Sets the setup type to the given value: standard (false), advanced (true) */
+    /** 
+     * Sets the setup type to the given value
+     * 
+     * @param setupType the setup type:  standard (false), advanced (true)
+     */
     public void setSetupType(boolean setupType) {
         m_setupType = setupType;
     }
 
-    /** Returns the value of the setup type: standard (false), advanced (true) */
+    /** 
+     * Returns the value of the setup type: standard (false), advanced (true)
+     * 
+     * @return the setup type 
+     */
     public boolean getSetupType() {
         return m_setupType;
     }
 
-    /** Gets the default pool */
+    /** 
+     * Gets the default pool
+     * 
+     * @return name of the default pool 
+     */
     public String getPool() {
         StringTokenizer tok = new StringTokenizer(this.getExtProperty("db.pools"), ",[]");
         String pool = tok.nextToken();
         return pool;
     }
 
-    /** Sets the database drivers to the given value */
+    /** 
+     * Sets the database drivers to the given value 
+     * 
+     * @param database name of the database
+     */
     public void setDatabase(String database) {
 
         m_database = database;
@@ -239,7 +269,11 @@ public class CmsSetup {
         }
     }
 
-    /** Gets the database */
+    /** 
+     * Gets the database 
+     * 
+     * @return name of the database
+     **/
     public String getDatabase() {
         if (m_database == null) {
             m_database = this.getExtProperty("db.name");
@@ -250,7 +284,11 @@ public class CmsSetup {
         return m_database;
     }
 
-    /** Returns all databases found in 'dbsetup.properties' */
+    /** 
+     * Returns all databases found in 'dbsetup.properties' 
+     *
+     * @return List of names of possible databases 
+     */
     public Vector getDatabases() {
         Vector values = new Vector();
 
@@ -262,7 +300,11 @@ public class CmsSetup {
         return values;
     }
 
-    /** Returns "nice display names" for all databases found in 'dbsetup.properties' */
+    /** 
+     * Returns "nice display names" for all databases found in 'dbsetup.properties' 
+     *
+     * @return List of display names for possible databases 
+     */
     public Vector getDatabaseNames() {
         Vector values = new Vector();
 
@@ -274,7 +316,11 @@ public class CmsSetup {
         return values;
     }
 
-    /** Sets the connection string to the database to the given value */
+    /** 
+     * Sets the connection string to the database to the given value 
+     *
+     * @param dbWorkConStr the connection string used by the OpenCms core 
+     */
     public void setDbWorkConStr(String dbWorkConStr) {
 
         String driver = this.getDbProperty(m_database + ".driver");
@@ -286,82 +332,144 @@ public class CmsSetup {
         this.setTestQuery(this.getDbTestQuery());
     }
 
-    /** Returns a connection string */
+    /** 
+     * Returns a connection string 
+     *
+     * @return the connection string used by the OpenCms core  
+     */
     public String getDbWorkConStr() {
 
         return this.getExtProperty("db.pool." + getPool() + ".jdbcUrl");
     }
 
-    /** Sets the user of the database to the given value */
+    /** 
+     * Sets the user of the database to the given value 
+     *
+     * @param dbWorkUser the database user used by the opencms core 
+     */
     public void setDbWorkUser(String dbWorkUser) {
 
         setExtProperty("db.pool." + getPool() + ".user", dbWorkUser);
     }
 
-    /** Returns the user of the database from the properties */
+    /** 
+     * Returns the user of the database from the properties 
+     *
+     * @return the database user used by the opencms core  
+     */
     public String getDbWorkUser() {
 
         return this.getExtProperty("db.pool." + getPool() + ".user");
     }
 
-    /** Sets the password of the database to the given value */
+    /** 
+     * Sets the password of the database to the given value 
+     *
+     * @param dbWorkPwd the password for the OpenCms database user  
+     */
     public void setDbWorkPwd(String dbWorkPwd) {
 
         setExtProperty("db.pool." + getPool() + ".password", dbWorkPwd);
     }
 
-    /** Returns the password of the database from the properties */
+    /** 
+     * Returns the password of the database from the properties 
+     * 
+     * @return the password for the OpenCms database user 
+     */
     public String getDbWorkPwd() {
 
         return this.getExtProperty("db.pool." + getPool() + ".password");
     }
 
-    /** Returns the extended properties */
+    /** 
+     * Returns the extended properties 
+     *
+     * @return the extended properties  
+     */
     public ExtendedProperties getProperties() {
-        return m_ExtProperties;
+        return m_extProperties;
     }
 
-    /** Adds a new error message to the vector */
+    /** 
+     * Adds a new error message to the vector 
+     *
+     * @param error the error message 
+     */
     public static void setErrors(String error) {
         errors.add(error);
     }
 
-    /** Returns the error messages */
+    /** 
+     * Returns the error messages 
+     * 
+     * @return a vector of error messages 
+     */
     public Vector getErrors() {
         return errors;
     }
 
-    /** Returns the path to the opencms config folder */
+    /** 
+     * Returns the path to the opencms config folder 
+     *
+     * @return the path to the config folder 
+     */
     public String getConfigFolder() {
         return (m_basePath + "WEB-INF/config/").replace('\\', '/').replace('/', File.separatorChar);
     }
 
-    /** Sets the database driver belonging to the database */
+    /** 
+     * Sets the database driver belonging to the database 
+     * 
+     * @param driver name of the opencms driver 
+     */
     public void setDbDriver(String driver) {
         this.setDbProperty(m_database + ".driver", driver);
     }
 
-    /** Returns the database driver belonging to the database */
+    /** 
+     * Returns the database driver belonging to the database
+     * from the default configuration 
+     *
+     * @return name of the opencms driver 
+     */
     public String getDbDriver() {
         return this.getDbProperty(m_database + ".driver");
     }
 
-    /** Returns the validation query belonging to the database */
+    /** 
+     * Returns the validation query belonging to the database
+     * from the default configuration 
+     *
+     * @return query used to validate connections 
+     */
     public String getDbTestQuery() {
         return this.getDbProperty(m_database + ".testQuery");
     }
 
-    /** Sets the validation query to the given value */
+    /** 
+     * Sets the validation query to the given value 
+     *
+     * @param query query used to validate connections   
+     */
     public void setTestQuery(String query) {
         setExtProperty("db.pool." + getPool() + ".testQuery", query);
     }
 
-    /** Returns the validation query */
+    /** 
+     * Returns the validation query 
+     *
+     * @return query used to validate connections 
+     */
     public String getTestQuery() {
         return this.getExtProperty("db.pool." + getPool() + ".testQuery");
     }
 
-    /** Sets the minimum connections to the given value */
+    /** 
+     * Sets the minimum connections to the given value 
+     * 
+     * @param minConn number of minimum connections
+     */
     public void setMinConn(String minConn) {
         setExtProperty("db.pool." + getPool() + ".maxIdle", minConn);
     }
@@ -913,7 +1021,7 @@ public class CmsSetup {
     }
 
     public Properties getDbSetupProps() {
-        return m_DbProperties;
+        return m_dbProperties;
     }
 
     public Hashtable getReplacer() {
@@ -1058,7 +1166,7 @@ public class CmsSetup {
 
     public String getDirectoryIndexFiles() {
         Object value = null;
-        value = m_ExtProperties.get("directory.default.files");
+        value = m_extProperties.get("directory.default.files");
 
         if (value == null) {
             // could be null...
