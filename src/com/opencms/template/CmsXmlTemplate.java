@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/09/11 14:02:48 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2001/10/12 07:46:09 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.77 $ $Date: 2001/09/11 14:02:48 $
+ * @version $Revision: 1.78 $ $Date: 2001/10/12 07:46:09 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -158,6 +158,39 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         return cms.getRequestContext().getFileUri().getBytes();
     }
 
+    /**
+     * Returns the absolute path of a resource merged with the absolute path of the file and
+     * the relative path in the tagcontent. This path is a intern OpenCms path (i.e. it starts
+     * with a "/" ).
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent The relative path of the resource incl. name of the resource.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object mergeAbsolutePath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        return Utils.mergeAbsolutePath(doc.getAbsoluteFilename(), tagcontent).getBytes();
+    }
+
+    /**
+     * Returns the absolute path of a resource merged with the absolute path of the file and
+     * the relative path in the tagcontent. This method adds the servlet path at the beginning
+     * of the path.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent The relative path of the resource incl. name of the resource.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object mergeAbsoluteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        String ocPath = new String((byte[])mergeAbsolutePath(cms,tagcontent, doc, userObject));
+        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
+        return (servletPath + ocPath).getBytes();
+    }
     /**
      * Gets the QueryString for CmsFrameTemplates.
      * <P>
@@ -1220,6 +1253,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 if(className != null || templateName != null || templateSelector != null || templateParameters.size() > 0) {
                     if(className == null){
                         className = "com.opencms.template.CmsXmlTemplate";
+                    }
+                    if(templateName != null){
+                        templateName = Utils.mergeAbsolutePath(templateFile, templateName);
                     }
                     CmsElementDefinition elDef = new CmsElementDefinition(elName, className, templateName, templateSelector, templateParameters);
                     subtemplateDefinitions.add(elDef);

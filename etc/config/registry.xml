@@ -79,7 +79,7 @@
             <launcher3>com.opencms.launcher.CmsLinkLauncher</launcher3>
             <launcher4>com.opencms.launcher.CmsPdfLauncher</launcher4>
         </launchers>
-		<tempfileproject></tempfileproject>
+        <tempfileproject></tempfileproject>
     </system>
     <modules/>
 </registry>

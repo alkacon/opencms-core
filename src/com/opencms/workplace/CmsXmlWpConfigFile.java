@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2001/09/05 10:28:20 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/10/12 07:46:09 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2001/09/05 10:28:20 $
+ * @version $Revision: 1.36 $ $Date: 2001/10/12 07:46:09 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -125,6 +125,7 @@ public class CmsXmlWpConfigFile {
             names.add("folder");    values.add("explorer_files_new_folder.html");
             names.add("page");      values.add("explorer_files_new_page.html");
             // names.add("pdfpage");   values.add("explorer_files_new_pdfpage.html");
+            names.add("gemadipage"); values.add("explorer_files_new_gemadipage.html");
             names.add("link");      values.add("explorer_files_new_link.html");
             names.add("othertype"); values.add("explorer_files_new_othertype.html");
             names.add("upload");    values.add("explorer_files_new_upload.html");

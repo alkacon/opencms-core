@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/08/06 08:31:24 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2001/10/12 07:46:09 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2001/08/06 08:31:24 $
+ * @version $Revision: 1.49 $ $Date: 2001/10/12 07:46:09 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -991,10 +991,9 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @see #lookupAbsoluteFilename
      */
     public void init(CmsObject cms, String filename) throws CmsException {
-        if(!filename.startsWith("/")) {
 
-            // this is no absolute filename.
-            filename = lookupAbsoluteFilename(cms, filename, this);
+        if(!filename.startsWith("/")) {
+            throw new CmsException("--Intruder Alert: A relative path has entered the A_CmsXmlContent class. ");
         }
         String currentProject = cms.getRequestContext().currentProject().getName();
         Document parsedContent = null;
@@ -1212,86 +1211,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Re-used previously parsed XML file " + getFilename() + ".");
         }
         return cachedDoc;
-    }
-
-    /**
-     * Used by the init method to search a template file if only a filename
-     * is given instead of a CmsFile Object.
-     * Previously cached documents will be considered.
-     * <P>
-     * Template files will be searched in the following hierachical order:
-     * <UL>
-     * <LI> (template path)/(full classname).TemplateName.(Extension) </LI>
-     * <LI> (template path)/(parent class).TemplateName.(Extension) </LI>
-     * <LI> ... </LI>
-     * <LI> (template path)/TemplateName.(Extension) </LI>
-     * </UL>
-     * <P>
-     * The starting classname is determined by the class of the given <code>requestingObject</class>
-     *
-     * @param cms CmsObject Object for accessing system resources.
-     * @param filename Template file name to be loaded.
-     * @param requestingObject Object whose class hierarchy should be used for resolving file names.
-     * @return absolute path of the filename.
-     * @exception CmsException
-     */
-    public static String lookupAbsoluteFilename(CmsObject cms, String filename, Object requestingObject) throws CmsException {
-        Class actualClass = requestingObject.getClass();
-        CmsResource retValue = null;
-        String completeFilename = null;
-
-        // we use this Vector for storing all tried filenames.
-
-        // so we can give detailled error messages if the
-
-        // template file was not found.
-        Vector checkedFilenames = new Vector();
-        if(filename.startsWith("/")) {
-            completeFilename = filename;
-        }
-        else {
-
-            // Now start the loop to search
-            while(retValue == null) {
-                completeFilename = C_TEMPLATEPATH + actualClass.getName() + "." + filename + C_TEMPLATE_EXTENSION;
-                checkedFilenames.addElement(completeFilename);
-                retValue = null;
-                try {
-                    retValue = cms.readFileHeader(completeFilename);
-                }
-                catch(Exception e) {
-                    retValue = null;
-                }
-
-                //retValue = readTemplateFile(cms, completeFilename);
-                actualClass = actualClass.getSuperclass();
-                if(actualClass.getName().equals(C_MINIMUM_CLASSNAME)) {
-                    if(retValue == null) {
-
-                        // last chance to get the filename
-                        completeFilename = C_TEMPLATEPATH + filename + C_TEMPLATE_EXTENSION;
-                        checkedFilenames.addElement(completeFilename);
-                        try {
-                            retValue = cms.readFileHeader(completeFilename);
-                        }
-                        catch(Exception e) {
-                            retValue = null;
-                        }
-                        break;
-                    }
-                }
-            }
-            if(retValue == null) {
-                Enumeration checkedEnum = checkedFilenames.elements();
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    while(checkedEnum.hasMoreElements()) {
-                        A_OpenCms.log(C_OPENCMS_CRITICAL, "[A_CmsXmlContent] checked: " + (String)checkedEnum.nextElement());
-                    }
-                }
-                throw new CmsException("Cannot find template file for request \"" + filename + "\". ", CmsException.C_NOT_FOUND);
-            }
-        }
-        return completeFilename;
     }
 
     /**

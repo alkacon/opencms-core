@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/08/02 07:26:22 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2001/10/12 07:46:09 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.cache.*;
+import com.opencms.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.util.*;
@@ -54,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2001/08/02 07:26:22 $
+ * @version $Revision: 1.31 $ $Date: 2001/10/12 07:46:09 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -122,6 +123,9 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                 templateClass = "com.opencms.template.CmsXmlTemplate";
             }
             templateName = doc.getMasterTemplate();
+            if(templateName != null && !"".equals(templateName)){
+                templateName = Utils.mergeAbsolutePath(file.getAbsolutePath(), templateName);
+            }
 
             // Previously, the template class was loaded here.
             // We avoid doing this so early, since in element cache mode the template

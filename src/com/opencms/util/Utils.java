@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2001/09/05 13:40:47 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2001/10/12 07:46:09 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -111,11 +111,53 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
     }
 
     /**
+     * Returns the AbsolutePath of an resource based on the base and the relative
+     * Path to the resource. There are three cases for the relative path:
+     *   case 1:     a / at the beginning of the relPath -> return the relPath
+     *   case 2:     one or more ../ at the beginning! of the relPath -> return the absolute path to the resource
+     *   case 3:     ./ or something else at the beginning -> return base + relpath (without the ./ of course)
+     *
+     * @param basePath The folder where the relativePath starts (or the absolute path of
+     *          a file (no folder) in this path)
+     * @param relativePath The relative path to a reaource.
+     */
+    public static String mergeAbsolutePath(String basePath, String relativePath){
+
+        if(relativePath == null || "".equals(relativePath)){
+            return basePath;
+        }
+        if(relativePath.startsWith("/") || basePath == null){
+            // case 1:     a / at the beginning of the relPath -> return the relPath
+            return relativePath;
+        }
+        basePath = basePath.substring(0,basePath.lastIndexOf('/')+1);
+        String result = null;
+        if(relativePath.startsWith("./")){
+            // case 3 a:     ./ at the beginning -> return base + relpath (without the ./ of course)
+            relativePath = relativePath.substring(2);
+        }
+        if(relativePath.startsWith("../")){
+            // case 2:     one or more ../ at the beginning! of the relPath -> return the absolute path to the resource
+			int lastIndexOfSlash = relativePath.lastIndexOf("../");
+			int count = (lastIndexOfSlash / 3)+1;
+			int baseCount =basePath.lastIndexOf('/') -1;
+			for(int i=0; i<count; i++){
+				baseCount = basePath.lastIndexOf('/',baseCount) -1;
+			}
+			result = basePath.substring(0,baseCount+2) + relativePath.substring(lastIndexOfSlash+3);
+
+        }else{
+            // case 3b: something else at the beginning -> return base + relpath (without the ./ of course)
+            result = basePath + relativePath;
+        }
+        return result;
+    }
+
+    /**
      * Returns a string representation of the full name of a user.
      * @param user The user to get the full name from
      * @return a string representation of the user fullname.
      */
-
     public static String getFullName(CmsUser user) {
         String retValue = "";
         if(user != null) {
@@ -302,7 +344,6 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
      *
      * @return an Array of Strings.
      */
-
     public static final String[] split(String toSplit, String at) {
         Vector parts = new Vector();
         int index = 0;

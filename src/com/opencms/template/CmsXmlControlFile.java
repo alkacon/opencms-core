@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2001/09/11 14:02:48 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/10/12 07:46:09 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.template;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.cache.*;
+import com.opencms.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.util.*;
@@ -40,7 +41,7 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2001/09/11 14:02:48 $
+ * @version $Revision: 1.25 $ $Date: 2001/10/12 07:46:09 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -419,6 +420,9 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
             Hashtable elementParameters = getElementParameters(elementName);
             if(elementClass == null){
                 elementClass = "com.opencms.template.CmsXmlTemplate";
+            }
+            if(elementTemplate != null){
+                elementTemplate = Utils.mergeAbsolutePath(getAbsoluteFilename(), elementTemplate);
             }
             result.add(new CmsElementDefinition(elementName, elementClass, elementTemplate, elementTs, elementParameters));
         }

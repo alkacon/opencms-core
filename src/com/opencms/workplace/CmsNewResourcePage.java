@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/09/25 06:55:08 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2001/10/12 07:46:09 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2001/09/25 06:55:08 $
+ * @version $Revision: 1.46 $ $Date: 2001/10/12 07:46:09 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -188,8 +188,16 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                     // create the page file
                     Hashtable prop = new Hashtable();
                     prop.put(C_PROPERTY_TITLE, title);
-                    CmsResourceTypePage rtpage = new CmsResourceTypePage();
-                    CmsResource file = rtpage.createResource(cms, currentFilelist, newFile, prop, "".getBytes(), templatefile);
+                    CmsResource file = null;
+                    String resourceType = (String)session.getValue("resourctype_for_new_page");
+                    session.removeValue("resourctype_for_new_page");
+                    if(resourceType != null && "gemadipage".equals(resourceType)){
+                        file = ((CmsResourceTypePage)cms.getResourceType(resourceType)).createResource(cms, currentFilelist, newFile, prop, "".getBytes(), templatefile) ;
+                    }else{
+                        //CmsResourceTypePage rtpage = new CmsResourceTypePage();
+                        //file = rtpage.createResource(cms, currentFilelist, newFile, prop, "".getBytes(), templatefile);
+                        file = ((CmsResourceTypePage)cms.getResourceType("page")).createResource(cms, currentFilelist, newFile, prop, "".getBytes(), templatefile) ;
+                    }
 
                     if( keywords != null && !keywords.equals("") ) {
                         cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_KEYWORDS, keywords);
@@ -221,8 +229,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                             updateNavPos(cms, file, navpos);
                         }
                     }
-                }
-                catch(CmsException ex) {
+                }catch(CmsException ex) {
                     throw new CmsException("Error while creating new Page" + ex.getMessage(), ex.getType(), ex);
                 }
 
@@ -231,15 +238,19 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 try {
                     cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                             + C_WP_EXPLORER_FILELIST);
-                }
-                catch(Exception e) {
+                }catch(Exception e) {
                     throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
                             + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
                 return null;
             }
-        }
-        else {
+        }else {
+            String putValue = (String)parameters.get("root.pagetype");
+            if(putValue != null){
+                session.putValue("resourctype_for_new_page", (String)parameters.get("root.pagetype"));
+            }else{
+                session.removeValue("resourctype_for_new_page");
+            }
             session.removeValue(C_PARA_FILE);
         }
 
@@ -403,9 +414,9 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
     public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
+
         return CmsHelperMastertemplates.getTemplates(cms, names, values, null);
     }
-
 
     /**
      * Indicates if the results of this class are cacheable.

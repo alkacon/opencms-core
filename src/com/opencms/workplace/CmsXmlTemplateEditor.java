@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/09/21 06:38:21 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2001/10/12 07:46:09 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.53 $ $Date: 2001/09/21 06:38:21 $
+ * @version $Revision: 1.54 $ $Date: 2001/10/12 07:46:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -148,6 +148,12 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
     public Integer getAvailableTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
+
+        String currentFile = (String)parameters.get("filename_for_relative_template");
+        String filetype = (String)parameters.get("root.pagetype");
+        if("gemadipage".equals(filetype)){
+            return CmsNewResourceGemadipage.getRelativeTemplates(cms, names, values, (String)parameters.get("template"), currentFile);
+        }
         return CmsHelperMastertemplates.getTemplates(cms, names, values, (String)parameters.get("template"));
     }
 
@@ -239,6 +245,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String title = (String)parameters.get(C_PARA_TITLE);
         String bodytitle = (String)parameters.get("bodytitle");
         String layoutTemplateFilename = (String)parameters.get("template");
+        String layoutTemplatFilenameRelative = layoutTemplateFilename;
+        layoutTemplateFilename = Utils.mergeAbsolutePath(file, layoutTemplateFilename);
         String bodyElementClassName = (String)parameters.get("bodyclass");
         String bodyElementFilename = (String)parameters.get("bodyfile");
         String action = (String)parameters.get(C_PARA_ACTION);
@@ -278,6 +286,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // If there is no content parameter this seems to be
         // a new request of the page editor.
         // So we have to read all files and set some initial values.
+        parameters.put("root.pagetype", cms.getResourceType(cms.readFileHeader(file).getType()).getResourceTypeName());
+        parameters.put("filename_for_relative_template", file);
         if(!existsContentParam) {
             CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
             if(originalControlFile.isElementClassDefined(C_BODY_ELEMENT)) {
@@ -287,29 +297,26 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 bodyElementFilename = originalControlFile.getElementTemplate(C_BODY_ELEMENT);
             }
             if((bodyElementClassName == null) || (bodyElementFilename == null)) {
-
-
-            // Either the template class or the template file
-            // for the body element could not be determined.
-            // BUG: Send error here
+                // Either the template class or the template file
+                // for the body element could not be determined.
+                // BUG: Send error here
             }
-
             // Check, if the selected page file is locked
             CmsResource pageFileResource = cms.readFileHeader(file);
             if(!pageFileResource.isLocked()) {
-
                 // BUG: Check only, dont't lock here!
                 cms.lockResource(file);
             }
-
             // The content file must be locked before editing
             CmsResource contentFileResource = cms.readFileHeader(bodyElementFilename);
             if(!contentFileResource.isLocked()) {
                 cms.lockResource(bodyElementFilename);
             }
-
             // Now get the currently selected master template file
             layoutTemplateFilename = originalControlFile.getMasterTemplate();
+            layoutTemplatFilenameRelative = layoutTemplateFilename;
+            layoutTemplateFilename = Utils.mergeAbsolutePath(originalControlFile.getAbsoluteFilename()
+                                                            , layoutTemplateFilename);
             layoutTemplateClassName = originalControlFile.getTemplateClass();
             int browserId;
             if(browser.indexOf("MSIE") > -1) {
@@ -424,7 +431,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             if(templatechangeRequested) {
 
                 // The user requested a change of the layout template
-                temporaryControlFile.setMasterTemplate(layoutTemplateFilename);
+                temporaryControlFile.setMasterTemplate(layoutTemplatFilenameRelative );
 
                 //temporaryControlFile.write();
                 try {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/10/02 13:00:20 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/10/12 07:46:09 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2001/10/02 13:00:20 $
+ * @version $Revision: 1.19 $ $Date: 2001/10/12 07:46:09 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -406,7 +406,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String bodyFolder =(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/"))) + folder;
 
         // Create the new page file
-        CmsFile file = cms.doCreateFile(folder, name, "".getBytes(), I_CmsConstants.C_TYPE_PAGE_NAME, properties);
+        //CmsFile file = cms.doCreateFile(folder, name, "".getBytes(), I_CmsConstants.C_TYPE_PAGE_NAME, properties);
+        CmsFile file = cms.doCreateFile(folder, name, "".getBytes(), m_resourceTypeName, properties);
         cms.doLockResource(folder + name, true);
         CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, file);
         pageXml.setTemplateClass(C_CLASSNAME);
