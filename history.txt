@@ -11,6 +11,7 @@ Legend:
 OpenCms 4.5.10  Gom Jabbar   - 13 September 2001
 * explorer filelist: the current page is stored in the session now so if you look
   a file you will see the same page again.
+* removed changes for temporary files of editor.
 
 OpenCms 4.5.9  Gom Jabbar   - 13 September 2001
 ! The filelist was very slow for folder with many entrys. Now if there are more than 
