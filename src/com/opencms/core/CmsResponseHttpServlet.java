@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
- * Date   : $Date: 2000/07/27 15:07:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/01 17:34:25 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/07/27 15:07:24 $  
+ * @version $Revision: 1.10 $ $Date: 2000/08/01 17:34:25 $  
  */
 public class CmsResponseHttpServlet implements I_CmsConstants,  
                                                I_CmsResponse{ 
@@ -158,6 +158,36 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
         }
         String servlet = m_req.getServletPath();
         m_res.sendRedirect(hostName + servlet + location);
+    }
+	
+	 /**
+     *  Helper function for a redirect to the cluster url.
+     *  If <code>location</code> has the same hostname as the host of this servlet use the cluster url. 
+     * 
+     * @param location a full url, eg. http://servername/servlets/opencms/index.html 
+     * @exception Throws IOException if an error occurs.
+     */
+    public void sendRedirect(String location)
+        throws IOException {
+		String shortLocation = location;
+		String hostName = m_req.getHeader("HOST");
+		// remove 'http', '://', servername and '/servlets/opencms' and send CmsRedirect
+		if (shortLocation.startsWith(m_req.getScheme())) {
+			shortLocation = shortLocation.substring(m_req.getScheme().length());
+		}
+		if (shortLocation.startsWith("://")) {
+			shortLocation = shortLocation.substring(3);
+		} 
+		if (shortLocation.startsWith(hostName)) {
+			shortLocation = shortLocation.substring(hostName.length()); 
+			if (shortLocation.startsWith(m_req.getServletPath())) {
+				shortLocation = shortLocation.substring(m_req.getServletPath().length());
+			} 
+			sendCmsRedirect(shortLocation);
+		} else {
+			// wanted to redirect on another site, don't use the cluster url
+			m_res.sendRedirect(location);
+		}
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2000/07/18 16:13:49 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/08/01 17:31:26 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/07/18 16:13:49 $
+ * @version $Revision: 1.19 $ $Date: 2000/08/01 17:31:26 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -198,17 +198,16 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                         
                     }    
      
-                }
-              
+                } 
                 
                 session.removeValue(C_PARA_FILE);
-                // return to filelist
-                try {
+                // return to filelist  
+                try {   
                     if(lasturl == null || "".equals(lasturl)) {
                         cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
                     } else {
-                        ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
-                    }                            
+						cms.getRequestContext().getResponse().sendRedirect(lasturl);                      
+                    }                           
 			    } catch (Exception e) {
 			        throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
 			    }

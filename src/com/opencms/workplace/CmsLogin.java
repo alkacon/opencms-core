@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/07/27 09:26:01 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/08/01 17:31:26 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Waruschan Babachan
- * @version $Revision: 1.31 $ $Date: 2000/07/27 09:26:01 $
+ * @version $Revision: 1.32 $ $Date: 2000/08/01 17:31:26 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -79,6 +79,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
+		 	
         String username=null;
         CmsSession session=null;
         CmsUser user;

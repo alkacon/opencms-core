@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
- * Date   : $Date: 2000/07/18 16:13:51 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/08/01 17:31:26 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.17 $ $Date: 2000/07/18 16:13:51 $
+ * @version $Revision: 1.18 $ $Date: 2000/08/01 17:31:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -429,7 +429,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			try { 
 				if (lastUrl.startsWith("http:")) {
 					// complete path 
-					((HttpServletResponse) context.getResponse().getOriginalResponse()).sendRedirect(lastUrl);
+					context.getResponse().sendRedirect(lastUrl);
 				} else {
 					// relative to the opencms path
 					context.getResponse().sendCmsRedirect(lastUrl);	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
- * Date   : $Date: 2000/07/21 09:48:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/08/01 17:34:25 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.3 $ $Date: 2000/07/21 09:48:38 $  
+ * @version $Revision: 1.4 $ $Date: 2000/08/01 17:34:25 $  
  */
 public interface I_CmsResponse { 
     
@@ -100,6 +100,15 @@ public interface I_CmsResponse {
     public void sendCmsRedirect(String location)
         throws IOException;
     
+	/**
+     *  Helper function for a redirect to the cluster url. 
+     * 
+     * @param location a complete url, eg. http://servername/servlets/opencms/index.html 
+     * @exception Throws IOException if an error occurs.
+     */
+    public void sendRedirect(String location)
+        throws IOException;
+	
     /**
      * Sets the last modified header-field in the response.
      * 

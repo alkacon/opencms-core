@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/07/18 16:13:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/08/01 17:31:26 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/07/18 16:13:51 $
+ * @version $Revision: 1.12 $ $Date: 2000/08/01 17:31:26 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -181,7 +181,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 					String redirectUrl;
   
 					if (lastUrl != null) {
-						((HttpServletResponse) cms.getRequestContext().getResponse().getOriginalResponse()).sendRedirect(lastUrl);	
+						cms.getRequestContext().getResponse().sendRedirect(lastUrl);	
 					} else {
 						cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);	
 					} 

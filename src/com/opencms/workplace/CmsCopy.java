@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/07/28 13:36:35 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/08/01 17:31:26 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.33 $ $Date: 2000/07/28 13:36:35 $
+ * @version $Revision: 1.34 $ $Date: 2000/08/01 17:31:26 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -181,7 +181,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     if(lasturl == null || "".equals(lasturl)) {
                         cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
                     } else {
-                        ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
+                        cms.getRequestContext().getResponse().sendRedirect(lasturl);
                     }                            
                 } catch (Exception e) {
                     throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
