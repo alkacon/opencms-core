@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2001/01/03 17:07:06 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2001/01/09 14:27:51 $
+ * Version: $Revision: 1.67 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.66 $ $Date: 2001/01/03 17:07:06 $  
+* @version $Revision: 1.67 $ $Date: 2001/01/09 14:27:51 $  
 * 
 * */
 
@@ -647,7 +647,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		HttpServletRequest req=(HttpServletRequest)cmsReq.getOriginalRequest();
 		HttpServletResponse res=(HttpServletResponse)cmsRes.getOriginalResponse();
 		
-		CmsObject cms=new CmsObject(m_sessionStorage);
+		CmsObject cms=new CmsObject();
 		
 		//set up the default Cms object
 		try {
