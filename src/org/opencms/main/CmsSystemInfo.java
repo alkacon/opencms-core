@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/16 01:30:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -69,7 +69,13 @@ public class CmsSystemInfo {
     
     /** The name of the OpenCms server */
     private String m_serverName;
-        
+    
+    /** The mapped servlet path for the OpenCms servlet */
+    private String m_servletPath;    
+    
+    /** The startup time of this OpenCms instance */
+    private long m_startupTime;
+    
     /** The version name (including version number) of this OpenCms installation */
     private String m_versionName;
 
@@ -89,6 +95,8 @@ public class CmsSystemInfo {
      * Creates a new system info container.<p>
      */    
     public CmsSystemInfo() {
+        // set startup time
+        m_startupTime = System.currentTimeMillis();
         // init version onformation
         initVersion();
         // set default encoding (will be changed again later when properties have been read)
@@ -186,12 +194,30 @@ public class CmsSystemInfo {
     }
     
     /**
+     * Returns the time this OpenCms instance is running in miliseconds.<p>
+     * 
+     * @return the time this OpenCms instance is running in miliseconds
+     */
+    public long getRuntime() {
+        return System.currentTimeMillis() - m_startupTime;
+    }
+    
+    /**
      * Returns the OpenCms server name.<p>
      * 
      * @return the OpenCms server name
      */
     public String getServerName() {
         return m_serverName;
+    }
+    
+    /**
+     * Returns the mapped OpenCms servlet path, e.g. "opencms" (no leading or trainling "/").<p>
+     * 
+     * @return the mapped OpenCms servlet path
+     */
+    public String getServletPath() {
+        return m_servletPath;
     }
     
     /**
@@ -215,7 +241,7 @@ public class CmsSystemInfo {
     }
     
     /** 
-     * Returns the OpenCms web application name, e.g. "opencms" or "ROOT".<p> 
+     * Returns the OpenCms web application name, e.g. "opencms" or "ROOT" (no leading or trainling "/").<p> 
      * 
      * @return the OpenCms web application name
      */    
@@ -251,26 +277,6 @@ public class CmsSystemInfo {
     public String getWebInfPath() {
         return m_webInfPath;
     }    
-    
-    /**
-     * Initializes the version for this OpenCms, will be called by 
-     * CmsHttpServlet or CmsShell upon system startup.<p>
-     */
-    private void initVersion() {
-        // init version information with static defaults
-        m_versionName = C_DEFAULT_VERSION_NUMBER + " " + C_DEFAULT_VERSION_NAME;
-        m_versionNumber = C_DEFAULT_VERSION_NUMBER;  
-        // read the version-informations from properties, if not done
-        Properties props = new Properties();
-        try {
-            props.load(this.getClass().getClassLoader().getResourceAsStream("com/opencms/core/version.properties"));
-        } catch (Throwable t) {
-            // ignore this exception - no properties found
-            return;
-        }
-        m_versionNumber = props.getProperty("version.number", C_DEFAULT_VERSION_NUMBER);
-        m_versionName = m_versionNumber + " " + props.getProperty("version.name", C_DEFAULT_VERSION_NAME);
-    }  
     
     /**
      * Sets the default encoding, called after the properties have been read.<p>
@@ -328,6 +334,22 @@ public class CmsSystemInfo {
         }        
     }    
     
+    /**
+     * Sets the mapped OpenCms servlet path.<p>
+     * 
+     * @param servletPath the servlet path to set
+     */
+    protected void setServletPath(String servletPath) {
+        // usually a mapping must be in the form "/opencms/*", cut off all slashes
+        if (servletPath.endsWith("/*")) {
+            servletPath = servletPath.substring(0, servletPath.length()-2);
+        }        
+        if (servletPath.startsWith("/")) {
+            servletPath = servletPath.substring(1);
+        }        
+        m_servletPath = servletPath;
+    }
+    
     /** 
      * Sets the OpenCms web application "WEB-INF" directory path in the "real" file system.<p>
      *
@@ -344,4 +366,24 @@ public class CmsSystemInfo {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info("OpenCms: Base application path is " + m_webInfPath);
         }        
     }
+    
+    /**
+     * Initializes the version for this OpenCms, will be called by 
+     * CmsHttpServlet or CmsShell upon system startup.<p>
+     */
+    private void initVersion() {
+        // init version information with static defaults
+        m_versionName = C_DEFAULT_VERSION_NUMBER + " " + C_DEFAULT_VERSION_NAME;
+        m_versionNumber = C_DEFAULT_VERSION_NUMBER;  
+        // read the version-informations from properties, if not done
+        Properties props = new Properties();
+        try {
+            props.load(this.getClass().getClassLoader().getResourceAsStream("com/opencms/core/version.properties"));
+        } catch (Throwable t) {
+            // ignore this exception - no properties found
+            return;
+        }
+        m_versionNumber = props.getProperty("version.number", C_DEFAULT_VERSION_NUMBER);
+        m_versionName = m_versionNumber + " " + props.getProperty("version.name", C_DEFAULT_VERSION_NAME);
+    }  
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2004/02/06 20:52:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/16 01:30:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.report;
 
 import org.opencms.i18n.CmsMessages;
+import org.opencms.util.CmsStringSubstitution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,18 +43,9 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public abstract class A_CmsReport implements I_CmsReport {
-    
-    /** Second constant */
-    protected static final long C_SECONDS = 1000;
-    
-    /** Minute constant */
-    protected static final long C_MINUTES = 1000 * 60;
-    
-    /** Hour constant */
-    protected static final long C_HOURS = 1000 * 60 * 60;    
 
     /** Localized message access object */
     private List m_messages;
@@ -130,32 +122,7 @@ public abstract class A_CmsReport implements I_CmsReport {
      * @see org.opencms.report.I_CmsReport#formatRuntime()
      */
     public String formatRuntime() {
-        long runtime = getRuntime();
-        long seconds = (runtime / C_SECONDS) % 60;
-        long minutes = (runtime / C_MINUTES) % 60;
-        long hours = runtime / C_HOURS;
-        StringBuffer strBuf = new StringBuffer();
-
-        if (hours < 10) {
-            strBuf.append('0');
-        }
-        strBuf.append(hours);
-
-        strBuf.append(':');
-
-        if (minutes < 10) {
-            strBuf.append('0');
-        }
-        strBuf.append(minutes);
-
-        strBuf.append(':');
-
-        if (seconds < 10) {
-            strBuf.append('0');
-        }
-        strBuf.append(seconds);
-        
-        return strBuf.toString();
+        return CmsStringSubstitution.formatRuntime(getRuntime());
     }
     
     /**

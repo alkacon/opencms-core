@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/16 01:30:51 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,21 +40,35 @@ import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
 
 /**
- * Provides a String substitution functionality
- * with Perl regular expressions.<p>
+ * Provides String utility functions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.6 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
 
+    /** Day constant */
+    private static final long C_DAYS = 1000 * 60 * 60 * 24;    
+    
+    /** Hour constant */
+    private static final long C_HOURS = 1000 * 60 * 60;        
+    
+    /** Minute constant */
+    private static final long C_MINUTES = 1000 * 60;
+        
+    /** Second constant */
+    private static final long C_SECONDS = 1000;
+    
+    /** OpenCms context replace String, static for performance reasons */    
+    private static String m_contextReplace;
+    
+    /** OpenCms context search String, static for performance reasons */    
+    private static String m_contextSearch;
+
     /** DEBUG flag */
     private static final int DEBUG = 0;
-    
-    // static members, will only be initilized once, for performance reasons    
-    private static String contextSearch = null;
-    private static String contextReplace = null;
         
     /** 
      * Default constructor (empty), private because this class has only 
@@ -62,101 +76,6 @@ public final class CmsStringSubstitution {
      */
     private CmsStringSubstitution() {
         // empty
-    }
-    
-    /**
-     * Substitutes searchString in content with replaceItem.<p>
-     * 
-     * @param content the content which is scanned
-     * @param searchString the String which is searched in content
-     * @param replaceItem the new String which replaces searchString
-     * @return String the substituted String
-     */
-    public static String substitute(String content, String searchString, String replaceItem) {
-        // high performance implementation to avoid regular expression overhead
-        int findLength;
-        if (content == null) {
-            return null;
-        }
-        int stringLength = content.length();
-        if (searchString == null || (findLength = searchString.length()) == 0) {
-            return content;
-        }
-        if (replaceItem == null) {
-            replaceItem = "";
-        }
-        int replaceLength = replaceItem.length();
-        int length;
-        if (findLength == replaceLength) {
-            length = stringLength;
-        } else {
-            int count;
-            int start;
-            int end;
-            count = 0;
-            start = 0;
-            while ((end = content.indexOf(searchString, start)) != -1) {
-                count++;
-                start = end + findLength;
-            }
-            if (count == 0) {
-                return content;
-            }
-            length = stringLength - (count * (findLength - replaceLength));
-        }
-        int start = 0;
-        int end = content.indexOf(searchString, start);
-        if (end == -1) {
-            return content;
-        }
-        StringBuffer sb = new StringBuffer(length);
-        while (end != -1) {
-            sb.append(content.substring(start, end));
-            sb.append(replaceItem);
-            start = end + findLength;
-            end = content.indexOf(searchString, start);
-        }
-        end = stringLength;
-        sb.append(content.substring(start, end));
-        return sb.toString();
-    }
-    
-    /**
-     * Substitutes searchString in content with replaceItem.<p>
-     * 
-     * @param content the content which is scanned
-     * @param searchString the String which is searched in content
-     * @param replaceItem the new String which replaces searchString
-     * @param occurences must be a "g" if all occurences of searchString shall be replaced
-     * @return String the substituted String
-     */
-    public static String substitutePerl(String content, String searchString, String replaceItem, String occurences) {
-        String translationRule = "s#" + searchString + "#" + replaceItem + "#" + occurences;
-        Perl5Util perlUtil = new Perl5Util();
-        try {
-            return perlUtil.substitute(translationRule, content);
-        } catch (MalformedPerl5PatternException e) {
-            if (DEBUG > 0) {
-                System.err.println("[CmsStringSubstitution]: " + e.toString());
-            }
-        }
-        return content;
-    }
-        
-    /**
-     * Substitutes the OpenCms context path (e.g. /opencms/opencms/) in a HTML page with a 
-     * special variable so that the content also runs if the context path of the server changes.<p>
-     * 
-     * @param htmlContent the HTML to replace the context path in 
-     * @param context the context path of the server
-     * @return the HTML with the replaced context path
-     */
-    public static String substituteContextPath(String htmlContent, String context) {
-        if (contextSearch == null) {
-            contextSearch = "([^\\w/])" + context;
-            contextReplace = "$1" + CmsStringSubstitution.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/"; 
-        }       
-        return substitutePerl(htmlContent, contextSearch, contextReplace, "g");            
     }
         
     /**
@@ -234,6 +153,52 @@ public final class CmsStringSubstitution {
         }
         return new String(result);
     }
+    
+    /**
+     * Formats a runtime in the format mm:ss, to be used e.g. in reports.<p>
+     * 
+     * If the runtime is greater then 1 hour, the format hh:mm:ss is used.
+     * If it is greater then 24 hours, the format dd:hh:mm:ss is used.<p> 
+     * 
+     * @param runtime the time to format
+     * @return the formatted runtime
+     */
+    public static final String formatRuntime(long runtime) {
+        long seconds = (runtime / C_SECONDS) % 60;
+        long minutes = (runtime / C_MINUTES) % 60;
+        long hours   = (runtime / C_HOURS) % 24;
+        long days    = runtime / C_DAYS;
+        StringBuffer strBuf = new StringBuffer();
+
+        if (days > 0) {
+            if (days < 10) {
+                strBuf.append('0');
+            }
+            strBuf.append(days);
+            strBuf.append(':');
+        }
+        
+        if ((hours > 0) || (days > 0)) {
+            if (hours < 10) {
+                strBuf.append('0');
+            }
+            strBuf.append(hours);
+            strBuf.append(':');
+        }
+        
+        if (minutes < 10) {
+            strBuf.append('0');        
+        }
+        strBuf.append(minutes);        
+        strBuf.append(':');
+        
+        if (seconds < 10) {
+            strBuf.append('0');
+        }
+        strBuf.append(seconds);
+        
+        return strBuf.toString();        
+    }
 
     /**
      * This method splits a String into substrings along the provided delimiter.<p>
@@ -254,5 +219,100 @@ public final class CmsStringSubstitution {
         }
         parts.add(source.substring(index));
         return (String[])parts.toArray(new String[parts.size()]);
+    }
+    
+    /**
+     * Substitutes searchString in content with replaceItem.<p>
+     * 
+     * @param content the content which is scanned
+     * @param searchString the String which is searched in content
+     * @param replaceItem the new String which replaces searchString
+     * @return String the substituted String
+     */
+    public static String substitute(String content, String searchString, String replaceItem) {
+        // high performance implementation to avoid regular expression overhead
+        int findLength;
+        if (content == null) {
+            return null;
+        }
+        int stringLength = content.length();
+        if (searchString == null || (findLength = searchString.length()) == 0) {
+            return content;
+        }
+        if (replaceItem == null) {
+            replaceItem = "";
+        }
+        int replaceLength = replaceItem.length();
+        int length;
+        if (findLength == replaceLength) {
+            length = stringLength;
+        } else {
+            int count;
+            int start;
+            int end;
+            count = 0;
+            start = 0;
+            while ((end = content.indexOf(searchString, start)) != -1) {
+                count++;
+                start = end + findLength;
+            }
+            if (count == 0) {
+                return content;
+            }
+            length = stringLength - (count * (findLength - replaceLength));
+        }
+        int start = 0;
+        int end = content.indexOf(searchString, start);
+        if (end == -1) {
+            return content;
+        }
+        StringBuffer sb = new StringBuffer(length);
+        while (end != -1) {
+            sb.append(content.substring(start, end));
+            sb.append(replaceItem);
+            start = end + findLength;
+            end = content.indexOf(searchString, start);
+        }
+        end = stringLength;
+        sb.append(content.substring(start, end));
+        return sb.toString();
+    }
+        
+    /**
+     * Substitutes the OpenCms context path (e.g. /opencms/opencms/) in a HTML page with a 
+     * special variable so that the content also runs if the context path of the server changes.<p>
+     * 
+     * @param htmlContent the HTML to replace the context path in 
+     * @param context the context path of the server
+     * @return the HTML with the replaced context path
+     */
+    public static String substituteContextPath(String htmlContent, String context) {
+        if (m_contextSearch == null) {
+            m_contextSearch = "([^\\w/])" + context;
+            m_contextReplace = "$1" + CmsStringSubstitution.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/"; 
+        }       
+        return substitutePerl(htmlContent, m_contextSearch, m_contextReplace, "g");            
+    }
+    
+    /**
+     * Substitutes searchString in content with replaceItem.<p>
+     * 
+     * @param content the content which is scanned
+     * @param searchString the String which is searched in content
+     * @param replaceItem the new String which replaces searchString
+     * @param occurences must be a "g" if all occurences of searchString shall be replaced
+     * @return String the substituted String
+     */
+    public static String substitutePerl(String content, String searchString, String replaceItem, String occurences) {
+        String translationRule = "s#" + searchString + "#" + replaceItem + "#" + occurences;
+        Perl5Util perlUtil = new Perl5Util();
+        try {
+            return perlUtil.substitute(translationRule, content);
+        } catch (MalformedPerl5PatternException e) {
+            if (DEBUG > 0) {
+                System.err.println("[CmsStringSubstitution]: " + e.toString());
+            }
+        }
+        return content;
     }
 }
