@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2003/02/13 10:14:50 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/02/15 11:14:57 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -716,7 +716,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
      * @return The full uri to the JSP
      */
     public static String getJspUri(String name, boolean online) {
-        return m_jspWebAppRepository + (online?"/online/":"/offline/") + getJspName(name);  
+        return m_jspWebAppRepository + (online?"/online":"/offline") + getJspName(name);  
     }
     
     /**
@@ -727,7 +727,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
      * @return The full path to the JSP
      */
     public static String getJspPath(String name, boolean online) {
-        return m_jspRepository + (online?"online":"offline") + File.separator + name;
+        return m_jspRepository + (online?"online":"offline") + name;
     }
 
     /**

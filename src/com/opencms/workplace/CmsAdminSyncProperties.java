@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,6 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
     private final String C_SYNCRESOURCES = "syncresources";
     private final String C_ADDFOLDER = "addfolder";
     private final String C_CURPROJECT = "currentProject";
-    private final String C_NEW_RESOURCES = "new_resources";
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates

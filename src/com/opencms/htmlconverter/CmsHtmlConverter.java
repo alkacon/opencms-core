@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2003/02/08 15:32:14 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -673,8 +673,6 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * @return index of new object in ArrayList replaceTags
      */
     private int scanTagElementAttrs(Node node, CmsHtmlConverterObjectReplaceTags testObject) {
-        // CHECK: boolean added = false;
-        // CHECK: ArrayList replaceTags = m_configuration.getReplaceTags();
         NamedNodeMap attrs = node.getAttributes();
         String prefix = testObject.getPrefix();
         String suffix = testObject.getSuffix();
@@ -752,8 +750,6 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * @return index of new object in ArrayList replaceBlocks
      */
     private int scanBlockElementAttrs(Node node, CmsHtmlConverterObjectReplaceBlocks testObject) {
-        // CHECK: boolean added = false;
-        // CHECK: ArrayList replaceBlocks = m_configuration.getReplaceBlocks();
         NamedNodeMap attrs = node.getAttributes();
         String prefix = testObject.getPrefix();
         String suffix = testObject.getSuffix();

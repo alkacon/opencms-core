@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/02/03 19:46:49 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.template.CmsXmlControlFile;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
@@ -51,23 +50,10 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.50 $ $Date: 2003/02/03 19:46:49 $
+ * @version $Revision: 1.51 $ $Date: 2003/02/15 11:14:53 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
-
-    /**
-     * method to check get the real body path from the content file
-     *
-     * @param cms The CmsObject, to access the XML read file.
-     * @param file File in which the body path is stored.
-     */
-
-    private String getBodyPath(CmsObject cms, CmsFile file) throws CmsException {
-        file = cms.readFile(file.getAbsolutePath());
-        CmsXmlControlFile hXml = new CmsXmlControlFile(cms, file);
-        return hXml.getElementTemplate("body");
-    }
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -80,7 +66,6 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * @return Bytearre containgine the processed data of the template.
      * @throws Throws CmsException if something goes wrong.
      */
-
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);

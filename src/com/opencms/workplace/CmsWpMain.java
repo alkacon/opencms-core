@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,16 +52,11 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.48 $ $Date: 2003/02/02 15:59:53 $
+ * @version $Revision: 1.49 $ $Date: 2003/02/15 11:14:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsWpMain extends CmsWorkplaceDefault {
-
-	private Vector m_viewNames = null;
-
-	private Vector m_viewLinks = null;
-
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
 	 * with the given parameters.

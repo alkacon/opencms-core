@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,17 +48,11 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2003/02/02 15:59:53 $
+ * @version $Revision: 1.8 $ $Date: 2003/02/15 11:14:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsProjecthistory extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
-
-    /**
-     * Javascriptmethod, to call for contextlink
-     */
-    private static final String C_PROJECT_LOCK = "project_lock";
-
 
     /**
      * Javascriptmethod, to call for contextlink

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/01/23 20:38:49 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -957,7 +957,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
         getAllResources(cms, resource, allSubFiles, allSubFolders);
-        // CHECK: String parent = ((CmsResource)cms.readFileHeader(resource)).getParent();
         if(!cms.accessWrite(resource)){
             throw new CmsException("[" + this.getClass().getName() + "]"+resource, CmsException.C_NO_ACCESS);
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.66 $ $Date: 2003/02/02 15:59:53 $
+ * @version $Revision: 1.67 $ $Date: 2003/02/15 11:14:54 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -306,26 +306,7 @@ public Vector getConflictingFilenames() throws CmsException {
             return buffer;
         }
     }
-    /**
-     * Returns a buffered reader for this resource using the importFile as root.
-     *
-     * @param filename The name of the file to read.
-     * @return BufferedReader The filereader for this file.
-     */
-    private BufferedReader getFileReader(String filename)
-        throws Exception{
-        // is this a zip-file?
-        if(m_importZip != null) {
-            // yes
-            ZipEntry entry = m_importZip.getEntry(filename);
-            InputStream stream = m_importZip.getInputStream(entry);
-            return new BufferedReader( new InputStreamReader(stream));
-        } else {
-            // no - use directory
-            File xmlFile = new File(m_importResource, filename);
-            return new BufferedReader(new FileReader(xmlFile));
-        }
-    }
+    
     /**
      * Gets the import resource and stores it in object-member.
      */
@@ -358,9 +339,7 @@ public Vector getResourcesForProject() throws CmsException {
         // walk through all files in manifest
         for (int i = 0; i < fileNodes.getLength(); i++) {
             currentElement = (Element) fileNodes.item(i);
-            // CHECK: source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
             destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-            // CHECK: path = m_importPath + destination;
 
             // get the resources for a project
             try {
@@ -419,20 +398,6 @@ public Vector getResourcesForProject() throws CmsException {
      * Gets the xml-config file from the import resource and stores it in object-member.
      * Checks whether the import is from a module file
      */
-    /**private void getXmlConfigFile()
-        throws CmsException {
-
-        try {
-            BufferedReader xmlReader = getFileReader(C_EXPORT_XMLFILENAME);
-            m_docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
-            xmlReader.close();
-         } catch(Exception exc) {
-
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }*/
-
-
       private void getXmlConfigFile() throws CmsException {
          try {
              InputStream in = new ByteArrayInputStream(getFileBytes(C_EXPORT_XMLFILENAME));

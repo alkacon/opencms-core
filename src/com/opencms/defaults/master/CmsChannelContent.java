@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/01/20 23:59:29 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/02/15 11:14:58 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,8 +52,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.14 $
- * $Date: 2003/01/20 23:59:29 $
+ * $Revision: 1.15 $
+ * $Date: 2003/02/15 11:14:58 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -65,13 +65,10 @@ public class CmsChannelContent extends A_CmsContentDefinition
 
     // definition of the error codes used by this content defintion
     private static String C_CHANNELNAME_ERRFIELD="channelname";
-    private static String C_OWNER_ERRFIELD="channelowner";
-    private static String C_GROUP_ERRFIELD="channelgroup";
     private static String C_PARENT_ERRFIELD="channelparent";
     //error code for empty inputs
     private static String C_ERRCODE_EMPTY="empty";
     //error code for no text input
-    private static String C_ERRCODE_NOTEXT="notext";
 
     /** The cms-object to get access to the cms-ressources */
     protected CmsObject m_cms = null;

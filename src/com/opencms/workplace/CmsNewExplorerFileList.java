@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/02/10 14:56:09 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,17 +58,9 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.57 $ $Date: 2003/02/10 14:56:09 $
+ * @version $Revision: 1.58 $ $Date: 2003/02/15 11:14:53 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
-
-
-    /**
-     * Template cache is not used here since we don't include
-     * any subtemplates.
-     */
-    private static I_CmsTemplateCache m_cache = null;
-
 
     /**
      * This is the number of resources that are shown on one page.

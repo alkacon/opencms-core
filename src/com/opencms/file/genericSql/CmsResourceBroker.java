@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/02/09 16:51:19 $
-* Version: $Revision: 1.354 $
+* Date   : $Date: 2003/02/15 11:14:55 $
+* Version: $Revision: 1.355 $
 
 *
 * This library is part of OpenCms -
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.354 $ $Date: 2003/02/09 16:51:19 $
+ * @version $Revision: 1.355 $ $Date: 2003/02/15 11:14:55 $
 
  *
  */
@@ -1585,8 +1585,6 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                            String source, String destination)
         throws CmsException {
 
-        // the name of the new file.
-        // CHECK: String filename;
         // the name of the folder.
         String foldername;
 
@@ -8025,7 +8023,6 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @return boolean If the group does not belong to Users, Administrators or Projectmanagers return true
      */
     protected boolean isWebgroup(CmsGroup group) throws CmsException{
-        // CHECK: boolean result = true;
         try{
             int user = m_dbAccess.readGroup(C_GROUP_USERS).getId();
             int admin = m_dbAccess.readGroup(C_GROUP_ADMIN).getId();

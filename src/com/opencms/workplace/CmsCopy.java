@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2003/02/03 19:46:21 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,19 +32,16 @@ package com.opencms.workplace;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.template.CmsXmlControlFile;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
@@ -53,97 +50,10 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.50 $ $Date: 2003/02/03 19:46:21 $
+ * @version $Revision: 1.51 $ $Date: 2003/02/15 11:14:53 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
-
-    /**
-     * This method changes the path of the body file in the xml conten file
-     * if file type name is page
-     *
-     * @param cms The CmsObject
-     * @param file The XML content file
-     * @param bodypath the new XML content entry
-     * @throws Throws CmsException if something goes wrong.
-     */
-
-    private void changeContent(CmsObject cms, CmsFile file, String bodypath)
-            throws CmsException {
-        file = cms.readFile(file.getAbsolutePath());
-        CmsXmlControlFile hXml = new CmsXmlControlFile(cms, file);
-        hXml.setElementTemplate("body", bodypath);
-        hXml.write();
-    }
-
-    /**
-     * Check if the access flags of the copied resource must be set to the default values.
-     * @param cms The CmsObject.
-     * @param filename The name of the file.
-     * @param flags The flag to change the access flags.
-     * @throws Throws CmsException if something goes wrong.
-     */
-
-    private void checkFlags(CmsObject cms, String filename, String flags)
-            throws CmsException {
-        if(flags.equals("false")) {
-
-            // set access flags of the new file to the default flags
-            Hashtable startSettings = null;
-            Integer accessFlags = null;
-            startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-            if(startSettings != null) {
-                accessFlags = (Integer)startSettings.get(C_START_ACCESSFLAGS);
-            }
-            if(accessFlags == null) {
-                accessFlags = new Integer(C_ACCESS_DEFAULT_FLAGS);
-            }
-            cms.chmod(filename, accessFlags.intValue());
-        }
-
-    //cms.unlockResource(filename);
-    }
-
-    /**
-     * This method checks if all nescessary folders are exisitng in the content body
-     * folder and creates the missing ones. <br>
-     * All page contents files are stored in the content body folder in a mirrored directory
-     * structure of the OpenCms filesystem. Therefor it is nescessary to create the
-     * missing folders when a new page document is createg.
-     * @param cms The CmsObject
-     * @param path The path in the CmsFilesystem where the new page should be created.
-     * @throws CmsException if something goes wrong.
-     */
-
-    private void checkFolders(CmsObject cms, String path) throws CmsException {
-        String completePath = C_VFS_PATH_BODIES;
-        StringTokenizer t = new StringTokenizer(path, "/");
-
-        // check if all folders are there
-        while(t.hasMoreTokens()) {
-            String foldername = t.nextToken();
-            try {
-
-                // try to read the folder. if this fails, an exception is thrown
-                cms.readFolder(completePath + foldername + "/");
-            }
-            catch(CmsException e) {
-
-                // the folder could not be read, so create it.
-                String orgFolder = completePath + foldername + "/";
-                orgFolder = orgFolder.substring(C_VFS_PATH_BODIES.length() - 1);
-                CmsFolder newfolder = (CmsFolder)cms.createResource(completePath, foldername, C_TYPE_FOLDER_NAME);
-                CmsFolder folder = cms.readFolder(orgFolder);
-                cms.lockResource(newfolder.getAbsolutePath());
-                cms.chown(newfolder.getAbsolutePath(), cms.readOwner(folder).getName());
-                cms.chgrp(newfolder.getAbsolutePath(), cms.readGroup(folder).getName());
-                cms.chmod(newfolder.getAbsolutePath(), folder.getAccessFlags());
-                cms.unlockResource(newfolder.getAbsolutePath());
-            }
-            completePath += foldername + "/";
-        }
-    }
-
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/01/31 16:57:21 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2003/01/31 16:57:21 $
+ * @version $Revision: 1.45 $ $Date: 2003/02/15 11:14:54 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -661,12 +661,6 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // First read the page file.
         CmsFile pageFile = cms.readFile(resource);
 
-        // CHECK: CmsUser pageLocker = null;
-        // CHECK: CmsUser bodyLocker = null;
-        // Check any locks on th page file
-        // CHECK: pageLocker = getLockedBy(cms, resource);
-        // CHECK: CmsUser currentUser = cms.getRequestContext().currentUser();
-        // CHECK: boolean pageLockedAndSelf = pageLocker != null && currentUser.equals(pageLocker);
         CmsResource bodyFile = null;
         String bodyPath = null;
         // Try to fetch the body file.
@@ -682,23 +676,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 
         if(bodyFile != null) {
             // Everything with the page file is ok. We have write access. XML is valid.
-            // Body file could be determined and fetched.
-            // Now check further body file details (is it locked already, WHO has locked it, etc.)
-            // CHECK: bodyLocker = getLockedBy(cms, bodyPath);
-            // Lock the body, if neccessary
-            //if((bodyLocker == null && (pageLocker == null || pageLockedAndSelf || force))
-            //        || (bodyLocker != null && !currentUser.equals(bodyLocker)
-            //            && !(pageLocker != null && !currentUser.equals(pageLocker) && !force))) {
-                cms.doLockResource(bodyPath, force);
-            //}
+            cms.doLockResource(bodyPath, force);
         }
-/*
-        // Lock the page file, if neccessary
-        if(!(pageLockedAndSelf && (bodyFile != null && ((bodyLocker == null)
-           || !currentUser.equals(bodyLocker))))) {
-            cms.doLockResource(resource, force);
-        }
-*/
     }
 
     /**
@@ -832,13 +811,6 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // First read the page file.
         CmsFile pageFile = cms.readFile(resource);
 
-        // CHECK: CmsUser pageLocker = null;
-        // CHECK: CmsUser bodyLocker = null;
-
-        // Check any locks on th page file
-        // CHECK: pageLocker = getLockedBy(cms, resource);
-        // CHECK: CmsUser currentUser = cms.getRequestContext().currentUser();
-
         CmsResource bodyFile = null;
         String bodyPath = null;
         // Try to fetch the body file.
@@ -854,19 +826,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 
         if(bodyFile != null) {
             // Everything with the page file is ok. We have write access. XML is valid.
-            // Body file could be determined and fetched.
-            // Now check further body file details (is it locked already, WHO has locked it, etc.)
-            // CHECK: bodyLocker = getLockedBy(cms, bodyPath);
-            // Unlock the body, if neccessary
-            //if((pageLocker == null || pageLocker.equals(currentUser)) && (bodyLocker != null)) {
-                cms.doUnlockResource(bodyPath);
-            //}
+            cms.doUnlockResource(bodyPath);
         }
-
-        // Unlock the page file, if neccessary
-        //if(pageLocker != null || bodyLocker == null) {
-        //cms.doUnlockResource(resource);
-        //}
     }
 
 
@@ -906,20 +867,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         }
         return result;
     }
-
-    private CmsUser getLockedBy(CmsObject cms, String filename) {
-        CmsUser result = null;
-        try {
-            result = cms.lockedBy(filename);
-            if(result.getId() == -1) {
-                result = null;
-            }
-        } catch(Exception e) {
-            result = null;
-        }
-        return result;
-    }
-
+    
       /**
        * This method changes the path of the body file in the xml conten file
        * if file type name is page

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2003/02/08 15:32:14 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/02/15 11:14:57 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.13 $ $Date: 2003/02/08 15:32:14 $
+ * @version $Name:  $ $Revision: 1.14 $ $Date: 2003/02/15 11:14:57 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -88,7 +88,6 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
     private String c_CONTENT = "";
     private String c_TYPE = "";
     private CmsObject c_CMS = null;
-    private String m_defaultSender = null;
     private Vector attachContent = new Vector();
     private Vector attachType = new Vector();
  

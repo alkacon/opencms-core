@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,6 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 	private final String C_MODULE = "module";
     private final String C_MODULENAME = "modulename";
 	private final String C_ACTION = "action";
-	private final String C_NAME_PARAMETER = "module";
     private final String C_MODULE_THREAD = "modulethread";    
 
 	private static final int C_MINIMUM_MODULE_RESOURCE_COUNT = C_VFS_NEW_STRUCTURE?1:3;

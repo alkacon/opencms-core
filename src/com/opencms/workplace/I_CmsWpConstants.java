@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2003/02/11 18:37:05 $
-* Version: $Revision: 1.122 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.123 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.122 $ $Date: 2003/02/11 18:37:05 $
+ * @version $Revision: 1.123 $ $Date: 2003/02/15 11:14:53 $
  */
 
 public interface I_CmsWpConstants {
@@ -918,23 +918,8 @@ public interface I_CmsWpConstants {
 
     /** option values for font select boxes */
     public static final String[] C_SELECTBOX_FONTS =  {
-        "Arial", "Arial Narrow", "System", "Times New Roman",
-        "Verdana"
+        "Arial", "Arial Narrow", "System", "Times New Roman", "Verdana", "Monospace", "SansSerif"
     };
-
-
-    /** option values for font select boxes */
-    public static final String[] C_SELECTBOX_FONTSTYLES =  {
-        "Normal", "Überschrift 1", "Überschrift 2", "Überschrift 3",
-        "Überschrift 4", "Überschrift 5", "Überschrift 6"
-    };
-
-
-    /** option values for font select boxes */
-    public static final String[] C_SELECTBOX_FONTSIZES =  {
-        "1", "2", "3", "4", "5", "6", "7"
-    };
-
 
     /** option values for editor view select boxes */
     public static final String[] C_SELECTBOX_EDITORVIEWS =  {

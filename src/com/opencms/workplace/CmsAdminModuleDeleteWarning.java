@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteWarning.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault implements 
      * the different template tags.
      */
     private final String C_READY = "ready";
-    private final String C_STEP = "step";
     private final String C_WINCONTENT = "windowcontent";
     private final String C_FILELISTENTRY = "filelist_entry";
     private final String C_FILENAME = "filename";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2003/02/01 19:14:46 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.45 $ $Date: 2003/02/01 19:14:46 $
+ * @version $Revision: 1.46 $ $Date: 2003/02/15 11:14:54 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -77,11 +77,6 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * The export-stream (zip) to store resources to
      */
     private ZipOutputStream m_exportZipStream = null;
-
-    /**
-     * The export-path to read resources from the cms.
-     */
-    private String m_exportPath;
 
     /**
      * The cms-object to do the operations.
@@ -135,9 +130,6 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * The object to report the log-messages.
      */
     private I_CmsReport m_report = null;
-
-    /** Minimum file change date for exporting */
-    private long m_minFileChangeDate = Long.MIN_VALUE;
     
     /** Set to store the names of page files in, required for later page body file export */
     private Set m_exportedPageFiles = null;

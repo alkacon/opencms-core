@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,18 +53,12 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.28 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.29 $ $Date: 2003/02/15 11:14:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants,I_CmsWpConstants {
-    
-    
-    /**
-     * Constant for generating user javascriptlist
-     */
-    private final static String C_ALL_ROLES = "___all";
-    
+        
     /**
      * This private helper method generates a string-representation of a button.
      * @param xmlTemplateDocument The xml-document in which the buttons are defined.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -433,9 +433,8 @@ public class CmsLruCache {
         return ret;
     }
 
-    /**
+    /*
      * used for debuging only. Checks if the Cache is in a valid condition.
-     */
     private void checkCondition(){
         System.err.println("");
         System.err.println("-- Verify condition of Cache");
@@ -478,4 +477,5 @@ public class CmsLruCache {
         System.err.println("");
 
     }
+    */
 }

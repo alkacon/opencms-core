@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2003/01/20 17:57:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/02/15 11:14:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import com.opencms.core.A_OpenCms;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -75,9 +75,6 @@ public class CmsFlexLruCache extends java.lang.Object {
     
     /** The sum of all cached objects. */
     private int m_ObjectCount;
-    
-    /** Internal debug switch */
-    private static final int DEBUG = 0;
     
     
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/02/01 19:14:45 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.10 $ $Date: 2003/02/01 19:14:45 $
+ * @version $Revision: 1.11 $ $Date: 2003/02/15 11:14:54 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -110,11 +110,6 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
      * The export-stream (zip) to store resources to
      */
     private ZipOutputStream m_exportZipStream = null;
-
-    /**
-     * The export-path to read resources from the cms.
-     */
-    private String m_exportPath;
 
     /**
      * The cms-object to do the operations.
@@ -630,9 +625,6 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         String dataSetFile = "dataset_"+subId+"_"+masterNr+".xml";
         // create new mastercontent for getting channels and media
         CmsMasterContent content = getContentDefinition(classname, new Class[]{CmsObject.class, CmsMasterDataSet.class}, new Object[]{m_cms, dataset});
-        // the channels of the master
-        // CHECK: Vector channels = content.getChannels();
-
         // write these informations to the xml-manifest
         Element master = m_docXml.createElement(C_EXPORT_TAG_MASTER);
         m_mastersElement.appendChild(master);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,12 +38,10 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Utils;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -55,7 +53,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.72 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.73 $ $Date: 2003/02/15 11:14:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -89,8 +87,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
     /** Session key */
     private static String C_NEWCHANNELS = "ALLCHAN";
-
-    private static String C_PROJECTNEW_THREAD = "project_new_thread";
 
     /** Check whether some of the resources are redundant because a superfolder has also
      *  been selected.
@@ -138,47 +134,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
     }
 
     /**
-     * Check if this resource should is writeable.
-     * @param cms The CmsObject
-     * @param res The resource to be checked.
-     * @return True or false.
-     * @throws CmsException if something goes wrong.
-     */
-
-    private boolean checkWriteable(CmsObject cms, String resPath, boolean isChannel) {
-        boolean access = false;
-        int accessflags;
-        CmsResource res = null;
-        try {
-            if(isChannel){
-                // must change the context to cos for reading channel
-                cms.setContextToCos();
-                res = cms.readFolder(resPath);
-                cms.setContextToVfs();
-            } else {
-                res = cms.readFolder(resPath);
-            }
-            accessflags = res.getAccessFlags();
-            boolean groupAccess = false;
-            Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-            while((!groupAccess) && allGroups.hasMoreElements()) {
-                groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
-            }
-            if(((accessflags & C_ACCESS_PUBLIC_WRITE) > 0)
-                    || (cms.getRequestContext().isAdmin())
-                    || (cms.readOwner(res).equals(cms.getRequestContext().currentUser())
-                    && (accessflags & C_ACCESS_OWNER_WRITE) > 0)
-                    || (groupAccess && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {
-                access = true;
-            }
-        }
-        catch(CmsException e) {
-            access = false;
-        }
-        return access;
-    }
-
-    /**
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
@@ -189,7 +144,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {

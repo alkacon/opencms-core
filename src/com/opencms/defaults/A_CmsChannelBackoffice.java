@@ -103,9 +103,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
                     throws CmsException{
         //get session
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        // CHECK: CmsMasterContent masterCD = (CmsMasterContent)session.getValue(getContentDefinitionClass().getName());
         //selected media content definition
-        // CHECK: CmsMasterMedia selectedmediaCD=null;
         //media_position
         String media_position = null;
         int media_positionInt=0;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import com.opencms.file.CmsStaticExport;
 import com.opencms.util.Encoder;
 
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.oro.text.perl.Perl5Util;
@@ -47,7 +46,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -260,22 +259,5 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
     public Boolean isExportActiveAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         boolean isAdmin = isAdmin(cms, lang, parameters).booleanValue();
         return new Boolean(CmsObject.getStaticExportProperties().isStaticExportEnabled() && isAdmin);
-    }
-
-    /** Parse the string which holds all resources
-     *
-     * @param resources containts the full pathnames of all the resources, separated by semicolons
-     * @return A vector with the same resources
-     */
-    private Vector parseResources(String resources) {
-        Vector ret = new Vector();
-        if(resources != null) {
-            StringTokenizer resTokenizer = new StringTokenizer(resources, ";");
-            while(resTokenizer.hasMoreElements()) {
-                String path = (String)resTokenizer.nextElement();
-                ret.addElement(path);
-            }
-        }
-        return ret;
     }
 }

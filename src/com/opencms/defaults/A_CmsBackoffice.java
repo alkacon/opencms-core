@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/02/15 11:14:57 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,8 +82,6 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   private static String C_DEFAULT_SELECTOR="(default)";
   private static String C_DONE_SELECTOR="done";
-
-    private static String C_CHECKBOX_PREV="checkbox_";
 
     /** The style for unchanged files or folders */
     private final static String C_STYLE_UNCHANGED = "dateingeandert";
@@ -2401,57 +2399,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
   public String getContentEdit(CmsObject cms,CmsXmlWpTemplateFile templateFile,  A_CmsContentDefinition cd, String elementName,Enumeration keys, Hashtable parameters, String templateSelector) throws CmsException {
    return null;
   }
-
-
-        /**
-     * Used for filling the values of a checkbox.
-     * <P>
-     * Gets the resources displayed in the Checkbox group on the new resource dialog.
-     * @param cms The CmsObject.
-     * @param lang The langauge definitions.
-     * @param names The names of the new rescources (used for optional images).
-     * @param values The links that are connected with each resource.
-     * @param parameters Hashtable of parameters.
-     * @return The vectors names and values are filled with the information found in the
-     * workplace.ini.
-     * @throws Throws CmsException if something goes wrong.
-     */
-    /*public Integer setCheckbox(CmsObject cms, Vector names, Vector values, Hashtable parameters)
-        throws CmsException {
-            int returnValue = 0;
-            CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
-            String checkboxValue = (String) session.getValue("checkselect");
-            if (checkboxValue == null){
-                checkboxValue = "";
-            }
-            // add values for the checkbox
-            values.addElement("contents");
-            values.addElement("navigation");
-            values.addElement("design");
-            values.addElement("other");
-            // add corresponding names for the checkboxvalues
-            names.addElement("contents");
-            names.addElement("navigation");
-            names.addElement("design");
-            names.addElement("other");
-            // set the return values
-            if (checkboxValue.equals("contents")) {
-                returnValue = 0;
-            }
-            if (checkboxValue.equals("navigation")) {
-                returnValue = 1;
-            }
-            if (checkboxValue.equals("design")) {
-                returnValue = 2;
-            }
-            if (checkboxValue.equals("other")) {
-                returnValue = 3;
-            }
-        return new Integer (returnValue);
-    }*/
-
-
-
+  
   /**
   * Set the correct lockstates in the list output.
   * Lockstates can be "unlocked", "locked", "locked by user" or "no access"

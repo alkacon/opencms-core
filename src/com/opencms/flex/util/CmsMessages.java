@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsMessages.java,v $
- * Date   : $Date: 2003/01/30 09:13:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/02/15 11:14:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0 beta 2
  */
@@ -50,7 +50,6 @@ public final class CmsMessages extends Object {
        
     // member variables
     private ResourceBundle m_bundle; 
-    private Locale m_locale;
        
     /**
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.

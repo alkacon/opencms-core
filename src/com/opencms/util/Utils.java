@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/02/15 11:14:57 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -99,8 +99,6 @@ public class Utils {
         String titleB = fileB.getName();
         long lastModifiedA = fileA.getDateLastModified();
         long lastModifiedB = fileB.getDateLastModified();
-        // CHECK: CmsProject projectA = cms.readProject(fileA);
-        // CHECK: CmsProject projectB = cms.readProject(fileB);
         switch(sorting) {
         case C_SORT_NAME_UP:
             cmp = (titleA.compareTo(titleB) > 0);
@@ -117,11 +115,7 @@ public class Utils {
         case C_SORT_LASTMODIFIED_DOWN:
             cmp = (lastModifiedA < lastModifiedB);
             break;
-
-        //case C_SORT_PUBLISHED_DOWN:
-        //    cmp = (projectA.getPublishingDate() < projectB.getPublishingDate());
-        //    break;
-
+            
         default:
             cmp = false;
         }

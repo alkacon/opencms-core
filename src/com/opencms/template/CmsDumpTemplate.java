@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/01/31 17:00:50 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,21 +48,14 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2003/01/31 17:00:50 $
+ * @version $Revision: 1.33 $ $Date: 2003/02/15 11:14:54 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
-    /**
-     * Template cache is not used here since we don't include
-     * any subtemplates.
-     */
-    private static I_CmsTemplateCache m_cache = null;
-
     /** Boolean for additional debug output control */
     private static final boolean C_DEBUG = false;
-    public CmsDumpTemplate() {
 
-    }
+    public CmsDumpTemplate() {}
 
     /**
      * gets the caching information from the current template class.
@@ -75,7 +68,6 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
      */
     public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-
         // First build our own cache directives.
         CmsCacheDirectives result = new CmsCacheDirectives(true);
         result.setCacheUri(true);
@@ -173,15 +165,6 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
     }
 
     /**
-     * Template cache is not used here since we don't include
-     * any subtemplates. So we can always return <code>true</code> here.
-     * @return <code>true</code>
-     */
-    /*public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return true;
-    }*/
-
-    /**
      * Any results of this class are cacheable since we don't include
      * any subtemplates. So we can always return <code>true</code> here.
      * @return <code>true</code>
@@ -195,9 +178,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * any subtemplates <em>(not implemented)</em>.
      */
     public void setTemplateCache(I_CmsTemplateCache c) {
-
-
-    // do nothing.
+        // do nothing.
     }
 
     /**

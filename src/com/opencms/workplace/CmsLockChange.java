@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2003/02/03 19:46:42 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,10 +31,8 @@ package com.opencms.workplace;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.template.CmsXmlControlFile;
 
 import java.util.Hashtable;
 
@@ -44,23 +42,10 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.36 $ $Date: 2003/02/03 19:46:42 $
+ * @version $Revision: 1.37 $ $Date: 2003/02/15 11:14:53 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
-
-    /**
-     * method to check get the real body path from the content file
-     *
-     * @param cms The CmsObject, to access the XML read file.
-     * @param file File in which the body path is stored.
-     */
-
-    private String getBodyPath(CmsObject cms, CmsFile file) throws CmsException {
-        file = cms.readFile(file.getAbsolutePath());
-        CmsXmlControlFile hXml = new CmsXmlControlFile(cms, file);
-        return hXml.getElementTemplate("body");
-    }
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -73,7 +58,6 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
      * @return Bytearre containgine the processed data of the template.
      * @throws Throws CmsException if something goes wrong.
      */
-
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);

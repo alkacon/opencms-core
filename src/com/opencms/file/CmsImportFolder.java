@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.zip.ZipInputStream;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.17 $ $Date: 2003/02/15 11:14:54 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -130,32 +130,10 @@ public class CmsImportFolder implements I_CmsConstants {
 
         try {
             // open the import resource
-            m_zipStreamIn = new ZipInputStream(new ByteArrayInputStream(
-                                                        content) );
-
-            // CHECK: CmsFolder impFold = m_cms.readFolder(importPath);
+            m_zipStreamIn = new ZipInputStream(new ByteArrayInputStream(content));
             m_cms.readFolder(importPath);
-
-            /*
-            if( !impFold.isLocked() && !importPath.equals("/") ) {
-                // frist lock the path to import into.
-                m_cms.lockResource(m_importPath);
-            }*/
-
-            // check if user is allowed to write to the folder ...
-            /*
-            if( m_cms.accessWrite(importPath) == false) {
-                throw new CmsException(CmsException.C_NO_ACCESS);
-            }*/
-
             // import the resources
             importZipResource(m_zipStreamIn, m_importPath, noSubFolder);
-
-            // all is done, unlock the resources
-            /*
-            if( impFold.isLocked() && !importPath.equals("/") ) {
-                m_cms.unlockResource(m_importPath);
-            }*/
 
         } catch( Exception exc ) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);

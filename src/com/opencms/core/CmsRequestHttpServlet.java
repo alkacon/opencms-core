@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/02/15 11:14:57 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.35 $ $Date: 2003/01/20 23:59:20 $
+ * @version $Revision: 1.36 $ $Date: 2003/02/15 11:14:57 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -95,12 +95,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * The original request.
      */
     private HttpServletRequest m_req;
-
-    /**
-     * The path to the resource
-     */
-    private String m_path = null;
-
+    
     /**
      * The type of theis CmsRequest.
      */

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2003/01/30 19:12:38 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,8 +51,6 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
     private final String C_STEP = "step";
     private final String C_DELETE = "delete";
     private final String C_WARNING = "warning";
-    private final String C_DONE = "done";
-    private final String C_WAIT = "wait";
     private final String C_ERROR = "error";
     private final String C_SESSION_MODULENAME = "deletemodulename";
     private final String C_MODULE_THREAD = "moduledeletethread";
@@ -102,22 +100,6 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
             }
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
-
-        /*
-        } else if ("working".equals(step)) {
-            // Thread is already running
-            Thread doDelete = (Thread)session.getValue(C_MODULE_THREAD);
-            if(doDelete.isAlive()) {
-                String time = (String)parameters.get("time");
-                int wert = Integer.parseInt(time);
-                wert += 20;
-                xmlDocument.setData("time", "" + wert);
-                return startProcessing(cms, xmlDocument, elementName, parameters, C_WAIT);
-            }
-            else {
-                return startProcessing(cms, xmlDocument, elementName, parameters, C_DONE);
-            }
-        */
             
         } else if(C_DELETE.equals(step)) {            
             Vector otherModules = reg.deleteCheckDependencies(moduleName);

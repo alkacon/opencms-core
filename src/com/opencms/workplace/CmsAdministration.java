@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,14 +53,10 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.25 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Name:  $ $Revision: 1.26 $ $Date: 2003/02/15 11:14:53 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
-
-
-    /** The number of elements per row */
-    private static int C_ELEMENT_PER_ROW = 5;
 
     private static String C_ADMIN_PATH = "system/workplace/action/administration_content_top.html";
 
@@ -440,44 +436,6 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             }
         }
         if ((accessflags & C_ACCESS_PUBLIC_VISIBLE) == C_ACCESS_PUBLIC_VISIBLE){
-            return true;
-        }
-        return access;
-    }
-
-    /**
-     * Check if this resource should be active in the administrationview.
-     * @param cms The CmsObject
-     * @param resource The resource to be checked.
-     * @return True or false.
-     * @throws CmsException if something goes wrong.
-     */
-
-    private boolean checkActive(CmsObject cms, CmsResource resource) throws CmsException {
-        boolean access = false;
-        int accessflags = resource.getAccessFlags();
-
-        // First check if the user may have access by one of his groups.
-        boolean groupAccess = false;
-        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-        while((!groupAccess) && allGroups.hasMoreElements()) {
-            CmsGroup nextGroup = (CmsGroup)allGroups.nextElement();
-            if(nextGroup.getName().equals(C_GROUP_ADMIN)){
-                return true;
-            }
-            groupAccess = cms.readGroup(resource).equals(nextGroup);
-
-        }
-        if(groupAccess && (accessflags & C_ACCESS_GROUP_READ) == C_ACCESS_GROUP_READ) {
-            return true;
-        }
-        // is the resource owned by this user?
-        if(resource.getOwnerId() == cms.getRequestContext().currentUser().getId()) {
-            if( (accessflags & C_ACCESS_OWNER_READ) == C_ACCESS_OWNER_READ ) {
-                return true ;
-            }
-        }
-        if ((accessflags & C_ACCESS_PUBLIC_READ) == C_ACCESS_PUBLIC_READ){
             return true;
         }
         return access;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/02/01 19:14:46 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.40 $ $Date: 2003/02/01 19:14:46 $
+ * @version $Revision: 1.41 $ $Date: 2003/02/15 11:14:54 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -281,60 +281,6 @@ public class CmsStaticExport implements I_CmsConstants{
     }
 
     /**
-     * This method checks if this link has to be exported.
-     *
-     * @param link The link to be checked.
-     * @return true if the link should be exported.
-     */
-    private boolean linkHasChanged(String link){
-        CmsExportLink linkObject = null;
-        try{
-            // first look if this link was exported before (then it is saved in the database)
-            linkObject = m_cms.readExportLink(link);
-            if(linkObject == null){
-                return true;
-            }else{
-                // lets check the dates
-                Vector deps = linkObject.getDependencies();
-                try{
-                    for(int i=0; i<deps.size(); i++){
-                        CmsResource res = m_cms.readFileHeader((String)deps.elementAt(i));
-                        if(linkObject.getLastExportDate() < res.getDateLastModified()){
-                            // ok one of the deps has changed since the last export
-                            m_cms.deleteExportLink(linkObject);
-                            return true;
-                        }
-                    }
-                }catch(CmsException e){
-                    // one of the files was deleted, we have to export it again
-                    m_cms.deleteExportLink(linkObject);
-                    return true;
-                }
-            }
-        }catch(CmsException e){
-            // this should not happen. Better we delete the link in the database and export it.
-            try{
-                m_cms.deleteExportLink(link);
-            }catch(CmsException exc){
-            }
-            return true;
-        }
-        //set the processed flag to true
-        if(linkObject != null){
-            linkObject.setProcessedState(true);
-            // write the linkObject to the database. Only the state has changed so
-            // we dont need to write the whole object.
-            try{
-                m_cms.writeExportLinkProcessedState(linkObject);
-            }catch(CmsException exp){
-                linkObject.setProcessedState(false);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Checks if the export path exists. If not it is created.
      */
     private void checkExportPath()throws CmsException{
@@ -445,58 +391,7 @@ public class CmsStaticExport implements I_CmsConstants{
             }
         }
     }
-    private void createDynamicRules2(){
-        // first the rules for namereplacing
-            // later!!
-
-        // now the rules for linking between static and dynamic pages
-        try{
-            // get the resources with the property "export"
-            Vector resWithProp = m_cms.getResourcesWithProperty(C_PROPERTY_EXPORT);
-            // generate the rules
-            if(resWithProp != null && resWithProp.size() != 0){
-                m_dynamicExportRulesExtern = new Vector();
-                m_dynamicExportRulesOnline = new Vector();
-                m_rulesForHttpsEnabledResources = new Vector();
-                for(int i=0; i < resWithProp.size(); i++){
-                    CmsResource resource = (CmsResource)resWithProp.elementAt(i);
-                    String resName = resource.getAbsolutePath();
-                    String propertyValue = m_cms.readProperty(resName, C_PROPERTY_EXPORT);
-                    if(propertyValue != null){
-                        if(propertyValue.equalsIgnoreCase("dynamic")){
-                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");
-                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ CmsObject.getStaticExportProperties().getUrlPrefixArray()[1] +"$1#");
-                        }
-                        if(propertyValue.equalsIgnoreCase("https")){
-                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");
-                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ CmsObject.getStaticExportProperties().getUrlPrefixArray()[2] +"$1#");
-                        }
-                        if(propertyValue.equalsIgnoreCase("true")){
-
-                        }
-                        if(propertyValue.equalsIgnoreCase("false")){
-                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*#export value was set to false#");
-                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ CmsObject.getStaticExportProperties().getUrlPrefixArray()[1] +"$1#");
-                        }
-                        if(propertyValue.equalsIgnoreCase("https_enabled")){
-                            m_rulesForHttpsEnabledResources.addElement("s#^"+resName+".*##");
-                        }
-                        if(propertyValue.equalsIgnoreCase("dynamic_https_enabled")){
-                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");
-                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ CmsObject.getStaticExportProperties().getUrlPrefixArray()[1] +"$1#");
-                            m_rulesForHttpsEnabledResources.addElement("s#^"+resName+".*##");
-                        }
-                    }
-                }
-            }
-        }catch(CmsException e){
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] "
-                    +"couldnt create dynamic export rules. " + e.toString() );
-            }
-        }
-    }
-
+    
     /**
      * checks if a link on a https page needs the http prefix.
      * Therefor it uses the property value https_enabled and dynamic_https_enabled on
@@ -946,7 +841,6 @@ public class CmsStaticExport implements I_CmsConstants{
         String retValue = link;
         int count;
         StringBuffer result = null;
-        // CHECK: boolean doTheParameter = false;
         if(dynRules != null){
             for(int i=0; i<dynRules.size(); i++){
                 result = new StringBuffer();

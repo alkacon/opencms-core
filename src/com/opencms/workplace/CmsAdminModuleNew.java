@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/01/30 19:13:01 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,13 +56,10 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
      * the different templateselectors.
      */
     private final String C_DONE = "done";
-    private final String C_LOCAL = "local";
-    private final String C_SERVER = "server";
     private final String C_FILES = "files";
     private final String C_FROMERRORPAGE = "fromerrorpage";
     private final String C_ERRORREPLACE = "errorreplace";
     private final String C_ERRORDEP = "errordep";
-    private final String C_WAIT = "wait";
 
     /**
      * const for session entrys.

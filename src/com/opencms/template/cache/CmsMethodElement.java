@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,11 +59,6 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
      * the name of the methode.
      */
     private String m_methodName;
-
-    /**
-     * the methodCacheDirectivs
-     */
-    private CmsMethodCacheDirectives m_methodCacheDirectives;
 
     /**
      * Constructor for an element with the given class and template name.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2003/02/15 11:14:53 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.68 $ $Date: 2003/02/02 15:59:53 $
+ * @version $Revision: 1.69 $ $Date: 2003/02/15 11:14:53 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -161,8 +161,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     private static I_CmsXmlParser parser = new CmsXmlXercesParser();
     
     private String m_newEncoding = null;
-
-    // private static I_CmsXmlParser parser = new CmsXmlProjectXParser();
 
     /** Constructor for creating a new instance of this class */
     public A_CmsXmlContent() {
@@ -338,7 +336,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         }
         int slashIndex = filename.lastIndexOf("/") + 1;
         String folder = filename.substring(0, slashIndex);
-        // CHECK: String file = filename.substring(slashIndex);
         cms.createResource(folder, filename, documentType, null, "".getBytes());
         cms.lockResource(filename);
         m_cms = cms;
@@ -350,48 +347,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
             throwException("Cannot create empty XML document for file " + m_filename + ". ", CmsException.C_XML_PARSING_ERROR);
         }
         write();
-    }
-
-    /**
-     * Internal method for debugging purposes.
-     * Dumps the content of the datablock hashtable to the logfile.
-     */
-    private void dumpDatablocks() {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            Enumeration hashKeys = m_blocks.keys();
-            String key = null;
-            Element node = null;
-            A_OpenCms.log(C_OPENCMS_DEBUG, "******** DUMP OF DATABLOCK HASHTABLE *********");
-            while(hashKeys.hasMoreElements()) {
-                key = (String)hashKeys.nextElement();
-                node = (Element)m_blocks.get(key);
-                A_OpenCms.log(C_OPENCMS_DEBUG, "* " + key + " --> " + node.getNodeName());
-            }
-            A_OpenCms.log(C_OPENCMS_DEBUG, "**********************************************");
-        }
-    }
-
-    /**
-     * Internal method for debugging purposes.
-     * Dumpes the content of a given NodeList to the logfile.
-     *
-     * @param l NodeList to dump.
-     */
-    private void dumpNodeList(NodeList l) {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            if(l == null) {
-                A_OpenCms.log(C_OPENCMS_DEBUG, "******* NODE LIST IS NULL ********");
-            }
-            else {
-                int len = l.getLength();
-                A_OpenCms.log(C_OPENCMS_DEBUG, "******** DUMP OF NODELIST ********");
-                A_OpenCms.log(C_OPENCMS_DEBUG, "* LEN: " + len);
-                for(int i = 0;i < len;i++) {
-                    A_OpenCms.log(C_OPENCMS_DEBUG, "*" + l.item(i));
-                }
-                A_OpenCms.log(C_OPENCMS_DEBUG, "**********************************");
-            }
-        }
     }
 
     /**
@@ -765,6 +720,24 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         StringWriter writer = new StringWriter();
         getXmlText(writer, n);
         return writer.toString();
+    }
+    
+    /**
+     * This method is just a hack so that the Eclise IDE will not show the methods listed here 
+     * as warnings when the "unused private methods" option is selected, 
+     * since they are called only using reclection API.
+     * Do not use this method. 
+     * 
+     * @throws CmsException 
+     */
+    protected void callAllUncalledMethodsSoThatEcliüseDosentComplaintAboutThem() throws CmsException {
+        this.handleDataTag(null, null, null);
+        this.handleIncludeTag(null, null, null);
+        this.handleLinkTag(null, null, null);
+        this.handleMethodTag(null, null, null);
+        this.handleMethodTag(null, null, null);
+        this.handleMethodTagForSure(null, null, null);
+        this.handleProcessTag(null, null, null);
     }
 
     /**
@@ -1335,21 +1308,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         return cachedDoc;
     }
 
-    /**
-     * Utility method for putting a single Node to a new NodeList
-     * consisting only of this Node.
-     * @param n Node to put in NodeList
-     * @return NodeList containing copy of the Node n
-     */
-    private NodeList nodeToNodeList(Node n) {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "nodeToNodeList called with node " + n);
-        }
-        Element tempNode = m_content.createElement("TEMP");
-        tempNode.appendChild(n.cloneNode(true));
-        return tempNode.getChildNodes();
-    }
-
     protected Document parse(byte[] content) throws CmsException {
         return parse(new ByteArrayInputStream(content));
     }
@@ -1811,24 +1769,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     public void removeFromFileCache() {
         String currentProject = m_cms.getRequestContext().currentProject().getName();
         m_filecache.remove(currentProject + ":" + getAbsoluteFilename());
-    }
-
-    /**
-     * Generates a XML comment.
-     * It's used to replace no longer needed DOM elements by a short XML comment
-     *
-     * @param n XML element containing the tag to be replaced <em>(unused)</em>.
-     * @param callingObject Reference to the object requesting the node processing <em>(unused)</em>.
-     * @param userObj Customizable user object that will be passed through to handling and user methods <em>(unused)</em>.
-     * @return the generated XML comment.
-     */
-    private NodeList replaceTagByComment(Element n, Object callingObject, Object userObj) {
-        Element tempNode = (Element)n.cloneNode(false);
-        while(tempNode.hasChildNodes()) {
-            tempNode.removeChild(tempNode.getFirstChild());
-        }
-        tempNode.appendChild(m_content.createComment("removed " + n.getNodeName()));
-        return tempNode.getChildNodes();
     }
 
     /**

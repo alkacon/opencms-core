@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/02/01 19:14:47 $
-* Version: $Revision: 1.268 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.269 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.268 $ $Date: 2003/02/01 19:14:47 $ *
+ * @version $Revision: 1.269 $ $Date: 2003/02/15 11:14:54 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4549,7 +4549,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public Vector getUsersOfGroup(String name, int type)
         throws CmsException {
-        // CHECK: CmsGroup group;
         Vector users = new Vector();
 
         PreparedStatement statement = null;
@@ -5513,7 +5512,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                                Hashtable properties, int versionId, long publishDate) throws CmsException {
         Connection con = null;
         PreparedStatement statement = null;
-        // CHECK: ResultSet res = null;
         String ownerName = null;
         String groupName = new String();
         String lastModifiedName = null;
@@ -5547,14 +5545,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 fileId = nextId(m_cq.get("C_TABLE_FILES_BACKUP"));
                 // write new resource to the database
                 createFileContent(fileId, content, versionId, m_poolNameBackup, "_BACKUP");
-                /*
-                statement = con.prepareStatement(m_cq.get("C_FILES_WRITE_BACKUP"));
-                statement.setInt(1, fileId);
-                // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2, content);
-                m_doSetBytes(statement,2,content);
-                statement.setInt(3, versionId);
-                statement.executeUpdate();
-                statement.close();*/
             }
             statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE_BACKUP"));
             statement.setInt(1, resourceId);
@@ -7856,8 +7846,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         ResultSet res =null;
         PreparedStatement statement = null;
         Connection con = null;
-        // CHECK: String usedPool;
-        // CHECK: String usedStatement;
         try {
             con = DriverManager.getConnection(m_poolNameBackup);
             statement=con.prepareStatement(m_cq.get("C_RESOURCES_READ_BACKUP"));
@@ -9070,7 +9058,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Vector logs = new Vector();
         PreparedStatement statement = null;
         String comment = null;
-        // CHECK: String externalusername = null;
         java.sql.Timestamp starttime = null;
         int id = C_UNKNOWN_ID;
         int task = C_UNKNOWN_ID;
@@ -9085,7 +9072,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             res = statement.executeQuery();
             while(res.next()) {
                 comment = res.getString(m_cq.get("C_LOG_COMMENT"));
-                // CHECK: externalusername = res.getString(m_cq.get("C_LOG_EXUSERNAME"));
                 id = res.getInt(m_cq.get("C_LOG_ID"));
                 starttime = SqlHelper.getTimestamp(res,m_cq.get("C_LOG_STARTTIME"));
                 task = res.getInt(m_cq.get("C_LOG_TASK"));
@@ -9814,7 +9800,6 @@ public CmsTask readTask(int id) throws CmsException {
             res = statement.executeQuery();
             if(res.next()) {
                 String comment = res.getString(m_cq.get("C_LOG_COMMENT"));
-                // CHECK: String externalusername;
                 id = res.getInt(m_cq.get("C_LOG_ID"));
                 java.sql.Timestamp starttime = SqlHelper.getTimestamp(res,m_cq.get("C_LOG_STARTTIME"));
                 int task = res.getInt(m_cq.get("C_LOG_TASK"));
@@ -9870,7 +9855,6 @@ public CmsTask readTask(int id) throws CmsException {
         Vector logs = new Vector();
         PreparedStatement statement = null;
         String comment = null;
-        // CHECK: String externalusername = null;
         java.sql.Timestamp starttime = null;
         int id = C_UNKNOWN_ID;
         int task = C_UNKNOWN_ID;
@@ -9884,7 +9868,6 @@ public CmsTask readTask(int id) throws CmsException {
             res = statement.executeQuery();
             while(res.next()) {
                 comment = res.getString(m_cq.get("C_TASKLOG_COMMENT"));
-                // CHECK: externalusername = res.getString(m_cq.get("C_TASKLOG_EXUSERNAME"));
                 id = res.getInt(m_cq.get("C_TASKLOG_ID"));
                 starttime = SqlHelper.getTimestamp(res,m_cq.get("C_TASKLOG_STARTTIME"));
                 task = res.getInt(m_cq.get("C_TASKLOG_TASK"));
@@ -11342,11 +11325,9 @@ public CmsTask readTask(int id) throws CmsException {
         throws CmsException {
         String usedPool;
         String usedStatement;
-        // CHECK: int modifiedBy = userId;
         if (project.getId() == onlineProject.getId()){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
-            // CHECK: modifiedBy = file.getResourceLastModifiedBy();
         } else {
             usedPool = m_poolName;
             usedStatement = "";
@@ -11819,7 +11800,6 @@ public CmsTask readTask(int id) throws CmsException {
             // write the property into the db
             PreparedStatement statement = null;
             Connection con = null;
-            // CHECK: boolean newprop=true;
             try {
                 con = DriverManager.getConnection(usedPool);
                 if( readProperty(propdef.getName(), projectId, resource, resourceType) != null) {
@@ -11830,7 +11810,6 @@ public CmsTask readTask(int id) throws CmsException {
                     statement.setInt(2, resource.getResourceId());
                     statement.setInt(3, propdef.getId());
                     statement.executeUpdate();
-                    // CHECK: newprop=false;
                 } else {
                     // property dosen't exist - use create.
                     // create statement
@@ -11840,7 +11819,6 @@ public CmsTask readTask(int id) throws CmsException {
                     statement.setInt(3, resource.getResourceId());
                     statement.setString(4, checkNull(value));
                     statement.executeUpdate();
-                    // CHECK: newprop=true;
                 }
             } catch(SQLException exc) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),

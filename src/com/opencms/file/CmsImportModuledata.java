@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.6 $ $Date: 2003/02/15 11:14:54 $
  */
 public class CmsImportModuledata implements I_CmsConstants, Serializable {
 
@@ -363,8 +363,6 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
         boolean success = true;
         String fullname = null;
         try {
-            // CHECK: String path = m_importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
-            // CHECK: String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
             m_cms.setContextToCos();
             // try to read an existing channel
             CmsResource res = null;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/02/01 19:14:45 $
-* Version: $Revision: 1.256 $
+* Date   : $Date: 2003/02/15 11:14:54 $
+* Version: $Revision: 1.257 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.256 $
+ * @version $Revision: 1.257 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2462,7 +2462,6 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
         // first we remember the new resources for the link management
         Vector newRes  = readProjectView(id, "new");
         updateOnlineProjectLinks(readProjectView(id, "deleted"), readProjectView(id, "changed"), null, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
-        // CHECK: Vector projectResources = readProjectView(id, "all");
         allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id, report);
         // update the online links table for the new resources (now they are there)
         updateOnlineProjectLinks(null, null, newRes, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
@@ -3781,7 +3780,6 @@ public void setTimeout(int taskId, long timeout) throws CmsException {
  */
 public void syncFolder(String resourceName) throws CmsException {
     // synchronize the resources
-    // CHECK: CmsSynchronize sync = new CmsSynchronize(this, resourceName);
     new CmsSynchronize(this, resourceName);
 }
 /**
