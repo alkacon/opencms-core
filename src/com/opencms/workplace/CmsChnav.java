@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2002/04/24 07:09:04 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/04/30 09:35:39 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2002/04/24 07:09:04 $
+ * @version $Revision: 1.3 $ $Date: 2002/04/30 09:35:39 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -94,10 +94,12 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
 
         // get request parameters
         String navpos = (String)parameters.get(C_PARA_NAVPOS);
+
         navtext = (String)parameters.get(C_PARA_NAVTEXT);
         if((navtext == null) || ("".equals(navtext))){
             navtext = cms.readProperty(resource.getAbsolutePath(), I_CmsConstants.C_PROPERTY_NAVTEXT);
         }
+
         // get the current phase of this wizard
         String action = (String)parameters.get("action");
         if(action != null) {
@@ -105,6 +107,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                 try {
                     // update the position
                     updateNavPos(cms, resource, navpos);
+
                     // update the navigation text
                     if(navtext != null){
                         cms.writeProperty(resource.getAbsolutePath(), I_CmsConstants.C_PROPERTY_NAVTEXT, navtext);
@@ -141,6 +144,9 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             }
         }
         xmlTemplateDocument.setData("frametitle", resource.getName());
+        if(navtext != null){
+            navtext = Encoder.escape(navtext);
+        }
         xmlTemplateDocument.setData(C_PARA_NAVTEXT, navtext);
 
         // process the selected template
@@ -152,11 +158,12 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
      * A file list of all files and folder is created, for all those resources, the navigation
      * property is read. The list is sorted by their navigation position.
      * @param cms The CmsObject.
+     * @param filename The Name of the current file.
      * @return Hashtable including three arrays of strings containing the filenames,
      * nicenames and navigation positions.
      * @exception Throws CmsException if something goes wrong.
      */
-    private Hashtable getNavData(CmsObject cms) throws CmsException {
+    private Hashtable getNavData(CmsObject cms, String filename) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         String[] filenames;
@@ -197,40 +204,43 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             // nav in there. The dimension of this arrays is set to the number of
             // found files and folders plus two more entrys for the first and last
             // element.
-            filenames = new String[filefolders.size() + 2];
-            nicenames = new String[filefolders.size() + 2];
-            positions = new String[filefolders.size() + 2];
+            filenames = new String[filefolders.size() + 3];
+            nicenames = new String[filefolders.size() + 3];
+            positions = new String[filefolders.size() + 3];
 
             //now check files and folders that are not deleted and include navigation
             // information
             enum = filefolders.elements();
             while(enum.hasMoreElements()) {
                 CmsResource res = (CmsResource)enum.nextElement();
-                // check if the resource is not marked as deleted
-                if(res.getState() != C_STATE_DELETED) {
-                    String navpos = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVPOS);
-                    // check if there is a navpos for this file/folder
-                    if(navpos != null) {
-                        nicename = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVTEXT);
-                        if(nicename == null) {
-                            nicename = res.getName();
-                        }
+                // do not include the current file
+                if(!res.getAbsolutePath().equals(filename)){
+                    // check if the resource is not marked as deleted
+                    if(res.getState() != C_STATE_DELETED) {
+                        String navpos = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVPOS);
+                        // check if there is a navpos for this file/folder
+                        if(navpos != null) {
+                            nicename = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVTEXT);
+                            if(nicename == null) {
+                                nicename = res.getName();
+                            }
 
-                        // add this file/folder to the storage.
-                        filenames[count] = res.getAbsolutePath();
-                        nicenames[count] = nicename;
-                        positions[count] = navpos;
-                        if(new Float(navpos).floatValue() > max) {
-                            max = new Float(navpos).floatValue();
+                            // add this file/folder to the storage.
+                            filenames[count] = res.getAbsolutePath();
+                            nicenames[count] = nicename;
+                            positions[count] = navpos;
+                            if(new Float(navpos).floatValue() > max) {
+                                max = new Float(navpos).floatValue();
+                            }
+                            count++;
                         }
-                        count++;
                     }
                 }
             }
         } else {
-            filenames = new String[2];
-            nicenames = new String[2];
-            positions = new String[2];
+            filenames = new String[3];
+            nicenames = new String[3];
+            positions = new String[3];
         }
 
         // now add the first and last value
@@ -241,6 +251,11 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         nicenames[count] = lang.getDataValue("input.lastelement");
         positions[count] = new Float(max + 1).toString();
 
+        // add the default value for no change of navigation position
+        filenames[count+1] = "NOCHANGE";
+        nicenames[count+1] = lang.getDataValue("input.nochange");
+        positions[count+1] = "-1";
+
         // finally sort the nav information.
         sort(cms, filenames, nicenames, positions, count);
 
@@ -248,7 +263,8 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         storage.put("FILENAMES", filenames);
         storage.put("NICENAMES", nicenames);
         storage.put("POSITIONS", positions);
-        storage.put("COUNT", new Integer(count));
+        // the value for count includes the entry for no change
+        storage.put("COUNT", new Integer(count+1));
         return storage;
     }
 
@@ -269,8 +285,14 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String preselect = (String)session.getValue(C_SESSIONHEADER + C_PARA_NAVPOS);
         int retValue = -1;
+        // get the name of the current file
+        String filename = (String)parameters.get(C_PARA_FILE);
+        if(filename == null || "".equals(filename)){
+            filename = (String)session.getValue(C_SESSIONHEADER + C_PARA_FILE);
+        }
+
        // get the nav information
-        Hashtable storage = getNavData(cms);
+        Hashtable storage = getNavData(cms, filename);
         if(storage.size() > 0) {
             String[] nicenames = (String[])storage.get("NICENAMES");
             int count = ((Integer)storage.get("COUNT")).intValue();
@@ -288,6 +310,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             values = new Vector();
         }
         if (retValue == -1){
+            // set the default value to no change
             return new Integer(values.size() - 1);
         }else{
             return new Integer(retValue);
@@ -349,34 +372,46 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
      * @param navpos The file after which the new entry is sorted.
      */
 
-    private void updateNavPos(CmsObject cms, CmsResource curResource, String newpos) throws CmsException {
+    private void updateNavPos(CmsObject cms, CmsResource curResource, String navpos) throws CmsException {
         float newPos = 0;
+        boolean changePos = true;
 
         // get the nav information
-        Hashtable storage = getNavData(cms);
+        Hashtable storage = getNavData(cms, curResource.getAbsolutePath());
         if(storage.size() > 0) {
             String[] nicenames = (String[])storage.get("NICENAMES");
             String[] positions = (String[])storage.get("POSITIONS");
-            int count = ((Integer)storage.get("COUNT")).intValue();
+            // the value for count must not include the entry for no change
+            int count = ((Integer)storage.get("COUNT")).intValue()-1;
 
             // now find the file after which the new file is sorted
             int pos = 0;
             for(int i = 0;i < nicenames.length;i++) {
-                if(newpos.equals((String)nicenames[i])) {
+                if(navpos.equals((String)nicenames[i])) {
                     pos = i;
                 }
             }
-            if(pos < count) {
-                float low = new Float(positions[pos]).floatValue();
-                float high = new Float(positions[pos + 1]).floatValue();
-                newPos = (high + low) / 2;
-            } else {
-                newPos = new Float(positions[pos]).floatValue() + 1;
+            // check if the value for no change is selected
+            if("-1".equals(positions[pos])){
+                changePos = false;
+            }
+            // only get new position if a new position was selected
+            if(changePos){
+                if(pos < count) {
+                    float low = new Float(positions[pos]).floatValue();
+                    float high = new Float(positions[pos + 1]).floatValue();
+                    newPos = (high + low) / 2;
+                } else {
+                    newPos = new Float(positions[pos]).floatValue() + 1;
+                }
             }
         } else {
             newPos = 1;
         }
-        cms.writeProperty(curResource.getAbsolutePath(), C_PROPERTY_NAVPOS, new Float(newPos).toString());
+        // only change position if new position was selected
+        if(changePos){
+            cms.writeProperty(curResource.getAbsolutePath(), C_PROPERTY_NAVPOS, new Float(newPos).toString());
+        }
     }
 
     /**
