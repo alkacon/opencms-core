@@ -2,6 +2,7 @@
 <LANGUAGE>
         <name>Italiano</name>
         <button>
+            <all>tutti</all>
             <unzip>scompatta file</unzip>
             <add><![CDATA[<<]]> Aggiungi</add>
             <addnew>Aggiungi Nuovo</addnew>

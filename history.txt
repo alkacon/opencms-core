@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.12 Ecaz - XX July 2002
+! there is a select all feature when deleting modules now.
+
 OpenCms 4.7.11 Ecaz - 09 July 2002
 - changed the default value for the ShowLockDialog to 'off'
 

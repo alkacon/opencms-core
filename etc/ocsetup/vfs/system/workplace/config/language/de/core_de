@@ -2,6 +2,7 @@
 <LANGUAGE>
         <name>Deutsch</name>
         <button>
+            <all>Alle</all>
             <unzip>Zip-File entpacken</unzip>
             <add><![CDATA[<<]]> Hinzufügen</add>
             <addnew>Hinzufügen</addnew>

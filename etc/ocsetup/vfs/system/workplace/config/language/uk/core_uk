@@ -2,6 +2,7 @@
 <LANGUAGE>
         <name>English</name>
         <button>
+            <all>All</all>
             <unzip>unzip file</unzip>
             <add><![CDATA[<<]]> Add</add>
             <addnew>Add New</addnew>
@@ -320,7 +321,7 @@
                 <htmlbrowser>Create the folder for the HTML galleries or contact your system administrator.</htmlbrowser>  
                 <htmlnogallery>Please first create a gallery with the menu item Administration/HTML Management.</htmlnogallery>                                                             
                 <linkbrowser>Create the folder for the link galleries or contact your system administrator.</linkbrowser>
-				<linknogallery>Please first create a gallery with the menu item Administration/External Link Management.</linknogallery>
+                <linknogallery>Please first create a gallery with the menu item Administration/External Link Management.</linknogallery>
                 <lock></lock>
                 <lockchange>Please try again later, or contact your system administrator.</lockchange>
                 <login>Please check the entered data or contact your system administrator.</login>
@@ -370,8 +371,8 @@
                 <editorsave>Save File</editorsave>
                 <foldercreate>Create Folder</foldercreate>
                 <histproperties>Manage history properties</histproperties>
-                <htmlbrowser>Create new HTML-Galerie</htmlbrowser>                		
-				<linkbrowser>Link Browser</linkbrowser>
+                <htmlbrowser>Create new HTML-Galerie</htmlbrowser>                      
+                <linkbrowser>Link Browser</linkbrowser>
                 <linkgallery>Creating new Link Gallery</linkgallery>
                 <lock>Lock File</lock>
                 <lockchange>Steal Lock</lockchange>
