@@ -140,7 +140,7 @@ top.help_url='ExplorerAnsicht/header.html';
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
             <!-- Beginn Tabellenkopf blau-->
             <tr> 
-                <td colspan=2 class="head">]]><label value="messagebox.lockedinfolder.title"/><![CDATA[</td>
+                <td colspan=2 class="head">]]><label value="messagebox.title.lockedinfolder"/><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
             
@@ -151,7 +151,7 @@ top.help_url='ExplorerAnsicht/header.html';
             <!-- Ende Leerzeile-->
             <tr>
                 <td class=dialogtxt colspan=2>
-                     ]]><label value="messagebox.lockedinfolder.message1"/><![CDATA[
+                     ]]><label value="messagebox.message1.lockedinfolder"/><![CDATA[
                 </td>
             </tr>
             <tr>
@@ -202,6 +202,6 @@ top.help_url='ExplorerAnsicht/header.html';
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.publishresource" message="error.message.publishresource" reason="error.reason.publishresource" suggestion="error.suggestion.publishresource" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.publishresource" message="error.message.publishresource" reason="error.reason.publishresource" suggestion="error.suggestion.publishresource" ref="head.html" ><process>details</process></ERRORPAGE>
 </TEMPLATE>
 </WORKPLACE>
