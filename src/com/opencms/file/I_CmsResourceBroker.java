@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/09 08:10:22 $
- * Version: $Revision: 1.147 $
+ * Date   : $Date: 2001/07/18 15:08:55 $
+ * Version: $Revision: 1.148 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.147 $ $Date: 2001/07/09 08:10:22 $
+ * @version $Revision: 1.148 $ $Date: 2001/07/18 15:08:55 $
  *
  */
 
@@ -1838,6 +1838,16 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 public Vector readAllFileHeadersForHist(CmsUser currentUser, CmsProject currentProject,
 									  String filename)
 		 throws CmsException;
+
+    /**
+     * select all projectResources from an given project
+     *
+     * @param project The project in which the resource is used.
+     *
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+    public Vector readAllProjectResources(int projectId) throws CmsException;
 
 	/**
 	 * Returns a list of all propertyinformations of a file or folder.

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/18 13:37:23 $
- * Version: $Revision: 1.171 $
+ * Date   : $Date: 2001/07/18 15:08:40 $
+ * Version: $Revision: 1.172 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.171 $ $Date: 2001/07/18 13:37:23 $
+ * @version $Revision: 1.172 $ $Date: 2001/07/18 15:08:40 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2054,6 +2054,16 @@ public boolean isAdmin() throws CmsException {
 }
 
 /**
+ * Checks, if the user has management access to the project.
+ *
+ * @return <code>true</code>, if the users current group is the admin-group; <code>false</code> otherwise.
+ * @exception CmsException if operation was not successful.
+ */
+public boolean isManagerOfProject() throws CmsException {
+    return m_rb.isManagerOfProject(getRequestContext().currentUser(), getRequestContext().currentProject());
+}
+
+/**
  *
  */
 public void linkmanagementSaveImportedResource(String importedResource) throws CmsException {
@@ -2298,15 +2308,20 @@ public void publishProject(int id) throws CmsException {
 public void publishResource(String resourcename) throws CmsException {
     int oldProjectId = m_context.currentProject().getId();
     if(oldProjectId != C_PROJECT_ONLINE_ID){
-        int newProjectId = m_rb.createProject(m_context.currentUser(), m_context.currentProject(),
+        // check access to project
+        if(isAdmin() || isManagerOfProject()){
+            int newProjectId = m_rb.createProject(m_context.currentUser(), m_context.currentProject(),
                                               "__forPublish","project for single resource publishing","Users",
                                               "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
-        getRequestContext().setCurrentProject(newProjectId);
-	    CmsResource res = readFileHeader(resourcename);
-	    I_CmsResourceType rt = getResourceType(res.getType());
-	    rt.copyResourceToProject(this, resourcename);
-        publishProject(newProjectId);
-        getRequestContext().setCurrentProject(oldProjectId);
+            getRequestContext().setCurrentProject(newProjectId);
+	        CmsResource res = readFileHeader(resourcename);
+	        I_CmsResourceType rt = getResourceType(res.getType());
+	        rt.copyResourceToProject(this, resourcename);
+            publishProject(newProjectId);
+            getRequestContext().setCurrentProject(oldProjectId);
+        } else {
+            throw new CmsException("[CmsObject] cannot publish resource in current project", CmsException.C_NO_ACCESS);
+        }
     } else {
         throw new CmsException("[CmsObject] cannot publish resource in online project", CmsException.C_NO_ACCESS);
     }
@@ -2360,6 +2375,18 @@ public Vector readAllFileHeaders(String filename) throws CmsException {
 public Vector readAllFileHeadersForHist(String filename) throws CmsException {
     return (m_rb.readAllFileHeadersForHist(m_context.currentUser(), m_context.currentProject(), filename));
 }
+
+    /**
+     * select all projectResources from an given project
+     *
+     * @param project The project in which the resource is used.
+     *
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+    public Vector readAllProjectResources(int projectId) throws CmsException {
+        return m_rb.readAllProjectResources(projectId);
+    }
 /**
  * Returns a list of all properties of a file or folder.
  *
