@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/10/11 10:09:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/10/11 15:58:18 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.7 $ $Date: 2000/10/11 10:09:22 $
+ * @version $Revision: 1.8 $ $Date: 2000/10/11 15:58:18 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -597,19 +597,6 @@ public void createProject(String name, String description, String groupname, Str
 			CmsShell.printException(exc);
 		}
 	}
-	/**
-	 * Delete the propertydefinition for the resource type.<BR/>
-	 * 
-	 * @param name The name of the propertydefinition to overwrite.
-	 * @param resourcetype The name of the resource-type for the propertydefinition.
-	 */
-	public void deletepropertydefinition(String name, String resourcetype) {
-		try {
-			m_cms.deletePropertydefinition(name, resourcetype);
-		} catch( Exception exc ) {
-			CmsShell.printException(exc);
-		}
-	}
 /**
  * Marks a site deleted
  *
@@ -639,6 +626,19 @@ public void deleteSite(String siteId)
 	public void deleteUser( String name ) {
 		try {
 			m_cms.deleteUser( name );
+		} catch( Exception exc ) {
+			CmsShell.printException(exc);
+		}
+	}
+	/**
+	 * Delete the propertydefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the propertydefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the propertydefinition.
+	 */
+	public void deletepropertydefinition(String name, String resourcetype) {
+		try {
+			m_cms.deletePropertydefinition(name, resourcetype);
 		} catch( Exception exc ) {
 			CmsShell.printException(exc);
 		}
@@ -810,6 +810,28 @@ public void getAllLanguages()
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+ * Reads all site urls
+ */
+public void getAllSiteUrls()
+{
+	try
+	{
+		Vector list = m_cms.getAllSiteUrls();
+		for (int i=0; i<list.size(); i++)
+		{
+			CmsSiteUrls siteUrls = (CmsSiteUrls) list.elementAt(i);
+			System.out.println("Url id: "+siteUrls.getUrlId());
+			System.out.println("url: "+siteUrls.getUrl());	
+			System.out.println("Site id: "+siteUrls.getSiteId());
+			System.out.println("Primary url: "+siteUrls.getPrimaryUrl());
+		}
+	}
+	catch (Exception exc)
+	{
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Reads all sites from the Cms.
 	 */
@@ -844,28 +866,6 @@ public void getAllSitesInCategory(String categoryID) throws CmsException
 		while (en.hasMoreElements())
 		{
 			System.out.println((CmsSite) en.nextElement());
-		}
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
-/**
- * Reads all site urls
- */
-public void getAllSiteUrls()
-{
-	try
-	{
-		Vector list = m_cms.getAllSiteUrls();
-		for (int i=0; i<list.size(); i++)
-		{
-			CmsSiteUrls siteUrls = (CmsSiteUrls) list.elementAt(i);
-			System.out.println("Url id: "+siteUrls.getUrlId());
-			System.out.println("url: "+siteUrls.getUrl());	
-			System.out.println("Site id: "+siteUrls.getSiteId());
-			System.out.println("Primary url: "+siteUrls.getPrimaryUrl());
 		}
 	}
 	catch (Exception exc)
@@ -968,6 +968,16 @@ public void getCurrentSite()
 	}
 }
 	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	 public void getFileSystemChanges() {
+		System.out.println( m_cms.getFileSystemChanges() );
+	 }
+	/**
 	 * Returns a Vector with all subfiles.<BR/>
 	 * 
 	 * @param foldername the complete path to the folder.
@@ -988,15 +998,25 @@ public void getCurrentSite()
 		}
 	}
 	/**
-	 * This method can be called, to determine if the file-system was changed 
-	 * in the past. A module can compare its previosly stored number with this
-	 * returned number. If they differ, a change was made.
+	 * Returns a Vector with all subfiles.<BR/>
 	 * 
-	 * @return the number of file-system-changes.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfiles A Vector with all subfiles for the overgiven folder.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource.
 	 */
-	 public void getFileSystemChanges() {
-		System.out.println( m_cms.getFileSystemChanges() );
-	 }
+	public void getFilesInFolderRecursively(String foldername) {
+		try {
+			Vector files = m_cms.getFilesInFolderRecursively(foldername);
+			for( int i = 0; i < files.size(); i++ ) {
+				System.out.println( (CmsFile)files.elementAt(i) );
+			}
+		} catch( Exception exc ) {
+			CmsShell.printException(exc);
+		}
+	}
 	/**
 	 * Returns all users of the cms.
 	 */
@@ -1201,6 +1221,22 @@ public void getSiteUrls(String siteId)
 		throws CmsException { 
 		try {
 			Vector folders = m_cms.getSubFolders(foldername);
+			for( int i = 0; i < folders.size(); i++ ) {
+				System.out.println( (CmsFolder)folders.elementAt(i) );
+			}
+		} catch( Exception exc ) {
+			CmsShell.printException(exc);
+		}
+	}
+	/**
+	 * Returns a Vector with all subfolders.<BR/>
+	 * 
+	 * @param foldername the complete path to the folder.
+	 */
+	public void getSubFoldersRecursively(String foldername)
+		throws CmsException { 
+		try {
+			Vector folders = m_cms.getSubFoldersRecursively(foldername);
 			for( int i = 0; i < folders.size(); i++ ) {
 				System.out.println( (CmsFolder)folders.elementAt(i) );
 			}
@@ -1765,19 +1801,6 @@ public void printHelpText()
 		}
 	}
 	/**
-	 * Reads the propertydefinition for the resource type.<BR/>
-	 * 
-	 * @param name The name of the propertydefinition to read.
-	 * @param resourcetype The name of the resource type for the propertydefinition.
-	 */
-	public void readpropertydefinition(String name, String resourcetype) {
-		try {
-			System.out.println( m_cms.readPropertydefinition(name, resourcetype) );
-		} catch( Exception exc ) {
-			CmsShell.printException(exc);
-		}
-	}
-	/**
 	 * Returns a user object.<P/>
 	 * 
 	 * @param username The name of the user that is to be read.
@@ -1800,6 +1823,19 @@ public void printHelpText()
 		} catch( Exception exc ) {
 			CmsShell.printException(exc);
 		}		
+	}
+	/**
+	 * Reads the propertydefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the propertydefinition to read.
+	 * @param resourcetype The name of the resource type for the propertydefinition.
+	 */
+	public void readpropertydefinition(String name, String resourcetype) {
+		try {
+			System.out.println( m_cms.readPropertydefinition(name, resourcetype) );
+		} catch( Exception exc ) {
+			CmsShell.printException(exc);
+		}
 	}
 	/** 
 	 * Recovers the password for a user.
@@ -2060,27 +2096,6 @@ public void updateSite(String siteId, String name, String description, String ca
 			CmsShell.printException(exc);
 		}
 	}
-	/**
-	 * Writes the propertydefinition for the resource type.<BR/>
-	 * 
-	 * @param name The name of the propertydefinition to overwrite.
-	 * @param resourcetype The name of the resource type to read the 
-	 * propertydefinitions for.
-	 * @param type The new type of the propertydefinition (normal|mandatory|optional).
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void writepropertydefinition(String name, 
-									String resourcetype, 
-									String type) {
-		try {
-			CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
-			propertydef.setPropertydefType(Integer.parseInt(type));			
-			System.out.println( m_cms.writePropertydefinition(propertydef) );
-		} catch( Exception exc ) {
-			CmsShell.printException(exc);
-		}
-	}
 	/** 
 	 * Writes a user to the Cms.
 	 * 
@@ -2101,6 +2116,27 @@ public void updateSite(String siteId, String name, String description, String ca
 			// write it back
 			m_cms.writeUser(user);		
 
+		} catch( Exception exc ) {
+			CmsShell.printException(exc);
+		}
+	}
+	/**
+	 * Writes the propertydefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the propertydefinition to overwrite.
+	 * @param resourcetype The name of the resource type to read the 
+	 * propertydefinitions for.
+	 * @param type The new type of the propertydefinition (normal|mandatory|optional).
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void writepropertydefinition(String name, 
+									String resourcetype, 
+									String type) {
+		try {
+			CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
+			propertydef.setPropertydefType(Integer.parseInt(type));			
+			System.out.println( m_cms.writePropertydefinition(propertydef) );
 		} catch( Exception exc ) {
 			CmsShell.printException(exc);
 		}
