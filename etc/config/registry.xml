@@ -85,14 +85,6 @@
             <launcher3>com.opencms.launcher.CmsLinkLauncher</launcher3>
             <launcher4>com.opencms.launcher.CmsPdfLauncher</launcher4>
         </launchers>
-        <!-- enable this for synchronizing resources and set the desired paths
-        <syncpath>c:/work41/sync</syncpath>
-            <syncproject>_syncProject</syncproject>
-            <syncresource>
-                <res1>/content/</res1>
-                <res2>/download/</res2>
-                <res3>/pics/</res3>
-            </syncresource> -->
     </system>
     <modules/>
 </registry>

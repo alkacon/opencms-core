@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/06/29 16:11:21 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -31,6 +31,7 @@ package com.opencms.defaults;
 
 import com.opencms.file.*;
 import com.opencms.core.*;
+import com.opencms.util.*;
 import javax.mail.*;
 import javax.activation.*;
 import javax.mail.internet.*;
@@ -71,7 +72,7 @@ import java.util.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.6 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Name:  $ $Revision: 1.7 $ $Date: 2001/06/29 16:11:21 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -514,7 +515,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         }
         catch(Exception e) {
     		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while building Email object: " + e.getMessage());
+                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while building Email object: " + Utils.getStackTrace(e));
             }
 
             // Do not continue here. We don't have a Message object we can send.
