@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/util/Attic/WordExtractor.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsWordExtractor.java,v $
+ * Date   : $Date: 2004/02/11 15:58:55 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -28,7 +28,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.search.util;
+package org.opencms.search.documents;
+
 
 import org.apache.poi.poifs.filesystem.*;
 import org.apache.poi.util.LittleEndian;
@@ -41,12 +42,12 @@ import java.io.*;
  *
  * @author Ryan Ackley
  */
-public class WordExtractor {
+public class CmsWordExtractor {
 
   /**
    * Constructor
    */
-  public WordExtractor() {
+  public CmsWordExtractor() {
       // empty
   }
 
@@ -94,7 +95,7 @@ public class WordExtractor {
             int totLength = LittleEndian.getInt(tableStream, pos + (x + 1) * 4)
                             - LittleEndian.getInt(tableStream, pos + (x * 4));
 
-            WordTextPiece piece = new WordTextPiece(filePos, totLength, unicode);
+            CmsWordTextPiece piece = new CmsWordTextPiece(filePos, totLength, unicode);
             text.add(piece);
 
         }
@@ -157,7 +158,7 @@ public class WordExtractor {
     tableStream = null;
 
     for (int x = 0; x < size; x++) {
-      WordTextPiece nextPiece = (WordTextPiece)text.get(x);
+      CmsWordTextPiece nextPiece = (CmsWordTextPiece)text.get(x);
       int start = nextPiece.getStart();
       int length = nextPiece.getLength();
 

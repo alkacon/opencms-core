@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsWordDocument.java,v $
- * Date   : $Date: 2004/02/11 15:01:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/11 15:58:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package org.opencms.search.documents;
 
 
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.util.WordExtractor;
 import org.opencms.util.CmsStringSubstitution;
 
 import com.opencms.core.CmsException;
@@ -46,7 +45,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:00 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/11 15:58:55 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsWordDocument extends CmsGenericDocument {
@@ -74,7 +73,7 @@ public class CmsWordDocument extends CmsGenericDocument {
                 throw new CmsIndexException("Resource " + resource.getRootPath() + " has no content.");
             }
  
-            WordExtractor extractor = new WordExtractor();
+            CmsWordExtractor extractor = new CmsWordExtractor();
             rawContent = extractor.extractText(new ByteArrayInputStream(file.getContents()));
             
             rawContent = CmsStringSubstitution.substitutePerl(rawContent, internalWordToken("PAGEREF"), "$1", "g");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/11 15:58:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 package org.opencms.search;
 
 import org.opencms.main.OpenCms;
+import org.opencms.search.documents.CmsHighlightExtractor;
+import org.opencms.search.documents.CmsHtmlHighlighter;
 import org.opencms.search.documents.I_CmsDocumentFactory;
-import org.opencms.search.util.HighlightExtractor;
-import org.opencms.search.util.HtmlHighlighter;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -62,7 +62,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:01 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/11 15:58:55 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsSearchIndex {
@@ -204,13 +204,13 @@ public class CmsSearchIndex {
         
         Analyzer analyzer = null;
         Query query = null;
-        HighlightExtractor highlighter = null;
+        CmsHighlightExtractor highlighter = null;
         String rawContent = null;
         
         try {
             analyzer = m_indexManager.getAnalyzer(m_language);
             query = QueryParser.parse(result.getQuery(), I_CmsDocumentFactory.DOC_CONTENT, analyzer);
-            highlighter= new HighlightExtractor(new HtmlHighlighter(), query, analyzer);
+            highlighter= new CmsHighlightExtractor(new CmsHtmlHighlighter(), query, analyzer);
             
             rawContent = result.getRawContent();
          
@@ -230,7 +230,7 @@ public class CmsSearchIndex {
             }
            
         } catch (Exception exc) {
-            String message="[Analyzer: "+analyzer+"][Query: "+query+"][HighlightExtractor: "+highlighter+"][RawContent: ";
+            String message="[Analyzer: "+analyzer+"][Query: "+query+"][CmsHighlightExtractor: "+highlighter+"][RawContent: ";
             if (rawContent!=null) {
                 message += rawContent.length()+"]";
             } else {

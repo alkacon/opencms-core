@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/util/Attic/WordTextPiece.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsWordTextPiece.java,v $
+ * Date   : $Date: 2004/02/11 15:58:55 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.search.util;
+package org.opencms.search.documents;
 
 /**
  * This class stores info about the data structure describing a run of text.
@@ -36,7 +36,7 @@ package org.opencms.search.util;
  * @author
  */
 
-class WordTextPiece {
+class CmsWordTextPiece {
     
     private int m_fcStart;
     private int m_length;
@@ -47,7 +47,7 @@ class WordTextPiece {
      * @param length length
      * @param unicode true if uses unicode
      */
-    public WordTextPiece(int start, int length, boolean unicode) {
+    public CmsWordTextPiece(int start, int length, boolean unicode) {
         m_usesUnicode = unicode;
         m_length = length;
         m_fcStart = start;

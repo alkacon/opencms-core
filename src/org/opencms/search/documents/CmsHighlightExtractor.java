@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/util/Attic/HighlightExtractor.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightExtractor.java,v $
+ * Date   : $Date: 2004/02/11 15:58:55 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -28,7 +28,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.search.util;
+package org.opencms.search.documents;
+
 
 import java.io.*;
 import java.util.*;
@@ -104,7 +105,7 @@ class FragmentQueue extends PriorityQueue {
  *  + Changed to support Lucene 1.3 release (requires no change to Lucene code
  * base but consequently no longer supports MultiTermQuery, RangeQuery and
  * PrefixQuery highlighting currently)
- *  + Performance enhancement - HighlightExtractor caches m_query m_terms and can
+ *  + Performance enhancement - CmsHighlightExtractor caches m_query m_terms and can
  * therefore be called repeatedly to highlight multiple results more efficently
  *  + New feature: can extract the most relevant parts of large bodies of text -
  * with user defined size of extracts
@@ -112,7 +113,7 @@ class FragmentQueue extends PriorityQueue {
  * @author Maik Schreiber (mailto: bZ@iq-computing.de) /Mark Harwood
  *         (mark@searcharea.co.uk)
  */
-public final class HighlightExtractor {
+public final class CmsHighlightExtractor {
     Analyzer m_analyzer;
     I_TermHighlighter m_highlighter;
 
@@ -128,7 +129,7 @@ public final class HighlightExtractor {
      *            Analyzer used to construct the Query
      * @throws IOException if something goes wrong
      */
-    public HighlightExtractor(
+    public CmsHighlightExtractor(
         I_TermHighlighter highlighter,
         Query query,
         Analyzer analyzer)
@@ -226,8 +227,8 @@ public final class HighlightExtractor {
         //MH getTerms(m_query.getQuery(), m_terms, prohibited);
         
         // just to avoid warnings
-        if (org.opencms.main.OpenCms.getLog(org.opencms.search.util.HighlightExtractor.class).isDebugEnabled()) {
-            org.opencms.main.OpenCms.getLog(org.opencms.search.util.HighlightExtractor.class).debug("Not implemented: getTermsFromPrefixQuery "
+        if (org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).isDebugEnabled()) {
+            org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).debug("Not implemented: getTermsFromPrefixQuery "
                     + "(" + query.toString() + "," + terms.toString() + "," + Boolean.toString(prohibited) + ")");
         }
     }
@@ -273,8 +274,8 @@ public final class HighlightExtractor {
         //MH getTerms(m_query.getQuery(), m_terms, prohibited);
         
         // just to avoid warnings
-        if (org.opencms.main.OpenCms.getLog(org.opencms.search.util.HighlightExtractor.class).isDebugEnabled()) {
-            org.opencms.main.OpenCms.getLog(org.opencms.search.util.HighlightExtractor.class).debug("Not implemented: getTermsFromPrefixQuery "
+        if (org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).isDebugEnabled()) {
+            org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).debug("Not implemented: getTermsFromPrefixQuery "
                 + "(" + query.toString() + "," + terms.toString() + "," + Boolean.toString(prohibited) + ")");
         }
     }
@@ -299,8 +300,8 @@ public final class HighlightExtractor {
         //MH getTerms(m_query.getQuery(), m_terms, prohibited);
 
         // just to avoid warnings
-        if (org.opencms.main.OpenCms.getLog(org.opencms.search.util.HighlightExtractor.class).isDebugEnabled()) {
-            org.opencms.main.OpenCms.getLog(org.opencms.search.util.HighlightExtractor.class).debug("Not implemented: getTermsFromPrefixQuery "
+        if (org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).isDebugEnabled()) {
+            org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).debug("Not implemented: getTermsFromPrefixQuery "
                     + "(" + query.toString() + "," + terms.toString() + "," + Boolean.toString(prohibited) + ")");
         }
     }

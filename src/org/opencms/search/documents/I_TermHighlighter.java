@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/util/Attic/HtmlHighlighter.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/I_TermHighlighter.java,v $
+ * Date   : $Date: 2004/02/11 15:58:55 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -28,19 +28,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.search.util;
+package org.opencms.search.documents;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:01 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * Highlights arbitrary m_terms.
+ *
+ * @version $Id: I_TermHighlighter.java,v 1.1 2004/02/11 15:58:55 c.weinholz Exp $
+ * @author Maik Schreiber (mailto: bZ@iq-computing.de)
  */
-public class HtmlHighlighter implements I_TermHighlighter {
-
-    /**
-     * @see org.opencms.search.util.I_TermHighlighter#highlightTerm(java.lang.String)
-     */
-    public String highlightTerm(String term) {
-        return "<b>" + term + "</b>";
-    }
-
+public interface I_TermHighlighter {
+  /**
+   * Highlight an arbitrary term. For example, an HTML I_TermHighlighter could simply do:
+   *
+   * <p><dl><dt></dt><dd><code>return "&lt;b&gt;" + term + "&lt;/b&gt;";</code></dd></dl>
+   *
+   * @param term term text to highlight
+   *
+   * @return highlighted term text
+   */
+  String highlightTerm(String term);
 }

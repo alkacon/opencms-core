@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/util/Attic/HtmlExtractor.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlExtractor.java,v $
+ * Date   : $Date: 2004/02/11 15:58:55 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -34,9 +34,9 @@
 //
 // Revision Control Information
 //
-// $Source: /alkacon/cvs/opencms/src/org/opencms/search/util/Attic/HtmlExtractor.java,v $
+// $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlExtractor.java,v $
 // $Author: c.weinholz $
-// $Date: 2004/02/11 15:01:01 $
+// $Date: 2004/02/11 15:58:55 $
 // $Revision: 1.1 $
 //
 // This library is free software; you can redistribute it and/or
@@ -53,7 +53,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-package org.opencms.search.util;
+package org.opencms.search.documents;
 
 import org.htmlparser.Parser;
 import org.htmlparser.StringNode;
@@ -65,13 +65,13 @@ import org.htmlparser.util.Translate;
 import org.htmlparser.visitors.NodeVisitor;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:01 $
+ * @version $Revision: 1.1 $ $Date: 2004/02/11 15:58:55 $
  * @author  Carsten Weinholz (c.weinholz@alkacon.com)
  *
  * @author Derrick Oswald
  * Created on December 23, 2002, 5:01 PM
  */
-public class HtmlExtractor extends NodeVisitor {
+public class CmsHtmlExtractor extends NodeVisitor {
 
     /**
      * Property name in event where the URL contents changes.
@@ -162,7 +162,7 @@ public class HtmlExtractor extends NodeVisitor {
      * <p><code>Collapse</code> is set <code>true</code>, so text appears
      * compact like a browser would display it.</p>
      */
-    public HtmlExtractor () {
+    public CmsHtmlExtractor () {
         super (true, true);
         m_parser = new Parser ();
         m_links = false;
