@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/01/21 23:20:38 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/02/03 14:17:04 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.55 $ $Date: 2003/01/21 23:20:38 $
+ * @version $Revision: 1.56 $ $Date: 2003/02/03 14:17:04 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -197,7 +197,11 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         int currentFolderId = (cms.readFolder(currentFolder)).getResourceId();
         // start creating content
         StringBuffer content = new StringBuffer(2048);
-        content.append("<html> \n<head> \n<script language=JavaScript>\n");
+        content.append("<html> \n<head> \n");
+        content.append("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=");
+        content.append(cms.getRequestContext().getEncoding());
+        content.append("\">\n");
+        content.append("<script language=JavaScript>\n");
         content.append("function initialize() {\n");
 
         if(listonly) {
