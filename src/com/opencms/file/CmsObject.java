@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/25 13:52:12 $
-* Version: $Revision: 1.291 $
+* Date   : $Date: 2003/06/25 16:19:35 $
+* Version: $Revision: 1.292 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.291 $
+ * @version $Revision: 1.292 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -109,6 +109,8 @@ public class CmsObject implements I_CmsConstants {
      * The class for linkmanagement.
      */
     private LinkChecker m_linkChecker = null;
+
+
 
     /**
      * the modus the cmsObject runs in (used i.e. for static export)
@@ -194,8 +196,26 @@ public void addFileExtension(String extension, String resTypeName) throws CmsExc
  *
  * @throws CmsException if operation was not successful.
  */
-public CmsGroup addGroup(String name, String description, int flags, String parent) throws CmsException {
-    return (m_driverManager.addGroup(m_context.currentUser(), m_context.currentProject(), name, description, flags, parent));
+public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException {
+    return (m_driverManager.createGroup(m_context.currentUser(), m_context.currentProject(), name, description, flags, parent));
+}
+
+/**
+ * Adds a new group to the Cms.<p>
+ * 
+ * <b>Security:</b>
+ * Only members of the group administrators are allowed to add a new group.
+ * 
+ * @param id			the id of the group
+ * @param name			the name of the new group
+ * @param description	the description of the new group
+ * @param flags			the flags for the new group
+ * @param parent		the parent group
+ * @return				a <code>CmsGroup</code> object representing the newly created group.
+ * @throws CmsException if something goes wrong
+ */
+public CmsGroup createGroup(String id, String name, String description, int flags, String parent) throws CmsException {
+	return m_driverManager.createGroup(m_context.currentUser(), m_context.currentProject(), id, name, description, flags, parent);
 }
 
 /**
@@ -226,6 +246,7 @@ public CmsUser addUser(String name, String password, String group, String descri
  * <b>Security:</b>
  * Only members of the group administrators are allowed to add a user.
  *
+ * @param id the id of the user
  * @param name the new name for the user.
  * @param password the new password for the user.
  * @param recoveryPassword the new password for the user.
@@ -245,10 +266,10 @@ public CmsUser addUser(String name, String password, String group, String descri
  *
  * @throws CmsException if operation was not successful.
  */
-public CmsUser addImportUser(String name, String password, String recoveryPassword, String description,
+public CmsUser addImportUser(String id, String name, String password, String recoveryPassword, String description,
         String firstname, String lastname, String email, int flags, Hashtable additionalInfos,
         String defaultGroup, String address, String section, int type) throws CmsException {
-    return (m_driverManager.addImportUser(m_context.currentUser(), m_context.currentProject(), name, password,
+    return (m_driverManager.addImportUser(m_context.currentUser(), m_context.currentProject(), id, name, password,
             recoveryPassword, description, firstname, lastname, email, flags, additionalInfos,
             defaultGroup, address, section, type));
 }
@@ -2354,6 +2375,7 @@ public void moveResource(String source, String destination) throws CmsException 
 protected void doMoveFile(String source, String destination) throws CmsException {
     m_driverManager.moveFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(source), getSiteRoot(destination));
 }
+
 
 /**
  * Publishes a project.
