@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsBase.java,v $
-* Date   : $Date: 2001/07/16 10:17:58 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/07/16 13:36:05 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ import java.io.File;
  * and helper functions, e.g. OpenCms logging oder OpenCms base path.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2001/07/16 10:17:58 $
+ * @version $Revision: 1.3 $ $Date: 2001/07/16 13:36:05 $
  */
 public class CmsBase implements I_CmsLogChannels {
 
@@ -113,7 +113,11 @@ public class CmsBase implements I_CmsLogChannels {
     /** Get the OpenCms web-base path */
     public static String getWebBasePath() {
         File basePath = new File(c_basePath);
-        return basePath.getParent();;
+        String webBasePath = basePath.getParent();
+        if(!webBasePath.endsWith(File.separatorChar+"")) {
+            webBasePath += File.separatorChar;
+        }
+        return webBasePath;
     }
 
     public static String getAbsoluteWebPath(String s) {
@@ -126,10 +130,11 @@ public class CmsBase implements I_CmsLogChannels {
             if(c_basePath == null) {
                 return null;
             } else {
-                f = new File(getWebBasePath() + s);
+                return getWebBasePath() + s;
             }
+        } else {
+            return s;
         }
-        return f.getAbsolutePath();
     }
 
     public static String getAbsolutePath(String s) {
@@ -142,10 +147,11 @@ public class CmsBase implements I_CmsLogChannels {
             if(c_basePath == null) {
                 return null;
             } else {
-                f = new File(c_basePath, s);
+                return c_basePath + s;
             }
+        } else {
+            return s;
         }
-        return f.getAbsolutePath();
     }
 
     public static String getPropertiesPath(boolean absolute) {

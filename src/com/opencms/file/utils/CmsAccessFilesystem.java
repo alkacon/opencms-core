@@ -2,11 +2,11 @@ package com.opencms.file.utils;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsAccessFilesystem.java,v $
- * Date   : $Date: 2001/05/17 14:10:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/07/16 13:36:05 $
+ * Version: $Revision: 1.7 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -14,15 +14,15 @@ package com.opencms.file.utils;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -42,39 +42,39 @@ public class CmsAccessFilesystem implements I_CmsConstants {
 	* This is the Hashtable of exportpoints.
 	*/
 	private Hashtable m_exportpointStorage  = null;
-	
+
 	/**
 	 * Constructor, creartes a new CmsAccessFilefilesystem object.
 	 *
 	 * @param mountpoint The mountpoint of this filesystem access module.
-	 * 
+	 *
 	 * @exception CmsException Throws CmsException if connection fails.
-	 * 
+	 *
 	 */
-	public CmsAccessFilesystem(Hashtable exportpoints)	
+	public CmsAccessFilesystem(Hashtable exportpoints)
 		throws CmsException {
 		m_exportpointStorage = exportpoints;
 	}
 	/**
 	 * Calculates the absolute path in the filesystem.
-	 * 
+	 *
 	 * @param filename Name of a file in the OpenCms system.
 	 * @param exportpoint the key in the Hashtable m_exportpointStorage.
 	 * @return Absolute path of a the file in the disk filesystem.
 	 */
 	private String absoluteName(String filename, String exportpoint){
-		
+
 		String path = null;
 		String exportpath = (String) m_exportpointStorage.get(exportpoint);
 		path = exportpath + filename.substring(exportpoint.length());
 		return path;
 	}
 /**
- * Creates a new folder 
- * 
- * @param foldername The complete path to the folder. 
- *  
- * 
+ * Creates a new folder
+ *
+ * @param foldername The complete path to the folder.
+ *
+ *
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public void createFolder(String foldername, String key) throws CmsException {
@@ -91,14 +91,14 @@ public void createFolder(String foldername, String key) throws CmsException {
 	}
 }
 	 /**
-	  * Deletes a file or folder in the filesytem. 
-	  * 
+	  * Deletes a file or folder in the filesytem.
+	  *
 	  * @param filename The complete path of the file or folder.
 	  * @exception CmsException Throws CmsException if operation was not succesful
 	  */
-	 public void removeResource(String filename, String key) 
+	 public void removeResource(String filename, String key)
 		throws CmsException{
-		 
+
 		 File discFile=new File(absoluteName(filename,key));
 		 // check if file exists
 		 if (discFile.exists()){
@@ -113,14 +113,14 @@ public void createFolder(String foldername, String key) throws CmsException {
 	 *
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * @param contents The contents of the new file.
-	 * 
-	 * 
+	 *
+	 *
 	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */    
+	 */
 	 public void writeFile(String filename, String key, byte[] contents)
-							
+
 		 throws CmsException {
-		 
+
 			 File discFile= new File (absoluteName(filename,key));
 			 try {
 				 // write the new file to disk
@@ -129,6 +129,6 @@ public void createFolder(String foldername, String key) throws CmsException {
 				 s.close();
 			 } catch (Exception e) {
 			  // throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
-			 }	
+			 }
 	 }
 }

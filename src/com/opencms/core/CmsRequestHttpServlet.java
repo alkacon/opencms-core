@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2001/07/11 15:17:08 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/07/16 13:36:05 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2001/07/11 15:17:08 $
+ * @version $Revision: 1.22 $ $Date: 2001/07/16 13:36:05 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -692,9 +692,6 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
      */
     public String getWebAppUrl() {
         String retValue = "";
-/*        retValue += m_req.getScheme() + "://";
-        retValue += m_req.getServerName() + ":";
-        retValue += m_req.getServerPort(); */
         try {
             retValue += m_req.getContextPath();
         } catch(NoSuchMethodError err) {
