@@ -267,13 +267,17 @@ ${opencms.inputlib.dbcp}
             <fileset dir="${opencms.input.libs}">
                 <include name="**/*.jar"/>
                 <include name="**/*.zip"/>
+                <exclude name="**/servlet.jar"/>
+                <exclude name="**/junit.jar"/>
+                <exclude name="${excludes}" />
             </fileset>
         </copy>    	
         <copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
             <fileset dir="${opencms.output.jars}">
                 <include name="*.jar"/>
                 <include name="*.zip"/>
-                <exclude name="servlet.jar"/>
+                <exclude name="**/servlet.jar"/>
+                <exclude name="**/junit.jar"/>
                 <exclude name="${excludes}" />
             </fileset>
         </copy>     
