@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/23 13:45:07 $
- * Version: $Revision: 1.224 $
+ * Date   : $Date: 2001/01/24 09:50:29 $
+ * Version: $Revision: 1.225 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.224 $ $Date: 2001/01/23 13:45:07 $
+ * @version $Revision: 1.225 $ $Date: 2001/01/24 09:50:29 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6100,7 +6100,11 @@ protected void validName(String name, boolean blank) throws CmsException {
 		throws CmsException {
 		if (extensions != null) {
 			if (isAdmin(currentUser, currentProject)) { 
-				
+		        Enumeration enu=extensions.keys();
+				while (enu.hasMoreElements()) {
+				    String key=(String)enu.nextElement();
+					validFilename(key);
+				}
 				if (m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS) == null) {
 					// the property wasn't set before.
 					m_dbAccess.addSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS, extensions);
