@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * ToDo: Removal of unused sessions!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/01/05 18:15:22 $  
+ * @version $Revision: 1.4 $ $Date: 2000/01/14 13:46:51 $  
  */
 
 public interface I_CmsSession
@@ -43,6 +43,7 @@ public interface I_CmsSession
      * @param username The name of the user to be stored.
      */
     public void putUser(String sessionId,String username);
+  
     /**
      * Gets the complete userinformation of a user from the session storage.
      * 
@@ -50,6 +51,14 @@ public interface I_CmsSession
      * @return Hashtable with userinformation or null;
      */
     public Hashtable getUser(String sessionId) ;
+    
+     /**
+     * Removes a user from the session storage.
+     * This is done when the session of the User is destroyed.
+     * 
+     * @param sessionID The actual session Id.
+     */
+    public void deleteUser(String sessionId) ;       
     
 
       /**

@@ -31,7 +31,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/13 17:51:00 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/14 13:46:51 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
@@ -180,7 +180,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
             throws CmsException {
         try {
             I_CmsResponse resp = cms.getRequestContext().getResponse();
-            resp.setContentType(mimeType);
+           // resp.setContentType(mimeType);
             OutputStream out = resp.getOutputStream();
             out.write(result);
             out.flush();

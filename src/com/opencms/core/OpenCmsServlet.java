@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.6 $ $Date: 2000/01/13 18:02:16 $  
+* @version $Revision: 1.7 $ $Date: 2000/01/14 13:46:51 $  
 * 
 */
 
@@ -72,7 +72,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
      /**
       * The reference to the OpenCms system.
       */
-     private OpenCms m_opencms;
+     private A_OpenCms m_opencms;
      
  	 /**
 	 * Initialization of the OpenCms servlet.
@@ -127,14 +127,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
 	public void doGet(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {	
         
-        // this method still contains debug information
-  
         CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
         CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(res);
        
        try {
             CmsObject cms=initUser(cmsReq,cmsRes);
             CmsFile file=m_opencms.initResource(cms); 
+            m_opencms.setResponse(cms,file);
             m_opencms.showResource(cms,file);
             updateUser(cms,cmsReq,cmsRes);
         } catch (CmsException e) {
@@ -169,6 +168,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
        try {
             CmsObject cms=initUser(cmsReq,cmsRes);
             CmsFile file=m_opencms.initResource(cms); 
+            m_opencms.setResponse(cms,file);
             m_opencms.showResource(cms,file);
             updateUser(cms,cmsReq,cmsRes);
         } catch (CmsException e) {
@@ -236,6 +236,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
              
                 // get the username
                 user=m_sessionStorage.getUserName(session.getId());
+     
+                             
                 //check if a user was returned, i.e. the user is authenticated
                 if (user != null) {
                
@@ -272,6 +274,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                             user=cms.loginUser(username,password); 
                             // authentification was successful create a session 
                             session=req.getSession(true);
+                            OpenCmsServletNotify notify = new OpenCmsServletNotify(session.getId(),m_sessionStorage);
+                            session.putValue("NOTIFY",notify);
                      
                             } catch (CmsException e) {
                                 if (e.getType() == CmsException.C_NO_ACCESS){
@@ -313,7 +317,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         // get the original ServletRequest and response
         HttpServletRequest req=(HttpServletRequest)cmsReq.getOriginalRequest();
         HttpServletResponse res=(HttpServletResponse)cmsRes.getOriginalResponse();
-       
+           
         //get the session if it is there
         session=req.getSession(false);
         // if the user was authenticated via sessions, update the information in the
@@ -323,7 +327,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                                       cms.getRequestContext().currentUser().getName(),
                                       cms.getRequestContext().currentGroup().getName(),
                                       cms.getRequestContext().currentProject().getName());
-        }       
+        }                  
      }
     
     /**

@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * ToDo: Removal of unused sessions!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/01/13 18:02:16 $  
+ * @version $Revision: 1.5 $ $Date: 2000/01/14 13:46:51 $  
  */
 
 public class CmsSession implements I_CmsConstants,I_CmsSession    
@@ -99,6 +99,15 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
         return userinfo;       
     }
     
+     /**
+     * Removes a user from the session storage.
+     * This is done when the session of the User is destroyed.
+     * 
+     * @param sessionID The actual session Id.
+     */
+    public void deleteUser(String sessionId) {
+        m_sessions.remove(sessionId) ;          
+    }
 
      /**
      * Gets the  username of a user from the session storage.
@@ -171,13 +180,13 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
         Hashtable value;
         String name;
         Enumeration enu=m_sessions.keys();
-        output.append("[CmsSessions]:/n");
+        output.append("[CmsSessions]:\n");
         while (enu.hasMoreElements()){
             key=(String)enu.nextElement();
             output.append(key+" : ");
             value=(Hashtable)m_sessions.get(key);
             name=(String)value.get(C_SESSION_USERNAME);
-            output.append(name+"/n");
+            output.append(name+"\n");
         }
         return output.toString();
     }
