@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/08/28 09:11:09 $
- * Version: $Revision: 1.495 $
+ * Date   : $Date: 2003/08/28 14:58:55 $
+ * Version: $Revision: 1.496 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,8 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.1.9 Salusa Secundus - September xx, 2003
 
 OpenCms 5.1.8 Salusa Secundus - August 28, 2003
 - Several performance improvements by optimized DB indexing and advanced caching
