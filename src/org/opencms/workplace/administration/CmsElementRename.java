@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsElementRename.java,v $
- * Date   : $Date: 2004/12/17 12:09:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/17 12:39:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.3
  */
@@ -828,7 +828,7 @@ public class CmsElementRename extends CmsReport {
                         continue;
                     }
                     if (!page.hasValue(getParamOldElement(), locale)) {
-                        m_report.println(m_report.key("report.dots") + "element "+getParamOldElement()+" does not exists.", I_CmsReport.C_FORMAT_WARNING);
+                        m_report.println(m_report.key("report.dots") + "element "+getParamOldElement()+" does not exist.", I_CmsReport.C_FORMAT_WARNING);
                         continue;
                     }
                     boolean validateNewElement = Boolean.valueOf(getParamValidateNewElement()).booleanValue();
