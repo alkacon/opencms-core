@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/09 14:25:49 $
- * Version: $Revision: 1.222 $
+ * Date   : $Date: 2001/01/23 08:43:56 $
+ * Version: $Revision: 1.223 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.222 $ $Date: 2001/01/09 14:25:49 $
+ * @version $Revision: 1.223 $ $Date: 2001/01/23 08:43:56 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1795,7 +1795,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
 			// no space before or after the name
 			name = name.trim();
 			// check the name
-			validName(name, true);
+			validFilename(name);
 			m_propertyDefVectorCache.clear();			
 			return( m_dbAccess.createPropertydefinition(name, 
 													    getResourceType(currentUser, 
