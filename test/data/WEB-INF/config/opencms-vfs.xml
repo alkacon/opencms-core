@@ -10,16 +10,15 @@
 				<loader class="org.opencms.loader.CmsPointerLoader" />
 				<loader class="org.opencms.loader.CmsJspLoader" />
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
+				<loader class="org.opencms.loader.CmsXmlContentLoader" />
 			</resourceloaders>
 			<resourcetypes>
 				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" />
 				<type class="org.opencms.file.types.CmsResourceTypeFolder" />
-				<type class="org.opencms.file.types.CmsResourceTypePlain">
+				<type class="org.opencms.file.types.CmsResourceTypePlain" >
 					<mapping suffix=".txt" />
 					<mapping suffix=".html" />
 					<mapping suffix=".htm" />
-					<param name="test1">One</param>
-					<param name="test2">Two</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypePointer" />
 				<type class="org.opencms.file.types.CmsResourceTypeBinary">
@@ -42,10 +41,30 @@
 					<mapping suffix=".jsp" />
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" />
-			</resourcetypes> 
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+					<param name="resource.type.id">11</param>
+					<param name="resource.type.name">xmlcontent</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">15</param>
+					<param name="resource.type.name">imagegallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">16</param>
+					<param name="resource.type.name">linkgallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">17</param>
+					<param name="resource.type.name">htmlgallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">18</param>
+					<param name="resource.type.name">downloadgallery</param>
+				</type>			
+			</resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.CmsDefaultResourceCollector" order="100" />
-			</collectors>	
+			</collectors>		
 		</resources>
 		<defaultfiles>
 			<defaultfile name="index.html" />
@@ -69,7 +88,6 @@
 			<xmlcontent class="org.opencms.xml.types.CmsXmlSimpleHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlStringValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlVfsFileValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlVfsImageValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsImageWidget" />
 		</xmlcontents>
 	</vfs>
 </opencms>

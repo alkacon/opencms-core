@@ -176,7 +176,7 @@
 # The URI for the new resource dialog and the ranking is required.
 -->
 <!ELEMENT newresource EMPTY>
-<!ATTLIST newresource uri CDATA #REQUIRED order CDATA #REQUIRED>
+<!ATTLIST newresource page CDATA #IMPLIED uri CDATA #REQUIRED order CDATA #REQUIRED>
 
 <!--
 # Enter the permissions for OpenCms groups. The flags have the following meaning:

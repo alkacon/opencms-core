@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/11/03 17:20:58 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -262,13 +262,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "addLoader");  
 
         // add rules for resource types
-        digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE, A_CLASS, CmsConfigurationException.class);
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
-        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE, "addResourceType");   
-        
-        // extension mapping rules
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
-        digester.addCallParam ("*/" +  N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, 0, A_SUFFIX);       
+        addResourceTypeXmlRules(digester);
         
         // add rules for VFS content collectors
         digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, "addContentCollector", 2);
@@ -304,6 +298,23 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_XMLCONTENT, 1, A_WIDGET);
     }
 
+    /**
+     * Adds the resource type rules to the given digester.<p>
+     * 
+     * @param digester the digester to add the rules to
+     */     
+    public static void addResourceTypeXmlRules(Digester digester) {
+
+        // add rules for resource types
+        digester.addObjectCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE, A_CLASS, CmsConfigurationException.class);
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
+        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, "addResourceType");   
+        
+        // extension mapping rules
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
+        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, 0, A_SUFFIX);       
+    }
+    
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#generateXml(org.dom4j.Element)
      */

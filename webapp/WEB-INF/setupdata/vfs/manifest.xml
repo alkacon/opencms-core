@@ -13794,6 +13794,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/filetypes/gallery.gif</source>
+			<destination>system/workplace/resources/filetypes/gallery.gif</destination>
+			<type>image</type>
+			<uuidresource>77cbb39a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:37:42 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/filetypes/image.gif</source>
 			<destination>system/workplace/resources/filetypes/image.gif</destination>
 			<type>image</type>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2004/10/22 10:03:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/03 17:20:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * in the new resource dialog.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -55,19 +55,20 @@ public class CmsExplorerTypeSettings implements Comparable {
     private CmsExplorerContextMenu m_contextMenu;
     
     private List m_contextMenuEntries;  
-    private String m_icon;
     
-    private boolean m_isResourceType;
+    private boolean m_hasEditOptions;
+    private String m_icon;
     private String m_key;
     
     private String m_name;
     private Integer m_newResourceOrder;
-    
+    private String m_newResourcePage;
     private String m_newResourceUri;
     private List m_properties;
     
     private boolean m_propertiesEnabled;
     private String m_reference;
+   
     private boolean m_showNavigation;
     
     /**
@@ -78,7 +79,7 @@ public class CmsExplorerTypeSettings implements Comparable {
         m_properties = new ArrayList();
         m_contextMenuEntries = new ArrayList();
         m_contextMenu = new CmsExplorerContextMenu();
-        m_isResourceType = false;
+        m_hasEditOptions = false;
         m_propertiesEnabled = false;
         m_showNavigation = false;
     }
@@ -257,6 +258,16 @@ public class CmsExplorerTypeSettings implements Comparable {
     }
     
     /**
+     * Returns the page.<p>
+     *
+     * @return the page
+     */
+    public String getNewResourcePage() {
+
+        return m_newResourcePage;
+    }
+    
+    /**
      * Returns the URI for the new resource dialog of the explorer type setting.<p>
      * 
      * @return the URI for the new resource dialog of the explorer type setting
@@ -283,6 +294,15 @@ public class CmsExplorerTypeSettings implements Comparable {
     }
     
     /**
+     * Returns true if this explorer type entry has explicit edit options set.<p>
+     *  
+     * @return true if this explorer type entry has explicit edit options set
+     */
+    public boolean hasEditOptions() {        
+        return m_hasEditOptions;
+    }
+    
+    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -296,15 +316,6 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public boolean isPropertiesEnabled() {
         return m_propertiesEnabled;
-    }
-    
-    /**
-     * Returns true if this settings object is mapped to an existing resource type.<p>
-     *  
-     * @return true, if this settings object is mapped to an existing resource type, otherwise false
-     */
-    public boolean isResourceType() {
-        return m_isResourceType;
     }
 
     /**
@@ -334,6 +345,15 @@ public class CmsExplorerTypeSettings implements Comparable {
         m_contextMenuEntries = entries;
     }
     
+    /** 
+     * Sets the flag if this explorer type entry has explicit edit options set.<p>
+     * 
+     * This is determined by the presence of the &lt;editoptions&gt; node in the Cms workplace configuration.<p>
+     */
+    public void setEditOptions() {
+        m_hasEditOptions = true;
+    }
+    
     /**
      * Sets the icon path and file name of the explorer type setting.<p>
      * 
@@ -344,15 +364,6 @@ public class CmsExplorerTypeSettings implements Comparable {
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Setting icon: " + m_icon);
         }      
-    }
-    
-    /** 
-     * Sets the flag if this settings object is mapped to an existing resource type.<p>
-     * 
-     * This is determined by the presence of the &lt;editoptions&gt; node in the Cms workplace configuration.<p>
-     */
-    public void setIsResourceType() {
-        m_isResourceType = true;
     }
     
     /**
@@ -397,6 +408,16 @@ public class CmsExplorerTypeSettings implements Comparable {
             }            
             m_newResourceOrder = new Integer(0);
         }
+    }
+    
+    /**
+     * Sets the page.<p>
+     *
+     * @param page the page to set
+     */
+    public void setNewResourcePage(String page) {
+
+        m_newResourcePage = page;
     }
     
     /**
@@ -489,5 +510,6 @@ public class CmsExplorerTypeSettings implements Comparable {
         setName(name);
         setKey(key);
         setIcon(icon);        
-        setReference(reference);    }
+        setReference(reference);
+    }
 }

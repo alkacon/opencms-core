@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/11/02 14:07:51 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/11/03 17:20:58 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.configuration;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
@@ -61,6 +62,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The "isxml" attribute. */
     public static final String A_ISXML = "isxml";
+    
+    /** The "page" attribute. */
+    public static final String A_PAGE = "page";
     
     /** The "permissions" attribute. */
     public static final String A_PERMISSIONS = "permissions";
@@ -320,6 +324,59 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         }               
     } 
 
+    /**
+     * Adds the explorer type rules to the given digester.<p>
+     * 
+     * @param digester the digester to add the rules to
+     */ 
+    public static void addExplorerTypeXmlRules(Digester digester) {
+
+        // add explorer type settings
+        digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
+        digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 4);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 0, A_NAME);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 3, A_REFERENCE);
+                
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceUri", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_URI);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceOrder", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_ORDER);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourcePage", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_PAGE);        
+        
+        digester.addObjectCreate("*/" + N_EXPLORERTYPE +"/" + N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
+        digester.addSetNext("*/" + N_EXPLORERTYPE +"/" + N_ACCESSCONTROL, "setAccess");        
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, "addAccessEntry", 2);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 0, A_PRINCIPAL);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 1, A_PERMISSIONS);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES, "setPropertyDefaults", 2);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES, 0, A_ENABLED);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES, 1, A_SHOWNAVIGATION);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY, "addProperty", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY, 0, A_NAME);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, "addContextMenuEntry", 6);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 0, A_KEY);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 1, A_URI);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 2, A_RULES);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 3, A_TARGET);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 4, A_ORDER);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 5, A_ISXML);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR, "addContextMenuSeparator", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR, 0, A_ORDER);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU, "createContextMenu");
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS, "setEditOptions");    
+    }
+
     
     /**
      * Creates the xml output for explorer type nodes.<p>
@@ -342,6 +399,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             }
             // create subnode <newresource>
             Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
+            if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {
+                newResElement.addAttribute(A_PAGE, settings.getNewResourcePage());
+            }
             newResElement.addAttribute(A_URI, settings.getNewResourceUri());
             newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
             // create subnode <accesscontrol>            
@@ -367,11 +427,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 }        
             }
             // create subnode <editoptions>
-            if (settings.isResourceType()) {
+            if (settings.hasEditOptions()) {
                 Element editOptionsElement = explorerTypeElement.addElement(N_EDITOPTIONS);
                 Element defaultPropertiesElement = editOptionsElement.addElement(N_DEFAULTPROPERTIES);
-                defaultPropertiesElement.addAttribute(A_ENABLED, "" + settings.isPropertiesEnabled());
-                defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, "" + settings.isShowNavigation());
+                defaultPropertiesElement.addAttribute(A_ENABLED, String.valueOf(settings.isPropertiesEnabled()));
+                defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, String.valueOf(settings.isShowNavigation()));
                 Iterator m = settings.getProperties().iterator();
                 while (m.hasNext()) {
                     defaultPropertiesElement.addElement(N_PROPERTY).addAttribute(A_NAME, (String)m.next());
@@ -458,7 +518,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         
         // add max file upload size rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_MAXUPLOADSIZE, "setFileMaxUploadSize", 0);
-        
+                
         // add labeled folders rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, "addLabeledFolder", 1);        
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
@@ -466,49 +526,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add localized folders rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_LOCALIZEDFOLDERS + "/" + N_RESOURCE, "addLocalizedFolder", 1);        
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LOCALIZEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
-                
-        // add explorer type settings
-        digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
-        digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");
-        
-        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 4);
-        digester.addCallParam("*/" + N_EXPLORERTYPE, 0, A_NAME);
-        digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
-        digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
-        digester.addCallParam("*/" + N_EXPLORERTYPE, 3, A_REFERENCE);
-                
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceUri", 1);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_URI);
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceOrder", 1);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_ORDER);
-        
-        digester.addObjectCreate("*/" + N_EXPLORERTYPE +"/" + N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
-        digester.addSetNext("*/" + N_EXPLORERTYPE +"/" + N_ACCESSCONTROL, "setAccess");        
-        
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, "addAccessEntry", 2);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 0, A_PRINCIPAL);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 1, A_PERMISSIONS);
-        
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES, "setPropertyDefaults", 2);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES, 0, A_ENABLED);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES, 1, A_SHOWNAVIGATION);
-        
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY, "addProperty", 1);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY, 0, A_NAME);
-        
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, "addContextMenuEntry", 6);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 0, A_KEY);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 1, A_URI);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 2, A_RULES);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 3, A_TARGET);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 4, A_ORDER);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 5, A_ISXML);
-        
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR, "addContextMenuSeparator", 1);
-        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR, 0, A_ORDER);
-        
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU, "createContextMenu");
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS, "setIsResourceType");
+
+        // add explorer type rules
+        addExplorerTypeXmlRules(digester);
         
         // creation of the default user settings              
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" +N_USER, CmsDefaultUserSettings.class);  

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-vfs.dtd">
 
-<opencms>    
-    <vfs>
-    	<resources>
+<opencms>	
+	<vfs>
+		<resources>
 			<resourceloaders>
 				<loader class="com.opencms.legacy.CmsXmlTemplateLoader">            
 					<param name="elementcache.enabled">true</param>
@@ -19,11 +19,11 @@
 					<param name="jsp.errorpage.committed">true</param>
 				</loader>
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
-			</resourceloaders>    
+			</resourceloaders>
 			<resourcetypes>
 				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" />
 				<type class="org.opencms.file.types.CmsResourceTypeFolder" />
-				<type class="org.opencms.file.types.CmsResourceTypePlain">
+				<type class="org.opencms.file.types.CmsResourceTypePlain" >
 					<mapping suffix=".txt" />
 					<mapping suffix=".html" />
 					<mapping suffix=".htm" />
@@ -53,23 +53,39 @@
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
 					<param name="resource.type.id">11</param>
 					<param name="resource.type.name">xmlcontent</param>
-				</type>	
-			</resourcetypes>  
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">15</param>
+					<param name="resource.type.name">imagegallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">16</param>
+					<param name="resource.type.name">linkgallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">17</param>
+					<param name="resource.type.name">htmlgallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">18</param>
+					<param name="resource.type.name">downloadgallery</param>
+				</type>							
+			</resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.CmsDefaultResourceCollector" order="100" />
-			</collectors>			
-        </resources>   
+			</collectors>		
+		</resources>
 		<defaultfiles>
 			<defaultfile name="index.html" />
 			<defaultfile name="index.jsp" />
-		</defaultfiles>        
-        <translations>
-        	<filetranslations enabled="true">
-        		<translation>s#[\s]+#_#g</translation>
-        		<translation>s#\\#/#g</translation>
-        		<translation>s#[^0-9a-zA-Z_\.\-\/]#!#g</translation>
-        		<translation>s#!+#x#g</translation>
-        	</filetranslations>
+		</defaultfiles>
+		<translations>
+			<filetranslations enabled="true">
+				<translation>s#[\s]+#_#g</translation>
+				<translation>s#\\#/#g</translation>
+				<translation>s#[^0-9a-zA-Z_\.\-\/]#!#g</translation>
+				<translation>s#!+#x#g</translation>
+			</filetranslations>
         	<foldertranslations enabled="false">
         		<translation>s#/default/vfs/content/bodys/(.*)#/system/bodies/$1#</translation>
         		<translation>s#/default/vfs/pics/system/(.*)#/system/workplace/resources/$1#</translation>
@@ -83,8 +99,8 @@
         		<translation>s#/default/vfs/system/workplace/css/(.*)#/system/workplace/resources/$1#</translation>
         		<translation>s#/default/vfs/system/workplace/templates/js/(.*)#/system/workplace/scripts/$1#</translation>
         	</foldertranslations>
-        </translations>     
-		<xmlcontents>	
+		</translations>
+		<xmlcontents>
 			<xmlcontent class="org.opencms.xml.types.CmsXmlBooleanValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlColorValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlDateTimeValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
@@ -93,7 +109,6 @@
 			<xmlcontent class="org.opencms.xml.types.CmsXmlSimpleHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlStringValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlVfsFileValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlVfsImageValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsImageWidget" />
-		</xmlcontents>              
-    </vfs>   
-</opencms>    
+		</xmlcontents>
+	</vfs>
+</opencms>
