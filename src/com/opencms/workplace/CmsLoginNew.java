@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/04/14 08:09:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/06/12 16:32:26 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,16 +39,19 @@ import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
+import com.opencms.util.LinkSubstitution;
 
 import java.util.Hashtable;
 import java.util.Vector;
+
+import org.opencms.workplace.CmsWorkplaceAction;
 
 /**
  * Template class for displaying the login screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -124,8 +127,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
                 username = cms.loginUser(name, password);
                 validLogin = true;
                 if (DEBUG > 1) System.err.println("CmsLoginNew: cms.loginUser() successfull");
-            }
-            catch(CmsException e) {
+            } catch(CmsException e) {
                 // invalid login
                 validLogin = false;
                 if (DEBUG > 1) System.err.println("CmsLoginNew: cms.loginUser() failed");
@@ -136,10 +138,10 @@ public class CmsLoginNew extends CmsXmlTemplate {
                 // use the same behaviour as if the access was unauthorized
                 validLogin = false;
                 if (DEBUG > 1) System.err.println("CmsLoginNew: user was guest user");
-            } else if ( (username != null) && 
-                (! cms.userInGroup(username, CmsObject.C_GROUP_USERS)) && 
-                (! cms.userInGroup(username, CmsObject.C_GROUP_PROJECTLEADER)) && 
-                (! cms.userInGroup(username, CmsObject.C_GROUP_ADMIN)) ) {
+            } else if ((username != null) 
+                && (! cms.userInGroup(username, CmsObject.C_GROUP_USERS)) 
+                && (! cms.userInGroup(username, CmsObject.C_GROUP_PROJECTLEADER)) 
+                && (! cms.userInGroup(username, CmsObject.C_GROUP_ADMIN))) {
                 // user MUST be in at last one of the default groups "Administrators", "Users" or "Projectmanagers"
                 // use the same behaviour as if the access was unauthorized
                 validLogin = false;
@@ -147,14 +149,14 @@ public class CmsLoginNew extends CmsXmlTemplate {
             }
             
             if (! validLogin) {
-                throw new CmsException( "[OpenCms login failed]", CmsException.C_NO_USER);
+                throw new CmsException("[OpenCms login failed]", CmsException.C_NO_USER);
             }
             if (DEBUG > 0) System.err.println("CmsLoginNew: user " + username + " logged in");
 
             // get a session for this user so that he is authentificated at the
             // end of this request
             session = cms.getRequestContext().getSession(true);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
             }
 
@@ -187,11 +189,11 @@ public class CmsLoginNew extends CmsXmlTemplate {
             
             // trigger call of "login()" JavaScript in Template on page load
             xmlTemplateDocument.setData("onload", "onload='login();'");
-        } else if ((! logout) && ((cms.getRequestContext().currentUser()) != null) && 
-            (! C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())) &&       
-            ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_USERS)) ||
-             (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_PROJECTLEADER)) ||
-             (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN)) )) {
+        } else if ((! logout) && ((cms.getRequestContext().currentUser()) != null) 
+            && (! C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())) 
+            && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_USERS)) 
+                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_PROJECTLEADER)) 
+                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN)))) {
             // the user is already logged in and no logout parameter is present, open a new window
             if (DEBUG > 1) System.err.println("CmsLoginNew: re-using old login");            
             xmlTemplateDocument.setData("onload", "onload='login();'");        
@@ -219,11 +221,10 @@ public class CmsLoginNew extends CmsXmlTemplate {
      * @param cms the initialized CmsObject
      * @param session the initialized user session 
      * @param startProjectId the id value of the request parameter (might be null)
-     * @throws CmeSxception in case of issues reading the registry
+     * @throws CmsException in case of issues reading the registry
      */
     private void setStartProjectId(CmsObject cms, I_CmsSession session, String startProjectId) 
-    throws CmsException 
-    {
+    throws CmsException {
         // set current project to the default online project or to 
         // project specified in the users preferences
         int currentProject = cms.onlineProject().getId();
@@ -265,11 +266,10 @@ public class CmsLoginNew extends CmsXmlTemplate {
      * @param cms the initialized CmsObject
      * @param session the initialized user session 
      * @param startTaskId the id of the task to display
-     * @throws CmeSxception in case of issues reading the registry
+     * @throws CmsException in case of issues reading the registry
      */
     private void setStartTaskId(CmsObject cms, I_CmsSession session, String startTaskId) 
-    throws CmsException 
-    {
+    throws CmsException {
         if ((startTaskId == null) || ("".equals(startTaskId))) return;
         Vector viewNames = new Vector();
         Vector viewLinks = new Vector();
@@ -308,9 +308,9 @@ public class CmsLoginNew extends CmsXmlTemplate {
      * @param cms for accessing system resources
      * @param tagcontent (unused)
      * @param doc reference to the A_CmsXmlContent object of the initiating XML document.
-     * @param userObj must ba a <code>java.util.Hashtable</code> with request parameters
+     * @param userObject must ba a <code>java.util.Hashtable</code> with request parameters
      * @return String with customized title information
-     * @throws CmsException
+     * @throws CmsException in case of errors processing the template
      */
     public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
     throws CmsException {
@@ -326,7 +326,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
      * @param cms for accessing system resources
      * @param tagcontent (unused)
      * @param doc reference to the A_CmsXmlContent object of the initiating XML document.
-     * @param userObj must ba a <code>java.util.Hashtable</code> with request parameters
+     * @param userObject must ba a <code>java.util.Hashtable</code> with request parameters
      * @return String with the version information of this OpenCms instance
      * @throws CmsException in case of errors processing the template
      */
@@ -342,7 +342,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
      * @param cms for accessing system resources
      * @param tagcontent key value for the resource bundle
      * @param doc reference to the A_CmsXmlContent object of the initiating XML document.
-     * @param userObj must ba a <code>java.util.Hashtable</code> with request parameters
+     * @param userObject must ba a <code>java.util.Hashtable</code> with request parameters
      * @return String with the version information of this OpenCms instance
      * @throws CmsException in case of errors processing the template
      */
@@ -350,6 +350,29 @@ public class CmsLoginNew extends CmsXmlTemplate {
     throws CmsException {
         return m_messages.key(tagcontent);
     }
+    
+    /**
+     * Returns the path to the workplace top level uri.<p>
+     *
+     * @param cms for accessing system resources
+     * @param tagcontent key value for the resource bundle
+     * @param doc reference to the A_CmsXmlContent object of the initiating XML document.
+     * @param userObject must ba a <code>java.util.Hashtable</code> with request parameters
+     * @return String with the version information of this OpenCms instance
+     * @throws CmsException in case of errors processing the template
+     */
+    public Object workplaceUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    throws CmsException {
+        try {
+            cms.readFileHeader(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            return LinkSubstitution.getLinkSubstitution(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+        } catch (CmsException e) {
+            if (e.getType() == CmsException.C_ACCESS_DENIED) {
+                return LinkSubstitution.getLinkSubstitution(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            }
+        }
+        return LinkSubstitution.getLinkSubstitution(cms, CmsWorkplaceAction.C_XML_WORKPLACE_URI);
+    }    
 
     /**
      * Prevent caching of this template

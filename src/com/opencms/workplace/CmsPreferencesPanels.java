@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/06/06 12:48:11 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/06/12 16:32:26 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,12 +43,14 @@ import com.opencms.template.A_CmsXmlContent;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 /**
  * Template class for displaying the preference panels screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.48 $ $Date: 2003/06/06 12:48:11 $
+ * @version $Revision: 1.49 $ $Date: 2003/06/12 16:32:26 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -151,8 +153,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param elementName not used
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
-     * @return Bytearre containgine the processed data of the template.
-     * @throws Throws CmsException if something goes wrong.
+     * @return array containing the processed data of the template.
+     * @throws CmsException if something goes wrong.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
@@ -260,20 +262,17 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 
                 // this is the panel for setting the explorer preferences
                 setExplorerSettings(session, parameters, reqCont, xmlTemplateDocument);
-            }
-            else {
+            } else {
                 if(panel.equals(C_PANEL_TASK)) {
 
                     // this is the panel for setting the task preferences
                     setTaskSettings(session, parameters, reqCont, xmlTemplateDocument);
-                }
-                else {
+                } else {
                     if(panel.equals(C_PANEL_START)) {
 
                         // this is the panel for setting the start preferences
                         setStartSettings(cms, session, parameters, reqCont, xmlTemplateDocument);
-                    }
-                    else {
+                    } else {
                         if(panel.equals(C_PANEL_USER)) {
 
                             // this is the panel for setting the user preferences
@@ -328,11 +327,10 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             session.removeValue("USERSETTINGS");
             session.removeValue("STARTSETTINGS");
             session.removeValue(C_PARA_OLDPANEL);
-            
+            CmsWorkplaceAction.updatePreferences(cms);
             try {
                 cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_RELOAD);
-            }
-            catch(Exception e) {
+            } catch(Exception e) {
                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + C_WP_RELOAD, CmsException.C_UNKNOWN_EXCEPTION, e);
             }
         
@@ -359,7 +357,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current group in the vectors.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Integer getDefaultGroup(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
@@ -454,7 +452,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current filter view in the vectors.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Integer getFilters(CmsObject cms, CmsXmlLanguageFile lang, Vector values,
             Vector names, Hashtable parameters) throws CmsException {
@@ -473,8 +471,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         }
         if(taskSettings != null) {
             filter = (String)taskSettings.get(C_TASK_FILTER);
-        }
-        else {
+        } else {
             filter = (String)session.getValue(C_SESSION_TASK_FILTER);
         }
         int selected = 0;
@@ -564,7 +561,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current group in the vectors.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
             Hashtable parameters) throws CmsException {
@@ -608,7 +605,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current group in the vectors.
-     * @throws CmsException
+     * @throws CmsException if something goes worng
      */
     public Integer getLanguageFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
@@ -659,7 +656,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current project in the vectors.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Integer getProjects(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
@@ -706,8 +703,10 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
     /**
      * Calculates the start settings from the data submitted in
      * the preference task panel.
+     * @param cms the current cms context
      * @param parameters Hashtable containing all request parameters
      * @return Hashtable containing the start settings.
+     * @throws CmsException if something goes wrong
      */
     private Hashtable getStartSettings(CmsObject cms, Hashtable parameters) throws CmsException {
         Hashtable startSettings = new Hashtable();
@@ -723,6 +722,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         cms.getRequestContext().setCurrentProject(Integer.parseInt((String)parameters.get("project")));
 
         // get all access flags from the request
+        /*
         String gr = (String)parameters.get("gr");
         String gw = (String)parameters.get("gw");
         String gv = (String)parameters.get("gv");
@@ -730,6 +730,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         String pw = (String)parameters.get("pw");
         String pv = (String)parameters.get("pv");
         String ir = (String)parameters.get("ir");
+        */
         int flag = 0;
 
         // now check and set all flags
@@ -782,14 +783,14 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * Calculates the task settings from the data submitted in
      * the preference task panel.
      * @param parameters Hashtable containing all request parameters
+     * @param session the current session
      * @return Explorer filelist flags.
      */
     private Hashtable getTaskSettings(Hashtable parameters, I_CmsSession session) {
         Hashtable taskSettings = new Hashtable();
         if(parameters.get("CBALL") != null) {
             taskSettings.put(C_TASK_VIEW_ALL, new Boolean(true));
-        }
-        else {
+        } else {
             taskSettings.put(C_TASK_VIEW_ALL, new Boolean(false));
         }
         session.putValue(C_SESSION_TASK_ALLPROJECTS, taskSettings.get(C_TASK_VIEW_ALL));
@@ -833,7 +834,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Integer getViews(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
@@ -878,8 +879,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             boolean visible = true;
             try {
                 cms.readFileHeader(loopLink);
-            }
-            catch(CmsException e) {
+            } catch(CmsException e) {
                 visible = false;
             }
             if(visible) {
@@ -939,64 +939,54 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         // if the settings are still empty, set them to default
         if(explorerSettings != null) {
             explorerSettingsValue = new Integer(explorerSettings).intValue();
-        }
-        else {
+        } else {
             explorerSettingsValue = C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_CHANGED;
         }
 
         // now update the datablocks in the template
         if((explorerSettingsValue & C_FILELIST_TITLE) > 0) {
             xmlTemplateDocument.setData(C_CHECKTITLE, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHECKTITLE, " ");
         }
         if((explorerSettingsValue & C_FILELIST_TYPE) > 0) {
             xmlTemplateDocument.setData(C_CHECKTYPE, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHECKTYPE, " ");
         }
         if((explorerSettingsValue & C_FILELIST_CHANGED) > 0) {
             xmlTemplateDocument.setData(C_CHECKCHANGED, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHECKCHANGED, " ");
         }
         if((explorerSettingsValue & C_FILELIST_SIZE) > 0) {
             xmlTemplateDocument.setData(C_CHECKSIZE, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHECKSIZE, " ");
         }
         if((explorerSettingsValue & C_FILELIST_STATE) > 0) {
             xmlTemplateDocument.setData(C_CHECKSTATE, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHECKSTATE, " ");
         }
         if((explorerSettingsValue & C_FILELIST_OWNER) > 0) {
             xmlTemplateDocument.setData(C_CHECKOWNER, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHECKOWNER, " ");
         }
         if((explorerSettingsValue & C_FILELIST_GROUP) > 0) {
             xmlTemplateDocument.setData(C_CHECKGROUP, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHECKGROUP, " ");
         }
         if((explorerSettingsValue & C_FILELIST_ACCESS) > 0) {
             xmlTemplateDocument.setData(C_CHECKACCESS, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHECKACCESS, " ");
         }
         if((explorerSettingsValue & C_FILELIST_LOCKED) > 0) {
             xmlTemplateDocument.setData(C_CHECKLOCKEDBY, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHECKLOCKEDBY, " ");
         }
     }
@@ -1009,7 +999,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object setPanel(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -1074,71 +1064,70 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         int flags = ((Integer)startSettings.get(C_START_ACCESSFLAGS)).intValue();
         if((flags & C_PERMISSION_READ) > 0) {
             xmlTemplateDocument.setData(C_CHECKUR, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHECKUR, " ");
         }
         String lockD = (String)startSettings.get(C_START_LOCKDIALOG);
         if (lockD!=null && "on".equals(lockD)){
             xmlTemplateDocument.setData(C_LOCKDIALOG, C_CHECKED);
-        }else{
+        } else{
             xmlTemplateDocument.setData(C_LOCKDIALOG, " ");
         }
-// TODO: check if neccessary to reimplement using acl
-//        if((flags & C_PERMISSION_WRITE) > 0) {
-//            xmlTemplateDocument.setData(C_CHECKUW, C_CHECKED);
-//        }else {
-            xmlTemplateDocument.setData(C_CHECKUW, " ");
-//        }
-//        if((flags & C_PERMISSION_VIEW) > 0) {
-//            xmlTemplateDocument.setData(C_CHECKUV, C_CHECKED);
-//        }
-//        else {
-            xmlTemplateDocument.setData(C_CHECKUV, " ");
-//        }
-//        if((flags & C_ACCESS_GROUP_READ) > 0) {
-//            xmlTemplateDocument.setData(C_CHECKGR, C_CHECKED);
-//        }
-//        else {
-            xmlTemplateDocument.setData(C_CHECKGR, " ");
-//        }
-//        if((flags & C_ACCESS_GROUP_WRITE) > 0) {
-//            xmlTemplateDocument.setData(C_CHECKGW, C_CHECKED);
-//        }
-//        else {
-            xmlTemplateDocument.setData(C_CHECKGW, " ");
-//        }
-//        if((flags & C_ACCESS_GROUP_VISIBLE) > 0) {
-//            xmlTemplateDocument.setData(C_CHECKGV, C_CHECKED);
-//        }
-//        else {
-            xmlTemplateDocument.setData(C_CHECKGV, " ");
-//        }
-//        if((flags & C_ACCESS_PUBLIC_READ) > 0) {
-//            xmlTemplateDocument.setData(C_CHECKPR, C_CHECKED);
-//        }
-//        else {
-            xmlTemplateDocument.setData(C_CHECKPR, " ");
-//        }
-//        if((flags & C_ACCESS_PUBLIC_WRITE) > 0) {
-//            xmlTemplateDocument.setData(C_CHECKPW, C_CHECKED);
-//        }
-//        else {
-            xmlTemplateDocument.setData(C_CHECKPW, " ");
-//        }
-//        if((flags & C_ACCESS_PUBLIC_VISIBLE) > 0) {
-//            xmlTemplateDocument.setData(C_CHECKPV, C_CHECKED);
-//        }
-//        else {
-            xmlTemplateDocument.setData(C_CHECKPV, " ");
-//        }
-//        if((flags & C_ACCESS_INTERNAL_READ) > 0) {
-//            xmlTemplateDocument.setData(C_CHECKIF, C_CHECKED);
-//        }
-//        else {
-            xmlTemplateDocument.setData(C_CHECKIF, " ");
-//        }
-    }
+//      TODO: check if neccessary to reimplement using acl
+//             if((flags & C_PERMISSION_WRITE) > 0) {
+//                 xmlTemplateDocument.setData(C_CHECKUW, C_CHECKED);
+//             }else {
+                 xmlTemplateDocument.setData(C_CHECKUW, " ");
+//             }
+//             if((flags & C_PERMISSION_VIEW) > 0) {
+//                 xmlTemplateDocument.setData(C_CHECKUV, C_CHECKED);
+//             }
+//             else {
+                 xmlTemplateDocument.setData(C_CHECKUV, " ");
+//             }
+//             if((flags & C_ACCESS_GROUP_READ) > 0) {
+//                 xmlTemplateDocument.setData(C_CHECKGR, C_CHECKED);
+//             }
+//             else {
+                 xmlTemplateDocument.setData(C_CHECKGR, " ");
+//             }
+//             if((flags & C_ACCESS_GROUP_WRITE) > 0) {
+//                 xmlTemplateDocument.setData(C_CHECKGW, C_CHECKED);
+//             }
+//             else {
+                 xmlTemplateDocument.setData(C_CHECKGW, " ");
+//             }
+//             if((flags & C_ACCESS_GROUP_VISIBLE) > 0) {
+//                 xmlTemplateDocument.setData(C_CHECKGV, C_CHECKED);
+//             }
+//             else {
+                 xmlTemplateDocument.setData(C_CHECKGV, " ");
+//             }
+//             if((flags & C_ACCESS_PUBLIC_READ) > 0) {
+//                 xmlTemplateDocument.setData(C_CHECKPR, C_CHECKED);
+//             }
+//             else {
+                 xmlTemplateDocument.setData(C_CHECKPR, " ");
+//             }
+//             if((flags & C_ACCESS_PUBLIC_WRITE) > 0) {
+//                 xmlTemplateDocument.setData(C_CHECKPW, C_CHECKED);
+//             }
+//             else {
+                 xmlTemplateDocument.setData(C_CHECKPW, " ");
+//             }
+//             if((flags & C_ACCESS_PUBLIC_VISIBLE) > 0) {
+//                 xmlTemplateDocument.setData(C_CHECKPV, C_CHECKED);
+//             }
+//             else {
+                 xmlTemplateDocument.setData(C_CHECKPV, " ");
+//             }
+//             if((flags & C_ACCESS_INTERNAL_READ) > 0) {
+//                 xmlTemplateDocument.setData(C_CHECKIF, C_CHECKED);
+//             }
+//             else {
+                 xmlTemplateDocument.setData(C_CHECKIF, " ");      
+//        	   }
+	}
 
     /**
      * Sets all data in the preference panel task settings.
@@ -1166,41 +1155,36 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         if(taskSettings == null) {
             taskSettings = new Hashtable();
             taskSettings.put(C_TASK_VIEW_ALL, new Boolean(false));
-            taskSettings.put(C_TASK_MESSAGES, new Integer(C_TASK_MESSAGES_ACCEPTED +
-                    C_TASK_MESSAGES_FORWARDED + C_TASK_MESSAGES_COMPLETED + C_TASK_MESSAGES_MEMBERS));
+            taskSettings.put(C_TASK_MESSAGES, new Integer(C_TASK_MESSAGES_ACCEPTED 
+                + C_TASK_MESSAGES_FORWARDED + C_TASK_MESSAGES_COMPLETED + C_TASK_MESSAGES_MEMBERS));
             taskSettings.put(C_TASK_FILTER, new String("a1"));
         }
 
         //now update the data in the template
         if(((Boolean)taskSettings.get(C_TASK_VIEW_ALL)).booleanValue()) {
             xmlTemplateDocument.setData(C_CHVIEWALL, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHVIEWALL, " ");
         }
         int taskMessages = ((Integer)taskSettings.get(C_TASK_MESSAGES)).intValue();
         if((taskMessages & C_TASK_MESSAGES_ACCEPTED) > 0) {
             xmlTemplateDocument.setData(C_CHMESSAGEACCEPTED, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHMESSAGEACCEPTED, " ");
         }
         if((taskMessages & C_TASK_MESSAGES_FORWARDED) > 0) {
             xmlTemplateDocument.setData(C_CHMESSAGEFORWARDED, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHMESSAGEFORWARDED, " ");
         }
         if((taskMessages & C_TASK_MESSAGES_COMPLETED) > 0) {
             xmlTemplateDocument.setData(C_CHMESSAGECOMPLETED, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHMESSAGECOMPLETED, " ");
         }
         if((taskMessages & C_TASK_MESSAGES_MEMBERS) > 0) {
             xmlTemplateDocument.setData(C_CHMESSAGEMEMEBERS, C_CHECKED);
-        }
-        else {
+        } else {
             xmlTemplateDocument.setData(C_CHMESSAGEMEMEBERS, " ");
         }
     }

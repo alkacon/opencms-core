@@ -67,14 +67,18 @@
             <name>select.tasks</name>
             <url>/system/workplace/action/tasks.html</url>
         </view>
+        <view>
+            <name>select.explorer</name>
+            <url>/system/workplace/jsp/explorer.html</url>
+        </view>        
         <exportpoint>
             <source>/system/workplace/resources/</source>
             <destination>resources/</destination>
         </exportpoint>
         <exportpoint>
-            <source>/system/modules/default/classes/</source>
-            <destination>WEB-INF/classes/</destination>
-        </exportpoint>        
+            <source>/system/workplace/skins/</source>
+            <destination>skins/</destination>
+        </exportpoint>     
         <smtpserver>my.smtp.server</smtpserver>
         <smtpserver2>alternative.smtp.server</smtpserver2>
         <defaultmailsender>nobody@nowhere.com</defaultmailsender>

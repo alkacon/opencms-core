@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/06/04 12:34:13 $
- * Version: $Revision: 1.476 $
+ * Date   : $Date: 2003/06/12 16:32:26 $
+ * Version: $Revision: 1.477 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,14 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms (next 5.1 version)
+OpenCms (5.1.1)
+- OpenCms 5.1.1 is a development version.
+  The core is currently undergoing heavy changes. 
+  This development version is known as unstable.
+  Users looking for updates or improvements of OpenCms 5.0.0 should use the 
+  "branch_5_0_x" CVS branch until further notice. 
+! Initial version of JSP based workplace classes
+! Initial version of ACL based permission system
 - Allowed changing of file type to JSP
 - Updated the setup wizard for the new database pooling and drivers
 - Removed the old custom database pooling mechanism located in the com.opencms.dbpool package

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/06/12 09:43:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/12 16:32:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.LinkSubstitution;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Hashtable;
@@ -50,7 +51,7 @@ import javax.servlet.http.HttpSession;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -77,7 +78,10 @@ public abstract class CmsWorkplace {
         // get / create the workplace settings 
         m_settings = (CmsWorkplaceSettings)m_session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
         if (m_settings == null) {
-            initWorkplaceSettings(m_cms);
+            // create the settings object
+            m_settings = new CmsWorkplaceSettings();
+            initWorkplaceSettings(m_cms, m_settings);
+            storeSettings(m_session, m_settings);
         }
         
         // check request for changes in the workplace settings
@@ -107,18 +111,28 @@ public abstract class CmsWorkplace {
     }
     
     /**
-     * Initializes the current users workplace settings.<p>
+     * Stores the settings in the given session.<p>
+     * 
+     * @param session the session to store the settings in
+     * @param settings the settings
+     */
+    static synchronized void storeSettings(HttpSession session, CmsWorkplaceSettings settings) {
+        // save the workplace settings in the session
+        session.setAttribute(C_SESSION_WORKPLACE_SETTINGS, settings);        
+    }
+    
+    /**
+     * Initializes the current users workplace settings by reading the values 
+     * from the users preferences.<p>
      * 
      * This method is synchronized to ensure that the settings are
      * initialized only once for a user.
      * 
      * @param cms the cms object for the current user
+     * @param settings the current workplace settings
+     * @return initialized object with the current users workplace settings 
      */    
-    private synchronized void initWorkplaceSettings(CmsObject cms) {        
-        // create the settings object
-        if (m_settings != null) return;
-        CmsWorkplaceSettings settings = new CmsWorkplaceSettings();
-        
+    static synchronized CmsWorkplaceSettings initWorkplaceSettings(CmsObject cms, CmsWorkplaceSettings settings) {                
         // initialize the current user language
         String language = null;               
         Hashtable startSettings =
@@ -146,13 +160,14 @@ public abstract class CmsWorkplace {
         // if no language was found so far, use the default language
         if (language == null) {
             language = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
-        }        
-        // store language in workplace settings
-        settings.setLanguage(language);
+        }
+        
+        // save language in settings
+        settings.setLanguage(language);        
         
         // initialize messages and also store them in settings
         CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, language);
-        settings.setMessages(messages);
+        settings.setMessages(messages);        
         
         // save current workplace user
         settings.setUser(cms.getRequestContext().currentUser());
@@ -165,12 +180,10 @@ public abstract class CmsWorkplace {
         
         // check out the user infor1ation if a default view is stored there
         if (startSettings != null) {
-            settings.setCurrentView(getJsp().link((String)startSettings.get(I_CmsConstants.C_START_VIEW)));
+            settings.setCurrentView(LinkSubstitution.getLinkSubstitution(cms, (String)startSettings.get(I_CmsConstants.C_START_VIEW)));
         }
-                
-        // save the workplace settings in the session
-        m_session.setAttribute(C_SESSION_WORKPLACE_SETTINGS, settings);     
-        m_settings = settings;   
+                  
+        return settings;   
     }
     
     /**

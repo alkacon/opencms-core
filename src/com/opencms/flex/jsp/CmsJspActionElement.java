@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/06/12 16:32:26 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.jcr.Ticket;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -80,7 +79,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.0 beta 2
  */
@@ -235,17 +234,6 @@ public class CmsJspActionElement {
             handleException(t);
         }      
         return null;            
-    }
-    
-    /**
-     * Returns the JCR ticket to access the repository.
-     * 
-     * @return the JCR ticket to access the repository
-     * @see javax.jcr.Ticket
-     * @since 5.1.2
-     */
-    public Ticket getTicket() {
-        return getCmsObject().getRequestContext().getTicket();
     }
     
     /**
