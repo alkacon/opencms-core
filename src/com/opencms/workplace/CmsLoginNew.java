@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/08/11 11:00:11 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 package com.opencms.workplace;
 
 import org.opencms.security.CmsSecurityException;
-import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -53,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -367,13 +366,13 @@ public class CmsLoginNew extends CmsXmlTemplate {
     throws CmsException {
         try {
             cms.readFileHeader(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
-            return CmsLinkManager.substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            return A_OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         } catch (CmsSecurityException se) {
-            return CmsLinkManager.substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            return A_OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         } catch (CmsException ce) {
             // return default xml uri
         }
-        return CmsLinkManager.substituteLink(cms, CmsWorkplaceAction.C_XML_WORKPLACE_URI);
+        return A_OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_XML_WORKPLACE_URI);
     }    
 
     /**

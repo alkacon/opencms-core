@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.161 $
+ * Date   : $Date: 2003/08/11 11:00:11 $
+ * Version: $Revision: 1.162 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExport;
 import org.opencms.staticexport.CmsStaticExportProperties;
 
@@ -92,7 +93,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.161 $
+ * @version $Revision: 1.162 $
  */
 public final class OpenCms extends A_OpenCms {
 
@@ -134,7 +135,7 @@ public final class OpenCms extends A_OpenCms {
      * @throws Exception in case of problems initializing OpenCms, this is usually fatal 
      */
     public OpenCms(Configurations conf) throws Exception {
-        // Save the configuration
+        // save the configuration
         setConfiguration(conf);
         // this will initialize the encoding with some default from the A_OpenCms
         String defaultEncoding = getDefaultEncoding();
@@ -173,14 +174,14 @@ public final class OpenCms extends A_OpenCms {
             log(I_CmsLogChannels.C_OPENCMS_INIT, ". Encoding set to      : " + defaultEncoding);
         }
 
-        // Read server ethernet address (MAC) and init UUID generator
+        // read server ethernet address (MAC) and init UUID generator
         String ethernetAddress = conf.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
         if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
             log(I_CmsLogChannels.C_OPENCMS_INIT, ". Ethernet address used: " + ethernetAddress);
         }
         CmsUUID.init(ethernetAddress);
         
-        // Check the installed Java SDK
+        // check the installed Java SDK
         try {
             if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
                 String jdkinfo = System.getProperty("java.vm.name") + " ";
@@ -200,7 +201,7 @@ public final class OpenCms extends A_OpenCms {
             throw e;
         }
                 
-        // Read the default user configuration
+        // read the default user configuration
         setDefaultUsers(CmsDefaultUsers.initialize(conf));      
 
         try {
@@ -240,6 +241,9 @@ public final class OpenCms extends A_OpenCms {
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
+        
+        // initialize the link manager
+        setLinkManager(new CmsLinkManager());
 
         // read flex jsp export url property and save in runtime configuration
         String flexExportUrl = conf.getString(CmsJspLoader.C_LOADER_JSPEXPORTURL, null);

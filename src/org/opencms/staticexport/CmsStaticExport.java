@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExport.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/11 11:00:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsStaticExport {
 
@@ -944,7 +944,7 @@ public class CmsStaticExport {
         m_cms.setMode(I_CmsConstants.C_MODUS_ONLINE);
         for (int i = 0; i < exportLinks.size(); i++) {
             // for the changedLinks we need the linkSubstitution
-            m_changedLinks.add(CmsLinkManager.substituteLink(m_cms, (String)exportLinks.elementAt(i)));
+            m_changedLinks.add(A_OpenCms.getLinkManager().substituteLink(m_cms, (String)exportLinks.elementAt(i)));
             // for the exported links we just add the link
         }
         m_cms.setMode(oldMode);

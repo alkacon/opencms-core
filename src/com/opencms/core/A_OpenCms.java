@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2003/08/11 11:00:11 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportProperties;
 
 import com.opencms.boot.CmsBase;
@@ -61,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 public abstract class A_OpenCms {
 
@@ -85,6 +86,9 @@ public abstract class A_OpenCms {
 
     /** The object to store the properties from the opencms.property file for the static export */
     private static CmsStaticExportProperties m_exportProperties;
+    
+    /** The link manager to resolve links in &lt;link&gt; tags */
+    private static CmsLinkManager m_linkManager;    
 
     /** List to save the event listeners in */
     private static java.util.ArrayList m_listeners = new ArrayList();
@@ -188,6 +192,15 @@ public abstract class A_OpenCms {
      */
     public static CmsDefaultUsers getDefaultUsers() {
         return m_defaultUsers;
+    }
+    
+    /**
+     * Returns the link manager to resolve links in &lt;link&gt; tags.<p>
+     * 
+     * @return  the link manager to resolve links in &lt;link&gt; tags
+     */
+    public static CmsLinkManager getLinkManager() {
+        return m_linkManager;        
     }
 
     /**
@@ -526,6 +539,15 @@ public abstract class A_OpenCms {
      */
     protected void setDefaultUsers(CmsDefaultUsers defaultUsers) {
         m_defaultUsers = defaultUsers;
+    }
+    
+    /**
+     * Sets the link manager to resolve links in &lt;link&gt; tags.<p>
+     * 
+     * @param linkManager the link manager to resolve links in &lt;link&gt; tags
+     */ 
+    protected void setLinkManager(CmsLinkManager linkManager) {
+        m_linkManager = linkManager;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/11 11:00:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,17 +51,19 @@ import org.apache.oro.text.perl.Perl5Util;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
-public final class CmsLinkManager {
+public class CmsLinkManager {
 
     /** Provides Perl style regular expression functionality */
-    private static Perl5Util m_perlUtil = new Perl5Util();
+    private Perl5Util m_perlUtil;
     
     /**
      * Hides the public constructor.<p>
      */
-    private CmsLinkManager() { }
+    public CmsLinkManager() {
+        m_perlUtil = new Perl5Util();
+    }
 
     /**
      * Replaces the link according to the configured rules and registers it to the
@@ -71,7 +73,7 @@ public final class CmsLinkManager {
      * @param link the link to process
      * @return the substituted link
      */
-    public static String substituteLink(CmsObject cms, String link) {
+    public String substituteLink(CmsObject cms, String link) {
         if (link == null || "".equals(link)) {
             return "";
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/11 11:00:11 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,7 @@
  
 package org.opencms.workplace;
 
-import org.opencms.staticexport.CmsLinkManager;
-
+import com.opencms.core.A_OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -44,7 +43,7 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -157,10 +156,10 @@ public final class CmsWorkplaceAction {
     public static String getExplorerFileFullUri(CmsObject cms) {              
         HttpSession session = extractSession(cms);
         String link = C_PATH_XML_WORKPLACE + C_FILE_WORKPLACE_FILELIST;
-        if (session == null) return CmsLinkManager.substituteLink(cms, link);
+        if (session == null) return A_OpenCms.getLinkManager().substituteLink(cms, link);
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
-        if (settings == null) return CmsLinkManager.substituteLink(cms, link);
-        return CmsLinkManager.substituteLink(cms, C_PATH_JSP_WORKPLACE + C_FILE_WORKPLACE_FILELIST);        
+        if (settings == null) return A_OpenCms.getLinkManager().substituteLink(cms, link);
+        return A_OpenCms.getLinkManager().substituteLink(cms, C_PATH_JSP_WORKPLACE + C_FILE_WORKPLACE_FILELIST);        
     }    
         
     /**
