@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.99 $
+* Date   : $Date: 2002/09/19 12:33:23 $
+* Version: $Revision: 1.100 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.99 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.100 $ $Date: 2002/09/19 12:33:23 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -511,20 +511,48 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException In case no stylesheet was found (or there were errors accessing the CmsObject)
      */
     public String getStylesheet(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        String styleSheetUri = "";
+        try {
+            styleSheetUri = getStylesheet(cms, tagcontent, "frametemplate", doc, userObject);
+        } catch (CmsException e) {} // Happens if no frametemplate is defined, can be ignored
+        if ((styleSheetUri == null) || ("".equals(styleSheetUri))) {
+            styleSheetUri = getStylesheet(cms, tagcontent, null, doc, userObject);
+        } // The original behaviour is to throw an exception in case no stylesheed could be found
+        return styleSheetUri;
+    }
+                
+    /**
+     * Internal method to do the actual lookup of the "stylesheet" tag
+     * on the subtemplate / element specified.
+     * 
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param templatename The subtemplate / element to look up the "stylesheet" tag
+     *   in, if null the mastertemplate is used.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @throws CmsException In case no stylesheet was found (or there were errors accessing the CmsObject)
+     */
+    private String getStylesheet(CmsObject cms, String tagcontent, String templatename, A_CmsXmlContent doc, Object userObject) throws CmsException {
         CmsXmlTemplateFile tempTemplateFile = (CmsXmlTemplateFile)doc;
-
-        // Get the XML parsed content of the frametemplate file.
-        // This can be done by calling the getOwnTemplateFile() method of the
-        // mastertemplate class.
-        // The content is needed to determine the HTML style of the body element.
-        Object tempObj = CmsTemplateClassManager.getClassInstance(cms, tempTemplateFile.getSubtemplateClass("frametemplate"));
-        CmsXmlTemplate frameTemplateClassObject = (CmsXmlTemplate)tempObj;
-        CmsXmlTemplateFile templateFile = frameTemplateClassObject.getOwnTemplateFile(cms, tempTemplateFile.getSubtemplateFilename("frametemplate"), null, null, null);
-
-
+        
+        // If templatename==null look in the master template
+        CmsXmlTemplateFile templateFile = tempTemplateFile;
+        
+        if (templatename != null) {
+            // Get the XML parsed content of the selected template file.
+            // This can be done by calling the getOwnTemplateFile() method of the
+            // mastertemplate class.
+            // The content is needed to determine the HTML style of the body element.
+            Object tempObj = CmsTemplateClassManager.getClassInstance(cms, tempTemplateFile.getSubtemplateClass(templatename));
+            CmsXmlTemplate frameTemplateClassObject = (CmsXmlTemplate)tempObj;
+            templateFile = frameTemplateClassObject.getOwnTemplateFile(cms, tempTemplateFile.getSubtemplateFilename(templatename), null, null, null);
+        }
+        
         // Get the styles from the parameter hashtable
         String styleIE = null;
         String styleNS = null;
@@ -565,13 +593,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         // Get the user's browser
         String browser = orgReq.getHeader("user-agent");
         if ((browser!= null) && (browser.indexOf("MSIE") > -1)) {
-            return servletPath + styleIE;
+            return ("".equals(styleIE))?"":servletPath + styleIE;
         } else {
             // return NS style as default value
-            return servletPath + styleNS;
+            return ("".equals(styleNS))?"":servletPath + styleNS;
         }
+     
     }
-
+    
     /**
      * Find the corresponding template class to be loaded.
      * this should be defined in the template file of the parent
