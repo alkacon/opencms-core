@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2004/04/07 07:38:22 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/08 16:53:01 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,24 +31,20 @@
  
 package org.opencms.db.mysql;
 
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.OpenCms;
-
 import java.util.Properties;
 
 /**
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2004/04/07 07:38:22 $ 
+ * @version $Revision: 1.15 $ $Date: 2004/06/08 16:53:01 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
     private static final String C_PROPERTY_FILENAME = "org/opencms/db/mysql/query.properties";
     private static Properties c_queries = null; 
-    private static Boolean c_singleByteEncoding = null;   
-    
+
     /**
      * Initializes the SQL manager.<p>
      * 
@@ -93,57 +89,5 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         }
         
         return value;
-    }
-    
-    /**
-     * Escapes a String to prevent issues with UTF-8 encoding, same style as
-     * http uses for form data since MySQL doesn't support Unicode/UTF-8 strings.<p>
-     * 
-     * @param value String to be escaped
-     * @return the escaped String
-     */
-    public static String escape(String value) { 
-        if (singleByteEncoding()) {
-            return value;
-        }
-        
-        return CmsEncoder.encode(value);
-    }
-
-
-    /**
-     * Returns <code>false</code> if Strings must be escaped before they are stored in the DB, 
-     * this is required because MySQL does not support multi byte unicode strings.<p>
-     * 
-     * @return boolean <code>true</code> if Strings must be escaped before they are stored in the DB
-     */
-    public static boolean singleByteEncoding() {
-        if (c_singleByteEncoding == null) {
-            String encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-            c_singleByteEncoding = new Boolean("ISO-8859-1".equalsIgnoreCase(encoding) 
-                || "ISO-8859-15".equalsIgnoreCase(encoding) 
-                || "US-ASCII".equalsIgnoreCase(encoding) 
-                || "Cp1252".equalsIgnoreCase(encoding));
-            
-            // FIXME Encoding for mySQL - use unicoded support in mySQL 4
-            //c_singleByteEncoding = new Boolean(false);
-        }
-        return c_singleByteEncoding.booleanValue();
-    }
-
-    /**
-     * Unescapes a String to prevent issues with UTF-8 encoding, same style as
-     * http uses for form data since MySQL doesn't support Unicode/UTF-8 strings.<p>
-     * 
-     * @param value String to be unescaped
-     * @return the unescaped String
-     */
-    public static String unescape(String value) {
-        if (singleByteEncoding()) {
-            return value;
-        }
-        
-        return CmsEncoder.decode(value);
-    }
-        
+    }  
 }

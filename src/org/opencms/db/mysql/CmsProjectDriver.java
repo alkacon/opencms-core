@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/08 16:53:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,10 @@
 
 package org.opencms.db.mysql;
 
-import org.opencms.main.CmsException;
-import org.opencms.workflow.CmsTaskLog;
-
-
-import java.util.Vector;
-
 /**
  * MySQL implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.9 $ $Date: 2004/02/13 13:41:46 $
+ * @version $Revision: 1.10 $ $Date: 2004/06/08 16:53:01 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -53,18 +47,4 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.mysql.CmsSqlManager();
     }
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#readProjectLogs(int)
-     */
-    public Vector readProjectLogs(int projectid) throws CmsException {
-        Vector v = super.readProjectLogs(projectid);
-        for (int i = 0; i < v.size(); i++) {
-            CmsTaskLog log = (CmsTaskLog) v.elementAt(i);
-            log.setComment(CmsSqlManager.escape(log.getComment()));
-            v.set(i, log);
-        }
-        return v;
-    }
-
 }
