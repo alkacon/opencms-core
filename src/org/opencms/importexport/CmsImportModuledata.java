@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/11/14 10:09:12 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/02/27 17:17:32 $
+* Version: $Revision: 1.17.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.17 $ $Date: 2003/11/14 10:09:12 $
+ * @version $Revision: 1.17.2.1 $ $Date: 2004/02/27 17:17:32 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -261,7 +261,8 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @throws CmsException in case something goes wrong
      */
     private CmsMasterDataSet getMasterDataSet(int subId, Element currentElement) throws CmsException {
-        String datasetfile, username, groupname, accessFlags, publicationDate, purgeDate, flags, feedId, feedReference, feedFilename, title;
+        String datasetfile, username, groupname, accessFlags, publicationDate, purgeDate, flags, 
+            feedId, feedReference, feedFilename, title, master_id;
         // get the new dataset object
         CmsMasterDataSet newDataset = new CmsMasterDataSet();
 
@@ -272,7 +273,14 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         // get the information from the dataset and add it to the dataset
         // first add the subid
         newDataset.m_subId = subId;
+                
+        master_id = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_ID);
+        if (master_id != null) {
+            newDataset.m_masterId = new CmsUUID(master_id);
+        } else {
         newDataset.m_masterId = CmsUUID.getNullUUID();
+        }
+        
         // get the id of the user or set the owner to the current user
         username = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_USER);
         CmsUUID userId = m_cms.getRequestContext().currentUser().getId();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/10/15 09:50:42 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/02/27 17:17:32 $
+* Version: $Revision: 1.16.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,12 +72,13 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.16 $ $Date: 2003/10/15 09:50:42 $
+ * @version $Revision: 1.16.2.1 $ $Date: 2004/02/27 17:17:32 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
     // the tags for the manifest or dataset xml files    
     public static String C_EXPORT_TAG_MASTER = "master";
+	public static String C_EXPORT_TAG_MASTER_ID = "master_id";
     public static String C_EXPORT_TAG_MASTER_ACCESSFLAGS = "access_flags";
     public static String C_EXPORT_TAG_MASTER_CHANNELNAME = "channelname";
     public static String C_EXPORT_TAG_MASTER_CHANNELREL = "channelrelations";
@@ -371,6 +372,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             }
         }
 
+        data.addElement(C_EXPORT_TAG_MASTER_ID).addText(dataset.m_masterId.toString());
         data.addElement(C_EXPORT_TAG_MASTER_USER).addText(ownerName);
         data.addElement(C_EXPORT_TAG_MASTER_GROUP).addText(groupName);
         data.addElement(C_EXPORT_TAG_MASTER_ACCESSFLAGS).addText(Integer.toString(dataset.m_accessFlags));
