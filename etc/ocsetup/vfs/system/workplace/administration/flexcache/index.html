@@ -1,5 +1,5 @@
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"  %>
-<%@ page import="com.opencms.flex.cache.*,com.opencms.flex.*,com.opencms.core.*" %>
+<%@ page import="com.opencms.flex.util.*,com.opencms.flex.cache.*,com.opencms.flex.*,com.opencms.core.*" %>
 <%@ page import="java.util.*" %>
 <html>
 
@@ -30,6 +30,11 @@ top.help_url='Administration/index.html';
     int sizeKeys = 0;
     CmsFlexCache cache = null;
     com.opencms.file.CmsObject cms = null;
+    int maxCacheByteSize = 0;
+    int avgCacheByteSize = 0;
+    int currentCacheByteSize = 0;
+    int currentCacheObjectCount = 0;
+    CmsFlexLruCache entryLruCache = null;
 
     String label_1 = "Clear entries only";
     String label_2 = "Clear cache keys and entries completely";
@@ -40,6 +45,7 @@ top.help_url='Administration/index.html';
     String label_9 = "Purge JSP repository";
     String label_3 = "Show cached resources with keys";
     String label_4 = "Show cached resources with keys and entries";
+    String label_10 = "Reload this page";
 
     out = pageContext.getOut();
 
@@ -87,16 +93,33 @@ top.help_url='Administration/index.html';
     if (cache != null) {
         sizeEntries = cache.size();
         sizeKeys = cache.keySize();
+
+        entryLruCache = cache.getEntryLruCache();
+
+        if (entryLruCache!=null) {
+            maxCacheByteSize = entryLruCache.getMaxCacheCosts();
+            avgCacheByteSize = entryLruCache.getAvgCacheCosts();
+            currentCacheByteSize = entryLruCache.getObjectCosts();
+            currentCacheObjectCount = entryLruCache.size();
+        }
     }
 %>
 
 <blockquote>
 
-<h2>Entries in Flex Cache: <font color="red"><b><%= sizeEntries %></b></font></h2>
-
-<h2>Keys in Flex Cache: <font color="red"><b><%= sizeKeys %></b></font></h2>
+<h2>
+Entries in Flex Cache: <font color="red"><b><%=sizeEntries%></b></font><br>
+Keys in Flex Cache: <font color="red"><b><%=sizeKeys%></b></font><br>
+Max. size of all entries: <font color="red"><b><%=maxCacheByteSize%> bytes</b></font><br>
+Avg. size of all entries: <font color="red"><b><%=avgCacheByteSize%> bytes</b></font><br>
+Cur. size of all entries: <font color="red"><b><%=currentCacheByteSize%> bytes</b></font>
+</h2>
 
 </blockquote>
+
+<form action="<%=request.getRequestURI()%>">
+<input type="submit" name="action" value="<%= label_10 %>">
+</form>
 
 <form method="POST" action="index.html">
 
