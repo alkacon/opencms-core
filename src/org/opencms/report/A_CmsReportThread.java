@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/10/08 14:56:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.workplace.CmsXmlLanguageFile;
  * Provides a common Thread class for the reports.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public abstract class A_CmsReportThread extends Thread {
 
@@ -56,6 +56,9 @@ public abstract class A_CmsReportThread extends Thread {
     
     /** The report that belongs to the thread */
     private I_CmsReport m_report;
+    
+    /** The time this report is running */
+    private long m_starttime;
 
     /**
      * Constructs a new report Thread with the given name.<p>
@@ -75,6 +78,8 @@ public abstract class A_CmsReportThread extends Thread {
         setName(name + " [" + m_id + "]");
         // new Threads are not doomed
         m_doomed = false;
+        // set start time
+        m_starttime = System.currentTimeMillis();
         // add this Thread to the main Thread store
         OpenCms.getThreadStore().addThread(this);
     }
@@ -122,6 +127,19 @@ public abstract class A_CmsReportThread extends Thread {
      * @return the part of the report that is ready for output
      */
     public abstract String getReportUpdate();
+    
+    /** 
+     * Returns the time this report has been running.<p>
+     * 
+     * @return the time this report has been running
+     */
+    public long getRuntime() {
+        if (m_doomed) {
+            return m_starttime;
+        } else {
+            return System.currentTimeMillis() - m_starttime;
+        }        
+    }
         
     /**
      * Initialize a HTML report for this Thread.<p>
@@ -150,7 +168,7 @@ public abstract class A_CmsReportThread extends Thread {
      * 
      * @return true if this thread is already "doomed" to be deleted
      */
-    public boolean isDoomed() {
+    public synchronized boolean isDoomed() {
         if (isAlive()) {
             // as long as the Thread is still active it is never doomed
             return false;
@@ -160,6 +178,7 @@ public abstract class A_CmsReportThread extends Thread {
             return true;
         }
         // condemn the Thread to be collected by the grim reaper next time  
+        m_starttime = getRuntime();
         m_doomed = true;
         return false;
     }
