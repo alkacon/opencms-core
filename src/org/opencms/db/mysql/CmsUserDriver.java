@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/10/14 08:20:56 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.17 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.18 $ $Date: 2004/10/14 08:20:56 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -68,7 +68,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
-            stmt.setString(3, encryptPassword(password));
+            stmt.setString(3, m_driverManager.digest(password));
             stmt.setString(4, description);
             stmt.setString(5, firstname);
             stmt.setString(6, lastname);

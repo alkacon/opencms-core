@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2004/10/14 08:20:33 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -68,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.62 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.63 $ $Date: 2004/10/14 08:20:33 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -81,6 +80,11 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      */
     protected MessageDigest m_digest;
 
+    /**
+     * The algorithm used to encode passwords.<p>
+     */
+    protected String m_digestAlgorithm;
+    
     /**
      * The file.encoding to code passwords after encryption with digest.
      */
@@ -185,7 +189,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
-            stmt.setString(3, encryptPassword(password));
+            stmt.setString(3, m_driverManager.digest(password));
             stmt.setString(4, m_sqlManager.validateEmpty(description));
             stmt.setString(5, m_sqlManager.validateEmpty(firstname));
             stmt.setString(6, m_sqlManager.validateEmpty(lastname));
@@ -339,39 +343,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#encryptPassword(java.lang.String)
-     */
-    public String encryptPassword(String value) {
-        // is there a valid digest?
-        if (m_digest != null) {
-            try {
-                byte[] bytesFromDigest = m_digest.digest(value.getBytes(m_digestFileEncoding));
-                // to get a String out of the bytearray we translate every byte
-                // in a hex value and put them together
-                StringBuffer result = new StringBuffer();
-                String addZerro;
-                for (int i = 0; i < bytesFromDigest.length; i++) {
-                    addZerro = Integer.toHexString(128 + bytesFromDigest[i]);
-                    if (addZerro.length() < 2) {
-                        addZerro = '0' + addZerro;
-                    }
-                    result.append(addZerro);
-                }
-                bytesFromDigest = null;
-                return result.toString();
-            } catch (UnsupportedEncodingException exc) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("File encoding " + m_digestFileEncoding + " for passwords not supported. Using the default.");
-                }
-                return new String(m_digest.digest(value.getBytes()));
-            }
-        } else {
-            // no digest - use clear passwords
-            return value;
-        }
-    }
-
-    /**
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
@@ -443,9 +414,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assigned pool        : " + poolUrl);
         }
 
-        String digest = configuration.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
+        m_digestAlgorithm = configuration.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest configured    : " + digest);
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest configured    : " + m_digestAlgorithm);
         }
 
         m_digestFileEncoding = configuration.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", CmsEncoder.C_UTF8_ENCODING);
@@ -455,7 +426,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
         // create the digest
         try {
-            m_digest = MessageDigest.getInstance(digest);
+            m_digest = MessageDigest.getInstance(m_digestAlgorithm);
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Using digest encoding: " + m_digest.getAlgorithm() + " from " + m_digest.getProvider().getName() + " version " + m_digest.getProvider().getVersion());
             }
@@ -939,7 +910,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READPW");
             stmt.setString(1, name);
-            stmt.setString(2, encryptPassword(password));
+            stmt.setString(2, m_driverManager.digest(password));
             stmt.setInt(3, type);
             res = stmt.executeQuery();
 
@@ -1253,7 +1224,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SETPW");
-            stmt.setString(1, encryptPassword(password));
+            stmt.setString(1, m_driverManager.digest(password));
             stmt.setString(2, userName);
             stmt.executeUpdate();
         } catch (SQLException e) {

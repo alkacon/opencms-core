@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/10/14 08:18:39 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.33 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.34 $ $Date: 2004/10/14 08:18:39 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -166,14 +166,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if something else goes wrong
      */
     void destroy() throws Throwable, CmsException;
-
-    /**
-     * Method to encrypt the passwords.<p>
-     *
-     * @param value The value to encrypt
-     * @return the encrypted value
-     */
-    String encryptPassword(String value);
 
     /**
      * Adds a user to the database.<p>
