@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/04/05 05:31:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/04/30 09:57:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
          */
         public void fatalError(SAXParseException exception) throws SAXException {
 
-            OpenCms.getLog(this).error("Fatel error parsing configuration file", exception);
+            OpenCms.getLog(this).error("Fatal error parsing configuration file", exception);
             throw exception;
         }
 
@@ -96,8 +96,10 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
          * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
          */
         public void warning(SAXParseException exception) {
-
-            OpenCms.getLog(this).error("Warning  parsing configuration file", exception);         
+            
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Warning parsing configuration file", exception);
+            }
         }
     }
     
@@ -120,7 +122,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
                     try {
                         return new InputSource(getClass().getClassLoader().getResourceAsStream(id));
                     } catch (Throwable t) {
-                        if (OpenCms.getLog(this).isDebugEnabled()) {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
                             OpenCms.getLog(this).error("Did not find " + systemId + " in " + location);
                         }
                     }                    
