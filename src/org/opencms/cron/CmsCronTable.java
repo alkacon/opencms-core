@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronTable.java,v $
- * Date   : $Date: 2003/10/29 13:00:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/10/29 16:41:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,27 @@
 
 package org.opencms.cron;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsRegistry;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.dom4j.Element;
 
 /**
  * Describes a complete crontable with cronentries.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.1 $ $Date: 2003/10/29 13:00:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/10/29 16:41:21 $
  * @since 5.1.12
  */
 public class CmsCronTable extends Object {
@@ -61,7 +68,7 @@ public class CmsCronTable extends Object {
      */
     public CmsCronTable(String table) throws IOException, CmsException {
         m_cronEntries = (List) new ArrayList();
-        update(new StringReader(table));
+        update(new StringReader(table));        
     }
     
     /**
@@ -100,7 +107,100 @@ public class CmsCronTable extends Object {
             line = lineReader.readLine();
         }
         
+        // read the cron tab configured in registry.xml
+        readCronTab();
+        
         reader.close();
+    }
+    
+    /**
+     * Reads the crontab from registry.xml.<p>
+     */
+    private void readCronTab() {
+        Element cronjob = null;
+        CmsCronEntry cronEntry = null;
+        int min = I_CmsConstants.C_UNKNOWN_ID;
+        int hour = I_CmsConstants.C_UNKNOWN_ID;
+        int dayOfMonth = I_CmsConstants.C_UNKNOWN_ID;
+        int month = I_CmsConstants.C_UNKNOWN_ID;
+        int dayOfWeek = I_CmsConstants.C_UNKNOWN_ID;
+        String userName = null;
+        String groupName = null;
+        String className = null;
+        String textValue = null;
+        String params = null;
+
+        try {
+            CmsRegistry registry = OpenCms.getRegistry();
+            Element system = registry.getDom4jSystemElement();
+            Element crontab = system.element("crontab");
+
+            if (crontab != null) {
+                List cronjobs = crontab.elements();
+
+                Iterator i = cronjobs.iterator();
+                while (i.hasNext()) {
+                    cronjob = (Element) i.next();
+
+                    try {
+                        textValue = cronjob.element("min").getText().trim();
+                        if ("*".equals(textValue)) {
+                            min = I_CmsConstants.C_UNKNOWN_ID;
+                        } else {
+                            min = Integer.parseInt(textValue);
+                        }
+
+                        textValue = cronjob.element("hour").getText().trim();
+                        if ("*".equals(textValue)) {
+                            hour = I_CmsConstants.C_UNKNOWN_ID;
+                        } else {
+                            hour = Integer.parseInt(textValue);
+                        }
+
+                        textValue = cronjob.element("dayofmonth").getText().trim();
+                        if ("*".equals(textValue)) {
+                            dayOfMonth = I_CmsConstants.C_UNKNOWN_ID;
+                        } else {
+                            dayOfMonth = Integer.parseInt(textValue);
+                        }
+
+                        textValue = cronjob.element("month").getText().trim();
+                        if ("*".equals(textValue)) {
+                            month = I_CmsConstants.C_UNKNOWN_ID;
+                        } else {
+                            month = Integer.parseInt(textValue);
+                        }
+
+                        textValue = cronjob.element("dayofweek").getText().trim();
+                        if ("*".equals(textValue)) {
+                            dayOfWeek = I_CmsConstants.C_UNKNOWN_ID;
+                        } else {
+                            dayOfWeek = Integer.parseInt(textValue);
+                        }
+
+                        userName = cronjob.element("user").getText().trim();
+                        groupName = cronjob.element("group").getText().trim();
+                        className = cronjob.element("class").getText().trim();
+
+                        params = cronjob.element("params").getText().trim();
+                        if ("".equals(params)) {
+                            params = null;
+                        }
+
+                        cronEntry = new CmsCronEntry(min, hour, dayOfWeek, month, dayOfMonth, userName, groupName, className, params);
+                        m_cronEntries.add(cronEntry);
+                    } catch (Exception e) {
+                        if (org.opencms.main.OpenCms.getLog(this).isErrorEnabled()) {
+                            org.opencms.main.OpenCms.getLog(this).error("Error reading cronjob in registry.xml: " + cronjob.toString(), e);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            if (org.opencms.main.OpenCms.getLog(this).isErrorEnabled()) {
+                org.opencms.main.OpenCms.getLog(this).error("Error reading crontab in registry.xml", e);
+            }
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronEntry.java,v $
- * Date   : $Date: 2003/10/29 13:00:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/10/29 16:41:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.1 $ $Date: 2003/10/29 13:00:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/10/29 16:41:21 $
  * @since 5.1.12
  */
 public class CmsCronEntry extends Object {
@@ -132,6 +132,31 @@ public class CmsCronEntry extends Object {
         } catch (Exception exc) {
             throw new CmsException("Invalid cron entry: " + paramstring);
         }
+    }
+    
+    /**
+     * Creates a new crontab entry.<p>
+     * 
+     * @param min the minute when the cron job is executed
+     * @param hour the hour when the cron job is executed
+     * @param dayOfWeek the day of the week when the cron job is executed
+     * @param month the month when the cron job is executed
+     * @param dayOfMonth the day of the month when the cron job is executed
+     * @param userName the user for the CmsObject instance when the cron job is executed
+     * @param groupName the group for the CmsObject when the cron job is executed
+     * @param className the class that gets executed when the cron job is executed
+     * @param params optionaly parameters
+     */
+    CmsCronEntry(int min, int hour, int dayOfWeek, int month, int dayOfMonth, String userName, String groupName, String className, String params) {
+        m_minute = min;
+        m_hour = hour;
+        m_dayOfMonth = dayOfMonth;
+        m_month = month;
+        m_dayOfWeek = dayOfWeek;
+        m_user = userName;
+        m_group = groupName;
+        m_moduleToLaunch = className;
+        m_moduleParameter = params;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/10/09 15:29:26 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2003/10/29 16:41:21 $
+ * Version: $Revision: 1.105 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,6 +58,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.dom4j.io.DOMReader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -74,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.104 $
+ * @version $Revision: 1.105 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1539,6 +1540,18 @@ public class CmsRegistry extends A_CmsXmlContent {
      */
     public Element getSystemElement() {
         return (Element)m_xmlReg.getElementsByTagName("system").item(0);
+    }
+    
+    /**
+     * Returns the registry's W3C DOM system node as a dom4j node.<p>
+     * 
+     * @return the registry's W3C DOM system node as a dom4j node
+     */
+    public org.dom4j.Element getDom4jSystemElement() {
+        DOMReader xmlReader = new DOMReader();
+        org.dom4j.Document doc = xmlReader.read(m_xmlReg);
+
+        return doc.getRootElement().element("system");
     }
 
     /**
