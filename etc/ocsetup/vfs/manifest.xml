@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <export>
     <info>
-        <creator>Alexander Kandzior (a.kandzior@alkacon.com)</creator>
+        <creator>Thomas Weckert (t.weckert@alkacon.com)</creator>
         <opencms_version>5.0_beta_2</opencms_version>
-        <createdate>02.11.2002 10:06</createdate>
-        <project>Online</project>
+        <createdate>07.11.2002 11:27</createdate>
+        <project>Offline</project>
         <export_version>1</export_version>
     </info>
     <files>
@@ -1293,7 +1293,7 @@
             <group>Users</group>
             <access>15</access>
             <properties/>
-        </file>		
+        </file>
         <file>
             <source>system/workplace/action/resource_to_project.html</source>
             <destination>system/workplace/action/resource_to_project.html</destination>
@@ -1576,7 +1576,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -1590,7 +1590,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>NavText</name>
@@ -1615,7 +1615,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1624,7 +1624,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -1639,7 +1639,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -1654,7 +1654,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1663,7 +1663,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1672,7 +1672,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1680,7 +1680,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -1710,7 +1710,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1719,7 +1719,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1727,7 +1727,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -1756,7 +1756,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>NavText</name>
@@ -1781,7 +1781,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1790,7 +1790,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -1805,7 +1805,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1813,7 +1813,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>NavText</name>
@@ -1838,7 +1838,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1847,7 +1847,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1855,7 +1855,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>activemethod</name>
@@ -1885,7 +1885,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1894,7 +1894,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -1909,7 +1909,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1917,7 +1917,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -1947,7 +1947,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1956,7 +1956,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -1964,7 +1964,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -1999,7 +1999,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2008,7 +2008,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2017,7 +2017,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2026,7 +2026,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2035,7 +2035,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2044,7 +2044,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2053,7 +2053,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2062,7 +2062,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2071,7 +2071,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2080,7 +2080,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2089,7 +2089,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2097,7 +2097,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -2127,7 +2127,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2136,7 +2136,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2144,7 +2144,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -2179,7 +2179,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2188,7 +2188,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2197,7 +2197,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2206,7 +2206,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2215,7 +2215,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2224,7 +2224,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2233,7 +2233,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2242,7 +2242,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2251,7 +2251,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2260,7 +2260,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2274,7 +2274,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -2304,7 +2304,7 @@
             <type>jsp</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2323,7 +2323,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -2358,7 +2358,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2373,7 +2373,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2382,7 +2382,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2391,7 +2391,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2400,7 +2400,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2409,7 +2409,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2418,7 +2418,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2427,7 +2427,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2436,7 +2436,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2445,7 +2445,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2453,7 +2453,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -2483,7 +2483,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2492,7 +2492,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2500,7 +2500,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -2530,7 +2530,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2545,7 +2545,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2554,7 +2554,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2563,7 +2563,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2572,7 +2572,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2580,7 +2580,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -2610,7 +2610,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2619,7 +2619,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2627,7 +2627,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -2657,7 +2657,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2672,7 +2672,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2681,7 +2681,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2690,7 +2690,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2699,7 +2699,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2708,7 +2708,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2717,7 +2717,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2726,7 +2726,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2735,7 +2735,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2750,7 +2750,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2759,7 +2759,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2774,7 +2774,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2783,7 +2783,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2798,7 +2798,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2807,7 +2807,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2816,7 +2816,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2825,7 +2825,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2834,7 +2834,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2843,7 +2843,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2858,7 +2858,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2867,7 +2867,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2882,7 +2882,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2891,7 +2891,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2906,7 +2906,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2915,7 +2915,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2930,7 +2930,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2939,7 +2939,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2948,7 +2948,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2957,7 +2957,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2966,7 +2966,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2975,7 +2975,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -2990,7 +2990,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -2998,7 +2998,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -3033,7 +3033,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3042,7 +3042,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3051,7 +3051,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3060,7 +3060,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3069,7 +3069,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3078,7 +3078,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3087,7 +3087,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3096,7 +3096,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3105,7 +3105,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3114,7 +3114,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3122,7 +3122,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>NavText</name>
@@ -3146,7 +3146,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>NavText</name>
@@ -3171,7 +3171,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3180,7 +3180,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3189,7 +3189,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3198,7 +3198,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3207,7 +3207,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3216,7 +3216,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3225,7 +3225,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3234,7 +3234,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3243,7 +3243,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3252,7 +3252,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3261,7 +3261,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3270,7 +3270,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3279,7 +3279,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3287,7 +3287,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>NavText</name>
@@ -3312,7 +3312,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3321,7 +3321,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3330,7 +3330,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3339,7 +3339,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3348,7 +3348,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3356,7 +3356,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -3386,7 +3386,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3395,7 +3395,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3403,7 +3403,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -3433,7 +3433,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3442,7 +3442,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3450,7 +3450,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -3480,7 +3480,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3489,7 +3489,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3497,7 +3497,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -3532,7 +3532,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>Title</name>
@@ -3547,7 +3547,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3556,7 +3556,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3564,7 +3564,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -3594,7 +3594,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3603,7 +3603,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3611,7 +3611,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>visiblemethod</name>
@@ -3640,7 +3640,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>NavText</name>
@@ -3665,7 +3665,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3674,7 +3674,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3682,7 +3682,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>NavText</name>
@@ -3707,7 +3707,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3716,7 +3716,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3724,7 +3724,7 @@
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties>
                 <property>
                     <name>NavText</name>
@@ -3749,7 +3749,7 @@
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -3758,7 +3758,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -11993,7 +11993,7 @@
             <group>Users</group>
             <access>527</access>
             <properties/>
-        </file>		
+        </file>
         <file>
             <source>system/workplace/templates/restore_resource</source>
             <destination>system/workplace/templates/restore_resource</destination>
