@@ -62,6 +62,14 @@ OpenCms 4.7.6 Ecaz - 10 June 2002
 * Fixed bug in cache for subresources: the cache must be cleared when a user was changed because
   it is user dependend
 
+OpenCms Flex alpha 1 - 10 May 2002
+- This is the initial release of the FLEX development branch
+! Support for JSP in OpenCms added
+! The FlexCache, a new cache implementation, has been added
+! Initial version of the OpenCms JSP Taglib added
+! Support for Java 1.4 added
+- This release of OpenCms/Flex is based on the 4.6.1 release
+
 OpenCms 4.6.1 Ecaz - 08 May 2002
 ! The WYSIWYG-Editor now supports modification of previously created tables.
   In Edit-Mode the border of a table is shown even if the table border is set to 0.
