@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/23 08:22:53 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2003/07/23 09:04:58 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.84 $ $Date: 2003/07/23 08:22:53 $
+ * @version $Revision: 1.85 $ $Date: 2003/07/23 09:04:58 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -3807,7 +3807,8 @@ public class CmsDriverManager extends Object {
 
         if (subResources != null && subResources.size() > 0) {
             // the parent folder is not deleted, and the sub resources were cached, no further operations required
-            return subResources;
+            // we must return a copy (see below)
+            return new ArrayList(subResources);
         }
 
         // get the sub resources from the VFS driver and check the required permissions
@@ -3824,7 +3825,8 @@ public class CmsDriverManager extends Object {
         // cache the sub resources
         m_resourceListCache.put(cacheKey, subResources);
 
-        return subResources;
+        //  currently we must return a copy to prevent the cached copy from being modified externally
+        return new ArrayList(subResources);
     }
 
     /**
