@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
- * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/09 17:13:49 $
- * Version: $Revision: 1.10 $
+ * Author : $Author: m.dernen $
+ * Date   : $Date: 2001/11/14 11:22:44 $
+ * Version: $Revision: 1.11 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -56,6 +56,9 @@ public class CmsDbAccess {
     /** The query properties for this accessmodule */
     protected Properties m_queries;
 
+    /** The root channel of the module */
+    protected String m_rootChannel = "/";
+
     /**
      * Make this constructor private, so noone cann call the default constructor.
      */
@@ -76,6 +79,21 @@ public class CmsDbAccess {
         // collect all query.properties in all packages of superclasses
         loadQueries(getClass());
         combineQueries();
+    }
+
+    /**
+     * Set the root channel
+     * @param newRootChannel the new value for the rootChannel
+     */
+    public void setRootChannel(String newRootChannel) {
+        m_rootChannel = newRootChannel;
+    }
+
+    /**
+     * Get the root channel
+     */
+    public String getRootChannel() {
+        return m_rootChannel;
     }
 
     /**
