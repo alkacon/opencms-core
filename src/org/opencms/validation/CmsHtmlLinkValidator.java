@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/01/23 11:04:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/23 14:30:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2004/01/23 11:04:21 $
+ * @version $Revision: 1.6 $ $Date: 2004/01/23 14:30:04 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -138,15 +138,15 @@ public class CmsHtmlLinkValidator extends Object {
 
         // populate a lookup map with the offline resources that 
         // actually get published keyed by their resource names.
-        // resources that don't get validated are ignored.
+        // second, resources that don't get validated are ignored.
         offlineFilesLookup = (Map) new HashMap();
         validatableResources = (List) new ArrayList();
         for (i = 0; i < offlineResources.size(); i++) {
             resource = (CmsResource) offlineResources.get(i);
-
+            offlineFilesLookup.put(resource.getRootPath(), resource);
+            
             try {
                 if ((resourceType = cms.getResourceType(resource.getType())) instanceof I_CmsHtmlLinkValidatable) {
-                    offlineFilesLookup.put(resource.getRootPath(), resource);
                     validatableResources.add(resource);
                 }
             } catch (CmsException e) {
