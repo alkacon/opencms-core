@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlHighlighter.java,v $
- * Date   : $Date: 2004/02/17 12:10:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/02 10:56:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.search.documents;
 /**
  * HTML Highlighter implementation used while generation excerpts.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2004/02/17 12:10:52 $
+ * @version $Revision: 1.3 $ $Date: 2004/10/02 10:56:14 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsHtmlHighlighter implements I_TermHighlighter {
@@ -43,7 +43,15 @@ public class CmsHtmlHighlighter implements I_TermHighlighter {
      * @see org.opencms.search.documents.I_TermHighlighter#highlightTerm(java.lang.String)
      */
     public String highlightTerm(String term) {
-        return "<b>" + term + "</b>";
+
+        if (term == null) {
+            return "";
+        }
+        StringBuffer result = new StringBuffer(term.length() + 16);
+        result.append("<b>");
+        result.append(term);
+        result.append("</b>");
+        return result.toString();
     }
 
 }
