@@ -1,0 +1,489 @@
+<HTML>
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<TITLE>Datei Kontext Menü</TITLE>
+
+<link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_kontextmenu.js"></SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#FFFFFF" marginwidth=5 marginheight=5 topmargin=5 leftmargin=5>
+
+Bitte auf die Icons Klicken:<br>
+(Icons die nicht verlinkt sind: zu diesen Dateien gibt es auch kein Kontextmenü)
+
+<p>&nbsp;</p> 
+Im Online Projekt:
+<p>
+<a href="javascript:showkontext('online_p',0);"><IMG SRC="pics/ic_file_plain.gif" border=0 width=16 height=16></a>
+<IMG SRC="pics/ic_file_image.gif" border=0 width=16 height=16>
+<IMG SRC="pics/ic_file_binary.gif" border=0 width=16 height=16>
+<IMG SRC="pics/ic_file_script.gif" border=0 width=16 height=16>
+<!-- vorerst noch nicht realisieren
+<IMG SRC="pics/ic_file_docloader.gif" border=0 width=16 height=16>
+<IMG SRC="pics/ic_file_template.gif" border=0 width=16 height=16>
+<IMG SRC="pics/ic_file_maileditor.gif" border=0 width=16 height=16>
+-->
+<IMG SRC="pics/ic_file_folder.gif" border=0 width=16 height=16>
+</p>
+
+<p>&nbsp;</p>
+In allen anderen Projekten zum Relaunch:
+(außer Dateien, die nicht zum Projekt gehören, die sind in der Dateiliste grau dargestellt)
+<p>
+<a href="javascript:showkontext('plain',0);"><IMG SRC="pics/ic_file_plain.gif" border=0 width=16 height=16></a>
+<a href="javascript:showkontext('plainlock',1);"><IMG SRC="pics/ic_file_plain.gif" border=0 width=16 height=16><IMG SRC="pics/ic_lock.gif" border=0 width=16 height=16></a>
+<a href="javascript:showkontext('plainlockuser',2);"><IMG SRC="pics/ic_file_plain.gif" border=0 width=16 height=16><IMG SRC="pics/ic_lockuser.gif" border=0 width=16 height=16></a>
+<a href="javascript:showkontext('pic',3);"><IMG SRC="pics/ic_file_image.gif" border=0 width=16 height=16></a>
+<a href="javascript:showkontext('binary',4);"><IMG SRC="pics/ic_file_binary.gif" border=0 width=16 height=16></a>
+<a href="javascript:showkontext('binary',4);"><IMG SRC="pics/ic_file_script.gif" border=0 width=16 height=16></a>
+<!-- erstma noch nicht realisieren
+<a href="javascript:showkontext('docloader',5);"><IMG SRC="pics/ic_file_docloader.gif" border=0 width=16 height=16></a>
+<a href="javascript:showkontext('template',6);"><IMG SRC="pics/ic_file_template.gif" border=0 width=16 height=16></a>
+<a href="javascript:showkontext('maileditor',7);"><IMG SRC="pics/ic_file_maileditor.gif" border=0 width=16 height=16></a>
+-->
+<a href="javascript:showkontext('folder',8);"><IMG SRC="pics/ic_file_folder.gif" border=0 width=16 height=16></a>
+<a href="javascript:showkontext('folderlock',9);"><IMG SRC="pics/ic_file_folder.gif" border=0 width=16 height=16><IMG SRC="pics/ic_lock.gif" border=0 width=16 height=16></a>
+<a href="javascript:showkontext('folderlockuser',10);"><IMG SRC="pics/ic_file_folder.gif" border=0 width=16 height=16><IMG SRC="pics/ic_lockuser.gif" border=0 width=16 height=16></a>
+</p>
+
+<!-- Beginn Layers -->
+
+<!-- Layer für Plaindateien -->
+<DIV ID="plain" class=kontextmenu>
+<table class=filekontext>
+<tr><td>
+	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_LOCK);">Sperren</A> 
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD class="inaktiv">
+		Seite bearbeiten
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Seite Editor
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_COPY);">Kopieren<!--#=POP_COPY#--></A> 
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Umbenennen
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Verschieben
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		L&ouml;schen
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD class="inaktiv">
+		Besitzer &auml;ndern
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Gruppe &auml;ndern
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Zugriff &auml;ndern
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD class="inaktiv">
+		Dateityp &auml;ndern
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_HISTVIEW);">Historie<!--#=POP_METAVIEW#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_METAVIEW);">Eigenschaften<!--#=POP_METAVIEW#--></A> 
+	</TD></TR>
+
+	</table>
+</td></tr>
+</table>
+</DIV>
+<!-- Ende Layer Plain -->
+
+
+<!-- Layer für Plaindateien gelockt -->
+<DIV ID="plainlock" class=kontextmenu>
+<table class=filekontext>
+<tr><td>
+	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_LOCKUSER);">Sperrung übernehmen</A> 
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD class="inaktiv">
+		Seite bearbeiten
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Seite Editor
+	</TD></TR>
+	
+
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_COPY);">Kopieren<!--#=POP_COPY#--></A> 
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Umbenennen
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Verschieben
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		L&ouml;schen
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD class="inaktiv">
+		Besitzer &auml;ndern
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Gruppe &auml;ndern
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Zugriff &auml;ndern
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD class="inaktiv">
+		Dateityp &auml;ndern
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_HISTVIEW);">Historie<!--#=POP_METAVIEW#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_METAVIEW);">Eigenschaften<!--#=POP_METAVIEW#--></A> 
+	</TD></TR>
+	
+	
+
+	</table>
+</td></tr>
+</table>
+</DIV>
+<!-- Ende Layer Plain glockt -->
+
+<!-- Layer für Plaindateien auf User gelockt -->
+<DIV ID="plainlockuser" class=kontextmenu>
+<table class=filekontext>
+<tr><td>
+	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_UNLOCK);">Frei geben</A> 
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_SeiteEDIT);">Seite bearbeiten<!--#=POP_Seite#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_EDIT);">Quelltext bearbeiten<!--#=POP_EDIT#--></A> 
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_COPY);">Kopieren<!--#=POP_COPY#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_RENAME);">Umbenennen<!--#=POP_RENAME#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_MOVE);">Verschieben<!--#=POP_MOVE#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_DELETE);">L&ouml;schen<!--#=POP_DELETE#--></A> 
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHOWN);">Besitzer &auml;ndern<!--#=POP_CHOWN#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHGRP);">Gruppe &auml;ndern <!--#=POP_CHGRP#--></A>
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHMOD);">Zugriff &auml;ndern<!--#=POP_CHMOD#--></A> 
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHTYPE);">Dateityp &auml;ndern<!--#=POP_TYPE#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_HIST);">Historie<!--#=POP_METAVIEW#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_META);">Eigenschaften<!--#=POP_META#--></A> 
+	</TD></TR>
+	
+	</table>
+</td></tr>
+</table>
+</DIV>
+<!-- Ende Layer Plain auf User gelockt -->
+
+<!-- Layer für Pic -->
+<DIV ID="pic" class=kontextmenu>
+<table class=filekontext>
+<tr><td>
+	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_COPY);">Kopieren<!--#=POP_COPY#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_RENAME);">Umbenennen<!--#=POP_RENAME#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_MOVE);">Verschieben<!--#=POP_MOVE#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_DELETE);">L&ouml;schen<!--#=POP_DELETE#--></A> 
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHOWN);">Besitzer &auml;ndern<!--#=POP_CHOWN#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHGRP);">Gruppe &auml;ndern <!--#=POP_CHGRP#--></A>
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHMOD);">Zugriff &auml;ndern<!--#=POP_CHMOD#--></A> 
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHTYPE);">Dateityp &auml;ndern<!--#=POP_TYPE#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_META);">Eigenschaften<!--#=POP_META#--></A> 
+	</TD></TR>
+	</table>
+</td></tr>
+</table>
+</DIV>
+<!-- Ende Layer Pic -->
+
+<!-- Layer für Folder -->
+<DIV ID="folder" class=kontextmenu>
+<table width=150 class=filekontext>
+<tr><td>
+	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_LOCKF);">Sperren</A> 
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_COPYF);">Kopieren<!--#=POP_COPY#--></A> 
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Umbenennen
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Verschieben
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		L&ouml;schen
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD class="inaktiv">
+		Besitzer &auml;ndern
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Gruppe &auml;ndern
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Zugriff &auml;ndern
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_METAVIEW);">Eigenschaften<!--#=POP_META#--></A> 
+	</TD></TR>
+	</table>
+</td></tr>
+</table>
+</DIV>
+<!-- Ende Layer folder -->
+
+<!-- Layer für Plaindateien auf User gelockt -->
+<DIV ID="binary" class=kontextmenu>
+<table class=filekontext>
+<tr><td>
+	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_EDIT);">Quelltext bearbeiten<!--#=POP_EDIT#--></A> 
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_COPY);">Kopieren<!--#=POP_COPY#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_RENAME);">Umbenennen<!--#=POP_RENAME#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_MOVE);">Verschieben<!--#=POP_MOVE#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_DELETE);">L&ouml;schen<!--#=POP_DELETE#--></A> 
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHOWN);">Besitzer &auml;ndern<!--#=POP_CHOWN#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHGRP);">Gruppe &auml;ndern <!--#=POP_CHGRP#--></A>
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHMOD);">Zugriff &auml;ndern<!--#=POP_CHMOD#--></A> 
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHTYPE);">Dateityp &auml;ndern<!--#=POP_TYPE#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_HIST);">Historie<!--#=POP_METAVIEW#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_META);">Eigenschaften<!--#=POP_META#--></A> 
+	</TD></TR>
+	
+	</table>
+</td></tr>
+</table>
+</DIV>
+<!-- Ende Layer Binary -->
+
+
+<!-- Layer für Folder gesperrt -->
+<DIV ID="folderlock" class=kontextmenu>
+<table width=150 class=filekontext>
+<tr><td>
+	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_LOCKUSERF);">Sperrung übernehmen</A> 
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_COPYF);">Kopieren<!--#=POP_COPY#--></A> 
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Umbenennen
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Verschieben
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		L&ouml;schen
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD class="inaktiv">
+		Besitzer &auml;ndern
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Gruppe &auml;ndern
+	</TD></TR>
+	<TR><TD class="inaktiv">
+		Zugriff &auml;ndern
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_METAVIEW);">Eigenschaften<!--#=POP_META#--></A> 
+	</TD></TR>
+	</table>
+</td></tr>
+</table>
+</DIV>
+<!-- Ende Layer folder -->
+
+<!-- Layer für Folder Lock user -->
+<DIV ID="folderlockuser" class=kontextmenu>
+<table width=150 class=filekontext>
+<tr><td>
+	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_UNLOCKF);">Frei geben</A> 
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_COPYF);">Kopieren<!--#=POP_COPY#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_RENAMEF);">Umbenennen<!--#=POP_RENAME#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_MOVEF);">Verschieben<!--#=POP_MOVE#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_DELETEF);">L&ouml;schen<!--#=POP_DELETE#--></A> 
+	</TD></TR>
+
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHOWN);">Besitzer &auml;ndern<!--#=POP_CHOWN#--></A> 
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHGRP);">Gruppe &auml;ndern <!--#=POP_CHGRP#--></A>
+	</TD></TR>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_CHMOD);">Zugriff &auml;ndern<!--#=POP_CHMOD#--></A> 
+	</TD></TR>
+	
+	<tr><td><hr></td></tr>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doAction(DO_META);">Eigenschaften<!--#=POP_META#--></A> 
+	</TD></TR>
+	</table>
+</td></tr>
+</table>
+</DIV>
+<!-- Ende Layer folder -->
+
+<!-- Beginn Layer nicht in Projekt -->
+<div id="ntprojekt_p" class="kontextmenu">
+<table class=filekontext>
+<tr><td>
+<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+<TR><TD>
+<A class=kontextlink href="javascript:doAction(DO_COPY);">Kopieren<!--#=POP_COPY#--></A> 
+</TD></TR>
+
+<tr><td><hr></td></tr>
+<TR><TD>
+<A class=kontextlink href="javascript:doAction(DO_HISTVIEW);">Historie<!--#=POP_METAVIEW#--></A> 
+</TD></TR>
+<TR><TD>
+<A class=kontextlink href="javascript:doAction(DO_METAVIEW);">Eigenschaften<!--#=POP_META#--></A> 
+</TD></TR>
+
+</table>
+</td></tr>
+</table>
+</div>
+<!-- Beginn Layer nicht in Projekt -->
+
+<!-- Ende Layers -->
+</BODY>
+</HTML>
+
+

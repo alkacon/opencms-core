@@ -1,0 +1,77 @@
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return 'help/3.html';
+}
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+
+<link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+
+</HEAD>
+
+<body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 leftmargin=0 topmargin=0>
+
+<!-- Beginn neue Datei Docloader und EMailformulareditor Anlegen -->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<form id="UPLOADPIC" name="UPLOADPIC">
+<table border=2 cellspacing=0 cellpadding=0 width=500>
+
+<tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+	<!--Beginn Head-->
+	<tr><td colspan=2 class=head>Neue Bilddatei hochladen</td></tr>
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<!--Beginn Inhalt-->
+	<tr>
+		<td class=formular width=15%>MimeTyp:</td>
+		<td class=dialogtxt>GIF</td>
+	</tr>
+	<tr>
+		<td class=formular>Größe:</td>
+		<td class=dialogtxt>15x30</td>
+	</tr>
+	<tr>
+		<td class=formular>Dateigröße:</td>
+		<td class=dialogtxt>24.000 Byte</td>
+	</tr>
+	<tr>
+		<td class=formular>Name:</td>
+		<td class=dialogtxt><INPUT class="textfeld2" id=NAME name=NAME value="head.gif"></td>
+	</tr>
+	<tr>
+		<td class=formular>Titel:</td>
+		<td class=dialogtxt><INPUT class="textfeld2" id=TITEL name=TITEL onfocus="UPLOADPIC.FERTIG.disabled=false;"></td>
+	</tr>
+	
+	<!--Beginn Buttons-->
+	<tr><td colspan=2 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT class=button width = 100 type ="button" value=" << Zurück" id=ZURUECK name=ZURUECK onClick="location='explorer_files_upload_01.html';"></td>
+				<td class=formular align=middle width=20%><INPUT disabled class=button width = 100 type ="button" value="Fertig stellen" id =FERTIG name=FERTIG onClick="a=check_textfeld('UPLOADPIC', 'TITEL'); if(a==true)location='explorer_files_upload_02.html';"></td>
+				<td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files_projekt.html';"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</TD></TR>
+</TABLE>
+</FORM>
+</TD></TR>
+</TABLE>
+<!-- Ende neue Datei Anlegen -->
+
+</body>
+</HTML>

@@ -1,0 +1,145 @@
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '5_2_1_1_1.html';
+}
+//-->
+</script>
+
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<link rel=stylesheet type="text/css" href="css/format.css">
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form id=USERNEW name=USERNEW>
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td class="head">Benutzer neu anlegen</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Beginn Inhalt-->
+			<tr><td class=dialogtxt>
+				<table border=1 width=100%>
+					<tr><td class=dialogtxt>
+						<table border=0 width=100% height=200px>
+							<tr>
+								<td class=formular width=10%>Benutzer:</td>
+								<td class=dialogtxt width=40%><input type="text" value="" class="textfeld" name="USER" id="USER"></td>
+								<td class=formular width=10%>Beschreibung:</td>
+								<td class=dialogtxt width=40%><input type="text" value="" class="textfeld" name="USERDESC" id="USERDESC"></td>
+							</tr>
+							<tr>
+								<td class=formular>Name:</td>
+								<td class=dialogtxt><input type="text" value="" class="textfeld" name="USERNAME" id="USERNEAME"></td>
+								<td class=formular>EMail:</td>
+								<td class=dialogtxt><input type="text" value="" class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
+							</tr>
+							<tr>
+								<td class=formular>Vorname:</td>
+								<td class=dialogtxt><input type="text" value="" class="textfeld" name="USERSIRNAME" id="USERSIRNAME"></td>
+								<td class=formular>Straße:</td>
+								<td class=dialogtxt><input type="text" value="" class="textfeld" name="USERSTREET" id="USERSTREET"></td>
+							</tr>
+							<tr>
+								<td class=formular>Kennwort:</td>
+								<td class=dialogtxt><input type="password" value="" class="textfeld" name="PWD" id="PWD"></td>
+								<td class=formular>PLZ:</td>
+								<td class=dialogtxt><input type="text" value="" class="textfeld" name="ZIP" id="ZIP"></td>
+							</tr>
+							<tr>
+								<td class=formular>Kennwort best.:</td>
+								<td class=dialogtxt><input type="password" value="" class="textfeld" name="PWD2" id="PWD2"></td>
+								<td class=formular>Ort:</td>
+								<td class=dialogtxt><input type="text" value="" class="textfeld" name="TOWN" id="TOWN"></td>
+							</tr>
+							</table>
+
+							<table border=0 width=100%>
+							<tr>
+								<td class=formular colspan=2>Benutzer gehört zu Gruppe:</td>
+								<td class=formular>Alle Gruppen:</td>
+							</tr>
+							<tr>
+							<td class=dialogtxt valign=top>
+							<select name="selectgroup" size="10" width=150 style="width:150px" onDblClick="">
+								
+							</select>
+							</td>
+							<td class=dialogtxt valign=top>
+								<INPUT class=button width=100 type="button" value="<< Hinzufügen" id=ADD name=ADD onClick="">
+								<br>&nbsp;<br>
+								<INPUT class=button width=100 type="button" value="Entfernen >>" id=SUB name=SUB onClick="">
+							</td>
+							<td class=dialogtxt valign=top>
+							<select name="selectgroup" size="10" width=150 style="width:150px" onDblClick="">
+								<option value="01"selected>Administrators
+								<option value="02">HTML Programmers
+								<option value="03">Screen Designers
+								<option value="04">Editors
+								<option value="05">Guests
+								<option value="05">Users
+							</select>
+							</td>
+							</tr>
+						</table>
+						<table border=0 width=100%>
+							<tr>
+								<td class=formular width=20%>Default Gruppe:</td>
+								<td class=dialogtxt align=left valign=top>
+									<select name="defaultgroup" width=150 style="width:150px">
+										<option>alle Gruppen, die ausgewählt wurden, erscheinen hier
+								</select>
+							</td>
+						</tr>
+					</table>
+					</td></tr>
+				</table>
+			</td></tr>
+			
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="location.href='administration_content_users.html'"></td>
+					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="location.href='administration_content_users.html'"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			
+			</table>
+	</td></tr>
+</table>
+</form>
+    
+</td></tr>
+</table>
+
+</BODY>
+</html>
+

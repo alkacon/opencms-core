@@ -1,0 +1,141 @@
+<HTML>
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>Dialog</title>
+
+<link rel=stylesheet type="text/css" href="css/format.css">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form id=01 name=01>
+<table cellspacing=0 cellpadding=0 border=2 width=500px>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td colspan=2 class="head">Überschrift</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			
+			<!-- Beginn Dropdown-->
+			<tr>
+				<td class=formular width=10%>Text:</td>
+				<td class=dialogtxt>
+					<select name="name" >
+						<option value="#" selected>Inhalt
+						<option value="#">Inhalt
+					</select>
+				</td>
+			</tr>
+			<!-- Ende Dropdown-->
+			
+			<!-- Beginn Textfeld-->
+			<tr>
+				<td class=formular width=10%>Text:</td>
+				<td class=dialogtxt><input type="text" class="textfeld" maxlength="8" name="name" id="name"></td>
+			</tr>
+			<!-- Ende Textfeld-->
+
+			<!-- Beginn Upload-->
+			<tr>
+				<td class=formular width=10%>Name:</td>
+				<td class=dialogtxt>
+					<INPUT type="file" class="textfeld" maxlength="30" name=DATEINAME id=DATEINAME>
+				</td>
+			</tr>
+			<!-- Ende Upload-->
+
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt colspan=2>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK></td>
+					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL name=CANCEL></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			
+			</table>
+	</td></tr>
+</table>
+</form>
+
+<!-- Tabellenaufbau für Dialog mit OK für Nachrichten und Fehlermeldugnen-->
+<form id=01 name=01>
+<table cellspacing=0 cellpadding=0 border=2 width=300px>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td class="head">Meldungsname</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			
+			<!-- Beginn Meldung-->
+			<tr>
+				<td class="dialogtxt">Text der Meldung</td>
+			</tr>
+			<!-- Ende Meldung-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=center><INPUT class=button width=100 type="button" value="OK" id=OK name=OK></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			
+			</table>
+	</td></tr>
+</table>
+</form>
+
+
+</td></tr>
+</table>
+<!-- Ende Tabelle um vertikal und horizontal zu zentrieren-->
+
+
+</BODY>
+</HTML>

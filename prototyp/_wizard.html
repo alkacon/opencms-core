@@ -1,0 +1,247 @@
+<HTML>
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<TITLE>Wizard</TITLE>
+
+<link rel=stylesheet type="text/css" href="css/format.css">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+<form id=01 name=01>
+
+<!-- Tabellenaufbau für Wizard mit weißem Auswahlfeld-->
+<table border=2 cellspacing=0 cellpadding=0 width=500px>
+<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+	<!-- Beginn Überschrift blau-->
+	<tr><td colspan=3 class=head>Neu</td></tr>
+	<!-- Ende Überschrift blau-->
+	
+	<!-- Beginn Leerzele-->
+	<tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
+	<!-- Ende Leerzeile-->
+	
+	<!-- Beginn Auswahlfeld-->
+	<tr>
+		<td class=leerzeile width=5%>&nbsp;</td>
+		<td class=leerzeile width=90%>
+			<table border=1 width=100%>
+				<tr><td class=wizard>
+					<table border=0 width=100%>
+						<!-- Beginn Zeile für Alternative-->
+						<tr>
+							<td align=middle width=5%><INPUT type="radio" id=R_NEU name=R_NEU checked></td>
+							<td align=middle width=10%><IMG name=folder src="pics/ic_file_folder.gif" border=0 width=16 height=16></td>
+							<td align=left>Ordner</td>
+						</tr>
+						<!-- Ende Zeile für Alternative-->
+						<!-- Beginn Zeile für Alternative-->
+						<tr>
+							<td align=middle><INPUT type="radio" id=R_NEU name=R_NEU></td>
+							<td align=middle><IMG src="pics/ic_file_plain.gif" border=0 width=16 height=16></td>
+							<td align=left>Plain</td>
+						</tr>
+						<!-- Ende Zeile für Alternative-->
+						<!-- Beginn Zeile für Alternative-->
+						<tr>
+							<td align=middle><INPUT type="radio" id=R_NEU name=R_NEU></td>
+							<td align=middle><IMG src="pics/ic_file_docloader.gif" border=0 width=16 height=16></td>
+							<td align=left>Docloader</td>
+						</tr>
+						<!-- Ende Zeile für Alternative-->
+						<!-- Beginn Zeile für Alternative-->
+						<tr>
+							<td align=middle><INPUT type="radio" id=R_NEU name=R_NEU></td>
+							<td align=middle><IMG src="pics/ic_file_maileditor.gif" border=0 width=16 height=16></td>
+							<td align=left>EMail-Formular</td>
+						</tr>
+						<!-- Ende Zeile für Alternative-->
+						<!-- Beginn Zeile für Alternative-->
+						<tr>
+							<td align=middle><INPUT type="radio" id=R_NEU name=R_NEU></td>
+							<td align=middle><IMG src="pics/ic_file_binary.gif" border=0 width=16 height=16></td>
+							<td align=left>Sektion</td>
+						</tr>
+						<!-- Ende Zeile für Alternative-->
+					</table>
+				</td></tr>
+			</table>
+		</td>
+		<td class=leerzeile width=5%>&nbsp;</td>
+	</tr>
+	<!-- Ende Auswahlfeld-->
+
+	<!-- Beginn Buttonleiste Zurück inaktiv-->
+	<tr><td colspan=3 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT disabled class=button width=100 type="button" value="<< Zurück" id=ZURUECK name=ZURUECK></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Weiter >>" id=WEITER name=WEITER></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- Ende Buttonleiste-->
+	</table>
+</td>
+</tr>
+</table>
+
+<br>&nbsp;<br>
+<!-- Beginn verschiedene Buttonleisten -->
+<table border=2 cellspacing=0 cellpadding=0 width=500px>
+<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+	
+	<!-- Beginn Überschrift blau-->
+	<tr><td colspan=3 class=head>Mögliche Buttonleisten für Wizard</td></tr>
+	<!-- Ende Überschrift blau-->
+	
+<!-- Beginn Buttonleiste Zurück inaktiv-->
+	<tr><td colspan=3 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT disabled class=button width=100 type="button" value="<< Zurück" id=ZURUECK name=ZURUECK></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Weiter >>" id=WEITER name=WEITER></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- Ende Buttonleiste-->
+	
+	<!-- Beginn Buttonleiste Zurück aktiv Weiter inaktiv-->
+	<tr><td colspan=3 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="<< Zurück" id=ZURUECK name=ZURUECK></td>
+				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="button" value="Weiter >>" id=WEITER name=WEITER></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- Ende Buttonleiste-->
+	
+	<!-- Beginn Buttonleiste Zurück aktiv Weiter aktiv-->
+	<tr><td colspan=3 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="<< Zurück" id=ZURUECK name=ZURUECK></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Weiter >>" id=WEITER name=WEITER></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- Ende Buttonleiste-->
+	
+	<!-- Beginn Buttonleiste Zurück aktiv Fertig stellen inaktiv-->
+	<tr><td colspan=3 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="<< Zurück" id=ZURUECK name=ZURUECK></td>
+				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="button" value="Fertig stellen" id=FERTIG name=FERTIG></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- Ende Buttonleiste-->
+	
+	<!-- Beginn Buttonleiste Zurück aktiv Fertig stellen aktiv-->
+	<tr><td colspan=3 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="<< Zurück" id=ZURUECK name=ZURUECK></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Fertig stellen" id=FERTIG name=FERTIG></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- Ende Buttonleiste-->
+	
+</table>
+</td></tr>
+</table>
+<!-- Ende verschiedene Buttonleisten -->
+
+
+<br>&nbsp;<br>
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<table cellspacing=0 cellpadding=0 border=2 width=500px>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td colspan=2 class="head">Überschrift</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			
+			<!-- Beginn Dropdown-->
+			<tr>
+				<td class=formular width=10%>Text</td>
+				<td class=dialogtxt>
+					<select name="name" >
+						<option value="#" selected>Inhalt
+						<option value="#">Inhalt
+					</select>
+				</td>
+			</tr>
+			<!-- Ende Dropdown-->
+			
+			<!-- Beginn Textfeld-->
+			<tr>
+				<td class=formular width=10%>Text</td>
+				<td class=dialogtxt><input type="text" class="textfeld" maxlength="8" name="name" id="name"></td>
+			</tr>
+			<!-- Ende Textfeld-->
+
+			<!-- Beginn Upload-->
+			<tr>
+				<td class=formular width=10%>Name:</td>
+				<td class=dialogtxt>
+					<INPUT type="file" class="textfeld" maxlength="30" name=DATEINAME id=DATEINAME>
+				</td>
+			</tr>
+			<!-- Ende Upload-->
+
+			<!-- Beginn Buttonleiste Zurück inaktiv-->
+			<tr><td colspan=2 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT disabled class=button width=100 type="button" value="<< Zurück" id=ZURUECK name=ZURUECK></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Weiter >>" id=WEITER name=WEITER></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- Ende Buttonleiste-->
+			
+			</table>
+	</td></tr>
+</table>
+
+</td></tr>
+</table>
+<!-- Ende Tabelle um vertikal und horizontal zu zentrieren-->
+
+</form>
+
+</BODY>
+</HTML>

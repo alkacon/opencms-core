@@ -1,0 +1,109 @@
+<html>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '5_2_2_2.html';
+}
+//-->
+</script>
+
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="css/format.css">
+<!-- Ende Style -->
+<!-- Beginn Script -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_choosebrowser.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_kontextmenu.js"></SCRIPT>
+<!-- Ende Script -->
+
+</head>
+
+<body bgcolor="#FFFFFF" background="pics/bg_weiss.gif"  bgproperties=fixed>
+
+<!-- Beginn Kontent Neue Aufgaben für mich-->
+<table cellspacing=1 cellpadding=1 border=0 width="632">
+	<!-- Beginn Kopf Kontent Aufgaben-->
+	<tr bgcolor="#c0c0c0">
+		<td valign=bottom width=32 colspan=2  nowrap>&nbsp;</td>
+		<td valign=bottom width=200 nowrap><p class=einzug>Projekt</p></td>
+		<td valign=bottom width=150 nowrap><p class=einzug>Status</p></td>
+		<td valign=bottom width=100 nowrap><p class=einzug>Angelegt am</p></td>
+		<td valign=bottom width=150 nowrap><p class=einzug>Angelegt von</p></td>
+	</tr>
+
+	<tr>
+		<td nowrap><A href="javascript:showkontext('project_lock',0)"><img src="pics/ic_project_small.gif" width=16 height=16 border=0></a></td>
+		<td nowrap><IMG src="pics/ic_lock.gif" width=16 height=16 border=0></td>
+		<td nowrap><p class=einzug><a href="administration_content_projectresent_lock.html" class=task>Relaunch Sozial</a></td>
+		<td nowrap><p class=einzug>Dateien in Bearbeitung</td>
+		<td nowrap><p class=einzug>18.11.1999 16:21</td>
+		<td nowrap><p class=einzug>a.spee</td>
+	</tr>
+	<tr>
+		<td nowrap><A href="javascript:showkontext('project_unlock',1)"><img src="pics/ic_project_small.gif" width=16 height=16 border=0></a></td>
+		<td nowrap>&nbsp;</td>
+		<td nowrap><p class=einzug><a href="administration_content_projectresent_unlock.html" class=task>Karitas</a></td>
+		<td nowrap><p class=einzug>keine Sperrung</td>
+		<td nowrap><p class=einzug>11.02.2000 09:20</td>
+		<td nowrap><p class=einzug>a.spee</td>
+	</tr>
+	<tr>
+		<td nowrap><A href="javascript:showkontext('project_lock',2)"><img src="pics/ic_project_small.gif" width=16 height=16 border=0></a></td>
+		<td nowrap><IMG src="pics/ic_lock.gif" width=16 height=16 border=0></td>
+		<td nowrap><p class=einzug><a href="administration_content_projectresent_lock.html" class=task>Der Papst</a></td>
+		<td nowrap><p class=einzug>Dateien in Bearbeitung</td>
+		<td nowrap><p class=einzug>12.02.2000</td>
+		<td nowrap><p class=einzug>a.spee</td>
+	</tr>
+	
+</table>
+<!-- Ende Inhalt Aufgaben Projektbezogen -->
+
+</body>
+</html>
+
+
+<div id="project_lock" class="kontextmenu">
+<table class=filekontext>
+<tr><td>
+<table CELLPADDING=1 CELLSPACING=1 BORDER=0 bgcolor="#c0c0c0" width=100%>
+<TR><TD>
+<A class=kontextlink href="javascript:doPAction(DO_PTASK);">Aufgabe erstellen</A> 
+</TD></TR>
+     
+<tr><td><hr></td></tr>
+
+<TR><TD>
+<A class=kontextlink href="javascript:doPAction(DO_PUNLOCK);">Sperrungen aufheben</A> 
+</TD></TR>
+
+
+</table>
+</td></tr>
+</table>
+</div>
+
+<div id="project_unlock" class="kontextmenu">
+<table class=filekontext>
+<tr><td>
+<table CELLPADDING=1 CELLSPACING=1 BORDER=0 bgcolor="#c0c0c0" width=100%>
+<TR><TD>
+<A class=kontextlink href="javascript:doPAction(DO_PTASK);">Aufgabe erstellen</A> 
+</TD></TR>
+
+<tr><td><hr></td></tr>
+<TR><TD>
+<A class=kontextlink href="javascript:doPAction(DO_PONLINE);">Veröffentlichen</A> 
+</TD></TR>
+
+</table>
+</td></tr>
+</table>
+</div>

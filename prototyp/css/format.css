@@ -1,0 +1,613 @@
+/* 	usual				*/
+BODY
+{
+    COLOR: #000000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt
+}
+P
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-INDENT: 15px
+}
+P.aktordner
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-INDENT: 5px;
+	FONT-WEIGHT: bold;
+}
+.allgtext
+{
+    COLOR: #000000;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+TD
+{
+    COLOR: #000000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt
+}
+SELECT
+{
+    COLOR: #000000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
+}
+H3
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, 'sans serif';
+    FONT-SIZE: 10pt;
+    FONT-STYLE: normal
+}
+A
+{
+    COLOR: black;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+A:link
+{
+    COLOR: black;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+A:aktive
+{
+    COLOR: black;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+A:visited
+{
+    COLOR: black;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+
+/* menu and button documents		*/
+TD.menu
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt
+}
+TD.menubold
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+	FONT-WEIGHT: bold;
+}
+TD.untermenu
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt
+}
+TD.untermenubold
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif
+}
+
+/* styles for documents with content		*/
+TD.head
+{
+    BACKGROUND-COLOR: #000066;
+    COLOR: white;
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold
+}
+TD.formular
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold
+}
+TD.dialogtxt
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal
+}
+TD.wizard
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal
+}
+TD.leerzeile
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    HEIGHT: 3px;
+    PADDING-BOTTOM: 0px;
+    PADDING-LEFT: 10px;
+    PADDING-RIGHT: 10px
+}
+INPUT.button
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+    WIDTH: 100px
+}
+INPUT.textfeld
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+    HEIGHT: 20px;
+    WIDTH: 150px
+}
+INPUT.textfeld2
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+	WIDTH: 425px
+}
+INPUT.textfeld3
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+	WIDTH: 300px
+}
+TEXTAREA.textarea
+{
+    COLOR: #000000;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	WIDTH: 500px
+}
+a.reiterinaktiv
+{
+    COLOR: #ffffff;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none;
+	FONT-WEIGHT: bold;
+}
+a:visited.reiterinaktiv
+{
+    COLOR: #ffffff;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none;
+	FONT-WEIGHT: bold;
+}
+P.einzug
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-INDENT: 5px
+}
+P.tab
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-INDENT: 15px
+}
+/* Tasks					*/
+TD.taskalert
+{
+	COLOR: #ff0000;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+	FONT-SIZE: 8pt;
+}
+TD.taskalertok
+{
+	COLOR: #ff0000;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+	FONT-SIZE: 8pt;
+	TEXT-DECORATION: line-through;
+}
+TD.taskok
+{
+	COLOR: #000000;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+	FONT-SIZE: 8pt;
+	TEXT-DECORATION: line-through;
+}
+/* Tasksview					*/
+TD.taskviewhead
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: #000066;
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold
+}
+TD.taskviewhead2
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: #000066;
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+}
+
+TD.taskviewheadred
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: #ff0000;
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold
+}
+TD.taskviewbold
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold
+}
+TD.taskviewtxt
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: #000000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal
+}
+TD.taskviewtxtred
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: #ff0000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal
+}
+TD.taskviewleerzeile
+{
+    BACKGROUND-COLOR: #ffffff;
+    HEIGHT: 2px;
+    PADDING-BOTTOM: 0px;
+    PADDING-LEFT: 10px;
+    PADDING-RIGHT: 10px
+}
+INPUT.taskviewbutton
+{
+    /*BACKGROUND-COLOR: #FFEBC5;*/
+	/*COLOR: #000066;*/
+	BACKGROUND-COLOR: #C0C0C0;
+	COLOR: #000000;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+    WIDTH: 100px
+}
+
+a.task
+{
+    COLOR: black;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:visited.task
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:hover.task
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: white;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a.taskok
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: line-through;
+}
+a:visited.taskok
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: line-through;
+}
+a:hover.taskok
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: white;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: line-through;
+}
+a.taskalert
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:visited.taskalert
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:hover.taskalert
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: #00ffff;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a.taskalertok
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: line-through;
+}
+a:visited.taskalertok
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: line-through;
+}
+a:hover.taskalertok
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: #00ffff;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: line-through;
+}
+
+/* styles for the tree						*/
+a.treefolder
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:visited.treefolder
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:hover.treefolder
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: white;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a.treefoldernip
+{
+    COLOR: silver;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:visited.treefoldernip
+{
+    COLOR: silver;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:hover.treefoldernip
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: silver;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+
+/* styles for the filelist					*/
+TD.dateingeandert
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: none
+}
+TD.dateigeloescht
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: line-through
+}
+TD.dateigeaendert
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+TD.dateineu
+{
+    COLOR: #0000ff;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+TD.dateintprojekt
+{
+    COLOR: silver;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a.dateingeandert
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:visited.dateingeandert
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:hover.dateingeandert
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: white;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a.dateigeloescht
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: line-through;
+}
+a:visited.dateigeloescht
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: line-through;
+}
+a:hover.dateigeloescht
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: white;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: line-through;
+}
+a.dateigeaendert
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:visited.dateigeaendert
+{
+    COLOR: #ff0000;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:hover.dateigeaendert
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: #00ffff;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a.dateineu
+{
+    COLOR: #0000ff;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:visited.dateineu
+{
+    COLOR: #0000ff;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:hover.dateineu
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: #ffff00;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a.dateintprojekt
+{
+    COLOR: silver;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:visited.dateintprojekt
+{
+    COLOR: silver;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:hover.dateintprojekt
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: #silver;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+/* Layer Filecontextmenu		*/
+DIV.kontextmenu
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    LEFT: 0px;
+    POSITION: absolute;
+    TEXT-INDENT: 15px;
+    TOP: 0px;
+    VISIBILITY: hidden;
+    WIDTH: 150px;
+    Z-INDEX: 100
+}
+TABLE.filekontext
+{
+    BACKGROUND-COLOR: #c0c0c0;
+	BORDER-BOTTOM: #c0c0c0 outset 1px;
+    BORDER-LEFT: #c0c0c0 outset 1px;
+    BORDER-RIGHT: #c0c0c0 outset 1px;
+    BORDER-TOP: #c0c0c0 outset 1px;
+}
+A.kontextlink
+{
+    background-color:#c0c0c0;
+	COLOR: black;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none;
+}
+A:hover.kontextlink
+{
+	color:#ffffff;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none;
+}
+TD.inaktiv
+{
+    COLOR: #838383;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+/*============================================*/
+/* Styles for timer							  */
+/*============================================*/
+DIV.timer_day
+{
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    LEFT: 60px;
+	TOP: 100px;
+    VISIBILITY: hidden;
+    Z-INDEX: 1;
+}

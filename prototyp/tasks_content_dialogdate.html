@@ -1,0 +1,81 @@
+<html>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '4_4_12.html';
+}
+//-->
+</script>
+
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="css/format.css">
+<!-- Ende Style -->
+<!-- Beginn externe Scripte wegen Datumsprüfung-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<!-- Ende Script-->
+
+</head>
+
+<body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id=FDATE name=FDATE>
+
+<!-- Tabellenaufbau für Neue Aufgabe-->
+<table border=2 cellspacing=0 cellpadding=0 width=500px>
+<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+
+	<!-- Beginn Überschrift blau-->
+	<tr><td colspan=2 class=head>Fälligkeit ändern</td></tr>
+	<!-- Ende Überschrift blau-->
+	
+	<!-- Beginn Leerzele-->
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<!-- Ende Leerzeile-->
+	
+	<!-- Beginn Inhalt -->
+	<tr>
+		<td class=formular>Fällig am:</td>
+		<td class=dialogtxt>
+			<input type="text" class="textfeld" maxlength=10 value="15.01.2000" name="DATE" id="DATE">
+		</td>
+	</tr>
+	<!-- Ende Inhalt -->
+	
+	<!-- Beginn Leerzele-->
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<!-- Ende Leerzeile-->
+
+	<!-- Beginn Buttonleiste Zurück inaktiv-->
+	<tr><td colspan=2 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="ok=checkDate(FDATE.DATE.value);if(ok)window.history.back();"></td>
+				<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="window.history.back();"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- Ende Buttonleiste-->
+	</table>
+</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+<!-- Ende Zentrierung -->
+</body>
+</html>

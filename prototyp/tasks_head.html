@@ -1,0 +1,53 @@
+<html>
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="css/format.css">
+<!-- End Style -->
+
+<!-- Beginn JavaScript -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<!-- Beginn JavaScript -->
+</head>
+
+<!-- Beginn Navigation Task -->
+<body bgcolor="#E0E0E0" background="pics/bg_grau.gif"  bgproperties=fixed  bgproperties=fixed>
+
+<table cellspacing=0 cellpadding=0 border=0>
+<form action="" method=post id=form1 name=form1>
+	<tr valign=center>
+		<td class=menubold><p class=einzug>Filter:&nbsp;&nbsp;&nbsp;</p></td>
+		<td class=menu>
+			<p class=einzug>
+			<select name="filter" width=210 style="width:210px" onchange="if(filter.options[filter.selectedIndex].value!='-')window.top.body.tasks_body.location.href=filter.options[filter.selectedIndex].value;">
+				<option value="tasks_content_nafm.html" selected>Neue Aufgaben für mich 
+				<option value="tasks_content_nafr.html">Neue Aufgaben für meine Rollen 
+				<option value="tasks_content_ana.html">Alle neuen Aufgaben
+				<option value="-">------------------------------------------------
+				<option value="tasks_content_maa.html">Meine aktiven Aufgaben 
+				<option value="tasks_content_aamr.html">Aktive Aufgaben für meine Rollen 
+				<option value="tasks_content_aaa.html">Alle aktiven Aufgaben
+				<option value="-">------------------------------------------------
+				<option value="tasks_content_vmea.html">Von mir erledigte Aufgaben 
+				<option value="tasks_content_eavmr.html">Erledigte Aufgaben von meinen Rollen 
+				<option value="tasks_content_aea.html">Alle erledigten Aufgaben
+				<option value="-">------------------------------------------------
+				<option value="tasks_content_vmgna.html">Von mir gestellten neue Aufgaben
+				<option value="tasks_content_vmgaa.html">Von mir gestellte aktive Aufgaben
+				<option value="tasks_content_vmgea.html">Von mir gestellte erledigte Aufgaben 
+			</select>
+			</p>
+		</td>
+		<td class=menu><p class=einzug><input type="checkbox" name=ALL id=ALL></td>
+		<td class=menubold><p class=einzug>alle Projekte anzeigen</td>
+		<td class=menu><p class=einzug>&nbsp;</td>
+		<td class=menu><a href="tasks_content_new.html" target="tasks_body" onMouseDown="ChPush('bt_task')" onMouseUp="ChOn('bt_task')" onMouseOver="ChOn('bt_task')" onMouseOut="ChOff('bt_task')"><img src="pics/bt_task_off.gif" name="bt_task" alt="neue Aufgabe" border=0 width=32 heigth=32></a></td>
+	</tr>
+</form>
+</table>
+</body>
+<!-- Ende Navigation Task -->
+
+</html>

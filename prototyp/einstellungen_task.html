@@ -1,0 +1,147 @@
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '1_2_2.html';
+}
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<form id=EINST_TASK name=EINST_TASK>
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+	<tr><td>
+		<table cellspacing=0 cellpadding=0 border=0 width=100% height=360>
+			<tr> 
+           		<td colspan=4 class="head" height=22><p class=einzug>Einstellungen</p></td>
+			</tr>
+			<tr bgcolor="#838383"> 
+				<td colspan=4 valign=bottom> 
+				<table border=0 cellspacing=0 cellpadding=0>
+					<tr>
+						<td rowspan=2><IMG height=20 src="pics/gr_rl_inaktiv.gif" width=6></td>
+						<td bgcolor="#000000"><IMG height=1 src="pics/empty.gif" width=1></td>
+						<td rowspan=2><IMG height=20 src="pics/gr_rr_inaktiv.gif" width=6></td>
+												
+						<td rowspan=2><IMG height=20 src="pics/gr_rl_aktiv.gif" width=6></td>
+						<td nowrap bgcolor="#000000"><IMG height=1 src="pics/empty.gif" width=1></td>
+						<td rowspan=2><IMG height=20 src="pics/gr_rr_aktiv.gif" width=6></td>
+												
+						<td rowspan=2><IMG height=20 src="pics/gr_rl_inaktiv.gif" width=6></td>
+						<td nowrap bgcolor="#000000"><IMG height=1 src="pics/empty.gif" width=1></td>
+						<td rowspan=2><IMG height=20 src="pics/gr_rr_inaktiv.gif" width=6></td>
+						
+						<td rowspan=2><IMG height=20 src="pics/gr_rl_inaktiv.gif" width=6></td>
+						<td nowrap bgcolor="#000000"><IMG height=1 src="pics/empty.gif" width=1></td>
+						<td rowspan=2><IMG height=20 src="pics/gr_rr_inaktiv.gif" width=6></td>
+					</tr>
+					<tr>
+						<td bgcolor="#838383"><A class=reiterinaktiv href="einstellungen_expl.html">Explorer</a></td>
+						<td class=formular>Aufgaben</td>
+						<td bgcolor="#838383"><A class=reiterinaktiv href="einstellungen_pers.html"> Starteinstellungen</a></td>
+						<td bgcolor="#838383"><A class=reiterinaktiv href="einstellungen_user.html">Benutzerdaten</a></td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+			
+			<tr><td colspan=4 class=dialogtxt>
+			<table border=0 cellspacing=0 cellpadding=0 width=100% height=210>
+			<tr><td class=leerzeile colspan=4>&nbsp;</td></tr>
+			<tr>
+				<td colspan=4 class=formular><p class=einzug>Aufgabenfilter</p></td>
+			</tr>
+			
+			<tr>
+				<td class=formular><p class=einzug>Standard 
+                                Filter:</p> </td>
+				<td colspan=2 class=dialogtxt>
+				<select name="filter" width = 200 style="WIDTH: 200px" onchange="if(filter.options[filter.selectedIndex].value!='-')window.top.body.tasks_body.location.href=filter.options[filter.selectedIndex].value;" 
+                               >
+					<option value="tasks_content_nafm.html" selected>Neue Aufgaben f&uuml;r mich 
+					<option value="tasks_content_nafr.html">Neue Aufgaben f&uuml;r meine Rollen 
+					<option value="tasks_content_ana.html">Alle neuen Aufgaben
+					<option value="-">------------------------------------------------
+					<option value="tasks_content_maa.html">Meine aktiven Aufgaben 
+					<option value="tasks_content_aamr.html">Aktive Aufgaben f&uuml;r meine Rollen 
+					<option value="tasks_content_aaa.html">Alle aktiven Aufgaben
+					<option value="-">------------------------------------------------
+					<option value="tasks_content_vmea.html">Von mir erledigte Aufgaben 
+					<option value="tasks_content_eavmr.html">Erledigte Aufgaben von meinen Rollen
+					<option value="tasks_content_aea.html">Alle erledigten Aufgaben
+					<option value="-">------------------------------------------------
+					<option value="tasks_content_vmgna.html">Von mir gestellten neue Aufgaben
+					<option value="tasks_content_vmgaa.html">Von mir gestellte aktive Aufgaben
+					<option value="tasks_content_vmgea.html">Von mir gestellte erledigte Aufgaben 
+				</select>
+                                 
+				</td>
+				<td class=dialogtxt>
+					<input type="checkbox" name=ALL id=ALL> alle Projekte anzeigen
+				</td>
+			</tr>
+			
+			<tr>
+				<td colspan=4 class=formular><p class=einzug>Voreinstellung bei 
+                                Aufgabenerstellung</p>  </td>
+			</tr>
+				<tr>
+		<td class=dialogtxt colspan=4>
+			<INPUT type="checkbox" checked id=MSG name=MSG> 
+                                Benachrichtigung bei Annahme
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+			<INPUT type="checkbox" checked id=MSG name=MSG> 
+                                Benachrichtigung bei &Uuml;bergabe
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+			<INPUT type="checkbox" checked id=MSG name=MSG> 
+                                Benachrichtigung bei Fertigstellung
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=4>
+			<INPUT type="checkbox" checked id=MSG name=MSG> Alle Rollenmitglieder von Aufgabe Benachrichtigen
+		</td>
+	</tr>
+</table>
+</td></tr>
+			<tr><td colspan=4 class=dialogtxt><hr></td></tr>			
+			<tr><td colspan=4 class=dialogtxt>
+				<table cellspacing=0 cellpadding=5 width=100% border=0>
+				<tr>
+					<td class=formular align=right width=60%><INPUT class=button width = 100 type="button" value="Übernehmen" id=UEBERNEHMEN name=UEBERNEHMEN></td>
+					<td class=formular align=right width=20%><INPUT class=button width = 100 type="button" value="OK" id=OK name=OK onClick="location='explorer.html';"></td>
+					<td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="location='explorer.html';"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			</table>
+	</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</BODY>
+</HTML>
