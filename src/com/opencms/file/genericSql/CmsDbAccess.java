@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/24 12:12:53 $
- * Version: $Revision: 1.210 $
+ * Date   : $Date: 2001/07/26 11:38:43 $
+ * Version: $Revision: 1.211 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.210 $ $Date: 2001/07/24 12:12:53 $ *
+ * @version $Revision: 1.211 $ $Date: 2001/07/26 11:38:43 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -10339,6 +10339,46 @@ public CmsTask readTask(int id) throws CmsException {
 			}
 		}
 	}
+
+    /**
+     * Changes the project-id of a resource to the new project
+     * for publishing the resource directly
+     *
+     * @param newProjectId The new project-id
+     * @param resourcename The name of the resource to change
+     */
+    public void changeLockedInProject(int newProjectId, String resourcename) throws CmsException{
+		PreparedStatement statement = null;
+		Connection con = null;
+
+		try	{
+			con = DriverManager.getConnection(m_poolName);
+			// write data to database
+			statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_PROJECTID"));
+			statement.setInt(1, newProjectId);
+			statement.setString(2, resourcename);
+			statement.executeUpdate();
+		}
+		catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		} finally {
+			if(statement != null) {
+				 try {
+					 statement.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(con != null) {
+				 try {
+					 con.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+		}
+
+    }
 
 	/**
 	 * retrieve the correct instance of the queries holder.
