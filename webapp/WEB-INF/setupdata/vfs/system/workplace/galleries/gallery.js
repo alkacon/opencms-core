@@ -113,9 +113,20 @@
 	/**
 	 * Pastes the content of the specified resource to the current position of the editor 
 	 */
-	function pasteContent() {		
-			top.window.opener.insertHtml(top.preview_fs.gallery_preview.document.getElementById("icontent").innerHTML);		
-			top.window.close();
+	function pasteContent(newContent) {
+	<% 	
+		if (wp.MODE_WIDGET.equals(wp.getParamDialogMode())) {
+	%>
+		top.window.opener.document.getElementById("<%= wp.getParamFieldId() %>").value  = newContent;
+		top.window.opener.checkHtmlContent("<%= wp.getParamFieldId() %>");
+	<%	
+		} else { 
+	%>		
+		top.window.opener.insertHtml(top.preview_fs.gallery_preview.document.getElementById("icontent").innerHTML);		
+	<%
+		}
+	%>
+		top.window.close();
 	}
 	
 	function deleteResource(uri) {
