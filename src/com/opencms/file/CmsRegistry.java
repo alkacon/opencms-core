@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/05 16:07:07 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2003/09/08 09:03:55 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1614,7 +1614,8 @@ public class CmsRegistry extends A_CmsXmlContent {
      * 
      * The classes of the values are either String, Map or List
      *  
-     * @param key the key of the system node
+     * @param node the base node element
+     * @param key the key of a node below the base node
      * @return the values for subnodes
      */
     public Map getSubNodeValues(Element node, String key) {
