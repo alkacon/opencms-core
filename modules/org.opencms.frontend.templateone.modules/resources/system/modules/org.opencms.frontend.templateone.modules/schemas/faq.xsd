@@ -2,10 +2,9 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/attachment.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/faqparagraph.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/image.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/externallink.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/internallink.xsd"/>
 		
 	<xsd:element name="FaqArticles" type="OpenCmsFaqArticles"/>
 	
@@ -18,13 +17,11 @@
 	<xsd:complexType name="OpenCmsFaqArticle">
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="FaqParagraph" type="OpenCmsFaqParagraph" minOccurs="1" maxOccurs="10" />
 			<xsd:element name="Author" type="OpenCmsString" />
-			<xsd:element name="Text" type="OpenCmsHtml" />
 			<xsd:element name="Date" type="OpenCmsDateTime" minOccurs="0" />
 			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
-			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
-			<xsd:element name="Image" type="OpenCmsImage" minOccurs="0" maxOccurs="3"/>		
-			<xsd:element name="ExternalLink" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="5"/>			
+			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />	
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>

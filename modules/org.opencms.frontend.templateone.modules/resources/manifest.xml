@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 beta 1 Corrin</opencms_version>
-		<createdate>12/23/04 12:07 PM</createdate>
+		<createdate>3/14/05 11:37 AM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -16,12 +16,11 @@
 
 
 
-(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).
-]]></description>
+(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
 		<version>0.9.8</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
-		<datecreated>Thu, 23 Dec 2004 12:07:27 CET</datecreated>
+		<datecreated>Thu, 23 Dec 2004 11:07:27 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
@@ -47,32 +46,32 @@
 		</parameters>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="property.create.content-conversion">cleanup;xhtml</param>
+				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html</param>
 				<param name="resource.type.id">30</param>
 				<param name="resource.type.name">news</param>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</param>
-				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html</param>
-				<param name="property.create.content-conversion">cleanup;xhtml</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="property.create.content-conversion">cleanup;xhtml</param>
+				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html</param>
 				<param name="resource.type.id">35</param>
 				<param name="resource.type.name">faq</param>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/faq.xsd</param>
-				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html</param>
-				<param name="property.create.content-conversion">cleanup;xhtml</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="property.create.content-conversion">cleanup;xhtml</param>
+				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html</param>
 				<param name="resource.type.id">40</param>
 				<param name="resource.type.name">event</param>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/event.xsd</param>
-				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html</param>
-				<param name="property.create.content-conversion">cleanup;xhtml</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="property.create.content-conversion">cleanup;xhtml</param>
+				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html</param>
 				<param name="resource.type.id">45</param>
 				<param name="resource.type.name">job</param>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/job.xsd</param>
-				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html</param>
-				<param name="property.create.content-conversion">cleanup;xhtml</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>
@@ -114,9 +113,9 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 26 Oct 2004 15:50:51 CEST</datelastmodified>
+			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 23 Dec 2004 11:36:14 CET</datecreated>
+			<datecreated>Wed, 26 Jan 2005 09:55:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -125,9 +124,9 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -136,9 +135,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 13 Dec 2004 16:57:45 CET</datelastmodified>
+			<datelastmodified>Mon, 13 Dec 2004 15:57:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 16:57:44 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 15:57:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -152,9 +151,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 13 Dec 2004 16:57:44 CET</datelastmodified>
+			<datelastmodified>Mon, 13 Dec 2004 15:57:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 16:57:44 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 15:57:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -163,9 +162,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 13 Dec 2004 16:57:44 CET</datelastmodified>
+			<datelastmodified>Mon, 13 Dec 2004 15:57:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 16:57:44 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 15:57:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -174,9 +173,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 13 Dec 2004 16:57:44 CET</datelastmodified>
+			<datelastmodified>Mon, 13 Dec 2004 15:57:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 16:57:44 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 15:57:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -185,9 +184,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 13 Dec 2004 16:57:44 CET</datelastmodified>
+			<datelastmodified>Mon, 13 Dec 2004 15:57:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 16:57:44 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 15:57:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -196,9 +195,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 13 Dec 2004 16:57:44 CET</datelastmodified>
+			<datelastmodified>Mon, 13 Dec 2004 15:57:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 16:57:44 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 15:57:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -207,9 +206,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 13 Dec 2004 16:57:44 CET</datelastmodified>
+			<datelastmodified>Mon, 13 Dec 2004 15:57:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 16:57:44 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 15:57:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -220,9 +219,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>ab074eda-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Thu, 23 Dec 2004 09:49:38 CET</datelastmodified>
+			<datelastmodified>Mon, 14 Mar 2005 10:15:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 16 Dec 2004 15:27:51 CET</datecreated>
+			<datecreated>Thu, 16 Dec 2004 14:27:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -233,9 +232,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>bf2685cf-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Thu, 23 Dec 2004 10:31:27 CET</datelastmodified>
+			<datelastmodified>Mon, 14 Mar 2005 10:19:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 16 Dec 2004 15:28:25 CET</datecreated>
+			<datecreated>Thu, 16 Dec 2004 14:28:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -245,9 +244,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>ab074eda-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Thu, 23 Dec 2004 09:49:38 CET</datelastmodified>
+			<datelastmodified>Mon, 14 Mar 2005 10:15:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 16 Dec 2004 15:27:51 CET</datecreated>
+			<datecreated>Thu, 16 Dec 2004 14:27:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -256,9 +255,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements</destination>
 			<type>folder</type>
-			<datelastmodified>Sun, 19 Dec 2004 17:26:15 CET</datelastmodified>
+			<datelastmodified>Sun, 19 Dec 2004 16:26:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sun, 19 Dec 2004 17:26:15 CET</datecreated>
+			<datecreated>Sun, 19 Dec 2004 16:26:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -269,9 +268,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-address.txt</destination>
 			<type>plain</type>
 			<uuidresource>751e6403-5421-11d9-b822-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 16:16:17 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 15:16:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 14:57:45 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 13:57:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -282,9 +281,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-date.txt</destination>
 			<type>plain</type>
 			<uuidresource>97a3a496-5424-11d9-b822-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 16:18:06 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 15:18:06 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 15:20:12 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 14:20:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -295,9 +294,22 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-externallink.txt</destination>
 			<type>plain</type>
 			<uuidresource>1b33de6a-5424-11d9-b822-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 16:18:40 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 15:18:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 15:16:43 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 14:16:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-faqparagraph.txt</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-faqparagraph.txt</destination>
+			<type>plain</type>
+			<uuidresource>a5d1a9a1-946c-11d9-ace3-eb1fdbd690a5</uuidresource>
+			<datelastmodified>Mon, 14 Mar 2005 09:45:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Mar 2005 09:37:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -308,9 +320,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/detail-element-image.txt</destination>
 			<type>plain</type>
 			<uuidresource>712695c3-5424-11d9-b822-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 16:18:49 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 15:18:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 15:19:07 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 14:19:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -321,9 +333,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/side_news_list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>c032bdb6-501b-11d9-889e-2de49c45b2e5</uuidresource>
-			<datelastmodified>Mon, 20 Dec 2004 09:49:21 CET</datelastmodified>
+			<datelastmodified>Mon, 20 Dec 2004 08:49:21 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 17 Dec 2004 12:06:50 CET</datecreated>
+			<datecreated>Fri, 17 Dec 2004 11:06:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -345,9 +357,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 22 Dec 2004 13:30:48 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 12:30:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 13:30:48 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 12:30:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -358,9 +370,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html</destination>
 			<type>jsp</type>
 			<uuidresource>3c595376-5331-11d9-b7cd-5777c119166f</uuidresource>
-			<datelastmodified>Thu, 23 Dec 2004 09:43:14 CET</datelastmodified>
+			<datelastmodified>Thu, 23 Dec 2004 08:43:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 21 Dec 2004 10:18:11 CET</datecreated>
+			<datecreated>Tue, 21 Dec 2004 09:18:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -388,9 +400,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html</destination>
 			<type>jsp</type>
 			<uuidresource>21f158be-5295-11d9-a418-5777c119166f</uuidresource>
-			<datelastmodified>Thu, 23 Dec 2004 09:44:37 CET</datelastmodified>
+			<datelastmodified>Mon, 14 Mar 2005 09:44:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 20 Dec 2004 15:40:45 CET</datecreated>
+			<datecreated>Mon, 20 Dec 2004 14:40:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -418,9 +430,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html</destination>
 			<type>jsp</type>
 			<uuidresource>8447f744-5353-11d9-9d85-5777c119166f</uuidresource>
-			<datelastmodified>Thu, 23 Dec 2004 09:48:39 CET</datelastmodified>
+			<datelastmodified>Thu, 23 Dec 2004 08:48:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 21 Dec 2004 14:23:35 CET</datecreated>
+			<datecreated>Tue, 21 Dec 2004 13:23:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -444,9 +456,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html</destination>
 			<type>jsp</type>
 			<uuidresource>ec483227-5020-11d9-b83c-2de49c45b2e5</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 13:34:37 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 12:34:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 17 Dec 2004 12:43:51 CET</datecreated>
+			<datecreated>Fri, 17 Dec 2004 11:43:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -464,9 +476,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 13 Dec 2004 17:01:25 CET</datelastmodified>
+			<datelastmodified>Mon, 13 Dec 2004 16:01:25 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 17:01:25 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 16:01:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -477,9 +489,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/address.xsd</destination>
 			<type>plain</type>
 			<uuidresource>cc8110d9-541f-11d9-b822-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 15:32:57 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 14:32:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 14:45:53 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 13:45:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties>
@@ -495,9 +507,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/attachment.xsd</destination>
 			<type>plain</type>
 			<uuidresource>f3d48bfb-4d22-11d9-b991-636f59544321</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 15:33:04 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 14:33:04 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 17:20:49 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 16:20:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -513,9 +525,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event.xsd</destination>
 			<type>plain</type>
 			<uuidresource>fe568d16-5295-11d9-a418-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 16:14:00 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 15:14:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 20 Dec 2004 15:46:55 CET</datecreated>
+			<datecreated>Mon, 20 Dec 2004 14:46:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -531,9 +543,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/externallink.xsd</destination>
 			<type>plain</type>
 			<uuidresource>080b37f6-4d22-11d9-b991-636f59544321</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 15:33:11 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 14:33:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 17:14:14 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 16:14:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -549,9 +561,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/faq.xsd</destination>
 			<type>plain</type>
 			<uuidresource>f44e8e0e-528f-11d9-8735-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 15:11:54 CET</datelastmodified>
+			<datelastmodified>Mon, 14 Mar 2005 09:10:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 20 Dec 2004 15:03:41 CET</datecreated>
+			<datecreated>Mon, 20 Dec 2004 14:03:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -563,13 +575,31 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/faqparagraph.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/faqparagraph.xsd</destination>
+			<type>plain</type>
+			<uuidresource>f992cd50-9467-11d9-8c73-eb1fdbd690a5</uuidresource>
+			<datelastmodified>Mon, 14 Mar 2005 09:42:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Mar 2005 09:03:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for FAQ]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/image.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/image.xsd</destination>
 			<type>plain</type>
 			<uuidresource>d24da95a-4f6b-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 15:33:19 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 14:33:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 16 Dec 2004 15:07:29 CET</datecreated>
+			<datecreated>Thu, 16 Dec 2004 14:07:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -585,9 +615,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/internallink.xsd</destination>
 			<type>plain</type>
 			<uuidresource>15389f09-4f6a-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 15:33:26 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 14:33:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 16 Dec 2004 14:55:02 CET</datecreated>
+			<datecreated>Thu, 16 Dec 2004 13:55:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -603,9 +633,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/job.xsd</destination>
 			<type>plain</type>
 			<uuidresource>62ab3057-5352-11d9-9ec3-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 14:52:21 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 13:52:21 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 21 Dec 2004 14:15:29 CET</datecreated>
+			<datecreated>Tue, 21 Dec 2004 13:15:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -621,9 +651,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</destination>
 			<type>plain</type>
 			<uuidresource>58e1421e-4d20-11d9-b991-636f59544321</uuidresource>
-			<datelastmodified>Wed, 22 Dec 2004 16:38:53 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 15:38:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 13 Dec 2004 17:02:10 CET</datecreated>
+			<datecreated>Mon, 13 Dec 2004 16:02:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -637,9 +667,9 @@
 		<file>
 			<destination>xmlmodules</destination>
 			<type>folder</type>
-			<datelastmodified>Thu, 23 Dec 2004 11:59:25 CET</datelastmodified>
+			<datelastmodified>Mon, 14 Mar 2005 09:27:24 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 12:17:03 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 11:17:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -661,9 +691,9 @@
 		<file>
 			<destination>xmlmodules/events</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 22 Dec 2004 14:39:49 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 13:39:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 13:30:10 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 12:30:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -691,9 +721,9 @@
 			<destination>xmlmodules/events/event_0001.html</destination>
 			<type>event</type>
 			<uuidresource>687cb2d5-5436-11d9-a9f0-5777c119166f</uuidresource>
-			<datelastmodified>Thu, 23 Dec 2004 11:48:59 CET</datelastmodified>
+			<datelastmodified>Thu, 23 Dec 2004 10:48:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 17:27:44 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 16:27:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -707,9 +737,9 @@
 		<file>
 			<destination>xmlmodules/faq</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 22 Dec 2004 14:39:57 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 13:39:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 13:30:28 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 12:30:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -736,13 +766,21 @@
 			<source>xmlmodules/faq/faq_0001.html</source>
 			<destination>xmlmodules/faq/faq_0001.html</destination>
 			<type>faq</type>
-			<uuidresource>8300db18-5423-11d9-b822-5777c119166f</uuidresource>
-			<datelastmodified>Thu, 23 Dec 2004 11:53:37 CET</datelastmodified>
+			<uuidresource>410b6474-946a-11d9-ace3-eb1fdbd690a5</uuidresource>
+			<datelastmodified>Mon, 14 Mar 2005 10:14:06 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 15:12:28 CET</datecreated>
+			<datecreated>Mon, 14 Mar 2005 09:20:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html]]></value>
+				</property>
+				<property>
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[This is the title of FAQ entry 0001]]></value>
@@ -753,9 +791,9 @@
 		<file>
 			<destination>xmlmodules/jobs</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 22 Dec 2004 14:40:08 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 13:40:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 13:30:16 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 12:30:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -783,9 +821,9 @@
 			<destination>xmlmodules/jobs/job_0001.html</destination>
 			<type>job</type>
 			<uuidresource>c154b1da-5420-11d9-b822-5777c119166f</uuidresource>
-			<datelastmodified>Thu, 23 Dec 2004 11:55:59 CET</datelastmodified>
+			<datelastmodified>Mon, 14 Mar 2005 10:13:05 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 14:52:44 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 13:52:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -799,9 +837,9 @@
 		<file>
 			<destination>xmlmodules/news</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 22 Dec 2004 16:39:54 CET</datelastmodified>
+			<datelastmodified>Wed, 22 Dec 2004 15:39:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 13:30:22 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 12:30:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -833,9 +871,9 @@
 			<destination>xmlmodules/news/index.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>734ff15f-501e-11d9-b83c-2de49c45b2e5</uuidresource>
-			<datelastmodified>Mon, 20 Dec 2004 09:32:37 CET</datelastmodified>
+			<datelastmodified>Mon, 20 Dec 2004 08:32:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 17 Dec 2004 12:26:09 CET</datecreated>
+			<datecreated>Fri, 17 Dec 2004 11:26:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -851,9 +889,9 @@
 			<destination>xmlmodules/news/news_0001.html</destination>
 			<type>news</type>
 			<uuidresource>f8257305-542f-11d9-94b2-5777c119166f</uuidresource>
-			<datelastmodified>Thu, 23 Dec 2004 11:59:05 CET</datelastmodified>
+			<datelastmodified>Thu, 23 Dec 2004 10:59:05 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 22 Dec 2004 16:41:38 CET</datecreated>
+			<datecreated>Wed, 22 Dec 2004 15:41:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -867,9 +905,9 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 08 Aug 2003 15:02:00 CEST</datecreated>
+			<datecreated>Fri, 08 Aug 2003 13:02:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -892,9 +930,9 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -908,9 +946,9 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 18 Aug 2004 13:39:40 CEST</datecreated>
+			<datecreated>Wed, 18 Aug 2004 11:39:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -921,9 +959,9 @@
 			<destination>system/workplace/resources/filetypes/article.gif</destination>
 			<type>image</type>
 			<uuidresource>a17837da-2769-11d9-a415-1fd2a335da0f</uuidresource>
-			<datelastmodified>Tue, 26 Oct 2004 18:11:01 CEST</datelastmodified>
+			<datelastmodified>Tue, 26 Oct 2004 16:11:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 26 Oct 2004 18:11:01 CEST</datecreated>
+			<datecreated>Tue, 26 Oct 2004 16:11:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

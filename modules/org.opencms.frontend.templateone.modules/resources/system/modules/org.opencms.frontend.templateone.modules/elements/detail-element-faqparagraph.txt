@@ -1,0 +1,24 @@
+<cms:contentcheck ifexists="FaqParagraph"><%--
+--%><cms:contentloop element="FaqParagraph">
+
+<cms:contentcheck ifexists="Subtitle">
+	<h3><cms:contentshow element="Subtitle" /></h3>
+</cms:contentcheck>
+<p>
+<cms:contentshow element="Text" />
+</p>
+
+<%-- begin images --%>
+<%@ include file="../elements/detail-element-image.txt" %>
+<%-- end images --%>
+
+
+<%-- begin external links --%>
+<cms:contentcheck ifexistsone="ExternalLink">
+<p><fmt:message key="detail.label.FaqArticle.ExternalLink" />:</p>
+<%@ include file="../elements/detail-element-externallink.txt" %>
+</cms:contentcheck>
+<%-- end external links --%>
+
+</cms:contentloop><%--
+--%></cms:contentcheck>

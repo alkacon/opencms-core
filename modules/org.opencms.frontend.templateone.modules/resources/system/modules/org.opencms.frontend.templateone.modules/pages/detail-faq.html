@@ -20,11 +20,9 @@ pageContext.setAttribute("locale", locale);
 
 <h1><cms:contentshow element="Title" /></h1>
 
-
 <%-- begin date --%>
 <%@ include file="../elements/detail-element-date.txt" %>
 <%-- end date --%>
-
 
 <%-- begin author --%>
 <cms:contentcheck ifexists="Author">
@@ -32,25 +30,9 @@ pageContext.setAttribute("locale", locale);
 </cms:contentcheck>
 <%-- end author --%>
 
-
-<%-- FAQ text --%>
-<p>
-<cms:contentshow element="Text" />
-</p>
-<%-- end FAQ text --%>
-
-
 <%-- begin images --%>
-<%@ include file="../elements/detail-element-image.txt" %>
+<%@ include file="../elements/detail-element-faqparagraph.txt" %>
 <%-- end images --%>
-
-
-<%-- begin external links --%>
-<cms:contentcheck ifexistsone="ExternalLink">
-<p><fmt:message key="detail.label.FaqArticle.ExternalLink" />:</p>
-<%@ include file="../elements/detail-element-externallink.txt" %>
-</cms:contentcheck>
-<%-- end external links --%>
 
 </cms:contentload>
 
