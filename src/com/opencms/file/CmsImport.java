@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/08/25 14:24:11 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/08/28 13:02:27 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/08/25 14:24:11 $
+ * @version $Revision: 1.17 $ $Date: 2000/08/28 13:02:27 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -117,9 +117,9 @@ public class CmsImport implements I_CmsConstants {
 		}
 	}
 /**
- * Insert the method's description here.
+ * Returns a list of files which are both in the import and in the virtual file system
  * Creation date: (24.08.00 16:18:23)
- * @return java.util.Vector
+ * @return java.util.Vector of Strings, complete path of the files
  */
 public Vector getConflictingFilenames() throws CmsException {
 	NodeList fileNodes;
@@ -319,8 +319,14 @@ public Vector getConflictingFilenames() throws CmsException {
 			if (fullname!=null) {
 				m_cms.chmod(fullname, Integer.parseInt(access));
 			    m_cms.chgrp(fullname, group);
-			    m_cms.chown(fullname, user); 
-				m_cms.chstate(fullname,state);
+			    m_cms.chown(fullname, user);
+			    // for debugging: check whether the kernel and this method determine the same status
+			    int kernelstate = m_cms.readFileHeader(fullname).getState();
+			    if ((state != kernelstate) && A_OpenCms.isLogging()) { 
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "CmsImport: different statuses, kernel sais "+kernelstate+
+					" import sais "+ state); 
+			    }
+				// m_cms.chstate(fullname,state);
 			}
 			System.out.println("OK");
 		} catch(Exception exc) {
@@ -339,8 +345,8 @@ public void importResources() throws CmsException {
 }
 /**
  * Imports the resources and writes them to the cms.
- * param excludeList filenames of files which should not be (over) written in the virtual file system
- * param writtenFilenames filenames of the files which have actually been successfully written
+ * param excludeList filenames of files and folders which should not be (over) written in the virtual file system
+ * param writtenFilenames filenames of the files and folder which have actually been successfully written
  *       not used when null
  * param fileCodes code of the written files (for the registry) 
  *       not used when null
@@ -401,14 +407,13 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 				}
 
 				// import the specified file
-				boolean succes = importFile(source, destination, type, user, group, access, properties);
-				boolean isFile = (source != null);
-				if (succes && isFile) {
+				boolean succes = importFile(source, destination, type, user, group, access, properties); 
+				if (succes) {
 					if (writtenFilenames != null) {
 						writtenFilenames.addElement(m_importPath + destination);
 					}
 					if (fileCodes != null) {
-						// TODO
+						// TODO generating a code for the resource name
 						fileCodes.addElement("code of " + m_importPath + destination);
 					}
 				}
