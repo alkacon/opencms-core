@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/08/30 14:08:21 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/09/04 15:46:47 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.flex.jsp.*;
  * to the OpenCms Template mechanism.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants, I_CmsJspConstants, I_CmsResourceLoader {
 
@@ -165,9 +165,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
         m_cache = (CmsFlexCache)openCms.getRuntimeProperty(this.C_LOADER_CACHENAME);
         m_context = (javax.servlet.ServletContext)openCms.getRuntimeProperty("context");
         if (m_cache == null) {
-            boolean enabled = c.getBoolean("flex.cache.enabled", true);
-            boolean cacheOffline = c.getBoolean("flex.cache.offline", true);
-            m_cache = new CmsFlexCache(enabled, cacheOffline);
+            m_cache = new CmsFlexCache( openCms );
             openCms.setRuntimeProperty(this.C_LOADER_CACHENAME, m_cache);
         }
         log("Initialized!");        

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2002/08/30 14:08:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/09/04 15:46:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.ServletException;
  * Description of the class CmsDumpLoader here.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher implements I_CmsResourceLoader {
     
@@ -73,10 +73,7 @@ public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher im
         m_openCms = openCms;
         m_cache = (CmsFlexCache)openCms.getRuntimeProperty(this.C_LOADER_CACHENAME);
         if (m_cache == null) {
-            source.org.apache.java.util.Configurations c = openCms.getConfiguration();
-            boolean enabled = c.getBoolean("flex.cache.enabled", true);
-            boolean cacheOffline = c.getBoolean("flex.cache.offline", true);
-            m_cache = new CmsFlexCache(enabled, cacheOffline);
+            m_cache = new CmsFlexCache( openCms );
             m_openCms.setRuntimeProperty(this.C_LOADER_CACHENAME, m_cache);
         }        
         log(this.getClass().getName() + " initialized!");     
