@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/05/18 12:37:41 $
- * Version: $Revision: 1.118 $
+ * Date   : $Date: 2000/05/18 13:30:39 $
+ * Version: $Revision: 1.119 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.118 $ $Date: 2000/05/18 12:37:41 $
+ * @version $Revision: 1.119 $ $Date: 2000/05/18 13:30:39 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -435,8 +435,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// read the project that should be published.
 		A_CmsProject publishProject = m_projectRb.readProject(id);
 		
-		if( isAdmin(currentUser, currentProject) || 
-			isManagerOfProject(currentUser, publishProject) || 
+		if( (isAdmin(currentUser, currentProject) || 
+			isManagerOfProject(currentUser, publishProject) ) && 
 			(publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
 			 
 			 // publish the project
