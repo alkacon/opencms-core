@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/03/19 17:45:01 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/03/22 16:40:40 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -227,19 +227,7 @@ public class CmsLoaderManager {
         HttpServletResponse res        
     ) throws ServletException, IOException, CmsException {
         res.setContentType(getMimeType(resource.getName(), cms.getRequestContext().getEncoding()));
-        I_CmsResourceLoader loader = getLoader(resource.getLoaderId());
-
-        // check if the request contains a last modified header
-        long lastModifiedHeader = req.getDateHeader("If-Modified-Since");                
-        if (lastModifiedHeader > -1) {
-            // last modified header is set, compare it to the requested resource
-            long lastModified = loader.getDateLastModified(cms, resource, req, res);
-            if (lastModified == lastModifiedHeader) {
-                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                return;
-            }            
-        }
-        
+        I_CmsResourceLoader loader = getLoader(resource.getLoaderId());        
         loader.load(cms, resource, req, res);
     }    
     

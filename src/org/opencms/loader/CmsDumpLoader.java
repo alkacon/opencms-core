@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/03/19 17:45:01 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/03/22 16:40:40 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -185,14 +185,24 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws IOException, CmsException {
         
-        CmsFile file = CmsFile.upgrade(resource, cms);       
+        // check if the request contains a last modified header
+        long lastModifiedHeader = req.getDateHeader(C_HEADER_IF_MODIFIED_SINCE);                
+        if (lastModifiedHeader > -1) {
+            // last modified header is set, compare it to the requested resource
+            if ((resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) && (resource.getDateLastModified() == lastModifiedHeader)) {
+                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                return;
+            }            
+        }
         
+        // make sure we have the file contents available
+        CmsFile file = CmsFile.upgrade(resource, cms);               
         // set response status to "200 - OK" (required for export since a 404 status might have been set before)
         res.setStatus(HttpServletResponse.SC_OK);           
         // set content length header
         res.setContentLength(file.getContents().length);
         // set date last modified header
-        res.setDateHeader("Last-Modified", file.getDateLastModified());
+        res.setDateHeader(C_HEADER_LAST_MODIFIED, file.getDateLastModified());
         // set expire and chache headers        
         int expireTime;
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
@@ -220,18 +230,5 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     throws CmsException, IOException {
         
         res.getOutputStream().write(CmsFile.upgrade(resource, cms).getContents());
-    }
-
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#getDateLastModified(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    public long getDateLastModified(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) {
-        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-            // resource has not changesd, use timestamp of the resource
-            return resource.getDateLastModified();
-        } else {
-            // if the resource has somehow changed (can only be true in an offline project) force reload
-            return Long.MIN_VALUE;
-        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/03/19 17:45:01 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/03/22 16:40:40 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 
@@ -58,19 +57,13 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
     
     /** The id of this loader */
     public static final int C_RESOURCE_LOADER_ID = 9;
-
-    /** Template part identifier (request parameter) */
-    public static final String C_TEMPLATE_ELEMENT = "__element";
-    
-    /** Attribute name for storing the loader facade in the request attributes */
-    private static final String C_LOADER_FACADE_ATTR = "__loaderFacade";
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -92,8 +85,17 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     public byte[] dump(CmsObject cms, CmsResource resource, String element, Locale locale, HttpServletRequest req, HttpServletResponse res)
     throws CmsException {
         
+        // get the absolute path of the resource
+        String absolutePath = cms.readAbsolutePath(resource);
+        
         // get the requested page
-        CmsXmlPage page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
+        CmsXmlPage page = (CmsXmlPage)req.getAttribute(absolutePath);
+            
+        if (page == null) {
+            // make sure a page is only read once (not every time for each element)
+            page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
+            req.setAttribute(absolutePath, page);
+        }    
 
         // get the appropriate content and convert it to bytes
         return page.getContent(cms, element, locale).getBytes();
@@ -105,13 +107,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException, CmsException {        
 
-        CmsFile file = CmsFile.upgrade(resource, cms);        
-        
-        // init the page object and attach it as attribute of the request
-        CmsXmlPage page = CmsXmlPage.read(cms, file);
-        req.setAttribute(CmsXmlPage.C_ATTRIBUTE_XMLPAGE_OBJECT, page);
-        
-        CmsTemplateLoaderFacade loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, file);        
+        CmsTemplateLoaderFacade loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, resource);        
         loaderFacade.getLoader().export(cms, loaderFacade.getLoaderStartResource(), exportStream, req, res);
     }    
 
@@ -177,17 +173,8 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
      */
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException, CmsException {        
-        
-        CmsFile file = CmsFile.upgrade(resource, cms);               
-        
-        // init the page object and attach it as attribute to the request
-        CmsXmlPage page = CmsXmlPage.read(cms, file);
-        req.setAttribute(CmsXmlPage.C_ATTRIBUTE_XMLPAGE_OBJECT, page);
-                
-        CmsTemplateLoaderFacade loaderFacade = (CmsTemplateLoaderFacade)req.getAttribute(C_LOADER_FACADE_ATTR);
-        if (loaderFacade == null) {
-            loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, file);
-        }                                
+              
+        CmsTemplateLoaderFacade loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, resource);
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
 
@@ -197,13 +184,17 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) 
     throws IOException, CmsException {
         
-        // get the requested page
-        CmsXmlPage page = (CmsXmlPage)req.getAttribute(CmsXmlPage.C_ATTRIBUTE_XMLPAGE_OBJECT); 
-            
-        if (page == null) {      
-            page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
-        }        
+        // get the absolute path of the resource
         String absolutePath = cms.readAbsolutePath(resource);
+        
+        // get the requested page
+        CmsXmlPage page = (CmsXmlPage)req.getAttribute(absolutePath);
+            
+        if (page == null) {
+            // make sure a page is only read once (not every time for each element)
+            page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
+            req.setAttribute(absolutePath, page);
+        }        
         
         // get the element selector
         String elementName = req.getParameter(C_TEMPLATE_ELEMENT);
@@ -218,28 +209,5 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         if (result != null) {
             res.getOutputStream().write(result);
         }        
-    }
-    
-    /**
-     * Since this is a template based loader, the "last modified" date for the resource 
-     * is the lower date from the template and the xmlpage file itself.<p>
-     * 
-     * @see org.opencms.loader.I_CmsResourceLoader#getDateLastModified(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    public long getDateLastModified(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException, CmsException {
-        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-            // only if the resource has not changed we use the 304 optimization 
-            CmsTemplateLoaderFacade loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, resource);
-            // store the facade object in the request for later reuse
-            req.setAttribute(C_LOADER_FACADE_ATTR, loaderFacade);
-            // now get the last modified date for the template
-            long templateLastModified = loaderFacade.getLoader().getDateLastModified(cms, loaderFacade.getLoaderStartResource(), req, res);        
-            // use the earlier date
-            return templateLastModified < resource.getDateLastModified() ? templateLastModified : resource.getDateLastModified();
-        } else {
-            // if the resource has somehow changed (can only be true in an offline project) force reload
-            return Long.MIN_VALUE;
-        }
     }    
 }

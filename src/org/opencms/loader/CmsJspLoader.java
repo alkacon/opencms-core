@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/03/19 17:45:01 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/03/22 16:40:40 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -246,7 +246,14 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             req.removeAttribute(CmsFlexController.ATTRIBUTE_NAME);
         } finally {
             if (oldController != null) {
-                // reset saved controller
+                try {
+                    // update "date last modified"
+                    oldController.updateDateLastModified(controller.getDateLastModified());
+                } catch (Throwable t) {
+                    // just make sure we don't have any null pointers etc.
+                    OpenCms.getLog(this).error("Could not access modification date from controller", t);
+                }
+                // reset saved controller                
                 req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, oldController);
             }
         }
@@ -436,6 +443,17 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             if (!streaming && !f_res.isSuspended()) {
                 try {
                     if (!res.isCommitted() || m_errorPagesAreNotCommited) {
+                        
+                        // check if the request contains a last modified header
+                        long lastModifiedHeader = req.getDateHeader(C_HEADER_IF_MODIFIED_SINCE);                
+                        if (lastModifiedHeader > -1) {
+                            // last modified header is set, compare it to the requested resource                           
+                            if (controller.getDateLastModified() == lastModifiedHeader) {
+                                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                                return;
+                            }            
+                        }                        
+                        
                         // If a JSP errorpage was triggered the response will be already committed here
                         byte[] result = f_res.getWriterBytes();
 
@@ -448,6 +466,15 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
                         // Process headers and write output                                          
                         res.setContentLength(result.length);
+                        
+                        if (controller.getDateLastModified() > -1) {
+                            // set date last modified header (precision is only second, not millisecond
+                            res.setDateHeader(C_HEADER_LAST_MODIFIED, controller.getDateLastModified());
+                        } else {
+                            // this resource can not be optimized for "last modified", use current time as header
+                            res.setDateHeader(C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
+                        }
+                        
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);
                         res.getOutputStream().flush();
@@ -477,11 +504,11 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      */
     public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) throws ServletException, IOException {
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        // Get JSP target name on "real" file system
-        String target = updateJsp(cms, resource, req, controller, new HashSet(11));
-        // Important: Indicate that all output must be buffered
+        // get JSP target name on "real" file system
+        String target = updateJsp(cms, resource, req, controller, new HashSet(8));
+        // important: Indicate that all output must be buffered
         controller.getCurrentResponse().setOnlyBuffering(true);
-        // Dispatch to external file
+        // dispatch to external file
         controller.getCurrentRequest().getRequestDispatcherToExternal(cms.readAbsolutePath(resource), target).include(req, res);
     }
     
@@ -702,7 +729,11 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             } catch (FileNotFoundException e) {
                 throw new ServletException("JspLoader: Could not write to file '" + f.getName() + "'\n" + e, e);
             }
-        }                      
+        }      
+        
+        // update "last modified" date on controller
+        controller.updateDateLastModified(f.lastModified());        
+        
         return jspfilename;
     }
     
@@ -736,12 +767,4 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         copy.combine(m_configuration);
         return copy; 
     }
-    
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#getDateLastModified(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    public long getDateLastModified(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) {
-        // TODO: implement last modified for this resource type
-        return Long.MIN_VALUE;
-    }    
 }
