@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/10/09 16:44:19 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/10/14 09:00:31 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,6 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -45,6 +41,8 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -58,12 +56,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
+
 /**
  * Master class for the JSP based workplace which provides default methods and
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1
  */
@@ -397,6 +399,80 @@ public abstract class CmsWorkplace {
             }       
         }        
         result.append("</select>\n");                
+        return result.toString();
+    }
+    
+    /**
+     * Creates the time in milliseconds from the given parameter.<p>
+     * 
+     * @param dateString the String representation of the date
+     * @return the time in milliseconds
+     * @throws ParseException if something goes wrong
+     */
+    public long getCalendarDate(String dateString) throws ParseException {
+        long dateLong = 0;
+        String dateFormat = key("calendar.dateformat");
+        // substitute small "m" with capital "M" because calendar syntax != DateFormat syntax
+        dateFormat = dateFormat.replace('m', 'M');
+        
+        SimpleDateFormat df = new SimpleDateFormat(dateFormat);       
+        dateLong = df.parse(dateString).getTime();       
+        return dateLong;
+    }
+    
+    /**
+     * Displays a javascript calendar element.<p>
+     * 
+     * Creates the HTML javascript and stylesheet includes for the head of the page.<p>
+     * 
+     * @return the necessary HTML code for the js and stylesheet includes
+     */
+    public String calendarIncludes() {
+        StringBuffer result = new StringBuffer(512);
+        String calendarPath = getSkinUri() + "components/js_calendar/";
+        result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + calendarPath + "calendar-system.css\">\n");
+        result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "calendar.js\"></script>\n");
+        result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "lang/calendar-" + getSettings().getLanguage() + ".js\"></script>\n");
+        result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "calendar-setup.js\"></script>\n");
+        return result.toString();
+    }
+    
+    /**
+     * Initializes a javascript calendar element to be shown on a page.<p>
+     * 
+     * This method must be called at the end of a HTML page, e.g. before the closing &lt;body&gt; tag.<p>
+     * 
+     * @param inputFieldId the ID of the input field where the date is pasted to
+     * @param triggerButtonId the ID of the button which triggers the calendar
+     * @param align initial position of the calendar popup element
+     * @param singleClick if true, a single click selects a date and closes the calendar, otherwise calendar is closed by doubleclick
+     * @param weekNumbers show the week numbers in the calendar or not
+     * @param mondayFirst show monday as first day of week
+     * @param disableFunc name of the function which determines is a date should be disabled
+     * @return the HTML code to initialize a calendar poup element
+     */
+    public String calendarInit(String inputFieldId, String triggerButtonId, String align, boolean singleClick, boolean weekNumbers, boolean mondayFirst, String disableFunc) {
+        StringBuffer result = new StringBuffer(512);
+        if (align == null || "".equals(align)) {
+            align = "Bc";
+        }
+        result.append("<script type=\"text/javascript\">\n");
+        result.append("<!--\n");
+        result.append("\tCalendar.setup({\n");
+        result.append("\t\tinputField     :    \"" + inputFieldId + "\",\n");
+        result.append("\t\tifFormat       :    \"" + key("calendar.dateformat") + "\",\n");
+        result.append("\t\tbutton         :    \"" + triggerButtonId + "\",\n");
+        result.append("\t\talign          :    \"" + align + "\",\n");
+        result.append("\t\tsingleClick    :    " + singleClick + ",\n");
+        result.append("\t\tweekNumbers    :    " + weekNumbers + ",\n");
+        result.append("\t\tmondayFirst    :    " + mondayFirst);
+        if (disableFunc != null && !"".equals(disableFunc)) {
+            result.append(",\n\t\tdisableFunc    :    " + disableFunc);
+        }
+        result.append("\n\t});\n");
+
+        result.append("//-->\n");
+        result.append("</script>\n");
         return result.toString();
     }
     

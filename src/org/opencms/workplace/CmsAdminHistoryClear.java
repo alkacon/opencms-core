@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2003/10/10 13:18:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/10/14 09:00:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,8 @@ import com.opencms.file.CmsRegistry;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.text.ParseException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +55,7 @@ import org.opencms.threads.CmsAdminHistoryClearThread;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -118,11 +114,9 @@ public class CmsAdminHistoryClear extends CmsReport {
     /**
      * Builds the HTML for the history settings input form.<p>
      * 
-     * @param startYear the start year for the year select box
-     * @param endYear the end year for the year select box
      * @return the HTML code for the history settings input form
      */
-    public String buildClearForm(int startYear, int endYear) {
+    public String buildClearForm() {
         StringBuffer retValue = new StringBuffer(512);
         CmsRegistry reg = null;
         int maxVersions = -1;
@@ -150,31 +144,21 @@ public class CmsAdminHistoryClear extends CmsReport {
             retValue.append("<table border=\"0\">\n");
             retValue.append("<tr>\n");
             retValue.append("<td>" + key("input.history.clear.number") + "</td>\n");
-            retValue.append("<td>" + buildSelectVersions(null) + "</td>\n");
+            retValue.append("<td colspan=\"2\">" + buildSelectVersions(null) + "</td>\n");
             retValue.append("</tr>\n");
-            retValue.append("<tr><td colspan=\"2\">&nbsp;</td></tr>\n");
+            retValue.append("<tr><td colspan=\"3\">&nbsp;</td></tr>\n");
             retValue.append("<tr>\n");
             retValue.append("<td>" + key("input.history.clear.date") + "</td>\n");
             retValue.append("<td>");
-            retValue.append(buildSelectDay(null) +  "&nbsp;");
-            retValue.append(buildSelectMonth(null) +  "&nbsp;");
-            retValue.append(buildSelectYear(null, startYear, endYear) +  "&nbsp;");
+            retValue.append("<input type=\"text\" name=\"date\" id=\"date\">");
+            retValue.append("</td>\n<td>");            retValue.append("<img src=\"" + getResourceUri() + "ic_timer.gif\" id=\"triggercalendar\" ");
+            retValue.append("alt=\"" + key("calendar.input.choosedate") + "\" title=\"" + key("calendar.input.choosedate") + "\">");
             retValue.append("</td>\n");
             retValue.append("</tr>\n");
             retValue.append("</table>\n");
         }
         
         return retValue.toString(); 
-    }
-    
-    /**
-     * Builds the HTML code for a select box of days.<p>
-     * 
-     * @param attributes optional additional attributes of the select tag
-     * @return the HTML code for a select box of days
-     */
-    public String buildSelectDay(String attributes) {
-        return buildSelectNumbers("day", attributes, 1, 31);
     }
     
     /**
@@ -201,47 +185,8 @@ public class CmsAdminHistoryClear extends CmsReport {
         retValue.append("</select>\n");
         
         return retValue.toString();
-    }
-    
-    /**
-     * Builds the HTML code for a select box of months.<p>
-     * 
-     * @param attributes optional additional attributes of the select tag
-     * @return the HTML code for a select box of months
-     */
-    public String buildSelectMonth(String attributes) {
-        StringBuffer retValue = new StringBuffer(512);
-        Locale locale = new Locale(getSettings().getLanguage());
-        Calendar cal = new GregorianCalendar(locale);
-        DateFormat df = new SimpleDateFormat("MMMM", locale);
-
-        retValue.append("<select name=\"month\"");
-        if (attributes != null) {
-            retValue.append(" "+attributes);
-        }
-        retValue.append(">\n");
-        retValue.append("\t<option value=\"\" selected=\"selected\">" + key("input.history.clear.select") + "</option>\n");
-        for (int i=0; i<12; i++) {
-            cal.set(Calendar.MONTH, i);
-            retValue.append("\t<option value=\""+(i+1)+"\">"+df.format(cal.getTime())+"</option>\n");
-        }
-        retValue.append("</select>\n");
-
-        return retValue.toString();
-    }
-    
-    /**
-     * Builds the HTML code for a select box of years.<p>
-     * 
-     * @param attributes optional additional attributes of the select tag
-     * @param startyear the starting year for the options
-     * @param endyear the ending year for the options
-     * @return the HTML code for a select box of years
-     */
-    public String buildSelectYear(String attributes, int startyear, int endyear) {
-        return buildSelectNumbers("year", attributes, startyear, endyear);
-    }
-    
+    }   
+   
     /**
      * Build the HTML code for a select box of versions to keep.<p>
      * 
@@ -280,17 +225,17 @@ public class CmsAdminHistoryClear extends CmsReport {
                 Map params = new HashMap();
                 try {
                 params = getBackupParams();
+                CmsAdminHistoryClearThread thread = new CmsAdminHistoryClearThread(getCms(), params);
+                setParamAction(REPORT_BEGIN);
+                setParamThread(thread.getId().toString());
+                getJsp().include(C_FILE_REPORT_OUTPUT);  
                 } catch (CmsException e) {
                     // error setting history values, show error dialog
                     setParamMessage(key("error.message.historyclear"));
                     setParamErrorstack(e.getStackTraceAsString());
                     setParamReasonSuggestion(getErrorSuggestionDefault());
                     getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-                }
-                CmsAdminHistoryClearThread thread = new CmsAdminHistoryClearThread(getCms(), params);
-                setParamAction(REPORT_BEGIN);
-                setParamThread(thread.getId().toString());
-                getJsp().include(C_FILE_REPORT_OUTPUT);  
+                }               
                 break;
         }
     }
@@ -307,9 +252,8 @@ public class CmsAdminHistoryClear extends CmsReport {
         
         // get the delete information from the request parameters
         String paramVersions = request.getParameter("versions");
-        String paramDay = request.getParameter("day");
-        String paramMonth = request.getParameter("month");
-        String paramYear = request.getParameter("year");
+        String paramDate = request.getParameter("date");
+        
         
         // check the submitted values        
         int versions = 0;
@@ -321,15 +265,10 @@ public class CmsAdminHistoryClear extends CmsReport {
         } catch (NumberFormatException e) {
             // no int value submitted, check date fields
             try {
-                int day = Integer.parseInt(paramDay);
-                int month = Integer.parseInt(paramMonth) - 1;
-                int year = Integer.parseInt(paramYear);
-                Calendar cal = new GregorianCalendar();
-                cal.set(year, month, day);
-                timeStamp = cal.getTimeInMillis();
-            } catch (NumberFormatException ex) {
+                timeStamp = getCalendarDate(paramDate);
+            } catch (ParseException ex) {
                 // no date values submitted, throw exception
-                throw new CmsException("Invalid arguments. Check the input fields of the dialog", CmsException.C_BAD_NAME, ex);
+                throw new CmsException("Invalid arguments. Check the date field of the dialog", CmsException.C_BAD_NAME, ex);
             }
         }
         
