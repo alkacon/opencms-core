@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/15 11:01:18 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2000/09/15 13:28:22 $
+ * Version: $Revision: 1.126 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.125 $ $Date: 2000/09/15 11:01:18 $
+ * @version $Revision: 1.126 $ $Date: 2000/09/15 13:28:22 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -57,42 +57,42 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	/**
 	 * Constant to count the file-system changes.
 	 */
-	private long m_fileSystemChanges = 0;
+	protected long m_fileSystemChanges = 0;
 
 	/**
 	 * Hashtable with resource-types.
 	 */
-	private Hashtable m_resourceTypes = null;
+	protected Hashtable m_resourceTypes = null;
 
 
 	/**
 	 * The configuration of the property-file.
 	 */
-	private Configurations m_configuration = null;
+	protected Configurations m_configuration = null;
 
 	/**
 	 * The access-module.
 	 */
-	private CmsDbAccess m_dbAccess = null;
+	protected CmsDbAccess m_dbAccess = null;
 
 	/**
 	* The Registry
 	*/
-	private I_CmsRegistry m_registry = null;
+	protected I_CmsRegistry m_registry = null;
 
 	/**
 	 *  Define the caches
 	*/
-	private CmsCache m_userCache = null;
-	private CmsCache m_groupCache = null;
-	private CmsCache m_usergroupsCache = null;
-	private CmsCache m_resourceCache = null;
-	private CmsCache m_subresCache = null;
-	private CmsCache m_projectCache = null;
-	private CmsCache m_propertyCache = null;
-	private CmsCache m_propertyDefCache = null;
-	private CmsCache m_propertyDefVectorCache = null;
-	private String m_refresh = null;
+	protected CmsCache m_userCache = null;
+	protected CmsCache m_groupCache = null;
+	protected CmsCache m_usergroupsCache = null;
+	protected CmsCache m_resourceCache = null;
+	protected CmsCache m_subresCache = null;
+	protected CmsCache m_projectCache = null;
+	protected CmsCache m_propertyCache = null;
+	protected CmsCache m_propertyDefCache = null;
+	protected CmsCache m_propertyDefVectorCache = null;
+	protected String m_refresh = null;
 
 /**
  * Accept a task from the Cms.
@@ -177,7 +177,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	private boolean accessGroup(CmsUser currentUser, CmsProject currentProject,
+	protected boolean accessGroup(CmsUser currentUser, CmsProject currentProject,
 								CmsResource resource, int flags)
 		throws CmsException {
 
@@ -257,7 +257,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
  * 
  * @return wether the user has access, or not.
  */
-private boolean accessOther(CmsUser currentUser, CmsProject currentProject, CmsResource resource, int flags) throws CmsException
+protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, CmsResource resource, int flags) throws CmsException
 {
 	if ((resource.getAccessFlags() & flags) == flags)
 	{
@@ -278,7 +278,7 @@ private boolean accessOther(CmsUser currentUser, CmsProject currentProject, CmsR
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	private boolean accessOwner(CmsUser currentUser, CmsProject currentProject,
+	protected boolean accessOwner(CmsUser currentUser, CmsProject currentProject,
 								CmsResource resource, int flags) 
 		throws CmsException {
 		// The Admin has always access
@@ -941,7 +941,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	private void checkMandatoryProperties(CmsUser currentUser, 
+	protected void checkMandatoryProperties(CmsUser currentUser, 
 										 CmsProject currentProject, 
 										 String resourceType, 
 										 Hashtable propertyinfos) 
@@ -1499,6 +1499,18 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 				CmsException.C_NO_ACCESS);
 		}
 	}
+/**
+ * return the correct DbAccess class.
+ * This method should be overloaded by all other Database Drivers 
+ * Creation date: (09/15/00 %r)
+ * @return com.opencms.file.genericSql.CmsDbAccess
+ * @param configurations source.org.apache.java.util.Configurations
+ * @exception com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated. 
+ */
+public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations configurations) throws CmsException
+{
+	return new com.opencms.file.genericSql.CmsDbAccess(configurations);
+}
 	/**
 	 * Creates a new file with the given content and resourcetype. <br>
 	 * 
@@ -2349,7 +2361,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 	 * This method is called, when a resource was changed. Currently it counts the
 	 * changes.
 	 */
-	private void fileSystemChanged() {
+	protected void fileSystemChanged() {
 		// count only the changes - do nothing else!
 		// in the future here will maybe a event-story be added
 		m_fileSystemChanges++;
@@ -3165,7 +3177,7 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName) throws
 	 * @param resource The name of the resource.
  	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 private void helperCopyResourceToProject(CmsUser currentUser,
+	 protected void helperCopyResourceToProject(CmsUser currentUser,
 											  CmsProject onlineProject,
 											  CmsProject offlineProject,
 											  String resource)
@@ -3219,7 +3231,7 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName) throws
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	private Vector helperGetFilesInFolder(CmsUser currentUser, 
+	protected Vector helperGetFilesInFolder(CmsUser currentUser, 
 										  CmsProject currentProject,
 										  String foldername)
 		throws CmsException {
@@ -3266,7 +3278,7 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName) throws
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	private Vector helperGetSubFolders(CmsUser currentUser, 
+	protected Vector helperGetSubFolders(CmsUser currentUser, 
 									   CmsProject currentProject,
 									   String foldername)
 		throws CmsException{
@@ -3363,7 +3375,7 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName) throws
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init the dbaccess-module.");
 		}
-		m_dbAccess = new CmsDbAccess(config);		
+		m_dbAccess = createDbAccess(config);		
 		
 		// initalize the caches
 		m_userCache=new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".user", 50));
@@ -3687,7 +3699,7 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName) throws
 	 * @param online The vector with the online resources.
 	 * @return The merged vector.
 	 */
-	private Vector mergeResources(Vector offline, Vector online) {
+	protected Vector mergeResources(Vector offline, Vector online) {
 		
 		// create a vector for the merged offline
 		
@@ -5766,7 +5778,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 	 * 
 	 * @exception throws a exception, if the check fails.
 	 */	
-	private void validFilename( String filename ) 
+	protected void validFilename( String filename ) 
 		throws CmsException {
 		
 		if (filename == null) {
