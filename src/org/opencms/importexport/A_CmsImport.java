@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/02 09:08:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/02/02 09:12:51 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -272,12 +272,8 @@ public abstract class A_CmsImport implements I_CmsImport {
                     while (propKeys.hasNext()) {
                         String property = (String)propKeys.next();
                         if (!checkedProperties.contains(property)) {
-                            try {
-                                m_cms.readPropertydefinition(property, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);                                
-                            } catch (CmsException e) {
-                                // property is not defined for pointer, so create it
-                                m_cms.createPropertydefinition(property, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
-                            }
+                            // check the current property and create it, if necessary
+                            createPropertydefinition(property, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
                             checkedProperties.add(property);
                         }
                     }
