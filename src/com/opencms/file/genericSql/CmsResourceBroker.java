@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/14 17:03:48 $
- * Version: $Revision: 1.213 $
+ * Date   : $Date: 2000/12/18 08:40:50 $
+ * Version: $Revision: 1.214 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.213 $ $Date: 2000/12/14 17:03:48 $
+ * @version $Revision: 1.214 $ $Date: 2000/12/18 08:40:50 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -975,8 +975,9 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 		}
 		
 		// has the user write-access?
-		if( accessWrite(currentUser, currentProject, resource) || 
-			(resource.getOwnerId() == currentUser.getId()) ) {
+		if( accessWrite(currentUser, currentProject, resource)|| 
+			((resource.isLockedBy() == currentUser.getId()) && 
+				(resource.getOwnerId() == currentUser.getId()||isAdmin(currentUser, currentProject))) ) {
 				
 			// write-acces  was granted - write the file.
 	
@@ -2035,10 +2036,6 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 		throws CmsException {
 		// read the project that should be deleted.
   		CmsProject deleteProject = readProject(currentUser, currentProject, id);
-  		
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "deletePublishedProject");
-			}
 			
 		if(isAdmin(currentUser, currentProject) || 
 		   isManagerOfProject(currentUser, deleteProject)) {
@@ -3445,7 +3442,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 		// Store the configuration.
 		m_configuration = config;
 
-		if (config.getString("publishproject.delete", "false").equals("true")) {
+		if (config.getString("publishproject.delete", "false").toLowerCase().equals("true")) {
 			m_deletePublishedProject = true;
 		}
 			
