@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/15 16:28:16 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/09/18 15:41:08 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,9 +52,19 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.33 $ $Date: 2000/09/15 16:28:16 $ * 
+ * @version $Revision: 1.34 $ $Date: 2000/09/18 15:41:08 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
+	/**
+	 * Instanciates the access-module and sets up all required modules and connections.
+	 * @param config The OpenCms configuration.
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsDbAccess(Configurations config) 
+		throws CmsException {
+
+		super(config);
+	}
 	/**
 	 * Adds a user to the database.
 	 * 
@@ -516,7 +526,8 @@ protected void initStatements() throws CmsException
 	m_pool.initPreparedStatement(m_cq.C_PROJECTS_GETSITEFROMPROJECT_KEY, m_cq.C_PROJECTS_GETSITEFROMPROJECT);
 	m_pool.initPreparedStatement(m_cq.C_PROJECTS_GETSITEFROMNAME_KEY, m_cq.C_PROJECTS_GETSITEFROMNAME);
 	m_pool.initPreparedStatement(m_cq.C_SITES_GETSITEFROMHOST_KEY, m_cq.C_SITES_GETSITEFROMHOST);
-	
+	m_pool.initPreparedStatement(m_cq.C_SITES_GETALLSITES_KEY, m_cq.C_SITES_GETALLSITES);
+
 
 	// init statements for systemproperties
 	m_pool.initPreparedStatement(m_cq.C_SYSTEMPROPERTIES_MAXID_KEY, m_cq.C_SYSTEMPROPERTIES_MAXID);
@@ -578,16 +589,6 @@ protected void initStatements() throws CmsException
 	m_pool.initPreparedStatement(m_cq.C_SESSION_READ_KEY, m_cq.C_SESSION_READ);
 	m_pool.initPreparedStatement(m_cq.C_SESSION_DELETE_KEY, m_cq.C_SESSION_DELETE);
 }
-	/**
-	 * Instanciates the access-module and sets up all required modules and connections.
-	 * @param config The OpenCms configuration.
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public CmsDbAccess(Configurations config) 
-		throws CmsException {
-
-		super(config);
-	}
 	/**
 	 * Private method to get the next id for a table.
 	 * This method is synchronized, to generate unique id's.

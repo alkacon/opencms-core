@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/15 11:22:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/09/18 15:41:06 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.5 $ $Date: 2000/09/15 11:22:11 $
+ * @version $Revision: 1.6 $ $Date: 2000/09/18 15:41:06 $
  */
 public class CmsQueries
 {
@@ -287,7 +287,9 @@ public class CmsQueries
 	//Multisite Constants
 	public Integer C_SITES_GETSITEFROMHOST_KEY = new Integer(450);
 	public String C_SITES_GETSITEFROMHOST	= "SELECT " + C_DATABASE_PREFIX + "SITES.SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID FROM " + C_DATABASE_PREFIX + "SITES, " + C_DATABASE_PREFIX + "SITE_URLS WHERE URL = ? AND " + C_DATABASE_PREFIX + "SITE_URLS.SITE_ID = " + C_DATABASE_PREFIX + "SITES.SITE_ID"; 
-
+	public Integer C_SITES_GETALLSITES_KEY = new Integer(451);
+	public String C_SITES_GETALLSITES = "SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID FROM " + C_DATABASE_PREFIX + "SITES";
+		
 	// Constants for Users table
 	public String C_USERS_USER_ID = "USER_ID";
 	public String C_USERS_USER_NAME = "USER_NAME";
