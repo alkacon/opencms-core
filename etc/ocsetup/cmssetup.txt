@@ -79,6 +79,7 @@ setCurrentProject 2
 importResources "ocsetup/vfs"
 publishProject "2"
 writeExportPath "export/"
+createDefaultProject "Offline" "The Offline Project"
 exit
 
 

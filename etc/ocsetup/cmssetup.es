@@ -81,4 +81,5 @@ cms.importResources("ocsetup/vfs","/");
 cms.unlockProject(2);
 cms.publishProject(2);
 cms.writeExportPath("export/");
+cms.createDefaultProject("Offline","The Offline Project");
 exit();
