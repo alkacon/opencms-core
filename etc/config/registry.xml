@@ -17,9 +17,25 @@
             <name>select.news</name>
             <url>/system/workplace/action/news_admin.html</url>
         </view>
-		<smtpserver>my.smtp.server</smtpserver>
-		<smtpserver2>alternative.smtp.server</smtpserver2>
-		<defaultmailsender>nobody@nowhere.com</defaultmailsender>
+        <smtpserver>my.smtp.server</smtpserver>
+        <smtpserver2>alternative.smtp.server</smtpserver2>
+        <defaultmailsender>nobody@nowhere.com</defaultmailsender>
     </system>
-    <modules/>
+    <modules>
+        <module>
+            <name>mod1</name>
+            <nicename></nicename>
+            <version>1</version>
+            <description></description>
+            <author>Admin</author>
+            <email/>
+            <creationdate>11.07.2000</creationdate>
+            <view/>
+            <documentation/>
+            <dependencies/>
+            <maintenance_class/>
+            <parameters/>
+            <repository/>
+        </module>
+    </modules>
 </registry>
