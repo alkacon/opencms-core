@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/06 12:48:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/06/10 16:19:34 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import com.opencms.util.SqlHelper;
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/06/06 12:48:11 $
+ * @version $Revision: 1.13 $ $Date: 2003/06/10 16:19:34 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {
@@ -1665,7 +1665,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * @throws CmsException
 	 */
 	public void publishAccessControlEntries(CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException {
-/*		
+		
 		// System.err.println ("Publish " + project + "/" + offlineId + " -> " + onlineId);
 		Vector aceList = new Vector();
 		PreparedStatement stmt = null, stmt2 = null;
@@ -1692,6 +1692,5 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 		} finally {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}
-*/
 	}
 }
