@@ -3,8 +3,8 @@ import java.util.zip.*;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2001/07/13 10:14:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/07/25 13:51:28 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,7 +43,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2001/07/13 10:14:52 $
+ * @version $Revision: 1.5 $ $Date: 2001/07/25 13:51:28 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -573,10 +573,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         CmsUser bodyLocker = null;
         // Check any locks on th page file
         pageLocker = getLockedBy(cms, resource);
-
         CmsUser currentUser = cms.getRequestContext().currentUser();
         boolean pageLockedAndSelf = pageLocker != null && currentUser.equals(pageLocker);
-
         CmsResource bodyFile = null;
         String bodyPath = null;
         // Try to fetch the body file.
@@ -587,23 +585,28 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             bodyPath = null;
             bodyFile = null;
         }
+        // first lock the page file
+        cms.doLockResource(resource, force);
+
         if(bodyFile != null) {
             // Everything with the page file is ok. We have write access. XML is valid.
             // Body file could be determined and fetched.
             // Now check further body file details (is it locked already, WHO has locked it, etc.)
             bodyLocker = getLockedBy(cms, bodyPath);
-
             // Lock the body, if neccessary
-            if((bodyLocker == null && (pageLocker == null || pageLockedAndSelf || force))
-                    || (bodyLocker != null && !currentUser.equals(bodyLocker) && !(pageLocker != null && !currentUser.equals(pageLocker) && !force))) {
+            //if((bodyLocker == null && (pageLocker == null || pageLockedAndSelf || force))
+            //        || (bodyLocker != null && !currentUser.equals(bodyLocker)
+            //            && !(pageLocker != null && !currentUser.equals(pageLocker) && !force))) {
                 cms.doLockResource(bodyPath, force);
-            }
+            //}
         }
-
+/*
         // Lock the page file, if neccessary
-        if(!(pageLockedAndSelf && (bodyFile != null && ((bodyLocker == null) || !currentUser.equals(bodyLocker))))) {
+        if(!(pageLockedAndSelf && (bodyFile != null && ((bodyLocker == null)
+           || !currentUser.equals(bodyLocker))))) {
             cms.doLockResource(resource, force);
         }
+*/
     }
 
 	/**
@@ -729,7 +732,6 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 
         // Check any locks on th page file
         pageLocker = getLockedBy(cms, resource);
-
         CmsUser currentUser = cms.getRequestContext().currentUser();
 
         CmsResource bodyFile = null;
@@ -743,22 +745,23 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             bodyFile = null;
         }
 
+        cms.doUnlockResource(resource);
+
         if(bodyFile != null) {
             // Everything with the page file is ok. We have write access. XML is valid.
             // Body file could be determined and fetched.
             // Now check further body file details (is it locked already, WHO has locked it, etc.)
             bodyLocker = getLockedBy(cms, bodyPath);
-
             // Unlock the body, if neccessary
-            if((pageLocker == null || pageLocker.equals(currentUser)) && (bodyLocker != null)) {
+            //if((pageLocker == null || pageLocker.equals(currentUser)) && (bodyLocker != null)) {
                 cms.doUnlockResource(bodyPath);
-            }
+            //}
         }
 
         // Unlock the page file, if neccessary
-        if(pageLocker != null || bodyLocker == null) {
+        //if(pageLocker != null || bodyLocker == null) {
             cms.doUnlockResource(resource);
-        }
+        //}
 	}
 
     /**
