@@ -6,14 +6,14 @@ import javax.servlet.http.*;
 import com.opencms.core.*;
 
 /**
- * This abstract class describes the access to groups in the Cms.<BR/>
+ * This interface describes the access to groups in the Cms.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/21 15:08:47 $
  */
-abstract class A_CmsAccessGroup {
+interface I_CmsAccessGroup {
 		
 	/**
 	 * Returns a list of groups of a user.<P/>
@@ -22,7 +22,7 @@ abstract class A_CmsAccessGroup {
 	 * @return Vector of groups
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract Vector getGroupsOfUser(int userid)
+	public Vector getGroupsOfUser(int userid)
 		throws CmsException;
 
 	/**
@@ -33,7 +33,7 @@ abstract class A_CmsAccessGroup {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	abstract A_CmsGroup readGroup(int groupid)
+	public A_CmsGroup readGroup(int groupid)
 		throws CmsException;
 
     /**
@@ -44,7 +44,7 @@ abstract class A_CmsAccessGroup {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	abstract A_CmsGroup readGroup(String groupname)
+	public A_CmsGroup readGroup(String groupname)
 		throws CmsException;
 
 	/**
@@ -54,7 +54,7 @@ abstract class A_CmsAccessGroup {
 	 * @return Vector of user id's.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getUsersOfGroup(int groupid)
+	public Vector getUsersOfGroup(int groupid)
 		throws CmsException;
 
 	/**
@@ -66,7 +66,7 @@ abstract class A_CmsAccessGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract boolean userInGroup(int userid, int groupid)
+	public boolean userInGroup(int userid, int groupid)
 		throws CmsException;
 
 
@@ -84,7 +84,7 @@ abstract class A_CmsAccessGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	abstract A_CmsGroup addGroup(String name, String description, int flags,String parent)
+	public A_CmsGroup addGroup(String name, String description, int flags,String parent)
 		throws CmsException;
 
      /**
@@ -95,7 +95,7 @@ abstract class A_CmsAccessGroup {
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	abstract void writeGroup(A_CmsGroup group)
+	public void writeGroup(A_CmsGroup group)
 		throws CmsException;
     
 	/**
@@ -107,7 +107,7 @@ abstract class A_CmsAccessGroup {
 	 * @param delgroup The name of the group that is to be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	abstract void deleteGroup(String delgroup)
+	public void deleteGroup(String delgroup)
 		throws CmsException;
 
 	/**
@@ -119,7 +119,7 @@ abstract class A_CmsAccessGroup {
 	 * @param groupid The id of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	abstract void addUserToGroup(int  userid, int groupid)
+	public void addUserToGroup(int  userid, int groupid)
 		throws CmsException;
 
 	/**
@@ -131,7 +131,7 @@ abstract class A_CmsAccessGroup {
 	 * @param groupid The id of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract void removeUserFromGroup(int  userid, int groupid)
+	public void removeUserFromGroup(int  userid, int groupid)
 		throws CmsException;
 
 	/**
@@ -140,7 +140,7 @@ abstract class A_CmsAccessGroup {
 	 * @return users A Vector of all existing groups.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getGroups()
+	public Vector getGroups()
         throws CmsException ;	
     
      
@@ -152,7 +152,7 @@ abstract class A_CmsAccessGroup {
 	 * @return users A Vector of all child groups or null.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getChild(String groupname)
+	public Vector getChild(String groupname)
          throws CmsException;	
 
 }

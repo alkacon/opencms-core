@@ -10,25 +10,25 @@ import com.opencms.core.*;
  * Only the system can access propertys. Propertys are for internal use
  * only. A property is a serializable object.
  * 
- * All methods have package-visibility for security-reasons.
+ * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/21 15:08:47 $
  */
-public class CmsRbProperty extends A_CmsRbProperty  {
+public class CmsRbProperty implements I_CmsRbProperty  {
 	
     /**
      * The property access object which is required to access the
      * property database.
      */
-    private A_CmsAccessProperty m_accessProperty;
+    private I_CmsAccessProperty m_accessProperty;
     
     /**
      * Constructor, creates a new Cms Property Resource Broker.
      * 
      * @param AccessProperty The property access object.
      */
-    public CmsRbProperty(A_CmsAccessProperty accessProperty)
+    public CmsRbProperty(I_CmsAccessProperty accessProperty)
     {
         m_accessProperty=accessProperty;
     }
@@ -56,7 +56,7 @@ public class CmsRbProperty extends A_CmsRbProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 Serializable readProperty(String name) 
+	 public Serializable readProperty(String name) 
         throws CmsException {
         
         return m_accessProperty.readProperty(name);
@@ -72,7 +72,7 @@ public class CmsRbProperty extends A_CmsRbProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 Serializable writeProperty(String name, Serializable object)
+	 public Serializable writeProperty(String name, Serializable object)
         throws  CmsException {
          
         return m_accessProperty.writeProperty(name,object);
@@ -85,7 +85,7 @@ public class CmsRbProperty extends A_CmsRbProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 void deleteProperty(String name)
+	 public void deleteProperty(String name)
         throws CmsException {
         
         m_accessProperty.deleteProperty(name);

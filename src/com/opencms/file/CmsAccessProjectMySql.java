@@ -8,12 +8,12 @@ import com.opencms.core.*;
 /**
  * This class describes the access to projects in the Cms.<BR/>
  * 
- * All methods have package-visibility for security-reasons.
+ * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/21 14:15:33 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/21 15:08:47 $
  */
-class CmsAccessProjectMySql extends A_CmsAccessProject {
+class CmsAccessProjectMySql implements I_CmsAccessProject {
 
     /**
      * This is the connection object to the database
@@ -135,7 +135,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 A_CmsProject readProject(String name)
+	 public A_CmsProject readProject(String name)
 		 throws CmsException {		 
 		 try {
 			 ResultSet result;
@@ -174,7 +174,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 A_CmsProject createProject(String name, String description, A_CmsTask task, 
+	 public A_CmsProject createProject(String name, String description, A_CmsTask task, 
 								A_CmsUser owner, A_CmsGroup group, int flags)
 		throws CmsException {
 		 try {
@@ -200,7 +200,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 A_CmsProject writeProject(A_CmsProject project)
+	 public A_CmsProject writeProject(A_CmsProject project)
 		 throws CmsException {
 		 try {    
 			 synchronized(m_statementUpdateProject) {
@@ -225,7 +225,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 Vector getAllAccessibleProjectsByUser(A_CmsUser user)
+	 public Vector getAllAccessibleProjectsByUser(A_CmsUser user)
 		 throws CmsException {
  		 Vector projects = new Vector();
 
@@ -258,7 +258,7 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
+	 public Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
 		 throws CmsException {		 
  		 Vector projects = new Vector();
 

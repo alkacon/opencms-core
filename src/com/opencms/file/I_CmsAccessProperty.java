@@ -5,7 +5,7 @@ import java.io.*;
 import com.opencms.core.*;
 
 /**
- * This abstract class describes a resource broker for propertys in the Cms.<BR/>
+ * This interface describes the access to propertys in the Cms.<BR/>
  * Only the system can access propertys. Propertys are for internal use
  * only. A property is a serializable object.
  * 
@@ -13,22 +13,22 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/21 15:08:47 $
  */
-abstract class A_CmsRbProperty {
-	
+interface I_CmsAccessProperty {
+
      /**
-	 * Creates a new a serializable object to the propertys.
+	 * Creates a serializable object in the propertys.
 	 * 
 	 * @param name The name of the property.
 	 * @param object The property-object.
 	 * 
+	 * @return object The property-object.
+	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Serializable addProperty(String name, Serializable object)
-		throws  CmsException;
-    
-    
+	public Serializable addProperty(String name, Serializable object)
+		throws CmsException;
     
 	/**
 	 * Reads a serializable object from the propertys.
@@ -39,11 +39,11 @@ abstract class A_CmsRbProperty {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Serializable readProperty(String name)
+	public Serializable readProperty(String name)
 		throws CmsException;
 
 	/**
-	 * Writes a serializable object to the propertys.
+	 * Writes or updates a serializable object to the propertys.
 	 * 
 	 * @param name The name of the property.
 	 * @param object The property-object.
@@ -52,7 +52,7 @@ abstract class A_CmsRbProperty {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Serializable writeProperty(String name, Serializable object)
+	public Serializable writeProperty(String name, Serializable object)
 		throws  CmsException;
 
 	/**
@@ -62,6 +62,6 @@ abstract class A_CmsRbProperty {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void deleteProperty(String name)
+	public void deleteProperty(String name)
 		throws CmsException;
 }

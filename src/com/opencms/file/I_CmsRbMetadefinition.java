@@ -5,7 +5,7 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This abstract class describes a resource broker for metadefinitions in 
+ * This public class describes a resource broker for metadefinitions in 
  * the Cms.<BR/>
  * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
@@ -14,9 +14,9 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 1999/12/21 14:15:33 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/21 15:08:47 $
  */
-abstract class A_CmsRbMetadefinition {
+interface I_CmsRbMetadefinition {
 	
 	/**
 	 * Reads a metadefinition for the given resource type.
@@ -29,7 +29,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract A_CmsMetadefinition readMetadefinition(String name, int type)
+	public A_CmsMetadefinition readMetadefinition(String name, int type)
 		throws CmsException;
 	
 	/**
@@ -42,7 +42,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	abstract Vector readAllMetadefinitions(int resourcetype)
+	public Vector readAllMetadefinitions(int resourcetype)
 		throws CmsException;
 	
 	/**
@@ -56,7 +56,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	abstract Vector readAllMetadefinitions(int resourcetype, int type)
+	public Vector readAllMetadefinitions(int resourcetype, int type)
 		throws CmsException;
 
 	/**
@@ -70,7 +70,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract A_CmsMetadefinition createMetadefinition(String name, int resourcetype, 
+	public A_CmsMetadefinition createMetadefinition(String name, int resourcetype, 
 													  int type)
 		throws CmsException;
 		
@@ -83,7 +83,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void deleteMetadefinition(A_CmsMetadefinition metadef)
+	public void deleteMetadefinition(A_CmsMetadefinition metadef)
 		throws CmsException;
 	
 	/**
@@ -97,7 +97,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition metadef)
+	public A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition metadef)
 		throws CmsException;
 	
 	// now the stuff for metainformations
@@ -112,7 +112,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract String readMetainformation(A_CmsResource resource, String meta)
+	public String readMetainformation(A_CmsResource resource, String meta)
 		throws CmsException;	
 
 	/**
@@ -124,7 +124,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void writeMetainformation(A_CmsResource resource, String meta,
+	public void writeMetainformation(A_CmsResource resource, String meta,
 											  String value)
 		throws CmsException;
 
@@ -136,7 +136,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
+	public void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
 		throws CmsException;
 
 	/**
@@ -148,7 +148,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract Hashtable readAllMetainformations(A_CmsResource resource)
+	public Hashtable readAllMetainformations(A_CmsResource resource)
 		throws CmsException;
 	
 	/**
@@ -158,7 +158,7 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void deleteAllMetainformations(A_CmsResource resource)
+	public void deleteAllMetainformations(A_CmsResource resource)
 		throws CmsException;
 
 	/**
@@ -169,6 +169,6 @@ abstract class A_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void deleteMetainformation(A_CmsResource resource, String meta)
+	public void deleteMetainformation(A_CmsResource resource, String meta)
 		throws CmsException;     	
 }

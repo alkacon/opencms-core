@@ -6,14 +6,14 @@ import javax.servlet.http.*;
 import com.opencms.core.*;
 
 /**
- * This abstract class describes the access to users in the Cms.<BR/>
+ * This public class describes the access to users in the Cms.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/21 15:08:47 $
  */
-abstract class A_CmsAccessUser {
+interface I_CmsAccessUser {
 
 	/**
 	 * Returns a user object.<P/>
@@ -22,7 +22,7 @@ abstract class A_CmsAccessUser {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract A_CmsUser readUser(String username)
+	public A_CmsUser readUser(String username)
 		throws CmsException;
     
      /**
@@ -32,7 +32,7 @@ abstract class A_CmsAccessUser {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract A_CmsUser readUser(int id)
+	public A_CmsUser readUser(int id)
 		throws CmsException;
 	
 	/**
@@ -44,7 +44,7 @@ abstract class A_CmsAccessUser {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	abstract A_CmsUser readUser(String username, String password)
+	public A_CmsUser readUser(String username, String password)
 		throws CmsException;
 
 	/** 
@@ -60,7 +60,7 @@ abstract class A_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract A_CmsUser addUser(String name, String password, 
+	public A_CmsUser addUser(String name, String password, 
 				               String description)
 		throws CmsException;
 
@@ -73,7 +73,7 @@ abstract class A_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract void deleteUser(String username)
+	public void deleteUser(String username)
 		throws CmsException;
 
 	/**
@@ -85,7 +85,7 @@ abstract class A_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void writeUser(A_CmsUser user)
+	public void writeUser(A_CmsUser user)
 		throws CmsException;
 
 	/**
@@ -94,7 +94,7 @@ abstract class A_CmsAccessUser {
 	 * @return users A Vector of all existing users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getUsers()
+	public Vector getUsers()
         throws CmsException;
 
 
@@ -108,6 +108,6 @@ abstract class A_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract void setPassword(String username, String newPassword)
+	public void setPassword(String username, String newPassword)
 		throws CmsException;
 }

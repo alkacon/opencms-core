@@ -5,15 +5,30 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This abstract class describes the access to metadefinitions in the Cms.<BR/>
+ * This class describes a resource broker for projects in the Cms.<BR/>
  * 
- * All methods have package-visibility for security-reasons.
+ * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 1999/12/21 14:15:33 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/21 15:08:47 $
  */
-abstract class A_CmsAccessMetadefinition {
-
+public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
+	
+    /**
+     * The metadefinition access object which is required to access the
+     * meta database.
+     */
+    private I_CmsAccessMetadefinition m_accessMetadefinition;
+    
+    /**
+     * Constructor, creates a new Cms Project Resource Broker.
+     * 
+     * @param accessProject The project access object.
+     */
+    public CmsRbMetadefinition(I_CmsAccessMetadefinition accessMetadefinition) {
+        m_accessMetadefinition = accessMetadefinition;
+    }
+	
 	/**
 	 * Reads a metadefinition for the given resource type.
 	 * 
@@ -25,8 +40,10 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract A_CmsMetadefinition readMetadefinition(String name, int type)
-		throws CmsException;
+	public A_CmsMetadefinition readMetadefinition(String name, int type)
+		throws CmsException {
+		return(m_accessMetadefinition.readMetadefinition(name, type));
+	}
 	
 	/**
 	 * Reads all metadefinitions for the given resource type.
@@ -38,8 +55,10 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	abstract Vector readAllMetadefinitions(int resourcetype)
-		throws CmsException;
+	public Vector readAllMetadefinitions(int resourcetype)
+		throws CmsException {
+		return(m_accessMetadefinition.readAllMetadefinitions(resourcetype));
+	}
 	
 	/**
 	 * Reads all metadefinitions for the given resource type.
@@ -52,8 +71,10 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	abstract Vector readAllMetadefinitions(int resourcetype, int type)
-		throws CmsException;
+	public Vector readAllMetadefinitions(int resourcetype, int type)
+		throws CmsException {
+		return(m_accessMetadefinition.readAllMetadefinitions(resourcetype, type));
+	}
 
 	/**
 	 * Creates the metadefinition for the resource type.<BR/>
@@ -66,9 +87,11 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract A_CmsMetadefinition createMetadefinition(String name, int resourcetype, 
+	public A_CmsMetadefinition createMetadefinition(String name, int resourcetype, 
 													  int type)
-		throws CmsException;
+		throws CmsException {
+		return(m_accessMetadefinition.createMetadefinition(name, resourcetype, type));
+	}
 		
 	/**
 	 * Delete the metadefinition for the resource type.<BR/>
@@ -79,8 +102,10 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void deleteMetadefinition(A_CmsMetadefinition metadef)
-		throws CmsException;
+	public void deleteMetadefinition(A_CmsMetadefinition metadef)
+		throws CmsException {
+		m_accessMetadefinition.deleteMetadefinition(metadef);
+	}
 	
 	/**
 	 * Updates the metadefinition for the resource type.<BR/>
@@ -93,8 +118,10 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition metadef)
-		throws CmsException;
+	public A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition metadef)
+		throws CmsException {
+		return(m_accessMetadefinition.writeMetadefinition(metadef));
+	}
 	
 	// now the stuff for metainformations
 
@@ -108,8 +135,10 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract String readMetainformation(A_CmsResource resource, String meta)
-		throws CmsException;	
+	public String readMetainformation(A_CmsResource resource, String meta)
+		throws CmsException {
+		return(m_accessMetadefinition.readMetainformation(resource, meta));
+	}	
 
 	/**
 	 * Writes a Metainformation for a file or folder.
@@ -120,9 +149,11 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void writeMetainformation(A_CmsResource resource, String meta,
+	public void writeMetainformation(A_CmsResource resource, String meta,
 											  String value)
-		throws CmsException;
+		throws CmsException {
+		m_accessMetadefinition.writeMetainformation(resource, meta, value);
+	}
 
 	/**
 	 * Writes a couple of Metainformation for a file or folder.
@@ -132,8 +163,10 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
-		throws CmsException;
+	public void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
+		throws CmsException {
+		m_accessMetadefinition.writeMetainformations(resource, metainfos);
+	}
 
 	/**
 	 * Returns a list of all Metainformations of a file or folder.
@@ -144,8 +177,10 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract Hashtable readAllMetainformations(A_CmsResource resource)
-		throws CmsException;
+	public Hashtable readAllMetainformations(A_CmsResource resource)
+		throws CmsException {
+		return(m_accessMetadefinition.readAllMetainformations(resource));
+	}
 	
 	/**
 	 * Deletes all Metainformation for a file or folder.
@@ -154,8 +189,10 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void deleteAllMetainformations(A_CmsResource resource)
-		throws CmsException;
+	public void deleteAllMetainformations(A_CmsResource resource)
+		throws CmsException {
+		m_accessMetadefinition.deleteAllMetainformations(resource);
+	}
 
 	/**
 	 * Deletes a Metainformation for a file or folder.
@@ -165,6 +202,8 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void deleteMetainformation(A_CmsResource resource, String meta)
-		throws CmsException;     	
+	public void deleteMetainformation(A_CmsResource resource, String meta)
+		throws CmsException {
+		m_accessMetadefinition.deleteMetainformation(resource, meta);
+	}
 }

@@ -5,7 +5,7 @@ import java.sql.*;
 
 import com.opencms.core.*;
 
-class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
+class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	
     /**
      * This is the connection object to the database
@@ -238,7 +238,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	A_CmsMetadefinition readMetadefinition(String name, int type)
+	public A_CmsMetadefinition readMetadefinition(String name, int type)
 		throws CmsException {
 		 try {
 			 ResultSet result;
@@ -275,7 +275,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	Vector readAllMetadefinitions(int resourcetype)
+	public Vector readAllMetadefinitions(int resourcetype)
 		throws CmsException {
  		 Vector metadefs = new Vector();
 
@@ -309,7 +309,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	Vector readAllMetadefinitions(int resourcetype, int type)
+	public Vector readAllMetadefinitions(int resourcetype, int type)
 		throws CmsException {
  		 Vector metadefs = new Vector();
 
@@ -344,7 +344,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	A_CmsMetadefinition createMetadefinition(String name, int resourcetype, 
+	public A_CmsMetadefinition createMetadefinition(String name, int resourcetype, 
 											 int type)
 		throws CmsException {
 		try {
@@ -369,7 +369,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	void deleteMetadefinition(A_CmsMetadefinition metadef)
+	public void deleteMetadefinition(A_CmsMetadefinition metadef)
 		throws CmsException {
 		try {
 			if(countMetainfos(metadef) != 0) {
@@ -427,7 +427,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition metadef)
+	public A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition metadef)
 		throws CmsException {
 		
 		try {
@@ -452,7 +452,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	String readMetainformation(A_CmsResource resource, String meta)
+	public String readMetainformation(A_CmsResource resource, String meta)
 		throws CmsException {
 		 try {
 			 ResultSet result;
@@ -486,7 +486,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	void writeMetainformation(A_CmsResource resource, String meta,
+	public void writeMetainformation(A_CmsResource resource, String meta,
 							  String value)
 		throws CmsException {
 		A_CmsMetadefinition metadef = readMetadefinition(meta, resource.getType());
@@ -530,7 +530,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
+	public void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
 		throws CmsException {
 		
 		// get all metadefs
@@ -554,7 +554,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	Hashtable readAllMetainformations(A_CmsResource resource)
+	public Hashtable readAllMetainformations(A_CmsResource resource)
 		throws CmsException {
 		
 		Hashtable returnValue = new Hashtable();
@@ -588,7 +588,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	void deleteAllMetainformations(A_CmsResource resource)
+	public void deleteAllMetainformations(A_CmsResource resource)
 		throws CmsException {
 		
 		try {
@@ -612,7 +612,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	void deleteMetainformation(A_CmsResource resource, String meta)
+	public void deleteMetainformation(A_CmsResource resource, String meta)
 		throws CmsException {
 		A_CmsMetadefinition metadef = readMetadefinition(meta, resource.getType());
 		

@@ -5,7 +5,7 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This abstract class describes a resource broker for tasks in the Cms.<BR/>
+ * This public class describes a resource broker for tasks in the Cms.<BR/>
  * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
@@ -13,9 +13,9 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/21 15:08:47 $
  */
-abstract class A_CmsRbTask { 	
+interface I_CmsRbTask { 	
 	
 	/**
 	 * Reads all tasks for a project.
@@ -29,7 +29,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Vector readTasks(A_CmsUser callingUSer, A_CmsProject project, int orderBy)
+	public Vector readTasks(A_CmsUser callingUSer, A_CmsProject project, int orderBy)
 		throws CmsException;
 	
 	/**
@@ -44,7 +44,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Vector readOpenTasks(A_CmsUser callingUSer, A_CmsProject project, int orderBy)
+	public Vector readOpenTasks(A_CmsUser callingUSer, A_CmsProject project, int orderBy)
 		throws CmsException;
 	
 	/**
@@ -59,7 +59,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Vector readDoneTasks(A_CmsUser callingUSer, A_CmsProject project, int orderBy)
+	public Vector readDoneTasks(A_CmsUser callingUSer, A_CmsProject project, int orderBy)
 		throws CmsException;
 	
 	/**
@@ -75,7 +75,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Vector readTasks(A_CmsUser callingUSer, A_CmsProject project, 
+	public Vector readTasks(A_CmsUser callingUSer, A_CmsProject project, 
 					 A_CmsUser user, int orderBy) 
 		throws CmsException;
 	
@@ -92,7 +92,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Vector readOpenTasks(A_CmsUser callingUSer, A_CmsProject project, 
+	public Vector readOpenTasks(A_CmsUser callingUSer, A_CmsProject project, 
 						 A_CmsUser user, int orderBy)
 		throws CmsException;
 	
@@ -109,7 +109,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Vector readPosedTasks(A_CmsUser callingUSer, A_CmsProject project, 
+	public Vector readPosedTasks(A_CmsUser callingUSer, A_CmsProject project, 
 						  A_CmsUser user, int orderBy) 
 		throws CmsException;
 
@@ -126,7 +126,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Vector readDoneTasks(A_CmsUser callingUSer, A_CmsProject project, 
+	public Vector readDoneTasks(A_CmsUser callingUSer, A_CmsProject project, 
 						 A_CmsUser user, int orderBy) 
 		throws CmsException;
 
@@ -143,7 +143,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Vector readTasks(A_CmsUser callingUSer, A_CmsProject project, 
+	public Vector readTasks(A_CmsUser callingUSer, A_CmsProject project, 
 					 A_CmsGroup group, int orderBy) 
 		throws CmsException;
 	
@@ -160,7 +160,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Vector readOpenTasks(A_CmsUser callingUSer, A_CmsProject project, 
+	public Vector readOpenTasks(A_CmsUser callingUSer, A_CmsProject project, 
 						 A_CmsGroup group, int orderBy) 
 		throws CmsException;
 	
@@ -177,7 +177,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Vector readDoneTasks(A_CmsUser callingUSer, A_CmsProject project, 
+	public Vector readDoneTasks(A_CmsUser callingUSer, A_CmsProject project, 
 						 A_CmsGroup group, int orderBy) 
 		throws CmsException;
 	
@@ -192,7 +192,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void writeTask(A_CmsUser callingUSer, A_CmsTask task) 
+	public void writeTask(A_CmsUser callingUSer, A_CmsTask task) 
 		throws CmsException;
 	
 	/**
@@ -208,7 +208,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract A_CmsTask createTask(A_CmsUser callingUSer, A_CmsProject project, 
+	public A_CmsTask createTask(A_CmsUser callingUSer, A_CmsProject project, 
 						 A_CmsUser user /* add parameters here */ ) 
 		throws CmsException;
 		
@@ -224,7 +224,7 @@ abstract class A_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void forwardTask(A_CmsUser callingUSer, A_CmsTask task, 
+	public void forwardTask(A_CmsUser callingUSer, A_CmsTask task, 
 					 A_CmsUser newUser) 
 		throws CmsException;	
 }

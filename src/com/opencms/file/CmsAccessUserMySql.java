@@ -12,12 +12,12 @@ import com.opencms.core.*;
  * This class contains the methods to read, write and delete CmsUser 
  * objects in a MySql user database.
  * 
- * All methods have package-visibility for security-reasons.
+ * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 1999/12/21 14:23:14 $
+ * @version $Revision: 1.7 $ $Date: 1999/12/21 15:08:47 $
  */
- public class CmsAccessUserMySql extends A_CmsAccessUser implements I_CmsConstants  {
+class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
      
      /**
      * SQL Command for writing users.
@@ -143,7 +143,7 @@ import com.opencms.core.*;
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 A_CmsUser readUser(String username)
+	 public A_CmsUser readUser(String username)
          throws CmsException {
       
          A_CmsUser user=null;
@@ -176,7 +176,7 @@ import com.opencms.core.*;
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 A_CmsUser readUser(int userid)
+	 public A_CmsUser readUser(int userid)
          throws CmsException {
       
          A_CmsUser user=null;
@@ -211,7 +211,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	 A_CmsUser readUser(String username, String password)
+	 public A_CmsUser readUser(String username, String password)
          throws CmsException {
          
          A_CmsUser user=null;
@@ -250,7 +250,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	 A_CmsUser addUser(String name, String password, 
+	 public A_CmsUser addUser(String name, String password, 
 					   String description) 				
         throws CmsException {
 
@@ -281,7 +281,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	 void deleteUser(String username)
+	 public void deleteUser(String username)
          throws CmsException {
           try {
               synchronized(m_statementUserDelete) {
@@ -306,7 +306,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 void writeUser(A_CmsUser user)
+	 public void writeUser(A_CmsUser user)
          throws CmsException {
          
          // empty for future use.
@@ -318,7 +318,7 @@ import com.opencms.core.*;
 	 * @return users A Vector of all existing users.
  	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getUsers()
+     public Vector getUsers()
      throws CmsException {
          Vector users=new Vector();
          A_CmsUser user=null;
@@ -355,7 +355,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	 void setPassword(String username, String newPassword)
+	 public void setPassword(String username, String newPassword)
          throws CmsException {
           try {     
               synchronized(m_statementSetPwd) {

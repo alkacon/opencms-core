@@ -8,17 +8,17 @@ import com.opencms.core.*;
 /**
  * This abstract class describes the access to groups and users in the Cms.<BR/>
  * 
- * All methods have package-visibility for security-reasons.
+ * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.6 $ $Date: 1999/12/21 15:08:47 $
  */
- class CmsAccessUserGroup extends A_CmsAccessUserGroup implements I_CmsConstants {
+ class CmsAccessUserGroup implements I_CmsAccessUserGroup, I_CmsConstants {
 
-     private A_CmsAccessUser m_accessUser;
-     private A_CmsAccessUserInfo m_accessUserInfo;
-     private A_CmsAccessGroup m_accessGroup;
+     private I_CmsAccessUser m_accessUser;
+     private I_CmsAccessUserInfo m_accessUserInfo;
+     private I_CmsAccessGroup m_accessGroup;
      
       /**
      * Constructor, creartes a new CmsAccessUserGroup object. 
@@ -33,9 +33,9 @@ import com.opencms.core.*;
      * @exception CmsException Throws CmsException if connection fails.
      * 
      */
-     public CmsAccessUserGroup(A_CmsAccessUser accessUser,
-                               A_CmsAccessUserInfo accessUserInfo,
-                               A_CmsAccessGroup accessGroup)
+     public CmsAccessUserGroup(I_CmsAccessUser accessUser,
+                               I_CmsAccessUserInfo accessUserInfo,
+                               I_CmsAccessGroup accessGroup)
       throws CmsException {
          m_accessUser=accessUser;
          m_accessUserInfo = accessUserInfo;
@@ -49,7 +49,7 @@ import com.opencms.core.*;
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 A_CmsUser readUser(String username)
+	 public A_CmsUser readUser(String username)
          throws CmsException {
          A_CmsUser user=null;
          Hashtable infos=null;
@@ -75,7 +75,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	 A_CmsUser readUser(String username, String password)
+	 public A_CmsUser readUser(String username, String password)
          throws CmsException {
          
          A_CmsUser user=null;
@@ -101,7 +101,7 @@ import com.opencms.core.*;
 	 * @return Vector of groups
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 Vector getGroupsOfUser(String username)
+	 public Vector getGroupsOfUser(String username)
          throws CmsException {
          Vector groups=new Vector();
          A_CmsUser user=null;
@@ -123,7 +123,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	 A_CmsGroup readGroup(String groupname)
+	 public A_CmsGroup readGroup(String groupname)
          throws CmsException {
           A_CmsGroup group= null;
           group=m_accessGroup.readGroup(groupname);
@@ -137,7 +137,7 @@ import com.opencms.core.*;
 	 * @return Vector of users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 Vector getUsersOfGroup(String groupname)
+	 public Vector getUsersOfGroup(String groupname)
          throws CmsException {
          A_CmsGroup group=null;
          A_CmsUser user=null;
@@ -175,7 +175,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 boolean userInGroup(String username, String groupname)
+	 public boolean userInGroup(String username, String groupname)
          throws CmsException {
          boolean userInGroup=false;
          A_CmsUser user=null;
@@ -218,7 +218,7 @@ import com.opencms.core.*;
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 
 	 */
-	 A_CmsUser addUser(String name, String password, 
+	 public A_CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
         throws CmsException {
@@ -249,7 +249,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	 void deleteUser(String username)
+	 public void deleteUser(String username)
 		throws CmsException {
          A_CmsUser user =null;
          int userId=C_UNKNOWN_ID;
@@ -274,7 +274,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	  void writeUser(A_CmsUser user)
+	  public void writeUser(A_CmsUser user)
          throws CmsException {
             int userId=C_UNKNOWN_ID;
             //check if this user is existing
@@ -301,7 +301,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	 A_CmsGroup addGroup(String name, String description, int flags,String parent)
+	 public A_CmsGroup addGroup(String name, String description, int flags,String parent)
          throws CmsException {
             A_CmsGroup group= null;
             group=m_accessGroup.addGroup(name,description,flags,parent);
@@ -316,7 +316,7 @@ import com.opencms.core.*;
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	 void writeGroup(A_CmsGroup group)
+	 public void writeGroup(A_CmsGroup group)
          throws CmsException{
          m_accessGroup.writeGroup(group);
      }
@@ -330,7 +330,7 @@ import com.opencms.core.*;
 	 * @param delgroup The name of the group that is to be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	 void deleteGroup(String delgroup)
+	 public void deleteGroup(String delgroup)
          throws CmsException {
          m_accessGroup.deleteGroup(delgroup);
      }
@@ -344,7 +344,7 @@ import com.opencms.core.*;
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	 void addUserToGroup(String username, String groupname)
+	 public void addUserToGroup(String username, String groupname)
          throws CmsException {
          A_CmsUser user;
          A_CmsGroup group;
@@ -374,7 +374,7 @@ import com.opencms.core.*;
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void removeUserFromGroup(String username, String groupname)
+	 public void removeUserFromGroup(String username, String groupname)
             throws CmsException {
          A_CmsUser user;
          A_CmsGroup group;
@@ -406,7 +406,7 @@ import com.opencms.core.*;
 	 * @return users A Vector of all existing users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getUsers() 
+     public Vector getUsers() 
      throws CmsException {
         Vector users=null;
         A_CmsUser user;
@@ -433,7 +433,7 @@ import com.opencms.core.*;
 	 * @return users A Vector of all existing groups.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getGroups() 
+     public Vector getGroups() 
        throws CmsException{
          return m_accessGroup.getGroups();
      }
@@ -447,7 +447,7 @@ import com.opencms.core.*;
 	 * @return users A Vector of all child groups or null.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getChild(String groupname)
+     public Vector getChild(String groupname)
         throws CmsException{
          return m_accessGroup.getChild(groupname);
      }
@@ -463,7 +463,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	 void setPassword(String username, String newPassword)
+	 public void setPassword(String username, String newPassword)
          throws CmsException {
          m_accessUser.setPassword(username,newPassword);
      }

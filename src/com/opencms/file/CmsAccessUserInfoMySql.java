@@ -10,12 +10,12 @@ import com.opencms.core.*;
  * This class contains the methods to read, write and delete  additional
  * user information in a MySql database. 
  * 
- * All methods have package-visibility for security-reasons.
+ * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 1999/12/21 14:23:14 $
+ * @version $Revision: 1.7 $ $Date: 1999/12/21 15:08:47 $
  */
- class CmsAccessUserInfoMySql extends A_CmsAccessUserInfo {
+ class CmsAccessUserInfoMySql implements I_CmsAccessUserInfo {
 
      /**
      * SQL Command for reading additional user information.
@@ -96,7 +96,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	void addUserInformation(int id, Hashtable object)
+	public void addUserInformation(int id, Hashtable object)
         throws  CmsException {
         byte[] value=null;
         try	{			
@@ -137,7 +137,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	Hashtable readUserInformation(int id)
+	public Hashtable readUserInformation(int id)
         throws CmsException {
         
         Hashtable info=null;
@@ -183,7 +183,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 void writeUserInformation(int id , Hashtable infos)
+	 public void writeUserInformation(int id , Hashtable infos)
          throws CmsException {
          
         byte[] value=null;
@@ -219,7 +219,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 void deleteUserInformation(int id)
+	 public void deleteUserInformation(int id)
          throws CmsException {
                
 		try	{			

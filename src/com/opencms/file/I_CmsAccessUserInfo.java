@@ -6,14 +6,14 @@ import javax.servlet.http.*;
 import com.opencms.core.*;
 
 /**
- * This abstract class describes the access to users information in the Cms.<BR/>
+ * This public class describes the access to users information in the Cms.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/21 15:08:47 $
  */
-abstract class A_CmsAccessUserInfo {
+interface I_CmsAccessUserInfo {
 
      /**
 	 * Creates a new hashtable containing additional user information to the user 
@@ -24,7 +24,7 @@ abstract class A_CmsAccessUserInfo {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void addUserInformation(int id, Hashtable object)
+	public void addUserInformation(int id, Hashtable object)
 		throws  CmsException;
     
 
@@ -39,7 +39,7 @@ abstract class A_CmsAccessUserInfo {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Hashtable readUserInformation(int id)
+	public Hashtable readUserInformation(int id)
 		throws CmsException;
 
 	/**
@@ -51,7 +51,7 @@ abstract class A_CmsAccessUserInfo {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	abstract void writeUserInformation(int id , Hashtable infos)
+	public void writeUserInformation(int id , Hashtable infos)
 		throws  CmsException;
 
 	/**
@@ -62,6 +62,6 @@ abstract class A_CmsAccessUserInfo {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void deleteUserInformation(int id)
+	public void deleteUserInformation(int id)
 		throws CmsException;
 }

@@ -5,14 +5,14 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This abstract class describes the access to projects in the Cms.<BR/>
+ * This interface describes the access to projects in the Cms.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/17 17:25:36 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/21 15:08:47 $
  */
-abstract class A_CmsAccessProject {
+interface I_CmsAccessProject {
 
 	/**
 	 * Reads a project from the Cms.
@@ -21,7 +21,7 @@ abstract class A_CmsAccessProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 abstract A_CmsProject readProject(String name)
+	 public A_CmsProject readProject(String name)
 		throws CmsException;
 	
 	/**
@@ -36,7 +36,7 @@ abstract class A_CmsAccessProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 abstract A_CmsProject createProject(String name, String description, A_CmsTask task, 
+	 public A_CmsProject createProject(String name, String description, A_CmsTask task, 
 										 A_CmsUser owner, A_CmsGroup group, int flags)
 		throws CmsException;
 	
@@ -47,7 +47,7 @@ abstract class A_CmsAccessProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 abstract A_CmsProject writeProject(A_CmsProject project)
+	 public A_CmsProject writeProject(A_CmsProject project)
 		throws CmsException;
 
 	/**
@@ -57,7 +57,7 @@ abstract class A_CmsAccessProject {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 abstract Vector getAllAccessibleProjectsByUser(A_CmsUser user)
+	 public Vector getAllAccessibleProjectsByUser(A_CmsUser user)
 		 throws CmsException;
 
 	/**
@@ -67,6 +67,6 @@ abstract class A_CmsAccessProject {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 abstract Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
+	 public Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
 		 throws CmsException;
 }

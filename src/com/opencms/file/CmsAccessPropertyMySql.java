@@ -11,12 +11,12 @@ import com.opencms.core.*;
  * Only the system can access propertys. Propertys are for internal use
  * only. A property is a serializable object.
  * 
- * All methods have package-visibility for security-reasons.
+ * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/21 14:23:14 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/21 15:08:47 $
  */
-public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
+public class CmsAccessPropertyMySql implements I_CmsAccessProperty  {
 
     /**
      * SQL Command for reading properties.
@@ -95,7 +95,7 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 Serializable addProperty(String name, Serializable object)
+	 public Serializable addProperty(String name, Serializable object)
          throws CmsException {
          
         Serializable property=null;
@@ -133,7 +133,7 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	Serializable readProperty(String name)
+	public Serializable readProperty(String name)
         throws CmsException {
         
         Serializable property=null;
@@ -179,7 +179,7 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	Serializable writeProperty(String name, Serializable object)
+	public Serializable writeProperty(String name, Serializable object)
         throws CmsException {
         
         byte[] value=null;
@@ -216,7 +216,7 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	void deleteProperty(String name)
+	public void deleteProperty(String name)
         throws CmsException {
         
 		try	{

@@ -9,12 +9,12 @@ import com.opencms.core.*;
  * This class contains the methods to read, write and delete and
  * CmsGroup objects in a MySql user database.
  * 
- * All methods have package-visibility for security-reasons.
+ * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 1999/12/21 14:23:14 $
+ * @version $Revision: 1.7 $ $Date: 1999/12/21 15:08:47 $
  */
- class CmsAccessGroupMySql extends A_CmsAccessGroup implements I_CmsConstants  {
+ class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
     /**
     * SQL Command for writing groups.
@@ -199,7 +199,7 @@ import com.opencms.core.*;
 	 * @return Vector of groups
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	Vector getGroupsOfUser(int userid)
+	public Vector getGroupsOfUser(int userid)
 		throws CmsException {
         A_CmsGroup group;
         Vector groups=new Vector();
@@ -237,7 +237,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-     A_CmsGroup readGroup(String groupname)
+     public A_CmsGroup readGroup(String groupname)
          throws CmsException {
   
          A_CmsGroup group=null;
@@ -272,7 +272,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-     A_CmsGroup readGroup(int id)
+     public A_CmsGroup readGroup(int id)
          throws CmsException {
   
          A_CmsGroup group=null;
@@ -306,7 +306,7 @@ import com.opencms.core.*;
 	 * @return Vector of user id's.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 Vector getUsersOfGroup(int groupId)
+	 public Vector getUsersOfGroup(int groupId)
          throws CmsException {
          
          Vector userid=new Vector();
@@ -338,7 +338,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 boolean userInGroup(int userid, int groupid)
+	 public boolean userInGroup(int userid, int groupid)
          throws CmsException {
          boolean userInGroup=false;
          ResultSet res=null;
@@ -373,7 +373,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	 A_CmsGroup addGroup(String name, String description, int flags,String parent)
+	 public A_CmsGroup addGroup(String name, String description, int flags,String parent)
          throws CmsException {
          
          int id=C_UNKNOWN_ID;
@@ -415,7 +415,7 @@ import com.opencms.core.*;
 	 * @param group The group that should be written to the Cms.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	 void writeGroup(A_CmsGroup group)
+	 public void writeGroup(A_CmsGroup group)
          throws CmsException {
          try {
             if (group != null){
@@ -442,7 +442,7 @@ import com.opencms.core.*;
 	 * @param delgroup The name of the group that is to be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	 void deleteGroup(String delgroup)
+	 public void deleteGroup(String delgroup)
          throws CmsException {
          try {
              synchronized (m_statementGroupDelete) {
@@ -463,7 +463,7 @@ import com.opencms.core.*;
 	 * @param groupid The id of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	void addUserToGroup(int userid, int groupid)
+	public void addUserToGroup(int userid, int groupid)
         throws CmsException {
         
         // check if user is already in group
@@ -496,7 +496,7 @@ import com.opencms.core.*;
 	 * @param groupid The id of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void removeUserFromGroup(int userid, int groupid)
+	 public void removeUserFromGroup(int userid, int groupid)
          throws CmsException {
          try {
              synchronized (m_statementRemoveUserFromGroup) {
@@ -515,7 +515,7 @@ import com.opencms.core.*;
 	 * @return users A Vector of all existing groups.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getGroups() 
+     public Vector getGroups() 
       throws CmsException {
          Vector groups = new Vector();
          A_CmsGroup group=null;
@@ -551,7 +551,7 @@ import com.opencms.core.*;
 	 * @return users A Vector of all child groups or null.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getChild(String groupname) 
+     public Vector getChild(String groupname) 
       throws CmsException {
          
          Vector childs = new Vector();

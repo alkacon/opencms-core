@@ -7,25 +7,25 @@ import com.opencms.core.*;
 /**
  * This class describes a resource broker for projects in the Cms.<BR/>
  * 
- * All methods have package-visibility for security-reasons.
+ * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/21 14:15:33 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/21 15:08:47 $
  */
-class CmsRbProject extends A_CmsRbProject implements I_CmsConstants {
+class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	
     /**
      * The project access object which is required to access the
      * project database.
      */
-    private A_CmsAccessProject m_accessProject;
+    private I_CmsAccessProject m_accessProject;
     
     /**
      * Constructor, creates a new Cms Project Resource Broker.
      * 
      * @param accessProject The project access object.
      */
-    public CmsRbProject(A_CmsAccessProject accessProject)
+    public CmsRbProject(I_CmsAccessProject accessProject)
     {
         m_accessProject = accessProject;
     }
@@ -37,7 +37,7 @@ class CmsRbProject extends A_CmsRbProject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 A_CmsProject readProject(String name)
+	 public A_CmsProject readProject(String name)
 		 throws CmsException {
 		 return( m_accessProject.readProject(name) );
 	 }
@@ -54,7 +54,7 @@ class CmsRbProject extends A_CmsRbProject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 A_CmsProject createProject(String name, String description, A_CmsTask task, 
+	 public A_CmsProject createProject(String name, String description, A_CmsTask task, 
 								A_CmsUser owner, A_CmsGroup group, int flags)
 		 throws CmsException {
 		 return( m_accessProject.createProject(name, description, task, 
@@ -69,7 +69,7 @@ class CmsRbProject extends A_CmsRbProject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 A_CmsProject writeProject(A_CmsProject project)
+	 public A_CmsProject writeProject(A_CmsProject project)
 		 throws CmsException {
 		 return( m_accessProject.writeProject(project) );
 	 }
@@ -81,7 +81,7 @@ class CmsRbProject extends A_CmsRbProject implements I_CmsConstants {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 Vector getAllAccessibleProjectsByUser(A_CmsUser user)
+	 public Vector getAllAccessibleProjectsByUser(A_CmsUser user)
 		 throws CmsException {
 		 return( m_accessProject.getAllAccessibleProjectsByUser(user) );
 	 }
@@ -93,7 +93,7 @@ class CmsRbProject extends A_CmsRbProject implements I_CmsConstants {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
+	 public Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
 		 throws CmsException {
 		 return( m_accessProject.getAllAccessibleProjectsByGroup(group) );
 	 }
