@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2002/08/24 08:42:37 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/10/17 14:31:52 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -626,74 +626,102 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     }
 
     /**
-     * Imports a Folder.
-     * Does the Linkmanagement when a resource is imported.
-     * When a resource has to be imported, the URL´s of the
-     * Links inside the resources have to be saved and changed to the corresponding ID´s
+     * Imports a resource.
      *
-     * @param file is the file that has to be changed
+     * @param cms The current CmsObject.
+     * @param source The sourcepath of the resource to import.
+     * @param destination The destinationpath of the resource to import.
+     * @param type The type of the resource to import.
+     * @param user The name of the owner of the resource.
+     * @param group The name of the group of the resource.
+     * @param access The access flags of the resource.
+     * @param properties A Hashtable with the properties of the resource.
+     * The key is the name of the propertydefinition, the value is the propertyvalue.
+     * @param launcherStartClass The name of the launcher startclass.
+     * @param content The filecontent if the resource is of type file
+     * @param importPath The name of the import path
+     * 
+     * @return CmsResource The imported resource.
+     * 
+     * @exception Throws CmsException if the resource could not be imported
+     * 
      */
-    public CmsResource importResource(CmsObject cms, String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
-        CmsResource cmsfolder = null;
+    public CmsResource importResource(CmsObject cms, String source, String destination, String type,
+                                       String user, String group, String access, Hashtable properties, 
+                                       String launcherStartClass, byte[] content, String importPath) 
+                       throws CmsException {
+        CmsResource importedResource = null;
 
         String path = importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
         String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
-        String fullname = null;
-
+        boolean changed = true;
+        // try to read the new owner and group
+        CmsUser resowner = null;
+        CmsGroup resgroup = null;
+        try{
+        	resowner = cms.readUser(user);
+        } catch (CmsException e){
+        	resowner = cms.getRequestContext().currentUser();	
+        }
+        try{
+        	resgroup = cms.readGroup(group);
+        } catch (CmsException e){
+        	resgroup = cms.getRequestContext().currentGroup();	
+        } 
+        // try to create the resource		
         try {
-            cmsfolder = createResource(cms, path, name, properties, content);
-            if(cmsfolder != null){
-                fullname = cmsfolder.getAbsolutePath();
-                lockResource(cms, fullname, true);
+            importedResource = cms.doCreateResource(path, name, C_TYPE_FOLDER,properties, C_UNKNOWN_LAUNCHER_ID, 
+                                             C_UNKNOWN_LAUNCHER, resowner.getName(), resgroup.getName(), Integer.parseInt(access), new byte[0]);
+            if(importedResource != null){
+                changed = false;
             }
         } catch (CmsException e) {
             // an exception is thrown if the folder already exists
         }
-        if(fullname == null){
-            //the folder exists, check if properties has to be updated
-            cmsfolder = cms.readFolder(path, name + "/");
-            Hashtable oldProperties = cms.readAllProperties(cmsfolder.getAbsolutePath());
+        if(changed){
+        	changed = false;
+            //the resource exists, check if properties has to be updated
+            importedResource = cms.readFolder(path, name + "/");
+            Hashtable oldProperties = cms.readAllProperties(importedResource.getAbsolutePath());
             if(oldProperties == null){
                 oldProperties = new Hashtable();
             }
             if(properties == null){
                 properties = new Hashtable();
             }
-            if( !oldProperties.equals(properties)){
-                fullname = cmsfolder.getAbsolutePath();
-                lockResource(cms, fullname, true);
-                cms.writeProperties(fullname, properties);
+            if(oldProperties.size() != properties.size()){
+            	changed = true;
+            } else {
+            	// check each of the properties
+            	Enumeration keys = properties.keys();
+            	while(keys.hasMoreElements()){
+            		String curKey = (String)keys.nextElement();
+            		String value = (String)properties.get(curKey);
+            		String oldValue = (String)oldProperties.get(curKey);
+            		if((oldValue == null) || !(value.trim().equals(oldValue.trim()))){
+            			changed = true;
+            			break;
+            		}
+            	}
             }
-            if(fullname == null){
-                // properties are the same but what about the owner, group and access?
-                if(cmsfolder.getAccessFlags()  != Integer.parseInt(access) ||
-                        cmsfolder.getOwnerId() != cms.readUser(user).getId() ||
-                        cmsfolder.getGroupId() != cms.readGroup(group).getId() ){
-                    fullname = cmsfolder.getAbsolutePath();
-                    lockResource(cms, fullname, true);
-                }
+            // check changes of the owner, group and access
+            if(importedResource.getAccessFlags() != Integer.parseInt(access) ||
+                   importedResource.getOwnerId() != resowner.getId() ||
+                   importedResource.getGroupId() != resgroup.getId()){
+                changed = true;            
             }
-        }
-
-        if(fullname != null){
-            try{
-                cms.chmod(fullname, Integer.parseInt(access));
-            }catch(CmsException e){
-                System.out.println("chmod(" + access + ") failed ");
+            // check changes of the resourcetype
+            if(importedResource.getType() != cms.getResourceType(type).getResourceType()){
+            	changed = true;
             }
-            try{
-                cms.chgrp(fullname, group);
-            }catch(CmsException e){
-                System.out.println("chgrp(" + group + ") failed ");
-            }
-            try{
-                cms.chown(fullname, user);
-            }catch(CmsException e){
-                System.out.println("chown((" + user + ") failed ");
+            // update the folder if something has changed
+            if(changed){
+            	lockResource(cms,importedResource.getAbsolutePath(), true);
+            	cms.doWriteResource(importedResource.getAbsolutePath(),properties,resowner.getName(), resgroup.getName(),Integer.parseInt(access),C_TYPE_FOLDER,new byte[0]);
             }
         }
 
-        return cmsfolder;
+        return importedResource;
     }
 
     /**

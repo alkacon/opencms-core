@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/09/24 13:48:42 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/10/17 14:32:00 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2002/09/24 13:48:42 $
+ * @version $Revision: 1.30 $ $Date: 2002/10/17 14:32:00 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -521,60 +521,73 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         return file;
     }
 
-
     /**
-     * When a resource has to be imported, the URL´s of the
-     * Links inside the resources have to be saved and changed to the corresponding ID´s
+     * Imports a resource.
      *
-     * @param file is the file that has to be changed
+     * @param cms The current CmsObject.
+     * @param source The sourcepath of the resource to import.
+     * @param destination The destinationpath of the resource to import.
+     * @param type The type of the resource to import.
+     * @param user The name of the owner of the resource.
+     * @param group The name of the group of the resource.
+     * @param access The access flags of the resource.
+     * @param properties A Hashtable with the properties of the resource.
+     * The key is the name of the propertydefinition, the value is the propertyvalue.
+     * @param launcherStartClass The name of the launcher startclass.
+     * @param content The filecontent if the resource is of type file
+     * @param importPath The name of the import path
+     * 
+     * @return CmsResource The imported resource.
+     * 
+     * @exception Throws CmsException if the resource could not be imported
+     * 
      */
-    public CmsResource importResource(CmsObject cms, String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
-        CmsFile file = null;
+    public CmsResource importResource(CmsObject cms, String source, String destination, String type,
+                                       String user, String group, String access, Hashtable properties, 
+                                       String launcherStartClass, byte[] content, String importPath) 
+                       throws CmsException {
+        CmsResource importedResource = null;
 
         String path = importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
         String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
-        int state = C_STATE_NEW;
-        // this is a file
-        // first delete the file, so it can be overwritten
+        boolean changed = true;
+        int resourceType = cms.getResourceType(type).getResourceType();
+		int launcherType = cms.getResourceType(type).getLauncherType();
+		if((launcherStartClass == null) || ("".equals(launcherStartClass))){
+			launcherStartClass = cms.getResourceType(type).getLauncherClass();
+        }
+        // try to read the new owner and group
+        CmsUser resowner = null;
+        CmsGroup resgroup = null;
+        try{
+        	resowner = cms.readUser(user);
+        } catch (CmsException e){
+        	resowner = cms.getRequestContext().currentUser();	
+        }
+        try{
+        	resgroup = cms.readGroup(group);
+        } catch (CmsException e){
+        	resgroup = cms.getRequestContext().currentGroup();	
+        }        
         try {
-            cms.doLockResource(path + name, true);
-            cms.doDeleteFile(path + name);
-            state = C_STATE_CHANGED;
-        } catch (CmsException exc) {
-            state = C_STATE_NEW;
-            // ignore the exception, the file dosen't exist
+            importedResource = cms.doCreateResource(path, name, resourceType ,properties, launcherType, 
+                                             launcherStartClass, resowner.getName(), resgroup.getName(), Integer.parseInt(access), content);
+            if(importedResource != null){
+                changed = false;
+            }
+        } catch (CmsException e) {
+            // an exception is thrown if the resource already exists
         }
-        // now create the file
-
-        // do not use createResource because then there will the body-file be created too.
-        // that would cause an exception while importing because of trying to
-        // duplicate an entry
-        file = (CmsFile)cms.doCreateFile(path, name, content, type, properties);
-        String fullname = file.getAbsolutePath();
-        lockResource(cms, fullname, true);
-        try{
-            cms.doChmod(fullname, Integer.parseInt(access));
-        }catch(CmsException e){
-            System.out.println("chmod(" + access + ") failed ");
-        }
-        try{
-            cms.doChgrp(fullname, group);
-        }catch(CmsException e){
-            System.out.println("chgrp(" + group + ") failed ");
-        }
-        try{
-            cms.doChown(fullname, user);
-        }catch(CmsException e){
-            System.out.println("chown((" + user + ") failed ");
-        }
-        if(launcherStartClass != null){
-            file.setLauncherClassname(launcherStartClass);
-            cms.writeFile(file);
+        if(changed){
+        	// if the resource already exists it must be updated
+            lockResource(cms,path+name, true);
+            cms.doWriteResource(path+name,properties,resowner.getName(), resgroup.getName(),Integer.parseInt(access),resourceType,content);
+            importedResource = cms.readFileHeader(path+name);
         }
 
-        return file;
+        return importedResource;
     }
-
+    
     /**
     * Locks a given resource.
     * <br>
