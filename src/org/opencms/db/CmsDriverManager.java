@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/05/27 16:22:19 $
- * Version: $Revision: 1.364 $
+ * Date   : $Date: 2004/05/28 16:00:40 $
+ * Version: $Revision: 1.365 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.364 $ $Date: 2004/05/27 16:22:19 $
+ * @version $Revision: 1.365 $ $Date: 2004/05/28 16:00:40 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1303,7 +1303,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         if (copyAsLink) {
             // create a copy of the source file in the destination parent folder      
-            newResource = createSibling(context, destination, source, properties, false);
+            newResource = createSibling(context, destination, source, properties, lockCopy);
         } else {
             // create a new resource in the destination folder
 
