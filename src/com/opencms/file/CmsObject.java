@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2000/01/21 16:56:46 $ 
+ * @version $Revision: 1.30 $ $Date: 2000/01/24 10:34:43 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -950,7 +950,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 			return(newUser.getName());
 		} else {
 			// No Access!
-			throw new CmsException(username, CmsException.C_NO_ACCESS );
+			throw new CmsException(this.getClass().getName() + ": " + username, 
+				CmsException.C_NO_ACCESS );
 		}		
 	}
 	

@@ -272,10 +272,12 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			   								result.getInt(C_METADEF_TYPE) ) );
 			} else {
 			    // not found!
-			    throw new CmsException(name, CmsException.C_NOT_FOUND);
+			    throw new CmsException(this.getClass().getName() + ": " + name, 
+					CmsException.C_NOT_FOUND);
 			}
 		 } catch( SQLException exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
 		 }
 	}
 
@@ -323,7 +325,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			 }
 			 return(metadefs);
 		 } catch( SQLException exc ) {
-			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
 		 }
 	}
 	
@@ -374,7 +377,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			 }
 			 return(metadefs);
 		 } catch( SQLException exc ) {
-			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
 		 }
 	}
 	
@@ -400,7 +404,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 				m_statementCreateMetadef.executeUpdate();
 			}
 		 } catch( SQLException exc ) {
-			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
 		 }
 		 return(readMetadefinition(name, resourcetype));
 	}
@@ -418,7 +423,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 		throws CmsException {
 		try {
 			if(countMetainfos(metadef) != 0) {
-				throw new CmsException(metadef.getName(), 
+				throw new CmsException(this.getClass().getName() + ": " + metadef.getName(), 
 					CmsException.C_UNKNOWN_EXCEPTION);
 			}
 			synchronized(m_statementDeleteMetadef) {
@@ -427,7 +432,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 				m_statementDeleteMetadef.executeUpdate();
 			}
 		 } catch( SQLException exc ) {
-			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
 		 }
 	}
 
@@ -452,12 +458,13 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			if( result.next() ) {
 				return( result.getInt(1) );
 			} else {
-				throw new CmsException(metadef.getName(), 
+				throw new CmsException(this.getClass().getName() + ": " + metadef.getName(), 
 					CmsException.C_UNKNOWN_EXCEPTION);
 			}
 			
 		} catch(SQLException exc) {
-			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
 		}		
 	}
 
@@ -483,7 +490,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			}
 			return( readMetadefinition(metadef.getName(), metadef.getType()) );
 		 } catch( SQLException exc ) {
-			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
 		 }		
 	}
 
@@ -537,7 +545,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 				 return(null);
 			 }
 		 } catch( SQLException exc ) {
-			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
 		 }
 	}
 	
@@ -575,7 +584,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 		
 		if( metadef == null) {
 			// there is no metadefinition for with the overgiven name for the resource
-			throw new CmsException(meta, CmsException.C_NOT_FOUND);
+			throw new CmsException(this.getClass().getName() + ": " + meta, 
+				CmsException.C_NOT_FOUND);
 		} else {
 			// write the metainfo into the db
 			try {
@@ -599,7 +609,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 					}
 				}
 			} catch(SQLException exc) {
-				throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+				throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+					CmsException.C_SQL_ERROR, exc);
 			}
 		}
 	}
@@ -695,7 +706,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			 return(returnValue);		
 			
 		} catch( SQLException exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
 		}
 		
 	}
@@ -731,7 +743,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 				m_statementDeleteAllMetainfo.executeQuery();
 			}			
 		} catch( SQLException exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
 		}
 	}
 	
@@ -766,7 +779,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 		
 		if( metadef == null) {
 			// there is no metadefinition with the overgiven name for the resource
-			throw new CmsException(meta, CmsException.C_NOT_FOUND);
+			throw new CmsException(this.getClass().getName() + ": " + meta, 
+				CmsException.C_NOT_FOUND);
 		} else {
 			// delete the metainfo into the db
 			try {
@@ -777,7 +791,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 					m_statementDeleteMetainfo.executeUpdate();
 				}
 			} catch(SQLException exc) {
-				throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+				throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+					CmsException.C_SQL_ERROR, exc);
 			}
 		}
 	}
@@ -795,7 +810,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
         try {
         	m_con = DriverManager.getConnection(conUrl);
        	} catch (SQLException e)	{
-         	throw new CmsException(e.getMessage(), CmsException.C_SQL_ERROR, e);
+         	throw new CmsException(this.getClass().getName() + ": " + e.getMessage(), 
+				CmsException.C_SQL_ERROR, e);
 		}
     }
 	
@@ -824,7 +840,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			m_statementReadAllMetainfoCount = m_con.prepareStatement(C_METAINFO_READALL_COUNT);
 			
 		} catch (SQLException exc) {
-			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
 		}
 	}
 }
