@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2003/09/11 13:49:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/11 14:29:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -286,8 +286,10 @@ public class CmsAdminHistoryClear extends CmsDialog {
         // check the submitted values        
         int versions = 0;
         long timeStamp = 0;
+        boolean useVersions = false;
         try {
             versions = Integer.parseInt(paramVersions);
+            useVersions = true;
         } catch (NumberFormatException e) {
             // no int value submitted, check date fields
             try {
@@ -301,6 +303,11 @@ public class CmsAdminHistoryClear extends CmsDialog {
                 // no date values submitted, throw exception
                 throw new CmsException("Invalid arguments. Check the input fields of the dialog", CmsException.C_BAD_NAME, ex);
             }
+        }
+        
+        // set the timeStamp one day to the future to delete versions
+        if (useVersions) {
+            timeStamp = System.currentTimeMillis() + 86400000;
         }
         
         if (DEBUG > 0) System.err.println("Versions: "+versions+"\nDate: "+timeStamp);
