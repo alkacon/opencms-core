@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/08 17:12:57 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/06/09 07:49:32 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.25 $ $Date: 2000/06/08 17:12:57 $
+ * @version $Revision: 1.26 $ $Date: 2000/06/09 07:49:32 $
  */
 public interface I_CmsQuerys {
     
@@ -283,6 +283,9 @@ public interface I_CmsQuerys {
 	
 	public static final Integer C_PROJECTS_READ_BYMANAGER_KEY = new Integer(407);
 	public static final String C_PROJECTS_READ_BYMANAGER = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where MANAGERGROUP_ID = ? and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED;
+
+	public static final Integer C_PROJECTS_DELETE_KEY = new Integer(408);
+	public static final String C_PROJECTS_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_ID = ?";
 	
 	// Constants for Users table
 	public static final String C_USERS_USER_ID = "USER_ID";

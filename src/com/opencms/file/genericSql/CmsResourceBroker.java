@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 07:17:09 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/06/09 07:49:32 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2000/06/09 07:17:09 $
+ * @version $Revision: 1.32 $ $Date: 2000/06/09 07:49:32 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -208,6 +208,19 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deleteProject(CmsUser currentUser, CmsProject currentProject,
 							  int id)
         throws CmsException {
+		// read the project that should be deleted.
+		CmsProject deleteProject = readProject(currentUser, currentProject, id);
+		
+		if( isAdmin(currentUser, currentProject) || 
+			isManagerOfProject(currentUser, deleteProject) || 
+			(deleteProject.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
+			 
+			 // delete the project
+			 m_dbAccess.deleteProject(deleteProject);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + id, 
+				CmsException.C_NO_ACCESS);
+		}
     }
      
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/08 17:57:47 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/06/09 07:49:32 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.37 $ $Date: 2000/06/08 17:57:47 $ * 
+ * @version $Revision: 1.38 $ $Date: 2000/06/09 07:49:32 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -415,7 +415,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
          return group;
      } 
    
-       /**
+    /**
 	 * Writes an already existing group in the Cms.<BR/>
 	 * 
 	 * Only the admin can do this.<P/>
@@ -1594,6 +1594,38 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		 return(projects);
 	 }
 	 
+	 /**
+	  * Deletes a project from the cms.
+	  * Therefore it deletes all files, resources and properties.
+	  * 
+	  * @param project the project to delete.
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void deleteProject(CmsProject project)
+		 throws CmsException {
+		 // TODO: delete the files
+		 // TODO: delete the reosureces
+		 // TODO: delete the properties
+		 
+		 // finally delete the project
+		 PreparedStatement statement = null;
+
+		 try {			 
+			 // create the statement
+			 statement = m_pool.getPreparedStatement(C_PROJECTS_DELETE_KEY);
+
+			 statement.setInt(1,project.getId());
+			 statement.executeUpdate();
+		 } catch( Exception exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 } finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROJECTS_READ_BYFLAG_KEY, statement);
+			}
+		 }	
+	 }
+	 
     // methods working with systemproperties
     
     /**
@@ -2478,6 +2510,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		m_pool.initPreparedStatement(C_PROJECTS_READ_BYGROUP_KEY, C_PROJECTS_READ_BYGROUP);
 		m_pool.initPreparedStatement(C_PROJECTS_READ_BYFLAG_KEY, C_PROJECTS_READ_BYFLAG);
 		m_pool.initPreparedStatement(C_PROJECTS_READ_BYMANAGER_KEY, C_PROJECTS_READ_BYMANAGER);
+		m_pool.initPreparedStatement(C_PROJECTS_DELETE_KEY, C_PROJECTS_DELETE);
 
 		// init statements for systemproperties
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_MAXID_KEY, C_SYSTEMPROPERTIES_MAXID);
