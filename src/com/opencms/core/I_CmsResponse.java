@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2004/03/29 08:50:06 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/06/15 07:22:30 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,11 +43,11 @@ import javax.servlet.http.HttpServletResponse;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.22 $ $Date: 2004/03/29 08:50:06 $  
+ * @version $Revision: 1.23 $ $Date: 2004/06/15 07:22:30 $  
  */
 public interface I_CmsResponse {
 
-    /** Request context attribute name */  
+    /** Request context attribute name. */  
     String C_CMS_RESPONSE = "__I_CmsResponse";
     
     /**
@@ -168,8 +168,8 @@ public interface I_CmsResponse {
     
     /**
      * Checks, if the header was set already.
-     * @param key, the header-key to check.
-     * @return true, if the header was set before else false.
+     * @param key the header-key to check.
+     * @return true if the header was set before else false.
      */
     boolean containsHeader(String key);
 }

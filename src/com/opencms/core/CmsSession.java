@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2004/06/15 07:22:30 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,12 +39,12 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich
  *
- * @version $Revision: 1.34 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.35 $ $Date: 2004/06/15 07:22:30 $
  */
 public class CmsSession implements I_CmsSession {
 
     /**
-     * The original HttpSession
+     * The original HttpSession.
      */
     private HttpSession m_session;
 

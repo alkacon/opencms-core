@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
-* Date   : $Date: 2004/03/29 08:50:06 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2004/06/15 07:22:30 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ class CmsMultipartInputStreamHandler {
     private int m_newLine = 0;
 
     /**
-     * Constructor, creates a new CmsMultipartInputStreamHandler
+     * Constructor, creates a new CmsMultipartInputStreamHandler.<p>
      *
      * @param in An input stream
      * @param totalExpected Number of bytes expected to be read

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsRequest.java,v $
-* Date   : $Date: 2004/02/22 13:54:41 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2004/06/15 07:22:30 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,11 +43,11 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.15 $ $Date: 2004/02/22 13:54:41 $
+ * @version $Revision: 1.16 $ $Date: 2004/06/15 07:22:30 $
  */
 public interface I_CmsRequest {
 
-    /** Request context attribute name */
+    /** Request context attribute name. */
     String C_CMS_REQUEST = "__I_CmsRequest";
     
     /**
@@ -76,7 +76,7 @@ public interface I_CmsRequest {
     HttpServletRequest getOriginalRequest();
     
     /**
-     * Sets the original request to another value
+     * Sets the original request to another value.
      * 
      * @param request the request 
      */

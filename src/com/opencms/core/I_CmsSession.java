@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsSession.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/06/15 07:22:30 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package com.opencms.core;
  * session data.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2004/02/21 17:11:42 $  
+ * @version $Revision: 1.19 $ $Date: 2004/06/15 07:22:30 $  
  */
 public interface I_CmsSession {
     
@@ -47,7 +47,7 @@ public interface I_CmsSession {
     Object getValue(String key);
     
     /**
-     * Stores a value in the session
+     * Stores a value in the session.<p>
      * 
      * @param key the key to map the value to
      * @param value an object to store for the key

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2004/03/29 08:50:06 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2004/06/15 07:22:30 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.49 $ $Date: 2004/03/29 08:50:06 $
+ * @version $Revision: 1.50 $ $Date: 2004/06/15 07:22:30 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -108,12 +108,12 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     private Hashtable m_files = new Hashtable();
 
     /**
-     * Storage for all uploaded name values
+     * Storage for all uploaded name values.
      */
     private Hashtable m_parameters = new Hashtable();
     
     /**
-     * File counter
+     * File counter.
      */
     int m_filecounter = 0;
 
@@ -128,7 +128,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     private int m_serverPort;
 
     /**
-     * Resource translator (for uploaded file names)
+     * Resource translator (for uploaded file names).
      */
     private CmsResourceTranslator m_translator;
 
@@ -410,7 +410,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         return m_req.getParameterValues(key);
     }
 
-    /** String to the requested resource */
+    /** String to the requested resource. */
     private String m_requestedResource = null;
 
     /**
