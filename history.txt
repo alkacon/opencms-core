@@ -10,6 +10,8 @@ Legend:
 
 OpenCms 4.5.31 Chusuk       - 09 January 2001
 ! Modification on Explorer-View for "Gecko" support. The "Gecko-Support" is not finished yet.
+  ATTENTION: The workplace has currently some problems displaying german umlauts. We will fix 
+  that in the next release.
 ! New property exportname used for the static export. While exporting the name is replaced
   by the value of this property if existent.
 ! New property export used for the static export. Resources with the propertyvalue dynamic, false or https are
