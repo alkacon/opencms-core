@@ -2,8 +2,8 @@ package com.opencms.examples.news;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/08/08 14:08:22 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2001/01/04 09:44:36 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import org.apache.xml.serialize.*;
  *             with the newer classes.   
  *      
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2000/08/08 14:08:22 $
+ * @version $Revision: 1.20 $ $Date: 2001/01/04 09:44:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -83,6 +83,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
 	 * @exception CmsException if check access failed.
 	 */
 	private boolean checkWriteAccess(CmsObject cms) throws CmsException {
+/*
 		CmsFolder pageFolder = null;
 		CmsFolder contentFolder = null;
 		try {
@@ -91,7 +92,9 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
 		} catch(Exception e) {
 			return false;
 		}
-		return cms.accessCreate(pageFolder) && cms.accessCreate(contentFolder);        
+*/		// ednfal: changed method accessCreate: resource is read in resourcebroker
+		//return cms.accessCreate(pageFolder) && cms.accessCreate(contentFolder);
+		return cms.accessCreate(C_NEWS_FOLDER_PAGE) && cms.accessCreate(C_NEWS_FOLDER_CONTENT); 
 	}
 	/**
 	 * Create a news content file. File flags setted in the user preferences
