@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2004/05/17 10:53:26 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * 
  * @since 5.1
  */
@@ -966,7 +966,7 @@ public abstract class CmsWorkplace {
                 if (name != null && item.getName() == null) {
                     // only put to map if current item is no file and not null
                     try {
-                        value = item.getString("UTF-8");
+                        value = item.getString(CmsEncoder.C_UTF8_ENCODING);
                     } catch (UnsupportedEncodingException e) {
                         value = item.getString();
                     }
