@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/01/23 12:53:06 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/01/29 16:17:54 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.page;
 
 import org.opencms.main.OpenCms;
@@ -74,18 +75,33 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsXmlPage {
+
+    /** Name of the language attribute of the elements node */
+    private static final String C_ATTRIBUTE_LANGUAGE = "language";
+
+    /** Name of the name attribute of the elements node */
+    private static final String C_ATTRIBUTE_NAME = "name";
+    
+    /** Name of the root document node */
+    private static final String C_DOCUMENT_NODE = "page";
+
+    /** Link to the external document type of this xml page */
+    private static final String C_DOCUMENT_TYPE = "/system/shared/page.dtd";
+
+    /** Name of the element node */
+    private static final String C_NODE_ELEMENT = "element";
+    
+    /** Name of the elements node */
+    public static final String C_NODE_ELEMENTS = "elements";
     
     /** Property to check if relative links are allowed */
     private static final String C_PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
     
-    /** Name of the root document node */
-    private static final String C_DOCUMENT_NODE = "page";
-    
-    /** Link to the external document type of this xml page */
-    private static final String C_DOCUMENT_TYPE = "/system/shared/page.dtd";
+    /** Indicates if relative Links are allowed */
+    private boolean m_allowRelativeLinks = false;
     
     /** Reference for named elements */
     private Map m_bookmarks = null;
@@ -95,9 +111,6 @@ public class CmsXmlPage {
     
     /** The file that contains the page data (note: is not set when creating an empty or document based CmsXmlPage) */
     private CmsFile m_file = null;
-    
-    /** Indicates if relative Links are allowed */
-    private boolean m_allowRelativeLinks = false;
     
     /**
      * Creates a new empty CmsXmlPage.<p>
@@ -120,22 +133,87 @@ public class CmsXmlPage {
     }
     
     /**
+     * Reads the xml contents of a file into the page.<p>
+     * 
+     * @param cms the current cms object
+     * @param file the file with xml data
+     * @return the concrete PageObject instanciated with the xml data
+     * @throws CmsPageException if something goes wrong
+     */
+    public static CmsXmlPage read(CmsObject cms, CmsFile file) throws CmsPageException {
+
+        CmsXmlPage newPage = null;
+        
+        byte[] content = file.getContents();
+
+        String allowRelative;
+        try {
+            allowRelative = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_ALLOW_RELATIVE, false, "false");
+        } catch (CmsException e) {
+            allowRelative = "false";
+        }
+        
+        if (content.length > 0) {
+            // content is initialized
+            String encoding;
+            try { 
+                encoding = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false, OpenCms.getDefaultEncoding());
+            } catch (CmsException e) {
+                encoding = OpenCms.getDefaultEncoding();
+            }
+            
+            String xmlData;
+            try {
+                xmlData = new String(content, encoding);
+            } catch (UnsupportedEncodingException e) {
+                xmlData = new String(content);
+            }            
+            newPage = read(cms, xmlData);
+            newPage.m_file = file;
+            newPage.m_allowRelativeLinks = "true".equals(allowRelative);
+            
+        } else {
+            // file is empty
+            newPage = new CmsXmlPage();
+            newPage.m_file = file;
+            newPage.m_allowRelativeLinks = "true".equals(allowRelative);
+        }
+        
+        return newPage;
+    }    
+
+    /**
+     * Reads the xml contents from a string into the page.<p>
+     * 
+     * @param cms the current cms object
+     * @param xmlData the xml data
+     * @return the page initialized with the given xml data
+     * @throws CmsPageException if something goes wrong
+     */
+    public static CmsXmlPage read(CmsObject cms, String xmlData) throws CmsPageException {        
+        try {
+            SAXReader reader = new SAXReader();
+            reader.setEntityResolver(new CmsEntityResolver(cms));
+            Document document = reader.read(new StringReader(xmlData));            
+            return new CmsXmlPage(document);
+        } catch (DocumentException e) {
+            throw new CmsPageException("Reading xml page from a String failed: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
      * Adds a new empty element with the given name and language.<p>
      *  
      * @param name name of the element, must be unique
      * @param language language of the element
      */
     public void addElement(String name, String language) {
-
-        Element elements = m_document.getRootElement().element("elements");
-        
-        Element element = elements.addElement("element")
-              .addAttribute("name", name)
-              .addAttribute("language", language);
-       
+        Element elements = m_document.getRootElement().element(C_NODE_ELEMENTS);        
+        Element element = elements.addElement(C_NODE_ELEMENT)
+              .addAttribute(C_ATTRIBUTE_NAME, name)
+              .addAttribute(C_ATTRIBUTE_LANGUAGE, language);       
         element.addElement("links");
         element.addElement("content");
-
         setBookmark (name, language, element);
     }
 
@@ -178,9 +256,7 @@ public class CmsXmlPage {
      * 
      * @throws CmsPageException if something goes wrong
      */
-    public String getContent(CmsObject cms, String name, String language)
-        throws CmsPageException {
-    
+    public String getContent(CmsObject cms, String name, String language) throws CmsPageException {    
         return getContent(cms, name, language, false);
     }
 
@@ -195,8 +271,7 @@ public class CmsXmlPage {
      * 
      * @throws CmsPageException if something goes wrong
      */
-    public String getContent(CmsObject cms, String name, String language, boolean forEditor) 
-        throws CmsPageException {
+    public String getContent(CmsObject cms, String name, String language, boolean forEditor) throws CmsPageException {
 
         Element element = getBookmark(name, language);        
         String content = "";
@@ -319,9 +394,34 @@ public class CmsXmlPage {
      * @param language the language of the element
      * @return true if this element exists
      */
-    public boolean hasElement(String name, String language) {
-    
+    public boolean hasElement(String name, String language) {    
         return getBookmark(name, language) != null;
+    }
+    
+    /**
+     * Initializes the bookmarks according to the named elements in the document.<p>
+     */
+    protected void initBookmarks() {
+
+        m_bookmarks = new HashMap();
+        
+        for (Iterator i = m_document.getRootElement().element(C_NODE_ELEMENTS).elementIterator(C_NODE_ELEMENT); i.hasNext();) {
+   
+            Element elem = (Element)i.next();
+            String elementName = elem.attribute(C_ATTRIBUTE_NAME).getValue();
+            String elementLang = elem.attribute(C_ATTRIBUTE_LANGUAGE).getValue();
+    
+            setBookmark(elementName, elementLang, elem);              
+        }
+    }
+    
+    /**
+     * Initializes the internal document object.<p>
+     */
+    protected void initDocument() {        
+        m_document = DocumentHelper.createDocument(DocumentHelper.createElement(C_DOCUMENT_NODE));
+        m_document.addDocType(C_DOCUMENT_NODE, "", C_DOCUMENT_TYPE);
+        m_document.getRootElement().addElement(C_NODE_ELEMENTS);
     }
 
     /**
@@ -336,122 +436,11 @@ public class CmsXmlPage {
         Element element = getBookmark(name, language);
 
         if (element != null) {
-
-            Attribute enabled = element.attribute("enabled");
-            
+            Attribute enabled = element.attribute("enabled");            
             return (enabled == null || Boolean.valueOf(enabled.getValue()).booleanValue());
         }
         
         return false;
-    }
-    
-    /**
-     * Initializes the bookmarks according to the named elements in the document.<p>
-     */
-    protected void initBookmarks() {
-
-        m_bookmarks = new HashMap();
-        
-        for (Iterator i = m_document.getRootElement().element("elements").elementIterator("element"); i.hasNext();) {
-   
-            Element elem = (Element)i.next();
-            String elementName = elem.attribute("name").getValue();
-            String elementLang = elem.attribute("language").getValue();
-    
-            setBookmark(elementName, elementLang, elem);              
-        }
-    }
-    
-    /**
-     * Initializes the internal document object.<p>
-     */
-    protected void initDocument() {
-        
-        m_document = DocumentHelper.createDocument(DocumentHelper.createElement(C_DOCUMENT_NODE));
-        m_document.addDocType(C_DOCUMENT_NODE, "", C_DOCUMENT_TYPE);
-        m_document.getRootElement().addElement("elements");
-    }
-    
-    /**
-     * Reads the xml contents of a file into the page.<p>
-     * 
-     * @param cms the current cms object
-     * @param file the file with xml data
-     * @return the concrete PageObject instanciated with the xml data
-     * @throws CmsPageException if something goes wrong
-     */
-    public static CmsXmlPage read(CmsObject cms, CmsFile file) 
-        throws CmsPageException {
-
-        CmsXmlPage newPage = null;
-        
-        byte[] content = file.getContents();
-
-        String allowRelative;
-        try {
-            allowRelative = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_ALLOW_RELATIVE, false, "false");
-        } catch (CmsException e) {
-            allowRelative = "false";
-        }
-        
-        if (content.length > 0) {
-            // content is initialized
-            String encoding;
-            try { 
-                encoding = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false, OpenCms.getDefaultEncoding());
-            } catch (CmsException e) {
-                encoding = OpenCms.getDefaultEncoding();
-            }
-            
-            String xmlData;
-            try {
-                xmlData = new String(content, encoding);
-            } catch (UnsupportedEncodingException e) {
-                xmlData = new String(content);
-            }            
-            newPage = read(cms, xmlData);
-            newPage.m_file = file;
-            newPage.m_allowRelativeLinks = "true".equals(allowRelative);
-            
-        } else {
-            // file is empty
-            newPage = new CmsXmlPage();
-            newPage.m_file = file;
-            newPage.m_allowRelativeLinks = "true".equals(allowRelative);
-        }
-        
-        return newPage;
-    }    
-
-    /**
-     * Reads the xml contents from a string into the page.<p>
-     * 
-     * @param cms the current cms object
-     * @param xmlData the xml data
-     * @return the page initialized with the given xml data
-     * @throws CmsPageException if something goes wrong
-     */
-    public static CmsXmlPage read(CmsObject cms, String xmlData) 
-        throws CmsPageException {        
-        try {
-            SAXReader reader = new SAXReader();
-            reader.setEntityResolver(new CmsEntityResolver(cms));
-
-            // TODO: check why this does not work ...
-            // try {
-            //    reader.setFeature("http://xml.org/sax/features/resolve-dtd-uris", false);
-            //} catch (SAXException exc) {
-            //    if (OpenCms.getLog(this).isDebugEnabled()) {
-            //        OpenCms.getLog(this).debug("Cannot disable sax feature resolve-dtd-uris", exc);
-            //    }
-            //}
-            
-            Document document = reader.read(new StringReader(xmlData));            
-            // Document document = DocumentHelper.parseText(xmlData);
-            return new CmsXmlPage(document);
-        } catch (DocumentException e) {
-            throw new CmsPageException("Reading xml page from a String failed: " + e.getMessage(), e);
-        }
     }
     
     /**
@@ -471,11 +460,8 @@ public class CmsXmlPage {
      * @param name name of the element
      * @param language language of the element
      */
-    public void removeElement(String name, String language) {
-
-        
-        Element elements = m_document.getRootElement().element("elements");
-        
+    public void removeElement(String name, String language) {        
+        Element elements = m_document.getRootElement().element(C_NODE_ELEMENTS);        
         Element element = removeBookmark(name, language);
         elements.remove(element);
     }
@@ -487,8 +473,7 @@ public class CmsXmlPage {
      * @param language the language of the element
      * @param element the element to bookmark
      */
-    protected void setBookmark (String name, String language, Element element) {
-        
+    protected void setBookmark (String name, String language, Element element) {        
         if (language != null) {
             m_bookmarks.put(language + "_" + name, element);
         } else {
@@ -510,8 +495,7 @@ public class CmsXmlPage {
      * 
      * @throws CmsPageException if something goes wrong
      */
-    public void setContent(CmsObject cms, String name, String language, String content) 
-        throws CmsPageException {
+    public void setContent(CmsObject cms, String name, String language, String content) throws CmsPageException {
         
         Element element = getBookmark(name, language);
         Element data = element.element("content");
@@ -589,9 +573,7 @@ public class CmsXmlPage {
      * @return the assigned file with the xml content
      * @throws CmsPageException if something goes wrong
      */
-    public CmsFile write() 
-        throws CmsPageException {
-        
+    public CmsFile write() throws CmsPageException {        
         return write(m_file, OpenCms.getDefaultEncoding());
     }
     
@@ -603,23 +585,8 @@ public class CmsXmlPage {
      * @return the file with the xml content
      * @throws CmsPageException if something goes wrong
      */
-    public CmsFile write(CmsFile file) 
-        throws CmsPageException {
-        
+    public CmsFile write(CmsFile file) throws CmsPageException {        
         return write(file, OpenCms.getDefaultEncoding());
-    }
-    
-    /**
-     * Writes the xml contents in the assigned CmsFile using the given encoding.<p>
-     * 
-     * @param encoding the encoding to use
-     * @return the assigned file with the xml content
-     * @throws CmsPageException if something goes wrong
-     */
-    public CmsFile write(String encoding) 
-        throws CmsPageException {
-        
-        return write(m_file, encoding);
     }
     
     /**
@@ -630,9 +597,7 @@ public class CmsXmlPage {
      * @return the file with the xml content
      * @throws CmsPageException if something goes wrong
      */
-    public CmsFile write(CmsFile file, String encoding) 
-        throws CmsPageException {
-        
+    public CmsFile write(CmsFile file, String encoding) throws CmsPageException {        
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         file.setContents(((ByteArrayOutputStream)write(out, encoding)).toByteArray());
         
@@ -647,10 +612,7 @@ public class CmsXmlPage {
      * @return the output stream with the xml content
      * @throws CmsPageException if something goes wrong
      */
-
-    public OutputStream write(OutputStream out, String encoding)
-        throws CmsPageException {
-        
+    public OutputStream write(OutputStream out, String encoding) throws CmsPageException {        
         try {
 
             OutputFormat format = OutputFormat.createPrettyPrint();
@@ -666,5 +628,16 @@ public class CmsXmlPage {
         }
         
         return out;
+    }
+    
+    /**
+     * Writes the xml contents in the assigned CmsFile using the given encoding.<p>
+     * 
+     * @param encoding the encoding to use
+     * @return the assigned file with the xml content
+     * @throws CmsPageException if something goes wrong
+     */
+    public CmsFile write(String encoding) throws CmsPageException {        
+        return write(m_file, encoding);
     }
 }
