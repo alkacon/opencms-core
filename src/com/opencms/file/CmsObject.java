@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/07/10 08:12:27 $
-* Version: $Revision: 1.237 $
+* Date   : $Date: 2002/07/30 07:37:50 $
+* Version: $Revision: 1.238 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.237 $ $Date: 2002/07/10 08:12:27 $
+ * @version $Revision: 1.238 $ $Date: 2002/07/30 07:37:50 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -4150,5 +4150,39 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      */
     public int deleteBackups(int weeks) throws CmsException{
        return m_rb.deleteBackups(this, m_context.currentUser(), m_context.currentProject(), weeks);
+    }
+    
+    /**
+     * Checks, if the user may read this resource and if it is visible to him.
+     * NOTE: If the ressource is in the project you never have to fallback.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resource The resource to check.
+     *
+     * @return weather the user has access, or not.
+     */
+    public boolean accessReadVisible(CmsResource resource) throws CmsException{
+        return m_rb.accessReadVisible(m_context.currentUser(), m_context.currentProject(), resource);
+    }
+    
+    /**
+     * Returns a Vector with all resources of the given type that have set the given property to the given value.
+     *
+     * <B>Security:</B>
+     * All users that have read and view access are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param propertyDefinition, the name of the propertydefinition to check.
+     * @param propertyValue, the value of the property for the resource.
+     * @param resourceType The resource type of the resource
+     *
+     * @return Vector with all resources.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public Vector getVisibleResourcesWithProperty(String propertyDefinition, String propertyValue, int resourceType) throws CmsException{
+        return m_rb.getVisibleResourcesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue, resourceType);
     }
 }
