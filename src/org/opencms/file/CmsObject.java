@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/02/26 11:35:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/27 14:28:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsObject {
 
@@ -770,7 +770,7 @@ public class CmsObject {
     }
 
     /**
-     * Creates a new link to a target resource.<p>
+     * Creates a new sibling of the target resource.<p>
      * 
      * @param linkName name of the new link
      * @param targetName name of the target
@@ -778,8 +778,8 @@ public class CmsObject {
      * @return the new link resource
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createVfsLink(String linkName, String targetName, Map linkProperties) throws CmsException {
-        return m_driverManager.createVfsLink(m_context, addSiteRoot(linkName), addSiteRoot(targetName), linkProperties, true);
+    public CmsResource createSibling(String linkName, String targetName, Map linkProperties) throws CmsException {
+        return m_driverManager.createSibling(m_context, addSiteRoot(linkName), addSiteRoot(targetName), linkProperties, true);
     }
     
     /**

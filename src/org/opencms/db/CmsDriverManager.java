@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/26 11:35:34 $
- * Version: $Revision: 1.332 $
+ * Date   : $Date: 2004/02/27 14:28:08 $
+ * Version: $Revision: 1.333 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.332 $ $Date: 2004/02/26 11:35:34 $
+ * @version $Revision: 1.333 $ $Date: 2004/02/27 14:28:08 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1307,7 +1307,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         if (copyAsLink) {
             // create a copy of the source file in the destination parent folder      
-            newResource = createVfsLink(context, destination, source, properties, false);
+            newResource = createSibling(context, destination, source, properties, false);
         } else {
             // create a new resource in the destination folder
 
@@ -2057,7 +2057,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Creates a new link to a target resource.<p>
+     * Creates a new sibling of the target resource.<p>
      * 
      * @param context the context
      * @param linkName the name of the link
@@ -2067,7 +2067,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @return the new resource
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, Map linkProperties, boolean lockResource) throws CmsException {
+    public CmsResource createSibling(CmsRequestContext context, String linkName, String targetName, Map linkProperties, boolean lockResource) throws CmsException {
         CmsResource targetResource = null;
         CmsResource linkResource = null;
         String parentFolderName = null;
@@ -2091,7 +2091,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // construct a dummy that is written to the db
-        linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, CmsResourceTypeLink.C_RESOURCE_TYPE_ID, targetResource.getFlags(), context.currentProject().getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), 0, targetResource.getLinkCount() + 1);
+        linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, targetResource.getType(), targetResource.getFlags(), context.currentProject().getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), 0, targetResource.getLinkCount() + 1);
 
         // check if the resource has to be labeled now
         if (labelResource(context, targetResource, linkName, 1)) {
@@ -7400,7 +7400,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         
         if (noSystemUser && noWebUser) {
             // the specified username + old password don't match
-            throw new CmsSecurityException("The specified username and old password could not be verified", CmsSecurityException.C_SECURITY_INVALID_PASSWORD);
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED);
         } else if (unknownException) {
             // we caught exceptions different from CmsException.C_NO_USER -> a general error?!
             throw new CmsException("[" + getClass().getName() + "] Error resetting password for user '" + username + "'", CmsException.C_UNKNOWN_EXCEPTION);
