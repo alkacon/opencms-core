@@ -66,7 +66,7 @@ function show_help()
 
 </head>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="parent.frames[0].location.href='../../../action/administration_head.html';">
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="parent.frames[0].location.href='../../action/administration_head.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -287,7 +287,7 @@ function show_help()
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/user/'"></td> 
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/'"></td> 
 				</tr>
 				</table>
 			</td>
