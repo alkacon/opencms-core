@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2003/08/04 12:22:38 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.84 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.85 $ $Date: 2003/08/04 12:22:38 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsConstants,I_CmsWpConstants {
 
@@ -698,8 +698,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsConstants,
     }
 
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
-        return new CmsElementDump(getClass().getName(), templateFile, null, getCacheDirectives(cms, templateFile, null, parameters, null),
-            CmsXmlTemplateLoader.getElementCache(cms).getVariantCachesize());
+        return new CmsElementDump(getClass().getName(), templateFile, getCacheDirectives(cms, templateFile, null, parameters, null), CmsXmlTemplateLoader.getElementCache(cms).getVariantCachesize());
     }
 
     /**

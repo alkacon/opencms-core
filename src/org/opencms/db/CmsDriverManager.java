@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/04 11:04:50 $
- * Version: $Revision: 1.133 $
+ * Date   : $Date: 2003/08/04 12:22:38 $
+ * Version: $Revision: 1.134 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.133 $ $Date: 2003/08/04 11:04:50 $
+ * @version $Revision: 1.134 $ $Date: 2003/08/04 12:22:38 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -986,9 +986,9 @@ public class CmsDriverManager extends Object {
      * </ul>
      * 
      * @param context the current request context
-     * @param source			the resource which access control entries are copied
-     * @param dest				the resource to which the access control entries are applied
-     * @throws CmsException		if something goes wrong
+     * @param source            the resource which access control entries are copied
+     * @param dest              the resource to which the access control entries are applied
+     * @throws CmsException     if something goes wrong
      */
     public void copyAccessControlEntries(CmsRequestContext context, CmsResource source, CmsResource dest) throws CmsException {
 
@@ -1758,9 +1758,9 @@ public class CmsDriverManager extends Object {
      * <li>the current user has write permission on the resource
      * </ul>
      * 
-     * @param context the current request context	
-     * @param resource			the resource
-     * @throws CmsException		if something goes wrong
+     * @param context the current request context   
+     * @param resource          the resource
+     * @throws CmsException     if something goes wrong
      */
     private void deleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -2634,11 +2634,11 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * The access control entries of a resource are readable by everyone.
      * 
-     * @param context the current request context	
-     * @param resource			the resource
-     * @param getInherited		true in order to include access control entries inherited by parent folders
-     * @return					a vector of access control entries defining all permissions for the given resource
-     * @throws CmsException		if something goes wrong
+     * @param context the current request context   
+     * @param resource          the resource
+     * @param getInherited      true in order to include access control entries inherited by parent folders
+     * @return                  a vector of access control entries defining all permissions for the given resource
+     * @throws CmsException     if something goes wrong
      */
     public Vector getAccessControlEntries(CmsRequestContext context, CmsResource resource, boolean getInherited) throws CmsException {
 
@@ -2667,10 +2667,10 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * The access control list of a resource is readable by everyone.
      * 
-     * @param context the current request context	
-     * @param resource			the resource 
-     * @return					the access control list of the resource
-     * @throws CmsException		if something goes wrong
+     * @param context the current request context   
+     * @param resource          the resource 
+     * @return                  the access control list of the resource
+     * @throws CmsException     if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -2682,10 +2682,10 @@ public class CmsDriverManager extends Object {
      * If inheritedOnly is set, non-inherited entries of the resource are skipped.
      * 
      * @param context the current request context
-     * @param resource			the resource
-     * @param inheritedOnly		skip non-inherited entries if set
-     * @return					the access control list of the resource
-     * @throws CmsException		if something goes wrong
+     * @param resource          the resource
+     * @param inheritedOnly     skip non-inherited entries if set
+     * @return                  the access control list of the resource
+     * @throws CmsException     if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(CmsRequestContext context, CmsResource resource, boolean inheritedOnly) throws CmsException {
 
@@ -2712,7 +2712,7 @@ public class CmsDriverManager extends Object {
         while (acEntries.hasNext()) {
             CmsAccessControlEntry acEntry = (CmsAccessControlEntry) acEntries.next();
 
-            // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry	
+            // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry 
             if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0)
                 acList.setAllowedPermissions(acEntry);
             else
@@ -3399,11 +3399,11 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Permissions are readable by everyone.
      * 
-     * @param context the current request context	
-     * @param resource			the resource
-     * @param user				the user
-     * @return					bitset with allowed permissions
-     * @throws CmsException 	if something goes wrong
+     * @param context the current request context   
+     * @param resource          the resource
+     * @param user              the user
+     * @return                  bitset with allowed permissions
+     * @throws CmsException     if something goes wrong
      */
     public CmsPermissionSet getPermissions(CmsRequestContext context, CmsResource resource, CmsUser user) throws CmsException {
 
@@ -3416,42 +3416,6 @@ public class CmsDriverManager extends Object {
      */
     public final I_CmsProjectDriver getProjectDriver() {
         return m_projectDriver;
-    }
-
-    /**
-     * Checks which Group can read the resource and all the parent folders.
-     *
-     * @param projectid the project to check the permission.
-     * @param res The resource name to be checked.
-     * @return The Group Id of the Group which can read the resource.
-     *          null for all Groups and
-     *          Admingroup for no Group.
-     */
-    public String getReadingpermittedGroup(CmsRequestContext context, int projectId, String resource) throws CmsException {
-        // TODO: check why this is neccessary
-
-        // Not, since resource is not neccessarily in the current project
-        // CmsResource res = readFileHeaderInProject(context.currentUser(), context.currentProject(), projectId, resource);
-        CmsResource res = readFileHeader(context, resource);
-        CmsAccessControlList acList = getAccessControlList(context, res);
-
-        String rpgroupName = null;
-
-        // if possible, prefer public read
-        CmsGroup g = readGroup(context, I_CmsConstants.C_GROUP_GUEST);
-        if ((acList.getPermissions(g).getPermissions() & I_CmsConstants.C_PERMISSION_READ) > 0)
-            return g.getName();
-
-        // check if any of the groups of the current user has read permissions
-        Enumeration groups = getGroupsOfUser(context, context.currentUser().getName()).elements();
-        while (rpgroupName == null && groups.hasMoreElements()) {
-
-            g = (CmsGroup) groups.nextElement();
-            if ((acList.getPermissions(g).getPermissions() & I_CmsConstants.C_PERMISSION_READ) > 0)
-                rpgroupName = g.getName();
-        }
-
-        return (rpgroupName != null) ? rpgroupName : I_CmsConstants.C_GROUP_ADMIN;
     }
 
     /**
@@ -4514,10 +4478,10 @@ public class CmsDriverManager extends Object {
     /**
      * Lookup and read the user or group with the given UUID.
      * 
-     * @param context the current request context	
-     * @param principalId		the UUID of the principal to lookup
-     * @return					the principal (group or user) if found, otherwise null
-     * @throws CmsException		if something goeas wrong
+     * @param context the current request context   
+     * @param principalId       the UUID of the principal to lookup
+     * @return                  the principal (group or user) if found, otherwise null
+     * @throws CmsException     if something goeas wrong
      */
     public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) throws CmsException {
 
@@ -4545,10 +4509,10 @@ public class CmsDriverManager extends Object {
     /**
      * Lookup and read the user or group with the given name.
      * 
-     * @param context the current request context	
-     * @param principalName		the name of the principal to lookup
-     * @return					the principal (group or user) if found, otherwise null
-     * @throws CmsException		if something goeas wrong	
+     * @param context the current request context   
+     * @param principalName     the name of the principal to lookup
+     * @return                  the principal (group or user) if found, otherwise null
+     * @throws CmsException     if something goeas wrong    
      */
     public I_CmsPrincipal lookupPrincipal(String principalName) throws CmsException {
 
@@ -4670,10 +4634,10 @@ public class CmsDriverManager extends Object {
     /**
      * Method to create a new instance of a pool.<p>
      * 
-     * @param configurations	the configurations from the propertyfile
-     * @param poolName			the configuration name of the pool
-     * @return					the pool url
-     * @throws CmsException		if something goes wrong
+     * @param configurations    the configurations from the propertyfile
+     * @param poolName          the configuration name of the pool
+     * @return                  the pool url
+     * @throws CmsException     if something goes wrong
      */
     public String newPoolInstance(Configurations configurations, String poolName) throws CmsException {
 
@@ -4839,11 +4803,11 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * The access control entries of a resource are readable by everyone.
      * 
-     * @param context the current request context	
-     * @param resource			the resource
-     * @param principal			the id of a group or a user any other entity
-     * @return					an access control entry that defines the permissions of the entity for the given resource
-     * @throws CmsException		if something goes wrong
+     * @param context the current request context   
+     * @param resource          the resource
+     * @param principal         the id of a group or a user any other entity
+     * @return                  an access control entry that defines the permissions of the entity for the given resource
+     * @throws CmsException     if something goes wrong
      */
     public CmsAccessControlEntry readAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsUUID principal) throws CmsException {
 
@@ -6199,13 +6163,18 @@ public class CmsDriverManager extends Object {
                 value = new HashMap();
                 HashMap parentValue;
                 do {
-                    parentValue = (HashMap) readProperties(context, resource, siteRoot, false);
-                    parentValue.putAll(value);
-                    value.clear();
-                    value.putAll(parentValue);
-                    resource = CmsResource.getParent(resource);
-                    // cont = (! ((resource.length() < siteRoot.length()) || (resource == null)));
-                    cont = (! "/".equals(resource));
+                    try {
+                        parentValue = (HashMap) readProperties(context, resource, siteRoot, false);
+                        parentValue.putAll(value);
+                        value.clear();
+                        value.putAll(parentValue);
+                        resource = CmsResource.getParent(resource);
+                        // cont = (! ((resource.length() < siteRoot.length()) || (resource == null)));
+                        cont = (! "/".equals(resource));
+                    } catch (CmsSecurityException se) {
+                        // a security exception (probably no read permission) we return the current result                      
+                        cont = false;
+                    }
                 } while (cont);
             } else {
                 value = m_vfsDriver.readProperties(context.currentProject().getId(), res, res.getType());
@@ -6271,16 +6240,21 @@ public class CmsDriverManager extends Object {
                     }
                 }
             } else if (search) {
-                // result not cached, look it up in the DB with search enabled
+                // result not cached, look it up recursivly with search enabled
                 String cacheKey3 = getCacheKey(property + false, null, new CmsProject(context.currentProject().getId(), -1), res.getFullResourceName());
                 value = (String) m_propertyCache.get(cacheKey3);
                 if ((value == null) || (value == C_CACHE_NULL_PROPERTY_VALUE)) {
                     boolean cont;
                     siteRoot += "/";
                     do {
-                        value = readProperty(context, resource, siteRoot, property, false);
-                        // cont = !((value != null) || (resource.length() < siteRoot.length()) || "/".equals(resource));
-                        cont = ((value == null) && (! "/".equals(resource)));
+                        try {
+                            value = readProperty(context, resource, siteRoot, property, false);
+                            // cont = !((value != null) || (resource.length() < siteRoot.length()) || "/".equals(resource));
+                            cont = ((value == null) && (! "/".equals(resource)));
+                        } catch (CmsSecurityException se) {
+                            // a security exception (probably no read permission) we return the current result                      
+                            cont = false;
+                        }
                         if (cont) resource = CmsResource.getParent(resource);
                     } while (cont);
                 }
@@ -6288,8 +6262,9 @@ public class CmsDriverManager extends Object {
                 // result not cached, look it up in the DB without search
                 value = m_vfsDriver.readProperty(property, context.currentProject().getId(), res, res.getType());
             }
-            if (value == null)
+            if (value == null) {                
                 value = C_CACHE_NULL_PROPERTY_VALUE;
+            }
             // store the result in the cache
             m_propertyCache.put(cacheKey, value);
         }
@@ -6723,10 +6698,10 @@ public class CmsDriverManager extends Object {
      * <li>the current user has control permission on the resource
      * </ul>
      * 
-     * @param context the current request context		 
-     * @param resource			the resource
-     * @param principal			the id of a group or user to identify the access control entry
-     * @throws CmsException		if something goes wrong
+     * @param context the current request context        
+     * @param resource          the resource
+     * @param principal         the id of a group or user to identify the access control entry
+     * @throws CmsException     if something goes wrong
      */
     public void removeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsUUID principal) throws CmsException {
 
@@ -7241,9 +7216,9 @@ public class CmsDriverManager extends Object {
 //     * <li>the current user has write permission on the resource
 //     * </ul>
 //     * 
-//     * @param context the current request context	
-//     * @param resource			the resource
-//     * @throws CmsException		if something goes wrong
+//     * @param context the current request context 
+//     * @param resource            the resource
+//     * @throws CmsException       if something goes wrong
 //     */
 //    private void undeleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
 //
@@ -7607,9 +7582,9 @@ public class CmsDriverManager extends Object {
      * </ul>
      * 
      * @param context the current request context
-     * @param resource			the resource
-     * @param acEntries			vector of access control entries applied to the resource
-     * @throws CmsException		if something goes wrong
+     * @param resource          the resource
+     * @param acEntries         vector of access control entries applied to the resource
+     * @throws CmsException     if something goes wrong
      */
     public void importAccessControlEntries(CmsRequestContext context, CmsResource resource, Vector acEntries) throws CmsException {
 
@@ -7636,9 +7611,9 @@ public class CmsDriverManager extends Object {
      * </ul>
      * 
      * @param context the current request context
-     * @param resource			the resource	 
-     * @param acEntry 			the entry to write
-     * @throws CmsException		if something goes wrong
+     * @param resource          the resource     
+     * @param acEntry           the entry to write
+     * @throws CmsException     if something goes wrong
      */
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
 

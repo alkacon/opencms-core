@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/08/04 12:22:38 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import org.opencms.loader.CmsXmlTemplateLoader;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
@@ -51,7 +50,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.41 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.42 $ $Date: 2003/08/04 12:22:38 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -196,19 +195,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @return New element for the element cache
      */
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters){
-        String readAccessGroup = I_CmsConstants.C_GROUP_ADMIN;
-        // TODO: fix this later - check how to do this without getReadingpermittedGroup
-        try{
-            readAccessGroup = cms.getReadingpermittedGroup(
-                                cms.getRequestContext().currentProject().getId(), templateFile);
-        }catch(CmsException e){
-             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, getClassName() + "Could not generate my template cache element.");
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, getClassName() + e);
-            }
-        }
-        return new CmsElementDump(getClass().getName(), templateFile, readAccessGroup,
-                    getCacheDirectives(cms, templateFile, null, parameters, null),
+        return new CmsElementDump(getClass().getName(), templateFile, getCacheDirectives(cms, templateFile, null, parameters, null),
                     CmsXmlTemplateLoader.getElementCache(cms).getVariantCachesize());
     }
 }

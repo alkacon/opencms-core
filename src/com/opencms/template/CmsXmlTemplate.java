@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/08/03 15:12:00 $
-* Version: $Revision: 1.120 $
+* Date   : $Date: 2003/08/04 12:22:38 $
+* Version: $Revision: 1.121 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.120 $ $Date: 2003/08/03 15:12:00 $
+ * @version $Revision: 1.121 $ $Date: 2003/08/04 12:22:38 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1546,7 +1546,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
 
         CmsElementDefinitionCollection subtemplateDefinitions = new CmsElementDefinitionCollection();
-        String readAccessGroup = I_CmsConstants.C_GROUP_ADMIN;
         int variantCachesize = 100;
         // if the templateFile is null someone didnt set the Templatefile in the elementdefinition
         // in this case we have to use the aktual body template when resolving the variant.
@@ -1557,8 +1556,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache(cms);
             variantCachesize = elementCache.getVariantCachesize();
 
-//			TODO: fix this later - check how to do this without getReadingpermittedGroup
-            readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(),templateFile);
             CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, null, parameters, null);
 
             Vector subtemplates = xmlTemplateDocument.getAllSubElementDefinitions();
@@ -1599,15 +1596,12 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, getClassName() + "Could not generate my template cache element.");
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, getClassName() + e);
                 }
-            }else{
-                // no templateFile given, so let everyone read this
-                readAccessGroup = null;
             }
         }
         CmsElementXml result = new CmsElementXml(getClass().getName(),
-                                                 templateFile, readAccessGroup,
-                                                 getCacheDirectives(cms, templateFile, null, parameters, null),
-                                                 subtemplateDefinitions, variantCachesize);
+                                                 templateFile, getCacheDirectives(cms, templateFile, null, parameters, null),
+                                                 subtemplateDefinitions,
+                                                 variantCachesize);
         return result;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/03 15:12:00 $
-* Version: $Revision: 1.362 $
+* Date   : $Date: 2003/08/04 12:22:38 $
+* Version: $Revision: 1.363 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.362 $
+ * @version $Revision: 1.363 $
  */
 public class CmsObject {
 
@@ -2092,18 +2092,6 @@ public class CmsObject {
         return acList.getPermissions(user, getGroupsOfUser(userName));
     }
 
-    /**
-     * Checks which Group can read the resource and all the parent folders.
-     *
-     * @param projectid the project to check the permission.
-     * @param res The resource name to be checked.
-     * @return The Group Id of the Group which can read the resource.
-     *          null for all Groups and
-     *          Admingroup for no Group.
-     */
-    public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
-        return m_driverManager.getReadingpermittedGroup(m_context, projectId, addSiteRoot(resource));
-    }
     /**
      * Gets the Registry.
      *

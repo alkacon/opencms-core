@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/08/04 12:22:38 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,8 +52,8 @@ public class CmsElementDump extends A_CmsElement {
     /**
      * Constructor for an element with the given class and template name.
      */
-    public CmsElementDump(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, int variantCachesize) {
-        init(className, templateName, readAccessGroup, cd, variantCachesize);
+    public CmsElementDump(String className, String templateName, CmsCacheDirectives cd, int variantCachesize) {
+        init(className, templateName, cd, variantCachesize);
     }
 
     /**
@@ -65,8 +65,8 @@ public class CmsElementDump extends A_CmsElement {
      * @param defs CmsElementDefinitionCollection for this element.
      * @param variantCachesize The size of the variant cache.
      */
-    public CmsElementDump(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, CmsElementDefinitionCollection defs, int variantCachesize) {
-        init(className, templateName, readAccessGroup, cd, defs, variantCachesize);
+    public CmsElementDump(String className, String templateName, CmsCacheDirectives cd, CmsElementDefinitionCollection defs, int variantCachesize) {
+        init(className, templateName, cd, defs, variantCachesize);
     }
 
     /**
