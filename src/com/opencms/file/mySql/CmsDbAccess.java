@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/10/30 10:18:55 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2002/11/02 10:31:51 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.75 $ $Date: 2002/10/30 10:18:55 $ *
+ * @version $Revision: 1.76 $ $Date: 2002/11/02 10:31:51 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -869,7 +869,6 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
     Connection con = null;
     Statement statement = null;
 
-
     // create the sql string depending on parameters
     // handle the project for the SQL String
     String sqlstr = "SELECT * FROM " + m_cq.get("C_TABLENAME_TASK") + " WHERE ";
@@ -974,7 +973,8 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
     return tasks;
 }
     /**
-     * Writes a property for a file or folder.
+     * Writes a property for a file or folder with
+     * added escaping of property values as MySQL doesn't support Unicode strings
      *
      * @param meta The property-name of which the property has to be read.
      * @param value The value for the property to be set.
@@ -983,85 +983,114 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
      *
      * @exception CmsException Throws CmsException if operation was not succesful
      */
-    //Gridnine AB Aug 12, 2002
-    // added escaping of property value as MySQL doesn't support Unicode strings
     public void writeProperty(String meta, int projectId, String value, CmsResource resource,
-                                      int resourceType)
-        throws CmsException {
-        CmsPropertydefinition propdef = readPropertydefinition(meta, resourceType);
-        if( propdef == null) {
-            // there is no propertydefinition for with the overgiven name for the resource
-            throw new CmsException("[" + this.getClass().getName() + "] " + meta,
-                CmsException.C_NOT_FOUND);
-        } else {
-            // write the property into the db
-            PreparedStatement statement = null;
-            Connection con = null;
-            //int onlineProject = getOnlineProject(projectId).getId();
-            int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-            String usedPool;
-            String usedStatement;
-            if (projectId == onlineProject){
-                usedPool = m_poolNameOnline;
-                usedStatement = "_ONLINE";
-            } else {
-                usedPool = m_poolName;
-                usedStatement = "";
-            }
-            boolean newprop=true;
-            try {
-                con = DriverManager.getConnection(usedPool);
-                if( readProperty(propdef.getName(), projectId, resource, resourceType) != null) {
-                    // property exists already - use update.
-                    // create statement
-                    statement = con.prepareStatement(m_cq.get("C_PROPERTIES_UPDATE"+usedStatement));
-                    if (value != null) {
-                        statement.setString(1, com.opencms.util.Encoder.encode(value, "utf-8", false));
-                    } else {
-                        statement.setString(1, value);
-                    }
-                    statement.setInt(2, resource.getResourceId());
-                    statement.setInt(3, propdef.getId());
-                    statement.executeUpdate();
-                    newprop=false;
-                } else {
-                    // property dosen't exist - use create.
-                    // create statement
-                    statement = con.prepareStatement(m_cq.get("C_PROPERTIES_CREATE"+usedStatement));
-                    statement.setInt(1, nextId(m_cq.get("C_TABLE_PROPERTIES")));
-                    statement.setInt(2, propdef.getId());
-                    statement.setInt(3, resource.getResourceId());
-                    if (value != null) {
-                        statement.setString(4, com.opencms.util.Encoder.encode(value, "utf-8", false));
-                    } else {
-                        statement.setString(4, value);
-                    }
-                    statement.executeUpdate();
-                    newprop=true;
-                }
-            } catch(SQLException exc) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                    CmsException.C_SQL_ERROR, exc);
-            }finally {
-                // close all db-resources
-                if(statement != null) {
-                     try {
-                         statement.close();
-                     } catch(SQLException exc) {
-                         // nothing to do here
-                     }
-                }
-                if(con != null) {
-                     try {
-                         con.close();
-                     } catch(SQLException exc) {
-                         // nothing to do here
-                     }
-                }
-            }
-        }
+                                      int resourceType, boolean addDefinition)
+        throws CmsException {            
+        // added escaping of property value as MySQL doesn't support Unicode strings
+        value =  Encoder.encode(value, "UTF-8", true);
+        super.writeProperty(meta, projectId, value, resource, resourceType, addDefinition);
     }
 
+    /**
+     * Added unescaping of property values as MySQL doesn't support Unicode strings
+     * 
+     * @see com.opencms.file.genericSql.CmsDbAccess#readProperty(String, int, CmsResource, int)
+     */
+    public String readProperty(String meta, int projectId,
+        CmsResource resource, int resourceType) throws CmsException {
+        String result = super.readProperty(meta, projectId, resource, resourceType);
+        return Encoder.decode(result, "UTF-8", true);
+    }
+
+    /**
+     * Added unescaping of property values as MySQL doesn't support Unicode strings
+     * 
+     * @see com.opencms.file.genericSql.CmsDbAccess#readAllProperties(int, CmsResource, int)
+     */
+    public Hashtable readAllProperties(int projectId, CmsResource resource,
+        int resourceType) throws CmsException {
+        Hashtable result = super.readAllProperties(projectId, resource, resourceType);
+        Iterator keys = result.keySet().iterator();
+        while (keys.hasNext()) {
+            Object key = keys.next();
+            String value = (String)result.get(key);         
+            result.put(key, Encoder.decode(value, "UTF-8", true));
+        }
+        return result;
+    }
+
+    /**
+     * Writes new log for a task with
+     * added escaping of comment as as MySQL doesn't support Unicode strings.
+     *
+     * @param taskid The id of the task.
+     * @param user User who added the Log.
+     * @param starttime Time when the log is created.
+     * @param comment Description for the log.
+     * @param type Type of the log. 0 = Sytem log, 1 = User Log
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void writeTaskLog(int taskId, int userid,
+                             java.sql.Timestamp starttime, String comment, int type)
+        throws CmsException {
+        // added escaping of property value as MySQL doesn't support Unicode strings
+        comment =  Encoder.encode(comment, "UTF-8", true);
+        super.writeTaskLog(taskId, userid, starttime, comment, type);
+    }
+    
+    /**
+     * Reads a log for a task with
+     * added unescaping of comment as as MySQL doesn't support Unicode strings.
+     *
+     * @param id The id for the tasklog .
+     * @return A new TaskLog object
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */
+    public CmsTaskLog readTaskLog(int id)
+        throws CmsException {
+        // added unescaping of property value as MySQL doesn't support Unicode strings
+        CmsTaskLog log = super.readTaskLog(id);
+        log.setComment(Encoder.decode(log.getComment(), "UTF-8", true));
+        return log;
+    }    
+
+    /**
+     * Reads log entries for a task with
+     * added unescaping of comment as as MySQL doesn't support Unicode strings.
+     *
+     * @param taskid The id of the task for the tasklog to read .
+     * @return A Vector of new TaskLog objects
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */
+    public Vector readTaskLogs(int taskId) throws CmsException {
+        Vector v = super.readTaskLogs(taskId);
+        for (int i=0; i<v.size(); i++) {
+            CmsTaskLog log = (CmsTaskLog)v.elementAt(i);
+            log.setComment(Encoder.decode(log.getComment(), "UTF-8", true));
+            v.set(i, log);
+        }    
+        return v;    
+    }
+    
+    /**
+     * Reads log entries for a project with
+     * added unescaping of comment as as MySQL doesn't support Unicode strings.
+     *
+     * @param project The projec for tasklog to read.
+     * @return A Vector of new TaskLog objects
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */
+    public Vector readProjectLogs(int projectid) throws CmsException {
+        Vector v = super.readProjectLogs(projectid);
+        for (int i=0; i<v.size(); i++) {
+            CmsTaskLog log = (CmsTaskLog)v.elementAt(i);
+            log.setComment(Encoder.decode(log.getComment(), "UTF-8", true));
+            v.set(i, log);
+        }
+        return v;    
+    }    
+        
     /**
      * Writes a user to the database.
      *
@@ -1124,34 +1153,4 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
             }
         }
     }
-    /**
-     * @see com.opencms.file.genericSql.CmsDbAccess#readProperty(String, int, CmsResource, int)
-     */
-    public String readProperty(String meta, int projectId,
-        CmsResource resource, int resourceType) throws CmsException {
-        String result = super.readProperty(meta, projectId, resource, resourceType);
-        if (result == null) {
-            return null;
-        }
-        return com.opencms.util.Encoder.decode(result, "utf-8", false);
-    }
-
-    /**
-     * @see com.opencms.file.genericSql.CmsDbAccess#readAllProperties(int, CmsResource, int)
-     */
-    public Hashtable readAllProperties(int projectId, CmsResource resource,
-        int resourceType) throws CmsException {
-        Hashtable result = super.readAllProperties(projectId, resource, resourceType);
-        Iterator keys = result.keySet().iterator();
-        while (keys.hasNext()) {
-            Object key = keys.next();
-            String value = (String)result.get(key);
-            if (value == null) {
-                continue;
-            }
-            result.put(key, com.opencms.util.Encoder.decode(value, "utf-8", false));
-        }
-        return result;
-    }
-
 }
