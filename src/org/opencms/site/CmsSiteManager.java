@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/09/29 08:30:56 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/10/01 11:30:13 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -93,8 +93,8 @@ public final class CmsSiteManager implements Cloneable {
                 try {
                     cms.readFileHeader(site.getSiteRoot());
                 } catch (Throwable t) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error initializing site " + site + " (ignoring this site entry)", t);
+                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_INIT).warn("Root folder for site " + site + " does not exist (ignoring this site entry)");
                     }
                 }
                 m_sites.put(site.getSiteMatcher(), site);
@@ -111,8 +111,8 @@ public final class CmsSiteManager implements Cloneable {
             try {
                 cms.readFileHeader(m_defaultSite.getSiteRoot());
             } catch (Throwable t) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error initializing default site " + m_defaultSite + " (setting default site to '/')", t);
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).warn("Root folder for default site " + m_defaultSite + " does not exist (setting default site root to '/')");
                 }
             }
         }
