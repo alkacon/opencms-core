@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/10/16 08:57:16 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2001/10/22 15:08:52 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.41 $ $Date: 2001/10/16 08:57:16 $
+ * @version $Revision: 1.42 $ $Date: 2001/10/22 15:08:52 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -2311,6 +2311,22 @@ public class CmsShellCommands implements I_CmsConstants {
     public void readGroup(String groupname) {
         try {
             System.out.println(m_cms.readGroup(groupname));
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Returns a group in the Cms.
+     *
+     * @param groupid The id of the group to be returned.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+    public void readGroupById(String groupid) {
+        try {
+            System.out.println(m_cms.readGroup(Integer.parseInt(groupid)));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
