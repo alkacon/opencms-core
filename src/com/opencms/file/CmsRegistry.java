@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/29 08:34:09 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2003/10/09 15:29:26 $
+ * Version: $Revision: 1.104 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.103 $
+ * @version $Revision: 1.104 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1547,7 +1547,7 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @param node the system node to get all values below.
      * @return list of Strings
      */
-    private List getSystemSubNodes(String node) {
+    public List getSystemSubNodes(String node) {
         List result = new ArrayList();
         try {
             Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
