@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/18 06:07:29 $
- * Version: $Revision: 1.168 $
+ * Date   : $Date: 2001/07/18 11:49:13 $
+ * Version: $Revision: 1.169 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.168 $ $Date: 2001/07/18 06:07:29 $
+ * @version $Revision: 1.169 $ $Date: 2001/07/18 11:49:13 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -688,9 +688,11 @@ protected void doCopyFolder(String source, String destination) throws CmsExcepti
  *
  * @exception CmsException if the file couldn't be copied, or the user
  * has not the appropriate rights to copy the file.
+ *
+ * @deprecated Use copyResource instead.
  */
 public void copyFile(String source, String destination) throws CmsException {
-    m_rb.copyFile(m_context.currentUser(), m_context.currentProject(), source, destination);
+    copyResource(source, destination);
 }
 /**
  * Copies a folder.
@@ -700,9 +702,11 @@ public void copyFile(String source, String destination) throws CmsException {
  *
  * @exception CmsException if the folder couldn't be copied, or if the
  * user has not the appropriate rights to copy the folder.
+ *
+ * @deprecated Use copyResource instead.
  */
 public void copyFolder(String source, String destination) throws CmsException {
-    m_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), source, destination);
+    copyResource(source, destination);
 }
 
 /**
@@ -765,9 +769,11 @@ public int countLockedResources(int id) throws CmsException {
  * @exception CmsException if the mandatory property-definitions for this file are missing
  * or if the resourcetype is set to folder. The CmsException is also thrown, if the
  * filename is not valid or if the user has not the appropriate rights to create a new file.
+ *
+ * @deprecated Use createResource instead.
  */
 public CmsFile createFile(String folder, String filename, byte[] contents, String type) throws CmsException {
-    return (m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, new Hashtable()));
+    return (CmsFile)createResource(folder, filename, type, null, contents);
 }
 /**
  * Creates a new file with the given content and resourcetype.
@@ -786,9 +792,11 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
  * the wrong properties are given, or if the resourcetype is set to folder.
  * The CmsException is also thrown, if the filename is not valid or if the user
  * has not the appropriate rights to create a new file.
+ *
+ * @deprecated Use createResource instead.
  */
 public CmsFile createFile(String folder, String filename, byte[] contents, String type, Hashtable properties) throws CmsException {
-    return (m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, properties));
+    return (CmsFile)createResource(folder, filename, type, properties, contents);
 }
 /**
  * Creates a new folder.
@@ -802,9 +810,11 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
  * @exception CmsException if the mandatory property-definitions for this folder are missing
  * , the foldername is not valid, or if the user has not the appropriate rights to create
  * a new folder.
+ *
+ * @deprecated Use createResource instead.
  */
 public CmsFolder createFolder(String folder, String newFolderName) throws CmsException {
-    return (m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, new Hashtable()));
+    return (CmsFolder)createResource(folder, newFolderName, C_TYPE_FOLDER_NAME);
 }
 /**
  * Creates a new folder.
@@ -821,9 +831,10 @@ public CmsFolder createFolder(String folder, String newFolderName) throws CmsExc
  * , the foldername is not valid, or if the user has not the appropriate rights to create
  * a new folder.
  *
+ * @deprecated Use createResource instead.
  */
 public CmsFolder createFolder(String folder, String newFolderName, Hashtable properties) throws CmsException {
-    return (m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, properties));
+    return (CmsFolder)createResource(folder, newFolderName, C_TYPE_FOLDER_NAME, properties);
 }
 
 public CmsResource createResource(String folder, String name, String type) throws CmsException {
@@ -1116,9 +1127,11 @@ public void deleteAllProperties(String resourcename) throws CmsException {
  *
  * @exception CmsException if the file couldn't be deleted, or if the user
  * has not the appropriate rights to delete the file.
+ *
+ * @deprecated Use deleteResource instead.
  */
 public void deleteFile(String filename) throws CmsException {
-    m_rb.deleteFile(m_context.currentUser(), m_context.currentProject(), filename);
+    deleteResource(filename);
 }
 /**
  * Deletes a folder.
@@ -1130,9 +1143,11 @@ public void deleteFile(String filename) throws CmsException {
  *
  * @exception CmsException if the folder couldn't be deleted, or if the user
  * has not the rights to delete this folder.
+ *
+ * @deprecated Use deleteResource instead.
  */
 public void deleteFolder(String foldername) throws CmsException {
-    m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), foldername);
+    deleteResource(foldername);
 }
 
 /**
@@ -2157,9 +2172,11 @@ public String loginWebUser(String username, String password) throws CmsException
  *
  * @exception CmsException if the user has not the rights to move this resource,
  * or if the file couldn't be moved.
+ *
+ * @deprecated Use moveResource instead.
  */
 public void moveFile(String source, String destination) throws CmsException {
-    m_rb.moveFile(m_context.currentUser(), m_context.currentProject(), source, destination);
+    moveResource(source, destination);
 }
 
 /**
@@ -2170,6 +2187,8 @@ public void moveFile(String source, String destination) throws CmsException {
  *
  * @exception CmsException if the user has not the rights to move this resource,
  * or if the file couldn't be moved.
+ *
+ * @deprecated Use moveResource instead.
  */
 public void moveResource(String source, String destination) throws CmsException {
 	CmsResource res = readFileHeader(source);
@@ -2945,9 +2964,11 @@ public void removeUserFromGroup(String username, String groupname) throws CmsExc
  *
  * @exception CmsException if the user has not the rights
  * to rename the file, or if the file couldn't be renamed.
+ *
+ * @deprecated Use renameResource instead.
  */
 public void renameFile(String oldname, String newname) throws CmsException {
-    m_rb.renameFile(m_context.currentUser(), m_context.currentProject(), oldname, newname);
+    renameResource(oldname, newname);
 }
 
 /**
