@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/06/16 13:37:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/25 16:21:09 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/06/16 13:37:54 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/25 16:21:09 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -278,7 +278,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             className = "[" + o.getClass().getName() + "] ";
         }
         
-        if (message == null && rootCause != null) {            
+        if (rootCause != null) {            
             StackTraceElement[] stackTraceElements = rootCause.getStackTrace();
             String stackTraceElement = "";
             
@@ -292,12 +292,15 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
                 }
             }
             
+            if (message != null)
+            	message = "[" + message + "] ";
+            else
+            	message = "";
+            	
             // where did we crash?
-            message = "where: " + stackTraceElement + ", ";
+            message += "where: " + stackTraceElement + ", ";
             // why did we crash?
             message += "why: " + rootCause.toString();
-        } else {
-            message = "";
         }
         
         message = className + message;
