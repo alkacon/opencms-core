@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/22 14:54:43 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2003/08/25 09:10:42 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.100 $ $Date: 2003/08/22 14:54:43 $
+ * @version $Revision: 1.101 $ $Date: 2003/08/25 09:10:42 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1965,7 +1965,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         m_sqlManager = this.initQueries();
         m_sqlManager.setOfflinePoolUrl(offlinePoolUrl);
         m_sqlManager.setOnlinePoolUrl(onlinePoolUrl);
-        m_sqlManager.setBackupPoolUrl(backupPoolUrl);        
+        m_sqlManager.setBackupPoolUrl(backupPoolUrl);     
         
         m_driverManager = driverManager;        
 
@@ -1975,7 +1975,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assign. online pool  : " + onlinePoolUrl);
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assign. backup pool  : " + backupPoolUrl);
             } else {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + offlinePoolUrl);
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assign. pool         : " + offlinePoolUrl);
             }
         }
         
@@ -2459,18 +2459,18 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public List readFolders(CmsProject currentProject, boolean includeUnchanged, boolean onlyProject) throws CmsException {
+    public List readFolders(int projectId) throws CmsException {
         List folders = (List) new ArrayList();
         CmsFolder currentFolder;
         ResultSet res = null;
         PreparedStatement stmt = null;
-        Connection conn = null;
+        Connection conn = null;       
+        /*
+        String query = null;
         String changedClause = null;
         String projectClause = null;
         String orderClause = " ORDER BY CMS_T_STRUCTURE.STRUCTURE_ID ASC";
-        String query = null;
-        int projectId = currentProject.getId();
-        
+
         if (projectId != I_CmsConstants.C_PROJECT_ONLINE_ID && onlyProject) {
             projectClause = " AND CMS_T_RESOURCES.PROJECT_ID=" + projectId;
         } else {
@@ -2481,14 +2481,17 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         	// TODO: dangerous - move this to query.properties
             changedClause = " AND (CMS_T_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED + " OR CMS_T_RESOURCES.RESOURCE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED + ")";
         } else {
-            projectClause = "";
+            changedClause = "";
         }        
+        */
         
         try {
             conn = m_sqlManager.getConnection(projectId);            
-            query = m_sqlManager.get(projectId, "C_RESOURCES_READ_FOLDERS_BY_PROJECT") + CmsSqlManager.replaceTableKey(projectId, projectClause + changedClause + orderClause);
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
-            //stmt.setInt(1, projectId);
+            //query = m_sqlManager.get(projectId, "C_RESOURCES_READ_FOLDERS_BY_PROJECT") + CmsSqlManager.replaceTableKey(projectId, projectClause + changedClause + orderClause);
+            //stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_FOLDERS_BY_PROJECT");
+            stmt.setInt(1, I_CmsConstants.C_STATE_UNCHANGED);
+            stmt.setInt(2, I_CmsConstants.C_STATE_UNCHANGED);
             res = stmt.executeQuery();
             while (res.next()) {
                 currentFolder = createCmsFolderFromResultSet(res, projectId, true);

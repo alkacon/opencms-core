@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/21 16:17:56 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2003/08/25 09:10:42 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.64 $ $Date: 2003/08/21 16:17:56 $
+ * @version $Revision: 1.65 $ $Date: 2003/08/25 09:10:42 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1043,8 +1043,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @return a vector of changed or deleted resources
      * @throws CmsException if something goes wrong
      */
-    public synchronized Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, I_CmsReport report, Hashtable exportpoints) throws CmsException {
-        CmsExportPointDriver discAccess = new CmsExportPointDriver(exportpoints);
+    public synchronized Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints) throws CmsException {
+        CmsExportPointDriver discAccess = null;
         CmsFolder currentFolder = null;
         CmsFile currentFile = null;
         CmsResource currentFileHeader = null;
@@ -1058,7 +1058,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         Vector changedResources = new Vector();
         String currentExportKey = null;
         String currentResourceName = null;
-        int backupVersionId = 1;
+        //int backupVersionId = 1;
         long publishDate = System.currentTimeMillis();
         Iterator i = null;
         boolean publishCurrentResource = false;
@@ -1069,21 +1069,24 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         List sortedFolderList = null;
         CmsResource delOnlineFolder = null;
         byte[] contents = null;
+        int publishHistoryId = nextPublishVersionId();
         
 
         try {
+            discAccess = new CmsExportPointDriver(exportpoints);
+            
             if (backupEnabled) {
                 // create a new backup version ID
-                backupVersionId = m_driverManager.getBackupVersionId();
+                //backupVersionId = m_driverManager.getBackupVersionId();
                 // write an entry in the publish project log
-                m_driverManager.backupProject(context, context.currentProject(), backupVersionId, publishDate, context.currentUser());
+                m_driverManager.backupProject(context, context.currentProject(), backupTagId, publishDate, context.currentUser());
             }
 
             // read the project resources of the project that gets published
             projectResources = m_driverManager.readProjectResources(context.currentProject());
 
             // read all changed/new/deleted folders in the offline project
-            offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject(), false, false);
+            offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject().getId());
 
             // ensure that the folders appear in the correct (DFS) tree order
             sortedFolderMap = (Map) new HashMap();
@@ -1180,9 +1183,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                         if (backupEnabled) {
                             // backup the offline resource
-                            m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFolder, properties, backupVersionId, publishDate);
-                            m_driverManager.getBackupDriver().writePublishHistoryResource(context.currentProject(), backupVersionId, currentResourceName, currentFolder);
+                            m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFolder, properties, backupTagId, publishDate);
                         }
+                        writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, currentResourceName, currentFolder);
 
                         if (currentFolder.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                             // set the state of current folder in the offline project to unchanged
@@ -1243,9 +1246,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                         if (backupEnabled) {
                             // backup the offline resource
-                            m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFolder, properties, backupVersionId, publishDate);
-                            m_driverManager.getBackupDriver().writePublishHistoryResource(context.currentProject(), backupVersionId, currentResourceName, currentFolder);
+                            m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFolder, properties, backupTagId, publishDate);
                         }
+                        writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, currentResourceName, currentFolder);
 
                         if (currentFolder.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                             // set the state of current folder in the offline project to unchanged
@@ -1263,11 +1266,15 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 }
             }
 
-            sortedFolderList.clear();
-            sortedFolderList = null;
+            if (sortedFolderList != null) {
+                sortedFolderList.clear();
+                sortedFolderList = null;
+            }
 
-            sortedFolderMap.clear();
-            sortedFolderMap = null;
+            if (sortedFolderMap != null) {
+                sortedFolderMap.clear();
+                sortedFolderMap = null;
+            }
 
             // now read all changed/new/deleted FILES in offlineProject
             offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId());
@@ -1357,9 +1364,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         //m_driverManager.readPath(context, onlineFile, true);
                         if (backupEnabled) {
                             properties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFile, currentFile.getType());
-                            m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFile, properties, backupVersionId, publishDate);
-                            m_driverManager.getBackupDriver().writePublishHistoryResource(context.currentProject(), backupVersionId, currentResourceName, currentFile);
+                            m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFile, properties, backupTagId, publishDate);
                         }
+                        writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, currentResourceName, currentFile);
 
                         try {
                             m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), onlineFile);
@@ -1458,9 +1465,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                         if (backupEnabled) {
                             // backup the offline resource
-                            m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFile, properties, backupVersionId, publishDate);
-                            m_driverManager.getBackupDriver().writePublishHistoryResource(context.currentProject(), backupVersionId, currentResourceName, currentFile);
+                            m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFile, properties, backupTagId, publishDate);
                         }
+                        writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, currentResourceName, currentFile);
 
                         if (currentFile.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                             // set the file state to unchanged
@@ -1533,9 +1540,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                         if (backupEnabled) {
                             // backup the offline resource
-                            m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFile, properties, backupVersionId, publishDate);
-                            m_driverManager.getBackupDriver().writePublishHistoryResource(context.currentProject(), backupVersionId, currentResourceName, currentFile);
+                            m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFile, properties, backupTagId, publishDate);
                         }
+                        writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, currentResourceName, currentFile);
 
                         if (currentFile.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                             // set the file state to unchanged
@@ -1555,8 +1562,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 }
             }
 
-            offlineFiles.clear();
-            offlineFiles = null;
+            if (offlineFiles != null) {
+                offlineFiles.clear();
+                offlineFiles = null;
+            }
 
             // now delete the "deleted" folders       
             if (deletedFolders.isEmpty()) {
@@ -1575,8 +1584,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             Collections.sort(sortedFolderList);
             Collections.reverse(sortedFolderList);
 
-            deletedFolders.clear();
-            deletedFolders = null;
+            if (deletedFolders != null) {
+                deletedFolders.clear();
+                deletedFolders = null;
+            }
 
             i = sortedFolderList.iterator();
             while (i.hasNext()) {
@@ -1594,7 +1605,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 if (backupEnabled) {
                     properties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFolder, currentFolder.getType());
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFolder, properties, backupVersionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFolder, properties, backupTagId, publishDate);
                 }
 
                 delOnlineFolder = m_driverManager.readFolder(context, currentFolder.getId(), true);
@@ -1620,11 +1631,15 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 delOnlineFolder = null;
             }
 
-            sortedFolderList.clear();
-            sortedFolderList = null;
+            if (sortedFolderList != null) {
+                sortedFolderList.clear();
+                sortedFolderList = null;
+            }
 
-            sortedFolderMap.clear();
-            sortedFolderMap = null;            
+            if (sortedFolderMap != null) {
+                sortedFolderMap.clear();
+                sortedFolderMap = null;
+            }           
         } catch (CmsException e) {
             // these are dummy catch blocks to have a finally block for clearing 
             // allocated resources. thus the exceptions are just logged and 
@@ -2339,5 +2354,54 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         return readSystemProperty(name);
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(com.opencms.file.CmsProject, int, int, java.lang.String, com.opencms.file.CmsResource)
+     */
+    public void writePublishHistory(CmsProject currentProject, int publishId, int tagId, String resourcename, CmsResource resource) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
+            stmt.setInt(1, tagId);
+            stmt.setString(2, resource.getId().toString());
+            stmt.setString(3, resource.getResourceId().toString());
+            stmt.setString(4, resource.getFileId().toString());
+            stmt.setString(5, resourcename);
+            stmt.setInt(6, resource.getState());
+            stmt.setInt(7, resource.getType());
+            stmt.setInt(8, publishId);
+            stmt.executeUpdate();                
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }                 
+    }
+    
+    public int nextPublishVersionId() throws CmsException  {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        int versionId = 1;
+        
+        try {
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_PUBLISH_MAXVER");
+            res = stmt.executeQuery();
+            
+            if (res.next()) {
+                versionId = res.getInt(1) + 1;
+            }
+        } catch (SQLException exc) {
+            return 1;
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }    
+        
+        return versionId;
+    }    
 
 }

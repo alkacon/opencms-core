@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/08/22 16:12:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/25 09:10:43 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,10 @@
 
 package org.opencms.db;
 
+import org.opencms.main.OpenCms;
+
+import com.opencms.boot.I_CmsLogChannels;
+
 import org.apache.commons.dbcp.AbandonedConfig;
 import org.apache.commons.dbcp.AbandonedObjectPool;
 import org.apache.commons.dbcp.ConnectionFactory;
@@ -50,7 +54,7 @@ import source.org.apache.java.util.Configurations;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/08/22 16:12:47 $
+ * @version $Revision: 1.8 $ $Date: 2003/08/25 09:10:43 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -94,18 +98,15 @@ public final class CmsDbPool extends Object {
     }
 
     /**
-     * Creates a Driver based DBCP connection pool.<p>
-     * 
-     * TODO auto-commit of db connections is currently TRUE
+     * Creates a JDBC DriverManager based DBCP connection pool.<p>
      * 
      * @param config the configuration (opencms.properties)
      * @param key the key of the database pool in the configuration
      * @return String the URL to access the created DBCP pool
      * @throws Exception if the pool could not be initialized
      */
-    public static final String createDriverConnectionPool(Configurations config, String key) throws Exception {
-
-        // read the values of the connection pool configuration specified by the given key
+    public static final String createDriverManagerConnectionPool(Configurations config, String key) throws Exception {
+        // read the values of the pool configuration specified by the given key
         String jdbcDriver = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_DRIVER);
         String jdbcUrl = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_URL);
         int maxActive = config.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_ACTIVE, 10);
@@ -194,6 +195,7 @@ public final class CmsDbPool extends Object {
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
 
         // initialize a keyed object pool to store PreparedStatements
+        // i still have to rtfm how pooling of PreparedStatements with DBCP works
         //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory();
         //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory(null, 5000, 0);
 
@@ -210,7 +212,11 @@ public final class CmsDbPool extends Object {
         PoolingDriver driver = new PoolingDriver();
         driver.registerPool(poolUrl, connectionPool);
 
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Init. JDBC pool      : " + poolUrl + " (" + jdbcUrl + ")");
+        }
+
         return poolUrl;
-    }
+    } 
 
 }

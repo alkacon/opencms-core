@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/20 16:01:55 $
- * Version: $Revision: 1.173 $
+ * Date   : $Date: 2003/08/25 09:10:43 $
+ * Version: $Revision: 1.174 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.173 $ $Date: 2003/08/20 16:01:55 $
+ * @version $Revision: 1.174 $ $Date: 2003/08/25 09:10:43 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4854,10 +4854,7 @@ public class CmsDriverManager extends Object {
         String poolUrl = null;
 
         try {
-            poolUrl = CmsDbPool.createDriverConnectionPool(configurations, poolName);
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing pool    : " + poolUrl);
-            }
+            poolUrl = CmsDbPool.createDriverManagerConnectionPool(configurations, poolName);
         } catch (Exception exc) {
             String message = "Critical error while initializing resource pool " + poolName;
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
@@ -4902,26 +4899,35 @@ public class CmsDriverManager extends Object {
         Vector changedResources = new Vector();
         Vector changedModuleMasters = new Vector();
         int publishProjectId = context.currentProject().getId();
+        boolean backupEnabled = isHistoryEnabled(cms);
+        int versionId = 0;
 
         // check the security
         if ((isAdmin(context) || isManagerOfProject(context)) && (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED) && (publishProjectId != I_CmsConstants.C_PROJECT_ONLINE_ID)) {
             try {
-                changedResources = m_projectDriver.publishProject(context, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), isHistoryEnabled(cms), report, m_registry.getExportpoints());
+                if (backupEnabled) {
+                    versionId = getBackupVersionId();
+                } else {
+                    versionId = 0;
+                }
+                
+                changedResources = m_projectDriver.publishProject(context, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), isHistoryEnabled(cms), versionId, report, m_registry.getExportpoints());
 
                 // now publish the module masters
                 Vector publishModules = new Vector();
                 cms.getRegistry().getModulePublishables(publishModules, null);
 
-                int versionId = 0;
                 long publishDate = System.currentTimeMillis();
 
-                if (isHistoryEnabled(cms)) {
+                if (backupEnabled) {
+                    /*
                     versionId = m_backupDriver.nextBackupVersionId();
 
                     // get the version_id for the currently published version
                     if (versionId > 1) {
                         versionId--;
                     }
+                    */
 
                     try {
                         publishDate = m_backupDriver.readBackupProject(versionId).getPublishingDate();

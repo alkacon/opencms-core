@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/08/18 08:33:42 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/08/25 09:10:43 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.36 $ $Date: 2003/08/18 08:33:42 $
+ * @version $Revision: 1.37 $ $Date: 2003/08/25 09:10:43 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -64,7 +64,7 @@ import java.util.Map;
 public final class CmsLockDispatcher extends Object {
 
     /** The shared lock dispatcher instance */
-    private static CmsLockDispatcher sharedInstance;
+    private static CmsLockDispatcher sharedInstance = null;
 
     /** A map holding the exclusive CmsLocks */
     private Map m_exclusiveLocks;
@@ -83,6 +83,7 @@ public final class CmsLockDispatcher extends Object {
      * @return the shared instance of the lock dispatcher
      */
     public static synchronized CmsLockDispatcher getInstance() {
+        // synchronized to avoid "Double Checked Locking"
         if (sharedInstance == null) {
             sharedInstance = new CmsLockDispatcher();
         }

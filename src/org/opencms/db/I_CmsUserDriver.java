@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/21 08:16:39 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/25 09:10:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/08/21 08:16:39 $
+ * @version $Revision: 1.15 $ $Date: 2003/08/25 09:10:43 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -250,16 +250,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if operation was not successful
      */
     Vector getUsersOfGroup(String name, int type) throws CmsException;
-
-    /**
-     * Initializes the user driver.
-     * 
-     * @param config general configuration from opencms.properties
-     * @param dbPoolUrl the url of the database pool to use
-     * @param driverManager the driver manager object
-     * @throws CmsException if operation was not successful
-     */
-    // void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException;
     
     /**
      * Initializes the SQL manager for this driver.<p>

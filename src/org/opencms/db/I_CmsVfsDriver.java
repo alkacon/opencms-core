@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/22 14:54:43 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/08/25 09:10:43 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2003/08/22 14:54:43 $
+ * @version $Revision: 1.44 $ $Date: 2003/08/25 09:10:43 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -466,15 +466,6 @@ public interface I_CmsVfsDriver {
     List getUndeletedResources(List resources);
     
     /**
-     * Initializes this driver.<p>
-     * 
-     * @param config the configurations object (opencms.properties)
-     * @param dbPoolUrl the URL of the JDBC connection pool
-     * @param driverManager the Cms driver manager
-     */
-    //void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
-    
-    /**
      * Initializes the SQL manager for this driver.<p>
      * 
      * To obtain JDBC connections from different pools, further 
@@ -533,7 +524,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */        
     CmsFile readFile(int projectId, boolean includeDeleted, CmsUUID resourceId) throws CmsException;
-
+    
     /**
      * Reads a file header from the Cms.<BR/>
      * The reading excludes the filecontent.
@@ -600,7 +591,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     List readFiles(int projectId) throws CmsException;
-    Vector readFilesByType(int projectId, int resourcetype) throws CmsException;
+    Vector readFilesByType(int projectId, int resourcetype) throws CmsException;    
 
     /**
      * Reads a folder from the Cms.<BR/>
@@ -613,7 +604,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     CmsFolder readFolder(int projectId, CmsUUID folderId) throws CmsException;
-
+    
     /**
      * Reads a folder from the Cms.<BR/>
      *
@@ -624,21 +615,17 @@ public interface I_CmsVfsDriver {
      * @return The read folder.
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    CmsFolder readFolder(int projectId, CmsUUID parentId, String foldername) throws CmsException;
-
+     */    
+    CmsFolder readFolder(int projectId, CmsUUID parentId, String filename) throws CmsException;
+    
     /**
      * Reads all folders from the Cms, that are in one project.<BR/>
      *
      * @param currentProject The project in which the folders are.
-     * @param includeUnchanged true if unchanged files are included
-     * @param onlyProject true if only resources aree included that are changed in the project
-     *
      * @return A Vecor of folders.
-     *
      * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    List readFolders(CmsProject currentProject, boolean includeUnchanged, boolean onlyProject) throws CmsException;
+     */    
+    List readFolders(int projectId) throws CmsException;
     
     /**
      * Reads the project resource path for a given project and resource path,
@@ -682,7 +669,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */    
     String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException;
-
+    
     /**
      * Reads a propertydefinition for the given resource type.
      *
@@ -710,8 +697,6 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     CmsPropertydefinition readPropertydefinition(String name, int projectId, int type) throws CmsException;
-
-
     CmsResource readResource(CmsProject project, CmsUUID parentId, String filename) throws CmsException;
     Vector readResources(CmsProject project) throws CmsException;
     Vector readResourcesLikeName(CmsProject project, String resourcename) throws CmsException;
@@ -890,6 +875,6 @@ public interface I_CmsVfsDriver {
      * @return true, if the specified content ID in the tables of the specified project {offline|online} exists
      * @throws CmsException if something goes wrong
      */
-    boolean existsContentId(int projectId, CmsUUID contentId) throws CmsException;
+    boolean existsContentId(int projectId, CmsUUID contentId) throws CmsException;    
      
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/21 16:17:56 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/08/25 09:10:42 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.33 $ $Date: 2003/08/21 16:17:56 $
+ * @version $Revision: 1.34 $ $Date: 2003/08/25 09:10:42 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -801,31 +801,6 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         }        
         
         return exists;       
-    }
-    
-    /**
-     * @see org.opencms.db.I_CmsBackupDriver#writePublishHistoryResource(com.opencms.file.CmsProject, int, java.lang.String, com.opencms.file.CmsResource)
-     */
-    public void writePublishHistoryResource(CmsProject currentProject, int tagId, String resourcename, CmsResource resource) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        
-        try {
-            conn = m_sqlManager.getConnectionForBackup();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_HISTORY");
-            stmt.setInt(1, tagId);
-            stmt.setString(2, resource.getId().toString());
-            stmt.setString(3, resource.getResourceId().toString());
-            stmt.setString(4, resource.getFileId().toString());
-            stmt.setString(5, resourcename);
-            stmt.setInt(6, resource.getState());
-            stmt.setInt(7, resource.getType());
-            stmt.executeUpdate();                
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }                 
     }
     
 }

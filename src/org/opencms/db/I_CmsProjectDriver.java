@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/21 08:16:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/08/25 09:10:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsResource;
 import com.opencms.file.CmsTask;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/08/21 08:16:16 $
+ * @version $Revision: 1.12 $ $Date: 2003/08/25 09:10:43 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -282,7 +283,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException Throws CmsException if the resource is not found, or the database communication went wrong.
      */
     CmsProject getOnlineProject() throws CmsException;
-    // void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException;
     
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -308,7 +308,7 @@ public interface I_CmsProjectDriver {
      * @return a vector of changed or deleted resources
      * @throws CmsException if something goes wrong
      */    
-    Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, I_CmsReport report, Hashtable exportpoints) throws CmsException;
+    Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints) throws CmsException;
 
     /**
      * Select all projectResources from an given project.<p>
@@ -444,4 +444,19 @@ public interface I_CmsProjectDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */    
     Serializable writeSystemProperty(String name, Serializable object) throws CmsException;
+    
+    /**
+     * Inserts an entry in the publish history for a published resource.<p>
+     * 
+     * @param currentProject the current project
+     * @param publishId the ID of the current publishing process
+     * @param tagId the current backup ID
+     * @param resource the resource that was published
+     * @throws CmsException if something goes wrong
+     * @see org.opencms.db.CmsDriverManager#getBackupVersionId()
+     */
+    void writePublishHistory(CmsProject currentProject, int publishId, int tagId, String resourcename, CmsResource resource) throws CmsException;
+    
+    int nextPublishVersionId() throws CmsException;
+        
 }

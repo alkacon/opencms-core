@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/21 16:17:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/08/25 09:10:43 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/08/21 16:17:56 $
+ * @version $Revision: 1.14 $ $Date: 2003/08/25 09:10:43 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -93,15 +93,6 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if an error occurs
      */
     Vector getAllBackupProjects() throws CmsException;
-
-    /**
-     * Initializes this driver.<p>
-     * 
-     * @param config the configurations object (opencms.properties)
-     * @param dbPoolUrl the URL of the JDBC connection pool
-     * @param driverManager the Cms driver manager
-     */
-    //void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -232,16 +223,5 @@ public interface I_CmsBackupDriver {
 	 * @throws CmsException		if something goes wrong
 	 */
 	void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int versionId) throws CmsException;
-    
-    /**
-     * Inserts an entry in the publish history for a published resource.<p>
-     * 
-     * @param currentProject the current project
-     * @param tagId the tag ID of the current publishing process
-     * @param resource the resource that was published
-     * @throws CmsException if something goes wrong
-     * @see org.opencms.db.CmsDriverManager#getBackupVersionId()
-     */
-    void writePublishHistoryResource(CmsProject currentProject, int tagId, String resourcename, CmsResource resource) throws CmsException;
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/08/22 14:54:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/08/25 09:10:42 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/08/22 14:54:43 $
+ * @version $Revision: 1.13 $ $Date: 2003/08/25 09:10:42 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -421,12 +421,16 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
 
         if (id > 1) {
             conn = DriverManager.getConnection(m_offlinePoolUrl);
+            //conn = DriverManager.getConnection(CmsDbPool.getOfflinePoolUrl());
         } else if (id == 1) {
             conn = DriverManager.getConnection(m_onlinePoolUrl);
+            //conn = DriverManager.getConnection(CmsDbPool.getOnlinePoolUrl());
         } else if (id < 0) {
             conn = DriverManager.getConnection(m_backupPoolUrl);
+            //conn = DriverManager.getConnection(CmsDbPool.getBackupPoolUrl());
         } else {
             conn = DriverManager.getConnection(m_offlinePoolUrl);
+            //conn = DriverManager.getConnection(CmsDbPool.getOfflinePoolUrl());
         }
         /*
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
