@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/11/08 10:19:14 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.oro.text.perl.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -220,23 +220,45 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
     }
 
     /**
-     * Checks if the staticExport is active and the current project is the online project.
-     * <P>
+     * Returns <code>true</code> if the staticExport is enabled, 
+     * the current project is the online project
+     * and the current user is in the project manager group.<p>
+     * 
      * This method is used by workplace icons to decide whether the icon should
-     * be activated or not. Icons will use this method if the attribute <code>method="isOnlineProject"</code>
+     * be activated or not. Icons will use this method if the attribute <code>method="isExportActive"</code>
      * is defined in the <code>&lt;ICON&gt;</code> tag.
      *
-     * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
-     * @param lang reference to the currently valid language file <em>(not used here)</em>.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
-     * @exception CmsException if there were errors while accessing project data.
+     * @param cms for accessing system resources <em>(not used here)</em>
+     * @param lang reference to the currently valid language file <em>(not used here)</em>
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>
+     * @return (see method description)
+     * @throws CmsException if there were errors while accessing project data
      */
-
     public Boolean isExportActive(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
         boolean isProMan = isProjectManager(cms, lang, parameters).booleanValue();
         return new Boolean(cms.getStaticExportProperties().isStaticExportEnabled() && isProMan);
+    }
+
+    /**
+     * Returns <code>true</code> if the staticExport is enabled, 
+     * the current project is the online project
+     * and the current user is in the administrator group.<p>
+     * 
+     * This method is used by workplace icons to decide whether the icon should
+     * be activated or not. Icons will use this method if the attribute <code>method="isExportActiveAdmin"</code>
+     * is defined in the <code>&lt;ICON&gt;</code> tag.
+     *
+     * @param cms for accessing system resources <em>(not used here)</em>
+     * @param lang reference to the currently valid language file <em>(not used here)</em>
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>
+     * @return (see method description)
+     * @throws CmsException if there were errors while accessing project data
+     */
+    public Boolean isExportActiveAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
+        CmsRequestContext reqCont = cms.getRequestContext();
+        boolean isAdmin = isAdmin(cms, lang, parameters).booleanValue();
+        return new Boolean(cms.getStaticExportProperties().isStaticExportEnabled() && isAdmin);
     }
 
     /** Parse the string which holds all resources
