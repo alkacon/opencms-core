@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/04/05 08:45:55 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/04/06 10:44:30 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -72,7 +72,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2000/04/05 08:45:55 $
+ * @version $Revision: 1.22 $ $Date: 2000/04/06 10:44:30 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -513,7 +513,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */
     public static void clearFileCache() {
         if(A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[A_CmsXmlContent] clearing XML file cache.");
+            A_OpenCms.log(C_OPENCMS_CACHE, "[A_CmsXmlContent] clearing XML file cache.");
         }
         m_filecache.clear();        
     }
