@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/08/17 07:07:32 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/08/18 11:54:19 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.38 $ $Date: 2004/08/17 07:07:32 $
+ * @version $Revision: 1.39 $ $Date: 2004/08/18 11:54:19 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -751,15 +751,15 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * size relative to the driver's limits on VARBINARY values) when it sends it to the database. 
      * 
      * @param statement the PreparedStatement where the content is set
-     * @param posn the first parameter is 1, the second is 2, ...
+     * @param pos the first parameter is 1, the second is 2, ...
      * @param content the parameter value 
      * @throws SQLException if a database access error occurs
      */
-    public void setBytes(PreparedStatement statement, int posn, byte[] content) throws SQLException {
+    public void setBytes(PreparedStatement statement, int pos, byte[] content) throws SQLException {
         if (content.length < 2000) {
-            statement.setBytes(posn, content);
+            statement.setBytes(pos, content);
         } else {
-            statement.setBinaryStream(posn, new ByteArrayInputStream(content), content.length);
+            statement.setBinaryStream(pos, new ByteArrayInputStream(content), content.length);
         }
     }
     
@@ -836,17 +836,16 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Replaces null Strings by an empty string.<p>
+     * Replaces null or empty Strings with a String with one space character <code>" "</code>.<p>
      * 
      * @param value the string to validate
-     * @return String the validate string or an empty string if the validated string is null
+     * @return the validate string or a String with one space character if the validated string is null or empty
      */
-    public String validateNull(String value) {
-        if (value != null && value.length() != 0) {
+    public String validateEmpty(String value) {
+        if (CmsStringUtil.isNotEmpty(value)) {
             return value;
         }
 
         return " ";
     }
-
 }

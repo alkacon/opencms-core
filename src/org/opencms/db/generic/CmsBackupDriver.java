@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/17 16:09:25 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2004/08/18 11:54:19 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.100 $ $Date: 2004/08/17 16:09:25 $
+ * @version $Revision: 1.101 $ $Date: 2004/08/18 11:54:19 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -1046,7 +1046,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                         stmt.setInt(3, propdef.getId());
                         stmt.setString(4, id.toString());
                         stmt.setInt(5, mappingType);
-                        stmt.setString(6, m_sqlManager.validateNull(value));
+                        stmt.setString(6, m_sqlManager.validateEmpty(value));
                         stmt.setInt(7, tagId);
                         stmt.setInt(8, versionId);
                         

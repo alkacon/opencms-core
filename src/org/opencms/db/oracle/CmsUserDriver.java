@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/08/18 11:54:19 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.26 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.27 $ $Date: 2004/08/18 11:54:19 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -83,16 +83,16 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(3, encryptPassword(password));
 
             stmt.setString(4, encryptPassword(""));
-            stmt.setString(5, m_sqlManager.validateNull(description));
-            stmt.setString(6, m_sqlManager.validateNull(firstname));
-            stmt.setString(7, m_sqlManager.validateNull(lastname));
-            stmt.setString(8, m_sqlManager.validateNull(email));
+            stmt.setString(5, m_sqlManager.validateEmpty(description));
+            stmt.setString(6, m_sqlManager.validateEmpty(firstname));
+            stmt.setString(7, m_sqlManager.validateEmpty(lastname));
+            stmt.setString(8, m_sqlManager.validateEmpty(email));
             stmt.setTimestamp(9, new Timestamp(lastlogin));
             stmt.setTimestamp(10, new Timestamp(0));
             stmt.setInt(11, flags);
             stmt.setString(12, defaultGroup.getId().toString());
-            stmt.setString(13, m_sqlManager.validateNull(address));
-            stmt.setString(14, m_sqlManager.validateNull(section));
+            stmt.setString(13, m_sqlManager.validateEmpty(address));
+            stmt.setString(14, m_sqlManager.validateEmpty(section));
             stmt.setInt(15, type);
             stmt.executeUpdate();
             stmt.close();
@@ -133,18 +133,18 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(2, name);
 
             // don't encrypt passwords since imported passwords are already encrypted
-            stmt.setString(3, m_sqlManager.validateNull(password));
-            stmt.setString(4, m_sqlManager.validateNull(recoveryPassword));
-            stmt.setString(5, m_sqlManager.validateNull(description));
-            stmt.setString(6, m_sqlManager.validateNull(firstname));
-            stmt.setString(7, m_sqlManager.validateNull(lastname));
-            stmt.setString(8, m_sqlManager.validateNull(email));
+            stmt.setString(3, m_sqlManager.validateEmpty(password));
+            stmt.setString(4, m_sqlManager.validateEmpty(recoveryPassword));
+            stmt.setString(5, m_sqlManager.validateEmpty(description));
+            stmt.setString(6, m_sqlManager.validateEmpty(firstname));
+            stmt.setString(7, m_sqlManager.validateEmpty(lastname));
+            stmt.setString(8, m_sqlManager.validateEmpty(email));
             stmt.setTimestamp(9, new Timestamp(lastlogin));
             stmt.setTimestamp(10, new Timestamp(lastused));
             stmt.setInt(11, flags);
             stmt.setString(12, defaultGroup.getId().toString());
-            stmt.setString(13, m_sqlManager.validateNull(address));
-            stmt.setString(14, m_sqlManager.validateNull(section));
+            stmt.setString(13, m_sqlManager.validateEmpty(address));
+            stmt.setString(14, m_sqlManager.validateEmpty(section));
             stmt.setInt(15, type);
             stmt.executeUpdate();
             stmt.close();
@@ -183,16 +183,16 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             
             // write data to database
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_WRITE");
-            stmt.setString(1, m_sqlManager.validateNull(user.getDescription()));
-            stmt.setString(2, m_sqlManager.validateNull(user.getFirstname()));
-            stmt.setString(3, m_sqlManager.validateNull(user.getLastname()));
-            stmt.setString(4, m_sqlManager.validateNull(user.getEmail()));
+            stmt.setString(1, m_sqlManager.validateEmpty(user.getDescription()));
+            stmt.setString(2, m_sqlManager.validateEmpty(user.getFirstname()));
+            stmt.setString(3, m_sqlManager.validateEmpty(user.getLastname()));
+            stmt.setString(4, m_sqlManager.validateEmpty(user.getEmail()));
             stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
             stmt.setTimestamp(6, new Timestamp(0));
             stmt.setInt(7, user.getFlags());
             stmt.setString(8, user.getDefaultGroupId().toString());
-            stmt.setString(9, m_sqlManager.validateNull(user.getAddress()));
-            stmt.setString(10, m_sqlManager.validateNull(user.getSection()));
+            stmt.setString(9, m_sqlManager.validateEmpty(user.getAddress()));
+            stmt.setString(10, m_sqlManager.validateEmpty(user.getSection()));
             stmt.setInt(11, user.getType());
             stmt.setString(12, user.getId().toString());
             stmt.executeUpdate();

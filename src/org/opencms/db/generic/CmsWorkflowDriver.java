@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/06/14 12:22:28 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/08/18 11:54:19 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.31 $ $Date: 2004/06/14 12:22:28 $
+ * @version $Revision: 1.32 $ $Date: 2004/08/18 11:54:19 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -328,8 +328,8 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             newId = m_sqlManager.nextId(C_TABLE_TASKPAR);
             stmt.setInt(1, newId);
             stmt.setInt(2, taskId);
-            stmt.setString(3, m_sqlManager.validateNull(parname));
-            stmt.setString(4, m_sqlManager.validateNull(parvalue));
+            stmt.setString(3, m_sqlManager.validateEmpty(parname));
+            stmt.setString(4, m_sqlManager.validateEmpty(parvalue));
             stmt.executeUpdate();
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -760,7 +760,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
                 stmt.setString(3, m_driverManager.readUser(OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
             }
             stmt.setTimestamp(4, starttime);
-            stmt.setString(5, m_sqlManager.validateNull(comment));
+            stmt.setString(5, m_sqlManager.validateEmpty(comment));
             stmt.setInt(6, type);
 
             stmt.executeUpdate();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/18 08:45:31 $
- * Version: $Revision: 1.198 $
+ * Date   : $Date: 2004/08/18 11:54:19 $
+ * Version: $Revision: 1.199 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.198 $ $Date: 2004/08/18 08:45:31 $
+ * @version $Revision: 1.199 $ $Date: 2004/08/18 11:54:19 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2015,7 +2015,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     if (existsPropertyValue) {
                         // {structure|resource} property value already exists- use update statement
                         stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_UPDATE");
-                        stmt.setString(1, m_sqlManager.validateNull(value));
+                        stmt.setString(1, m_sqlManager.validateEmpty(value));
                         stmt.setString(2, id.toString());
                         stmt.setInt(3, mappingType);
                         stmt.setInt(4, propertyDefinition.getId());
@@ -2026,7 +2026,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                         stmt.setInt(2, propertyDefinition.getId());
                         stmt.setString(3, id.toString());
                         stmt.setInt(4, mappingType);
-                        stmt.setString(5, m_sqlManager.validateNull(value));
+                        stmt.setString(5, m_sqlManager.validateEmpty(value));
                     }
                 } else {
                     // {structure|resource} property value marked as deleted- use delete statement

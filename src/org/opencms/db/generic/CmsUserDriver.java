@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/06/14 12:22:28 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/08/18 11:54:19 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.60 $ $Date: 2004/06/14 12:22:28 $
+ * @version $Revision: 1.61 $ $Date: 2004/08/18 11:54:19 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -156,15 +156,10 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setString(1, groupId.toString());
             stmt.setString(2, parentId.toString());
             stmt.setString(3, groupName);
-            stmt.setString(4, m_sqlManager.validateNull(description));
+            stmt.setString(4, m_sqlManager.validateEmpty(description));
             stmt.setInt(5, flags);
             stmt.executeUpdate();
 
-            // TODO: remove this
-            // create the user group by reading it from the database.
-            // this is necessary to get the group id which is generated in the
-            // database.
-            // group = readGroup(groupName);
             group = new CmsGroup(groupId, parentId, groupName, description, flags);
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "[CmsGroup]: " + groupName + ", Id=" + groupId.toString(), CmsException.C_SQL_ERROR, e, true);
@@ -179,7 +174,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
      */
     public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
-        //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
 
         Connection conn = null;
@@ -196,17 +190,17 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             // crypt the password with MD5
             stmt.setString(3, encryptPassword(password));
             stmt.setString(4, encryptPassword(""));
-            stmt.setString(5, m_sqlManager.validateNull(description));
-            stmt.setString(6, m_sqlManager.validateNull(firstname));
-            stmt.setString(7, m_sqlManager.validateNull(lastname));
-            stmt.setString(8, m_sqlManager.validateNull(email));
+            stmt.setString(5, m_sqlManager.validateEmpty(description));
+            stmt.setString(6, m_sqlManager.validateEmpty(firstname));
+            stmt.setString(7, m_sqlManager.validateEmpty(lastname));
+            stmt.setString(8, m_sqlManager.validateEmpty(email));
             stmt.setTimestamp(9, new Timestamp(lastlogin));
             stmt.setTimestamp(10, new Timestamp(0));
             stmt.setInt(11, flags);
             m_sqlManager.setBytes(stmt, 12, internalSerializeAdditionalUserInfo(additionalInfos));
             stmt.setString(13, defaultGroup.getId().toString());
-            stmt.setString(14, m_sqlManager.validateNull(address));
-            stmt.setString(15, m_sqlManager.validateNull(section));
+            stmt.setString(14, m_sqlManager.validateEmpty(address));
+            stmt.setString(15, m_sqlManager.validateEmpty(section));
             stmt.setInt(16, type);
             stmt.executeUpdate();            
         } catch (SQLException e) {
@@ -217,8 +211,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             m_sqlManager.closeAll(conn, stmt, null);
         }
 
-        // cw 20.06.2003 avoid calling upper level methods
-        // return readUser(id);
         return this.readUser(id);
     }
 
@@ -419,19 +411,19 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
-            stmt.setString(3, m_sqlManager.validateNull(password));
-            stmt.setString(4, m_sqlManager.validateNull(recoveryPassword));
-            stmt.setString(5, m_sqlManager.validateNull(description));
-            stmt.setString(6, m_sqlManager.validateNull(firstname));
-            stmt.setString(7, m_sqlManager.validateNull(lastname));
-            stmt.setString(8, m_sqlManager.validateNull(email));
+            stmt.setString(3, m_sqlManager.validateEmpty(password));
+            stmt.setString(4, m_sqlManager.validateEmpty(recoveryPassword));
+            stmt.setString(5, m_sqlManager.validateEmpty(description));
+            stmt.setString(6, m_sqlManager.validateEmpty(firstname));
+            stmt.setString(7, m_sqlManager.validateEmpty(lastname));
+            stmt.setString(8, m_sqlManager.validateEmpty(email));
             stmt.setTimestamp(9, new Timestamp(lastlogin));
             stmt.setTimestamp(10, new Timestamp(lastused));
             stmt.setInt(11, flags);
             m_sqlManager.setBytes(stmt, 12, internalSerializeAdditionalUserInfo(additionalInfos));
             stmt.setString(13, defaultGroup.getId().toString());
-            stmt.setString(14, m_sqlManager.validateNull(address));
-            stmt.setString(15, m_sqlManager.validateNull(section));
+            stmt.setString(14, m_sqlManager.validateEmpty(address));
+            stmt.setString(15, m_sqlManager.validateEmpty(section));
             stmt.setInt(16, type);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -1300,7 +1292,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
                 conn = m_sqlManager.getConnection();
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_WRITEGROUP");
 
-                stmt.setString(1, m_sqlManager.validateNull(group.getDescription()));
+                stmt.setString(1, m_sqlManager.validateEmpty(group.getDescription()));
                 stmt.setInt(2, group.getFlags());
                 stmt.setString(3, group.getParentId().toString());
                 stmt.setString(4, group.getId().toString());
@@ -1403,17 +1395,17 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE");
             // write data to database
-            stmt.setString(1, m_sqlManager.validateNull(user.getDescription()));
-            stmt.setString(2, m_sqlManager.validateNull(user.getFirstname()));
-            stmt.setString(3, m_sqlManager.validateNull(user.getLastname()));
-            stmt.setString(4, m_sqlManager.validateNull(user.getEmail()));
+            stmt.setString(1, m_sqlManager.validateEmpty(user.getDescription()));
+            stmt.setString(2, m_sqlManager.validateEmpty(user.getFirstname()));
+            stmt.setString(3, m_sqlManager.validateEmpty(user.getLastname()));
+            stmt.setString(4, m_sqlManager.validateEmpty(user.getEmail()));
             stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
             stmt.setTimestamp(6, new Timestamp(0));
             stmt.setInt(7, user.getFlags());
             m_sqlManager.setBytes(stmt, 8, internalSerializeAdditionalUserInfo(user.getAdditionalInfo()));
             stmt.setString(9, user.getDefaultGroupId().toString());
-            stmt.setString(10, m_sqlManager.validateNull(user.getAddress()));
-            stmt.setString(11, m_sqlManager.validateNull(user.getSection()));
+            stmt.setString(10, m_sqlManager.validateEmpty(user.getAddress()));
+            stmt.setString(11, m_sqlManager.validateEmpty(user.getSection()));
             stmt.setInt(12, user.getType());
             stmt.setString(13, user.getId().toString());
             stmt.executeUpdate();
