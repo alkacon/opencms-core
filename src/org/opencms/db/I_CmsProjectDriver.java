@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/09/26 15:11:51 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.db;
 
+import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.CmsException;
-import org.opencms.db.generic.CmsSqlManager;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsGroup;
@@ -56,7 +56,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.28 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.29 $ $Date: 2003/09/26 15:11:51 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -269,19 +269,18 @@ public interface I_CmsProjectDriver {
 
     /**
      * Publishes a specified project to the online project.<p>
-     *
-     * @param context the context
-     * @param onlineProject the online project of the OpenCms
-     * @param backupEnabled flag if the backup is enabled
-     * @param backupTagId the backup tag id
-     * @param report a report object to provide the loggin messages
-     * @param exportpoints the exportpoints
-     * @param directPublishResource the resource of a direct publish
+     * 
+     * @param context the current request context
+     * @param report an I_CmsReport instance to print output messages
+     * @param onlineProject the online project
+     * @param publishHistoryId unique int ID to identify each publish task in the publish history
+     * @param directPublishResource a CmsResource that gets directly published, or null if an entire project gets published
+     * @param backupEnabled true if published resources should be written to the Cms backup
+     * @param backupTagId the backup tag ID
      * @param maxVersions maximum number of backup versions
-     * @return a vector of changed or deleted resources
      * @throws Exception if something goes wrong
      */
-    Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints, CmsResource directPublishResource, int maxVersions) throws Exception;
+    void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, int publishHistoryId, CmsResource directPublishResource, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
 
     /**
      * Searches for broken links in the online project.<p>
@@ -430,6 +429,16 @@ public interface I_CmsProjectDriver {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     List readProjectView(int project, String filter) throws CmsException;
+    
+    /**
+     * Reads the resources that were published in a publish task for a given publish history ID.<p>
+     * 
+     * @param projectId the ID of the current project
+     * @param publishHistoryId unique int ID to identify each publish task in the publish history
+     * @return a List of CmsPublishedResource objects
+     * @throws CmsException if something goes wrong
+     */
+    List readPublishedResources(int projectId, int publishHistoryId) throws CmsException;
 
     /**
      * Reads a serializable object from the systempropertys.<p>

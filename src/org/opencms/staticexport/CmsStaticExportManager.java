@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/09/26 11:01:20 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/09/26 15:11:52 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -167,7 +167,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
                 // event data contains a list of the published resources
-                CmsPublishedResources publishedResources = (CmsPublishedResources)event.getData().get("data");
+
+                // TODO re-activate the static export here by processing the List of CmsPublishedResource objects
+                
+                /*
+                int publishHistoryId = new Integer((String) event.getData().get("publishHistoryId")).intValue();
+                List publishedResources = cms.readPublishedResources(publishHistoryId);
+                */
+                CmsPublishedResources publishedResources = null;
+                
                 if (publishedResources != null) {
                     // get list published resources
                     Vector resources = publishedResources.getChangedVfsResources();

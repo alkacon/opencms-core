@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.418 $
+* Date   : $Date: 2003/09/26 15:11:51 $
+* Version: $Revision: 1.419 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 package com.opencms.file;
  
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsPublishedResources;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsEvent;
@@ -81,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.418 $
+ * @version $Revision: 1.419 $
  */
 public class CmsObject {
 
@@ -2651,39 +2650,34 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void publishProject(I_CmsReport report, CmsResource directPublishResource) throws CmsException {
-        Vector newResources = null;
-        Vector deletedResources = null;
+        //Vector newResources = null;
+        //Vector deletedResources = null;
         Vector changedResources = null;
         Vector changedModuleMasters = null;
         boolean success = false;
-        CmsPublishedResources publishedResources = null;
+        int publishHistoryId = m_driverManager.getProjectDriver().readNextPublishVersionId();
 
         clearcache();
 
-        synchronized (m_driverManager) {
-            publishedResources = new CmsPublishedResources(m_context.currentProject());
-            
+        synchronized (m_driverManager) {            
             try {
-                // first we remember the new resources for the link management
+                /*
                 newResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "new");
-
                 deletedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "deleted");
-
                 changedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "changed");
-
                 updateOnlineProjectLinks(deletedResources, changedResources, null, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+                */
 
-                publishedResources = m_driverManager.publishProject(this, m_context, report, directPublishResource);
+                m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource);
 
                 // update the online links table for the new resources (now they are there)
-                updateOnlineProjectLinks(null, null, newResources, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+                //updateOnlineProjectLinks(null, null, newResources, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
 
+                /*
                 changedResources.clear();
                 changedResources = null;
                 newResources = null;
-
-                changedResources = publishedResources.getChangedVfsResources();
-                changedModuleMasters = publishedResources.getChangedCosResources();
+                */
 
                 if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
                     CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
@@ -2711,34 +2705,24 @@ public class CmsObject {
                 OpenCms.getLog(this).error(stamp2, e);
                 }
             } finally {
-                if (changedResources == null || changedResources.size() < 1) {
-                    String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
-                    String stamp2 = "[" + this.getClass().getName() + ".publishProject()/2] User: " + m_context.currentUser().toString();
-                    String stamp3 = "[" + this.getClass().getName() + ".publishProject()/2] Vector was null or empty";
-                    if (DEBUG > 0) {
-                        System.err.println("###################################");
-                        System.err.println(stamp1);
-                        System.err.println(stamp2);
-                        System.err.println(stamp3);
-                    }
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug(stamp1);
-                    OpenCms.getLog(this).debug(stamp2);
-                    OpenCms.getLog(this).debug(stamp3);
-                    }
-                    success = false;
-                }
                 if (!success) {
-                    if (CmsXmlTemplateLoader.getOnlineElementCache() != null)
+                    if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
                         CmsXmlTemplateLoader.getOnlineElementCache().clearCache();
+                    }
                 }
+                
                 // set current project to online project if the published project was temporary
                 // and the published project is still the current project
                 if (m_context.currentProject().getId() == m_context.currentProject().getId() && (m_context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
                     m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
                 }
 
-                this.fireEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, publishedResources);
+                // fire an event that a project has been published
+                Map eventData = (Map) new HashMap();
+                eventData.put("report", report);
+                eventData.put("publishHistoryId", new Integer(publishHistoryId).toString());
+                CmsEvent exportPointEvent = new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData, false);
+                OpenCms.fireCmsEvent(exportPointEvent);                 
             }
         }
     }
@@ -4330,5 +4314,16 @@ public class CmsObject {
     public void validatePassword(String password) throws CmsSecurityException {
         m_driverManager.validatePassword(password);
     }           
+
+    /**
+     * Reads the resources that were published in a publish task for a given publish history ID.<p>
+     * 
+     * @param publishHistoryId unique int ID to identify each publish task in the publish history
+     * @return a List of CmsPublishedResource objects
+     * @throws CmsException if something goes wrong
+     */
+    public List readPublishedResources(int publishHistoryId) throws CmsException {
+        return m_driverManager.readPublishedResources(m_context, publishHistoryId);
+    }
 
 }
