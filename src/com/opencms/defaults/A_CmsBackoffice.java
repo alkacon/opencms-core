@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/01/08 09:04:22 $
-* Version: $Revision: 1.48.2.1 $
+* Date   : $Date: 2003/01/08 09:42:13 $
+* Version: $Revision: 1.48.2.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1816,7 +1816,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             }
 
             // now apply the filter with the cms object, the filter method and additional user parameters
-            long stoptime = System.currentTimeMillis();
             tableContent = (Vector) cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
         } catch (InvocationTargetException ite) {
             //error occured while applying the filter
@@ -1882,7 +1881,20 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             style = this.getStyle(cms, template, entryObject)+">";
             //style entry for backoffice with getUrl method
             url_style = this.getStyle(cms, template, entryObject);
-            //style = ">";
+
+            //get the unique id belonging to an entry
+            try {
+                id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
+            } catch (Exception e) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
+                }
+            }
+            //insert unique id in contextmenue
+            if (id != null) {
+                template.setData("uniqueid", id);
+            }
+            
             //set data of single row
             for (int j = 0; j < columns; j++) {
                 fieldEntry = "+++ NO VALUE FOUND +++";
@@ -1912,18 +1924,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object: Other exception! "+e);
                     }
-                }
-                try {
-                    id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
-                } catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
-                    }
-                }
-
-                //insert unique id in contextmenue
-                if (id != null) {
-                    template.setData("uniqueid", id);
                 }
                 //insert table entry
                 if (fieldEntry != null) {
@@ -1956,20 +1956,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
                     entry.append(tabledataend);
                 }
             }
-            //get the unique id belonging to an entry
-            try {
-                id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
-            } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
-                }
-            }
-
-            //insert unique id in contextmenue
-            if (id != null) {
-                template.setData("uniqueid", id);
-            }
-
             //set the lockstates for the current entry
             setExtendedLockstates(cms, template, cdClass, entryObject, parameters);
             //set the projectflag for the current entry
