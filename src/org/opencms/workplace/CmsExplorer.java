@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/30 15:52:38 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/07/30 16:46:05 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1
  */
@@ -247,12 +247,9 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(getSettings().getExplorerMode());
         content.append("\";\n");
 
-        content.append("top.showlinks=\"");        
+        content.append("top.showlinks=");        
         content.append(showVfsLinks);
-        content.append("\";\n");
-        System.err.println(showVfsLinks);
-
-        
+        content.append(";\n");        
 
 //      // the flaturl
 //      if (getSettings().getExplorerFlaturl() != null) {
