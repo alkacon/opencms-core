@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/19 14:54:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/19 15:26:26 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.io.SAXReader;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
@@ -1185,6 +1185,11 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
 
         try {
             if (resource.isFile()) {
+                if (!resource.getName().toLowerCase().endsWith(".zip")) {
+                    // skip non-ZIP files
+                    return null;
+                }
+                
                 // create a Reader either from a ZIP file's manifest.xml entry...
                 zipFile = new ZipFile(resource);
                 zipFileEntry = zipFile.getEntry("manifest.xml");
@@ -1200,7 +1205,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
             saxReader = new SAXReader();
             manifest = saxReader.read(reader);            
         } catch (Exception e) {
-            System.err.println(e.toString());
+            System.err.println("Error reading manifest.xml from resource: " + resource + ", " + e.toString());
             e.printStackTrace(System.err);
             manifest = null;
         } finally {
@@ -1252,7 +1257,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     public void importModulesFromSetupBean() throws Exception {
         Map module = null;
         String filename = null;
-        
+
         // read here how the list of modules to be installed is passed from the setup bean to the
         // setup thread, and finally to the shell process that executes the setup script:
         // 1) the list with the package names of the modules to be installed is saved by setInstallModules
@@ -1261,9 +1266,9 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         // 4) the setup bean is passed to the shell by startSetup
         // 5) because the setup bean implements I_CmsShellCommands, the shell constructor can pass the shell's CmsObject back to the setup bean
         // 6) thus, the setup bean can do things with the Cms
-        
+
         if (m_cms != null && m_installModules != null) {
-            for (int i=0;i<m_installModules.size();i++) {
+            for (int i = 0; i < m_installModules.size(); i++) {
                 module = (Map) m_availableModules.get(m_installModules.get(i));
                 filename = (String) module.get("filename");
                 importModuleFromDefault(filename);
