@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
-* Date   : $Date: 2001/08/30 13:50:01 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/04/02 08:47:07 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -114,6 +114,7 @@ public class CmsPool extends Thread {
         start();
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": created");
+            System.err.println("Pool with connectiontest created: " + m_poolname);
         }
     }
 
@@ -203,7 +204,11 @@ public class CmsPool extends Thread {
             }
         }
         // done it - we have a connection
-        return con;
+        if(testConnection(con)) {
+            return con;
+        } else {
+            return getConnection();
+        }
     }
 
     /**
@@ -321,5 +326,33 @@ public class CmsPool extends Thread {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": destroyed");
         }
+    }
+
+    protected boolean testConnection(java.sql.Connection con) {
+        ResultSet res = null;
+        PreparedStatement stmnt = null;
+        boolean retValue = true;
+        try {
+            stmnt = con.prepareStatement("select count(*) from CMS_USERS");
+            res = stmnt.executeQuery();
+            res.next();
+        } catch(SQLException exc) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": testConnection failed:\n" + com.opencms.util.Utils.getStackTrace(exc) + "\n\n" + com.opencms.util.Utils.getStackTrace(new Exception()));
+            }
+            retValue = false;
+        } finally {
+            try {
+                res.close();
+            } catch(Exception exc) {
+                // ignore
+            }
+            try {
+                stmnt.close();
+            } catch(Exception exc) {
+                // ignore
+            }
+        }
+        return retValue;
     }
 }
