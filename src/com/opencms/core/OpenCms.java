@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/07/18 16:13:47 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/07/19 16:13:13 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.30 $ $Date: 2000/07/18 16:13:47 $  
+* @version $Revision: 1.31 $ $Date: 2000/07/19 16:13:13 $  
 * 
 * */
 
@@ -95,7 +95,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
       * 
       * @param conf The configurations from the property-file.
       */
-     OpenCms(Configurations conf) {
+     OpenCms(Configurations conf) 
+		 throws Exception {
         // invoke the ResourceBroker via the initalizer
         try {
 			
@@ -124,6 +125,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
 			}
+			throw e;
         }
         
         // try to initialize the launchers.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/07/18 16:13:47 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2000/07/19 16:13:13 $
+ * Version: $Revision: 1.49 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.48 $ $Date: 2000/07/18 16:13:47 $  
+* @version $Revision: 1.49 $ $Date: 2000/07/19 16:13:13 $  
 * 
 * */
 
@@ -120,7 +120,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
     public void init(ServletConfig config) throws ServletException {
 		
         super.init(config);
-           
+		
         // Collect the configurations
     	try {	
             m_configurations = new Configurations (new ExtendedProperties(config.getInitParameter("properties")));
@@ -148,9 +148,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] redirect-rule: " + redirect + " -> " + redirectlocation);
 			}
         }                                                                                                      
-        
-        // invoke the OpenCms
-        m_opencms=new OpenCms(m_configurations);
+
+		try {
+			// invoke the OpenCms
+			m_opencms=new OpenCms(m_configurations);
+		} catch(Exception exc) {
+			throw new ServletException(exc.getMessage());
+		}
         
         //initalize the session storage
 		if(A_OpenCms.isLogging()) {
