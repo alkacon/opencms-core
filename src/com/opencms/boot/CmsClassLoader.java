@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsClassLoader.java,v $
-* Date   : $Date: 2001/04/19 17:14:53 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/04/27 14:37:00 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -106,7 +106,7 @@ import java.lang.reflect.*;
  * with a parent classloader. Normally this should be the classloader
  * that loaded this loader.
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2001/04/19 17:14:53 $
+ * @version $Revision: 1.3 $ $Date: 2001/04/27 14:37:00 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -339,13 +339,13 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                             myResourceData = null;
                         }
 
-                        if(fromJar) {
+                        if(fromJar && myResourceData != null) {
                             s = loadResourceFromZipFile(new ByteArrayInputStream(myResourceData), name);
                         } else {
                             s = new ByteArrayInputStream(myResourceData);
                         }
                     }
-                } catch(Exception exc) {
+                } catch(IOException exc) {
                     // Error while reading data, consider it as not found
                     s = null;
                 }
@@ -523,7 +523,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                         myClassData = null;
                     }
 
-                    if(fromJar) {
+                    if(fromJar && myClassData != null) {
                         myClassData = loadClassFromZipFile(new ByteArrayInputStream(myClassData), name);
                     }
 
