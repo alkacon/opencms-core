@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/07 12:36:10 $
- * Version: $Revision: 1.290 $
+ * Date   : $Date: 2003/11/07 17:29:00 $
+ * Version: $Revision: 1.291 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.290 $ $Date: 2003/11/07 12:36:10 $
+ * @version $Revision: 1.291 $ $Date: 2003/11/07 17:29:00 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6469,17 +6469,17 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         
         // first get the correct status mode
         int state=-1;
-        if ("new".equalsIgnoreCase(filter)) state=I_CmsConstants.C_STATE_NEW;
-        else if ("changed".equalsIgnoreCase(filter)) state=I_CmsConstants.C_STATE_CHANGED;
-        else if ("deleted".equalsIgnoreCase(filter)) state=I_CmsConstants.C_STATE_DELETED;
-        else if ("all".equalsIgnoreCase(filter)) state=I_CmsConstants.C_STATE_UNCHANGED;
+        if (filter.equals("new")) state=I_CmsConstants.C_STATE_NEW;
+        else if (filter.equals("changed")) state=I_CmsConstants.C_STATE_CHANGED;
+        else if (filter.equals("deleted")) state=I_CmsConstants.C_STATE_DELETED;
+        else if (filter.equals("all")) state=I_CmsConstants.C_STATE_UNCHANGED;
         
         // depending on the selected filter, we must use different methods to get the required 
         // resources
         
         // if the "lock" filter was selected, we must handle the DB access different since
         // lock information aren ot sotred in the DB anymore
-        if ("locked".equalsIgnoreCase(filter)) {
+        if (filter.equals("locked")) {
             resources=m_vfsDriver.readResources(projectId, state, I_CmsConstants.C_READMODE_IGNORESTATE);              
         } else {
         
@@ -6497,14 +6497,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
           
         Iterator i = resources.iterator();
         while (i.hasNext()) {
-            currentResource = (CmsResource)i.next();
-            if (hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {
-                if ("locked".equalsIgnoreCase(filter)) {
+            currentResource = (CmsResource)i.next();          
+            if (hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {                
+                if (filter.equals("locked")) {                    
                     currentLock = getLock(context, currentResource);
                     if (!currentLock.isNullLock()) {
                         retValue.addElement(currentResource);
                     }
-                } else {
+                } else {                      
                     retValue.addElement(currentResource);
                 }
             }

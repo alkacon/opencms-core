@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/05 17:45:00 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2003/11/07 17:29:00 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1202,6 +1202,9 @@ public class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(". Encoding set to      : " + m_defaultEncoding);
         }
 
+        // initialize the memory monitor
+        m_memoryMonitor = CmsMemoryMonitor.initialize(conf);
+        
         // read server ethernet address (MAC) and init UUID generator
         String ethernetAddress = conf.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {            
@@ -1547,7 +1550,7 @@ public class OpenCmsCore {
         // get a Admin cms context object
         CmsObject adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
         // initialize the site manager
-        m_siteManager = CmsSiteManager.initialize(conf, adminCms);        
+        m_siteManager = CmsSiteManager.initialize(conf, adminCms);  
 
         // site folders for which links should be labeled specially in the explorer
         String[] labelSiteFolderString = conf.getStringArray("site.labeled.folders");
@@ -1769,7 +1772,6 @@ public class OpenCmsCore {
      */
     protected void initMembers() {
         m_log = new CmsLog();
-        m_memoryMonitor = new CmsMemoryMonitor();
         m_passwordValidatingClass = "";
         m_checkFile = new ArrayList();
         m_defaultEncoding = C_DEFAULT_ENCODING;
@@ -2151,6 +2153,7 @@ public class OpenCmsCore {
         if (currentInstance != null) {
             m_basePath = currentInstance.getBasePath();
             m_log = currentInstance.getLog();
+            m_memoryMonitor = currentInstance.getMemoryMonitor();
         }
         return this;
     }
