@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/31 17:07:36 $
- * Version: $Revision: 1.188 $
+ * Date   : $Date: 2000/11/03 14:55:01 $
+ * Version: $Revision: 1.189 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.188 $ $Date: 2000/10/31 17:07:36 $
+ * @version $Revision: 1.189 $ $Date: 2000/11/03 14:55:01 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1279,63 +1279,6 @@ public void copyResourceToProject(CmsProject currentProject, CmsProject fromProj
 {
 	m_dbAccess.copyResourceToProject(currentProject, fromProject, resource);
 }
-/**
- * Insert the method's description here.
- * Creation date: (06-10-2000 08:47:34)
- * @param currentUser com.opencms.file.CmsUser
- * @param currentProject com.opencms.file.CmsProject
- * @param fromProject com.opencms.file.CmsProject
- * @param resource java.lang.String
- * @author Martin Langelund
- */
-public void copyResourceToProject(CmsUser currentUser, CmsProject currentProject, CmsProject fromProject, String resource) throws CmsException
-{
-	if (currentProject.equals(fromProject))
-		throw new CmsException("[" + this.getClass().getName() + "] " + currentProject.getName() + " Cannot copy from same project", CmsException.C_NO_ACCESS);
-	if (currentProject.getOwnerId() != currentUser.getId())
-		throw new CmsException("[" + this.getClass().getName() + "] " + currentProject.getName(), CmsException.C_NO_ACCESS);
-	if (currentProject.getFlags() != C_PROJECT_STATE_UNLOCKED)
-		throw new CmsException("[" + this.getClass().getName() + "] " + currentProject.getName(), CmsException.C_NO_ACCESS);
-		
-	CmsResource fromResource = readFileHeader(currentUser, fromProject, resource);
-	CmsResource offlineRes = null;
-
-	// walk recursively through all parents and copy them, too
-	String parent = fromResource.getParent();
-	Stack resources = new Stack();
-
-	// go through all parens and store them on a stack
-	while (parent != null)
-	{
-		// read the online-resource
-		fromResource = readFileHeader(currentUser, fromProject, parent);
-		resources.push(fromResource);
-		// get the parent
-		parent = fromResource.getParent();
-	}
-	// now create all parent folders, starting at the root folder
-	while (resources.size() > 0)
-	{
-		fromResource = (CmsResource) resources.pop();
-		parent = fromResource.getAbsolutePath();
-		// copy it to the offlineproject
-		try
-		{
-			m_dbAccess.copyResourceToProject(currentProject, fromProject, fromResource);
-			// read the offline-resource
-			offlineRes = readFileHeader(currentUser, currentProject, parent);
-
-			// copy the metainfos			
-			writeProperties(currentUser, currentProject, offlineRes.getAbsolutePath(), readAllProperties(currentUser, currentProject, fromResource.getAbsolutePath()));
-			chstate(currentUser, currentProject, offlineRes.getAbsolutePath(), C_STATE_UNCHANGED);
-		}
-		catch (CmsException exc)
-		{
-			// if the subfolder exists already - all is ok
-		}
-	}
-	helperCopyResourceToProject(currentUser, fromProject, currentProject, resource);
-}
 	 /**
 	 * Copies a resource from the online project to a new, specified project.<br>
 	 * Copying a resource will copy the file header or folder into the specified 
@@ -1618,7 +1561,6 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 				CmsException.C_NO_ACCESS);
 		}
 	}
-
 /**
  * Creates a project.
  * 
@@ -1654,7 +1596,6 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
 		throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
 	}
 }
-
 	/**
 	 * Creates a new project for task handling.
 	 * 
@@ -2337,7 +2278,6 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 									  newUser.getFirstname() + " " +
 									  newUser.getLastname() + ".");
 	}
-
 	/**
 	 * Returns all projects, which are owned by the user or which are accessible
 	 * for the group of the user.
@@ -2383,7 +2323,6 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 		// return the vector of projects
 		return(projects);
 	 }
-	
 	/**
 	 * Returns all projects, which are owned by the user or which are manageable
 	 * for the group of the user.
@@ -2432,8 +2371,6 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 		// return the vector of projects
 		return(projects);
 	 }
-
-	
 	/**
 	 * Returns a Vector with all I_CmsResourceTypes.
 	 * 
@@ -2463,7 +2400,6 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 		// return the resource-types.
 		return(m_resourceTypes);
 	}
-	
 	/**
 	 * Returns informations about the cache<P/>
 	 * 
@@ -2486,7 +2422,6 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 
 	return info;
 	}
-	
 	/**
 	 * Returns all child groups of a group<P/>
 	 * 
@@ -4033,7 +3968,6 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, int proj
 		throw exc;
 	}
 }
-
 /**
  * Reads a file from the Cms.<BR/>
  * 
@@ -4091,8 +4025,6 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
 		throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
 	}
 }
-
-
 	/**
 	 * Gets the known file extensions (=suffixes) 
 	 * 
@@ -4110,7 +4042,6 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
 		Hashtable res=(Hashtable) m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS);
 		return ( (res!=null)? res : new Hashtable());	
 	}
-	
 	 /**
 	 * Reads a file header a previous project of the Cms.<BR/>
 	 * The reading excludes the filecontent. <br>
@@ -4159,7 +4090,6 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
 		 }
 
 	 }
-
 	/**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent. <br>
@@ -4223,7 +4153,6 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
 				 CmsException.C_ACCESS_DENIED);
 		}
 	 }
-	 
 	 /**
 	 * Reads all file headers for a project from the Cms.<BR/>
 	 * 
@@ -4288,7 +4217,6 @@ protected CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, i
 	}
 	return cmsFolder;		
 }
-
 /**
  * Reads a folder from the Cms.<BR/>
  * 
@@ -4348,7 +4276,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_ACCESS_DENIED);
 	}
 }
-
 /**
  * Reads a folder from the Cms.<BR/>
  * 

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/31 13:11:24 $
- * Version: $Revision: 1.129 $
+ * Date   : $Date: 2000/11/03 14:55:01 $
+ * Version: $Revision: 1.130 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.129 $ $Date: 2000/10/31 13:11:24 $
+ * @version $Revision: 1.130 $ $Date: 2000/11/03 14:55:01 $
  * 
  */
 
@@ -441,27 +441,6 @@ public interface I_CmsResourceBroker {
 	public void copyFolder(CmsUser currentUser, CmsProject currentProject,
 						 String source, String destination)
 		throws CmsException;
-/**
- * Insert the method's description here.
- * Creation date: (09-10-2000 13:01:38)
- * @param currentProject com.opencms.file.CmsProject
- * @param fromProject com.opencms.file.CmsProject
- * @param resource com.opencms.file.CmsResource
- * @exception com.opencms.core.CmsException The exception description.
- * @author Martin Langelund
- */
-public void copyResourceToProject(CmsProject currentProject, CmsProject fromProject, CmsResource resource) throws com.opencms.core.CmsException;
-/**
- * Insert the method's description here.
- * Creation date: (06-10-2000 08:54:00)
- * @param currentUser com.opencms.file.CmsUser
- * @param currentProject com.opencms.file.CmsProject
- * @param fromProject com.opencms.file.CmsProject
- * @param resource java.lang.String
- * @exception com.opencms.core.CmsException The exception description.
- * @author Martin Langelund
- */
-public void copyResourceToProject(CmsUser currentUser, CmsProject currentProject, CmsProject fromProject, String resource) throws com.opencms.core.CmsException;
 	/**
 	 * Copies a resource from the online project to a new, specified project.<br>
 	 * Copying a resource will copy the file header or folder into the specified 
@@ -586,7 +565,6 @@ public void copyResourceToProject(CmsUser currentUser, CmsProject currentProject
  * @author Martin Langelund
  */
 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname) throws com.opencms.core.CmsException;
-
 	/**
 	  * Creates a new project for task handling.
 	  * 
@@ -981,15 +959,12 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	public Hashtable getAllResourceTypes(CmsUser currentUser, 
 										 CmsProject currentProject) 
 		throws CmsException;
-	
 	/**
 	 * Returns informations about the cache.
 	 * 
 	 * @return a hashtable with informations about the cache.
 	 */
 	public Hashtable getCacheInfo();
-	
-	
 	/**
 	 * Returns all child groups of a group<P/>
 	 * 
@@ -1049,20 +1024,6 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	public Vector getDirectGroupsOfUser(CmsUser currentUser, CmsProject currentProject, 
 										String username)
 		throws CmsException;
-	/**
-	 * This method can be called, to determine if the file-system was changed 
-	 * in the past. A module can compare its previosly stored number with this
-	 * returned number. If they differ, a change was made.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * 
-	 * @return the number of file-system-changes.
-	 */
-	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject);
 	 /**
 	 * Returns a Vector with all files of a folder.<br>
 	 * 
@@ -1103,6 +1064,20 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition, String propertyValue) throws CmsException;
+	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject);
 	/**
 	 * Returns all groups<P/>
 	 * 
@@ -1402,36 +1377,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	public boolean isProjectManager(CmsUser currentUser, CmsProject currentProject) 
 		throws CmsException;
 	/**
-	 * Locks a resource.<br>
-	 * 
-	 * Only a resource in an offline project can be locked. The state of the resource
-	 * is set to CHANGED (1).
-	 * If the content of this resource is not exisiting in the offline project already,
-	 * it is read from the online project and written into the offline project.
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource. <br>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is not locked by another user</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The complete path to the resource to lock.
-	 * @param force If force is true, a existing locking will be oberwritten.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 * It will also be thrown, if there is a existing lock
-	 * and force was set to false.
-	 */
-	public void lockResource(CmsUser currentUser, CmsProject currentProject,
-							 String resourcename, boolean force)
-		throws CmsException;
-	/**
 	 * Returns the user, who had locked the resource.<BR/>
 	 * 
 	 * A user can lock a resource, so he is the only one who can write this 
@@ -1466,6 +1411,36 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 */
 	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  String resource)
+		throws CmsException;
+	/**
+	 * Locks a resource.<br>
+	 * 
+	 * Only a resource in an offline project can be locked. The state of the resource
+	 * is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is not locked by another user</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The complete path to the resource to lock.
+	 * @param force If force is true, a existing locking will be oberwritten.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * It will also be thrown, if there is a existing lock
+	 * and force was set to false.
+	 */
+	public void lockResource(CmsUser currentUser, CmsProject currentProject,
+							 String resourcename, boolean force)
 		throws CmsException;
 	//  Methods working with user and groups
 	

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/11/01 18:15:32 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/11/03 14:55:00 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.14 $ $Date: 2000/11/01 18:15:32 $
+ * @version $Revision: 1.15 $ $Date: 2000/11/03 14:55:00 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -71,6 +71,43 @@ public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws E
 	printHelpText();
 
 }
+/**
+ * Accept a task from the Cms.
+ * 
+ * @param taskid the id of the task to accept.
+ */
+public void acceptTask(String taskId) {
+	try {
+		int id = Integer.parseInt(taskId);
+		m_cms.acceptTask(id);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Checks, if the user may create this resource.
+ * 
+ * @param resource the resource to check.
+ */
+public void accessCreate(String resource) {
+	try {
+		System.out.println(m_cms.accessCreate(m_cms.readFileHeader(resource)));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Checks, if the user may lock this resource.
+ * 
+ * @param resource the resource to check.
+ */
+public void accessLock(String resource) {
+	try {
+		System.out.println(m_cms.accessLock(m_cms.readFileHeader(resource)));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Tests if the user can access the project.
 	 * 
@@ -84,6 +121,18 @@ public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws E
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+ * Checks, if the user may read this resource.
+ * 
+ * @param resource The resource to check.
+ */
+public void accessRead(String resource) {
+	try {
+		System.out.println(m_cms.accessRead(m_cms.readFileHeader(resource)));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Tests if the user can write the resource.
 	 * 
@@ -228,16 +277,39 @@ public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws E
 			CmsShell.printException(exc);
 		}
 	}
-	/**
-	 * Returns the anonymous user object.
-	 */
-	public void anonymousUser() {
-		try {
-			System.out.println( m_cms.anonymousUser() );
-		} catch( Exception exc ) {
-			CmsShell.printException(exc);
-		}
+/** 
+ * Adds a web user to the Cms.
+ * <br>
+ * A web user has no access to the workplace but is able to access personalized
+ * functions controlled by the OpenCms.
+ *
+ * @param name the new name for the user.
+ * @param password the new password for the user.
+ * @param group the default groupname for the user.
+ * @param description the description for the user.
+ * @param flags the flags for a user (e.g. C_FLAG_ENABLED)
+ * 
+ */
+public void addWebUser(String name, String password, String group, String description, String flags) {
+	try {
+		int intFlags = Integer.parseInt(flags);
+		System.out.println(m_cms.addWebUser(name, password, group, description, new Hashtable(), intFlags));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
 	}
+}
+/**
+ * Returns the anonymous user object.
+ * 
+ * @return a <code>CmsUser</code> object representing the anonymous user.
+ */
+public void anonymousUser() {
+	try {
+		System.out.println(m_cms.anonymousUser());
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Changes the group for this resource<BR/>
 	 * 
@@ -298,6 +370,16 @@ public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws E
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Clears all internal DB-Caches.
+ */
+public void clearcache() {
+	try {
+		m_cms.clearcache();
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Copies the file.
 	 * 
@@ -315,6 +397,19 @@ public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws E
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Copies a folder.
+ * 
+ * @param source the complete path of the sourcefolder.
+ * @param destination the complete path of the destinationfolder.
+ */
+public void copyFolder(String source, String destination) {
+	try {
+		m_cms.copyFolder(source, destination);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Copies a resource from the online project to a new, specified project.<br>
 	 * Copying a resource will copy the file header or folder into the specified 
@@ -329,24 +424,6 @@ public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws E
 			CmsShell.printException(exc);
 		}
 	}
-/**
- * Insert the method's description here.
- * Creation date: (06-10-2000 08:58:47)
- * @param fromProjectId java.lang.String
- * @param resource java.lang.String
- * @author Martin Langelund
- */
-public void copyResourceToProject(String fromProjectId, String resource)
-{
-	try
-	{
-		m_cms.copyResourceToProject(m_cms.readProject(Integer.parseInt(fromProjectId)), resource);
-	}
-	catch (Exception e)
-	{
-		CmsShell.printException(e);
-	}
-}
 	/**
 	 * Returns a copyright-string for this OpenCms.
 	 */
@@ -356,6 +433,19 @@ public void copyResourceToProject(String fromProjectId, String resource)
 			 System.out.println(copy[i]);
 		 }
 	 }
+/**
+ * Counts the locked resources in a project.
+ * 
+ * @param id the id of the project
+ */
+public void countLockedResources(String id) {
+	try {
+		int intId = Integer.parseInt(id);
+		System.out.println(m_cms.countLockedResources(intId));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Creates a new folder.
 	 * 
@@ -424,6 +514,49 @@ public void createModule(String modulename, String niceModulename, String descri
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+  * Creates a new task.
+  * <p>
+  * <B>Security:</B>
+  * All users can create a new task.
+  * @param agent the User who will edit the task. 
+  * @param role a Usergroup for the task.
+  * @param taskname the name of the task.
+  * @param taskcomment a description of the task.
+  * @param timeout the time when the task must finished.
+  * @param priority the Id for the priority of the task.
+  */
+public void createTask(String agentName, String roleName, String taskname, String taskcomment, String timeout, String priority) {
+	try {
+		int intPriority = Integer.parseInt(priority);
+		long longTimeout = Long.parseLong(timeout);
+		System.out.println(m_cms.createTask(agentName, roleName, taskname, taskcomment, longTimeout, intPriority));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+  * Creates a new task.
+  * <p>
+  * <B>Security:</B>
+  * All users can create a new task.
+  * 
+  * @param projectid the Id of the current project task of the user.
+  * @param agentname the User who will edit the task. 
+  * @param rolename a Usergroup for the task.
+  * @param taskname a Name of the task.
+  * @param tasktype the type of the task.
+  * @param taskcomment a description of the task.
+  * @param timeout the time when the task must finished.
+  * @param priority the Id for the priority of the task.
+  */
+public void createTask(String projectid, String agentName, String roleName, String taskname, String taskcomment, String tasktype, String timeout, String priority) {
+	try {
+		System.out.println(m_cms.createTask(Integer.parseInt(projectid), agentName, roleName, taskname, taskcomment, Integer.parseInt(tasktype), Long.parseLong(timeout), Integer.parseInt(priority)));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Deletes all propertyinformation for a file or folder.
 	 * 
@@ -549,6 +682,18 @@ public void deleteModuleView(String modulename) {
 			CmsShell.printException(exc);
 		}
 	}
+/** 
+ * Deletes a web user from the Cms.
+ * 
+ * @param name the id of the user to be deleted.
+ */
+public void deleteWebUser(String userId) {
+	try {
+		m_cms.deleteWebUser(Integer.parseInt(userId));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Echos the input to output.
 	 * 
@@ -557,6 +702,18 @@ public void deleteModuleView(String modulename) {
 	public void echo(String echo) {
 		System.out.println(echo);
 	}
+/**
+ * Ends a task of the Cms.
+ * 
+ * @param taskid the ID of the task to end.
+ */
+public void endTask(String taskid) {
+	try {
+		m_cms.endTask(Integer.parseInt(taskid));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Exits the commandline-interface
 	 */
@@ -634,6 +791,20 @@ public void exportModule(String modulename, String resource, String filename) {
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Forwards a task to a new user.
+ * 
+ * @param taskid the id of the task which will be forwarded.
+ * @param newRole the new group for the task.
+ * @param newUser the new user who gets the task.
+ */
+public void forwardTask(String taskid, String newRoleName, String newUserName) {
+	try {
+		m_cms.forwardTask(Integer.parseInt(taskid), newRoleName, newUserName);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Returns all projects, which the user may access.
 	 * 
@@ -649,6 +820,21 @@ public void exportModule(String modulename, String resource, String filename) {
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+ * Returns all projects which are owned by the current user or which are manageable
+ * for the group of the user.
+ */
+public void getAllManageableProjects() {
+	try {
+		Vector projects = m_cms.getAllManageableProjects();
+		for(int i = 0 ; i < projects.size(); i++) {
+			CmsProject project = (CmsProject) projects.elementAt(i);
+			System.out.println(project);
+		}		
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Returns  all I_CmsResourceTypes.
 	 */
@@ -664,6 +850,34 @@ public void exportModule(String modulename, String resource, String filename) {
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+* Gets information about the cache size.
+* <br>
+* The size of the following caching areas is returned:
+* <ul>
+*  <li>GroupCache</li>
+*  <li>UserGroupCache</li>
+*  <li>ResourceCache</li>
+*  <li>SubResourceCache</li>
+*  <li>ProjectCache</li>
+*  <li>PropertyCache</li>
+*  <li>PropertyDefinitionCache</li>
+*  <li>PropertyDefinitionVectorCache</li>
+* </ul>
+*/
+public void getCacheInfo() {
+	try {
+		Hashtable cacheInfo = m_cms.getCacheInfo();
+		Enumeration keys = cacheInfo.keys();
+		while(keys.hasMoreElements()) {
+			String key = (String) keys.nextElement();
+			String info = (String) cacheInfo.get(key);
+			System.out.println("\t" + key + ": " + info);
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Returns all child groups of a group<P/>
 	 * 
@@ -701,6 +915,22 @@ public void exportModule(String modulename, String resource, String filename) {
 	public void getCurrentProject() {
 		System.out.println(m_cms.getRequestContext().currentProject().toString());
 	}
+/**
+ * Gets all groups to which a given user directly belongs.
+ * 
+ * @param username the name of the user to get all groups for.
+ * @return a Vector of all groups of a user.
+ */
+public void getDirectGroupsOfUser(String username) {
+	try {
+		Vector groups = m_cms.getDirectGroupsOfUser(username);
+		for(int i = 0; i < groups.size(); i++) {
+			System.out.println((CmsGroup) groups.elementAt(i));
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Returns a Vector with all subfiles.<BR/>
 	 * 
@@ -721,6 +951,22 @@ public void exportModule(String modulename, String resource, String filename) {
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Returns a Vector with all resource-names of the resources that have set the given property to the given value.
+ * 
+ * @param propertydef the name of the property-definition to check.
+ * @param property the value of the property for the resource.
+ */
+public void getFilesWithProperty(String propertyDefinition, String propertyValue) {
+	try {
+		Vector files = m_cms.getFilesWithProperty(propertyDefinition, propertyValue);
+		for(int i = 0; i < files.size(); i++) {
+			System.out.println((CmsFile)files.elementAt(i));
+		}		
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * This method can be called, to determine if the file-system was changed 
 	 * in the past. A module can compare its previosly stored number with this
@@ -863,21 +1109,18 @@ public void getModuleInfo(String name) {
 		CmsShell.printException(exc);
 	}
 }
-	/**
-	 * Returns the parent group of a group<P/>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
-	 * 
-	 * @param groupname The name of the group.
-	 */
-	public void getParent(String groupname) {
-		try {
-			System.out.println(m_cms.getParent(groupname));
-		} catch( Exception exc ) {
-			CmsShell.printException(exc);
-		}
+/**
+ * Returns the parent group of a group.
+ * 
+ * @param groupname the name of the group.
+ */
+public void getParent(String groupname) {
+	try {
+		System.out.println(m_cms.getParent(groupname));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
 	}
+}
 	/**
 	 * Returns a CmsResourceTypes.
 	 * 
@@ -921,6 +1164,31 @@ public void getModuleInfo(String name) {
 			CmsShell.printException(exc);
 		}
 	}
+/**
+  * Get a parameter value for a task.
+  * 
+  * @param taskid the id of the task.
+  * @param parname the name of the parameter.
+  */
+public void getTaskPar(String taskid, String parname) {
+	try {
+		System.out.println(m_cms.getTaskPar(Integer.parseInt(taskid), parname));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Get the template task id fo a given taskname.
+ * 
+ * @param taskname the name of the task.
+ */
+public void getTaskType(String taskname) {
+	try {
+		System.out.println(m_cms.getTaskType(taskname));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Returns all users of the cms.
 	 */
@@ -934,6 +1202,21 @@ public void getModuleInfo(String name) {
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Returns all users of the given type in the Cms.
+ * 
+ * @param type the type of the users.
+ */
+public void getUsers(String type) {
+	try {
+		Vector users = m_cms.getUsers(Integer.parseInt(type));
+		for (int i = 0; i < users.size(); i++) {
+			System.out.println((CmsUser) users.elementAt(i));
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Returns all groups of a user.
 	 * 
@@ -1152,6 +1435,22 @@ public void importResources(String importFile, String importPath) {
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Returns the user, who has locked a given resource.
+ * <br>
+ * A user can lock a resource, so he is the only one who can write this 
+ * resource. This methods checks, who has locked a resource.
+ * 
+ * @param resource The complete path to the resource.
+ * 
+ */
+public void lockedBy(String resource) {
+	try {
+		System.out.println(m_cms.lockedBy(resource));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Locks a resource<BR/>
 	 * 
@@ -1167,6 +1466,22 @@ public void importResources(String importFile, String importPath) {
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Locks a given resource.
+ * <br>
+ * A user can lock a resource, so he is the only one who can write this 
+ * resource.
+ * 
+ * @param resource the complete path to the resource to lock.
+ * @param force if force is <code>true</code>, a existing locking will be overwritten.
+ */
+public void lockResource(String resource, String force) {
+	try {
+		m_cms.lockResource(resource, Boolean.getBoolean(force));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Logs a user into the system.
 	 * 
@@ -1182,6 +1497,54 @@ public void importResources(String importFile, String importPath) {
 			System.out.println("Login failed!");
 		}
 	}
+	/**
+	 * Logs a user into the system.
+	 * 
+	 * @param username The name of the user to log in.
+	 * @param password The password.
+	 */
+	public void loginUser(String username, String password) {
+		loginUser(username, password);
+	}
+/**
+ * Logs a web user into the Cms, if the password is correct.
+ * 
+ * @param username the name of the user.
+ * @param password the password of the user.
+ */
+public void loginWebUser(String username, String password) {
+	try {
+		System.out.println(m_cms.loginWebUser(username, password));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Moves a file to the given destination.
+ * 
+ * @param source the complete path of the sourcefile.
+ * @param destination the complete path of the destinationfile.
+ */
+public void moveFile(String source, String destination) {
+	try {
+		m_cms.moveFile(source, destination);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Moves the folder to the given destination.
+ * 
+ * @param source the complete path of the sourcefile.
+ * @param destination the complete path of the destinationfile.
+ */
+public void moveFolder(String source, String destination) {
+	try {
+		m_cms.moveFolder(source, destination);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Reads a the online-project from the Cms.
 	 */
@@ -1228,6 +1591,18 @@ public void printHelpText()
 	public void quit() {
 		exit();
 	}
+/**
+ * Reads the agent of a task from the OpenCms.
+ * 
+ * @param task the task to read the agent from.
+ */
+public void readAgent(String task) {
+	try {
+		System.out.println(m_cms.readAgent(m_cms.readTask(Integer.parseInt(task))));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	 /**
 	 * Reads all file headers of a file in the OpenCms.<BR>
 	 * This method returns a vector with the histroy of all file headers, i.e. 
@@ -1341,6 +1716,22 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Gets the known file extensions (=suffixes). 
+ */
+public void readFileExtensions() {
+	try {
+		Hashtable extensions = m_cms.readFileExtensions();
+		Enumeration keys = extensions.keys();
+		while (keys.hasMoreElements()) {
+			String key = (String) keys.nextElement();
+			String ext = (String) extensions.get(key);
+			System.out.println(key + ": " + ext);
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.
@@ -1354,6 +1745,21 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Reads all file headers of a project from the Cms.
+ * 
+ * @param projectId the id of the project to read the file headers for.
+ */
+public void readFileHeaders(String projectId) {
+	try {
+		Vector files = m_cms.readFileHeaders(Integer.parseInt(projectId));
+		for (int i = 0; i < files.size(); i++) {
+			System.out.println(files.elementAt(i));
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Reads a folder from the Cms.<BR/>
 	 * 
@@ -1366,6 +1772,24 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+  * Reads all given tasks from a user for a project.
+  * 
+  * @param projectId the id of the project in which the tasks are defined.
+  * @param owner the owner of the task.
+  * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+  * @param orderBy specifies how to order the tasks.
+  */
+public void readGivenTasks(String projectId, String ownerName, String taskType, String orderBy, String sort) {
+	try {
+		Vector tasks = m_cms.readGivenTasks(Integer.parseInt(projectId), ownerName, Integer.parseInt(taskType), orderBy, sort);
+		for (int i = 0; i < tasks.size(); i++) {
+			System.out.println(tasks.elementAt(i));
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Returns a group in the Cms.
 	 * 
@@ -1380,6 +1804,48 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Reads the group of a project from the OpenCms.
+ */
+public void readGroupOfProject(String project) {
+	try {
+		System.out.println(m_cms.readGroup(m_cms.readProject(Integer.parseInt(project))));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads the group of a resource from the Cms.
+ */
+public void readGroupOfResource(String resource) {
+	try {
+		System.out.println(m_cms.readGroup(m_cms.readFileHeader(resource)));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads the group (role) of a task from the Cms.
+ * 
+ * @param task the task to read the role from.
+ */
+public void readGroupOfTask(String task) {
+	try {
+		System.out.println(m_cms.readGroup(m_cms.readTask(Integer.parseInt(task))));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads the managergroup of a project from the Cms.
+ */
+public void readManagerGroup(String project) {
+	try {
+		System.out.println(m_cms.readManagerGroup(m_cms.readProject(Integer.parseInt(project))));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Gets all CmsMountPoints. 
 	 * All mountpoints will be returned.
@@ -1400,6 +1866,50 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+ * Reads the original agent of a task from the Cms.
+ * 
+ * @param task the task to read the original agent from.
+ */
+public void readOriginalAgent(String task) {
+	try {
+		System.out.println(m_cms.readOriginalAgent(m_cms.readTask(Integer.parseInt(task))));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads the owner of a project from the Cms.
+ */
+public void readOwnerOfProject(String project) {
+	try {
+		System.out.println(m_cms.readOwner(m_cms.readProject(Integer.parseInt(project))));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads the owner of a resource from the Cms.
+ */
+public void readOwnerOfResource(String resource) {
+	try {
+		System.out.println(m_cms.readOwner(m_cms.readFileHeader(resource)));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads the owner (initiator) of a task from the Cms.
+ * 
+ * @param tasktThe task to read the owner from.
+ */
+public void readOwnerOfTask(String task) {
+	try {
+		System.out.println(m_cms.readOwner(m_cms.readTask(Integer.parseInt(task))));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Reads a project from the Cms.
 	 * 
@@ -1413,6 +1923,45 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+  * Reads log entries for a project.
+  * 
+  * @param projectId the id of the project for which the tasklog will be read.
+  */
+public void readProjectLogs(String projectId) {
+	try {
+		Vector logs = m_cms.readProjectLogs(Integer.parseInt(projectId));
+		for (int i = 0; i < logs.size(); i++) {
+			System.out.println(logs.elementAt(i));
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads a project from the Cms.
+ * 
+ * @param res The resource to read the project for.
+ */
+public void readProjectOfResource(String res) {
+	try {
+		System.out.println(m_cms.readProject(m_cms.readFileHeader(res)));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads a project from the Cms.
+ * 
+ * @param task the task for which the project will be read.
+ */
+public void readProjectOfTask(String task) {
+	try {
+		System.out.println(m_cms.readProject(m_cms.readTask(Integer.parseInt(task))));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Returns a propertyinformation of a file or folder.
 	 * 
@@ -1439,6 +1988,89 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Reads the task with the given id.
+ * 
+ * @param id the id of the task to be read.
+ */
+public void readTask(String id) {
+	try {
+		System.out.println(m_cms.readTask(Integer.parseInt(id)));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads log entries for a task.
+ * 
+ * @param taskid the task for which the tasklog will be read.
+ */
+public void readTaskLogs(String taskid) {
+	try {
+		Vector logs = m_cms.readTaskLogs(Integer.parseInt(taskid));
+		for (int i = 0; i < logs.size(); i++) {
+			System.out.println(logs.elementAt(i));
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads all tasks for a project.
+ * 
+ * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks.
+ * @tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+ * @param orderBy specifies how to order the tasks. 
+ * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null.
+ */
+public void readTasksForProject(String projectId, String tasktype, String orderBy, String sort) {
+	try {
+		Vector tasks = m_cms.readTasksForProject(Integer.parseInt(projectId), Integer.parseInt(tasktype), orderBy, sort);
+		for (int i = 0; i < tasks.size(); i++) {
+			System.out.println(tasks.elementAt(i));
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads all tasks for a role in a project.
+ * 
+ * @param projectId the id of the Project in which the tasks are defined.
+ * @param user the user who has to process the task.
+ * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+ * @param orderBy specifies how to order the tasks.
+ * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
+ */
+public void readTasksForRole(String projectId, String roleName, String tasktype, String orderBy, String sort) {
+	try {
+		Vector tasks = m_cms.readTasksForRole(Integer.parseInt(projectId), roleName, Integer.parseInt(tasktype), orderBy, sort);
+		for (int i = 0; i < tasks.size(); i++) {
+			System.out.println(tasks.elementAt(i));
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Reads all tasks for a user in a project.
+ * 
+ * @param projectId the id of the Project in which the tasks are defined.
+ * @param role the user who has to process the task.
+ * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+ * @param orderBy specifies how to order the tasks.
+ * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
+ */
+public void readTasksForUser(String projectId, String userName, String tasktype, String orderBy, String sort) {
+	try {
+		Vector tasks = m_cms.readTasksForUser(Integer.parseInt(projectId), userName, Integer.parseInt(tasktype), orderBy, sort);
+		for (int i = 0; i < tasks.size(); i++) {
+			System.out.println(tasks.elementAt(i));
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Returns a user object.<P/>
 	 * 
@@ -1463,6 +2095,18 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+ * Reactivates a task from the Cms.
+ * 
+ * @param taskid the Id of the task to accept.
+ */
+public void reaktivateTask(String taskId) {
+	try {
+		m_cms.reaktivateTask(Integer.parseInt(taskId));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/** 
 	 * Recovers the password for a user.
 	 * 
@@ -1503,6 +2147,18 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Returns the root-folder object.
+ * 
+ * @return the root-folder object.
+ */
+public void rootFolder() {
+	try {
+		System.out.println(m_cms.rootFolder());
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Sets the current project for the user.
 	 * 
@@ -1645,6 +2301,33 @@ public void setModuleView(String modulename, String viewname, String viewurl) {
 		CmsShell.printException(exc);
 	}
 }
+/**
+ * Set a new name for a task.
+ * 
+ * @param taskid the id of the task.
+ * @param name the new name of the task.
+ */
+public void setName(String taskId, String name) {
+	try {
+		m_cms.setName(Integer.parseInt(taskId), name);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Sets a new parent-group for an already existing group in the Cms.
+ * 
+ * @param groupName the name of the group that should be written to the Cms.
+ * @param parentGroupName the name of the parentGroup to set, or null if the parent 
+ * group should be deleted.
+ */
+public void setParentGroup(String groupName, String parentGroupName) {
+	try {
+		m_cms.setParentGroup(groupName, parentGroupName);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/** 
 	 * Sets the password for a user.
 	 * 
@@ -1672,6 +2355,19 @@ public void setModuleView(String modulename, String viewname, String viewurl) {
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Sets the priority of a task.
+ * 
+ * @param taskid the id of the task.
+ * @param priority the new priority value.
+ */
+public void setPriority(String taskId, String priority) {
+	try {
+		m_cms.setPriority(Integer.parseInt(taskId), Integer.parseInt(priority));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/** 
 	 * Sets the recovery password for a user.
 	 * 
@@ -1686,6 +2382,33 @@ public void setModuleView(String modulename, String viewname, String viewurl) {
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Set a parameter for a task.
+ * 
+ * @param taskid the Id of the task.
+ * @param parname the ame of the parameter.
+ * @param parvalue the value of the parameter.
+ */
+public void setTaskPar(String taskid, String parname, String parvalue) {
+	try {
+		m_cms.setTaskPar(Integer.parseInt(taskid), parname, parvalue);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Sets the timeout of a task.
+ * 
+ * @param taskid the id of the task.
+ * @param timeout the new timeout value.
+ */
+public void setTimeout(String taskId, String timeout) {
+	try {
+		m_cms.setTimeout(Integer.parseInt(taskId), Long.parseLong(timeout));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Sets the current group of the current user.
 	 */
@@ -1696,19 +2419,18 @@ public void setModuleView(String modulename, String viewname, String viewurl) {
 			CmsShell.printException(exc);
 		}
 	}
-	/**
-	 * Unlocks a project.
-	 * 
-	 * @param id The id of the project to be unlocked.
-	 */
-	public void unlockProject(String id) {
-		try {
-			int projectId = Integer.parseInt(id);
-			m_cms.unlockProject(projectId);
-		} catch( Exception exc ) {
-			CmsShell.printException(exc);
-		}
+/**
+ * Unlocks all resources of a project.
+ * 
+ * @param id the id of the project to be unlocked.
+ */
+public void unlockProject(String id) {
+	try {
+		m_cms.unlockProject(Integer.parseInt(id));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
 	}
+}
 	/**
 	 * Unlocks a resource<BR/>
 	 * 
@@ -1850,6 +2572,33 @@ public void setModuleView(String modulename, String viewname, String viewurl) {
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Writes a new user tasklog for a task.
+ * 
+ * @param taskid the Id of the task.
+ * @param comment the description for the log.
+ */
+public void writeTaskLog(String taskid, String comment) {
+	try {
+		m_cms.writeTaskLog(Integer.parseInt(taskid), comment);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Writes a new user tasklog for a task.
+ * 
+ * @param taskid the Id of the task .
+ * @param comment the description for the log
+ * @param tasktype the type of the tasklog. User tasktypes must be greater than 100.
+ */
+public void writeTaskLog(String taskid, String comment, String taskType) {
+	try {
+		m_cms.writeTaskLog(Integer.parseInt(taskid), comment, Integer.parseInt(taskType));
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/** 
 	 * Writes a user to the Cms.
 	 * 
