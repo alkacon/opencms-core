@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/07 13:16:58 $
- * Version: $Revision: 1.264 $
+ * Date   : $Date: 2003/10/07 13:52:43 $
+ * Version: $Revision: 1.265 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.264 $ $Date: 2003/10/07 13:16:58 $
+ * @version $Revision: 1.265 $ $Date: 2003/10/07 13:52:43 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1010,20 +1010,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // read the resource to check the access
         CmsResource resource = readFileHeader(context, filename);
 
-        // has the user write-access? and is he owner or admin?
-        // TODO: extend the check to restrict to owner/admin -> CONTROL RIGHT
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-
-        // write-access  was granted - write the file.
         resource.setType(type.getResourceType());
         resource.setLoaderId(type.getLoaderId());
-        m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile)resource, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
-        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-            resource.setState(I_CmsConstants.C_STATE_CHANGED);
-        }
-        // update the cache
-        //clearResourceCache(filename, context.currentProject(), context.currentUser());
-        clearResourceCache();
+        writeFileHeader(context, (CmsFile)resource);
     }
 
     /**
