@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2001/11/22 09:54:34 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/11/22 16:32:24 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -105,8 +105,8 @@ public class LinkSubstitution {
                         "		<tag name=\"meta\"/>"+
                         "	</inlinetags>"+
                         "	<replacetags usedefaults=\"true\">"+
-                        "		<tag name=\"img\" attrib=\"src\" replacestarttag=\"]]&gt;&lt;LINK&gt;$parameter$&lt;/LINK&gt;&lt;![CDATA[\" parameter=\"src\" replaceparamattr=\"true\"/>"+
-                        "		<tag name=\"a\" attrib=\"href\" replacestarttag=\"]]&gt;&lt;LINK&gt;$parameter$&lt;/LINK&gt;&lt;![CDATA[\" replaceendtag=\"&lt;/a&gt;\" parameter=\"href\" replaceparamattr=\"true\"/>"+
+                        "		<tag name=\"img\" attrib=\"src\" replacestarttag=\"]]&gt;&lt;LINK&gt;&lt;![CDATA[$parameter$]]&gt;&lt;/LINK&gt;&lt;![CDATA[\" parameter=\"src\" replaceparamattr=\"true\"/>"+
+                        "		<tag name=\"a\" attrib=\"href\" replacestarttag=\"]]&gt;&lt;LINK&gt;&lt;![CDATA[$parameter$]]&gt;&lt;/LINK&gt;&lt;![CDATA[\" replaceendtag=\"&lt;/a&gt;\" parameter=\"href\" replaceparamattr=\"true\"/>"+
                         "	</replacetags>"+
                         "</converterconfig>");
             converter.setServletPrefix("/opencms");//Todo:replace this by the aktual servletprefix
