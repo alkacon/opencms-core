@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGallery.java,v $
- * Date   : $Date: 2004/12/09 13:53:44 $
- * Version: $Revision: 1.9 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallery.java,v $
+ * Date   : $Date: 2004/12/09 16:24:01 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.commons;
+package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProperty;
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpSession;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.5.2
  */
@@ -84,7 +84,7 @@ public abstract class CmsGallery extends CmsDialog {
     /** The uri suffix for the gallery start page. */
     public static final String C_OPEN_URI_SUFFIX = "gallery_fs.jsp";
     /** Constant for the galleries path in the Workplace. */
-    public static final String C_PATH_GALLERIES = C_PATH_DIALOGS + "galleries/";    
+    public static final String C_PATH_GALLERIES = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "galleries/";    
     /** Request parameter value for the action: delete the gallery item. */
     public static final String DIALOG_DELETE = "delete";
     /** Request parameter value for the action: list gallery items. */
@@ -630,6 +630,19 @@ public abstract class CmsGallery extends CmsDialog {
                 OpenCms.getLog(this).error(e);    
             }
         }
+        List systemGalleries = null;
+        try {
+            systemGalleries = getCms().readResources(I_CmsWpConstants.C_VFS_PATH_SYSTEM, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));            
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error(e);    
+            }
+        }
+        
+        if (systemGalleries != null && systemGalleries.size() > 0) {
+            galleries.addAll(systemGalleries);
+        }
+        
         return galleries;
     }
     

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryDownloads.java,v $
- * Date   : $Date: 2004/12/09 13:53:44 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDownloadGallery.java,v $
+ * Date   : $Date: 2004/12/09 16:24:01 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.commons;
+package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
@@ -45,11 +45,11 @@ import javax.servlet.jsp.PageContext;
  * Generates the download gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.5.2
  */
-public class CmsGalleryDownloads extends CmsGallery {
+public class CmsDownloadGallery extends CmsGallery {
     
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "download_fs.jsp";       
@@ -57,7 +57,7 @@ public class CmsGalleryDownloads extends CmsGallery {
     /**
      * Public empty constructor, required for {@link CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
      */
-    public CmsGalleryDownloads() {
+    public CmsDownloadGallery() {
 
         // noop
     }
@@ -67,7 +67,7 @@ public class CmsGalleryDownloads extends CmsGallery {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsGalleryDownloads(CmsJspActionElement jsp) {
+    public CmsDownloadGallery(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -79,7 +79,7 @@ public class CmsGalleryDownloads extends CmsGallery {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsGalleryDownloads(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsDownloadGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -135,7 +135,7 @@ public class CmsGalleryDownloads extends CmsGallery {
         
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#getGalleryItemsTypeId()
+     * @see org.opencms.workplace.galleries.CmsGallery#getGalleryItemsTypeId()
      */
     public int getGalleryItemsTypeId() {
         
@@ -143,7 +143,7 @@ public class CmsGalleryDownloads extends CmsGallery {
     }   
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#getHeadFrameSetHeight()
+     * @see org.opencms.workplace.galleries.CmsGallery#getHeadFrameSetHeight()
      */
     public String getHeadFrameSetHeight() {
         

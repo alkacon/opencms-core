@@ -16,13 +16,24 @@
 	}
 
 	function link(uri, title, desc) {
-		 if (top.window.opener.hasSelectedText() == true) {
-			// text selected.
-			setLink(uri);
-		 } else {
+		<% 	
+			if (wp.MODE_WIDGET.equals(wp.getParamDialogMode())) {
+		%>
 			pasteLink(uri, title, desc);
-		 }
+		<% 
+			} else { 
+		%>
+			if (top.window.opener.hasSelectedText() == true) {
+				// text selected.
+				setLink(uri);
+			} else {
+				pasteLink(uri, title, desc);
+			}
+		<% 
+			} 
+		%>
 	}
+
 	
 	/**
 	 * Sets the calculated link to the calling editor. This Function will be called when hasSelectedText() returns true
@@ -71,9 +82,9 @@
 	}
 	
 	/**
-	 * Pastes a resource to the current position of the editor 
+	 * Pastes an Image to the current position of the editor 
 	 */
-	function pasteResource(uri, title, desc) {
+	function pasteImage(uri, title, desc) {
 	<% 	
 		if (wp.MODE_WIDGET.equals(wp.getParamDialogMode())) {
 	%>

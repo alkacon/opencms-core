@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryLinks.java,v $
- * Date   : $Date: 2004/12/09 13:53:44 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
+ * Date   : $Date: 2004/12/09 16:24:01 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.commons;
+package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
@@ -55,11 +55,11 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.5.2
  */
-public class CmsGalleryLinks extends CmsGallery {
+public class CmsLinkGallery extends CmsGallery {
     
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "link_fs.jsp";
@@ -67,7 +67,7 @@ public class CmsGalleryLinks extends CmsGallery {
     /**
      * Public empty constructor, required for {@link CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
      */
-    public CmsGalleryLinks() {
+    public CmsLinkGallery() {
 
         // noop
     }
@@ -77,7 +77,7 @@ public class CmsGalleryLinks extends CmsGallery {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsGalleryLinks(CmsJspActionElement jsp) {
+    public CmsLinkGallery(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -89,9 +89,38 @@ public class CmsGalleryLinks extends CmsGallery {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsGalleryLinks(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsLinkGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+    
+    /**
+     * @see org.opencms.workplace.galleries.CmsGallery#applyButton()
+     */
+    public String applyButton() {
+        
+        if (MODE_VIEW.equals(getParamDialogMode())) {
+            return button(null, null, "apply_in", "button.paste", 0); 
+        } else {
+            String uri = getParamResourcePath();
+            if (CmsStringUtil.isEmpty(getParamDialogMode())) {
+                uri = getJsp().link(uri);
+            } else if (MODE_WIDGET.equals(getParamDialogMode())) {
+                // get real link target in widget mode
+                try {
+                    CmsResource res = getCms().readResource(getParamResourcePath());
+                    CmsFile file = getCms().readFile(getCms().getSitePath(res));
+                    uri = new String(file.getContents());
+                } catch (CmsException e) {
+                    // this should never happen
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());    
+                    }    
+                }
+            }
+            
+            return button("javascript:link('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);
+        }
     }
     
     /**
@@ -147,7 +176,7 @@ public class CmsGalleryLinks extends CmsGallery {
     }           
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#getGalleryItemsTypeId()
+     * @see org.opencms.workplace.galleries.CmsGallery#getGalleryItemsTypeId()
      */
     public int getGalleryItemsTypeId() {
         
@@ -155,7 +184,7 @@ public class CmsGalleryLinks extends CmsGallery {
     } 
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#wizardButton()
+     * @see org.opencms.workplace.galleries.CmsGallery#wizardButton()
      */
     public String wizardButton() {
         
@@ -185,7 +214,7 @@ public class CmsGalleryLinks extends CmsGallery {
     }
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#buildGalleryItemListHeadline()
+     * @see org.opencms.workplace.galleries.CmsGallery#buildGalleryItemListHeadline()
      */
     protected String buildGalleryItemListHeadline() {
         
@@ -207,7 +236,7 @@ public class CmsGalleryLinks extends CmsGallery {
     }
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#getHeadFrameSetHeight()
+     * @see org.opencms.workplace.galleries.CmsGallery#getHeadFrameSetHeight()
      */
     public String getHeadFrameSetHeight() {
         

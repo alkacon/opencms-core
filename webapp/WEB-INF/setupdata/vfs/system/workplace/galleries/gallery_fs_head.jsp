@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.jsp.*, org.opencms.workplace.commons.*" buffer="none" session="false" %>
+<%@ page import="org.opencms.jsp.*, org.opencms.workplace.galleries.*" buffer="none" session="false" %>
 <%		
 	// initialize action element for link substitution
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);

@@ -1,5 +1,5 @@
 <%@ page import= "org.opencms.jsp.*, 
-						org.opencms.workplace.commons.*,
+						org.opencms.workplace.galleries.*,
 						org.opencms.util.CmsStringUtil" buffer="none" session="false" %>
 <%	
 

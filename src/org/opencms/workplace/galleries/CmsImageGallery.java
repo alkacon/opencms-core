@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryImages.java,v $
- * Date   : $Date: 2004/12/09 13:53:44 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
+ * Date   : $Date: 2004/12/09 16:24:01 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.commons;
+package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeImage;
@@ -46,11 +46,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.5.2
  */
-public class CmsGalleryImages extends CmsGallery {
+public class CmsImageGallery extends CmsGallery {
     
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "img_fs.jsp";
@@ -58,7 +58,7 @@ public class CmsGalleryImages extends CmsGallery {
     /**
      * Public empty constructor, required for {@link CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
      */
-    public CmsGalleryImages() {
+    public CmsImageGallery() {
 
         // noop
     }
@@ -68,7 +68,7 @@ public class CmsGalleryImages extends CmsGallery {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsGalleryImages(CmsJspActionElement jsp) {
+    public CmsImageGallery(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -80,13 +80,13 @@ public class CmsGalleryImages extends CmsGallery {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsGalleryImages(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsImageGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#applyButton()
+     * @see org.opencms.workplace.galleries.CmsGallery#applyButton()
      */
     public String applyButton() {
         if (MODE_VIEW.equals(getParamDialogMode())) {
@@ -96,7 +96,7 @@ public class CmsGalleryImages extends CmsGallery {
             if (CmsStringUtil.isEmpty(getParamDialogMode())) {
                 uri = getJsp().link(uri);
             }
-            return button("javascript:pasteResource('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);
+            return button("javascript:pasteImage('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);
         }
     }
     
@@ -125,7 +125,7 @@ public class CmsGalleryImages extends CmsGallery {
     }  
         
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#getGalleryItemsTypeId()
+     * @see org.opencms.workplace.galleries.CmsGallery#getGalleryItemsTypeId()
      */
     public int getGalleryItemsTypeId() {
         
@@ -133,7 +133,7 @@ public class CmsGalleryImages extends CmsGallery {
     }     
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#getPreviewBodyStyle()
+     * @see org.opencms.workplace.galleries.CmsGallery#getPreviewBodyStyle()
      */
     public String getPreviewBodyStyle() {
         
@@ -141,14 +141,14 @@ public class CmsGalleryImages extends CmsGallery {
     }
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#previewButton()
+     * @see org.opencms.workplace.galleries.CmsGallery#previewButton()
      */
     public String previewButton() {
         return "";        
     }
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#targetSelectBox()
+     * @see org.opencms.workplace.galleries.CmsGallery#targetSelectBox()
      */
     public String targetSelectBox() {
         return "";

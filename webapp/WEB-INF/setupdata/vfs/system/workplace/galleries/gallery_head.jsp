@@ -1,7 +1,7 @@
 <%@ page import="org.opencms.jsp.*, 
 					  org.opencms.workplace.CmsWorkplaceManager,
 					  org.opencms.util.CmsStringUtil,
-					  org.opencms.workplace.commons.*" buffer="none" session="false" %>
+					  org.opencms.workplace.galleries.*" buffer="none" session="false" %>
 
 <%	
 	// initialize action element for link substitution
@@ -24,7 +24,7 @@
 					mainForm.<%= wp.PARAM_PAGE %>.options[0].selected = true;
 				}
 			}
-			mainForm.submit();
+			mainForm.submit();			
 		<% } else { %>
 			alert("<%=wp.getNoGalleryErrorMsg()%>");
 			top.window.close();			

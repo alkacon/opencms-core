@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.commons.CmsOpenGallery" buffer="none" %>
+<%@ page import="org.opencms.workplace.galleries.CmsOpenGallery" buffer="none" %>
 <%	
 	// initialize the workplace class
 	CmsOpenGallery wp = new CmsOpenGallery(pageContext, request, response);	
