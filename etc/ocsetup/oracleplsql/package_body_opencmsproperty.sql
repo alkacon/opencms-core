@@ -135,7 +135,7 @@ PACKAGE BODY opencmsProperty IS
     END IF;
   EXCEPTION
     WHEN OTHERS THEN
-      RAISE;
+      raise_application_error(-20004, 'error when write property',true);
   END writeProperty;
 ----------------------------------------------------------------------------------------
 END;
