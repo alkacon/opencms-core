@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2003/01/20 23:59:16 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/01/31 16:55:36 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.template.I_CmsXmlParser;
 import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -64,7 +63,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.43 $ $Date: 2003/01/20 23:59:16 $
+ * @version $Revision: 1.44 $ $Date: 2003/01/31 16:55:36 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -660,9 +659,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         try {
             ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
             m_exportZipStream.putNextEntry(entry);
-            //A_CmsXmlContent.getXmlParser().getXmlText(m_docXml,m_exportZipStream, null);
-            //Gridnine AB Sep 2, 2002
-            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml,m_exportZipStream, I_CmsXmlParser.C_XML_ENCODING);
+            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml,m_exportZipStream, I_CmsRegistry.C_REGISTRY_ENCODING);
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);

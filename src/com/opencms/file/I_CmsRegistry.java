@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/01/31 16:56:12 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,24 +37,28 @@ import com.opencms.report.I_CmsReport;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.33 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.34 $ $Date: 2003/01/31 16:56:12 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
+    
     public static final int C_ANY_VERSION = -1;
+    
+    /** Encoding for the registry and the export files, this is always "UTF-8" */
+    public final static String C_REGISTRY_ENCODING = "UTF-8";
 
     /**
-    * The name of the folder to extend the exportpath
-    */
+     * The name of the folder to extend the exportpath
+     */
     public final String C_MODULE_PATH="modules/";
 
-/**
- * This method clones the registry.
- *
- * @param CmsObject the current cms-object for the user.
- * @return the cloned registry.
- */
-public I_CmsRegistry clone(CmsObject cms);
+    /**
+     * This method clones the registry.
+     *
+     * @param CmsObject the current cms-object for the user.
+     * @return the cloned registry.
+     */
+    public I_CmsRegistry clone(CmsObject cms);
     /**
      * This method creates a new module in the repository.
      *

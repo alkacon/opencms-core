@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/01/23 10:43:11 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/01/31 16:56:00 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.template.I_CmsXmlParser;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.BufferedOutputStream;
@@ -64,7 +63,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.59 $ $Date: 2003/01/23 10:43:11 $
+ * @version $Revision: 1.60 $ $Date: 2003/01/31 16:56:00 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -325,7 +324,7 @@ public void createModule(String modulename, String niceModulename, String descri
     // encoding project:
     Document doc;
     try {
-        doc = parse(moduleString.toString().getBytes(I_CmsXmlParser.C_XML_ENCODING));
+        doc = parse(moduleString.toString().getBytes(C_REGISTRY_ENCODING));
     } catch (UnsupportedEncodingException uee) {
         // use default system encoding
         doc = parse(moduleString.toString().getBytes());
@@ -1831,7 +1830,7 @@ private void saveRegistry() throws CmsException {
         // get the file
         File xmlFile = new File(m_regFileName);
         BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(xmlFile));
-        A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os, I_CmsXmlParser.C_XML_ENCODING);
+        A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os, C_REGISTRY_ENCODING);
         // reinit the modules-hashtable
         init();
     } catch (Exception exc) {
