@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/03 16:47:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/11/08 13:34:40 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -78,13 +78,6 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
 		}
 		
-System.err.println("mgm---------------------------------------******");
-		Enumeration enu=parameters.keys();
-		while (enu.hasMoreElements()) {
-			String key=(String)enu.nextElement();
-			String values=(String)parameters.get(key);
-			System.err.println(key+" : "+values);
-		}
 		CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		CmsRequestContext reqCont = cms.getRequestContext();   
 		I_CmsRegistry reg = cms.getRegistry();	
@@ -94,10 +87,11 @@ System.err.println("mgm---------------------------------------******");
 		if ((step != null)&&("ok".equals(step))){
 			// export
 			String exportName = (String)parameters.get("modulename");
-			String[] resourcen = new String[3];
+			String[] resourcen = new String[4];
 			resourcen[0] = "/moduledemos/"+exportName+"/";
 			resourcen[1] = "/system/modules/"+exportName+"/";
 			resourcen[2] = "/system/classes/" + exportName.replace('.','/') +"/";
+			resourcen[3] = "/content/bodys/moduledemos/" + exportName + "/";
 			reg.exportModule(exportName, resourcen, cms.readExportPath()+exportName + "_" + reg.getModuleVersion(exportName));
 			templateSelector= "done";
 		}else{
