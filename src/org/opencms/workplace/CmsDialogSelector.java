@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyDialogSelector.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
+ * Date   : $Date: 2003/11/05 10:33:21 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,53 +36,87 @@ import com.opencms.workplace.I_CmsWpConstants;
 import org.opencms.main.OpenCms;
 
 /**
- * Selects the property dialog which should be displayed by OpenCms.<p>
+ * Selects the dialog which should be displayed by OpenCms depending on the registry value.<p>
  * 
- * You can define the class of your property handler in the OpenCms registry.xml. 
+ * You can define the class of your dialog handler in the OpenCms registry.xml in the &lt;dialoghandler&gt; node. 
  * The following files use this class:
  * <ul>
  * <li>/jsp/dialogs/property_html
+ * <li>/jsp/dialogs/delete_html
  * </ul>
  *
- * @see org.opencms.workplace.I_CmsPropertyDialogHandler
+ * @see org.opencms.workplace.I_CmsDialogHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.1
  */
-public class CmsPropertyDialogSelector {
+public class CmsDialogSelector {
     
+    // necessary member variables
     private CmsJspActionElement m_jsp;
-    private String m_paramResource;               
-       
+    private String m_paramResource;
+    private String m_handler;
+    
+    // constants for the dialog handler key names used for the runtime properties
+    public static final String DIALOG_DELETE = "class_dialog_delete";
+    public static final String DIALOG_PROPERTY = "class_dialog_property";
+    
+    // debug flag
+    public static final boolean C_DEBUG = false;      
     
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
+     * @param handler the key name of the dialog handler (use the constants in your classes!)
      */
-    public CmsPropertyDialogSelector(CmsJspActionElement jsp) {      
+    public CmsDialogSelector(CmsJspActionElement jsp, String handler) {      
         setJsp(jsp);
+        setHandler(handler);
         setParamResource(jsp.getRequest().getParameter(I_CmsWpConstants.C_PARA_RESOURCE));         
     }
     
     
     /**
-     * Returns the uri of the property dialog which will be displayed.<p>
+     * Returns the uri of the dialog which will be displayed.<p>
      *  
      * @return the uri of the property dialog
      */
-    public String getPropertyDialogUri() {          
-        try {
-            // get the handler class from the OpenCms runtime property
-            I_CmsPropertyDialogHandler propertyClass = (I_CmsPropertyDialogHandler)OpenCms.getRuntimeProperty("propertydialoghandler");
-            // get the dialog URI from the class defined in the registry 
-            return propertyClass.getPropertyDialogUri(getParamResource(), getJsp());
-        } catch (Throwable t) {
-            return CmsProperty.URI_PROPERTY_DIALOG;   
-        }             
-    } 
+    public String getSelectedDialogUri() {          
+        
+        if (C_DEBUG) {
+            System.err.println("[" + this.getClass().getName() + "].getSelectedDialogUri() - DialogHandler class: " + getHandler());
+            System.err.println("[" + this.getClass().getName() + "].getSelectedDialogUri() - Resource: " + getParamResource());
+        }
+        // get the handler class from the OpenCms runtime property
+        I_CmsDialogHandler dialogClass = (I_CmsDialogHandler)OpenCms.getRuntimeProperty(getHandler());
+        if (dialogClass == null) {
+            // error getting the dialog class, return to file list
+            return CmsWorkplace.C_FILE_EXPLORER_FILELIST;
+        }
+        // get the dialog URI from the class defined in the registry 
+        return dialogClass.getDialogUri(getParamResource(), getJsp());      
+    }
+    
+    /**
+     * Returns the key name of the dialog handler.<p>
+     * 
+     * @return the key name of the dialog handler
+     */
+    private String getHandler() {
+        return m_handler;
+    }
+    
+    /**
+     * Sets the key name of the dialog handler.<p>
+     * 
+     * @param handler the key name of the dialog handler
+     */
+    private void setHandler(String handler) {
+        m_handler = handler;
+    }
     
     /**
      * Returns the CmsJspActionElement.<p>

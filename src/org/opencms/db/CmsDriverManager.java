@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.285 $
+ * Date   : $Date: 2003/11/05 10:33:21 $
+ * Version: $Revision: 1.286 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,13 @@
 
 package org.opencms.db;
 
+import com.opencms.boot.CmsBase;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.exceptions.CmsResourceNotFoundException;
+import com.opencms.file.*;
+import com.opencms.template.A_CmsXmlContent;
+
 import org.opencms.cache.CmsLruHashMap;
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsExportModuledata;
@@ -43,6 +50,7 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsCore;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -54,13 +62,6 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
-
-import com.opencms.boot.CmsBase;
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.core.exceptions.CmsResourceNotFoundException;
-import com.opencms.file.*;
-import com.opencms.template.A_CmsXmlContent;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -86,7 +87,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.285 $ $Date: 2003/11/03 09:05:53 $
+ * @version $Revision: 1.286 $ $Date: 2003/11/05 10:33:21 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3695,6 +3696,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             extractedResources = extractResourcesInTree(context, storage, resources);
             // cache the calculated result list
             m_resourceListCache.put(cacheKey, extractedResources);
+            resources = null;
+            storage = null;
         }
 
         return extractedResources;
@@ -4438,7 +4441,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         } catch (Exception ex) {
             // init of registry failed - throw exception
             if (OpenCms.getLog(this).isErrorEnabled())
-                OpenCms.getLog(this).error("Critical init error/4", ex);
+                OpenCms.getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "4", ex);
             throw new CmsException("Init of registry failed", CmsException.C_REGISTRY_ERROR, ex);
         }
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {

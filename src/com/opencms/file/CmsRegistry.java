@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2003/11/05 10:33:21 $
+ * Version: $Revision: 1.107 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.106 $
+ * @version $Revision: 1.107 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1448,17 +1448,6 @@ public class CmsRegistry extends A_CmsXmlContent {
     }
 
     /**
-     * Returns the class name of the property dialog handler as String.<p>
-     *
-     * @return the class name of the property dialog handler
-     */
-    public String getPropertyDialogHandler() {
-        Element systemElement = getSystemElement();
-        String className = systemElement.getElementsByTagName("propertydialoghandler").item(0).getFirstChild().getFirstChild().getNodeValue();
-        return className;
-                }
-
-    /**
      * Returns all repositories for all modules.
      *
      * @return java.lang.String[] the reprositories of all modules.
@@ -1476,6 +1465,15 @@ public class CmsRegistry extends A_CmsXmlContent {
         retValueArray = new String[retValue.size()];
         retValue.copyInto(retValueArray);
         return retValueArray;
+    }
+    
+    /**
+     * Returns a list of all configured dialog handler classes.<p>
+     *
+     * @return a list of all configured dialog handler classes
+     */
+    public List getDialogHandler() {
+        return getSystemSubNodes("dialoghandler");
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/11/03 09:05:51 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/11/05 10:33:21 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,11 +59,11 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
-public class CmsProperty extends CmsDialog {
+public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
 
     // always start individual action id's with 100 to leave enough room for more default actions
     public static final int ACTION_SHOW_EDIT = 100;
@@ -91,6 +91,13 @@ public class CmsProperty extends CmsDialog {
     private String m_paramNewproperty;
     
     /**
+     * Default constructor needed for dialog handler implementation.<p>
+     */
+    public CmsProperty() {
+        super(null);
+    }
+    
+    /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
@@ -108,7 +115,21 @@ public class CmsProperty extends CmsDialog {
      */
     public CmsProperty(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
-    }  
+    }
+    
+    /**
+     * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, com.opencms.flex.jsp.CmsJspActionElement)
+     */
+    public String getDialogUri(String resource, CmsJspActionElement jsp) {
+        return URI_PROPERTY_DIALOG;
+    }
+    
+    /**
+     * @see org.opencms.workplace.I_CmsDialogHandler#getDialogHandler()
+     */
+    public String getDialogHandler() {
+        return CmsDialogSelector.DIALOG_PROPERTY;
+    }
     
     /**
      * Returns the value of the new property parameter, 

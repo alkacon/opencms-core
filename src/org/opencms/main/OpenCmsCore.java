@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/11/05 10:33:21 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.I_CmsDialogHandler;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.CmsMain;
@@ -101,7 +102,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -120,6 +121,8 @@ public class OpenCmsCore {
     
     /** Prefix for error messages for initialization errors */
     private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";     
+    
+    public static final String C_MSG_CRITICAL_ERROR = "Critical init error/";
     
     /** One instance to rule them all, one instance to find them... */        
     private static OpenCmsCore m_instance;
@@ -1167,7 +1170,7 @@ public class OpenCmsCore {
         if (!m_defaultEncoding.equals(systemEncoding)) {
             String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + "' not equal to OpenCms encoding '" + m_defaultEncoding + "'";
             if (getLog(this).isFatalEnabled()) {
-                getLog(this).fatal("Critical init error/1: " + msg);
+                getLog(this).fatal(OpenCmsCore.C_MSG_CRITICAL_ERROR + "1: " + msg);
             }
             throw new Exception(msg);
         }
@@ -1208,7 +1211,7 @@ public class OpenCmsCore {
             }
         } catch (Exception e) {
             if (getLog(this).isErrorEnabled())
-                getLog(this).error("Critical init error/2", e);
+                getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "2", e);
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
@@ -1222,7 +1225,7 @@ public class OpenCmsCore {
             m_driverManager = CmsDriverManager.newInstance(conf);            
         } catch (Exception e) {
             if (getLog(this).isErrorEnabled()) {
-                getLog(this).error("Critical init error/3", e);
+                getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "3", e);
             }
             // any exception here is fatal and will cause a stop in processing
             throw new CmsException("Database init failed", CmsException.C_RB_INIT_ERROR, e);
@@ -1249,7 +1252,27 @@ public class OpenCmsCore {
             }
         } catch (Exception e) {
             if (getLog(this).isErrorEnabled()) {
-                getLog(this).error("Critical init error/5", e);
+                getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "5", e);
+            }
+            // any exception here is fatal and will cause a stop in processing
+            throw e;
+        }
+        
+        // initialize "dialoghandler" registry classes
+        try {
+            List dialogHandlerClasses = OpenCms.getRegistry().getDialogHandler();
+            Iterator i = dialogHandlerClasses.iterator();
+            while (i.hasNext()) {
+                String currentClass = (String)i.next();                
+                I_CmsDialogHandler handler = (I_CmsDialogHandler)Class.forName(currentClass).newInstance();            
+                setRuntimeProperty(handler.getDialogHandler(), handler);
+                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).info(". Dialog handler class : " + currentClass + " instanciated");
+                }
+            }
+        } catch (Exception e) {
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "7", e);
             }
             // any exception here is fatal and will cause a stop in processing
             throw e;
@@ -1447,20 +1470,7 @@ public class OpenCmsCore {
             if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                 getLog(CmsLog.CHANNEL_INIT).warn(". Resource init class  : non-critical error " + e2.toString());
             }
-        }   
-        
-        // initialize the class for the default property dialog
-        String propertyDialogHandler = OpenCms.getRegistry().getPropertyDialogHandler();
-        try { 
-            setRuntimeProperty("propertydialoghandler", Class.forName(propertyDialogHandler).newInstance());
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Property dialog class: " + propertyDialogHandler);
-            }    
-        } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Property dialog class: non-critical error " + e.toString());
-            }   
-        }
+        } 
         
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean supportOldLocales = conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/11/05 10:33:21 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,15 +49,15 @@ import javax.servlet.jsp.PageContext;
  * 
  * The following files use this class:
  * <ul>
- * <li>/jsp/delete_html
+ * <li>/jsp/delete_standard_html
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
-public class CmsDelete extends CmsDialog {
+public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
 
     // always start individual action id's with 100 to leave enough room for more default actions
     public static final int ACTION_DELETE = 100;
@@ -65,6 +65,15 @@ public class CmsDelete extends CmsDialog {
     public static final String DIALOG_TYPE = "delete";
     
     private String m_deleteVfsLinks;
+    
+    public static final String URI_DELETE_DIALOG = C_PATH_DIALOGS + "delete_standard.html";
+    
+    /**
+     * Default constructor needed for dialog handler implementation.<p>
+     */
+    public CmsDelete() {
+        super(null);
+    }
     
     /**
      * Public constructor with JSP action element.<p>
@@ -84,7 +93,21 @@ public class CmsDelete extends CmsDialog {
      */
     public CmsDelete(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
-    }        
+    }  
+    
+    /**
+     * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, com.opencms.flex.jsp.CmsJspActionElement)
+     */
+    public String getDialogUri(String resource, CmsJspActionElement jsp) {
+        return URI_DELETE_DIALOG;
+    }
+    
+    /**
+     * @see org.opencms.workplace.I_CmsDialogHandler#getDialogHandler()
+     */
+    public String getDialogHandler() {
+        return CmsDialogSelector.DIALOG_DELETE;
+    }
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
@@ -146,7 +169,7 @@ public class CmsDelete extends CmsDialog {
      * @return true, if the resource was deleted, otherwise false
      * @throws CmsException if deletion is not successful
      */
-    private boolean performDeleteOperation() throws CmsException {
+    public boolean performDeleteOperation() throws CmsException {
         int deleteOption = -1;     
         
         // on folder copy display "please wait" screen, not for simple file copy

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/I_CmsPropertyDialogHandler.java,v $
- * Date   : $Date: 2003/08/19 12:04:41 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/I_CmsDialogHandler.java,v $
+ * Date   : $Date: 2003/11/05 10:33:21 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -33,26 +33,35 @@ package org.opencms.workplace;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
 /**
- * Provides a method for selecting an individual properties dialog.<p>
+ * Provides a method for selecting an individual jsp dialog.<p>
  * 
- * You can define the class of your own properties dialog handler in the OpenCms registry.xml
- * changing the &lt;class&gt; subnode of the system node &lt;propertydialoghandler&gt; to another value. 
- * The class you enter must implement this interface to obtain the URI of the displayed property dialog.<p>  
+ * You can define the class of your own dialog handler in the OpenCms registry.xml
+ * changing the &lt;class&gt; subnode of the system node &lt;{dialogname}dialoghandler&gt; to another value. 
+ * The class you enter must implement this interface to obtain the URI of the displayed dialog.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @version $Revision: 1.1 $
  * 
  * @since 5.1
  */
-public interface I_CmsPropertyDialogHandler {
+public interface I_CmsDialogHandler {
 
     /**
-     * Returns the property dialog URI in the OpenCms VFS to the CmsPropertyDialogSelector class.<p>
+     * Returns the dialog URI in the OpenCms VFS to the dialog selector class.<p>
      * 
      * @param resource the selected resource
      * @param jsp the CmsJspActionElement
      * @return the absolute path to the property dialog
      */
-    String getPropertyDialogUri(String resource, CmsJspActionElement jsp); 
+    String getDialogUri(String resource, CmsJspActionElement jsp); 
+    
+    /**
+     * Returns the name of the handler which is used as key for the OpenCms runtime properties.<p>
+     * 
+     * Store the name of the key as a public String constant in the CmsDialogSelector class.<p>
+     * 
+     * @return the name of the dialog handler
+     */
+    String getDialogHandler();
 
 }

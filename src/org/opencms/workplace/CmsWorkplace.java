@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/11/05 10:33:21 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.opencms.site.CmsSiteManager;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1
  */
@@ -105,24 +105,26 @@ public abstract class CmsWorkplace {
      * @param jsp the initialized JSP context
      */    
     public CmsWorkplace(CmsJspActionElement jsp) {
-        m_jsp = jsp;        
-        m_cms = m_jsp.getCmsObject();                
-        m_session = m_jsp.getRequest().getSession();
-        
-        // get / create the workplace settings 
-        m_settings = (CmsWorkplaceSettings)m_session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
-        if (m_settings == null) {
-            // create the settings object
-            m_settings = new CmsWorkplaceSettings();
-            initWorkplaceSettings(m_cms, m_settings);
-            storeSettings(m_session, m_settings);
+        if (jsp != null) {       
+            m_jsp = jsp;        
+            m_cms = m_jsp.getCmsObject();                
+            m_session = m_jsp.getRequest().getSession();
+            
+            // get / create the workplace settings 
+            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
+            if (m_settings == null) {
+                // create the settings object
+                m_settings = new CmsWorkplaceSettings();
+                initWorkplaceSettings(m_cms, m_settings);
+                storeSettings(m_session, m_settings);
+            }
+            
+            // check request for changes in the workplace settings
+            initWorkplaceRequestValues(m_settings, m_jsp.getRequest());        
+            
+            // set cms context accordingly
+            initWorkplaceCmsContext(m_settings, m_cms);
         }
-        
-        // check request for changes in the workplace settings
-        initWorkplaceRequestValues(m_settings, m_jsp.getRequest());        
-        
-        // set cms context accordingly
-        initWorkplaceCmsContext(m_settings, m_cms);
     }    
     
     /**
