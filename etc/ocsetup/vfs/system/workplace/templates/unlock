@@ -28,7 +28,7 @@
 	
 	<!-- table to set up the dialog box-->
 	<form id=UNLOCK name=UNLOCK>
-	]]><MESSAGEBOX title="messagebox.title.unlock" message1="messagebox.message1.unlock" message2="messagebox.message2.unlock" button1="button.ok" button2="button.cancel" link1="unlock.html?unlock=true" link2="unlock.html?unlock=false" /><![CDATA[
+	]]><MESSAGEBOX title="messagebox.title.unlock" message1="messagebox.message1.unlock" message2="messagebox.message2.unlock" button1="button.ok" button2="button.cancel" link1="unlock.html?unlock=true" link2="unlock.html?unlock=false"><PROCESS>FILENAME</PROCESS></MESSAGEBOX><![CDATA[
 	</td></tr>
 	</table>
 		

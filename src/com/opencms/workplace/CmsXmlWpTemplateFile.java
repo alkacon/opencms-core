@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/02/15 17:53:49 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/02/17 09:57:39 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2000/02/15 17:53:49 $
+ * @version $Revision: 1.31 $ $Date: 2000/02/17 09:57:39 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -203,7 +203,8 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
             throwException("Loaded class " + classname + " is not implementing I_CmsWpElement");            
         }
     
-        workplaceObject = (I_CmsWpElement)loadedClass;
+		processNode(n, m_mainProcessTags, null, callingObject, userObj);
+		workplaceObject = (I_CmsWpElement)loadedClass;
         try {
             result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, this, callingObject, (Hashtable)userObj, m_languageFile);                
         } catch(Exception e) {

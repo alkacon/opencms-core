@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/02/16 18:06:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/17 09:57:39 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/16 18:06:28 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/17 09:57:39 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -76,6 +76,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         //check if the unlock parameter was included in the request
         // if not, the unlock page is shown for the first time
         filename=(String)session.getValue(C_PARA_FILE);
+		CmsFile file=(CmsFile)cms.readFileHeader(filename);
         if (unlock != null) {
             if (unlock.equals("true")) {            
                    cms.unlockResource(filename);
@@ -90,7 +91,8 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
             }
         }
 
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
+        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		xmlTemplateDocument.setXmlData("FILENAME",file.getName());
        
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);

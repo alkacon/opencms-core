@@ -28,7 +28,7 @@
 	
 	<!-- table to set up the dialog box-->
 	<form id=LOCK name=LOCK>
-    ]]><MESSAGEBOX title="messagebox.title.lockchange" message1="messagebox.message1.lockchange" message2="messagebox.message2.lockchange" button1="button.ok" button2="button.cancel" link1="lockchange.html?lock=true" link2="explorer_files.html" /><![CDATA[
+    ]]><MESSAGEBOX title="messagebox.title.lockchange" message1="messagebox.message1.lockchange" message2="messagebox.message2.lockchange" button1="button.ok" button2="button.cancel" link1="lockchange.html?lock=true" link2="explorer_files.html"><PROCESS>FILENAME</PROCESS></MESSAGEBOX><![CDATA[
 	</td></tr>
 	</table>
 		

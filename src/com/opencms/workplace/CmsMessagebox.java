@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMessagebox.java,v $
- * Date   : $Date: 2000/02/16 18:06:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/17 09:57:39 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.3 $ $Date: 2000/02/16 18:06:28 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/17 09:57:39 $
  */
 public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -69,6 +69,9 @@ public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement, I_C
      */
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         // collect all required data
+		Node helpfilename=null;
+		String helpname=null;
+		
         String messageTitle = n.getAttribute(C_MESSAGE_TITLE);
         String messageMessage1= n.getAttribute(C_MESSAGE_MESSAGE1);
         String messageMessage2= n.getAttribute(C_MESSAGE_MESSAGE2);     
@@ -76,11 +79,18 @@ public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement, I_C
         String messageButton2= n.getAttribute(C_MESSAGE_BUTTON2);
         String messageLink1 = n.getAttribute(C_MESSAGE_LINK1);
         String messageLink2 = n.getAttribute(C_MESSAGE_LINK2);
+		if(n.hasChildNodes()) {
+			helpfilename=n.getFirstChild();
+			helpname=helpfilename.getNodeValue();
+		}
         
         CmsXmlWpBoxDefFile boxdef = getBoxDefinitions(cms);
         
         // get the data from the language file
         messageTitle = lang.getLanguageValue(messageTitle);
+		if(helpfilename!=null) {
+			messageTitle=messageTitle+": "+helpname;
+		}
 		messageMessage1= lang.getLanguageValue(messageMessage1);
         messageMessage2= lang.getLanguageValue(messageMessage2);
         messageButton1= lang.getLanguageValue(messageButton1);
