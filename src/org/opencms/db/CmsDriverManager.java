@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/04 08:41:28 $
- * Version: $Revision: 1.129 $
+ * Date   : $Date: 2003/08/04 09:14:11 $
+ * Version: $Revision: 1.130 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.129 $ $Date: 2003/08/04 08:41:28 $
+ * @version $Revision: 1.130 $ $Date: 2003/08/04 09:14:11 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4394,7 +4394,7 @@ public class CmsDriverManager extends Object {
         if (stealLock) {
 
             // stealing a lock: checking permissions will throw an exception coz the
-            // resource is still locked for the user. thus, the resource is unlocked
+            // resource is still locked for the other user. thus, the resource is unlocked
             // before the permissions of the new user are checked. if the new user 
             // has insufficient permissions, the previous lock is restored.
 
@@ -4404,9 +4404,11 @@ public class CmsDriverManager extends Object {
             oldLock = getLock(context, resourcename);
 
             // TODO move this code into the CmsLockDispatcher
+            /*
             if (oldLock.getType() == CmsLock.C_TYPE_INHERITED || oldLock.getType() == CmsLock.C_TYPE_SHARED_INHERITED) {
                 throw new CmsLockException("Unable to steal lock due to an inherited lock of a parent folder", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
             }
+            */
 
             unlockResource(context, resourcename, true);
         }
