@@ -7,7 +7,53 @@
         <project>Online</project>
         <export_version>1</export_version>
     </info>
-    <files>
+    <files>    
+        <file>
+            <destination>system</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>127</access>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[de.framfab.opencms.modules.external_links_4]]></value>
+                </property>
+            </properties>
+        </file>    
+        <file>
+            <destination>system/modules</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>95</access>
+            <properties/>
+        </file> 
+        <file>
+            <destination>system/modules/default</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>95</access>
+            <properties/>
+        </file>     
+        <file>
+            <destination>system/galleries</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>95</access>
+            <properties/>
+        </file>         
+        <file>
+            <destination>pics/system</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>    
         <file>
             <destination>content</destination>
             <type>folder</type>
@@ -261,14 +307,6 @@
                     <value><![CDATA[true]]></value>
                 </property>
             </properties>
-        </file>
-        <file>
-            <destination>pics/system</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
         </file>
         <file>
             <source>pics/system/bg_grau.gif</source>
@@ -3122,20 +3160,6 @@
             <group>Users</group>
             <access>79</access>
             <properties/>
-        </file>
-        <file>
-            <destination>system</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>127</access>
-            <properties>
-                <property>
-                    <name>module</name>
-                    <type>0</type>
-                    <value><![CDATA[de.framfab.opencms.modules.external_links_4]]></value>
-                </property>
-            </properties>
         </file>
         <file>
             <destination>system/classes</destination>
