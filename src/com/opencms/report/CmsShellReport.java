@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsShellReport.java,v $
- * Date   : $Date: 2003/01/20 23:59:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/13 11:14:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,9 @@ import com.opencms.workplace.I_CmsWpConstants;
  * 
  * It stores nothing. It just prints everthing to <code>System.out</code>.
  * 
- * @author Hanjo Riege
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  *  
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsShellReport implements I_CmsReport {
 

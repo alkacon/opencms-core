@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/03/22 07:24:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/06/13 11:14:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.0 rc 1
  */
@@ -224,7 +224,7 @@ public class CmsHtmlReport implements I_CmsReport {
      * 
      * This method formats the link source.<p>
      *
-     * @param name the link resource
+     * @param link the link resource
      * @return the formatted StringBuffer
      */
     private StringBuffer getLinkElement(String link) {
@@ -242,7 +242,7 @@ public class CmsHtmlReport implements I_CmsReport {
      *
       * This method formats the link targets.<p>
       * 
-     * @param name the link target resource
+     * @param target the link target resource
      * @return the formatted StringBuffer
      */    
     private StringBuffer getLinkTargetElement(String target) {

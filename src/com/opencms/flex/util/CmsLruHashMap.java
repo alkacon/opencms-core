@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsLruHashMap.java,v $
- * Date   : $Date: 2003/03/18 01:48:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/06/13 11:10:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,14 +40,14 @@ import java.util.Map;
  * and a "last-recently-used" cache policy of the mapped key/values.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @see CmsFlexLruCache
  * @see I_CmsFlexLruCacheObject
  */
 public class CmsLruHashMap extends HashMap {
     
     /** LRU cache to organize the cached objects efficient. */
-    private CmsFlexLruCache m_LruCache;
+    private CmsFlexLruCache m_lruCache;
 
 
     /**
@@ -55,7 +55,7 @@ public class CmsLruHashMap extends HashMap {
      * of (0.75), and a max. size of cacheable objects of (36).<p>
      */
     public CmsLruHashMap() {
-        this( 16, (float)0.75, 36 );
+        this(16, (float)0.75, 36);
     }
 
     /**
@@ -64,8 +64,8 @@ public class CmsLruHashMap extends HashMap {
      * 
      * @param initialCapacity the initial capacity of the hash map
      */
-    public CmsLruHashMap( int initialCapacity ) {
-        this( initialCapacity, (float)0.75, (int)(initialCapacity*3*0.75) );
+    public CmsLruHashMap(int initialCapacity) {
+        this(initialCapacity, (float)0.75, (int)(initialCapacity*3*0.75));
     }
     
     /**
@@ -75,8 +75,8 @@ public class CmsLruHashMap extends HashMap {
      * @param initialCapacity the initial capacity of the hash map
      * @param loadFactor the load factor of the hash map before it is rehashed
      */    
-    public CmsLruHashMap( int initialCapacity, float loadFactor ) {
-        this( initialCapacity, loadFactor, (int)(initialCapacity*3*loadFactor) );
+    public CmsLruHashMap(int initialCapacity, float loadFactor) {
+        this(initialCapacity, loadFactor, (int)(initialCapacity*3*loadFactor));
     }
     
     /**
@@ -86,8 +86,8 @@ public class CmsLruHashMap extends HashMap {
      * @param initialCapacity the initial capacity of the hash map
      * @param maxLruSize the max. count of cacheable objects
      */    
-    public CmsLruHashMap( int initialCapacity, int maxLruSize ) {
-        this( initialCapacity, (float)0.75, maxLruSize );
+    public CmsLruHashMap(int initialCapacity, int maxLruSize) {
+        this(initialCapacity, (float)0.75, maxLruSize);
     }
     
     /**
@@ -98,9 +98,9 @@ public class CmsLruHashMap extends HashMap {
      * @param loadFactor the load factor of the hash map before it is rehashed
      * @param maxLruSize the max. count of cacheable objects
      */
-    public CmsLruHashMap( int initialCapacity, float loadFactor, int maxLruSize ) {
-        super( initialCapacity, loadFactor );
-        this.m_LruCache = new CmsFlexLruCache( maxLruSize, (int)(maxLruSize*0.75), -1, false );
+    public CmsLruHashMap(int initialCapacity, float loadFactor, int maxLruSize) {
+        super(initialCapacity, loadFactor);
+        this.m_lruCache = new CmsFlexLruCache(maxLruSize, (int)(maxLruSize*0.75), -1, false);
     }
       
     
@@ -108,16 +108,18 @@ public class CmsLruHashMap extends HashMap {
      * Removes all objects from this map.
      */
     public void clear() {
-        this.m_LruCache.clear();
+        this.m_lruCache.clear();
         super.clear();
     }
     
     /**
      * Clears any allocated resources during finalization.<p>
+     * 
+     * @throws Throwable if something goes wring
      */
     protected void finalize() throws Throwable {
         this.clear();
-        this.m_LruCache = null;
+        this.m_lruCache = null;
         super.finalize();
     }
     
@@ -132,13 +134,14 @@ public class CmsLruHashMap extends HashMap {
      * these two cases. 
      * 
      * @param key the key to look up
+     * @return the value for the key
      * @see java.util.Map#get(java.lang.Object)
      */
-    public Object get( Object key ) {
-        CmsLruCacheObject cachedObject = (CmsLruCacheObject)super.get( key );
+    public Object get(Object key) {
+        CmsLruCacheObject cachedObject = (CmsLruCacheObject)super.get(key);
         
         if (cachedObject!=null) {
-            this.m_LruCache.touch( cachedObject );  
+            this.m_lruCache.touch(cachedObject);  
             return (Object)cachedObject.getValue();
         }
         
@@ -153,14 +156,15 @@ public class CmsLruHashMap extends HashMap {
      * 
      * @param key the key to store 
      * @param value the value to store
+     * @return the object previously mapped to the key, or null if no object was previously mapped
      *
      * @see java.util.Map#put(java.lang.Object, java.lang.Object)
      */
-    public Object put( Object key, Object value ) {         
-        CmsLruCacheObject cachedObject = new CmsLruCacheObject( value, key, this );
+    public Object put(Object key, Object value) {         
+        CmsLruCacheObject cachedObject = new CmsLruCacheObject(value, key, this);
         
-        if (this.m_LruCache.add(cachedObject)) {
-            CmsLruCacheObject previousMapping = (CmsLruCacheObject)super.put( key, (CmsLruCacheObject)cachedObject );
+        if (this.m_lruCache.add(cachedObject)) {
+            CmsLruCacheObject previousMapping = (CmsLruCacheObject)super.put(key, (CmsLruCacheObject)cachedObject);
                 
             if (previousMapping!=null) {
                 return (Object)previousMapping.getValue();
@@ -180,12 +184,12 @@ public class CmsLruHashMap extends HashMap {
      *
      * @see java.util.Map#putAll(java.util.Map)
      */
-    public void putAll( Map t ) {
+    public void putAll(Map t) {
         Iterator allKeys = t.keySet().iterator();
         
         while (allKeys.hasNext()) {
             String nextKey = (String)allKeys.next();
-            this.put( nextKey, t.get(nextKey) );
+            this.put(nextKey, t.get(nextKey));
         }
 
     }
@@ -194,14 +198,15 @@ public class CmsLruHashMap extends HashMap {
      * Removes the mapping for this key from this map if present.<p>
      *
      * @param key the key to remove
+     * @return the removed object, or null if no object for this key was found
      *
      * @see java.util.Map#remove(java.lang.Object)
      */
-    public Object remove( Object key ) {
-        CmsLruCacheObject cachedObject = (CmsLruCacheObject)super.remove( key );
+    public Object remove(Object key) {
+        CmsLruCacheObject cachedObject = (CmsLruCacheObject)super.remove(key);
         
         if (cachedObject!=null) {
-            this.m_LruCache.remove( cachedObject );
+            this.m_lruCache.remove(cachedObject);
             return (Object)cachedObject.getValue();    
         }
         
@@ -214,7 +219,7 @@ public class CmsLruHashMap extends HashMap {
      * @return the internal cache used for the LRU policy
      */
     public CmsFlexLruCache getLruCache() {
-        return this.m_LruCache;
+        return this.m_lruCache;
     }
     
 
@@ -228,15 +233,15 @@ public class CmsLruHashMap extends HashMap {
      */
     class CmsLruCacheObject extends Object implements I_CmsFlexLruCacheObject {
         
-        private CmsLruHashMap m_ParentHashMap;
-        private Object m_ParentKey;
-        private Object m_Value;
+        private CmsLruHashMap m_parentHashMap;
+        private Object m_parentKey;
+        private Object m_value;
         
         /** Pointer to the next cache entry in the LRU cache. */
-        private I_CmsFlexLruCacheObject m_Next;
+        private I_CmsFlexLruCacheObject m_next;
         
         /** Pointer to the previous cache entry in the LRU cache. */
-        private I_CmsFlexLruCacheObject m_Previous;
+        private I_CmsFlexLruCacheObject m_previous;
         
         /**
          * Constuctor.<p>
@@ -245,49 +250,49 @@ public class CmsLruHashMap extends HashMap {
          * @param theParentKey the parent key
          * @param theParentHashMap the parent cache 
          */
-        public CmsLruCacheObject( Object theInitialValue, Object theParentKey, CmsLruHashMap theParentHashMap ) {
-            this.m_Next = this.m_Previous = null;
-            this.m_Value = theInitialValue;
-            this.m_ParentKey = theParentKey;
-            this.m_ParentHashMap = theParentHashMap;
+        public CmsLruCacheObject(Object theInitialValue, Object theParentKey, CmsLruHashMap theParentHashMap) {
+            this.m_next = this.m_previous = null;
+            this.m_value = theInitialValue;
+            this.m_parentKey = theParentKey;
+            this.m_parentHashMap = theParentHashMap;
         }        
             
         /**
          * @see java.lang.Object#finalize()
          */
         protected void finalize() throws Throwable {
-            this.m_Next = this.m_Previous = null;
-            this.m_Value = null;  
-            this.m_ParentKey = null;
-            this.m_ParentHashMap = null;          
+            this.m_next = this.m_previous = null;
+            this.m_value = null;  
+            this.m_parentKey = null;
+            this.m_parentHashMap = null;          
         }
         
         /**
          * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#setNextLruObject(com.opencms.flex.util.I_CmsFlexLruCacheObject)
          */
-        public void setNextLruObject( I_CmsFlexLruCacheObject theNextObject ) {
-            this.m_Next = theNextObject;
+        public void setNextLruObject(I_CmsFlexLruCacheObject theNextObject) {
+            this.m_next = theNextObject;
         }
         
         /**
          * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getNextLruObject()
          */
         public I_CmsFlexLruCacheObject getNextLruObject() {
-            return this.m_Next;
+            return this.m_next;
         }
         
         /**
          * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#setPreviousLruObject(com.opencms.flex.util.I_CmsFlexLruCacheObject)
          */
-        public void setPreviousLruObject( I_CmsFlexLruCacheObject thePreviousObject ) {
-            this.m_Previous = thePreviousObject;
+        public void setPreviousLruObject(I_CmsFlexLruCacheObject thePreviousObject) {
+            this.m_previous = thePreviousObject;
         }
          
         /**
          * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getPreviousLruObject()
          */
         public I_CmsFlexLruCacheObject getPreviousLruObject() {
-            return this.m_Previous;
+            return this.m_previous;
         }
         
         /**
@@ -301,7 +306,7 @@ public class CmsLruHashMap extends HashMap {
          * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#removeFromLruCache()
          */
         public void removeFromLruCache() {
-            this.m_ParentHashMap.remove( this.m_ParentKey );
+            this.m_parentHashMap.remove(this.m_parentKey);
         }
         
         /**
@@ -317,7 +322,7 @@ public class CmsLruHashMap extends HashMap {
          * @return the value
          */
         public Object getValue() {
-            return m_Value;
+            return m_value;
         }
 
         /**
@@ -326,7 +331,7 @@ public class CmsLruHashMap extends HashMap {
          * @param value the value to set
          */
         public void setValue(Object value) {
-            m_Value = value;
+            m_value = value;
         }
 
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/I_CmsReport.java,v $
- * Date   : $Date: 2003/01/29 17:23:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/13 11:14:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,41 +33,40 @@ import com.opencms.linkmanagement.CmsPageLinks;
  * This is the interface for the report classes which are used to process the output
  * during database import and export operations.
  * 
- * @author Hanjo Riege
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public interface I_CmsReport {
 
     // soms statics to indicate the formatting
-    public static final int C_FORMAT_DEFAULT = 0;
-    public static final int C_FORMAT_WARNING = 1;
-    public static final int C_FORMAT_HEADLINE = 2;
-    public static final int C_FORMAT_NOTE = 3;  
-    public static final int C_FORMAT_OK = 4;      
+    int C_FORMAT_DEFAULT = 0;
+    int C_FORMAT_WARNING = 1;
+    int C_FORMAT_HEADLINE = 2;
+    int C_FORMAT_NOTE = 3;  
+    int C_FORMAT_OK = 4;      
         
     /** The name of the property file */
-    public static final String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
+    String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
         
     /**
      * Adds a line break to the report.<p>
      */
-    public void println();
+    void println();
 
     /**
      * Prints a String to the report.<p>
      * 
      * @param value the String to add
      */
-    public void print(String value);
+    void print(String value);
 
     /**
      * Prints a String with line break to the report.<p>
      *
      * @param value the String to add
      */
-    public void println(String value);
+    void println(String value);
 
     /**
      * Prints a String to the report, using the indicated formatting.<p>
@@ -78,7 +77,7 @@ public interface I_CmsReport {
      * @param value the String to add
      * @param format the formatting to use for the output
      */
-    public void print(String value, int format);
+    void print(String value, int format);
 
     /**
      * Prints a String with line break to the report, using the indicated formatting.<p>
@@ -89,7 +88,7 @@ public interface I_CmsReport {
      * @param value the String to add
      * @param format the formatting to use for the output
      */
-    public void println(String value, int format);
+    void println(String value, int format);
     
     /**
      * Adds a CmsPageLinks object to the report<p>
@@ -99,7 +98,7 @@ public interface I_CmsReport {
      *
      * @param value the CmsPageLinks object to add to the report
      */
-    public void println(CmsPageLinks value);        
+    void println(CmsPageLinks value);        
 
     /**
      * Adds an Exception to the report, ensuring that the Exception content is
@@ -108,9 +107,9 @@ public interface I_CmsReport {
      * The exception will be stored and the output will later be processed
      * in a special way.<p>    
      * 
-     * @param e the exception to add
+     * @param t the exception to add
      */
-    public void println(Throwable t);
+    void println(Throwable t);
         
     /**
      * Updates this report, this processes all new output added since 
@@ -121,7 +120,7 @@ public interface I_CmsReport {
      * 
      * @return new elements that have been added to the report and not yet processed.
      */
-    public String getReportUpdate();
+    String getReportUpdate();
     
     /**
      * Returns <code>true</code> if broken links where reported, <code>false</code>
@@ -133,7 +132,7 @@ public interface I_CmsReport {
      * @return <code>true</code> if broken links where reported, <code>false</code>
      * otherwise
      */
-    public boolean hasBrokenLinks();
+    boolean hasBrokenLinks();
     
     /**
      * Gets the localized resource string for a given message key.<p>
@@ -146,5 +145,5 @@ public interface I_CmsReport {
      * 
      * @see com.opencms.flex.util.CmsMessages#key(String)
      */
-    public String key(String keyName);
+    String key(String keyName);
 }
