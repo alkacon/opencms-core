@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
-* Date   : $Date: 2002/04/02 08:47:07 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/04/05 12:34:50 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -114,7 +114,6 @@ public class CmsPool extends Thread {
         start();
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": created");
-            System.err.println("Pool with connectiontest created: " + m_poolname);
         }
     }
 
@@ -204,11 +203,12 @@ public class CmsPool extends Thread {
             }
         }
         // done it - we have a connection
-        if(testConnection(con)) {
+        /* if(testConnection(con)) {
             return con;
         } else {
             return getConnection();
-        }
+        } */
+        return con;
     }
 
     /**

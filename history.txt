@@ -8,6 +8,12 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.3 Ecaz - 5 April 2002
+! Corrected the base url for editing in ActiveX DHTML-Control. Now relative links to
+  images and other resources are handled correct. The Editor will display relative linked
+  images.
+- Switched back the opencms pool so it dosn't test each connection before delivering.
+
 OpenCms 4.7.2 Ecaz - 25 March 2002
 ! new values for the property 'export'. https_enabled and dynamic_https_enabled say that
   the link to such a resource from a https page wont switch to http. Used to show pics

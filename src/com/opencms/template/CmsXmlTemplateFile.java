@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/11/27 10:49:31 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2002/04/05 12:34:50 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.51 $ $Date: 2001/11/27 10:49:31 $
+ * @version $Revision: 1.52 $ $Date: 2002/04/05 12:34:50 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -185,6 +185,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getDataValue(String tag) throws CmsException {
         return super.getDataValue(tag);
     }
+
     public String getEditableTemplateContent(Object callingObject, Hashtable parameters, String templateSelector, boolean html, String style) throws CmsException {
         Vector cdatas = new Vector();
         String editDatablockName = this.getEditTemplateDatablockName(templateSelector);
@@ -242,8 +243,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             result.append("<link rel=stylesheet type=\"text/css\" href=\"" + style + "\">\n");
             result.append("</HEAD>\n");
             result.append("<BASE href=\"");
-            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)m_cms.getRequestContext().getRequest().getOriginalRequest();
-            result.append(req.getScheme() + "://" + req.getHeader("HOST") + req.getServletPath() + "/");
+            I_CmsRequest req = m_cms.getRequestContext().getRequest();
+            result.append(req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getServletUrl() + (String)parameters.get("file"));
             result.append("\"></BASE>");
             result.append("<BODY " + getProcessedDataValue("bodytag", callingObject, parameters) + ">\n");
             while(cdataStart != -1) {
