@@ -3,6 +3,15 @@
 		<name>English</name>
 
 		<sitemanagement>
+			<label>
+				<createnewsite>Create new site</createnewsite>
+				<sitename>Site name</sitename>
+				<domainname>Domain name</domainname>
+				<domain>Domain</domain>
+				<language>Language</language>
+				<categories>Categories</categories>
+				
+			</label>
 			<error>
 				<title>
 			
