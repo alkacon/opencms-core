@@ -1,0 +1,231 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/Attic/todo.txt,v $
+ * Date   : $Date: 2002/08/23 10:33:08 $
+ * Version: $Revision: 1.1 $
+ *
+ * This file is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002  The OpenCms Group
+ */
+
+TODO Items for OpenCms Release 5.0.
+
+This document serves as a base for discussion on what features should 
+be included in the next release of OpenCms. 
+
+Everyone is invited to make suggestions to this list, please use the 
+opencms-dev mailing list at www.opencms.org to do so.
+
+Legend: 
++ Decision: Feature will be implemented in the next release
+d Decision: Feature will be implemented, but implementation is delayed beyond next release
+- Decision: Feature will NOT be implemented
+? No desicion made about this feature
+# Feature has already been implemented for the next release
+
+As a small rule, there can be only a decision to implement a feature if there is 
+also a volunteer to do the work! 
+
+
+[ ? ] Consolidate top-level directories
+================================================================================
+Suggested by: 
+  Alexander Kandzior (a.kandzior@alkacon.com) 
+
+Description: 
+  Even in an empty OpenCms installation, there are a lot of default directories
+  in the root folder ("/"). This confuses users, esp. when one starts to
+  add his own directories, since it might not be clear which directory 
+  belongs to the application, and which is just a default directory with
+  some special system function. The suggestion is to move all the default
+  directories below the "/system" folder.
+
+  The current folder structure of a fres OpenCms installation looks like this:
+
+  /content
+  /download
+  /externallinks
+  /htmlgalleries
+  /moduledemos
+  /pics/system
+  /system
+   
+  All above directories are only needed for special system purposes. 
+  This new folder structure would achive the same result, but without 
+  clustering the root folder:
+
+  /system
+  /system/content
+  /system/download
+  /system/externallinks
+  /system/htmlgalleries
+  /system/moduledemos
+  /system/pics
+  [other directories already below /system remain]
+    
+Issues: 
+   This changes require re-coding a lot of path information that might
+   be clustered in the Java sources and the workplace files. 
+   Esp. moving /content to /system/content might be difficult because 
+   of the XMLTemplate mechanism. 
+
+   Also important is to have a mechanism to update a running system
+   using the old structure to the new structure. This might be achived
+   with a special import / export filter method.
+
+Assigned to: 
+  (No volunteer yet)
+
+
+[ ? ] Logfile rotation
+================================================================================
+Suggested by: 
+  Andreas Schouten (andreas.schouten@framfab.de) 
+
+Description: 
+  The OpenCms logfile just grows and grows. Logfile rotation would help
+  keep the filesize reasonable.
+ 
+Issues:
+    None known. Someone has to to the work.
+
+Assigned to: 
+  (No volunteer yet)
+
+
+[ ? ] Native support for Velocity templates
+================================================================================
+Suggested by: 
+  Alexander Kandzior (a.kandzior@alkacon.com) 
+
+Description: 
+  Thanks to contributions from the community, there is now a Velocity 
+  template extension for OpenCms available. Based on this work,
+  Velocity support should be extended to be natively included in the 
+  standard release. In short, there should be a "Velocity Template" option 
+  on the "Add new" dialog in the OpenCms workplace.
+ 
+Issues:
+  Adding a new resource type in OpenCms is tricky. Also, there must be a way devised
+  that binds the Velocity template to a corrosponding Velocity class. 
+
+Assigned to: 
+  (No volunteer yet)
+
+
+[ ? ] Check for old, unused template files in "/system/workplace" folders
+================================================================================
+Suggested by: 
+  Alexander Kandzior (a.kandzior@alkacon.com) 
+
+Description: 
+  There are many files in "/system/workplace" folders. Some of them seem to 
+  be unused. This should be checked and unused files should be removed.
+
+Issues:
+  None known. Someone has to to the work.
+
+Assigned to: 
+  (No volunteer yet)
+
+
+[ ? ] Support for MS-SQL Server in setup wizard
+================================================================================
+Suggested by: 
+  Alexander Kandzior (a.kandzior@alkacon.com) 
+
+Description: 
+  There is now a native MS-SQL Server resource broker available. 
+  This should be selectable during installation with the wizard.
+  Currently the opencms.properties file must be edited to enable MS-SQL 
+  server support, which is difficult to impossible for new users who want
+  to try our OpenCms on their system.
+
+Issues:
+  None known. Someone has to to the work.
+
+Assigned to: 
+  (No volunteer yet)
+
+
+[ ? ] Create a default "Offline" project during installation
+================================================================================
+From: 
+  Alexander Kandzior (a.kandzior@alkacon.com) 
+
+Description: 
+  Currently, the user must first create a project after installation to be able 
+  to make any changes. There should be a default "Offline" project that is
+  created during the installation, so that a new user can start checking out 
+  the system right away. This default "Offline" project should be just a normal
+  project, so it can be deleted if not wanted. This change would help new users
+  to get started with OpenCms more easily. 
+
+Issues:
+  None known.
+
+Assigned to: 
+  (No volunteer yet)
+
+
+[ ? ] Rename "uk" locale to "en" 
+================================================================================
+From: 
+  Alexander Kandzior (a.kandzior@alkacon.com) 
+
+Description: 
+  The locale for english language for some obscure reason is "uk", while 
+  the international standard is "en". Rename local and language files to "en"
+
+Issues:
+  Make sure old modules that still use "uk" locale are still running.
+
+Assigned to: 
+  (No volunteer yet)
+
+
+[ ? ] Add i18n changes to release version
+================================================================================
+From:  
+  Alexander Kandzior (a.kandzior@alkacon.com) 
+
+Description: 
+  There has been a great contribution from Gridnine systems to better support
+  i18n in the OpenCms XML process. This changes should be part of the next 
+  major release. 
+
+  As a side effect, these changes might also cause OpenCms to work with the 
+  Java 1.4 default XML parser. In this case a seperate Xerces jar would not  
+  longer be needed, reducing a lot of installation issues. This should 
+  be verified.
+
+Issues:
+  Make sure the changes have no side - effect on the rest of the system.
+
+Assigned to: 
+  (No volunteer yet)
+
+
+[ ? ] English help file translations
+================================================================================
+From: 
+  Alexander Kandzior (a.kandzior@alkacon.com) 
+
+Description: 
+  The help files are available only in German language. 
+  They must be made available in English for international users.
+  Other languages (eg. Italian) would also be great.
+
+Issues:
+  Find someone who translates the content. 
+  Also, the selection mechanism for the help language must be checked and 
+  perhaps adjusted to support more then one language. Moreover, all files 
+  currently have German names. To make translation easier and to be more
+  consistent, the names of the help files should be changed to english. This
+  in turn requires changing the reference to the helpfiles in all workplace 
+  files. 
+
+Assigned to: 
+  (No volunteer yet)
+
