@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2001/12/06 10:02:00 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2002/07/10 15:01:55 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.32 $ $Date: 2001/12/06 10:02:00 $
+ * @version $Revision: 1.33 $ $Date: 2002/07/10 15:01:55 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -108,7 +108,7 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
             template = "folder";
         }
         Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-        String showLockDialog = "on";
+        String showLockDialog = "off";
         if(startSettings!=null){
             showLockDialog = (String)startSettings.get(C_START_LOCKDIALOG);
         }

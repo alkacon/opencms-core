@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/07/10 15:01:55 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.34 $ $Date: 2002/07/10 15:01:55 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -1122,7 +1122,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             }
             startSettings.put(C_START_VIEW, currentView);
             startSettings.put(C_START_DEFAULTGROUP, reqCont.currentUser().getDefaultGroup().getName());
-            startSettings.put(C_START_LOCKDIALOG, "on");
+            startSettings.put(C_START_LOCKDIALOG, "");
             startSettings.put(C_START_ACCESSFLAGS, new Integer(C_ACCESS_DEFAULT_FLAGS));
         }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/06/28 16:17:15 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2002/07/10 15:01:55 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -2012,7 +2012,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
     // now check if the "do you really want to lock" dialog should be shown.
     Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-    String showLockDialog = "on";
+    String showLockDialog = "off";
     if(startSettings!=null){
       showLockDialog = (String)startSettings.get(C_START_LOCKDIALOG);
     }
