@@ -23,8 +23,6 @@ top.head.helpUrl='administration/index.html';
     onLoad="window.top.body.admin_head.location.href='<cms:link>/system/workplace/action/administration_head.html</cms:link>';">
 
 
-<h1>Flex Cache Administration</h1>
-
 <%
     int sizeEntries = 0;
     int sizeKeys = 0;
@@ -35,31 +33,43 @@ top.head.helpUrl='administration/index.html';
     int currentCacheByteSize = 0;
     int currentCacheObjectCount = 0;
     CmsFlexLruCache entryLruCache = null;
-
-    String label_1 = "Clear entries only";
-    String label_2 = "Clear cache keys and entries completely";
-    String label_5 = "Clear only online entries";
-    String label_6 = "Clear only online keys and entries";
-    String label_7 = "Clear only offline entries";
-    String label_8 = "Clear only offline keys and entries";
-    String label_9 = "Purge JSP repository";
-    String label_3 = "Show cached resources with keys";
-    String label_4 = "Show cached resources with keys and entries";
-    String label_10 = "Reload this page";
-
+    
     out = pageContext.getOut();
-
+	
+	// initialise Cms Action Element
+	com.opencms.flex.jsp.CmsJspActionElement cmsAction = new com.opencms.flex.jsp.CmsJspActionElement(pageContext, request, response);
+	
+	String locale = "en";
+	
     if (request instanceof CmsFlexRequest) {
         // out.write("<h3>CmsFlexRequest found!</h3>");
 
         CmsFlexRequest req = (CmsFlexRequest)request;
 
         cache = req.getCmsCache();
-        cms = req.getCmsObject();
+        cms = cmsAction.getCmsObject();
+        // get the current locale
+		locale = com.opencms.workplace.CmsXmlLanguageFile.getCurrentUserLanguage(cms);
     } else {
         out.write("<h3>NO CmsFlexRequest!</h3>");
     }
 
+	CmsMessages messages = new CmsMessages("com/opencms/workplace/workplace", locale);
+	
+	out.println("<h1>" + messages.key("flexcache.admin.heading") + "</h1>");
+	
+	// get the label texts for the submit buttons
+	String label_1 = messages.key("flexcache.admin.label1");
+    String label_2 = messages.key("flexcache.admin.label2");
+    String label_5 = messages.key("flexcache.admin.label5");
+    String label_6 = messages.key("flexcache.admin.label6");
+    String label_7 = messages.key("flexcache.admin.label7");
+    String label_8 = messages.key("flexcache.admin.label8");
+    String label_9 = messages.key("flexcache.admin.label9");
+    String label_3 = messages.key("flexcache.admin.label3");
+    String label_4 = messages.key("flexcache.admin.label4");
+    String label_10 = messages.key("flexcache.admin.label10");
+	
     String action = request.getParameter("action");
     // out.write("Request action is: " + action);
 
@@ -109,29 +119,29 @@ top.head.helpUrl='administration/index.html';
 
 <table border="0" cellpadding="3" cellspacing="0">
 <tr>
-	<td class="wizardbig"><b>Entries in Flex Cache:</b></td>
+	<td class="wizardbig"><b><%= messages.key("flexcache.admin.variants_size") %></b></td>
 	<td class="wizardbig" align="right"><font color="red"><b><%=sizeEntries%></b></font></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
-	<td class="wizardbig"><b>Keys in Flex Cache:</b></td>
+	<td class="wizardbig"><b><%= messages.key("flexcache.admin.keys") %></b></td>
 	<td class="wizardbig" align="right"><font color="red"><b><%=sizeKeys%></b></font></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
-	<td class="wizardbig"><b>Max. size of all entries:</b></td>
+	<td class="wizardbig"><b><%= messages.key("flexcache.admin.variants_maxsize") %></b></td>
 	<td class="wizardbig" align="right"><font color="red"><b><%=maxCacheByteSize%></b></font></td>
-	<td class="wizardbig"><b>bytes</b></td>
+	<td class="wizardbig"><b><%= messages.key("flexcache.admin.bytes") %></b></td>
 </tr>
 <tr>
-	<td class="wizardbig"><b>Avg. size of all entries:</b></td>
+	<td class="wizardbig"><b><%= messages.key("flexcache.admin.variants_avgsize") %></b></td>
 	<td class="wizardbig" align="right"><font color="red"><b><%=avgCacheByteSize%></b></font></td>
-	<td class="wizardbig"><b>bytes</b></td>
+	<td class="wizardbig"><b><%= messages.key("flexcache.admin.bytes") %></b></td>
 </tr>
 <tr>
-	<td class="wizardbig"><b>Cur. size of all entries:</b></td>
+	<td class="wizardbig"><b><%= messages.key("flexcache.admin.variants_cursize") %></b></td>
 	<td class="wizardbig" align="right"><font color="red"><b><%=currentCacheByteSize%></b></font></td>
-	<td class="wizardbig"><b>bytes</b></td>
+	<td class="wizardbig"><b><%= messages.key("flexcache.admin.bytes") %></b></td>
 </tr>
 </table>
 
@@ -146,7 +156,7 @@ top.head.helpUrl='administration/index.html';
 </form>
 
 
-<h2>Clear Cache options</h2>
+<h2><%= messages.key("flexcache.admin.clear_options") %></h2>
 
 <form method="POST" action="index.html">
 <table border="0" cellpadding="3" cellspacing="0">
@@ -158,11 +168,11 @@ top.head.helpUrl='administration/index.html';
 <%
     if (cache.cacheOffline()) {
 %>
-<h3>Clear online / offline cache options</h3>
+<h3><%= messages.key("flexcache.admin.clear_options2") %></h3>
 <table border="0" cellpadding="3" cellspacing="0">
 <tr>
-	<td><b>Online</b> cache</td>
-	<td><b>Offline</b> cache</td>
+	<td><b><%= messages.key("flexcache.admin.online") %></b> <%= messages.key("flexcache.admin.cache") %></td>
+	<td><b><%= messages.key("flexcache.admin.offline") %></b> <%= messages.key("flexcache.admin.cache") %></td>
 </tr>
 <tr>
 	<td><input type="submit" name="action" value="<%= label_5 %>"></td>
@@ -177,7 +187,7 @@ top.head.helpUrl='administration/index.html';
     }
 %>
 
-<h2>JSP options</h2>
+<h2><%= messages.key("flexcache.admin.jsp_options") %></h2>
 
 <table border="0" cellpadding="3" cellspacing="0">
 <tr>
@@ -185,7 +195,7 @@ top.head.helpUrl='administration/index.html';
 </tr>
 </table>
 
-<h2>Currently cached resources</h2>
+<h2><%= messages.key("flexcache.admin.cached_resources") %></h2>
 
 <table border="0" cellpadding="3" cellspacing="0">
 <tr>
@@ -202,9 +212,9 @@ top.head.helpUrl='administration/index.html';
             boolean showall = false;
             if (label_4.equals(action)) {
                 showall = true;
-                out.write("<h1>Cached resources with keys and entries:</h1>");
+                out.write("<h1>"+messages.key("flexcache.admin.cached_keys_variants")+"</h1>");
             } else {
-                out.write("<h1>Cached resources with keys:</h1>");
+                out.write("<h1>"+messages.key("flexcache.admin.cached_keys")+"</h1>");
             }
 
             Set set = cache.getCachedResources(cms);
@@ -224,11 +234,11 @@ top.head.helpUrl='administration/index.html';
                 Collections.sort(offline);
                 Collections.sort(online);
 
-                out.write("<h2>Online resources:</h2>");
+                out.write("<h2>"+messages.key("flexcache.admin.online")+"</h2>");
                 i = online.iterator();
                 while(i.hasNext()) {
                     String resource = (String)i.next();
-                    out.write("Resource: " + resource + " &nbsp; Key: " + cache.getCachedKey(resource, cms) + "<br>");
+                    out.write(messages.key("flexcache.admin.resource")+": <b>" + resource + "</b> &nbsp; "+messages.key("flexcache.admin.key")+": " + cache.getCachedKey(resource, cms) + "<br>");
                     if (showall) {
                         Set variations = cache.getCachedVariations(resource, cms);
                         if (variations.size() > 0) {
@@ -238,18 +248,18 @@ top.head.helpUrl='administration/index.html';
                             Iterator s = outlist.iterator();
                             while (s.hasNext()) {
                                 String v = (String)s.next();
-                                out.write("&nbsp; &nbsp; &nbsp; &nbsp; Entry: " + v + "<br>");
+                                out.write("&nbsp; &nbsp; &nbsp; &nbsp; "+messages.key("flexcache.admin.variant")+": " + v + "<br>");
                             }
                         }
                     }
                 }
-                if (online.size() == 0) out.write("There are no cached online resources!");
+                if (online.size() == 0) out.write(messages.key("flexcache.admin.err_online"));
 
-                out.write("<h2>Offline resources:</h2>");
+                out.write("<h2>"+messages.key("flexcache.admin.offline")+"</h2>");
                 i = offline.iterator();
                 while(i.hasNext()) {
                     String resource = (String)i.next();
-                    out.write("Resource: " + resource + " &nbsp; Key: " + cache.getCachedKey(resource, cms) + "<br>");
+                    out.write(messages.key("flexcache.admin.resource")+": <b>" + resource + "</b> &nbsp; "+messages.key("flexcache.admin.key")+": " + cache.getCachedKey(resource, cms) + "<br>");
                     if (showall) {
                         Set variations = cache.getCachedVariations(resource, cms);
                         if (variations.size() > 0) {
@@ -259,12 +269,12 @@ top.head.helpUrl='administration/index.html';
                             Iterator s = outlist.iterator();
                             while (s.hasNext()) {
                                 String v = (String)s.next();
-                                out.write("&nbsp; &nbsp; &nbsp; &nbsp; Entry: " + v + "<br>");
+                                out.write("&nbsp; &nbsp; &nbsp; &nbsp; "+messages.key("flexcache.admin.variant")+": " + v + "<br>");
                             }
                         }
                     }
                 }
-                if (offline.size() == 0) out.write("There are no cached offline resources!");
+                if (offline.size() == 0) out.write(messages.key("flexcache.admin.err_offline"));
 
             } else {
           		List online = new ArrayList();
@@ -274,7 +284,7 @@ top.head.helpUrl='administration/index.html';
                 Iterator i = online.iterator();
                 while(i.hasNext()) {
                     String resource = (String)i.next();
-                    out.write("Resource: " + resource + " &nbsp; Key: " + cache.getCachedKey(resource, cms) + "<br>");
+                    out.write(messages.key("flexcache.admin.resource")+": <b>" + resource + "</b> &nbsp; "+messages.key("flexcache.admin.key")+": " + cache.getCachedKey(resource, cms) + "<br>");
                     if (showall) {
                         Set variations = cache.getCachedVariations(resource, cms);
                         if (variations.size() > 0) {
@@ -284,12 +294,12 @@ top.head.helpUrl='administration/index.html';
                             Iterator s = outlist.iterator();
                             while (s.hasNext()) {
                                 String v = (String)s.next();
-                                out.write("&nbsp; &nbsp; &nbsp; &nbsp; Entry: " + v + "<br>");
+                                out.write("&nbsp; &nbsp; &nbsp; &nbsp; "+messages.key("flexcache.admin.variant")+": " + v + "<br>");
                             }
                         }
                     }
                 }
-                if (set.size() == 0) out.write("The cache is currently empty!");
+                if (set.size() == 0) out.write(messages.key("flexcache.admin.err_empty"));
             }
         }
     }
