@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/10/30 10:18:03 $
-* Version: $Revision: 1.259 $
+* Date   : $Date: 2002/11/04 11:28:08 $
+* Version: $Revision: 1.260 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.259 $ $Date: 2002/10/30 10:18:03 $ *
+ * @version $Revision: 1.260 $ $Date: 2002/11/04 11:28:08 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -5111,7 +5111,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 // export to filesystem if necessary
                 String exportKey = checkExport(currentFile.getAbsolutePath(), exportpoints);
                 if (exportKey != null){
-                    discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, currentFile.getContents());
+                    // Encoding project: Make sure files are written in the right encoding 
+                    byte[] contents = currentFile.getContents();
+                    String encoding = readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, projectId, currentFile, currentFile.getType());
+                    if (encoding != null) {
+                        // Only files that have the encodig property set will be encoded,
+                        // the other files will be ignored. So images etc. are not touched.                        
+                        try {
+                            contents = (new String(contents, encoding)).getBytes();
+                        } catch (UnsupportedEncodingException uex) {
+                            // contents will keep original value
+                        }
+                    }
+                    discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, contents);
                 }
                 CmsFile onlineFile = null;
                 try{
@@ -5203,7 +5215,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 // export to filesystem if necessary
                 String exportKey = checkExport(currentFile.getAbsolutePath(), exportpoints);
                 if (exportKey != null){
-                    discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, currentFile.getContents());
+                    // Encoding project: Make sure files are written in the right encoding 
+                    byte[] contents = currentFile.getContents();
+                    String encoding = readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, projectId, currentFile, currentFile.getType());
+                    if (encoding != null) {
+                        // Only files that have the encodig property set will be encoded,
+                        // the other files will be ignored. So images etc. are not touched.
+                        try {
+                            contents = (new String(contents, encoding)).getBytes();
+                        } catch (UnsupportedEncodingException uex) {
+                            // contents will keep original value
+                        }
+                    }
+                    discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, contents);                    
                 }
                 // get parentId for onlineFile either from folderIdIndex or from the database
                 Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
