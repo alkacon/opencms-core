@@ -50,12 +50,14 @@ function checkIt(wasdenn){
 		else formu=document.NEWLINK.document.LINK;
 
 		allesok=checkforchars(formu.NEUNAME);
+		if(allesok)checkforchars(formu.LINKNAME);
 
 		if(formu.NEUNAME.value=="" || formu.LINKNAME.value=="")
 		{
 			alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
 			allesok=false;
 		}
+		
 		if(allesok){
 			if(ie){
 				location='explorer_files_new_page.html?step=1&newfile='+

@@ -46,7 +46,7 @@ function checkIt(whichone){
 		else formu=document.NEWLINK.document.LINK;
 
 		if(formu.LINKNAME.value!=""){
-			if(checkforchars(formu.NEUNAME)==true )location='explorer_files_new_folder.html?step=1&newfolder='+formu.NEUNAME.value+'&title='+formu.NEUTITEL.value+'&navtitle='+formu.LINKNAME.value+'&navpos='+formu.LINKPOS.value;
+			if(checkforchars(formu.NEUNAME)==true && checkforchars(formu.LINKNAME)==true)location='explorer_files_new_folder.html?step=1&newfolder='+formu.NEUNAME.value+'&title='+formu.NEUTITEL.value+'&navtitle='+formu.LINKNAME.value+'&navpos='+formu.LINKPOS.value;
 		}else{
 		 alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
 		}
