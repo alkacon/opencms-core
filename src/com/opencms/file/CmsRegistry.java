@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2001/06/29 13:42:21 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2001/07/16 14:10:18 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.32 $ $Date: 2001/06/29 13:42:21 $
+ * @version $Revision: 1.33 $ $Date: 2001/07/16 14:10:18 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1795,7 +1795,6 @@ public void setModuleParameterdef(String modulename, Vector names, Vector descri
 	try {
 		Element module = getModuleElement(modulename);
 		Element params = (Element) (module.getElementsByTagName("parameters").item(0));
-
 		// delete all subnodes
 		while (params.hasChildNodes()) {
 			params.removeChild(params.getFirstChild());

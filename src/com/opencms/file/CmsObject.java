@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/10 16:05:47 $
- * Version: $Revision: 1.165 $
+ * Date   : $Date: 2001/07/16 14:10:18 $
+ * Version: $Revision: 1.166 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.165 $ $Date: 2001/07/10 16:05:47 $
+ * @version $Revision: 1.166 $ $Date: 2001/07/16 14:10:18 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1620,6 +1620,7 @@ public Vector getDirectGroupsOfUser(String username) throws CmsException {
 }
 /**
  * Returns a Vector with all files of a given folder.
+ * (only the direct subfiles, not the files in subfolders)
  * <br>
  * Files of a folder can be read from an offline Project and the online Project.
  *

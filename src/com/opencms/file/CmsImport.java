@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/07/12 09:09:52 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2001/07/16 14:10:18 $
+ * Version: $Revision: 1.46 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -45,7 +45,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.45 $ $Date: 2001/07/12 09:09:52 $
+ * @version $Revision: 1.46 $ $Date: 2001/07/16 14:10:18 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -193,6 +193,7 @@ private void createDigest() throws CmsException {
             // ok, an old system exported this, check if the file is ok
             if(!(new CmsCompatibleCheck()).isTemplateCompatible(path+name, content, type)){
                 type = C_TYPE_COMPATIBLEPLAIN_NAME;
+                System.out.print(" must set to "+C_TYPE_COMPATIBLEPLAIN_NAME+" ");
             }
         }
         return type;

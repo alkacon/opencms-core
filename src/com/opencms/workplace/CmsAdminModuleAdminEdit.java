@@ -2,11 +2,11 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/07/16 14:09:14 $
+* Version: $Revision: 1.11 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -14,15 +14,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @author: Hanjo Riege
  */
 public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_CmsConstants {
-    
+
     /**
      *  Checks if the name is correct.
      *  @param name the name to check..
@@ -60,7 +60,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
         }
         return true;
     }
-    
+
     /**
      *  Checks if the type of the value is correct and returns the converted value or null.
      *  @param type the type that the value should have..
@@ -108,7 +108,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
                                         return value;
                                     }
                                     else {
-                                        
+
                                         // the type dosen't exist
                                         return null;
                                     }
@@ -120,16 +120,16 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
             }
         }
         catch(Exception exc) {
-            
+
             // the type of the value was wrong
             return null;
         }
     }
-    
+
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
+     * with the given parameters.
+     *
      * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
@@ -158,16 +158,16 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
         String ok = (String)parameters.get("ok");
         String step = (String)parameters.get("step");
         if((prop == null) || ("".equals(prop))) {
-            
+
             // new property
             if((ok != null) && (!"".equals(ok))) {
-                
+
                 // read new prop
                 String name = getStringValue((String)parameters.get("NAME"));
                 String description = getStringValue((String)parameters.get("BESCHREIBUNG"));
                 String type = (String)parameters.get("TYP");
                 String value = (String)parameters.get("WERT");
-                
+
                 //  check if all fields are filled out and if the value is correct
                 String newValue = checkType(type, value);
                 if((checkName(name)) && (newValue != null)) {
@@ -194,7 +194,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
                     xmlTemplateDocument.setData("delybutton", " ");
                 }
                 else {
-                    
+
                     // from Errorpage
                     xmlTemplateDocument.setData("paraname", "");
                     xmlTemplateDocument.setData("paranameok", (String)session.getValue("parametername"));
@@ -208,10 +208,9 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
                     session.removeValue("description");
                 }
             }
-        }
-        else {
+        }else {
             if((ok != null) && (!"".equals(ok))) {
-                
+
                 // set property
                 String type = getStringValue((String)parameters.get("TYP"));
                 String value = getStringValue((String)parameters.get("WERT"));
@@ -227,18 +226,16 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
                     paraTyp.addElement(type);
                     paraVal.addElement(newValue);
                     templateSelector = "done";
-                }
-                else {
+                }else {
                     session.putValue("parametername", prop);
                     session.putValue("description", getStringValue((String)parameters.get("BESCHREIBUNG")));
                     session.putValue("parametertype", type);
                     session.putValue("parametervalue", value);
                     templateSelector = "errorold";
                 }
-            }
-            else {
+            }else {
                 if((delete != null) && (!"".equals(delete))) {
-                    
+
                     // delete property
                     int i = paraNames.indexOf(prop);
                     paraNames.removeElementAt(i);
@@ -246,9 +243,8 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
                     paraTyp.removeElementAt(i);
                     paraVal.removeElementAt(i);
                     templateSelector = "done";
-                }
-                else {
-                    
+                }else {
+
                     // prepare for change property
                     if((step == null) || ("".equals(step))) {
                         int i = paraNames.indexOf(prop);
@@ -258,9 +254,8 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
                         xmlTemplateDocument.setData("description", (String)paraDescr.elementAt(i));
                         xmlTemplateDocument.setData((String)paraTyp.elementAt(i), "selected");
                         xmlTemplateDocument.setData("delybutton", xmlTemplateDocument.getProcessedDataValue("deletebutton"));
-                    }
-                    else {
-                        
+                    }else {
+
                         // from errorpage errorold
                         prop = (String)session.getValue("parametername");
                         xmlTemplateDocument.setData("paraname", prop);
@@ -277,11 +272,10 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
                 }
             }
         }
-        
         // Now load the template file and start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
-    
+
     /**
      * returns the String or "" if it is null.
      * Creation date: (29.10.00 16:05:38)
@@ -294,12 +288,12 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
         }
         return param;
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.

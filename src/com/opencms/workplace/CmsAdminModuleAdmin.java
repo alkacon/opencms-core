@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/07/16 14:09:14 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -79,8 +79,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         try {
             cms.readFolder("/system/modules/" + module + "/administration/");
             check = "checked";
-        }
-        catch(Exception exc) {
+        }catch(Exception exc) {
             check = "";
         }
         table.put(C_ADMINPOINT, check);
@@ -112,7 +111,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         String[] allParas = reg.getModuleParameterNames(module);
         for(int i = 0;i < allParas.length;i++) {
             paraNames.addElement(allParas[i]);
-            paraDescr.addElement(reg.getModuleParameterDescription(module, allParas[i]));
+            paraDescr.addElement(getStringValue(reg.getModuleParameterDescription(module, allParas[i])));
             paraVal.addElement(reg.getModuleParameterString(module, allParas[i]));
             paraTyp.addElement(reg.getModuleParameterType(module, allParas[i]));
         }
@@ -154,8 +153,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             fillHashtable(cms, reg, sessionData, packetName);
             session.putValue(C_SESSION_MODULE_ADMIN_DATA, sessionData);
             stepTo = "firstpage";
-        }
-        else {
+        }else {
             sessionData = (Hashtable)session.getValue(C_SESSION_MODULE_ADMIN_DATA);
             if("first".equals(from)) {
 
@@ -296,9 +294,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
     private void tryToCreateFolder(CmsObject cms, String folder, String newFolder) {
         try {
             cms.createFolder(folder, newFolder);
-        }
-        catch(Exception e) {
-
+        }catch(Exception e) {
         }
     }
 
@@ -316,9 +312,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         try {
             int v = Integer.parseInt(version);
             reg.setModuleVersion(name, v);
-        }
-        catch(Exception e) {
-
+        }catch(Exception e) {
         }
         try {
             reg.setModuleNiceName(name, (String)table.get(C_MODULENAME));
@@ -329,14 +323,11 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                 if(!"".equals(getStringValue(reg.getModuleViewName(name)))) {
                     try {
                         cms.deleteFolder(modulePath + "view/");
-                    }
-                    catch(Exception e) {
-
+                    }catch(Exception e) {
                     }
                     reg.deleteModuleView(name);
                 }
-            }
-            else {
+            }else {
                 if("".equals(getStringValue(reg.getModuleViewName(name)))) {
                     reg.setModuleView(name, name.replace('.', '_'), modulePath + "view/index.html");
                     tryToCreateFolder(cms, modulePath, "view");
@@ -347,12 +338,9 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             if("".equals((String)table.get(C_ADMINPOINT))) {
                 try { // does not work when folder is not empty
                     cms.deleteFolder(modulePath + "administration/");
+                }catch(Exception e) {
                 }
-                catch(Exception e) {
-
-                }
-            }
-            else {
+            }else {
                 tryToCreateFolder(cms, modulePath, "administration");
             }
 
@@ -361,13 +349,12 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             reg.setModuleAuthor(name, (String)table.get(C_AUTHOR));
             reg.setModuleAuthorEmail(name, (String)table.get(C_EMAIL));
 
-            // set the date
+            // set the date, if the value is not correct set the current date
             String date = (String)table.get(C_DATE);
             long dateLong = 0;
             try {
                 dateLong = dateFormat.parse(date).getTime();
-            }
-            catch(Exception exc) {
+            }catch(Exception exc) {
                 dateLong = (new Date()).getTime();
             }
             reg.setModuleCreateDate(name, dateLong);
@@ -387,17 +374,13 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                 int maxInt = -1;
                 try {
                     minInt = Integer.parseInt(min);
-                }
-                catch(Exception e) {
-
+                }catch(Exception e) {
                 }
                 try {
                     if(!"*".equals(max)) {
                         maxInt = Integer.parseInt(max);
                     }
-                }
-                catch(Exception e) {
-
+                }catch(Exception e) {
                 }
                 minVersion.addElement(new Integer(minInt));
                 maxVersion.addElement(new Integer(maxInt));
@@ -410,8 +393,8 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             Vector paraTyp = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_TYP);
             Vector paraVal = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_VAL);
             reg.setModuleParameterdef(name, paraNames, paraDesc, paraTyp, paraVal);
-        }
-        catch(CmsException e) {
+
+        }catch(CmsException e) {
              if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                  A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG,
                     "Error while module administrating: " + e.toString());
