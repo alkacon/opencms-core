@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlHtmlWidget.java,v $
- * Date   : $Date: 2004/10/18 13:04:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/18 14:46:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
@@ -66,14 +66,16 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
         CmsObject cms,
         A_CmsXmlDocument document,
         CmsXmlContentEditor editor,
-        CmsXmlContentDefinition contentDefintion,
+        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException {
 
         String id = getParameterName(value);
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(editor, contentDefintion, value.getNodeName()));
-        result.append(": </td><td class=\"xmlTd\">");
+        result.append(getMessage(editor, contentDefinition, value.getNodeName()));
+        result.append(": </td>");
+        result.append(getHelpBubble(cms, editor, contentDefinition, value.getNodeName()));
+        result.append("</td><td class=\"xmlTd\">");
         result.append("<textarea class=\"xmlInput maxwidth\" name=\"");
         result.append(id);
         result.append("\" id=\"");

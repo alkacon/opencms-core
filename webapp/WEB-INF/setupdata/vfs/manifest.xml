@@ -6548,6 +6548,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/editors/xmlcontent/help.js</source>
+			<destination>system/workplace/editors/xmlcontent/help.js</destination>
+			<type>plain</type>
+			<uuidresource>b50b1e87-20e3-11d9-9b67-9f91734fb765</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 11:53:27 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Oct 2004 10:57:15 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/editors/xmlcontent/editor.jsp</source>
 			<destination>system/workplace/editors/xmlcontent/editor.jsp</destination>
 			<type>jsp</type>
@@ -13181,12 +13194,48 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/resources/editors/xmlcontent/images</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 18 Oct 2004 11:15:05 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Oct 2004 11:15:05 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/editors/xmlcontent/edit.js</destination>
 			<type>plain</type>
 			<uuidresource>bc7dd786-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 17 Aug 2004 12:53:56 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/xmlcontent/images/help.gif</source>
+			<destination>system/workplace/resources/editors/xmlcontent/images/help.gif</destination>
+			<type>image</type>
+			<uuidresource>4a97a871-20e6-11d9-8f52-9f91734fb765</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 11:15:45 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Oct 2004 11:15:45 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/xmlcontent/help.js</destination>
+			<type>plain</type>
+			<uuidresource>b50b1e87-20e3-11d9-9b67-9f91734fb765</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 11:53:27 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Oct 2004 10:57:15 CEST</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlDateTimeWidget.java,v $
- * Date   : $Date: 2004/10/18 13:04:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/18 14:46:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
@@ -69,16 +69,17 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
         CmsObject cms,
         A_CmsXmlDocument document,
         CmsXmlContentEditor editor,
-        CmsXmlContentDefinition contentDefintion,
+        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) {
 
         CmsXmlDateTimeValue castValue = (CmsXmlDateTimeValue)value;
 
         StringBuffer result = new StringBuffer(128);
-        result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(editor, contentDefintion, value.getNodeName()));
-        result.append(": </td><td class=\"xmlTd\">");
-        
+        result.append("<tr><td class=\"xmlLabel\">");        
+        result.append(getMessage(editor, contentDefinition, value.getNodeName()));
+        result.append(": </td>");
+        result.append(getHelpBubble(cms, editor, contentDefinition, value.getNodeName()));
+        result.append("</td><td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"); 
         result.append("<input class=\"xmlInputSmall\" value=\"");
         String dateTimeValue = "";

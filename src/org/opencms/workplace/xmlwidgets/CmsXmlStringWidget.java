@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2004/10/18 13:04:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/18 14:42:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,23 +32,25 @@
 package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
 import org.opencms.workplace.editors.CmsXmlContentEditor;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+
+
 /**
  * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlStringValue}.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
 
+      
     /**
      * Creates a new editor widget.<p>
      */
@@ -64,35 +66,17 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         CmsObject cms,
         A_CmsXmlDocument document,
         CmsXmlContentEditor editor,
-        CmsXmlContentDefinition contentDefintion,
+        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) throws CmsXmlException {
-
+           
         String id = getParameterName(value);
-        int idHash = id.hashCode();
-        if (idHash < 0) {
-            idHash = -idHash;
-        }
         
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(editor, contentDefintion, value.getNodeName()));
+        result.append(getMessage(editor, contentDefinition, value.getNodeName()));
         result.append(": </td>");
         
-        result.append(": </td>");
-        
-        result.append("<td>");
-        result.append("<img id=\"img");
-        result.append(id);
-        result.append("\" name=\"img");
-        result.append(id);
-        result.append("\" src=\"");
-        result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/editors/xmlcontent/images/help.gif"));
-        result.append("\" border=\"0\" onmouseout=\"hideHelp('");                
-        result.append(id);
-        result.append("');\" onmouseover=\"showHelp('");
-        result.append(id);
-        result.append("');\">");       
-        result.append("</td>");         
+        result.append(getHelpBubble(cms, editor, contentDefinition, value.getNodeName()));
         
         result.append("<td class=\"xmlTd\"><input class=\"xmlInput maxwidth\" value=\"");
         result.append(value.getStringValue(cms, document));
@@ -103,18 +87,7 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         result.append("\">");
         result.append("</td>");
 
-        result.append("<div class=\"help\" name=\"help");
-        result.append(id);
-        result.append("\" id=\"help");
-        result.append(id);
-        result.append("\" onmouseout=\"hideHelp('");
-        result.append(id);
-        result.append("');\" onmouseover=\"showHelp('");
-        result.append(id);
-        result.append("');\">");
-        result.append("Help text to item ");
-        result.append(value.getNodeName());
-        result.append("</div>");
+        //result.append(getHelpText(editor, contentDefinition, value.getNodeName()));
         
         result.append("</tr>\n");
         

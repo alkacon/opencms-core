@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlBooleanWidget.java,v $
- * Date   : $Date: 2004/10/18 13:04:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/18 14:46:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
@@ -67,15 +67,17 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
         CmsObject cms,
         A_CmsXmlDocument document,
         CmsXmlContentEditor editor,
-        CmsXmlContentDefinition contentDefintion,
+        CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) {
 
         CmsXmlBooleanValue castValue = (CmsXmlBooleanValue)value;
 
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(editor, contentDefintion, value.getNodeName()));
-        result.append(": </td><td class=\"xmlTd\">");
+        result.append(getMessage(editor, contentDefinition, value.getNodeName()));
+        result.append(": </td>");
+        result.append(getHelpBubble(cms, editor, contentDefinition, value.getNodeName()));
+        result.append("<td class=\"xmlTd\">");        
         boolean booleanValue = castValue.getBooleanValue();
         String id = getParameterName(value);
         
