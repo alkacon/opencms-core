@@ -27,7 +27,7 @@
 	
 	<table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
-		<td class=menu><img src="]]><METHOD name="picsUrl">logokunde.gif</METHOD><![CDATA[" border=0 widht=70 height=26></td>
+		<td class=menu><img src="]]><METHOD name="picsUrl">logokunde.gif</METHOD><![CDATA[" border=0 widht=53 height=32></td>
 		<td class=menubold><p class=einzug>Projekt:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt>
 			]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.form1.submit()"/><![CDATA[
@@ -44,9 +44,9 @@
 		<td class=dialogtxt><p class=tab>]]><BUTTON href="javascript:window.top.body.location.reload(true)" name="bt_reload" action="" alt="reload"/><![CDATA[</td>
 		<td class=dialogtxt>]]><BUTTON href="einstellungen_expl.html" name="bt_einstellungen" action="" alt="preferences"/><![CDATA[</td>
 		<td class=dialogtxt>]]><BUTTON href="javascript:window.top.location.href='login.html'" name="bt_exit" action="" alt="exit"/><![CDATA[</td>
-		<td class=dialogtxt>]]><BUTTON href="javascript:url=window.top.body.show_help(); openwin(url, 'Hilfe', 300, 600);" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
+		<td class=dialogtxt>]]><BUTTON href="javascript:url='../help/de/'+window.top.body.show_help(); openwin(url, 'Hilfe', 300, 600);" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
 		<td class=dialogtxt width="100%">&nbsp;</td>
-		<td class=dialogtxt><img src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA[" width=75 height=26 border=0 alt="opencms"><br></a></td>
+		<td class=dialogtxt><img src="]]><METHOD name="picsUrl">opencms_grau.gif</METHOD><![CDATA[" width=114 height=32 border=0 alt="opencms"><br></a></td>
 	</tr>
 </table>
 
