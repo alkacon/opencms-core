@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/07/18 16:31:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/08/19 12:25:40 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 package org.opencms.configuration;
 
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -205,29 +205,6 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         addDtdPrefixMapping(this);
         m_configurations = new ArrayList();
     }
-    
-    /**
-     * Simply version of a 1:1 binary file copy.<p>
-     * 
-     * @param fromFile the name of the file to copy
-     * @param toFile the name of the target file
-     * @throws IOException if any IO error occurs during the copy operation
-     */
-    public static void copy(String fromFile, String toFile) throws IOException {
-        File inputFile = new File(fromFile);
-        File outputFile = new File(toFile);
-
-        FileInputStream in = new FileInputStream(inputFile);
-        FileOutputStream out = new FileOutputStream(outputFile);
-        int c;
-
-        while ((c = in.read()) != -1) {
-           out.write(c);
-        }
-        
-        in.close();
-        out.close();
-    }    
     
     /**
      * Adds a configuration object to the configuration manager.<p>
@@ -441,7 +418,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         }
         
         try {
-            copy(fromName, toName);
+            CmsFileUtil.copy(fromName, toName);
         } catch (IOException e) {
             OpenCms.getLog(this).error("Could not generate configuration backup file " + toName, e);
         }        
