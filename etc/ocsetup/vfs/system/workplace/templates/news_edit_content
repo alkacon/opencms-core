@@ -33,7 +33,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <tr><td align=middle valign=center>
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id=PROJECTNEW name=PROJECTNEW>
+<form id=PROJECTNEW name=PROJECTNEW method=post>
 <table cellspacing=0 cellpadding=0 border=1 width=700>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>

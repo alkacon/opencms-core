@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_dialogscroll.js,v $
- * Date   : $Date: 2000/04/06 11:48:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/10 08:43:18 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -160,9 +160,9 @@ function resized(){
 //---------------------------------------------
 
 function move(pos) {
-	if (pos=='start')
+	if ((pos=='start')&&(oScroll.y<0))
 		oScroll.moveIt(0,0);
-	else if (pos=='end') {
+	else if ((pos=='end')&&(oScroll.y>-oScroll.scrollHeight+oCont.clipHeight)) {
 		oScroll.moveIt(0,-oScroll.scrollHeight+oCont.clipHeight);
 	}
 }

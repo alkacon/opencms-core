@@ -6,10 +6,10 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2.html';
-}
+	function show_help()
+	{
+		return '5_2.html';
+	}
 //-->
 </script>
 
@@ -30,9 +30,6 @@ function show_help()
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
-		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
-		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
-		<!-- <td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td> -->
 	</tr>
 	<tr valign=top align=center>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
@@ -41,7 +38,13 @@ function show_help()
 <!--		<td>]]><ICON name="ic_computer" label="mountpoint" method="doNotShow" action="notImplemented('Mountpointverwaltung');" href="#" target=""/><![CDATA[</td> -->
 <!--		<td>]]><ICON name="ic_clock" label="processmanagement" method="doNotShow" action="notImplemented('Vorgangsverwaltung');" href="#" target=""/><![CDATA[</td> -->
 		<td>]]><ICON name="ic_data" label="database" action="location.href='administration_content_database.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
-		<!-- <td>]]><ICON name="ic_admin_newsarchive" label="news" method="isNotOnlineProject" action="" href="javascript:window.top.body.location.href='newsadmin.html';"/><![CDATA[</td> -->
+<!--        <td>]]><ICON name="ic_admin_newsarchive" label="news" method="isNotOnlineProject" action="" href="javascript:window.top.body.location.href='newsadmin.html';"/><![CDATA[</td> -->
+	</tr>
+	<tr valign=top align=center>
+		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
+		<td>]]><ICON name="ic_admin_datatypes" label="datatypes" action="location.href='administration_content_datatypes.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
+		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
+		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
 	</tr>
 </table>
 

@@ -1,4 +1,32 @@
-//------------------------------------------
+/*
+ * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms.js,v $
+ * Date   : $Date: 2000/04/10 08:43:18 $
+ * Version: $Revision: 1.14 $
+ *
+ * Copyright (C) 2000  The OpenCms Group 
+ * 
+ * This File is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.com
+ * 
+ * You should have received a copy of the GNU General Public License
+ * long with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+ 
+ //------------------------------------------
 // global variables und functions
 // m.schleich 03.01.2000
 //------------------------------------------
@@ -58,23 +86,40 @@ function default_dateiangaben() //to set defaults in user sets for filelist
 var imgEndOn = "_on.gif";
 var imgEndOff = "_off.gif";
 var imgEndPush = "_push.gif";
-var imgEndInakitv = "_in.gif";
-//var pfad="../pics/";
+var imgEndInaktiv = "_in.gif";
+//var pfad="pics/";
 
 
-function ChOn(imgID) //changes a imageobject on mouseover
+function ChOn(imgID,div) //changes a imageobject on mouseover
 {
-document.images[imgID].src = pfad + imgID + imgEndOn;
+if (ns && div)
+	document[div].document[imgID].src = pfad + imgID + imgEndOn;
+else
+	document.images[imgID].src = pfad + imgID + imgEndOn;
 }
 
-function ChOff(imgID) //changes a imageobject on mouseout
+function ChOff(imgID,div) //changes a imageobject on mouseout
 {
-document.images[imgID].src = pfad + imgID + imgEndOff;
+if (ns && div)
+	document[div].document[imgID].src = pfad + imgID + imgEndOff;
+else
+	document.images[imgID].src = pfad + imgID + imgEndOff;
 }
 
-function ChPush(imgID) //changes a imageobject on clicked or mousedown
+function ChPush(imgID,div) //changes a imageobject on clicked or mousedown
 {
-document.images[imgID].src = pfad + imgID + imgEndPush;
+if (ns && div)
+	document[div].document[imgID].src = pfad + imgID + imgEndPush;
+else
+	document.images[imgID].src = pfad + imgID + imgEndPush;
+}
+
+function ChIn(imgID,div) //changes a imageobject on clicked or mousedown
+{
+if (ns && div)
+	document[div].document[imgID].src = pfad + imgID + imgEndInaktiv;
+else
+	document.images[imgID].src = pfad + imgID + imgEndInaktiv;
 }
 
 

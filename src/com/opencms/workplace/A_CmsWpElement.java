@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
- * Date   : $Date: 2000/04/06 09:26:34 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/04/10 08:45:41 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/04/06 09:26:34 $
+ * @version $Revision: 1.22 $ $Date: 2000/04/10 08:45:41 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -106,10 +106,15 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      */
     protected static CmsXmlWpTemplateFile m_radiodef = null;
     
-     /**
+    /**
      * Reference to the box defintion file
      */
     protected static CmsXmlWpBoxDefFile m_boxdef = null;
+
+    /**
+     * Reference to the box defintion file
+     */
+    protected static CmsXmlWpTemplateFile m_prefsscrollerdef = null;
     
     /**
      * Path to all worplace definition files (will be read once
@@ -340,7 +345,24 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
         //}
         return m_taskdocudef;
     }
-   
+
+     /**
+     * Reads the preferences scroller definition file.
+     * @param cms The actual cms object
+     * @return Reference to the list defintion file.
+     * @exception CmsException
+     */
+    public CmsXmlWpTemplateFile getPrefsScrollerDefinitions(A_CmsObject cms) throws CmsException {
+        //if(m_taskdocudef == null) {
+            if(m_workplaceElementPath == null) {
+                CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+                m_workplaceElementPath = configFile.getWorkplaceElementPath();
+            }
+            m_prefsscrollerdef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_PREFSSCROLLER_TEMPLATEFILE);
+        //}
+        return m_prefsscrollerdef;
+    }
+    
      
     /**
      * Help method to print nice classnames in error messages

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/04/06 12:39:03 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2000/04/10 08:45:41 $
+ * Version: $Revision: 1.83 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.82 $ $Date: 2000/04/06 12:39:03 $
+ * @version $Revision: 1.83 $ $Date: 2000/04/10 08:45:41 $
  */
 public interface I_CmsWpConstants {
 
@@ -207,7 +207,10 @@ public interface I_CmsWpConstants {
 	
 	/** The filename to the projectlisttemplate */
 	public static final String C_CONTEXTMENUE_TEMPLATEFILE = "contexttemplate";
-	
+
+	/** The filename to the prefs scroller template file */
+	public static final String C_PREFSSCROLLER_TEMPLATEFILE = "prefsscrollerTemplate";
+            
 	/** The explorer tree. */
     public static final String C_WP_EXPLORER_TREE="explorer_tree.html";
 
@@ -735,6 +738,9 @@ public interface I_CmsWpConstants {
 
     /** Prefix for label texts in the language file */
     public static final String C_LANG_LABEL = "label";
+
+    /** Prefix for label texts in the language file */
+    public static final String C_LANG_TITLE = "title";
     
     // Constants for user default preferences
     

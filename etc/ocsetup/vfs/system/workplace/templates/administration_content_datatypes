@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+	{
+		return '5_2_9.html';
+	}
+
+	<!-- URL for pictures -->
+	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+//-->
+</script>
+
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT> 
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_dialogscroll.js"></SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#ffffff" background=""  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="parent.frames[0].admincontenturl='administration_content_top.html';">
+]]><PREFSSCROLLER method="getDatatypes" title="admindatatypes"/><![CDATA[
+</BODY>
+</html>]]>
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<![CDATA[
+]]><ERRORPAGE title="error.title.newproject" message="error.message.newproject" reason="error.reason.newproject" suggestion="error.suggestion.newproject" ref="administration_content_projectnew.html"><process>details</process></ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="done">
+<![CDATA[
+<HTML>
+<HEAD>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+</HEAD>
+<BODY onload="updateFrame('head', 'head.html');">
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</CENTER>
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="wait">
+<![CDATA[
+<HTML>
+<HEAD>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+</HEAD>
+<BODY onload="updateFrame('body.admin_content', 'administration_content_projectnew.html?action=ok');">
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</CENTER>
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+<scrollercontent><![CDATA[
+			<table border=0 cellspacing=0 cellpadding=5 width=100%>
+			]]><PROCESS>allentries</PROCESS><![CDATA[
+			</table>
+]]></scrollercontent>
+<restypeentry><![CDATA[
+			<tr>
+			<td class=wizardbold><img src="]]><METHOD name="picsUrl"/><![CDATA[ic_file_]]><PROCESS>restype</PROCESS><![CDATA[.gif" border=0 width=16 height=16></td>
+			<td class=wizardbold nowrap>Typ: ]]><PROCESS>restype</PROCESS><![CDATA[</td>
+			<td class=wizardbold align=right width=100%><a href="administration_content_properties_new.html"><img src="]]><METHOD name="picsUrl"/><![CDATA[bt_new_on.gif" alt="Neu" border=0 width=32 heigth=32></a></td>
+			</tr>
+]]></restypeentry>
+<postfixentry><![CDATA[
+			<tr>
+			<td class=wizardbig>&nbsp;</td>
+			<td class=wizardbig nowrap>*.xml</td>
+			<td class=wizardbig width=100%><a href="administration_content_datatypes_delete.html"><img src="]]><METHOD name="picsUrl"/><![CDATA[ic_admin_deleteext.gif" alt="Löschen" border=0 width=16 heigth=16></a></td>
+			</tr>
+]]></postfixentry>
+<separatorentry><![CDATA[
+			<tr>
+			<td colspan=3 class=wizardbig>
+				<table cellspacing=0 cellpadding=0 border=0 width="100%">
+				<tr><td class="taskviewbackblack" height="1" colspan=3><spacer type=block width=10 height=1></td></tr>
+				</table>
+			</td>
+			</tr>
+]]></separatorentry>
+
+</WORKPLACE>
