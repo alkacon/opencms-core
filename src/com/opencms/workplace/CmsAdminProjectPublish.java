@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2001/06/22 16:01:33 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/06/27 07:20:44 $
+* Version: $Revision: 1.17 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2001/06/22 16:01:33 $
+ * @version $Revision: 1.17 $ $Date: 2001/06/27 07:20:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -74,9 +74,11 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String paraId = (String)parameters.get("projectid");
         int projectId = -1;
+        int projectType = C_PROJECT_TYPE_TEMPORARY;
         if(paraId != null) {
             projectId = Integer.parseInt(paraId);
             CmsProject project = cms.readProject(projectId);
+            projectType = project.getType();
             xmlTemplateDocument.setData("projectid", projectId + "");
             xmlTemplateDocument.setData("projectname", project.getName());
         }
@@ -87,6 +89,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
             // this is Explorer calling lets talk about currentProject
             CmsProject currentProject = cms.getRequestContext().currentProject();
             projectId = currentProject.getId();
+            projectType = currentProject.getType();
             xmlTemplateDocument.setData("projectid", projectId + "");
             xmlTemplateDocument.setData("projectname", currentProject.getName());
             // in this case we have to check if there are locked resources in the project
@@ -108,13 +111,16 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
                 }
             }
         }
+
         if((action != null) && "ok".equals(action)) {
             // start the publishing
             // first clear the session entry if necessary
             if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                 session.removeValue(C_SESSION_THREAD_ERROR);
             }
-            cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
+            if(projectType == C_PROJECT_TYPE_TEMPORARY){
+                cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
+            }
             Thread doPublish = new CmsAdminPublishProjectThread(cms, projectId);
             doPublish.start();
             session.putValue(C_PUBLISH_THREAD, doPublish);
