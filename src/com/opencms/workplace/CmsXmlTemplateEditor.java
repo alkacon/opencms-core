@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/09/11 13:36:59 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.69 $ $Date: 2002/09/11 13:36:59 $
+ * @version $Revision: 1.70 $ $Date: 2002/11/07 19:33:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -441,7 +441,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 tempPageFilename = (String)session.getValue("te_temppagefile");
             }
             cms.getRequestContext().setCurrentProject(curProject);
-            tempBodyFilename = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + tempPageFilename;
+            tempBodyFilename = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + tempPageFilename;
 
             session.putValue("te_temppagefile", tempPageFilename);
             session.putValue("te_tempbodyfile", tempBodyFilename);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2002/10/18 16:54:03 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.3 $ $Date: 2002/10/18 16:54:03 $
+ * @version $Revision: 1.4 $ $Date: 2002/11/07 19:33:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -57,7 +57,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
      * @see I_CmsWpConstants
      */ 
     public String getGalleryPath() {
-        return C_GALLERYPATH_HTML;
+        return C_VFS_GALLERY_HTML;
     }
     
     /**
@@ -103,14 +103,14 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
         CmsFolder thefolder = cms.readFolder(foldername);        
 
         // Check if we must redirect to head_1
-        if(foldername.equals(C_GALLERYPATH_HTML) && templateFile.endsWith("administration_head_htmlgalleries2")) {
+        if(foldername.equals(C_VFS_GALLERY_HTML) && templateFile.endsWith("administration_head_htmlgalleries2")) {
             // we are in the wrong head - use the first one
             xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/htmlgallery/administration_head_htmlgalleries1", elementName, parameters, templateSelector);
         }
 
         // Check if we must redirect to head_2
         try {
-            if(foldername.startsWith(C_GALLERYPATH_HTML) && (thefolder.getParent().equals(C_GALLERYPATH_HTML)) && templateFile.endsWith("administration_head_htmlgalleries1")) {
+            if(foldername.startsWith(C_VFS_GALLERY_HTML) && (thefolder.getParent().equals(C_VFS_GALLERY_HTML)) && templateFile.endsWith("administration_head_htmlgalleries1")) {
                 // we are in the wrong head - use the second one
                 xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/htmlgallery/administration_head_htmlgalleries2", elementName, parameters, templateSelector);
             }
@@ -209,7 +209,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 
         xmlTemplateDocument.setData("link_value", foldername);
         xmlTemplateDocument.setData("lasturl", lasturl);
-        xmlTemplateDocument.setData("galleryRootFolder", C_GALLERYPATH_HTML);
+        xmlTemplateDocument.setData("galleryRootFolder", C_VFS_GALLERY_HTML);
 
         // Finally start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters,

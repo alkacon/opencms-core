@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModuleDemos.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ public class CmsModuleDemos extends CmsWorkplaceDefault implements I_CmsConstant
             templateDocument.setData("namelink", servPath + "/moduledemos/" + name + "/index.html");
             completeList += templateDocument.getProcessedDataValue("list_entry");
             templateDocument.setData("doc_name", currentname);
-            templateDocument.setData("doc_link", servPath + "/system/modules/" + name + "/doc/index.html");
+            templateDocument.setData("doc_link", servPath + I_CmsWpConstants.C_VFS_PATH_MODULES + name + "/doc/index.html");
             completeList += templateDocument.getProcessedDataValue("doc_entry");
         }
         templateDocument.setData("list", completeList);

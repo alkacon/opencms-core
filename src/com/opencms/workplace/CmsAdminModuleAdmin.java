@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2002/10/16 10:43:42 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         }
         table.put(C_VIEW, check);
         try {
-            cms.readFolder("/system/modules/" + module + "/administration/");
+            cms.readFolder(C_VFS_PATH_MODULES + module + "/administration/");
             check = "checked";
         }catch(Exception exc) {
             check = "";
@@ -324,7 +324,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
     private void updateTheModule(CmsObject cms, I_CmsRegistry reg, Hashtable table, String module) {
         SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");
         String name = (String)table.get(C_MODULE_PACKETNAME);
-        String modulePath = "/system/modules/" + name + "/";
+        String modulePath = C_VFS_PATH_MODULES + name + "/";
         
         // set the module version
         String version = (String)table.get(C_VERSION);

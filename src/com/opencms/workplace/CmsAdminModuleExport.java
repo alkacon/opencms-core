@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2002/10/18 16:54:03 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -117,11 +117,11 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
                         
                         if (DEBUG>0) {
                             System.err.println( "Adding resource: " + currentResource );
-                            System.err.println( "Adding resource: " + C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + currentResource );
+                            System.err.println( "Adding resource: " + C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + currentResource );
                         }
                         
                         resourcen[ i++ ] = currentResource;
-                        resourcen[ i++ ] = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + currentResource;
+                        resourcen[ i++ ] = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + currentResource;
                     }
                 }
                 else {
@@ -140,9 +140,9 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
             }
             
             // finally, add the "standard" module resources to the string of all resources for the export
-            resourcen[ i++ ] = C_MODULES_PATH + exportName + "/";
-            resourcen[ i++ ] = C_MODULEDEMOPATH + exportName + "/";
-            resourcen[ i++ ] = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + C_MODULEDEMOPATH + exportName + "/";            
+            resourcen[ i++ ] = C_VFS_PATH_MODULES + exportName + "/";
+            resourcen[ i++ ] = C_VFS_PATH_MODULEDEMOS + exportName + "/";
+            resourcen[ i++ ] = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + C_VFS_PATH_MODULEDEMOS + exportName + "/";            
 	
 	        // TODO: this is just a Hack (What the heck does this hack??)
 	        for(i=0;i<resourceCount;i++) {

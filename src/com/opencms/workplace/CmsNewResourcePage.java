@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2002/10/23 15:13:14 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.51 $ $Date: 2002/10/23 15:13:14 $
+ * @version $Revision: 1.52 $ $Date: 2002/11/07 19:33:56 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -178,7 +178,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 try {
 
                     // create the content for the page file
-                    content = createPagefile(C_CLASSNAME, templatefile, C_CONTENTBODYPATH
+                    content = createPagefile(C_CLASSNAME, templatefile, C_VFS_PATH_BODIES
                             + currentFilelist.substring(1, currentFilelist.length()) + newFile);
 
                     // check if the nescessary folders for the content files are existing.
@@ -217,7 +217,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                         bodyBytes = layoutFile.getContents();
                         layoutFileDefined = true;
                     }
-                    CmsFile bodyFile = cms.readFile(C_CONTENTBODYPATH + currentFilelist.substring(1,
+                    CmsFile bodyFile = cms.readFile(C_VFS_PATH_BODIES + currentFilelist.substring(1,
                                 currentFilelist.length()), newFile);
                     bodyFile.setContents(bodyBytes);
                     cms.writeFile(bodyFile);
@@ -526,7 +526,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             Vector values, Hashtable parameters) throws CmsException {
 
         // Gather templates from the VFS
-        CmsHelperMastertemplates.getTemplateElements(cms, I_CmsWpConstants.C_DEFAULTBODIESDIR, names, values);
+        CmsHelperMastertemplates.getTemplateElements(cms, I_CmsWpConstants.C_VFS_DIR_DEFAULTBODIES, names, values);
 
         // Always return 0
         return new Integer(0);

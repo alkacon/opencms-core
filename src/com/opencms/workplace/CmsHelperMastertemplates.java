@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2002/10/22 12:41:32 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import java.util.*;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.7 $ $Date: 2002/10/22 12:41:32 $
+ * @version $Revision: 1.8 $ $Date: 2002/11/07 19:33:56 $
  */
 
 public class CmsHelperMastertemplates {
@@ -67,7 +67,7 @@ public class CmsHelperMastertemplates {
      */
     public static Integer getTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate, int defaultReturnValue) throws CmsException {
         // first read the available templates from the VFS
-        getTemplateElements(cms, I_CmsWpConstants.C_TEMPLATEDIR, names, values);
+        getTemplateElements(cms, I_CmsWpConstants.C_VFS_DIR_TEMPLATES, names, values);
          // find the correct index for the current template
         if(currentTemplate != null) {
            // it's required to do directory translation if comparing directory names 
@@ -95,15 +95,15 @@ public class CmsHelperMastertemplates {
         
         Vector files = new Vector();
 
-        if (! I_CmsWpConstants.C_NEW_VFS_STRUCTURE) {
+        if (! I_CmsWpConstants.C_VFS_NEW_STRUCTURE) {
             // get all template elements in the default folder
             // only required in old structure
-            files = cms.getFilesInFolder(I_CmsWpConstants.C_DEFAULTMODULEPATH + subFolder);            
+            files = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_DEFAULTMODULE + subFolder);            
         }        
 
         // get all selected template elements in the module folders
         Vector modules = new Vector();
-        modules = cms.getSubFolders(I_CmsConstants.C_MODULES_PATH);
+        modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
         for(int i = 0;i < modules.size();i++) {
             Vector moduleTemplateFiles = new Vector();
             String folder = ((CmsFolder)modules.elementAt(i)).getAbsolutePath();

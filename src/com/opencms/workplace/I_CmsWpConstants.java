@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2002/11/02 10:39:57 $
-* Version: $Revision: 1.115 $
+* Date   : $Date: 2002/11/07 19:33:57 $
+* Version: $Revision: 1.116 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.115 $ $Date: 2002/11/02 10:39:57 $
+ * @version $Revision: 1.116 $ $Date: 2002/11/07 19:33:57 $
  */
 
 public interface I_CmsWpConstants {
@@ -51,73 +51,64 @@ public interface I_CmsWpConstants {
      * Parameter to check if the new (since 5.0 beta 2) folder structure is to be used.
      * @since 5.0 beta 2
      */
-    // Resource translation project:    
-    public static final boolean C_NEW_VFS_STRUCTURE = true;
+    public static final boolean C_VFS_NEW_STRUCTURE = true;
     
     /** Parameter for content body folder */
-    // Resource translation project:
-    public static final String C_CONTENTBODYPATH = C_NEW_VFS_STRUCTURE?"/system/bodies/":"/content/bodys/";
- 
-    /** Parameter for default module */
-    // Resource translation project:
-    public static final String C_DEFAULTMODULEPATH = C_NEW_VFS_STRUCTURE?"/system/modules/default/":"/content/";
+    public static final String C_VFS_PATH_BODIES = C_VFS_NEW_STRUCTURE?"/system/bodies/":"/content/bodys/";
+     
+    /** Path to modules folder */
+    public static final String C_VFS_PATH_MODULES = "/system/modules/";
     
-    /** Path to module demo folder */
-    // Resource translation project:
-    public static final String C_MODULEDEMOPATH = C_NEW_VFS_STRUCTURE?"/system/modules/moduledemos/":"/moduledemos/";
+    /** Parameter for default module */
+    public static final String C_VFS_PATH_DEFAULTMODULE = C_VFS_NEW_STRUCTURE?"/system/modules/default/":"/content/";
+    
+    /** Path to module demo folder (deprecated since version 5.0 beta 2) */
+    public static final String C_VFS_PATH_MODULEDEMOS = C_VFS_NEW_STRUCTURE?"/system/modules/moduledemos/":"/moduledemos/";
 
     /** Path to pics gallery folder */
-    // Resource translation project:
-    public static final String C_GALLERYPATH_PICS = C_NEW_VFS_STRUCTURE?"/system/galleries/pics/":"/pics/";
+    public static final String C_VFS_GALLERY_PICS = C_VFS_NEW_STRUCTURE?"/system/galleries/pics/":"/pics/";
 
     /** Path to download gallery folder */
-    // Resource translation project:
-    public static final String C_GALLERYPATH_DOWNLOAD = C_NEW_VFS_STRUCTURE?"/system/galleries/download/":"/download/";
+    public static final String C_VFS_GALLERY_DOWNLOAD = C_VFS_NEW_STRUCTURE?"/system/galleries/download/":"/download/";
  
     /** Path to html gallery folder */
-    // Resource translation project:
-    public static final String C_GALLERYPATH_HTML = C_NEW_VFS_STRUCTURE?"/system/galleries/htmlgalleries/":"/htmlgalleries/";
+    public static final String C_VFS_GALLERY_HTML = C_VFS_NEW_STRUCTURE?"/system/galleries/htmlgalleries/":"/htmlgalleries/";
 
     /** Path to externallink gallery folder */
-    // Resource translation project:
-    public static final String C_GALLERYPATH_EXTERNALLINKS = C_NEW_VFS_STRUCTURE?"/system/galleries/externallinks/":"/externallinks/";
+    public static final String C_VFS_GALLERY_EXTERNALLINKS = C_VFS_NEW_STRUCTURE?"/system/galleries/externallinks/":"/externallinks/";
 
     /** Path to system image folder */
-    // Resource translation project:
-    public static final String C_SYSTEM_PICS_PATH = C_NEW_VFS_STRUCTURE?"/system/workplace/resources/":"/pics/system/";
+    public static final String C_VFS_PATH_SYSTEMPICS = C_VFS_NEW_STRUCTURE?"/system/workplace/resources/":"/pics/system/";
 
     /** Path to exported system image folder */
-    // Resource translation project:
-    public static final String C_SYSTEM_PICS_EXPORT_PATH = C_NEW_VFS_STRUCTURE?"/resources/":"/pics/system/";
+    public static final String C_SYSTEM_PICS_EXPORT_PATH = C_VFS_NEW_STRUCTURE?"/resources/":"/pics/system/";
 
     /** Path to locales */
-    // Resource translation project:    
-    public static final String C_LOCALES_PATH = C_NEW_VFS_STRUCTURE?"/system/workplace/locales/":"/system/workplace/config/language/";
+    public static final String C_VFS_PATH_LOCALES = C_VFS_NEW_STRUCTURE?"/system/workplace/locales/":"/system/workplace/config/language/";
 
     /** Path to scripts */
-    // Resource translation project:    
-    public static final String C_SCRIPTS_PATH = C_NEW_VFS_STRUCTURE?"/system/workplace/scripts/":"/system/workplace/templates/js/";
+    public static final String C_VFS_PATH_SCRIPTS = C_VFS_NEW_STRUCTURE?"/system/workplace/scripts/":"/system/workplace/templates/js/";
 
-    /** Parameter for content templates folder */
-    public static final String C_TEMPLATEDIR = "templates/";
+    /** Directory name of content templates folder */
+    public static final String C_VFS_DIR_TEMPLATES = "templates/";
 
-    /** Parameter for content internal folder */
-    public static final String C_INTERNALDIR = "internal/";
+    /** Directory name of content internal folder */
+    public static final String C_VFS_DIR_INTERNAL = "internal/";
 
-    /** Parameter for content default_bodies folder */
-    public static final String C_DEFAULTBODIESDIR = "default_bodies/";
+    /** Directory name of content default_bodies folder */
+    public static final String C_VFS_DIR_DEFAULTBODIES = "default_bodies/";
 
-    /** Parameter for content templates folder */
-    public static final String C_CONTENTTEMPLATEPATH = C_DEFAULTMODULEPATH + C_TEMPLATEDIR;
+    /** Path to content templates folder */
+    public static final String C_VFS_PATH_DEFAULT_TEMPLATES = C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_TEMPLATES;
 
-    /** Parameter for content internal folder */
-    public static final String C_CONTENTINTERNALPATH = C_DEFAULTMODULEPATH + C_INTERNALDIR;
+    /** Path to content internal folder */
+    public static final String C_VFS_PATH_DEFAULT_INTERNAL = C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_INTERNAL;
 
-    /** Parameter for content default_bodies folder */
-    public static final String C_CONTENTDEFAULTBODIESPATH = C_DEFAULTMODULEPATH + C_DEFAULTBODIESDIR;
+    /** Path to content default_bodies folder */
+    public static final String C_VFS_PATH_DEFAULT_BODIES = C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_DEFAULTBODIES;
 
-    /** Parameter for content layouts folder */
-    public static final String C_CONTENTLAYOUTPATH = C_DEFAULTMODULEPATH + "default_bodies/";
+    /** Directory name of module locales path */
+    public static final String C_VFS_DIR_LOCALES = C_VFS_NEW_STRUCTURE?"locales/":"language/";
 
     /** Parameter for layout  */
     public static final String C_PARA_LAYOUT = "default_body";

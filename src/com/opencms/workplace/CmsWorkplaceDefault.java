@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2002/11/02 10:39:18 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2002/11/02 10:39:18 $
+ * @version $Revision: 1.49 $ $Date: 2002/11/07 19:33:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -569,7 +569,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      */
     public Object scriptsUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         if(m_scriptsUri == null) {
-            m_scriptsUri = cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_SCRIPTS_PATH;
+            m_scriptsUri = cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SCRIPTS;
         }
         if (tagcontent == null) return m_scriptsUri;
         return m_scriptsUri + tagcontent;

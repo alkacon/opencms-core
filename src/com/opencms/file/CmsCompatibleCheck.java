@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCompatibleCheck.java,v $
-* Date   : $Date: 2002/08/26 13:00:41 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/11/07 19:30:21 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
         if ( name == null){
             return false;
         }
-        if (name.startsWith(I_CmsWpConstants.C_CONTENTBODYPATH)){
+        if (name.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)){
             // this is a body file
             if (!C_TYPE_PLAIN_NAME.equals(type)){
                 // only plain files allowed in content/bodys
@@ -94,8 +94,8 @@ public class CmsCompatibleCheck implements I_CmsConstants{
                 return false;
             }
 
-        } else if (name.startsWith(I_CmsWpConstants.C_CONTENTTEMPLATEPATH)
-                    || (name.startsWith("/system/modules/") && name.indexOf("/" + I_CmsWpConstants.C_TEMPLATEDIR) > -1)){
+        } else if (name.startsWith(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES)
+                    || (name.startsWith(I_CmsWpConstants.C_VFS_PATH_MODULES) && name.indexOf("/" + I_CmsWpConstants.C_VFS_DIR_TEMPLATES) > -1)){
             // this is a template file
             if (!C_TYPE_PLAIN_NAME.equals(type)){
                 // only plain templates are allowed
@@ -204,7 +204,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
     }
 
     /**
-     * helper for checking the templates from C_CONTENTBODYPATH.
+     * helper for checking the templates from C_VFS_PATH_BODIES.
      * This helper checks a elementdef Node if it sticks to the rules.
      * @param el the Element to check.
      * @return true if the elementdef is ok.
@@ -232,7 +232,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
     }
 
     /**
-     * helper for checking the templates from C_CONTENTBODYPATH.
+     * helper for checking the templates from C_VFS_PATH_BODIES.
      * This helper checks a template Node if it sticks to the rules.
      * @param el the Element to check.
      * @return true if the template is ok.

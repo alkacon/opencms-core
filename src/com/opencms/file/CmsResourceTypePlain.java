@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2002/11/05 09:33:59 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/11/07 19:32:12 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,9 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
      */
     private String m_launcherClass;
 
-
+    /** Internal debug flag */
+    private static final int DEBUG = 0;  
+    
     /**
      * Constructor, creates a new CmsResourceType object.
      *
@@ -381,17 +383,23 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
         CmsUser resowner = null;
         CmsGroup resgroup = null;
         try{
-        	resowner = cms.readUser(user);
+            resowner = cms.readUser(user);
         } catch (CmsException e){
-        	System.err.println("User "+user+" not found");
-        	resowner = cms.getRequestContext().currentUser();	
+            if (DEBUG>0) System.err.println("[" + this.getClass().getName() + ".importResource/1] User " + user + " not found");
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".importResource/1] User " + user + " not found");
+            }                
+            resowner = cms.getRequestContext().currentUser();   
         }
         try{
-        	resgroup = cms.readGroup(group);
+            resgroup = cms.readGroup(group);
         } catch (CmsException e){
-        	System.err.println("Group "+group+" not found");
-        	resgroup = cms.getRequestContext().currentGroup();	
-        }        
+            if (DEBUG>0) System.err.println("[" + this.getClass().getName() + ".importResource/2] Group " + group + " not found");
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".importResource/2] Group " + group + " not found");
+            }  
+            resgroup = cms.getRequestContext().currentGroup();  
+        }       
         try {
             importedResource = cms.doCreateResource(destination, resourceType ,properties, launcherType, 
                                              launcherStartClass, resowner.getName(), resgroup.getName(), Integer.parseInt(access), content);

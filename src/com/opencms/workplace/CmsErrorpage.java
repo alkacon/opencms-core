@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsErrorpage.java,v $
-* Date   : $Date: 2002/11/02 10:35:22 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2002/11/02 10:35:22 $
+ * @version $Revision: 1.17 $ $Date: 2002/11/07 19:33:56 $
  */
 
 public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
@@ -102,8 +102,8 @@ public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement,I_Cms
         reason = lang.getLanguageValue("message.reason");
         button = lang.getLanguageValue("button.ok");
         String servletPath = cms.getRequestContext().getRequest().getServletUrl();
-        errordef.setData("stylesheetpath", cms.getRequestContext().getRequest().getServletUrl() + (I_CmsWpConstants.C_NEW_VFS_STRUCTURE?"/system/workplace/resources/":"/system/workplace/css/"));
-        errordef.setData("jspath", cms.getRequestContext().getRequest().getServletUrl() + (I_CmsWpConstants.C_NEW_VFS_STRUCTURE?"/system/workplace/scripts/":"/system/workplace/templates/js/"));
+        errordef.setData("stylesheetpath", cms.getRequestContext().getRequest().getServletUrl() + (I_CmsWpConstants.C_VFS_NEW_STRUCTURE?"/system/workplace/resources/":"/system/workplace/css/"));
+        errordef.setData("jspath", cms.getRequestContext().getRequest().getServletUrl() + (I_CmsWpConstants.C_VFS_NEW_STRUCTURE?"/system/workplace/scripts/":"/system/workplace/templates/js/"));
         errordef.setData(C_ERROR_MSG_BUTTON, button);
         errordef.setData(C_ERROR_TITLE, errorTitle);
         errordef.setData(C_ERROR_MESSAGE, errorMessage);

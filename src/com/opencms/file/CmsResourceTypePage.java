@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/11/05 09:33:42 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2002/11/07 19:32:12 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2002/11/05 09:33:42 $
+ * @version $Revision: 1.39 $ $Date: 2002/11/07 19:32:12 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -78,6 +78,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * The class name of the Java class launched by the launcher.
      */
     private String m_launcherClass;
+        
+    /** Internal debug flag */
+    private static final int DEBUG = 0;    
 
 
     /**
@@ -355,7 +358,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 
         // Check the path of the body file.
         // Don't use the checkBodyPath method here to avaoid overhead.
-        String bodyPath=(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+(source);
+        String bodyPath=(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")))+(source);
         String bodyXml=cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + hXml.getElementTemplate("body"));        
 
         if ((C_DEFAULT_SITE + C_ROOTNAME_VFS + bodyPath).equals(bodyXml)){
@@ -363,7 +366,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             // Evaluate some path information
             String destinationFolder = destination.substring(0,destination.lastIndexOf("/")+1);
             checkFolders(cms, destinationFolder);
-            String newbodyPath=(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+ destination;
+            String newbodyPath=(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")))+ destination;
 
             // we don't want to use the changeContent method here
             // to avoid overhead by copying, readig, parsing, setting XML and writing again.
@@ -429,7 +432,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String pageName = newPageName.substring(folderName.length(), newPageName.length());
 
         // Scan for mastertemplates
-        Vector allMasterTemplates = cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
+        Vector allMasterTemplates = cms.getFilesInFolder(C_VFS_PATH_DEFAULT_TEMPLATES);
 
         // Select the first mastertemplate as default
         String masterTemplate = "";
@@ -438,7 +441,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         }
 
         // Evaluate the absolute path to the new body file
-        String bodyFolder =(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/"))) + folderName;
+        String bodyFolder =(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/"))) + folderName;
 
         // Create the new page file
         CmsFile file = cms.doCreateFile(newPageName, "".getBytes(), m_resourceTypeName, properties);
@@ -592,13 +595,19 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         try{
         	resowner = cms.readUser(user);
         } catch (CmsException e){
-        	System.err.println("User "+user+" not found");
+            if (DEBUG>0) System.err.println("[" + this.getClass().getName() + ".importResource/1] User " + user + " not found");
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".importResource/1] User " + user + " not found");
+            }                
         	resowner = cms.getRequestContext().currentUser();	
         }
         try{
         	resgroup = cms.readGroup(group);
         } catch (CmsException e){
-        	System.err.println("Group "+group+" not found");
+            if (DEBUG>0) System.err.println("[" + this.getClass().getName() + ".importResource/2] Group " + group + " not found");
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".importResource/2] Group " + group + " not found");
+            }  
         	resgroup = cms.getRequestContext().currentGroup();	
         }        
         try {
@@ -690,7 +699,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String bodyPath = checkBodyPath(cms, file);
         cms.doMoveFile(source, destination);
         if(bodyPath != null) {
-            String hbodyPath = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")) + destination;
+            String hbodyPath = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")) + destination;
             checkFolders(cms, destination.substring(0, destination.lastIndexOf("/")));
             cms.doMoveFile(bodyPath, hbodyPath);
             changeContent(cms, destination, hbodyPath);
@@ -716,8 +725,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
         CmsFile file = cms.readFile(oldname);
         String bodyPath = readBodyPath(cms, file);
-        int help = C_CONTENTBODYPATH.lastIndexOf("/");
-        String hbodyPath=(C_CONTENTBODYPATH.substring(0,help)) + oldname;
+        int help = C_VFS_PATH_BODIES.lastIndexOf("/");
+        String hbodyPath=(C_VFS_PATH_BODIES.substring(0,help)) + oldname;
         cms.doRenameFile(oldname,newname);
         if(hbodyPath.equals(bodyPath)) {
             cms.doRenameFile(bodyPath, newname);
@@ -875,7 +884,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      */
     private String checkBodyPath(CmsObject cms, CmsFile file) throws CmsException {
         // Use translated path name of body
-        String result = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")) + file.getAbsolutePath();
+        String result = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")) + file.getAbsolutePath();
         if (!result.equals(readBodyPath(cms, (CmsFile)file))){
             result = null;
         }
@@ -925,7 +934,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      private void checkFolders(CmsObject cms, String path)
           throws CmsException {
 
-          String completePath=C_CONTENTBODYPATH;
+          String completePath=C_VFS_PATH_BODIES;
           StringTokenizer t=new StringTokenizer(path,"/");
           String correspFolder = "/";
           // check if all folders are there
@@ -939,7 +948,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
               } catch (CmsException e) {
                   // the folder could not be read, so create it.
                   String orgFolder=completePath+foldername+"/";
-                  orgFolder=orgFolder.substring(C_CONTENTBODYPATH.length()-1);
+                  orgFolder=orgFolder.substring(C_VFS_PATH_BODIES.length()-1);
                   CmsFolder newfolder=cms.doCreateFolder(completePath,foldername);
                   CmsFolder folder=cms.readFolder(orgFolder);
                   cms.doLockResource(newfolder.getAbsolutePath(),false);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2002/09/02 07:46:41 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.45 $ $Date: 2002/09/02 07:46:41 $
+ * @version $Revision: 1.46 $ $Date: 2002/11/07 19:33:56 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -105,7 +105,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      */
 
     private void checkFolders(CmsObject cms, String path) throws CmsException {
-        String completePath = C_CONTENTBODYPATH;
+        String completePath = C_VFS_PATH_BODIES;
         StringTokenizer t = new StringTokenizer(path, "/");
 
         // check if all folders are there
@@ -120,7 +120,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
                 // the folder could not be read, so create it.
                 String orgFolder = completePath + foldername + "/";
-                orgFolder = orgFolder.substring(C_CONTENTBODYPATH.length() - 1);
+                orgFolder = orgFolder.substring(C_VFS_PATH_BODIES.length() - 1);
                 CmsFolder newfolder = (CmsFolder)cms.createResource(completePath, foldername, C_TYPE_FOLDER_NAME);
                 CmsFolder folder = cms.readFolder(orgFolder);
                 cms.lockResource(newfolder.getAbsolutePath());

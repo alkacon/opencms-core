@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2002/10/18 16:54:03 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2002/10/18 16:54:03 $
+ * @version $Revision: 1.3 $ $Date: 2002/11/07 19:33:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -57,7 +57,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
      * @see I_CmsWpConstants
      */ 
     public String getGalleryPath() {
-        return C_GALLERYPATH_EXTERNALLINKS;
+        return C_VFS_GALLERY_EXTERNALLINKS;
     }
     
     /**
@@ -103,14 +103,14 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
         CmsFolder thefolder = cms.readFolder(foldername);        
         
         // Check if we must redirect to head_1
-        if(foldername.equals(C_GALLERYPATH_EXTERNALLINKS) && templateFile.endsWith("administration_head_extlinkgalleries2")) {
+        if(foldername.equals(C_VFS_GALLERY_EXTERNALLINKS) && templateFile.endsWith("administration_head_extlinkgalleries2")) {
             // we are in the wrong head - use the first one
             xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/externallinksgallery/administration_head_extlinkgalleries1", elementName, parameters, templateSelector);
         }
         
         // Check if we must redirect to head_2
         try {
-            if(foldername.startsWith(C_GALLERYPATH_EXTERNALLINKS) && (thefolder.getParent().equals(C_GALLERYPATH_EXTERNALLINKS)) && templateFile.endsWith("administration_head_extlinkgalleries1")) {
+            if(foldername.startsWith(C_VFS_GALLERY_EXTERNALLINKS) && (thefolder.getParent().equals(C_VFS_GALLERY_EXTERNALLINKS)) && templateFile.endsWith("administration_head_extlinkgalleries1")) {
                 // we are in the wrong head - use the second one
                 xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/htmlgallery/administration_head_extlinkgalleries2", elementName, parameters, templateSelector);
             }
@@ -136,7 +136,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                 try {
 
                     // create the folder
-                    CmsResource folder = cms.createResource(C_GALLERYPATH_EXTERNALLINKS, galleryname, C_TYPE_FOLDER_NAME);
+                    CmsResource folder = cms.createResource(C_VFS_GALLERY_EXTERNALLINKS, galleryname, C_TYPE_FOLDER_NAME);
                     if(title != null) {
                         cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
                     }
@@ -287,7 +287,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
 
         xmlTemplateDocument.setData("link_value", foldername);
         xmlTemplateDocument.setData("lasturl", lasturl);
-        xmlTemplateDocument.setData("galleryRootFolder", C_GALLERYPATH_EXTERNALLINKS);        
+        xmlTemplateDocument.setData("galleryRootFolder", C_VFS_GALLERY_EXTERNALLINKS);        
         
         // Finally start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters,

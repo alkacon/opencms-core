@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
-* Date   : $Date: 2002/09/02 07:47:17 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2002/09/02 07:47:17 $
+ * @version $Revision: 1.16 $ $Date: 2002/11/07 19:33:56 $
  */
 
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -70,7 +70,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
      */
 
     private void checkFolders(CmsObject cms, String path) throws CmsException {
-        String completePath = C_CONTENTBODYPATH;
+        String completePath = C_VFS_PATH_BODIES;
         StringTokenizer t = new StringTokenizer(path, "/");
 
         // check if all folders are there
@@ -85,7 +85,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 
                 // the folder could not be read, so create it.
                 String orgFolder = completePath + foldername + "/";
-                orgFolder = orgFolder.substring(C_CONTENTBODYPATH.length() - 1);
+                orgFolder = orgFolder.substring(C_VFS_PATH_BODIES.length() - 1);
                 CmsFolder newfolder = (CmsFolder)cms.createResource(completePath, foldername, C_TYPE_FOLDER_NAME);
                 CmsFolder folder = cms.readFolder(orgFolder);
                 cms.lockResource(newfolder.getAbsolutePath());
@@ -202,7 +202,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
                 try {
 
                     // create the content for the page file
-                    content = createPagefile(C_CLASSNAME, templatefile, C_CONTENTBODYPATH
+                    content = createPagefile(C_CLASSNAME, templatefile, C_VFS_PATH_BODIES
                             + currentFilelist.substring(1, currentFilelist.length()) + newFile);
 
                     // check if the nescessary folders for the content files are existing.
@@ -212,7 +212,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
                     // create the page file
                     CmsResource file = cms.createResource(currentFilelist, newFile, "pdfpage", new Hashtable(),content);
                     // now create the page content file
-                    contentFile = cms.createResource(C_CONTENTBODYPATH + currentFilelist.substring(1,
+                    contentFile = cms.createResource(C_VFS_PATH_BODIES + currentFilelist.substring(1,
                                                      currentFilelist.length()), newFile, "plain", new Hashtable(),
                                                      C_DEFAULTBODY.getBytes());
 
@@ -416,12 +416,12 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
     public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
 
-        //Vector files=cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
-        Vector files = cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
+        //Vector files=cms.getFilesInFolder(C_VFS_PATH_DEFAULT_TEMPLATES);
+        Vector files = cms.getFilesInFolder(C_VFS_PATH_DEFAULT_TEMPLATES);
 
         // get all module Templates
         Vector modules = new Vector();
-        modules = cms.getSubFolders(C_MODULES_PATH);
+        modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
         for(int i = 0;i < modules.size();i++) {
             Vector moduleTemplateFiles = new Vector();
             moduleTemplateFiles = cms.getFilesInFolder(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "templates/");

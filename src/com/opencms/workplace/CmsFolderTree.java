@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2002/11/02 10:36:01 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2002/11/07 19:33:56 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2002/11/02 10:36:01 $
+ * @version $Revision: 1.42 $ $Date: 2002/11/07 19:33:56 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -280,7 +280,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             String filename = C_ICON_PREFIX + type.getResourceTypeName() + C_ICON_EXTENSION;
             try {
                 // read the icon file
-                CmsResource iconFile = cms.readFileHeader(I_CmsWpConstants.C_SYSTEM_PICS_PATH + filename);
+                CmsResource iconFile = cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + filename);
                 // add the icon to the cache
                 icon = filename;
                 m_iconCache.put(type.getResourceTypeName(), icon);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/11/07 18:41:22 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2002/11/07 19:30:43 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.34 $ $Date: 2002/11/07 18:41:22 $
+ * @version $Revision: 1.35 $ $Date: 2002/11/07 19:30:43 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -459,14 +459,14 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
                 // check if this is a system-folder and if it should be included.
                 String export = folder.getAbsolutePath();
                 if( // new VFS, always export "/system/bodies/" OR
-                    I_CmsWpConstants.C_NEW_VFS_STRUCTURE && export.startsWith("/system/bodies/") ||                    
+                    I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith("/system/bodies/") ||                    
                     // option "exclude system folder" selected AND
                     !(m_excludeSystem && 
                         // export folder is a system folder 
                         (export.startsWith("/system/") ||            
                         // if new VFS, ignore old system folders (are below "/system" in new VFS)
-                        ((! I_CmsWpConstants.C_NEW_VFS_STRUCTURE) && export.startsWith("/pics/system/")) ||
-                        ((! I_CmsWpConstants.C_NEW_VFS_STRUCTURE) && export.startsWith("/moduledemos/")))                                           
+                        ((! I_CmsWpConstants.C_VFS_NEW_STRUCTURE) && export.startsWith("/pics/system/")) ||
+                        ((! I_CmsWpConstants.C_VFS_NEW_STRUCTURE) && export.startsWith("/moduledemos/")))                                           
                     )) {
                     // export this folder
                     if (folder.getDateLastModified() >= m_contentAge) {

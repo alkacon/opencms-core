@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2002/11/02 10:39:36 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2002/11/07 19:33:57 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.44 $ $Date: 2002/11/02 10:39:36 $
+ * @version $Revision: 1.45 $ $Date: 2002/11/07 19:33:57 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -74,7 +74,7 @@ public class CmsXmlWpConfigFile {
      * @return Path for download galleries.
      */
     public String getDownGalleryPath(){
-        return I_CmsWpConstants.C_GALLERYPATH_DOWNLOAD;
+        return I_CmsWpConstants.C_VFS_GALLERY_DOWNLOAD;
     }
 
     /**
@@ -82,7 +82,7 @@ public class CmsXmlWpConfigFile {
      * @return Path for html galleries.
      */
     public String getHtmlGalleryPath(){
-        return I_CmsWpConstants.C_GALLERYPATH_HTML;
+        return I_CmsWpConstants.C_VFS_GALLERY_HTML;
     }
 
     /**
@@ -90,7 +90,7 @@ public class CmsXmlWpConfigFile {
      * @return Path for picture galleries.
      */
     public String getPicGalleryPath(){
-        return I_CmsWpConstants.C_GALLERYPATH_PICS;
+        return I_CmsWpConstants.C_VFS_GALLERY_PICS;
     }
 
     /**
@@ -98,7 +98,7 @@ public class CmsXmlWpConfigFile {
      * @return Path for externallink galleries.
      */
     public String getLinkGalleryPath() {
-        return I_CmsWpConstants.C_GALLERYPATH_EXTERNALLINKS;
+        return I_CmsWpConstants.C_VFS_GALLERY_EXTERNALLINKS;
     }
     
     /**
@@ -108,7 +108,7 @@ public class CmsXmlWpConfigFile {
      */
 
     public String getLanguagePath() throws CmsException {
-        return I_CmsWpConstants.C_LOCALES_PATH;
+        return I_CmsWpConstants.C_VFS_PATH_LOCALES;
     }
 
     /**
@@ -145,7 +145,7 @@ public class CmsXmlWpConfigFile {
         if (m_useWpPicturesFromVFSPath == null) {
             // Check registry for setting of workplace images
             m_useWpPicturesFromVFS = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
-            m_useWpPicturesFromVFSPath = m_cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_SYSTEM_PICS_PATH;
+            m_useWpPicturesFromVFSPath = m_cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS;
             if (m_useWpPicturesFromVFS) {
                 m_resourceUri = m_useWpPicturesFromVFSPath;
             } else {
