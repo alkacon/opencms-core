@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsConnection.java,v $
- * Date   : $Date: 2001/02/06 18:33:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/02/13 12:34:40 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -310,7 +310,7 @@ public class CmsConnection implements Connection {
 	 * This method calls close, to put the connection back to the pool.
 	 */
 	protected void finalize() throws Throwable {
-		// close the connection (put it back to the pool
+		// close the connection (put it back to the pool)
 		close();
 		super.finalize();
 	}
@@ -320,6 +320,7 @@ public class CmsConnection implements Connection {
 	 */
 	void closeOriginalConnection() {
           // close all statements
+          m_isClosed = true;
           Enumeration keys = m_statementPool.keys();
           while(keys.hasMoreElements()) {
             Object key = keys.nextElement();

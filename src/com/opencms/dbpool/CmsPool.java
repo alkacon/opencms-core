@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
- * Date   : $Date: 2001/02/06 19:25:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/02/13 12:34:40 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  *
  * @author a.schouten
  */
-public class CmsPool {
+public class CmsPool extends Thread {
 
 	/**
 	 * The parameters for this pool.
@@ -51,8 +51,8 @@ public class CmsPool {
 	private int m_minConn;
 	private int m_maxConn;
 	private int m_increaseRate;
-	private int m_timeout;
-	private int m_maxage;
+	private long m_timeout;
+	private long m_maxage;
 	private String m_poolname;
 
 	/**
@@ -82,6 +82,7 @@ public class CmsPool {
 	public CmsPool(String poolname, String driver, String url, String user,
 				String password, int minConn, int maxConn, int increasRate, int timeout, int maxage)
 		throws SQLException {
+        super(poolname);
 		// store the parameters
 		m_poolname = poolname;
 		m_driver = driver;
@@ -91,8 +92,8 @@ public class CmsPool {
 		m_minConn = minConn;
 		m_maxConn = maxConn;
 		m_increaseRate = increasRate;
-		m_timeout = timeout;
-                m_maxage = maxage;
+		m_timeout = timeout  * 60 * 1000;
+        m_maxage = maxage  * 60 * 1000;
 
 		// register the driver to the driver-manager
 		try {
@@ -102,11 +103,63 @@ public class CmsPool {
 		}
 
 		// create the initial amount of connections
+		createConnections(m_minConn);
+
+        // set this a deamon-thread
+        setDaemon(true);
+        // start the connection-guard for this pool
+        start();
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": created");
 		}
-		createConnections(m_minConn);
 	}
+
+    /**
+     * The run-method for the connection-guard
+     */
+    public void run() {
+        if(A_OpenCms.isLogging()) {
+           A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": starting connection-guard");
+        }
+        // never stop
+        for(;;) {
+            // sleep, before checking the timeouts of the connections
+            try {
+                sleep(m_timeout);
+            } catch(InterruptedException exc) {
+                // ignore this exception
+            }
+            if(A_OpenCms.isLogging()) {
+               A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": checking for outtimed connections");
+            }
+            synchronized(m_availableConnections) {
+                Enumeration elements = m_availableConnections.elements();
+                while(elements.hasMoreElements()) {
+                    CmsConnection con = (CmsConnection) elements.nextElement();
+                    if((con.getLastUsed() + (m_timeout)) < System.currentTimeMillis()) {
+                        // this connection is to old... destroy it
+                        m_availableConnections.removeElement(con);
+                        m_connectionAmount--;
+                        con.closeOriginalConnection();
+                        if(A_OpenCms.isLogging()) {
+                           A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": closing one outtimed connection");
+                        }
+                    }
+                }
+                // create missing minimum connection-amount
+                if(m_connectionAmount < m_minConn) {
+                    try {
+                        createConnections(m_minConn - m_connectionAmount);
+                    } catch(SQLException exc) {
+                        if(A_OpenCms.isLogging()) {
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": unable to create new connection for broken one");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
 	/**
 	 * Try to make a database connection to the given database.
@@ -114,47 +167,48 @@ public class CmsPool {
 	 * @exception SQLException if a database-access error occurs.
 	 */
 	public Connection connect() throws SQLException {
-          synchronized(m_availableConnections) {
 		return getConnection();
-          }
 	}
 
 	/**
 	 * Gets a connection.
 	 * @exception SQLException if a database-access error occurs.
 	 */
-	public Connection getConnection()
+	private Connection getConnection()
 		throws SQLException {
-                  try {
-                          return (Connection) m_availableConnections.pop();
-                  } catch(EmptyStackException exc) {
-                          if(m_connectionAmount < m_maxConn) {
-                                  // create new connections
-                                  createConnections(m_increaseRate);
-                          } else {
-                                  // no connections available - have to wait
-                                  // wait until there are available connections
-                                  if(A_OpenCms.isLogging()) {
-                                          A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": no connections available - have to wait");
-                                  }
-                                  try {
-                                          m_availableConnections.wait();
-                                  } catch(InterruptedException iExc) {
-                                          // ignore the exception
-                                  }
-                          }
-                  }
-                  // try again to get a connection
-                  return getConnection();
+        Connection con = null;
+        while(con == null) {
+            synchronized(m_availableConnections) {
+                if( (m_availableConnections.size() <= 0) && (m_connectionAmount < m_maxConn) ) {
+                    // create new connections
+                    createConnections(m_increaseRate);
+                } else if(m_availableConnections.size() > 0) {
+                    // return the available connection
+                    con = (Connection) m_availableConnections.pop();
+                } else {
+                    // no connection available - have to wait
+                    // wait until there are available connections
+                    if(A_OpenCms.isLogging()) {
+                          A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": no connections available - have to wait");
+                    }
+                    try {
+                          m_availableConnections.wait();
+                    } catch(InterruptedException iExc) {
+                          // ignore the exception
+                    }
+                }
+            }
+        }
+        // done it - we have a connection
+        return con;
 	}
 
 	/**
 	 * Puts a connection back to the pool.
 	 */
 	public void putConnection(CmsConnection con) {
-          synchronized(m_availableConnections) {
 		boolean alive = false;
-		try {
+        try {
 			// check, if the connection is available
 			if(!con.isClosed()) {
 				con.clearWarnings();
@@ -165,38 +219,38 @@ public class CmsPool {
 			// ignore the exception, alive is false
 		}
 
-/*                if((con.getEstablishedTime() + (m_maxage * 60 * 1000)) < System.currentTimeMillis()) {
-                  // this connection is to old. destroy it and create a new-one!
-                  alive = false;
-                  if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": connection is to old, destroy it.");
-                  }
-                } */
+        if((con.getEstablishedTime() + (m_maxage)) < System.currentTimeMillis()) {
+            // this connection is to old. destroy it and create a new-one!
+            alive = false;
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": connection is to old, destroy it.");
+            }
+        }
 
-		if(alive) {
-			// put the connection to the available connections
-			m_availableConnections.push(con);
-		} else {
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": connection was broken");
-			}
-			// no, the connection is dead -> trhow it away and close it
-                        con.closeOriginalConnection();
-                        m_connectionAmount --;
+        synchronized(m_availableConnections) {
+            if(alive) {
+                // put the connection to the available connections
+                m_availableConnections.push(con);
+                m_availableConnections.notify();
+            } else {
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": connection was broken");
+                }
+                // no, the connection is dead -> trhow it away and close it
+                con.closeOriginalConnection();
+                m_connectionAmount --;
 
-			// create a new one
-			try {
-				createConnections(1);
-			} catch(SQLException exc) {
-				if(A_OpenCms.isLogging()) {
-					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": unable to create new connection for broken one");
-				}
-			}
-		}
-
-		// wake up eventually waiting threads
-                m_availableConnections.notifyAll();
-          }
+                // create a new one
+                try {
+                    createConnections(1);
+                    m_availableConnections.notify();
+                } catch(SQLException exc) {
+                    if(A_OpenCms.isLogging()) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": unable to create new connection for broken one");
+                    }
+                }
+            }
+        }
 	}
 
 	/**
@@ -204,13 +258,12 @@ public class CmsPool {
 	 * @param amount - the amount of connections to create.
 	 * @exception SQLException if a database-access error occurs.
 	 */
-	private void createConnections(int amount)
-		throws SQLException {
-                  for(int i = 0; (i < amount) && (m_connectionAmount < m_maxConn); i++) {
-                          // create another connection
-                          m_availableConnections.push(createConnection());
-                          m_connectionAmount++;
-  		  }
+	private void createConnections(int amount) throws SQLException {
+        for(int i = 0; (i < amount) && (m_connectionAmount < m_maxConn); i++) {
+            // create another connection
+            m_availableConnections.push(createConnection());
+            m_connectionAmount++;
+        }
 	}
 
 	/**
@@ -220,7 +273,7 @@ public class CmsPool {
 	 */
 	private Connection createConnection() throws SQLException {
 		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": creating new connection number " + m_connectionAmount);
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": creating new connection. Current Amount is:" + m_connectionAmount);
 		}
 		return new CmsConnection(DriverManager.getConnection(m_url, m_user, m_password), this);
 	}
