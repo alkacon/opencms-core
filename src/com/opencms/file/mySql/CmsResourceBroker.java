@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/14 14:53:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/07/17 16:10:36 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/07/14 14:53:56 $
+ * @version $Revision: 1.5 $ $Date: 2000/07/17 16:10:36 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -265,13 +265,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 CmsGroup managergroup = readGroup(currentUser, currentProject, 
 											   managergroupname);
 			 
-			 // TODO: create a new task for the project
-			 /*CmsTask task = m_taskRb.createProject(currentUser, name, group,
-													 new java.sql.Timestamp(System.currentTimeMillis()),
-													 C_TASK_PRIORITY_NORMAL); */
-			CmsTask task=createProject(currentUser,name,1,group.getName(),
-                                       System.currentTimeMillis(),C_TASK_PRIORITY_NORMAL);
-                                                              
+			 // create a new task for the project
+			 CmsTask task=createProject(currentUser,name,1,group.getName(),
+										System.currentTimeMillis(),C_TASK_PRIORITY_NORMAL);
 			 
 			 return m_dbAccess.createProject(currentUser, group, managergroup, task, name, description, C_PROJECT_STATE_UNLOCKED, C_PROJECT_TYPE_NORMAL );
 		} else {

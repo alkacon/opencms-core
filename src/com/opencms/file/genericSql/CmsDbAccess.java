@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/17 10:20:25 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2000/07/17 16:10:35 $
+ * Version: $Revision: 1.96 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,14 +49,14 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.95 $ $Date: 2000/07/17 10:20:25 $ * 
+ * @version $Revision: 1.96 $ $Date: 2000/07/17 16:10:35 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
 	/**
 	 * The maximum amount of tables.
 	 */
-	private static int C_MAX_TABLES = 9;
+	private static int C_MAX_TABLES = 12;
 	
 	/**
 	 * Table-key for max-id
@@ -102,6 +102,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * Table-key for max-id
 	 */
 	private static int C_TABLE_PROPERTIES = 8;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_TASK = 9;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_TASKTYPE = 10;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_TASKPAR = 11;
+	
+	/**
+	 * Table-key for max-id
+	 */
+	private static int C_TABLE_TASKLOG = 12;
 	
 	/**
 	 * Constant to get property from configurations.
@@ -4760,10 +4780,29 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		m_pool.initPreparedStatement(C_PROPERTIES_DELETEALL_KEY,C_PROPERTIES_DELETEALL);
 		m_pool.initPreparedStatement(C_PROPERTIES_DELETE_KEY,C_PROPERTIES_DELETE);
 		
+		// init statements for tasks
+		m_pool.initPreparedStatement(C_TASK_TYPE_COPY_KEY,C_TASK_TYPE_COPY);
+		m_pool.initPreparedStatement(C_TASK_UPDATE_KEY,C_TASK_UPDATE);
+		m_pool.initPreparedStatement(C_TASK_READ_KEY,C_TASK_READ);
+		m_pool.initPreparedStatement(C_TASK_END_KEY,C_TASK_END);
+		m_pool.initPreparedStatement(C_TASK_FIND_AGENT_KEY,C_TASK_FIND_AGENT);
+		m_pool.initPreparedStatement(C_TASK_FORWARD_KEY,C_TASK_FORWARD);
+		m_pool.initPreparedStatement(C_TASK_GET_TASKTYPE_KEY,C_TASK_GET_TASKTYPE);	
+		
+		// init statements for taskpars
+		m_pool.initPreparedStatement(C_TASKPAR_TEST_KEY,C_TASKPAR_TEST);	
+		m_pool.initPreparedStatement(C_TASKPAR_UPDATE_KEY,C_TASKPAR_UPDATE);	
+		m_pool.initPreparedStatement(C_TASKPAR_INSERT_KEY,C_TASKPAR_INSERT);	
+		m_pool.initPreparedStatement(C_TASKPAR_GET_KEY,C_TASKPAR_GET);	
+		
+		// init statements for tasklogs
+		m_pool.initPreparedStatement(C_TASKLOG_WRITE_KEY,C_TASKLOG_WRITE);
+		m_pool.initPreparedStatement(C_TASKLOG_READ_KEY,C_TASKLOG_READ);
+		m_pool.initPreparedStatement(C_TASKLOG_READ_LOGS_KEY,C_TASKLOG_READ_LOGS);
+		m_pool.initPreparedStatement(C_TASKLOG_READ_PPROJECTLOGS_KEY,C_TASKLOG_READ_PPROJECTLOGS);
+
 		// init statements for id
 		m_pool.initPreparedStatement(C_SYSTEMID_INIT_KEY,C_SYSTEMID_INIT);
-		
-		// TODO: implement this!
 		
 		m_pool.initPreparedStatement(C_SYSTEMID_LOCK_KEY,C_SYSTEMID_LOCK);
 		m_pool.initPreparedStatement(C_SYSTEMID_READ_KEY,C_SYSTEMID_READ);
@@ -4806,8 +4845,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		addUserToGroup(guest.getId(), guests.getId());
 		addUserToGroup(admin.getId(), administrators.getId());
 
-		// TODO: use real task here-when available!
-		CmsTask task = new CmsTask();
+        CmsTask task=createTask(0,0,1, // standart project type,
+				     admin.getId(), 
+                     admin.getId(),						
+				     administrators.getId(),
+				     C_PROJECT_ONLINE,
+			         new java.sql.Timestamp(new java.util.Date().getTime()),
+				     new java.sql.Timestamp(new java.util.Date().getTime()),
+				     C_TASK_PRIORITY_NORMAL);
+		
 		CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 		
 		// create the root-folder
@@ -5115,5 +5161,792 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
 		}
+	}
+	/**
+	 * Creates a new task.
+	 * rootId Id of the root task project
+	 * parentId Id of the parent task
+	 * tasktype Type of the task
+	 * ownerId Id of the owner
+	 * agentId Id of the agent
+	 * roleId Id of the role
+	 * taskname Name of the Task
+	 * wakeuptime Time when the task will be wake up
+	 * timeout Time when the task times out
+	 * priority priority of the task
+	 * 
+	 * @return The Taskobject  of the generated Task
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsTask createTask(int rootId, int parentId, int tasktype, 
+							   int ownerId, int agentId,int  roleId, String taskname, 
+							   java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout, 
+							   int priority) 
+		throws CmsException {
+		int newId = C_UNKNOWN_ID;
+		CmsTask task = null;
+		PreparedStatement statement = null;
+		
+		try {
+			
+			newId = nextId(C_TABLE_TASK);
+			statement = m_pool.getPreparedStatement(C_TASK_TYPE_COPY_KEY);
+			// create task by copying from tasktype table
+			statement.setInt(1,newId);
+			statement.setInt(2,tasktype);
+			statement.executeUpdate();
+			
+			task = this.readTask(newId);
+			task.setRoot(rootId);
+			task.setParent(parentId);
+			
+			task.setName(taskname);
+			task.setTaskType(tasktype);
+			task.setRole(roleId);
+			if(agentId==C_UNKNOWN_ID){
+				agentId = findAgent(roleId);
+			}	
+			task.setAgentUser(agentId);				 
+			task.setOriginalUser(agentId);
+			task.setWakeupTime(wakeuptime);
+			task.setTimeOut(timeout);
+			task.setPriority(priority);
+			task.setPercentage(0);
+			task.setState(C_TASK_STATE_STARTED);
+			task.setInitiatorUser(ownerId);
+			task.setStartTime(new java.sql.Timestamp(System.currentTimeMillis()));
+			task.setMilestone(0);
+			task = this.writeTask(task);
+		} catch( SQLException exc ) {
+			System.err.println(exc.getMessage());
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASK_TYPE_COPY_KEY, statement);
+			}
+		}		
+		return task;
+	}	
+	
+	/**
+	 * Reads a task from the Cms.
+	 * 
+	 * @param id The id of the task to read.
+	 * 
+	 * @return a task object or null if the task is not found.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsTask readTask(int id)
+		throws CmsException {
+		ResultSet res;
+		CmsTask task = null;
+		PreparedStatement statement = null;
+		
+		try {
+			statement = m_pool.getPreparedStatement(C_TASK_READ_KEY);
+			statement.setInt(1,id);
+			res = statement.executeQuery();
+			if(res.next()) {
+				id = res.getInt(C_TASK_ID);
+				String name = res.getString(C_TASK_NAME);
+				int autofinish = res.getInt(C_TASK_AUTOFINISH);
+				java.sql.Timestamp starttime = SqlHelper.getTimestamp(res,C_TASK_STARTTIME);
+				java.sql.Timestamp timeout = SqlHelper.getTimestamp(res,C_TASK_TIMEOUT);
+				java.sql.Timestamp endtime = SqlHelper.getTimestamp(res,C_TASK_ENDTIME);
+				java.sql.Timestamp wakeuptime = SqlHelper.getTimestamp(res,C_TASK_WAKEUPTIME);
+				int escalationtype = res.getInt(C_TASK_ESCALATIONTYPE);
+				int initiatoruser = res.getInt(C_TASK_INITIATORUSER);
+				int originaluser = res.getInt(C_TASK_ORIGINALUSER);
+				int agentuser = res.getInt(C_TASK_AGENTUSER);
+				int role = res.getInt(C_TASK_ROLE);
+				int root = res.getInt(C_TASK_ROOT);
+				int parent = res.getInt(C_TASK_PARENT);
+				int milestone = res.getInt(C_TASK_MILESTONE);
+				int percentage = res.getInt(C_TASK_PERCENTAGE);
+				String permission = res.getString(C_TASK_PERMISSION);
+				int priority = res.getInt(C_TASK_PRIORITY);
+				int state = res.getInt(C_TASK_STATE);
+				int tasktype = res.getInt(C_TASK_TASKTYPE);
+				String htmllink = res.getString(C_TASK_HTMLLINK);
+				res.close();
+				task =  new CmsTask(id, name, state, tasktype, root, parent,
+									initiatoruser, role, agentuser, originaluser,
+									starttime, wakeuptime, timeout, endtime,
+									percentage, permission, priority, escalationtype,
+									htmllink, milestone, autofinish);
+			}
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASK_READ_KEY, statement);
+			}
+		}
+		return task;
+	}
+
+	/**
+	 * Updates a task.
+	 * 
+	 * @param task The task that will be written.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsTask writeTask(CmsTask task)
+		throws CmsException {
+		
+		PreparedStatement statement = null;
+		
+		try {    
+			statement = m_pool.getPreparedStatement(C_TASK_UPDATE_KEY);
+			statement.setString(1,task.getName());
+			statement.setInt(2,task.getState());
+			statement.setInt(3,task.getTaskType());
+			statement.setInt(4,task.getRoot());
+			statement.setInt(5,task.getParent());
+			statement.setInt(6,task.getInitiatorUser());
+			statement.setInt(7,task.getRole());
+			statement.setInt(8,task.getAgentUser());
+			statement.setInt(9,task.getOriginalUser());
+			statement.setTimestamp(10,task.getStartTime());
+			statement.setTimestamp(11,task.getWakeupTime());
+			statement.setTimestamp(12,task.getTimeOut());
+			statement.setTimestamp(13,task.getEndTime());
+			statement.setInt(14,task.getPercentage());
+			statement.setString(15,task.getPermission());
+			statement.setInt(16,task.getPriority());
+			statement.setInt(17,task.getEscalationType());
+			statement.setString(18,task.getHtmlLink());
+			statement.setInt(19,task.getMilestone());
+			statement.setInt(20,task.getAutoFinish());
+			statement.setInt(21,task.getId());
+			statement.executeUpdate();
+
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASK_UPDATE_KEY, statement);
+			}
+		}
+		return(readTask(task.getId()));
+	}
+
+	
+	/**
+	 * Ends a task from the Cms.
+	 * 
+	 * @param taskid Id of the task to end.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void endTask(int taskId)
+
+		
+		throws CmsException {
+		
+		PreparedStatement statement = null;
+		try{
+			statement = m_pool.getPreparedStatement(C_TASK_END_KEY);
+			statement.setInt(1, 100);
+			statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
+			statement.setInt(3,taskId);
+			statement.executeQuery();
+			
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASK_END_KEY, statement);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Forwards a task to another user.
+	 * 
+	 * @param taskId The id of the task that will be fowarded.
+	 * @param newRoleId The new Group the task belongs to
+	 * @param newUserId User who gets the task.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void forwardTask(int taskId, int newRoleId, int newUserId)
+		throws CmsException {
+		
+		PreparedStatement statement = null;
+		try{
+			statement = m_pool.getPreparedStatement(C_TASK_FORWARD_KEY);
+			statement.setInt(1,newRoleId);
+			statement.setInt(2,newUserId);
+			statement.setInt(3,taskId);
+			statement.executeUpdate();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASK_FORWARD_KEY, statement);
+			}
+		}
+	}
+	
+	/**
+	 * Reads all tasks of a user in a project.
+	 * @param project The Project in which the tasks are defined.
+	 * @param agent The task agent   
+	 * @param owner The task owner .
+	 * @param group The group who has to process the task.	 
+	 * @tasktype C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+	 * @param orderBy Chooses, how to order the tasks.
+	 * @param sort Sort Ascending or Descending (ASC or DESC)
+	 * 
+	 * @return A vector with the tasks
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, 
+							CmsGroup role, int tasktype, 
+							String orderBy, String sort)
+		throws CmsException {
+		boolean first = true;
+		Vector tasks = new Vector(); // vector for the return result
+		CmsTask task = null;		 // tmp task for adding to vector
+		ResultSet recset = null; 
+		
+		// create the sql string depending on parameters
+		// handle the project for the SQL String
+		String sqlstr = "SELECT * FROM " + C_TABLENAME_TASK+" WHERE ";
+		if(project!=null){
+			sqlstr = sqlstr + C_TASK_ROOT + "=" + project.getTaskId();
+			first = false;
+		}
+		else
+		{
+			sqlstr = sqlstr + C_TASK_ROOT + "<>0 AND " + C_TASK_PARENT + "<>0";
+			first = false;
+		}
+		
+		// handle the agent for the SQL String
+		if(agent!=null){
+			if(!first){
+				sqlstr = sqlstr + " AND ";
+			}
+			sqlstr = sqlstr + C_TASK_AGENTUSER + "=" + agent.getId();
+			first = false;
+		}
+		
+		// handle the owner for the SQL String
+		if(owner!=null){
+			if(!first){
+				sqlstr = sqlstr + " AND ";
+			}
+			sqlstr = sqlstr + this.C_TASK_INITIATORUSER + "=" + owner.getId();
+			first = false;
+		}
+		
+		// handle the role for the SQL String
+		if(role!=null){
+			if(!first){
+				sqlstr = sqlstr+" AND ";
+			}
+			sqlstr = sqlstr + C_TASK_ROLE + "=" + role.getId();
+			first = false;
+		}
+		
+		sqlstr = sqlstr + getTaskTypeConditon(first, tasktype);
+		
+		// handel the order and sort parameter for the SQL String
+		if(orderBy!=null) {
+			if(!orderBy.equals("")) {
+				sqlstr = sqlstr + " ORDER BY " + orderBy;
+				if(orderBy!=null) {
+					if(!orderBy.equals("")) {
+						sqlstr = sqlstr + " " + sort;
+					}
+				}
+			}
+		}	
+		
+		Statement statement = null;
+		
+		try {
+			statement = m_pool.getStatement();
+			recset = statement.executeQuery(sqlstr);
+			
+			// if resultset exists - return vector of tasks
+			while(recset.next()) {
+				task =  new CmsTask(recset.getInt(C_TASK_ID),
+									recset.getString(C_TASK_NAME),
+									recset.getInt(C_TASK_STATE),
+									recset.getInt(C_TASK_TASKTYPE),
+									recset.getInt(C_TASK_ROOT),
+									recset.getInt(C_TASK_PARENT),
+									recset.getInt(C_TASK_INITIATORUSER),
+									recset.getInt(C_TASK_ROLE),
+									recset.getInt(C_TASK_AGENTUSER),
+									recset.getInt(C_TASK_ORIGINALUSER),
+									SqlHelper.getTimestamp(recset,C_TASK_STARTTIME),
+									SqlHelper.getTimestamp(recset,C_TASK_WAKEUPTIME),
+									SqlHelper.getTimestamp(recset,C_TASK_TIMEOUT),
+									SqlHelper.getTimestamp(recset,C_TASK_ENDTIME),
+									recset.getInt(C_TASK_PERCENTAGE),
+									recset.getString(C_TASK_PERMISSION),
+									recset.getInt(C_TASK_PRIORITY),
+									recset.getInt(C_TASK_ESCALATIONTYPE),
+									recset.getString(C_TASK_HTMLLINK),
+									recset.getInt(C_TASK_MILESTONE),
+									recset.getInt(C_TASK_AUTOFINISH));
+				
+				
+				tasks.addElement(task);
+			}
+			
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+  		} finally {
+			if( statement != null) {
+				m_pool.putStatement(statement);
+			}
+		}
+		
+		return tasks;
+	}
+
+	
+	/**
+	 * Finds an agent for a given role (group).
+	 * @param roleId The Id for the role (group).
+	 * 
+	 * @return A vector with the tasks
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	protected int findAgent(int roleid)
+		throws CmsException {
+		
+		int result = C_UNKNOWN_ID;
+		PreparedStatement statement = null;
+		ResultSet res = null; 
+		
+		try {
+			
+			statement = m_pool.getPreparedStatement(C_TASK_FIND_AGENT_KEY);
+			statement.setInt(1,roleid);
+			res = statement.executeQuery();
+
+			if(res.next()) {
+				result = res.getInt(C_DATABASE_PREFIX+"USERS.USER_ID");
+			} else {
+				System.out.println("No User for role "+ roleid + " found");
+			}
+			res.close();			
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);		  
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASK_FIND_AGENT_KEY, statement);
+			}
+		}
+		return result;
+	}
+
+	
+	/**
+	 * Writes new log for a task.
+	 * 
+	 * @param taskid The id of the task.
+	 * @param user User who added the Log.
+	 * @param starttime Time when the log is created.
+	 * @param comment Description for the log.
+	 * @param type Type of the log. 0 = Sytem log, 1 = User Log
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void writeTaskLog(int taskId, int userid, 
+							 java.sql.Timestamp starttime, String comment, int type)
+		throws CmsException {
+		
+		int newId = C_UNKNOWN_ID;
+		PreparedStatement statement = null;
+		try{
+			
+			newId = nextId(C_TABLE_TASKLOG);
+			statement = m_pool.getPreparedStatement(C_TASKLOG_WRITE_KEY);
+			statement.setInt(1, newId);
+			statement.setInt(2, taskId);
+			if(userid!=C_UNKNOWN_ID){
+				statement.setInt(3, userid);
+			}
+			else {
+				// no user is specified so set to system user
+				// is only valid for system task log
+				statement.setInt(3, 1);
+			}
+			statement.setTimestamp(4, starttime);
+			statement.setString(5, comment);
+			statement.setInt(6, type);
+			
+			statement.executeUpdate();
+			
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASKLOG_WRITE_KEY, statement);
+			}
+		}
+	}
+	
+	public void writeSystemTaskLog(int taskid, String comment)
+		throws CmsException {
+		this.writeTaskLog(taskid, C_UNKNOWN_ID, 
+						  new java.sql.Timestamp(System.currentTimeMillis()), 
+						  comment, C_TASKLOG_USER);
+	}
+	
+	/**
+	 * Reads a log for a task.
+	 * 
+	 * @param id The id for the tasklog .
+	 * @return A new TaskLog object 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsTaskLog readTaskLog(int id)
+		throws CmsException {
+		ResultSet res;
+		CmsTaskLog tasklog = null;
+		PreparedStatement statement = null;
+		
+		try {
+			statement = m_pool.getPreparedStatement(C_TASKLOG_READ_KEY);
+			statement.setInt(1, id);
+			res = statement.executeQuery();
+			if(res.next()) {				 
+				String comment = res.getString(C_LOG_COMMENT);
+				String externalusername;
+				id = res.getInt(C_LOG_ID);
+				java.sql.Timestamp starttime = SqlHelper.getTimestamp(res,C_LOG_STARTTIME);
+				int task = res.getInt(C_LOG_TASK);
+				int user = res.getInt(C_LOG_USER);
+				int type = res.getInt(C_LOG_TYPE);
+
+				tasklog =  new CmsTaskLog(id, comment, task, user, starttime, type);
+			}
+			res.close();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASKLOG_READ_KEY, statement);
+			}
+		}
+		
+		return tasklog;
+	}
+
+	
+	/**
+	 * Reads log entries for a task.
+	 * 
+	 * @param taskid The id of the task for the tasklog to read .
+	 * @return A Vector of new TaskLog objects 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public Vector readTaskLogs(int taskId)
+		throws CmsException {
+		ResultSet res;
+		CmsTaskLog tasklog = null;
+		Vector logs = new Vector();
+		PreparedStatement statement = null;
+		String comment = null;
+		String externalusername = null;
+		java.sql.Timestamp starttime = null;
+		int id = C_UNKNOWN_ID;
+		int task = C_UNKNOWN_ID;
+		int user = C_UNKNOWN_ID;
+		int type = C_UNKNOWN_ID;
+
+		try {
+			statement = m_pool.getPreparedStatement(C_TASKLOG_READ_LOGS_KEY);
+			statement.setInt(1, taskId);
+			res = statement.executeQuery();
+			while(res.next()) {				 
+				comment = res.getString(C_LOG_COMMENT);
+				externalusername = res.getString(C_LOG_EXUSERNAME);
+				id = res.getInt(C_LOG_ID);
+				starttime = SqlHelper.getTimestamp(res,C_LOG_STARTTIME);
+				task = res.getInt(C_LOG_TASK);
+				user = res.getInt(C_LOG_USER);
+				type = res.getInt(C_LOG_TYPE);
+				
+				tasklog =  new CmsTaskLog(id, comment, task, user, starttime, type);
+				logs.addElement(tasklog);
+			}
+			res.close();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASKLOG_READ_LOGS_KEY, statement);
+			}
+		}
+		return logs;
+	}
+	
+	
+	/**
+	 * Reads log entries for a project.
+	 * 
+	 * @param project The projec for tasklog to read.
+	 * @return A Vector of new TaskLog objects 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public Vector readProjectLogs(int projectid)
+		throws CmsException {
+		ResultSet res;
+		CmsTaskLog tasklog = null;
+		Vector logs = new Vector();
+		PreparedStatement statement = null;
+		String comment = null;
+		String externalusername = null;
+		java.sql.Timestamp starttime = null;
+		int id = C_UNKNOWN_ID;
+		int task = C_UNKNOWN_ID;
+		int user = C_UNKNOWN_ID;
+		int type = C_UNKNOWN_ID;
+
+		try {
+			statement = m_pool.getPreparedStatement(C_TASKLOG_READ_PPROJECTLOGS_KEY);
+			statement.setInt(1, projectid);
+			res = statement.executeQuery();
+			while(res.next()) {				 
+				comment = res.getString(C_LOG_COMMENT);
+				externalusername = res.getString(C_LOG_EXUSERNAME);
+				id = res.getInt(C_LOG_ID);
+				starttime = SqlHelper.getTimestamp(res,C_LOG_STARTTIME);
+				task = res.getInt(C_LOG_TASK);
+				user = res.getInt(C_LOG_USER);
+				type = res.getInt(C_LOG_TYPE);
+				
+				tasklog =  new CmsTaskLog(id, comment, task, user, starttime, type);
+				logs.addElement(tasklog);
+			}
+			res.close();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASKLOG_READ_PPROJECTLOGS_KEY, statement);
+			}
+		}
+		return logs;
+	}
+
+	
+	/**
+	 * Set a Parameter for a task.
+	 * 
+	 * @param task The task.
+	 * @param parname Name of the parameter.
+	 * @param parvalue Value if the parameter.
+	 * 
+	 * @return The id of the inserted parameter or 0 if the parameter exists for this task.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int setTaskPar(int taskId, String parname, String parvalue)
+		throws CmsException {
+		
+		ResultSet res;
+		int result = 0;
+		PreparedStatement statement = null;
+		
+		try {
+			// test if the parameter already exists for this task
+			statement = m_pool.getPreparedStatement(C_TASKPAR_TEST_KEY);
+			statement.setInt(1, taskId);
+			statement.setString(2, parname);
+			res = statement.executeQuery();
+			
+			if(res.next()) {
+				//Parameter exisits, so make an update
+				updateTaskPar(res.getInt(C_PAR_ID), parname, parvalue);
+			}
+			else {
+				//Parameter is not exisiting, so make an insert
+				result = insertTaskPar(taskId, parname, parvalue);
+				
+			}
+			res.close();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASKPAR_TEST_KEY, statement);
+			}
+		}
+		return result;
+	}
+	
+	private void updateTaskPar(int parid, String parname, String parvalue) 
+		throws CmsException {
+		
+		PreparedStatement statement = null;
+		try {
+			
+			statement = m_pool.getPreparedStatement(C_TASKPAR_UPDATE_KEY);
+			statement.setString(1, parvalue);
+			statement.setInt(2, parid);
+			statement.executeUpdate();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASKPAR_UPDATE_KEY, statement);
+			}
+		}
+	}
+	
+	private int insertTaskPar(int taskId, String parname, String parvalue) 
+		throws CmsException {
+		int result = 0;
+		PreparedStatement statement = null;
+		int newId = C_UNKNOWN_ID;
+		
+		try {
+			newId = nextId(C_TABLE_TASKPAR);
+			statement = m_pool.getPreparedStatement(C_TASKPAR_INSERT_KEY);
+			statement.setInt(1, newId);
+			statement.setInt(2, taskId);
+			statement.setString(3, parname);
+			statement.setString(4, parvalue);
+			statement.executeUpdate();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASKPAR_INSERT_KEY, statement);
+			}
+		}
+		return newId;
+	}
+	
+	/**
+	 * Get a parameter value for a task.
+	 * 
+	 * @param task The task.
+	 * @param parname Name of the parameter.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public String getTaskPar(int taskId, String parname)
+		throws CmsException {
+		
+		String result = null;
+		ResultSet res = null;
+		PreparedStatement statement = null;
+		
+		try {
+			statement = m_pool.getPreparedStatement(C_TASKPAR_GET_KEY);
+			statement.setInt(1, taskId);
+			statement.setString(2, parname);
+			res = statement.executeQuery();
+			if(res.next()) {
+				result = res.getString(C_PAR_VALUE);
+			}
+			res.close();			
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASKPAR_GET_KEY, statement);
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Get the template task id fo a given taskname.
+	 * 
+	 * @param taskName Name of the TAsk
+	 * 
+	 * @return id from the task template
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int getTaskType(String taskName)
+		throws CmsException {
+		int result = 1;
+		
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		
+		try {
+			statement = m_pool.getPreparedStatement(C_TASK_GET_TASKTYPE_KEY);
+			statement.setString(1, taskName);
+			res = statement.executeQuery();
+			if (res.next()) {
+				result = res.getInt("id");
+			}
+			res.close();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_TASK_GET_TASKTYPE_KEY, statement);
+			}
+		}
+		return result;
+	}
+	
+		private String getTaskTypeConditon(boolean first, int tasktype) {
+		
+		String result = "";
+		// handle the tasktype for the SQL String
+		if(!first){
+			result = result+" AND ";
+		}
+		
+		switch(tasktype)
+		{
+		case C_TASKS_ALL: {
+				result = result + C_TASK_ROOT + "<>0";			
+				break;				
+			}
+		case C_TASKS_OPEN: {
+				result = result + C_TASK_STATE + "=" + C_TASK_STATE_STARTED;
+				break;
+			}	
+		case C_TASKS_ACTIVE: {
+				result = result + C_TASK_STATE + "=" + C_TASK_STATE_STARTED;
+				break;
+			}
+		case C_TASKS_DONE: {
+				result = result + C_TASK_STATE + "=" + C_TASK_STATE_ENDED;
+				break;					
+			}
+		case C_TASKS_NEW: {
+				result = result + C_TASK_PERCENTAGE + "=0 AND " + C_TASK_STATE + "=" + C_TASK_STATE_STARTED;
+				break;					
+			}
+		default:{}
+		}
+		
+		return result;
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/17 10:20:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/07/17 16:10:35 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.6 $ $Date: 2000/07/17 10:20:26 $ * 
+ * @version $Revision: 1.7 $ $Date: 2000/07/17 16:10:35 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -103,7 +103,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 */
 	private static int C_TABLE_PROPERTIES = 8;
 	
-		/**
+	/**
 	 * Table-key for max-id
 	 */
 	private static int C_TABLE_TASK = 9;
@@ -4774,7 +4774,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		m_pool.initPreparedStatement(C_PROPERTIES_DELETEALL_KEY,C_PROPERTIES_DELETEALL);
 		m_pool.initPreparedStatement(C_PROPERTIES_DELETE_KEY,C_PROPERTIES_DELETE);
 		
-				// init statements for tasks
+		// init statements for tasks
 		m_pool.initPreparedStatement(C_TASK_TYPE_COPY_KEY,C_TASK_TYPE_COPY);
 		m_pool.initPreparedStatement(C_TASK_UPDATE_KEY,C_TASK_UPDATE);
 		m_pool.initPreparedStatement(C_TASK_READ_KEY,C_TASK_READ);
@@ -4841,7 +4841,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		addUserToGroup(guest.getId(), guests.getId());
 		addUserToGroup(admin.getId(), administrators.getId());
 
-		// TODO: use real task here-when available!
         CmsTask task=createTask(0,0,1, // standart project type,
 				     admin.getId(), 
                      admin.getId(),						
@@ -4852,9 +4851,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				     C_TASK_PRIORITY_NORMAL);
         
         
-		/*CmsTask task = createProject(admin, C_PROJECT_ONLINE, administrators, 
-											  new java.sql.Timestamp(new java.util.Date().getTime()), 
-											  C_TASK_PRIORITY_NORMAL);*/
 		CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 		
 		// create the root-folder

@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/07/17 10:20:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/07/17 16:10:35 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -257,8 +257,14 @@ public class CmsDbPool {
 	public void putStatement(Statement stmt) {
 		synchronized(m_prepStatements) {
 			Hashtable pool = (Hashtable)(m_usedStatementsCache.remove(stmt));
-			m_prepStatements.push(pool);
-			m_prepStatements.notify();
+			if( pool != null ) {
+				m_prepStatements.push(pool);
+				m_prepStatements.notify();
+			} else {
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDbPool] putting back wrong statement: " + stmt);
+				}
+			}
 		}		
 	}
 	
@@ -271,8 +277,14 @@ public class CmsDbPool {
 	public void putPreparedStatement(Integer key, PreparedStatement pstmt) {
 		synchronized(m_prepStatements) {
 			Hashtable pool = (Hashtable)(m_usedStatementsCache.remove(pstmt));
-			m_prepStatements.push(pool);
-			m_prepStatements.notify();
+			if( pool != null ) {
+				m_prepStatements.push(pool);
+				m_prepStatements.notify();
+			} else {
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDbPool] putting back wrong prepared statement: " + pstmt);
+				}
+			}
 		}		
 	}
 	
