@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/22 05:50:35 $
-* Version: $Revision: 1.344 $
+* Date   : $Date: 2003/07/22 08:35:20 $
+* Version: $Revision: 1.345 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.344 $
+ * @version $Revision: 1.345 $
  */
 public class CmsObject extends Object {
 
@@ -1358,10 +1358,9 @@ public class CmsObject extends Object {
      * @throws CmsException if the user has not the rights to move this resource,
      * or if the file couldn't be moved.
      */
-    /*
     protected void doMoveResource(String source, String destination) throws CmsException {
         m_driverManager.moveResource(m_context, addSiteRoot(source), addSiteRoot(destination));
-    }*/
+    }
 
     /**
      * Renames the resource to the new name.
@@ -4264,9 +4263,9 @@ public class CmsObject extends Object {
      * @param acEntries			a vector of access control entries
      * @throws CmsException		if something goes wrong
      */
-    public void writeAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
+    public void importAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
         // TODO: force the access control entries to belong to the given resource
-        m_driverManager.writeAccessControlEntries(m_context, resource, acEntries);
+        m_driverManager.importAccessControlEntries(m_context, resource, acEntries);
     }
 
     /**

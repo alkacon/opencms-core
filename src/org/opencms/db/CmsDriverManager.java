@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/22 05:50:35 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2003/07/22 08:35:20 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.78 $ $Date: 2003/07/22 05:50:35 $
+ * @version $Revision: 1.79 $ $Date: 2003/07/22 08:35:20 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7302,7 +7302,10 @@ public class CmsDriverManager extends Object {
         fileSystemChanged(isFolder);
     */
         CmsResource res = readFileHeader(context, resourceName);
-        touchResource(context, res, timestamp);
+        if (res.isFile())
+            touchResource(context, res, timestamp);
+        else
+            touchStructure(context, res, timestamp);
     }
 
     /**
@@ -7327,27 +7330,27 @@ public class CmsDriverManager extends Object {
         fileSystemChanged(res.isFolder());
     }
     
-//    /**
-//     * Access the driver underneath to change the timestamp of a resource.
-//     * 
-//     * @param context.currentUser() the currentuser who requested this method
-//     * @param context.currentProject() the current project of the user 
-//     * @param resourceName the name of the resource to change
-//     * @param timestamp timestamp the new timestamp of the changed resource
-//     */
-//    private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp) throws CmsException {
-//        
-//        // NOTE: this is the new way to update the state !
-//        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
-//            res.setState(I_CmsConstants.C_STATE_CHANGED);
-//                
-//        res.setDateLastModified(timestamp);
-//        res.setUserLastModified(context.currentUser().getId());
-//        m_vfsDriver.updateResourcestate(res, C_UPDATE_STRUCTURE);
-//        
-//        clearResourceCache();
-//        fileSystemChanged(res.isFolder());        
-//    }
+    /**
+     * Access the driver underneath to change the timestamp of a resource.
+     * 
+     * @param context.currentUser() the currentuser who requested this method
+     * @param context.currentProject() the current project of the user 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     */
+    private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp) throws CmsException {
+        
+        // NOTE: this is the new way to update the state !
+        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
+            res.setState(I_CmsConstants.C_STATE_CHANGED);
+                
+        res.setDateLastModified(timestamp);
+        res.setUserLastModified(context.currentUser().getId());
+        m_vfsDriver.updateResourcestate(res, C_UPDATE_STRUCTURE);
+        
+        clearResourceCache();
+        fileSystemChanged(res.isFolder());        
+    }
     
     /**
      * Removes the deleted mark for all access control entries of a given resource
@@ -7781,7 +7784,7 @@ public class CmsDriverManager extends Object {
      * @param acEntries			vector of access control entries applied to the resource
      * @throws CmsException		if something goes wrong
      */
-    public void writeAccessControlEntries(CmsRequestContext context, CmsResource resource, Vector acEntries) throws CmsException {
+    public void importAccessControlEntries(CmsRequestContext context, CmsResource resource, Vector acEntries) throws CmsException {
 
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
 
@@ -7793,7 +7796,6 @@ public class CmsDriverManager extends Object {
         }
 
         clearAccessControlListCache();
-        touchResource(context, resource, System.currentTimeMillis());
     }
 
     /**

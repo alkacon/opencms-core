@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/07/22 08:35:20 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -218,7 +218,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         for (int i = 0; i < allSubFiles.size(); i++) {
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if (curFile.getState() != I_CmsConstants.C_STATE_DELETED) {
-                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length());
+                // both destination and readAbsolutePath have a trailing/leading slash !
+                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length() + 1);
                 cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags, false);
             }
         }

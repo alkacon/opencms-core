@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.83 $
+* Date   : $Date: 2003/07/22 08:35:20 $
+* Version: $Revision: 1.84 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.83 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.84 $ $Date: 2003/07/22 08:35:20 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -494,7 +494,8 @@ public class CmsRequestContext implements I_CmsConstants {
     public String addSiteRoot(String resourcename) {
         if (resourcename == null) return null;
         // TODO: hack - added logic to have a / between site root and resourcename if missing
-        resourcename = getAdjustedSiteRoot(resourcename) + ((resourcename.startsWith("/")) ? "" : "/") + resourcename;
+        String siteRoot = getAdjustedSiteRoot(resourcename);
+        resourcename =  siteRoot + ((siteRoot.endsWith("/") || resourcename.startsWith("/")) ? "" : "/") + resourcename;
         return m_directoryTranslator.translateResource(resourcename);
     }    
     

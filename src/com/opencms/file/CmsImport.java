@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.116 $
+* Date   : $Date: 2003/07/22 08:35:20 $
+* Version: $Revision: 1.117 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.116 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.117 $ $Date: 2003/07/22 08:35:20 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -1595,7 +1595,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     private void importAccessControlEntries(CmsResource resource) throws CmsException {
         try {
             try {
-                m_cms.writeAccessControlEntries(resource, m_acEntriesToCreate);
+                m_cms.importAccessControlEntries(resource, m_acEntriesToCreate);
             } catch (CmsException exc) {
                 m_report.println(m_report.key("report.import_accesscontroldata_failed"), I_CmsReport.C_FORMAT_WARNING);
             }
