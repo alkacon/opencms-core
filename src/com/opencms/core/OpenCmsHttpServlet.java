@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/09/05 10:13:22 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/09/13 09:14:23 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2001/09/05 10:13:22 $
+ * @version $Revision: 1.17 $ $Date: 2001/09/13 09:14:23 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -572,6 +572,9 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
               // access denied error - display login dialog
               case CmsException.C_ACCESS_DENIED:
                   if(canWrite) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Access denied. "+e.getStackTrace());
+                    }
                     requestAuthorization(req, res);
                   }
 
