@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2004/10/16 08:24:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/10 17:31:56 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator {
@@ -153,7 +153,7 @@ public class CmsResourceTranslator {
         }
         StringBuffer result;
         for (int i=0; i<m_translations.length; i++) {
-            result = new StringBuffer();
+            result = new StringBuffer(resourceName.length() * 2);
             try {
                 if (m_perlUtil.substitute(result, m_translations[i], resourceName) != 0) {
                     // The pattern matched, return the result

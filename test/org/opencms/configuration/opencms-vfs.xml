@@ -86,19 +86,15 @@
 				<translation>s#[^0-9a-zA-Z_\.\-\/]#!#g</translation>
 				<translation>s#!+#x#g</translation>
 			</filetranslations>
-        	<foldertranslations enabled="false">
-        		<translation>s#/default/vfs/content/bodys/(.*)#/system/bodies/$1#</translation>
-        		<translation>s#/default/vfs/pics/system/(.*)#/system/workplace/resources/$1#</translation>
-        		<translation>s#/default/vfs/pics/(.*)#/system/galleries/pics/$1#</translation>
-        		<translation>s#/default/vfs/download/(.*)#/system/galleries/download/$1#</translation>
-        		<translation>s#/default/vfs/externallinks/(.*)#/system/galleries/externallinks/$1#</translation>
-        		<translation>s#/default/vfs/htmlgalleries/(.*)#/system/galleries/htmlgalleries/$1#</translation>
-        		<translation>s#/default/vfs/content/(.*)#/system/modules/org.opencms.default/$1#</translation>
-        		<translation>s#/default/vfs/moduledemos/(.*)#/system/moduledemos/$1#</translation>
-        		<translation>s#/default/vfs/system/workplace/config/language/(.*)#/system/workplace/locales/$1#</translation>
-        		<translation>s#/default/vfs/system/workplace/css/(.*)#/system/workplace/resources/$1#</translation>
-        		<translation>s#/default/vfs/system/workplace/templates/js/(.*)#/system/workplace/scripts/$1#</translation>
-        	</foldertranslations>
+        	<foldertranslations enabled="true">
+				<translation>s#/content/bodys/(.*)#/system/bodies/$1#</translation>
+				<translation>s#/pics/system/(.*)#/system/workplace/resources/$1#</translation>
+				<translation>s#/pics/(.*)#/system/galleries/pics/$1#</translation>
+				<translation>s#/download/(.*)#/system/galleries/download/$1#</translation>
+				<translation>s#/externallinks/(.*)#/system/galleries/externallinks/$1#</translation>
+				<translation>s#/htmlgalleries/(.*)#/system/galleries/htmlgalleries/$1#</translation>
+				<translation>s#/content/(.*)#/system/$1#</translation>
+			</foldertranslations>
 		</translations>
 		<xmlcontents>
 			<xmlcontent class="org.opencms.xml.types.CmsXmlBooleanValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
