@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/10/25 08:14:28 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/10/31 13:11:29 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2000/10/25 08:14:28 $
+ * @version $Revision: 1.34 $ $Date: 2000/10/31 13:11:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -63,34 +63,33 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 	 * HACK: replace this by the corresponding value from the user object
 	 */
 	private final static String C_CURRENT_LANGUAGE = "de";
-	
 	/**
- * Sorts two vectors using bubblesort. This is a quick hack to display templates sorted by title instead of
- * by name in the template dropdown, because it is the title that is shown in the dropdown.
- * Creation date: (10/24/00 13:55:12)
- * @param names The vector to sort
- * @param data Vector with data that accompanies names.
- */
-public void bubblesort(Vector names, Vector data)
-{
-	for (int i = 0; i < names.size() - 1; i++)
+	* Sorts two vectors using bubblesort. This is a quick hack to display templates sorted by title instead of
+	* by name in the template dropdown, because it is the title that is shown in the dropdown.
+	* Creation date: (10/24/00 13:55:12)
+	* @param names The vector to sort
+	* @param data Vector with data that accompanies names.
+	*/
+	public void bubblesort(Vector names, Vector data)
 	{
-		int len = names.size() - i - 1;
-		for (int j = 0; j < len; j++)
+		for (int i = 0; i < names.size() - 1; i++)
 		{
-			String a = (String) names.elementAt(j);
-			String b = (String) names.elementAt(j + 1);
-			if (a.toLowerCase().compareTo(b.toLowerCase()) > 0)
+			int len = names.size() - i - 1;
+			for (int j = 0; j < len; j++)
 			{
-				names.setElementAt(a, j + 1);
-				names.setElementAt(b, j);
-				a = (String) data.elementAt(j);
-				data.setElementAt(data.elementAt(j + 1), j);
-				data.setElementAt(a, j + 1);
+				String a = (String) names.elementAt(j);
+				String b = (String) names.elementAt(j + 1);
+				if (a.toLowerCase().compareTo(b.toLowerCase()) > 0)
+				{
+					names.setElementAt(a, j + 1);
+					names.setElementAt(b, j);
+					a = (String) data.elementAt(j);
+					data.setElementAt(data.elementAt(j + 1), j);
+					data.setElementAt(a, j + 1);
+				}
 			}
 		}
 	}
-}
 	/**
 	 * Checks a Java System property for containing the given value
 	 * @param propertyName Name of the property
@@ -515,12 +514,11 @@ public void bubblesort(Vector names, Vector data)
 		// Since we are in the workplace, no browser caching is allowed here.
 		// Set all caching information to "no-cache".
 		// Don't bother about the internal caching here! Workplace users should be forced
-		// to reload the workplace pages at every request.
-
+		// to reload the workplace pages at every request.		
 		//HTTP 1.1
 		cms.getRequestContext().getResponse().setHeader("Cache-Control", "no-cache");
 		//HTTP 1.0
-		cms.getRequestContext().getResponse().setHeader("Pragma","no-cache");
+		cms.getRequestContext().getResponse().setHeader("Pragma","no-cache");		
 		((CmsXmlWpTemplateFile)xmlTemplateDocument).setData("lasturl", lasturl);        
 		return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 	}

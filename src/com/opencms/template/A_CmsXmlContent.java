@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/10/11 19:25:05 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/10/31 13:11:28 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,11 +32,8 @@ import java.io.*;
 import java.util.*;
 
 import java.lang.reflect.*;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
-import com.opencms.workplace.CmsXmlLanguageFile;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -78,7 +75,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2000/10/11 19:25:05 $
+ * @version $Revision: 1.34 $ $Date: 2000/10/31 13:11:28 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
 	
@@ -150,13 +147,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 
  	/** XML parser */   
 	private static I_CmsXmlParser parser = new CmsXmlXercesParser();
+	// private static I_CmsXmlParser parser = new CmsXmlProjectXParser();
 
-	/** Reference to the actual language file. */
-	protected CmsXmlLanguageFile m_languageFile = null;
-
-	/** List of available parsed language file objects */
-	protected static Hashtable m_langFiles = new Hashtable();
-	
+	/** Constructor for creating a new instance of this class */    
+	public A_CmsXmlContent() {
+		registerAllTags();
+	}
 	/**
 	 * Calls a user method in the object callingObject.
 	 * Every user method has to user the parameter types defined in 
@@ -210,14 +206,13 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 		return(result);
 	}
 	/**
-	* Clears the internal language cache
-	**/
-	public static void clearcache() {
+	 * Deletes all files from the file cache.
+	 */
+	public static void clearFileCache() {
 		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(C_OPENCMS_INFO,"clear language file cache");
+			A_OpenCms.log(C_OPENCMS_CACHE, "[A_CmsXmlContent] clearing XML file cache.");
 		}
-	    m_langFiles = new Hashtable();
-	    
+		m_filecache.clear();        
 	}
 	/**
 	 * Deletes the file represented by the given A_CmsXmlContent from
@@ -237,15 +232,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 	 */
 	public static void clearFileCache(String key) {
 		m_filecache.remove(key);
-	}
-	/**
-	 * Deletes all files from the file cache.
-	 */
-	public static void clearFileCache() {
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(C_OPENCMS_CACHE, "[A_CmsXmlContent] clearing XML file cache.");
-		}
-		m_filecache.clear();        
 	}
 	/**
 	 * Creates a clone of this object.
@@ -448,12 +434,26 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 	public String getFilename() {
 		return m_filename.substring(m_filename.lastIndexOf("/")+1);
 	}
-	/**
-	 * Gets the actual instance of the language file.
-	 * @return Language file.
+  	/**
+	 * Gets a processed datablock from the datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
 	 */
-	public CmsXmlLanguageFile getLanguageFile() {
-		return m_languageFile; 
+	protected Element getProcessedData(String tag) throws CmsException {
+		return getProcessedData(tag, null, null);
+	}
+  	/**
+	 * Gets a processed datablock from the datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @param callingObject Object that should be used to look up user methods.
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
+	 */
+	protected Element getProcessedData(String tag, Object callingObject) throws CmsException {
+		return getProcessedData(tag, callingObject, null);
 	}
   	/**
 	 * Gets a processed datablock from the datablock hashtable.
@@ -474,42 +474,15 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 		return dBlock;
 	}
   	/**
-	 * Gets a processed datablock from the datablock hashtable.
-	 * 
-	 * @param tag Key for the datablocks hashtable.
-	 * @param callingObject Object that should be used to look up user methods.
-	 * @return Processed datablock for the given key.
-	 * @exception CmsException
-	 */
-	protected Element getProcessedData(String tag, Object callingObject) throws CmsException {
-		return getProcessedData(tag, callingObject, null);
-	}
-  	/**
-	 * Gets a processed datablock from the datablock hashtable.
-	 * 
-	 * @param tag Key for the datablocks hashtable.
-	 * @return Processed datablock for the given key.
-	 * @exception CmsException
-	 */
-	protected Element getProcessedData(String tag) throws CmsException {
-		return getProcessedData(tag, null, null);
-	}
-  	/**
 	 * Gets the text and CDATA content of a processed datablock from the 
 	 * datablock hashtable.
-	 * <P>
-	 * The userObj Object is passed to all called user methods.
-	 * By using this, the initiating class can pass customized data to its methods.
 	 * 
 	 * @param tag Key for the datablocks hashtable.
-	 * @param callingObject Object that should be used to look up user methods.
-	 * @param userObj any object that should be passed to user methods
 	 * @return Processed datablock for the given key.
 	 * @exception CmsException
 	 */
-	protected String getProcessedDataValue(String tag, Object callingObject, Object userObj) 
-			throws CmsException {
-		Element data = getProcessedData(tag, callingObject, userObj);
+	protected String getProcessedDataValue(String tag) throws CmsException {
+		Element data = getProcessedData(tag);
 		return getTagValue(data);
 	}
   	/**
@@ -528,13 +501,19 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
   	/**
 	 * Gets the text and CDATA content of a processed datablock from the 
 	 * datablock hashtable.
+	 * <P>
+	 * The userObj Object is passed to all called user methods.
+	 * By using this, the initiating class can pass customized data to its methods.
 	 * 
 	 * @param tag Key for the datablocks hashtable.
+	 * @param callingObject Object that should be used to look up user methods.
+	 * @param userObj any object that should be passed to user methods
 	 * @return Processed datablock for the given key.
 	 * @exception CmsException
 	 */
-	protected String getProcessedDataValue(String tag) throws CmsException {
-		Element data = getProcessedData(tag);
+	protected String getProcessedDataValue(String tag, Object callingObject, Object userObj) 
+			throws CmsException {
+		Element data = getProcessedData(tag, callingObject, userObj);
 		return getTagValue(data);
 	}
 	/**
@@ -610,6 +589,24 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 	public static I_CmsXmlParser getXmlParser() {
 		  return parser;
 	}
+	/**
+	 * Prints the XML parsed content to a String
+	 * @return String with XML content
+	 */
+	public String getXmlText() {
+		StringWriter writer = new StringWriter();
+		getXmlText(writer);
+		return writer.toString();
+	}
+	/**
+	 * Prints the XML parsed content of this template file
+	 * to the given Writer.
+	 * 
+	 * @param out Writer to print to.
+	 */   
+	public void getXmlText(Writer out) {
+		parser.getXmlText(m_content, out);
+	}
   	/**
 	 * Prints the XML parsed content of the given Node and
 	 * its subnodes to the given Writer.
@@ -621,24 +618,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 		Document tempDoc = (Document)m_content.cloneNode(false);
 		tempDoc.appendChild(parser.importNode(tempDoc, n));
 		parser.getXmlText(tempDoc, out);
-	}
-	/**
-	 * Prints the XML parsed content of this template file
-	 * to the given Writer.
-	 * 
-	 * @param out Writer to print to.
-	 */   
-	public void getXmlText(Writer out) {
-		parser.getXmlText(m_content, out);
-	}
-	/**
-	 * Prints the XML parsed content to a String
-	 * @return String with XML content
-	 */
-	public String getXmlText() {
-		StringWriter writer = new StringWriter();
-		getXmlText(writer);
-		return writer.toString();
 	}
 	/**
 	 * Prints the XML parsed content of a given node and 
@@ -797,25 +776,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 	protected boolean hasData(String key) {
 		return m_blocks.containsKey(key.toLowerCase());
 	}
-/**
- * Helpermethod to initialise hashtable of parsed language files.
- * Called from init();
- *
- * @author Jan Krag
- * @author Jesper Holme
- * @param cms CmsObject Object for accessing resources.
- * @param file CmsFile object of the file to be loaded and parsed.
- * @exception CmsException
- */
-protected void initLanguages(CmsObject cms) throws CmsException
-{
-	String currentLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-	if (!m_langFiles.containsKey(currentLanguage))
-	{
-		m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
-	}
-	m_languageFile = (CmsXmlLanguageFile) m_langFiles.get(currentLanguage);
-}
 	/**
 	 * Initialize the XML content class.
 	 * Load and parse the content of the given CmsFile object.
@@ -1462,6 +1422,18 @@ protected void initLanguages(CmsObject cms) throws CmsException
 		registerTag(getXmlDocumentTagName());
 	}
 	/**
+	 * Registers the given tag to be "known" by the system. 
+	 * So this tag will not be handled by the default method of processNode.
+	 * Under normal circumstances this feature will only be used for 
+	 * the XML document tag.
+	 * @param tagname Tag name to register.
+	 */
+	public void registerTag(String tagname) {
+		if(!(m_knownTags.contains(tagname.toLowerCase()))) {
+			m_knownTags.addElement(tagname.toLowerCase());
+		}
+	}
+	/**
 	 * Registeres a tagname together with a corresponding method for processing
 	 * with processNode. Tags can be registered for two different runs of the processNode
 	 * method. This can be selected by the runSelector. 
@@ -1496,18 +1468,6 @@ protected void initLanguages(CmsObject cms) throws CmsException
 			System.err.println(e);
 		}        
 		registerTag(tagname);
-	}
-	/**
-	 * Registers the given tag to be "known" by the system. 
-	 * So this tag will not be handled by the default method of processNode.
-	 * Under normal circumstances this feature will only be used for 
-	 * the XML document tag.
-	 * @param tagname Tag name to register.
-	 */
-	public void registerTag(String tagname) {
-		if(!(m_knownTags.contains(tagname.toLowerCase()))) {
-			m_knownTags.addElement(tagname.toLowerCase());
-		}
 	}
 	/**
 	 * Remove a datablock from the internal hashtable and
@@ -1641,6 +1601,16 @@ protected void initLanguages(CmsObject cms) throws CmsException
 	/**
 	 * Help method that handles any occuring exception by writing
 	 * an error message to the OpenCms logfile and throwing a 
+	 * CmsException of the type "unknown".
+	 * @param errorMessage String with the error message to be printed.
+	 * @exception CmsException
+	 */
+	protected void throwException(String errorMessage) throws CmsException {
+		throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+	}
+	/**
+	 * Help method that handles any occuring exception by writing
+	 * an error message to the OpenCms logfile and throwing a 
 	 * CmsException of the given type.
 	 * @param errorMessage String with the error message to be printed.
 	 * @param type Type of the exception to be thrown.
@@ -1651,6 +1621,17 @@ protected void initLanguages(CmsObject cms) throws CmsException
 			A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
 		}        
 		throw new CmsException(errorMessage, type);
+	}
+	/**
+	 * Help method that handles any occuring exception by writing
+	 * an error message to the OpenCms logfile and throwing a 
+	 * CmsException of the type "unknown".
+	 * @param errorMessage String with the error message to be printed.
+	 * @param e Original exception.
+	 * @exception CmsException
+	 */
+	protected void throwException(String errorMessage, Exception e) throws CmsException {
+		throwException(errorMessage, e, CmsException.C_UNKNOWN_EXCEPTION);
 	}
 	/**
 	 * Help method that handles any occuring exception by writing
@@ -1670,27 +1651,6 @@ protected void initLanguages(CmsObject cms) throws CmsException
 		} else {
 			throw new CmsException(errorMessage, type, e);
 		}
-	}
-	/**
-	 * Help method that handles any occuring exception by writing
-	 * an error message to the OpenCms logfile and throwing a 
-	 * CmsException of the type "unknown".
-	 * @param errorMessage String with the error message to be printed.
-	 * @param e Original exception.
-	 * @exception CmsException
-	 */
-	protected void throwException(String errorMessage, Exception e) throws CmsException {
-		throwException(errorMessage, e, CmsException.C_UNKNOWN_EXCEPTION);
-	}
-	/**
-	 * Help method that handles any occuring exception by writing
-	 * an error message to the OpenCms logfile and throwing a 
-	 * CmsException of the type "unknown".
-	 * @param errorMessage String with the error message to be printed.
-	 * @exception CmsException
-	 */
-	protected void throwException(String errorMessage) throws CmsException {
-		throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
 	}
 	/**
 	 * Gets a string representation of this object.
@@ -1747,12 +1707,6 @@ protected void initLanguages(CmsObject cms) throws CmsException
 			}
 		return nextnode;
 	}
-	// private static I_CmsXmlParser parser = new CmsXmlProjectXParser();
-
-	/** Constructor for creating a new instance of this class */    
-	public A_CmsXmlContent() {
-		registerAllTags();
-	}
 	/**
 	 * Writes the XML document back to the OpenCms system. 
 	 * @exception CmsException  
@@ -1776,3 +1730,4 @@ protected void initLanguages(CmsObject cms) throws CmsException
 		m_filecache.put(currentProject + ":" + filename, m_content.cloneNode(true));        
 	}
 }
+

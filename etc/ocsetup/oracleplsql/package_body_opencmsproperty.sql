@@ -4,17 +4,17 @@ PACKAGE BODY opencmsProperty IS
 -- read all properties of the resource and return as cursor
 ----------------------------------------------------------------------------------------
   FUNCTION ReadAllProperties(pUserId NUMBER, pProjectId NUMBER, pResourceName VARCHAR2) RETURN userTypes.anyCursor IS
-    curResource userTypes.anyCursor;   
+    curResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
     curProperties userTypes.anyCursor;
-  BEGIN 
+  BEGIN
     curResource := opencmsResource.readFileHeader(pUserId, pProjectID, pResourceName);
     FETCH curResource INTO recResource;
     CLOSE curResource;
     IF opencmsAccess.accessRead(pUserId, pProjectId, recResource.resource_id) = 0 THEN
       OPEN curProperties FOR select 'error', '' from dual;
-    ELSE  
-      OPEN curProperties FOR select p.property_value, pd.propertydef_name 
+    ELSE
+      OPEN curProperties FOR select p.property_value, pd.propertydef_name
                                   from cms_properties p, cms_propertydef pd
                                   where p.propertydef_id = pd.propertydef_id
                                   and p.resource_id = recResource.resource_id
@@ -26,7 +26,7 @@ PACKAGE BODY opencmsProperty IS
 -- checks the access for writing the properies and
 -- calls the second procedure writeProperties
 ----------------------------------------------------------------------------------------
-  PROCEDURE writeProperties(pUserId IN NUMBER, pProjectId IN NUMBER, pResourceId IN NUMBER, 
+  PROCEDURE writeProperties(pUserId IN NUMBER, pProjectId IN NUMBER, pResourceId IN NUMBER,
                             pResourceType IN NUMBER, pPropertyInfo IN userTypes.anyCursor) IS
     recPropertyValue cms_properties.property_value%TYPE;
     recPropdefName cms_propertydef.propertydef_name%TYPE;
@@ -40,7 +40,7 @@ PACKAGE BODY opencmsProperty IS
 -- write properties in pPropertyInfo to resource with resource_id = pResourceId
 -- calls writeProperty
 ----------------------------------------------------------------------------------------
-  PROCEDURE writeProperties(pPropertyInfo IN userTypes.anyCursor, pResourceId IN NUMBER, 
+  PROCEDURE writeProperties(pPropertyInfo IN userTypes.anyCursor, pResourceId IN NUMBER,
                             pResourceType IN NUMBER) IS
     recPropertyValue cms_properties.property_value%TYPE;
     recPropdefName cms_propertydef.propertydef_name%TYPE;
@@ -52,7 +52,7 @@ PACKAGE BODY opencmsProperty IS
         writeProperty(recPropdefName, recPropertyValue, pResourceId, pResourceType);
       END IF;
     END LOOP;
-    CLOSE pPropertyInfo;         
+    CLOSE pPropertyInfo;
     commit;
   EXCEPTION
     WHEN OTHERS THEN
@@ -69,20 +69,20 @@ PACKAGE BODY opencmsProperty IS
     vNewPropId NUMBER;
   BEGIN
     BEGIN
-      select propertydef_id into vPropdefID 
-             from cms_propertydef 
-             where propertydef_name = pMeta 
+      select propertydef_id into vPropdefID
+             from cms_propertydef
+             where propertydef_name = pMeta
              and resource_type = pResourceType;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         vPropdefId := NULL;
-    END;     
+    END;
     IF vPropdefID IS NOT NULL THEN
-      select count(*) into vCount from cms_properties p, cms_propertydef pd 
-             where p.propertydef_id = pd.propertydef_id 
-             and p.resource_id = pResourceID 
-             and pd.propertydef_name = pMeta 
-             and pd.resource_type = pResourceType; 
+      select count(*) into vCount from cms_properties p, cms_propertydef pd
+             where p.propertydef_id = pd.propertydef_id
+             and p.resource_id = pResourceID
+             and pd.propertydef_name = pMeta
+             and pd.resource_type = pResourceType;
       IF vCount > 0 THEN
         -- update
         update cms_properties set property_value = pValue
@@ -95,9 +95,9 @@ PACKAGE BODY opencmsProperty IS
         insert into cms_properties
               (property_id, propertydef_id, resource_id, property_value)
         values
-              (vNewPropId, vPropdefId, pResourceId, pValue);      
+              (vNewPropId, vPropdefId, pResourceId, pValue);
         -- newprop = true
-      END IF;  
+      END IF;
     ELSE
       userErrors.raiseUserError(userErrors.C_NOT_FOUND);
     END IF;

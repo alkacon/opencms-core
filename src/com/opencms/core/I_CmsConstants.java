@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/10/25 08:31:42 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2000/10/31 13:11:24 $
+ * Version: $Revision: 1.106 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,14 +36,14 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.105 $ $Date: 2000/10/25 08:31:42 $
+ * @version $Revision: 1.106 $ $Date: 2000/10/31 13:11:24 $
  */
 public interface I_CmsConstants
 {
 	/**
 	 * The version-string for the cvs.
 	 */
-	static String C_VERSION = "Version 4.1.36 Arakis ";
+	static String C_VERSION = "Version 4.1.36 Halloween ";
 	
 	/**
 	 * The copyright message for the cvs.
@@ -785,9 +785,6 @@ public interface I_CmsConstants
 	/** Start preferenses Project */
 	public static final String  C_START_PROJECT = "StartProject";
 
-	/** Constant for parent id in root project. */
-	public static final int C_PROJECT_ROOT = -1;
-	
 	/** Start preferenses View */
 	public static final String  C_START_VIEW = "StartView";
 	

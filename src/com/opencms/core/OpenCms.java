@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/10/25 10:54:53 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/10/31 13:11:24 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.41 $ $Date: 2000/10/25 10:54:53 $  
+* @version $Revision: 1.42 $ $Date: 2000/10/31 13:11:24 $  
 * 
 * */
 
@@ -109,16 +109,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 		 throws Exception {
 		// invoke the ResourceBroker via the initalizer
 		try {
-/*
-			try
-			{
-				CmsConstants.USE_MULTISITE=conf.getBoolean("multisite.on");
-			}
-			catch(NoSuchElementException e)
-			{
-				CmsConstants.USE_MULTISITE=false;
-			}
-	*/		
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating first cms-object");
 			}

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/10/26 17:23:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/10/31 13:11:24 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -28,7 +28,6 @@ package com.opencms.file;
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import java.lang.*;
 import java.util.*;
 import com.opencms.core.*;
 
@@ -36,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/10/26 17:23:49 $
+ * @version $Revision: 1.12 $ $Date: 2000/10/31 13:11:24 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {

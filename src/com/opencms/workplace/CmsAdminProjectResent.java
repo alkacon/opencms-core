@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResent.java,v $
- * Date   : $Date: 2000/10/13 16:07:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/10/31 13:11:29 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/10/13 16:07:50 $
+ * @version $Revision: 1.9 $ $Date: 2000/10/31 13:11:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResent extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -88,32 +88,36 @@ public class CmsAdminProjectResent extends CmsWorkplaceDefault implements I_CmsC
 	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
 		return false;
 	}
-/**
- * Gets the projects.
- * <P>
- * 
- * @param cms CmsObject Object for accessing system resources.
- * @param names Vector to be filled with the appropriate values in this method.
- * @param values Vector to be filled with the appropriate values in this method.
- * @return Vector representing the current projects.
- * @exception CmsException
- */
-public Vector projectList(CmsObject cms, CmsXmlLanguageFile lang) throws CmsException
-{
-	Vector list = new Vector();
-	// get the manageable projects
-	Vector mp = cms.getAllManageableProjects();
-	Hashtable temp = new Hashtable();
-	for (int i = 0; i < mp.size(); i++)
-		temp.put("" + ((CmsProject) mp.elementAt(i)).getId(), mp.elementAt(i));
-
-	//
-	Vector ap = cms.getAllAccessibleProjects();
-	for (int i = 0; i < ap.size(); i++)
-		if (temp.containsKey("" + ((CmsProject) ap.elementAt(i)).getId()))
-			list.addElement(ap.elementAt(i));
+	/**
+	 * Gets the projects.
+	 * <P>
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @return Vector representing the current projects.
+	 * @exception CmsException
+	 */
+//	public Vector projectList(CmsObject cms, CmsXmlLanguageFile lang)
+//		throws CmsException {
+		// get the manageable projects
+//		return cms.getAllManageableProjects();
+//	}
+	public Vector projectList(CmsObject cms, CmsXmlLanguageFile lang) throws CmsException
+	{
+		Vector list = new Vector();
+		// get the manageable projects
+		Vector mp = cms.getAllManageableProjects();
+		Hashtable temp = new Hashtable();
+		for (int i = 0; i < mp.size(); i++)
+			temp.put("" + ((CmsProject) mp.elementAt(i)).getId(), mp.elementAt(i));
 
 		//
-	return list;
-}
+		Vector ap = cms.getAllAccessibleProjects();
+		for (int i = 0; i < ap.size(); i++)
+			if (temp.containsKey("" + ((CmsProject) ap.elementAt(i)).getId()))
+				list.addElement(ap.elementAt(i));
+		//
+		return list;
+	}	
 }

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/10/13 08:32:48 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/10/31 13:11:30 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2000/10/13 08:32:48 $
+ * @version $Revision: 1.29 $ $Date: 2000/10/31 13:11:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -74,12 +74,11 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		I_CmsSession session = cms.getRequestContext().getSession(true);
 		CmsRequestContext reqCont = cms.getRequestContext();
 		String newGroup = (String)parameters.get("group");
-		String newSite = (String)parameters.get("site");
 		String newProject = (String)parameters.get("project");
 		String newView = (String)parameters.get(C_PARA_VIEW);
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-		int currentSite = cms.getSite(cms.onlineProject().getId()).getId();
 		
+
 		// Check if the user requested a group change
 		if(newGroup != null && !("".equals(newGroup))) {
 			if(!(newGroup.equals(reqCont.currentGroup().getName()))) {
@@ -87,19 +86,12 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 			}
 		}                            
 
-		// Check if the user requested a site change
-		if(newSite != null && !(newSite.trim().equals("")) && !newSite.trim().equals(""+currentSite)) 
-		{
-			reqCont.setCurrentProject(cms.getSiteBySiteId(Integer.parseInt(newSite)).getOnlineProjectId());
-		}
 		// Check if the user requested a project change
-		else if(newProject != null && !("".equals(newProject))) {
-			if(!(newProject.equals(reqCont.currentProject().getName()))) 
-			{
+		if(newProject != null && !("".equals(newProject))) {
+			if(!(newProject.equals(reqCont.currentProject().getName()))) {
 				reqCont.setCurrentProject(Integer.parseInt(newProject));
 			}
 		}
-		
 		
 		// Check if the user requested a new view
 		if(newView != null && !("".equals(newView))) {
@@ -189,13 +181,11 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 			String loopProjectId = loopProject.getId() + "";
 			values.addElement(loopProjectId);
 			names.addElement(loopProjectName);
-
 			if(loopProjectName.equals(currentProject)) {
 				// Fine. The project of this loop is the user's current project. Save it!
 				currentProjectNum = i;
 			}
 		}
-
 		return new Integer(currentProjectNum);
 	}
 	/**
@@ -273,49 +263,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 				
 		return new Integer(currentViewIndex);
 	}
-/**
- * Gets all sites
- * <P>
- * The given vectors <code>names</code> and <code>values</code> will 
- * be filled with the appropriate information to be used for building
- * a select box.
- * <P>
- * Both <code>names</code> and <code>values</code> will contain
- * the site names after returning from this method.
- * <P>
- *
- * @author Finn Nielsen
- * @author Martin Langelund 
- * @param cms CmsObject Object for accessing system resources.
- * @param lang reference to the currently valid language file
- * @param names Vector to be filled with the appropriate values in this method.
- * @param values Vector to be filled with the appropriate values in this method.
- * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
- * @return Index representing the user's current project in the vectors.
- * @exception CmsException
- */
-public Integer getSites(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException
-{
-	// Get all project information
-	CmsRequestContext reqCont = cms.getRequestContext();
 
-	Vector allSites = cms.getAllSites();
-	int currentSite = cms.getSite(reqCont.currentProject().getId()).getId(); //cms.getCurrentSite().getId(); //getSite(cms.onlineProject().getId()).getId();
-
-	// Now loop through all sites and fill the result vectors
-	int currentSiteNum = 0;
-
-	//
-	for (int i = 0; i < allSites.size(); i++)
-	{
-		CmsSite site = (CmsSite) allSites.elementAt(i);
-		values.addElement("" + site.getId());
-		names.addElement(site.getName());
-		if (currentSite == site.getId())
-			currentSiteNum = i;
-	}
-	return new Integer(currentSiteNum);
-}
 	/**
 	 * Gets the currently logged in user.
 	 * <P>

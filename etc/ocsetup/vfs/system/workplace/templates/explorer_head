@@ -32,7 +32,6 @@
 		]]><PROCESS>PREVIOUS</PROCESS><![CDATA[
 		]]><PROCESS>PARENT</PROCESS><![CDATA[
 		]]><PROCESS>NEW</PROCESS><![CDATA[
-		]]><PROCESS>SITECOPY</PROCESS><![CDATA[
 		<td class=menu width=30px nowrap align=right>&nbsp;</td>
 		<td class=menubold nowrap align=right valign=middle><IMG border=0  src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" width=16 height=16></td>
 		<td class=menubold nowrap align=right valign=middle><p class=einzug>]]><LABEL value="input.adress" /><![CDATA[:</td>
@@ -63,16 +62,16 @@
 <body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed>
 
 <table cellspacing=0 cellpadding=0 border=0>
-]]><PROCESS>BACK_BUTTON</PROCESS><![CDATA[
+]]><PROCESS>BACKBUTTON</PROCESS><![CDATA[
 </table>
 </body>
 </html>
 ]]>
 </TEMPLATE>
 
-<BACK_BUTTON>
+<BACKBUTTON>
 <BUTTON href="javascript:updateFrame('body.explorer_content.explorer_head','explorer_head.html');updateFrame('body.explorer_content.explorer_files','explorer_files.html')" name="bt_back" action="" alt="back"/>
-</BACK_BUTTON>
+</BACKBUTTON>
 
 <PARENT_DISABLED>
 <![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_up_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.parent"  />"<![CDATA[" name="bt_up" border=0 width=32 height=32></td>]]>
@@ -97,14 +96,6 @@
 <NEW_ENABLED>
 <![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files_new.html')" name="bt_new" action="" alt="new"/><![CDATA[</td>]]>
 </NEW_ENABLED>	
-
-<SITECOPY_DISABLED>
-<![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_copy_off.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.sitecopy" />"<![CDATA[" name="bt_copy" border=0 width=32 height=32></a></td>]]>
-</SITECOPY_DISABLED>	
-
-<SITECOPY_ENABLED>
-<![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','administration_sitecopy.html?initial=true')" name="bt_copy" action="" alt="Sitecopy"/><![CDATA[</td>]]>
-</SITECOPY_ENABLED>	
 
 
 <STARTUP_FOLDER>

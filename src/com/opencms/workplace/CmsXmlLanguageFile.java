@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/10/25 08:30:55 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/10/31 13:11:30 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2000/10/25 08:30:55 $
+ * @version $Revision: 1.19 $ $Date: 2000/10/31 13:11:30 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,
 																   I_CmsWpConstants,
@@ -219,15 +219,16 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
 	 */
 	private void mergeLanguageFiles(CmsObject cms, String language) throws CmsException {
 		Vector langFiles = new Vector();
-		langFiles = cms.getFilesInFolderRecursively(m_languagePath + language + "/");
+		//langFiles = cms.getFilesInFolder(m_languagePath + language + "/");
+		langFiles = cms.getFilesInFolder(m_languagePath + language + "/");
 
 		// get all modules-language Files
 		Vector modules = new Vector();
-		modules = cms.getSubFoldersRecursively(C_MODULES_PATH);
+		modules = cms.getSubFolders(C_MODULES_PATH);
 		String lang = "language/"+language+"/";
 		for(int i=0; i < modules.size(); i++){
 			Vector moduleLangFiles = new Vector();
-			moduleLangFiles = cms.getFilesInFolderRecursively( ((CmsFolder)modules.elementAt(i)).getAbsolutePath() + lang);
+			moduleLangFiles = cms.getFilesInFolder( ((CmsFolder)modules.elementAt(i)).getAbsolutePath() + lang);
 			for (int j=0; j < moduleLangFiles.size(); j++){
 				langFiles.addElement(moduleLangFiles.elementAt(j));
 			}

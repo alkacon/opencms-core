@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/10/11 16:11:33 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2000/10/31 13:11:24 $
+ * Version: $Revision: 1.55 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.54 $ $Date: 2000/10/11 16:11:33 $
+ * @version $Revision: 1.55 $ $Date: 2000/10/31 13:11:24 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -147,18 +147,9 @@ public CmsShell(String args[])
 		m_openCms = new OpenCms(conf);
 		m_cms = new CmsObject();
 		this.shellCommands = new CmsShellCommands(args, m_openCms, m_cms);
-		//debug messages.
-		System.out.println("Using Multisite Functionality - Beware that this functionality is still in alpha.");
-		System.out.println("CmsShell 2 now running");
 
 		//log in default user.
 		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-		if (args.length >= 2)
-		{
-			CmsSite site = m_cms.getSite(args[1]);
-			System.out.println("Multisite name: " + site.getName() + ", Description: " + site.getDescription());
-			m_openCms.initUser(m_cms, null, null, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
-		}
 	}
 	catch (Exception exc)
 	{
@@ -176,9 +167,7 @@ public static void main(String[] args)
 	CmsShell shell;
 	try
 	{
-		//expect a multisite on the commandline or not.
-		//int nargs = ((CmsConstants.USE_MULTISITE) ? 2 : 1);
-		if (args.length < 2)
+		if (args.length < 1)
 		{
 			// print out usage-information.
 			CmsShell.usage();
@@ -194,15 +183,6 @@ public static void main(String[] args)
 			shell.commands();
 		}
 	}
-	/*
-	catch (ArrayIndexOutOfBoundsException e)
-	{
-		int nargs = ((CmsConstants.USE_MULTISITE) ? 2 : 1);
-		if (args.length < nargs)
-			CmsShell.usage();
-		else
-			e.printStackTrace();
-	}*/
 	catch (Exception exc)
 	{
 		exc.printStackTrace();
@@ -252,7 +232,6 @@ private void printPrompt()
  */
 private static void usage()
 {
-	//System.out.println("Usage: java com.opencms.core.CmsShell properties-file" + (CmsConstants.USE_MULTISITE ? " site" : ""));
-	System.out.println("Usage: java com.opencms.core.CmsShell properties-file site");
+	System.out.println("Usage: java com.opencms.core.CmsShell properties-file");
 }
 }

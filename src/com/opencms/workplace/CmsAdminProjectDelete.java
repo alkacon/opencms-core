@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
- * Date   : $Date: 2000/10/09 13:12:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/10/31 13:11:29 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/10/09 13:12:47 $
+ * @version $Revision: 1.8 $ $Date: 2000/10/31 13:11:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsLogChannels {
@@ -70,6 +70,7 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsC
 													getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
 		int projectId =  Integer.parseInt((String)parameters.get("projectid"));
+		
 		CmsProject project = cms.readProject(projectId);
 		
 		if(parameters.get("ok") != null) {

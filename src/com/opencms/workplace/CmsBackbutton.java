@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsBackbutton.java,v $
- * Date   : $Date: 2000/08/22 13:39:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/10/31 13:11:29 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * 
  * Creation date: (09.08.00 15:21:44)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/08/22 13:39:28 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/10/31 13:11:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsBackbutton extends A_CmsWpElement implements I_CmsConstants, I_CmsWpElement, I_CmsWpConstants {

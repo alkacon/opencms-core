@@ -27,14 +27,6 @@
 	<table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu><img src="]]><METHOD name="picsUrl">logokunde.gif</METHOD><![CDATA[" border=0 width=109 height=32></td>
-		<td class=menubold><p class=einzug>]]><LABEL value="label.site" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
-		
-		<form name="sitechange" id="sitechange" method="get">
-		<td class=dialogtxt>
-			]]><SELECT class="textfeld" name="site" width="150" method="getSites" onchange="javascript:document.sitechange.submit()"/><![CDATA[
-		</td>
-		</form>
-		
 		<td class=menubold><p class=einzug>]]><LABEL value="label.project" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
 		
 		<form name="projectchange" id="projectchange" method="get">

@@ -9,6 +9,6 @@ BEGIN
 EXCEPTION
   WHEN OTHERS THEN
     rollback;
-    raise;  
+    raise;
 END getNextId;
 /

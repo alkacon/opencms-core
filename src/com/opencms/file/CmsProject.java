@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/10/11 12:10:11 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/10/31 13:11:24 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.util.SqlHelper;
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.26 $ $Date: 2000/10/11 12:10:11 $
+ * @version $Revision: 1.27 $ $Date: 2000/10/31 13:11:24 $
  */
 public class CmsProject implements I_CmsConstants, Cloneable{
 	
@@ -109,18 +109,10 @@ public class CmsProject implements I_CmsConstants, Cloneable{
 	 */
 	private int m_type = C_UNKNOWN_ID;
 
-	/**
-	 * The parent project, -1 if none.
-	 */
-	private int parentId;
-	 
-	 
-	
-
 	public CmsProject(int projectId, String name, String description, int taskId, 
 					  int ownerId, int group, int managerGroup, int flags, 
 					  Timestamp createdate, Timestamp publishingdate, int publishedBy, 
-					  int type, int parentId) {
+					  int type) {
 		
 		m_id = projectId;
 		m_name = name;
@@ -134,7 +126,6 @@ public class CmsProject implements I_CmsConstants, Cloneable{
 		m_flags = flags;
 		m_publishedBy = publishedBy;
 		m_type = type;
-		this.parentId = parentId;
 		if( createdate != null) {
 			m_createdate = createdate.getTime();
 		} else {
@@ -163,8 +154,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 							SqlHelper.getTimestamp(res,m_cq.C_PROJECTS_PROJECT_CREATEDATE),
 							SqlHelper.getTimestamp(res,m_cq.C_PROJECTS_PROJECT_PUBLISHDATE),
 							res.getInt(m_cq.C_PROJECTS_PROJECT_PUBLISHED_BY),
-							res.getInt(m_cq.C_PROJECTS_PROJECT_TYPE),
-							res.getInt(m_cq.C_PROJECTS_PARENT_ID) );
+							res.getInt(m_cq.C_PROJECTS_PROJECT_TYPE) );
 }
 	/** 
 	* Clones the CmsProject by creating a new CmsProject Object.
@@ -176,7 +166,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 									   this.m_ownerId,this.m_groupId,this.m_managerGroupId,
 									   this.m_flags,new Timestamp(this.m_createdate),
 									   new Timestamp(this.m_publishingdate),this.m_publishedBy,
-									   this.m_type,this.parentId);
+									   this.m_type);
 		return project;    
 	}
 	/**
@@ -265,37 +255,6 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	public int getOwnerId() {
 		return(m_ownerId);
 	}
-/**
- * Returns the parent of a project, skipping projects belonging to deleted sites.
- * Creation date: (10/10/00 11:22:21)
- * @author Finn Nielsen
- * @return The parent project
- * @param cms A CmsObject needed to make database access.
- */
-public CmsProject getParent(CmsObject cms) throws CmsException
-{
-	// This is the default online master project.
-	if (parentId == -1) return null;
-
-	// get the first parent (will allways be an onlineproject, since offline projects will be leafs in the tree).
-	//CmsSite site = cms.getSite(parentId);
-	//CmsProject project = cms.readProject(site.getOnlineProjectId());
-
-	// skip deleted sites
-	//if (site.isDeleted())
-	//	return project.getParent(cms);
-	//else
-	//	return project;
-	return cms.readProject(parentId);
-}
-/**
- * return the id of the parent project.
- * Creation date: (10/02/00)
- * @return int the id of the parent project, -1 if none.
- */
-public int getParentId() {
-	return parentId;
-}
 	/**
 	 * Gets the published-by value.
 	 * 
@@ -346,14 +305,6 @@ public int getParentId() {
 	public void setFlags(int flags) {
 		m_flags = flags;
 	}
-/**
- * Set the parent Id.
- * Creation date: (10/02/00)
- * @param newParentId int the parent Id.
- */
-private void setParentId(int newParentId) {
-	parentId = newParentId;
-}
 	/**
 	 * Sets the published-by value.
 	 * 

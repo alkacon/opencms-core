@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
- * Date   : $Date: 2000/10/16 13:17:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/10/31 13:11:29 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/10/16 13:17:45 $
+ * @version $Revision: 1.12 $ $Date: 2000/10/31 13:11:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -100,7 +100,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 			 access=true;
 		 }
 		 return access;
-	 }
+	 } 
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
 	 * with the given parameters. 
@@ -167,6 +167,8 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 		// store the chosen filter into the session
 		session.putValue("filter", filter);
 
+		// Finally start the processing
+		//return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 		// Finally start the processing
 		byte[] content = startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 		

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/10/12 11:15:28 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/10/31 13:11:29 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/10/12 11:15:28 $
+ * @version $Revision: 1.26 $ $Date: 2000/10/31 13:11:29 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																		 I_CmsConstants {
@@ -614,8 +614,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 		
 		Vector allLangFiles = null;
 		// get all folders with language files
-		Vector allLangFolders = cms.getSubFoldersRecursively(conf.getLanguagePath());
-	
+		//Vector allLangFolders = cms.getSubFolders(conf.getLanguagePath());
+		Vector allLangFolders = cms.getSubFolders(conf.getLanguagePath());	
 		String langName=null;
 		Hashtable startSettings=null;
 		I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -637,7 +637,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 		for (int i=0; i<allLangFolders.size(); i++) {
 			
 			CmsFolder folder = (CmsFolder)allLangFolders.elementAt(i);
-			allLangFiles = cms.getFilesInFolderRecursively(folder.getAbsolutePath());
+			//allLangFiles = cms.getFilesInFolder(folder.getAbsolutePath());
+			allLangFiles = cms.getFilesInFolder(folder.getAbsolutePath());
 			CmsFile file=(CmsFile)allLangFiles.elementAt(0);
 			CmsXmlLanguageFile langFile=new CmsXmlLanguageFile(cms,file.getAbsolutePath());
 			names.addElement(langFile.getDataValue("name"));

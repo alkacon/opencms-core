@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/10/25 08:33:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/10/31 13:11:29 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/10/25 08:33:43 $
+ * @version $Revision: 1.16 $ $Date: 2000/10/31 13:11:29 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																   I_CmsConstants {
@@ -282,19 +282,19 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 	  public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 			throws CmsException {
 
-			Vector files=cms.getFilesInFolderRecursively(C_CONTENTTEMPLATEPATH);
+			//Vector files=cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
+			Vector files=cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
 			// get all module Templates
 			Vector modules = new Vector();
-			modules = cms.getSubFoldersRecursively(C_MODULES_PATH);
+			modules = cms.getSubFolders(C_MODULES_PATH);
 			for(int i=0; i < modules.size(); i++){
 				Vector moduleTemplateFiles = new Vector();
-				moduleTemplateFiles = cms.getFilesInFolderRecursively( ((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "templates/");
+				moduleTemplateFiles = cms.getFilesInFolder( ((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "templates/");
 				for (int j=0; j < moduleTemplateFiles.size(); j++){
 					files.addElement(moduleTemplateFiles.elementAt(j));
 				}
 			}
-			
-			 Enumeration enum=files.elements();
+			Enumeration enum=files.elements();
 			while (enum.hasMoreElements()) {
 				CmsFile file =(CmsFile)enum.nextElement();
 				if (file.getState() != C_STATE_DELETED) {
@@ -306,7 +306,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 					values.addElement(file.getAbsolutePath());
 				}
 			}
-			bubblesort(names, values);
+			bubblesort(names, values);			
 			return new Integer(0);           
 	  }
 	 /**

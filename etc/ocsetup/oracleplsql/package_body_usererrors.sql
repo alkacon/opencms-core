@@ -34,12 +34,33 @@ PACKAGE BODY userErrors IS
     ELSIF pErrorCode = -20012 THEN
       RETURN ERROR_20012;
     ELSIF pErrorCode = -20013 THEN
-      RETURN ERROR_20013;      
+      RETURN ERROR_20013;
     ELSIF pErrorCode = -20014 THEN
-      RETURN ERROR_20014;                  
+      RETURN ERROR_20014;
+    ELSIF pErrorCode = -20015 THEN
+      RETURN ERROR_20015;
+    ELSIF pErrorCode = -20016 THEN
+      RETURN ERROR_20016;
+    ELSIF pErrorCode = -20017 THEN
+      RETURN ERROR_20017;
+    -- without XML-Errors 
+    ELSIF pErrorCode = -20028 THEN
+      RETURN ERROR_20028;
+    ELSIF pErrorCode = -20029 THEN
+      RETURN ERROR_20029;
+    ELSIF pErrorCode = -20030 THEN
+      RETURN ERROR_20030;
+    ELSIF pErrorCode = -20031 THEN
+      RETURN ERROR_20031;
+    ELSIF pErrorCode = -20032 THEN
+      RETURN ERROR_20032;
+    ELSIF pErrorCode = -20033 THEN
+      RETURN ERROR_20033;
+    ELSIF pErrorCode = -20034 THEN
+      RETURN ERROR_20034;                                         
     ELSE
       RETURN ERROR_20000;
-    END IF;                                      
+    END IF;
   END getErrMsg;
 ----------------------------------------------------------------------------------------------
 END;

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/10/24 07:26:36 $
- * Version: $Revision: 1.138 $
+ * Date   : $Date: 2000/10/31 13:11:24 $
+ * Version: $Revision: 1.139 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.138 $ $Date: 2000/10/24 07:26:36 $ 
+ * @version $Revision: 1.139 $ $Date: 2000/10/31 13:11:24 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -436,64 +436,6 @@ public void copyFolder(String source, String destination) throws CmsException {
 }
 /**
  * Insert the method's description here.
- * Creation date: (09-10-2000 09:25:41)
- * @return java.util.Vector
- * @param fromProject com.opencms.file.CmsProject
- * @exception com.opencms.core.CmsException The exception description.
- * @author Martin Langelund
- */
-public Vector copyProjectToProject(CmsProject fromProject) throws com.opencms.core.CmsException
-{
-	Vector current = m_rb.readResources(m_context.currentProject());
-	Vector from = m_rb.readResources(fromProject);
-	Vector toBeCopied = new Vector();
-	Vector notCopied = new Vector();
-	Hashtable compare = new Hashtable();
-	if (current.size() == 0)
-		toBeCopied = current;
-	for (int i = 0; i < current.size(); i++)
-		compare.put(((CmsResource) current.elementAt(i)).getAbsolutePath() + ((CmsResource) current.elementAt(i)).getName(), current.elementAt(i));
-	for (int i = 0; i < from.size(); i++)
-	{
-		if (compare.containsKey(((CmsResource) from.elementAt(i)).getAbsolutePath() + ((CmsResource) from.elementAt(i)).getName()))
-			notCopied.addElement(from.elementAt(i));
-		else
-			toBeCopied.addElement(from.elementAt(i));
-	}
-	/*	
-	System.out.println("****************** current: ************************");
-	for (int i=0; i<current.size(); i++)
-	{
-	System.out.println(((CmsResource) current.elementAt(i)).getAbsolutePath()+((CmsResource) current.elementAt(i)).getName());
-	}
-	System.out.println("****************** from: ***************************");
-	for (int i=0; i<from.size(); i++)
-	{
-	System.out.println(((CmsResource) from.elementAt(i)).getAbsolutePath()+((CmsResource) from.elementAt(i)).getName());
-	}
-	System.out.println("****************** notCopied: ***************************");
-	for (int i=0; i<notCopied.size(); i++)
-	{
-	System.out.println(((CmsResource) notCopied.elementAt(i)).getAbsolutePath()+((CmsResource) notCopied.elementAt(i)).getName());
-	}
-	System.out.println("****************** toBeCopied: ***************************");
-	for (int i=0; i<toBeCopied.size(); i++)
-	{
-	System.out.println(((CmsResource) toBeCopied.elementAt(i)).getAbsolutePath()+((CmsResource) toBeCopied.elementAt(i)).getName());
-	}
-	*/
-	for (int i = 0; i < toBeCopied.size(); i++)
-	{
-		CmsResource resource = (CmsResource) toBeCopied.elementAt(i);
-		resource.setLocked(-1);
-		resource.setGroupId(m_context.currentProject().getGroupId());
-		resource.setUserId(m_context.currentProject().getOwnerId());
-		m_rb.copyResourceToProject(m_context.currentProject(), fromProject, resource);
-	}
-	return notCopied;
-}
-/**
- * Insert the method's description here.
  * Creation date: (06-10-2000 08:55:42)
  * @param fromProject com.opencms.file.CmsProject
  * @param resource java.lang.String
@@ -534,39 +476,6 @@ public String[] copyright() {
  */
 public int countLockedResources(int id) throws CmsException {
 	return m_rb.countLockedResources(m_context.currentUser(), m_context.currentProject(), id);
-}
-/**
- * Creates a new category
- *
- * Only a adminstrator can do this.<P/>
- * 
- * <B>Security:</B>
- * @return com.opencms.file.CmsCategory
- * @param name java.lang.String
- * @param description java.lang.String
- * @param shortName java.lang.String
- * @param priority int
- * @exception com.opencms.core.CmsException The exception description.
- */
-public CmsCategory createCategory(String name, String description, String shortName, int priority) throws com.opencms.core.CmsException
-{
-	return m_rb.createCategory(m_context.currentUser(), m_context.currentProject(), name, description, shortName, priority);
-}
-/**
- * Creates a new country
- *
- * Only a adminstrator can do this.<P/>
- * 
- * <B>Security:</B>
- * @return com.opencms.file.CmsCountry
- * @param name java.lang.String
- * @param shortName java.lang.String
- * @param priority int
- * @exception com.opencms.core.CmsException The exception description.
- */
-public CmsCountry createCountry(String name, String shortName, int priority) throws com.opencms.core.CmsException
-{
-	return m_rb.createCountry(m_context.currentUser(), m_context.currentProject(), name, shortName, priority);
 }
 /**
  * Creates a new file with the given content and resourcetype.<br>
@@ -642,22 +551,6 @@ public CmsFolder createFolder(String folder, String newFolderName, Hashtable pro
 	return (m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, properties));
 }
 /**
- * Creates a new language
- *
- * Only a adminstrator can do this.<P/>
- * 
- * <B>Security:</B>
- * @return com.opencms.file.CmsLanguage
- * @param name java.lang.String
- * @param shortName java.lang.String
- * @param priority int
- * @exception com.opencms.core.CmsException The exception description.
- */
-public CmsLanguage createLanguage(String name, String shortName, int priority) throws com.opencms.core.CmsException
-{
-	return m_rb.createLanguage(m_context.currentUser(), m_context.currentProject(), name, shortName, priority);
-}
-/**
   * Creates a new project for task handling.
   * 
   * @param projectname the name of the project
@@ -686,33 +579,6 @@ public CmsTask createProject(String projectname, int projectType, String roleNam
 public CmsProject createProject(String name, String description, String groupname, String managergroupname) throws CmsException
 {
 	CmsProject newProject = m_rb.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname);
-//	if (CmsConstants.USE_MULTISITE)
-//	{
-		CmsSite cs = getSite((m_context.currentProject()).getId());
-		//The following line should not be needed anymore. Remove after testing.
-		m_rb.newSiteProjectsRecord(
-			m_context.currentUser(), 
-			m_context.currentProject(), 
-			cs.getId(), newProject.getId());
-//	}
-	return (newProject);
-}
-/**
- * Creates a new project.
- * 
- * @param name the name of the project to read.
- * @param description the description for the new project.
- * @param groupname the name of the group to be set.
- * @param managergroupname the name of the managergroup to be set.
- * 
- * @exception CmsException if operation was not successful.
- * @author Martin Langelund
- */
-public CmsProject createProject(String name, String description, String groupname, String managergroupname, int parentId) throws CmsException
-{
-	CmsProject newProject = m_rb.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname, parentId);
-	CmsSite cs = getSite((m_context.currentProject()).getId());
-	m_rb.newSiteProjectsRecord(m_context.currentUser(), m_context.currentProject(), cs.getId(), newProject.getId());
 	return (newProject);
 }
 /**
@@ -847,22 +713,6 @@ public void deleteProperty(String resourcename, String property) throws CmsExcep
 public void deletePropertydefinition(String name, String resourcetype) throws CmsException {
 	m_rb.deletePropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype);
 }
-/**
- * Marks a site deleted
- *
- * Only a adminstrator can do this.<P/>
- * 
- * <B>Security:</B>
- * Only users, which are in the group "administrators" are granted.
- * Creation date: (28-09-2000 11:10:05)
- * @param siteId int
- * @exception com.opencms.core.CmsException The exception description.
- */
-public void deleteSite(int siteId) throws CmsException
-{
-	m_rb.deleteSite(m_context.currentUser(), m_context.currentProject(), siteId);
-	if (m_launcherManager != null) m_launcherManager.clearCaches();
-}
 /** 
  * Deletes a user from the Cms.
  * <p>
@@ -964,34 +814,6 @@ public Vector getAllAccessibleProjects() throws CmsException {
 	return (m_rb.getAllAccessibleProjects(m_context.currentUser(), m_context.currentProject()));
 }
 /**
- * Returns all categories.
- * 
- * @return all categories.
- * @exception CmsException Throws CmsException if something goes wrong.
- */
-public Vector getAllCategories() throws com.opencms.core.CmsException
-{
-	return m_rb.getAllCategories(m_context.currentUser(), m_context.currentProject());
-}
-/**
- * Returns all countries
- * @return java.util.Vector all countries
- * @exception com.opencms.core.CmsException The exception description.
- */
-public Vector getAllCountries() throws com.opencms.core.CmsException
-{
-	return m_rb.getAllCountries(m_context.currentUser(), m_context.currentProject());
-}
-/**
- * Returns all languages
- * @return java.util.Vector all languages
- * @exception com.opencms.core.CmsException The exception description.
- */
-public Vector getAllLanguages() throws com.opencms.core.CmsException
-{
-	return m_rb.getAllLanguages(m_context.currentUser(), m_context.currentProject());
-}
-/**
  * Returns all projects which are owned by the current user or which are manageable
  * for the group of the user.
  * 
@@ -1013,47 +835,6 @@ public Hashtable getAllResourceTypes() throws CmsException {
 	return (m_rb.getAllResourceTypes(m_context.currentUser(), m_context.currentProject()));
 }
 /**
- * Returns all site urls
- * @return java.util.Vector site urls
- * @exception com.opencms.core.CmsException The exception description.
- */
-public Vector getAllSiteUrls() throws com.opencms.core.CmsException
-{
-	return m_rb.getAllSiteUrls(m_context.currentUser(), m_context.currentProject());
-}
-/**
- * Returns a vector containing all sites of the current project.
- * 
- * @return vector containing all sites of the current project.
- * @exception CmsException if operation was not successful.
- */
-public Vector getAllSites() throws CmsException {
-	return m_rb.getAllSites(m_context.currentUser(), m_context.currentProject());
-}
-/**
- * Returns a vector containing all sites with the specified category id.
- *
- * @author Jesper Holme
- * @author Jan Krag
- *
- * @return vector containing all sites with specified category-id
- * @exception CmsException if operation was not successful.
- */
-public Vector getAllSitesInCategory(int category) throws CmsException
-{
-	Enumeration sites = m_rb.getAllSites(m_context.currentUser(), m_context.currentProject()).elements();
-	Vector filteredSites = new Vector();
-	while (sites.hasMoreElements())
-	{
-		CmsSite site = (CmsSite) sites.nextElement();
-		if (site.getCategoryId() == category)
-		{
-			filteredSites.addElement(site);
-		}
-	}
-	return filteredSites;
-}
-/**
 * Gets information about the cache size.
 * <br>
 * The size of the following caching areas is returned:
@@ -1071,17 +852,6 @@ public Vector getAllSitesInCategory(int category) throws CmsException
 */
 public Hashtable getCacheInfo() {
 	return m_rb.getCacheInfo();
-}
-/**
- * Returns a CmsCategory object
- *
- * @param categoryId the category_id 
- * @return a CmsCategory object according to the categoryId
- * @exception CmsException Throws CmsException if something goes wrong.
- */
-public CmsCategory getCategory(int categoryId) throws CmsException
-{
-	return m_rb.getCategory(m_context.currentUser(), m_context.currentProject(), categoryId);
 }
 /**
  * Returns all child groups of a group.
@@ -1111,27 +881,6 @@ public Vector getChilds(String groupname) throws CmsException {
  */
 public Configurations getConfigurations() {
 	return m_rb.getConfigurations(getRequestContext().currentUser(), getRequestContext().currentProject());
-}
-/**
- * Returns a CmsCountry object
- * Creation date: (02-10-2000 17:15:36)
- * @return com.opencms.file.CmsCountry
- * @param countryId int
- * @exception com.opencms.core.CmsException The exception description.
- */
-public CmsCountry getCountry(int countryId) throws com.opencms.core.CmsException
-{
-	return m_rb.getCountry(m_context.currentUser(), m_context.currentProject(), countryId);
-}
-/**
- * Insert the method's description here.
- * Creation date: (02-10-2000 16:47:15)
- * @return com.opencms.file.CmsSite
- * @exception com.opencms.core.CmsException The exception description.
- */
-public CmsSite getCurrentSite() throws com.opencms.core.CmsException
-{
-	return this.getSite(this.onlineProject().getId());
 }
 /**
  * Gets all groups to which a given user directly belongs.
@@ -1170,20 +919,6 @@ public Vector getFilesInFolder(String foldername) throws CmsException {
 	return (m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(), foldername));
 }
 /**
- * Returns a Vector with all files of a given folder.
- * <br>
- * Files of a folder can be read from an offline Project and the online Project.
- * 
- * @param foldername the complete path to the folder.
- * 
- * @return subfiles a Vector with all files of the given folder.
- * 
- * @exception CmsException if the user has not hte appropriate rigths to access or read the resource.
- */
-public Vector getFilesInFolderRecursively(String foldername) throws CmsException {
-	return (m_rb.getFilesInFolderRecursively(m_context.currentUser(), m_context.currentProject(), foldername));
-}
-/**
  * Returns a Vector with all resource-names of the resources that have set the given property to the given value.
  * 
  * @param propertydef the name of the property-definition to check.
@@ -1218,17 +953,6 @@ public Vector getGroupsOfUser(String username) throws CmsException {
 	return (m_rb.getGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
 }
 /**
- * Returns a CmsLanguage object
- * Creation date: (02-10-2000 17:14:29)
- * @return com.opencms.file.CmsLanguage
- * @param languageId int
- * @exception com.opencms.core.CmsException The exception description.
- */
-public CmsLanguage getLanguage(int languageId) throws com.opencms.core.CmsException
-{
-	return m_rb.getLanguage(m_context.currentUser(), m_context.currentProject(), languageId);
-}
-/**
  * Get the launcher manager used with this instance of CmsObject.
  * Creation date: (10/23/00 14:50:15)
  * @author Finn Nielsen
@@ -1246,21 +970,6 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
  */
 public CmsGroup getParent(String groupname) throws CmsException {
 	return (m_rb.getParent(m_context.currentUser(), m_context.currentProject(), groupname));
-}
-/**
- * return the parrent site based on the given site. 
- * Creation date: (10/04/00 %r)
- * @return com.opencms.file.CmsSite if there is a parrent site, or null if the no site is found.
- *
- * @param site the child of the returned site.
- * @exception com.opencms.core.CmsException The exception description.
- */
-public CmsSite getParentSite(CmsSite site) throws com.opencms.core.CmsException {
-	CmsProject project = m_rb.readProject(m_context.currentUser(),m_context.currentProject(),site.getOnlineProjectId());
-	if (project.getParentId() != -1)
-	  return m_rb.getSite(m_context.currentUser(),m_context.currentProject(),project.getParentId());
-	else 
-	  return null;
 }
 /**
  * Gets the Registry.
@@ -1312,93 +1021,6 @@ public CmsCoreSession getSessionStorage() {
 	return m_rb.getSessionStorage(m_context.currentUser(), m_sessionStorage);
 }
 /**
- * Return the online site of the project (the base project)
- * @return com.opencms.file.CmsSite the site for the project.
- * @param projectId int the project to be used in the lookup.
- * @throws CmsException If any error occured when looking up the site.
- */
-
-
-public CmsSite getSite(int projectId) throws CmsException {
-	return m_rb.getSite(m_context.currentUser(), m_context.currentProject(), projectId);
-}
-/**
- * Get the site based on the name of the site.
- *
- * @return com.opencms.file.CmsSite the site found.
- * @param url java.lang.String the name of the site to find.
- * @exception com.opencms.core.CmsException if an error occurs. The CmsException should be specialized.
- */
-
-public CmsSite getSite(String siteName) throws CmsException {
-	return m_rb.getSite(m_context.currentUser(), m_context.currentProject(), siteName);
-}
-/**
- * Get the site based on the url
- *
- * @return com.opencms.file.CmsSite the site found.
- * @param url java.lang.StringBuffer the Url on wn which the lookup should be based.
- * @exception com.opencms.core.CmsException if an error occurs. The CmsException should be specialized.
- */
-public CmsSite getSite(StringBuffer url) throws com.opencms.core.CmsException
-{
-	//return a dummy site.
-	String host = null;
-	try
-	{
-		java.net.URL siteUrl = new java.net.URL(url.toString());
-		host = siteUrl.getHost();
-	}
-	catch (java.net.MalformedURLException mue)
-	{
-		//the StringBuffer was an illigal URL - we should throw an exception.
-		host = "Unknown";
-	}
-	return getSite(host);
-}
-/**
- * Return the online site of the project (the base project)
- * @return com.opencms.file.CmsSite the site for the project.
- * @param projectId int the project to be used in the lookup.
- * @throws CmsException If any error occured when looking up the site.
- */
-
-
-public CmsSite getSiteBySiteId(int siteId) throws CmsException {
-	return m_rb.getSiteBySiteId(m_context.currentUser(), m_context.currentProject(), siteId);
-}
-/**
- * Get the site based on the url
- *
- * @return com.opencms.file.CmsSite the site found.
- * @param url java.lang.StringBuffer the Url on wn which the lookup should be based.
- * @exception com.opencms.core.CmsException if an error occurs. The CmsException should be specialized.
- */
-public CmsSite getSiteFromUrl(StringBuffer url) throws com.opencms.core.CmsException
-{
-	return m_rb.getSiteFromUrl(m_context.currentUser(),m_context.currentProject(),url);
-}
-/**
- * Returns a vector containing all sites of the current project.
- * 
- * @return vector containing all sites of the current project.
- * @exception CmsException if operation was not successful.
- */
-public Vector getSiteMatrixInfo() throws CmsException {
-	return m_rb.getSiteMatrixInfo(m_context.currentUser(), m_context.currentProject());
-}
-/**
- * Returns all site urls for a specifik site
- * Creation date: (28-09-2000 15:23:38)
- * @return java.util.Vector
- * @param siteId int
- * @exception com.opencms.core.CmsException The exception description.
- */
-public Vector getSiteUrls(int siteId) throws com.opencms.core.CmsException
-{
-	return m_rb.getSiteUrls(m_context.currentUser(), m_context.currentProject(), siteId);
-}
-/**
  * Returns a Vector with all subfolders of a given folder.
  * 
  * @param foldername the complete path to the folder.
@@ -1409,18 +1031,6 @@ public Vector getSiteUrls(int siteId) throws com.opencms.core.CmsException
  */
 public Vector getSubFolders(String foldername) throws CmsException {
 	return (m_rb.getSubFolders(m_context.currentUser(), m_context.currentProject(), foldername));
-}
-/**
- * Returns a Vector with all subfolders of a given folder.
- * 
- * @param foldername the complete path to the folder.
- * 
- * @return subfolders a Vector with all subfolders for the given folder.
- * 
- * @exception CmsException if the user has not the rights to access or read the resource.
- */
-public Vector getSubFoldersRecursively(String foldername) throws CmsException {
-	return (m_rb.getSubFoldersRecursively(m_context.currentUser(), m_context.currentProject(), foldername));
 }
 /**
   * Get a parameter value for a task.
@@ -1545,22 +1155,6 @@ public boolean isAdmin() throws CmsException {
 	return m_rb.isAdmin(getRequestContext().currentUser(), getRequestContext().currentProject());
 }
 /**
- * Checks is the site name, url or combination of language, category and country already exists
- * Creation date: (04-10-2000 12:03:31)
- * @return boolean
- * @param siteId int
- * @param name java.lang.String
- * @param url java.lang.String
- * @param categoryId int
- * @param languageId int
- * @param countryId int
- * @exception com.opencms.core.CmsException The exception description.
- */
-public boolean isSiteLegal(int siteId, String name, String url, int categoryId, int languageId, int countryId) throws com.opencms.core.CmsException
-{
-	return m_rb.isSiteLegal(m_context.currentUser(), m_context.currentProject(), siteId, name, url, categoryId, languageId, countryId);
-}
-/**
  * Locks the given resource.
  * <br>
  * A user can lock a resource, so he is the only one who can write this 
@@ -1678,53 +1272,6 @@ public void moveFile(String source, String destination) throws CmsException {
  */
 public void moveFolder(String source, String destination) throws CmsException {
 	m_rb.moveFolder(m_context.currentUser(), m_context.currentProject(), source, destination);
-}
-/**
- * Creates a new Site in the OpenCms system based on the parameters given. <br>
- * This includes:<br>
- * 1) Creating a new online-project for the site.<br>
- * 2) Creating a single site_url record connecting the given url to the new site.<br>
- * 3) Creating a site_project record linking the new site to the new onlineproject.
- *
- * Creation date: (09/20/00 %r)
- *
- * @return com.opencms.file.CmsSite
- * @param Name java.lang.String
- * @param Description java.lang.String
- * @param Category int
- * @param Language int
- * @param Country int
- * @param url java.lang.String
- * @param user java.lang.String
- * @param group java.lang.String
- */
-public CmsSite newSite(String Name, String Description, int Category, int Language, int Country, String url, String user, String group) throws CmsException {
-	return m_rb.newSite(Name, Description, Category, Language, Country, url, user, group, m_context.currentUser(), m_context.currentProject());
-}
-/**
- * Creates a new Site in the OpenCms system based on the parameters given. <br>
- * This includes:<br>
- * 1) Creating a new online-project for the site.<br>
- * 2) Creating a single site_url record connecting the given url to the new site.<br>
- * 3) Creating a site_project record linking the new site to the new onlineproject.
- *
- * Creation date: (09/20/00 %r)
- *
- * @return com.opencms.file.CmsSite
- * @param Name java.lang.String
- * @param Description java.lang.String
- * @param Category int
- * @param Language int
- * @param Country int
- * @param url java.lang.String
- * @param user java.lang.String
- * @param group java.lang.String
- * @param parentId
- * @author Martin Langelund
- */
-public CmsSite newSite(String Name, String Description, int Category, int Language, int Country, String url, String user, String group, int parentId) throws CmsException
-{
-	return m_rb.newSite(Name, Description, Category, Language, Country, url, user, group, m_context.currentUser(), m_context.currentProject(), parentId);
 }
 /**
  * Returns the online project.
@@ -2432,26 +1979,6 @@ public void unlockProject(int id) throws CmsException {
  */
 public void unlockResource(String resource) throws CmsException {
 	m_rb.unlockResource(m_context.currentUser(), m_context.currentProject(), resource);
-}
-/**
- * Updates a site
- *
- * Only a adminstrator can do this.<P/>
- * 
- * <B>Security:</B>
- * Only users, which are in the group "administrators" are granted.
- * @param siteId int
- * @param name java.lang.String
- * @param description java.lang.String
- * @param categoryId int
- * @param languageId int
- * @param countryId int
- * @param url java.lang.String
- * @exception com.opencms.core.CmsException The exception description.
- */
-public void updateSite(int siteId, String name, String description, int categoryId, int languageId, int countryId, String url) throws com.opencms.core.CmsException
-{
-	m_rb.updateSite(m_context.currentUser(), m_context.currentProject(), siteId, name, description, categoryId, languageId, countryId, url);
 }
 /**
  * Tests, if a user is member of the given group.

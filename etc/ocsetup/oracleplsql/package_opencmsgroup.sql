@@ -5,5 +5,5 @@ PACKAGE OpenCmsGroup IS
   FUNCTION getParent (pGroupId NUMBER) RETURN NUMBER;
   FUNCTION isManagerOfProject(pUserID NUMBER, pProjectId NUMBER) RETURN NUMBER;
   FUNCTION getUsersOfGroup(pUserID NUMBER, pGroupName VARCHAR2, pType NUMBER) RETURN userTypes.anyCursor;
-END;  
+END;
 /

@@ -2,50 +2,50 @@ CREATE OR REPLACE
 PACKAGE BODY OpenCmsGroup IS
 ------------------------------------------------------------------------------------
 -- declare variables/procedures/functions which are used in this package
-------------------------------------------------------------------------------------  
+------------------------------------------------------------------------------------
   bAnyList VARCHAR2(100) := ''; -- string with IDs of selected groups
   FUNCTION addInList(pAnyId NUMBER) RETURN BOOLEAN;
-  
+
 ------------------------------------------------------------------------------------
 -- returns true if user is member of group with group_name = pGroupName
 ------------------------------------------------------------------------------------
   FUNCTION userInGroup(pUserId NUMBER, pGroupId NUMBER) RETURN NUMBER IS
       CURSOR cUserGroups IS
-             select g.group_id, g.group_name 
+             select g.group_id, g.group_name
                     from cms_groupusers gu, cms_users u, cms_groups g
                     where u.user_id = pUserId
                     and u.user_id = gu.user_id
-                    and gu.group_id = g.group_id;      
+                    and gu.group_id = g.group_id;
 
       vSubId  NUMBER;
   BEGIN
 	FOR vUserGroups IN cUserGroups
-	LOOP
-      IF vUserGroups.group_id != pGroupId THEN
-	    vSubId := getParent(vUserGroups.group_id);
-        WHILE vSubId IS NOT NULL LOOP     
-	        IF vUserGroups.group_id != pGroupId THEN
+	LOOP	
+      IF vUserGroups.group_id != pGroupId THEN    
+	    vSubId := getParent(vUserGroups.group_id);		       
+        WHILE vSubId IS NOT NULL LOOP
+	        IF vSubId != pGroupId THEN
               vSubId := getParent(vSubId);
             ELSE
               RETURN 1;
-            END IF;          
+            END IF;
           END LOOP;
       ELSE
         RETURN 1;
       END IF;
-    END LOOP;
-    RETURN 0;   
+    END LOOP; 
+    RETURN 0;
   END userInGroup;
 ---------------------------------------------------------------------------------
 -- returns cursor for all groups the user belongs to directly and all subgroups
 ---------------------------------------------------------------------------------
    FUNCTION getGroupsOfUser (pUserID IN NUMBER) RETURN userTypes.anyCursor IS
       CURSOR curUserGroups IS
-             select g.group_id, g.group_name 
+             select g.group_id, g.group_name
                     from cms_groupusers gu, cms_users u, cms_groups g
                     where u.user_id = pUserID
                     and u.user_id = gu.user_id
-                    and gu.group_id = g.group_id;      
+                    and gu.group_id = g.group_id;
 
       recUserGroup curUserGroups%ROWTYPE;
       curGroups userTypes.anyCursor;
@@ -61,14 +61,14 @@ PACKAGE BODY OpenCmsGroup IS
           -- if the group wasn't called already => find subgroup
 	      vSubId := opencmsgroup.getParent(recUserGroup.group_id);
           WHILE vSubId IS NOT NULL LOOP
-            IF addInList(vSubId) THEN     
+            IF addInList(vSubId) THEN
               -- if the group wasn't called already => find subgroup and edit query-string
               vQueryStr := vQueryStr||' union select * from cms_groups where group_id='||to_char(vSubId);
               vSubId := opencmsgroup.getParent(vSubId);
-            END IF;          
+            END IF;
           END LOOP;
-        END IF;  
-      END LOOP;                      
+        END IF;
+      END LOOP;
      bAnyList := '';
      -- open and return the cursor
      OPEN curGroups FOR 'select g.* from cms_groupusers gu, cms_users u, cms_groups g'||
@@ -86,8 +86,8 @@ PACKAGE BODY OpenCmsGroup IS
     vGroupId cms_groups.group_id%TYPE;
     vGroupName cms_groups.group_name%TYPE;
   BEGIN
-    select user_id, managergroup_id into vProjectOwner, vProjectManager 
-           from cms_projects 
+    select user_id, managergroup_id into vProjectOwner, vProjectManager
+           from cms_projects
            where project_id = pProjectId;
     -- is user owner of the project?
     IF vProjectOwner = pUserID THEN
@@ -106,7 +106,7 @@ PACKAGE BODY OpenCmsGroup IS
     RETURN 0;
     <<ENDTRUE>>
     CLOSE vCursor;
-    RETURN 1;    
+    RETURN 1;
   END;
 -------------------------------------------------------------------------------------------------
 -- returns cursor for informations about all user which are member of the group
@@ -132,11 +132,11 @@ PACKAGE BODY OpenCmsGroup IS
                             'U.USER_DESCRIPTION, U.USER_FIRSTNAME, U.USER_LASTNAME, U.USER_EMAIL, U.USER_LASTLOGIN, '||
                             'U.USER_LASTUSED, U.USER_FLAGS, U.USER_DEFAULT_GROUP_ID, DG.PARENT_GROUP_ID, DG.GROUP_NAME, '||
                             'DG.GROUP_DESCRIPTION, DG.GROUP_FLAGS, U.USER_ADDRESS, U.USER_SECTION, U.USER_TYPE '||
-                            'FROM cms_GROUPS G, cms_USERS U, cms_GROUPUSERS GU, cms_GROUPS DG '|| 
-                            'where G.GROUP_NAME = '''||pGroupName||''' AND U.USER_ID=GU.USER_ID AND GU.GROUP_ID = G.GROUP_ID '|| 
+                            'FROM cms_GROUPS G, cms_USERS U, cms_GROUPUSERS GU, cms_GROUPS DG '||
+                            'where G.GROUP_NAME = '''||pGroupName||''' AND U.USER_ID=GU.USER_ID AND GU.GROUP_ID = G.GROUP_ID '||
                             'AND U.USER_DEFAULT_GROUP_ID = DG.GROUP_ID AND U.USER_TYPE = '||
                             to_char(pType)||' ORDER BY USER_NAME';
-    
+
     RETURN curUsersOfGroup;
     <<ERROR>>
     CLOSE curGuests;
@@ -148,30 +148,30 @@ PACKAGE BODY OpenCmsGroup IS
 -------------------------------------------------------------------
     FUNCTION getParent(pGroupId NUMBER) RETURN NUMBER IS
       vParentId NUMBER;
-    BEGIN
-      select decode(parent_group_id, -1, NULL, parent_group_id) into vParentId 
-             from cms_groups 
+    BEGIN 
+      select decode(parent_group_id, -1, NULL, parent_group_id) into vParentId
+             from cms_groups
              where group_id = pGroupId;
       RETURN vParentId;
     EXCEPTION
-      WHEN OTHERS THEN 
-         RETURN NULL;
+      WHEN OTHERS THEN
+        RETURN NULL;
     END getParent;
 ------------------------------------------------------------------------------------
--- private function checks if id is already in list, if not edit the list 
+-- private function checks if id is already in list, if not edit the list
 -- and return boolean
 ------------------------------------------------------------------------------------
   FUNCTION addInList(pAnyId NUMBER) RETURN BOOLEAN IS
     vCount NUMBER;
   BEGIN
     vCount := nvl(Instr(bAnyList, ''''||to_char(pAnyId)||''''),0);
-    IF vCount = 0 THEN 
+    IF vCount = 0 THEN
       bAnyList := bAnyList||','''||to_char(pAnyId)||'''';
       RETURN TRUE;
     ELSE
       RETURN FALSE;
-	END IF;    
-  END addInList;      
+	END IF;
+  END addInList;
 ---------------------------------------------------------------------------------------
-END;  
+END;
 /

@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/09/18 12:48:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/10/31 13:11:28 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -31,6 +31,7 @@ package com.opencms.file.oracleplsql;
 
 import java.sql.*;
 import java.util.*; 
+import oracle.jdbc.driver.*;
 import com.opencms.file.genericSql.I_CmsDbPool; 
 
 import com.opencms.core.*;
@@ -42,6 +43,7 @@ import com.opencms.core.*;
  * @author a.schouten
  */
 public class CmsDbPool extends com.opencms.file.genericSql.CmsDbPool {
+	
 	/**
 	 * Init the pool with a specified number of connections.
 	 * 
@@ -54,7 +56,24 @@ public class CmsDbPool extends com.opencms.file.genericSql.CmsDbPool {
 	public CmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws CmsException {
 		// create a new DB-Pool
 		super(driver, url, user, passwd, maxConn);
-	}
+/*
+		Connection conn = null;
+		
+		for (int i = 0; i < m_maxConn; i++) {
+			conn = (Connection) m_connections.elementAt(i);
+			
+			try {
+				// setAutoCommit=false because of using SELECT..FOR UPDATE-Statements and performance
+				// all insert- and update-statements must be committed manually with
+				// getNextPreparedStatement(C_COMMIT);
+				conn.setAutoCommit(false);
+			}
+			catch (SQLException e) {
+				throw new CmsException(CmsException.C_SQL_ERROR, e);
+			}
+		}
+*/
+		}
 	/**
 	 * Init the CallableStatement on all connections.
 	 * 
@@ -70,6 +89,28 @@ public class CmsDbPool extends com.opencms.file.genericSql.CmsDbPool {
 			
 			try {
 				CallableStatement cstmt = conn.prepareCall(sql);
+				tmp.put(key, cstmt);
+			}
+			catch (SQLException e) {
+				throw new CmsException(CmsException.C_SQL_ERROR, e);
+			}
+		}
+	}
+	/**
+	 * Init the CallableStatement on all connections.
+	 * 
+	 * @param key - the hashtable key
+	 * @param sql - a SQL callable-statement that may contain one or more '?' IN and OUT parameter placeholders
+	 */
+	public void initOracleCallableStatement(Integer key, String sql) throws CmsException {
+		Connection conn = null;
+		
+		for (int i = 0; i < m_maxConn; i++) {
+			conn = (Connection) m_connections.elementAt(i);
+			Hashtable tmp = (Hashtable) m_prepStatements.elementAt(i);
+			
+			try {
+				OracleCallableStatement cstmt = (OracleCallableStatement) conn.prepareCall(sql);
 				tmp.put(key, cstmt);
 			}
 			catch (SQLException e) {

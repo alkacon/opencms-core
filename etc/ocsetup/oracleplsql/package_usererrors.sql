@@ -37,10 +37,10 @@ PACKAGE userErrors IS
   C_RESOURCE_DELETED NUMBER := -20032;
   C_RB_INIT_ERROR NUMBER := -20033;
   C_REGISTRY_ERROR NUMBER := -20034;
-  
+
   ERROR_20000 VARCHAR2(200) := 'Unknown exception';
   ERROR_20001 VARCHAR2(200) := 'Access denied';
-  ERROR_20002 VARCHAR2(200) := 'Not found';    
+  ERROR_20002 VARCHAR2(200) := 'Not found';
   ERROR_20003 VARCHAR2(200) := 'Bad name';
   ERROR_20004 VARCHAR2(200) := 'Sql exception';
   ERROR_20005 VARCHAR2(200) := 'Folder not empty';

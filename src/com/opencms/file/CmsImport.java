@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/10/25 19:30:55 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/10/31 13:11:24 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2000/10/25 19:30:55 $
+ * @version $Revision: 1.29 $ $Date: 2000/10/31 13:11:24 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -115,7 +115,7 @@ public class CmsImport implements I_CmsConstants {
  * Creation date: (29.08.00 15:45:35)
  */
 private void createDigest() throws CmsException {
-	Configurations config = m_cms.getConfigurations();
+	// Configurations config = m_cms.getConfigurations();
 	 
 	String digest = C_IMPORT_DIGEST;
 	// create the digest

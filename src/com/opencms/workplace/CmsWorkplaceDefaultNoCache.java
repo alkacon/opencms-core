@@ -1,5 +1,6 @@
 package com.opencms.workplace;
 
+
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;

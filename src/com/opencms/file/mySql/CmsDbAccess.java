@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/09 18:24:41 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2000/10/31 13:11:27 $
+ * Version: $Revision: 1.39 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.38 $ $Date: 2000/10/09 18:24:41 $ * 
+ * @version $Revision: 1.39 $ $Date: 2000/10/31 13:11:27 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -181,17 +181,20 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 		  int state= C_STATE_NEW;
 		   // Test if the file is already there and marked as deleted.
 		   // If so, delete it
-			try {
- 		  	CmsResource resource = readFileHeader(project.getId(),filename);
-				if ((resource != null) && (resource.getState() == C_STATE_DELETED))
-			  {
-				  removeFile(project.getId(),filename);
-				  state=C_STATE_CHANGED;
-		    }
-	    } catch (SQLException se) {
-	  	  throw new CmsException(CmsException.C_SQL_ERROR,se);
-	    }
-
+		   try {
+	
+			readFileHeader(project.getId(),filename);     
+	   
+		   } catch (CmsException e) {
+			   // if the file is maked as deleted remove it!
+			   if (e.getType()==CmsException.C_RESOURCE_DELETED) {
+		
+				   removeFile(project.getId(),filename);
+		
+				   state=C_STATE_CHANGED;
+			   }              
+		   }
+	
 		   int	resourceId = nextId(C_TABLE_RESOURCES);
 		   int fileId = nextId(C_TABLE_FILES);
 		   
@@ -239,7 +242,6 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 			 }	
 		 return readFile(project.getId(),onlineProject.getId(),filename);
 	 }
-  // methods working with users and groups
 
 	/**
 	 * Add a new group to the Cms.<BR/>
@@ -400,30 +402,12 @@ protected void fillDefaults() throws CmsException
 	addUserToGroup(admin.getId(), administrators.getId());
 	CmsTask task = createTask(0, 0, 1, // standart project type,
 	admin.getId(), admin.getId(), administrators.getId(), C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), C_TASK_PRIORITY_NORMAL);
-	CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL, C_PROJECT_ROOT);
+	CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 
 	// create the root-folder
 	CmsFolder rootFolder = createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
 	rootFolder.setGroupId(users.getId());
 	writeFolder(online, rootFolder, false);
-	
-	/* Inserting some multisite initialization
-	 * insert a default site, create relation between default site and the default project
-	 * This needs to be done even if you're not using multisite functionality
-	 */
-	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] filling default multisite resources");	}
-	CmsCategory category = createCategory("Default", "Default category", "def", 0);
-	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created category with ID="+category.getId());	}
-	CmsLanguage language = createLanguage("Default Language", "def", 0);
-	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created language with ID="+language.getLanguageId());	}
-	CmsCountry country = createCountry("Master", "master", 0);
-	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created country with ID="+country.getCountryId());	}
-	CmsSite newSite = newSiteRecord("Default", "Default site", category.getId(), language.getLanguageId(), country.getCountryId(), online.getId());
-	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created new site with ID="+newSite.getId());	}
-	newSiteProjectsRecord(newSite.getId(), online.getId());
-	String url = "www.default.cms";
-	newSiteUrlRecord(url, newSite.getId(), url);
-
 }
 	/**
 	 * Finds an agent for a given role (group).
@@ -506,6 +490,7 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 		}
 		return(	newId );
 	}
+
 /**
  * Publishes a specified project to the online project. <br>
  *
@@ -526,8 +511,6 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 	Hashtable folderIdIndex = new Hashtable();
 
 	// read all folders in offlineProject
-	try
-	{
 
 	offlineFolders = readFolders(projectId);
 	for (int i = 0; i < offlineFolders.size(); i++)
@@ -590,10 +573,16 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 						discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
 					}
 					CmsFolder onlineFolder = null;
-					onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
-					if (onlineProject == null) 
+					try
 					{
+						onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+					}
+					catch (CmsException exc)
+					{
+
 						// if folder does not exist create it
+						if (exc.getType() == CmsException.C_NOT_FOUND)
+						{
 
 							// get parentId for onlineFolder either from folderIdIndex or from the database
 							Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
@@ -607,7 +596,12 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 							onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
 							onlineFolder.setState(C_STATE_UNCHANGED);
 							writeFolder(onlineProject, onlineFolder, false);
-					} 
+						}
+						else
+						{
+							throw exc;
+						}
+					} // end of catch
 					PreparedStatement statement = null;
 					try
 					{
@@ -662,8 +656,13 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 					if (currentFolder.getState() == C_STATE_UNCHANGED)
 					{
 						CmsFolder onlineFolder = null;
+						try
+						{
 							onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
-						if (onlineFolder == null)
+						}
+						catch (CmsException exc)
+						{
+							if (exc.getType() == CmsException.C_NOT_FOUND)
 							{
 								// get parentId for onlineFolder either from folderIdIndex or from the database
 								Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
@@ -683,13 +682,18 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 									Hashtable props = readAllProperties(currentFolder.getResourceId(), currentFolder.getType());
 									writeProperties(props, onlineFolder.getResourceId(), onlineFolder.getType());
 								}
-								catch (CmsException exc)
+								catch (CmsException exc2)
 								{
 									if (A_OpenCms.isLogging())
 									{
 										A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
 									}
 								}
+							}
+							else
+							{
+								throw exc;
+							}
 						} // end of catch
 						folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(onlineFolder.getResourceId()));
 					} // end of else if 
@@ -766,16 +770,15 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 					{
 						discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, readFileContent(currentFile.getFileId()));
 					}
-
-		  CmsFile onlineFile = null;
-					try {
-					  onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
-					} catch (SQLException se) {
-					  throw new CmsException(CmsException.C_SQL_ERROR,se);
-					}					
-					
-					if (onlineFile == null)
+					CmsFile onlineFile = null;
+					try
 					{
+						onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
+					}
+					catch (CmsException exc)
+					{
+						if (exc.getType() == CmsException.C_NOT_FOUND)
+						{
 							// get parentId for onlineFolder either from folderIdIndex or from the database
 							Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
 							if (parentId == null)
@@ -787,10 +790,8 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 							// create a new File
 							currentFile.setState(C_STATE_UNCHANGED);
 							onlineFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getAbsolutePath(), false);
-					}
-					if (onlineFile.getState() == C_STATE_DELETED)
-					  onlineFile = null;
-
+						}
+					} // end of catch
 					PreparedStatement statement = null;
 					try
 					{
@@ -902,12 +903,10 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 		}
 		removeFolderForPublish(onlineProject, currentFolder.getAbsolutePath());
 	} // end of for
-	} catch (SQLException se) {
-		throw new CmsException(CmsException.C_SQL_ERROR,se);
-	}
-
 	//clearFilesTable();
 }
+
+	
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 

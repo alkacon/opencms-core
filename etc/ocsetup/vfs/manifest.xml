@@ -110,78 +110,6 @@
 			<properties/>
 		</file>
 		<file>
-			<source>action/sitematrix.html</source>
-			<destination>system/workplace/action/sitematrix.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>7</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/sitematrix_head.html</source>
-			<destination>system/workplace/action/sitematrix_head.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>7</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/sitematrix_frames.html</source>
-			<destination>system/workplace/action/sitematrix_frames.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>7</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/administration_sitecopy.html</source>
-			<destination>system/workplace/action/administration_sitecopy.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>7</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/administration_content_sitenew.html</source>
-			<destination>system/workplace/action/administration_content_sitenew.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>7</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/administration_content_siteedit.html</source>
-			<destination>system/workplace/action/administration_content_siteedit.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>7</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/administration_content_sitedelete.html</source>
-			<destination>system/workplace/action/administration_content_sitedelete.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>7</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/administration_content_siteproperty.html</source>
-			<destination>system/workplace/action/administration_content_siteproperty.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>7</access>
-			<properties/>
-		</file>
-		<file>
 			<source>action/administration_content_downgalleries.html</source>
 			<destination>system/workplace/action/administration_content_downgalleries.html</destination>
 			<type>XMLTemplate</type>
@@ -2111,15 +2039,6 @@
 			<properties/>
 		</file>
 		<file>
-			<source>config/language/de/site_de</source>
-			<destination>system/workplace/config/language/de/site_de</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
 			<source>config/language/de/news_de</source>
 			<destination>system/workplace/config/language/de/news_de</destination>
 			<type>plain</type>
@@ -2131,15 +2050,6 @@
 		<file>
 			<source>config/language/uk/core_uk</source>
 			<destination>system/workplace/config/language/uk/core_uk</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>config/language/uk/site_uk</source>
-			<destination>system/workplace/config/language/uk/site_uk</destination>
 			<type>plain</type>
 			<user>Admin</user>
 			<group>Users</group>
@@ -2175,42 +2085,6 @@
 		<file>
 			<source>css/help.css</source>
 			<destination>system/workplace/css/help.css</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>css/giga_context_menus_ie.css</source>
-			<destination>system/workplace/css/giga_context_menus_ie.css</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>css/giga_context_menus_ns.css</source>
-			<destination>system/workplace/css/giga_context_menus_ns.css</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>css/site_matrix.css</source>
-			<destination>system/workplace/css/site_matrix.css</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>css/warp_layer.css</source>
-			<destination>system/workplace/css/warp_layer.css</destination>
 			<type>plain</type>
 			<user>Admin</user>
 			<group>Users</group>
@@ -6814,33 +6688,6 @@
 			<properties/>
 		</file>
 		<file>
-			<source>pics/system/sitedot.gif</source>
-			<destination>system/workplace/pics/sitedot.gif</destination>
-			<type>image</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>15</access>
-			<properties/>
-		</file>
-		<file>
-			<source>pics/system/sitedot_off.gif</source>
-			<destination>system/workplace/pics/sitedot_off.gif</destination>
-			<type>image</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>15</access>
-			<properties/>
-		</file>
-		<file>
-			<source>pics/system/sitedot_on.gif</source>
-			<destination>system/workplace/pics/sitedot_on.gif</destination>
-			<type>image</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>15</access>
-			<properties/>
-		</file>
-		<file>
 			<source>pics/system/pixel_blue.gif</source>
 			<destination>system/workplace/pics/pixel_blue.gif</destination>
 			<type>image</type>
@@ -6866,78 +6713,6 @@
 		<file>
 			<source>templates/ButtonTemplate</source>
 			<destination>system/workplace/templates/ButtonTemplate</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/administration_content_sitenew</source>
-			<destination>system/workplace/templates/administration_content_sitenew</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/administration_content_siteedit</source>
-			<destination>system/workplace/templates/administration_content_siteedit</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/administration_content_sitedelete</source>
-			<destination>system/workplace/templates/administration_content_sitedelete</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/administration_content_siteproperty</source>
-			<destination>system/workplace/templates/administration_content_siteproperty</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/sitematrix</source>
-			<destination>system/workplace/templates/sitematrix</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/sitematrix_head</source>
-			<destination>system/workplace/templates/sitematrix_head</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/sitematrix_frames</source>
-			<destination>system/workplace/templates/sitematrix_frames</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/administration_sitecopy</source>
-			<destination>system/workplace/templates/administration_sitecopy</destination>
 			<type>plain</type>
 			<user>Admin</user>
 			<group>Users</group>
@@ -8146,59 +7921,6 @@
 		<file>
 			<source>templates/js/opencms_timer.js</source>
 			<destination>system/workplace/templates/js/opencms_timer.js</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<destination>system/workplace/templates/js/gigaMatrix</destination>
-			<type>folder</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/js/gigaMatrix/giga_context_menu.js</source>
-			<destination>system/workplace/templates/js/gigaMatrix/giga_context_menu.js</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/js/gigaMatrix/giga_site_matrix.js</source>
-			<destination>system/workplace/templates/js/gigaMatrix/giga_site_matrix.js</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/js/gigaMatrix/style_giga_context_menu.js</source>
-			<destination>system/workplace/templates/js/gigaMatrix/style_giga_context_menu.js</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/js/gigaMatrix/table.js</source>
-			<destination>system/workplace/templates/js/gigaMatrix/table.js</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/js/gigaMatrix/warp_layer.js</source>
-			<destination>system/workplace/templates/js/gigaMatrix/warp_layer.js</destination>
 			<type>plain</type>
 			<user>Admin</user>
 			<group>Users</group>

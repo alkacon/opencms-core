@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/10/26 17:23:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/10/31 13:11:24 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.11 $ $Date: 2000/10/26 17:23:48 $
+ * @version $Revision: 1.12 $ $Date: 2000/10/31 13:11:24 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -61,24 +61,10 @@ public class CmsShellCommands implements I_CmsConstants {
  */
 public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws Exception
 {
-	Configurations conf = new Configurations(new ExtendedProperties(args[0]));
 	m_openCms = openCms;
 	m_cms = cms;
-//	if (CmsConstants.USE_MULTISITE)
-//	{
-		//debug messages.
-		System.out.println("Using Multisite Functionality - Beware that this functionality is still in alpha.");
 
-		//log in default user.
-		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-		CmsSite site = m_cms.getSite(args[1]);
-		System.out.println("Multisite name: " + site.getName() + ", Description: " + site.getDescription());
-		m_openCms.initUser(m_cms, null, null, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
-/*	}
-	else
-	{
-		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-	}*/
+	m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
 	// print the version-string
 	version();
 	copyright();
@@ -329,22 +315,6 @@ public CmsShellCommands(String[] args, A_OpenCms openCms,CmsObject cms) throws E
 			CmsShell.printException(exc);
 		}
 	}
-/**
- * Insert the method's description here.
- * Creation date: (09-10-2000 10:06:25)
- * @param fromProjectId java.lang.String
- */
-public void copyProjectToProject(String fromProjectId)
-{
-	try
-	{
-		m_cms.copyProjectToProject(m_cms.readProject(Integer.parseInt(fromProjectId)));
-	}
-	catch (CmsException e)
-	{
-		CmsShell.printException(e);
-	}
-}
 	/**
 	 * Copies a resource from the online project to a new, specified project.<br>
 	 * Copying a resource will copy the file header or folder into the specified 
@@ -386,45 +356,6 @@ public void copyResourceToProject(String fromProjectId, String resource)
 			 System.out.println(copy[i]);
 		 }
 	 }
-/**
- * Creates a new category
- * Creation date: (29-09-2000 10:47:34)
- * @param name java.lang.String
- * @param description java.lang.String
- * @param shortName java.lang.String
- * @param priority java.lang.String
- */
-public void createCategory(String name, String description, String shortName, String priority)
-{
-	try
-	{
-		CmsCategory category = m_cms.createCategory(name, description, shortName, Integer.parseInt(priority));
-		System.out.println("Category id: "+ category.getId());
-	}
-	catch (CmsException e)
-	{
-			CmsShell.printException(e);
-	}
-}
-/**
- * Creates a new country
- * Creation date: (29-09-2000 10:53:46)
- * @param name java.lang.String
- * @param shortName java.lang.String
- * @param priority java.lang.String
- */
-public void createCountry(String name, String shortName, String priority)
-{
-	try
-	{
-		CmsCountry country = m_cms.createCountry(name, shortName, Integer.parseInt(priority));
-		System.out.println("Country id: " + country.getCountryId());
-	}
-	catch (CmsException e)
-	{
-		CmsShell.printException(e);
-	}
-}
 	/**
 	 * Creates a new folder.
 	 * 
@@ -439,25 +370,6 @@ public void createCountry(String name, String shortName, String priority)
 			CmsShell.printException(exc);
 		}		
 	}
-/**
- * Creates a new language
- * Creation date: (29-09-2000 10:51:20)
- * @param name java.lang.String
- * @param shortName java.lang.String
- * @param priority java.lang.String
- */
-public void createLanguage(String name, String shortName, String priority)
-{
-	try
-	{
-		CmsLanguage language = m_cms.createLanguage(name, shortName, Integer.parseInt(priority));
-		System.out.println("Language id: " + language.getLanguageId());
-	}
-	catch (CmsException e)
-	{
-		CmsShell.printException(e);
-	}
-}
 	/**
 	 * Creates a project.
 	 * 
@@ -473,25 +385,6 @@ public void createLanguage(String name, String shortName, String priority)
 			CmsShell.printException(exc);
 		}		
 	}
-/**
- * Creates a project.
- * 
- * @param name The name of the project to read.
- * @param description The description for the new project.
- * @param groupname the name of the group to be set.
- * @author Martin Langelund
- */
-public void createProject(String name, String description, String groupname, String managergroupname, String parentId)
-{
-	try
-	{
-		System.out.println(m_cms.createProject(name, description, groupname, managergroupname, Integer.parseInt(parentId)).toString());
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
 	/**
 	 * Creates the propertydefinition for the resource type.<BR/>
 	 * 
@@ -610,27 +503,6 @@ public void createProject(String name, String description, String groupname, Str
 			CmsShell.printException(exc);
 		}
 	}
-/**
- * Marks a site deleted
- *
- * Only a adminstrator can do this.<P/>
- * 
- * <B>Security:</B>
- * Only users, which are in the group "administrators" are granted.
- * Creation date: (28-09-2000 11:11:57)
- * @param siteId int
- */
-public void deleteSite(String siteId)
-{
-	try
-	{
-		m_cms.deleteSite(Integer.parseInt(siteId));
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
 	/** 
 	 * Deletes a user from the Cms.
 	 * 
@@ -727,74 +599,6 @@ public void deleteSite(String siteId)
 			CmsShell.printException(exc);
 		}		
 	}
-/**
- * Read all categories from cms
- */
-public void getAllCategories()
-{
-	try
-	{
-		Vector categories = m_cms.getAllCategories();
-		for (int i=0; i<categories.size(); i++)
-		{
-			CmsCategory category = (CmsCategory) categories.elementAt(i);
-			System.out.println("Category id: "+category.getId());
-			System.out.println("Category name: "+category.getName());	
-			System.out.println("Category description: "+category.getDescription());
-			System.out.println("Category shortname: "+category.getShortName());
-			System.out.println("Category priority: "+category.getPriority());
-		}
-		
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
-/**
- * Reads all countries
- */
-public void getAllCountries()
-{
-	try
-	{
-		Vector list = m_cms.getAllCountries();
-		for (int i=0; i<list.size(); i++)
-		{
-			CmsCountry country = (CmsCountry) list.elementAt(i);
-			System.out.println("Country id: "+country.getCountryId());
-			System.out.println("Country name: "+country.getName());	
-			System.out.println("Country shortname: "+country.getShortName());
-			System.out.println("Country priority: "+country.getPriority());
-		}
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
-/**
- * Reads all languages
- */
-public void getAllLanguages()
-{
-	try
-	{
-		Vector list = m_cms.getAllLanguages();
-		for (int i=0; i<list.size(); i++)
-		{
-			CmsLanguage language = (CmsLanguage) list.elementAt(i);
-			System.out.println("Language id: "+language.getLanguageId());
-			System.out.println("Language name: "+language.getName());	
-			System.out.println("Language shortname: "+language.getShortName());
-			System.out.println("Language priority: "+language.getPriority());
-		}
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
 	/**
 	 * Returns  all I_CmsResourceTypes.
 	 */
@@ -810,89 +614,6 @@ public void getAllLanguages()
 			CmsShell.printException(exc);
 		}		
 	}
-	/**
-	 * Reads all sites from the Cms.
-	 */
-	public void getAllSites() {
-		try {
-			Vector sites = m_cms.getAllSites();
-			Enumeration en = sites.elements();
-			while(en.hasMoreElements())
-			{
-				System.out.println((CmsSite)en.nextElement());
-			}
-		} catch( Exception exc ) {
-			CmsShell.printException(exc);
-		}		
-	}
-/**
- * Returns a vector containing all sites with the specified category id.
- *
- * @author Jesper Holme
- * @author Jan Krag
- *
- * @return vector containing all sites with specified category-id
- * @exception CmsException if operation was not successful.
- */
-public void getAllSitesInCategory(String categoryID) throws CmsException
-{
-	try
-	{
-		int catId = Integer.parseInt(categoryID);
-		Vector sites = m_cms.getAllSitesInCategory(catId);
-		Enumeration en = sites.elements();
-		while (en.hasMoreElements())
-		{
-			System.out.println((CmsSite) en.nextElement());
-		}
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
-/**
- * Reads all site urls
- */
-public void getAllSiteUrls()
-{
-	try
-	{
-		Vector list = m_cms.getAllSiteUrls();
-		for (int i=0; i<list.size(); i++)
-		{
-			CmsSiteUrls siteUrls = (CmsSiteUrls) list.elementAt(i);
-			System.out.println("Url id: "+siteUrls.getUrlId());
-			System.out.println("url: "+siteUrls.getUrl());	
-			System.out.println("Site id: "+siteUrls.getSiteId());
-			System.out.println("Primary url: "+siteUrls.getPrimaryUrl());
-		}
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
-/**
- * Insert the method's description here.
- * Creation date: (21-09-2000 16:54:13)
- * @param categoryId int
- */
-public void getCategory(String categoryId)
-{
-	try
-	{
-		CmsCategory category= m_cms.getCategory(Integer.parseInt(categoryId));
-		System.out.println("Name: "+ category.getName());
-		System.out.println("Description: "+ category.getDescription());
-		System.out.println("Short name: "+ category.getShortName());
-		System.out.println("Priority: "+ category.getPriority());
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
 	/**
 	 * Returns all child groups of a group<P/>
 	 * 
@@ -924,49 +645,12 @@ public void getCategory(String categoryId)
 			CmsShell.printException(exc);
 		}
 	}
-/**
- * Insert the method's description here.
- * Creation date: (02-10-2000 17:17:51)
- * @param countryId java.lang.String
- */
-public void getCountry(String countryId)
-{
-	try
-	{
-		CmsCountry country = m_cms.getCountry(Integer.parseInt(countryId));
-		System.out.println("Name: " + country.getName());
-		System.out.println("Short name: " + country.getShortName());
-		System.out.println("Priority: " + country.getPriority());
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
 	/**
 	 * Returns the current project for the user.
 	 */
 	public void getCurrentProject() {
 		System.out.println(m_cms.getRequestContext().currentProject().toString());
 	}
-/**
- * Insert the method's description here.
- * Creation date: (04-09-2000 12:37:43)
- */
-public void getCurrentSite()
-{
-	try
-	{
-		//int onlineProjectId = m_cms.onlineProject().getId();
-		CmsSite site = m_cms.getCurrentSite();
-		
-		System.out.println("Site: " + site.toString());
-	}
-	catch (CmsException e)
-	{
-		CmsShell.printException(e);
-	}
-}
 	/**
 	 * Returns a Vector with all subfiles.<BR/>
 	 * 
@@ -980,26 +664,6 @@ public void getCurrentSite()
 	public void getFilesInFolder(String foldername) {
 		try {
 			Vector files = m_cms.getFilesInFolder(foldername);
-			for( int i = 0; i < files.size(); i++ ) {
-				System.out.println( (CmsFile)files.elementAt(i) );
-			}
-		} catch( Exception exc ) {
-			CmsShell.printException(exc);
-		}
-	}
-	/**
-	 * Returns a Vector with all subfiles.<BR/>
-	 * 
-	 * @param foldername the complete path to the folder.
-	 * 
-	 * @return subfiles A Vector with all subfiles for the overgiven folder.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource.
-	 */
-	public void getFilesInFolderRecursively(String foldername) {
-		try {
-			Vector files = m_cms.getFilesInFolderRecursively(foldername);
 			for( int i = 0; i < files.size(); i++ ) {
 				System.out.println( (CmsFile)files.elementAt(i) );
 			}
@@ -1045,25 +709,6 @@ public void getCurrentSite()
 			CmsShell.printException(exc);
 		}
 	}
-/**
- * Insert the method's description here.
- * Creation date: (02-10-2000 17:16:41)
- * @param languageId java.lang.String
- */
-public void getLanguage(String languageId)
-{
-	try
-	{
-		CmsLanguage language = m_cms.getLanguage(Integer.parseInt(languageId));
-		System.out.println("Name: " + language.getName());
-		System.out.println("Short name: " + language.getShortName());
-		System.out.println("Priority: " + language.getPriority());
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
 	/**
 	 * Imports a module into the cms.
 	 * 
@@ -1173,45 +818,6 @@ public void getLanguage(String languageId)
 			CmsShell.printException(exc);
 		}		
 	}
-/**
- * Insert the method's description here.
- * Creation date: (10-10-2000 14:29:40)
- * @param projectId java.lang.String
- */
-public void getSite(String projectId)
-{
-	try
-	{
-		System.out.println(m_cms.getSite(Integer.parseInt(projectId)).toString());
-	}
-	catch (CmsException e)
-	{
-		CmsShell.printException(e);
-	}
-}
-/**
- * Reads all site urls for a specifik site
- * @param siteId java.lang.String
- */
-public void getSiteUrls(String siteId)
-{
-	try
-	{
-		Vector list = m_cms.getSiteUrls(Integer.parseInt(siteId));
-		for (int i = 0; i < list.size(); i++)
-		{
-			CmsSiteUrls siteUrls = (CmsSiteUrls) list.elementAt(i);
-			System.out.println("Url id: " + siteUrls.getUrlId());
-			System.out.println("url: " + siteUrls.getUrl());
-			System.out.println("Site id: " + siteUrls.getSiteId());
-			System.out.println("Primary url: " + siteUrls.getPrimaryUrl());
-		}
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 
@@ -1221,22 +827,6 @@ public void getSiteUrls(String siteId)
 		throws CmsException { 
 		try {
 			Vector folders = m_cms.getSubFolders(foldername);
-			for( int i = 0; i < folders.size(); i++ ) {
-				System.out.println( (CmsFolder)folders.elementAt(i) );
-			}
-		} catch( Exception exc ) {
-			CmsShell.printException(exc);
-		}
-	}
-	/**
-	 * Returns a Vector with all subfolders.<BR/>
-	 * 
-	 * @param foldername the complete path to the folder.
-	 */
-	public void getSubFoldersRecursively(String foldername)
-		throws CmsException { 
-		try {
-			Vector folders = m_cms.getSubFoldersRecursively(foldername);
 			for( int i = 0; i < folders.size(); i++ ) {
 				System.out.println( (CmsFolder)folders.elementAt(i) );
 			}
@@ -1490,27 +1080,6 @@ public void importResources(String importFile, String importPath) {
 			CmsShell.printException(exc);
 		}
 	}
-/**
- * Checks is the site name, url or combination of language, category and country already exists
- * Creation date: (04-10-2000 12:05:49)
- * @param siteId int
- * @param name java.lang.String
- * @param url java.lang.String
- * @param categoryId java.lang.String
- * @param languageId java.lang.String
- * @param countryId java.lang.String
- */
-public void isSiteLegal(String siteId, String name, String url, String categoryId, String languageId, String countryId)
-{
-	try
-	{
-		System.out.println("isSiteLegal: " + m_cms.isSiteLegal(Integer.parseInt(siteId), name, url, Integer.parseInt(categoryId), Integer.parseInt(languageId), Integer.parseInt(countryId)));
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
 	/**
 	 * Locks a resource<BR/>
 	 * 
@@ -1541,36 +1110,6 @@ public void isSiteLegal(String siteId, String name, String url, String categoryI
 			System.out.println("Login failed!");
 		}
 	}
-/**
- * Creates a new Site in the OpenCms system based on the parameters given. <br>
- * This includes:<br>
- * 1) Creating a new online-project for the site.<br>
- * 2) Creating a single site_url record connecting the given url to the new site.<br>
- * 3) Creating a site_project record linking the new site to the new onlineproject.
- *
- * Creation date: (09/20/00 %r)
- *
- * @return com.opencms.file.CmsSite
- * @param Name java.lang.String
- * @param Description java.lang.String
- * @param Category int
- * @param Language int
- * @param Country int
- * @param url java.lang.String
- * @param user java.lang.String
- * @param group java.lang.String
- */
-public void newSite(String name, String description, String category, String language, String country, String url, String user, String group)
-{
-	try
-	{
-		 System.out.println(m_cms.newSite(name, description, Integer.parseInt(category), Integer.parseInt(language), Integer.parseInt(country), url, user, group).toString());
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
 	/**
 	 * Reads a the online-project from the Cms.
 	 */
@@ -1983,28 +1522,6 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}
 	}
-/**
- * Insert the method's description here.
- * Creation date: (28-09-2000 12:01:09)
- * @param siteId java.lang.String
- * @param name java.lang.String
- * @param description java.lang.String
- * @param categoryId java.lang.String
- * @param languageId java.lang.String
- * @param countryId java.lang.String
- * @param url java.lang.String
- */
-public void updateSite(String siteId, String name, String description, String categoryId, String languageId, String countryId, String url)
-{
-	try
-	{
-		m_cms.updateSite(Integer.parseInt(siteId), name, description, Integer.parseInt(categoryId), Integer.parseInt(languageId), Integer.parseInt(countryId), url);
-	}
-	catch (Exception exc)
-	{
-		CmsShell.printException(exc);
-	}
-}
 	/**
 	 * Loads a File up to the cms from the lokal disc.
 	 * 
