@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/01/28 09:32:23 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/02/03 17:06:44 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,11 +30,12 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.db.CmsPublishList;
-import org.opencms.main.OpenCms;
-
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsUser;
+
+import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsUserSettings;
+import org.opencms.main.OpenCms;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -70,6 +71,7 @@ public class CmsWorkplaceSettings {
     private Map m_treeSite;
     private Map m_treeType;
     private CmsUser m_user;
+    private CmsUserSettings m_userSettings;
     private String m_viewUri;
 
     /**
@@ -256,6 +258,15 @@ public class CmsWorkplaceSettings {
      */
     public CmsUser getUser() {
         return m_user;
+    }
+    
+    /**
+     * Returns the current workplace user settings object.<p>
+     * 
+     * @return the current workplace user settings object
+     */
+    public CmsUserSettings getUserSettings() {
+        return m_userSettings;
     }
 
     /**
@@ -468,6 +479,15 @@ public class CmsWorkplaceSettings {
      */
     public synchronized void setUser(CmsUser user) {
         m_user = user;
+    }
+    
+    /**
+     * Sets the current workplace user settings object.<p>
+     * 
+     * @param userSettings the current workplace user settings object
+     */
+    public synchronized void setUserSettings(CmsUserSettings userSettings) {
+        m_userSettings = userSettings;
     }
 
     /**

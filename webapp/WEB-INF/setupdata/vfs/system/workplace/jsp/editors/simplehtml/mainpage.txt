@@ -84,7 +84,7 @@ if (options.showElement("selector.elements")) {
 <%= wp.buttonBarStartTab(0, 5) %>
 <%
 if (options.showElement("button.customized")) {%>
-	<td><%= wp.buttonActionDirectEdit("doNsEdit(55);") %></td><%
+	<td><%= wp.buttonActionDirectEdit("doNsEdit(55);", buttonStyle) %></td><%
 }
 %>
 <%= wp.button("javascript:doNsEdit(2);", null, "save_exit", "button.saveclose", buttonStyle) %>

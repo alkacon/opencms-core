@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/03 17:06:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.12
  */
@@ -119,12 +119,26 @@ public class CmsPreferences extends CmsTabDialog {
      * @see org.opencms.workplace.CmsTabDialog#getTabs()
      */
     public List getTabs() {
-        ArrayList tabList = new ArrayList(4);
-        tabList.add(key("panel.explorer"));
+        ArrayList tabList = new ArrayList(5);
+        tabList.add(key("panel.workplace"));
+        tabList.add(key("panel.explorer"));      
+        tabList.add(key("panel.editors"));
         tabList.add(key("panel.task"));
-        tabList.add(key("panel.start"));
         tabList.add(key("panel.user"));
         return tabList;
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsTabDialog#getTabParameterOrder()
+     */
+    public List getTabParameterOrder() {
+        ArrayList orderList = new ArrayList(5);
+        orderList.add("tabwp");
+        orderList.add("tabex");
+        orderList.add("tabed");
+        orderList.add("tabwf");
+        orderList.add("tabup");
+        return orderList;
     }
 
     /**
@@ -248,12 +262,66 @@ public class CmsPreferences extends CmsTabDialog {
                 // after "set" action, leave dialog open 
                 getCms().getRequestContext().getResponse().sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_TAB + "=" + getActiveTab());
             } else {
-                // after "ok" action, close dialog and return to workplace view
-                getCms().getRequestContext().getResponse().sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_ACTION + "=" + DIALOG_RELOAD);            
+                // after "ok" action, close dialog and reload the workplace view
+                setParamOkFunctions("window.top.location.reload(true);");
+                try {
+                    closeDialog();
+                } catch (JspException e) {
+                    // closing dialog failed, redirect to dialog with action set to reload the workplace
+                    getCms().getRequestContext().getResponse().sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_ACTION + "=" + DIALOG_RELOAD);
+                }    
             }
         } catch (IOException e) {
             // error during redirect, do nothing 
         }
+    }
+    
+    /**
+     * Builds the html for a common button style select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @param selectedIndex the index of the selected option
+     * @return the html for the common button style select box
+     */
+    private String buildSelectButtonStyle(String htmlAttributes, int selectedIndex) {
+        List options = new ArrayList(3);      
+        options.add(key("preferences.buttonstyle.img"));
+        options.add(key("preferences.buttonstyle.imgtxt"));
+        options.add(key("preferences.buttonstyle.txt"));
+        String [] vals = new String[] {"0", "1", "2"};
+        List values = new ArrayList(java.util.Arrays.asList(vals));
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+    
+    /**
+     * Builds the html for the explorer button style select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the explorer button style select box
+     */
+    public String buildSelectExplorerButtonStyle(String htmlAttributes) {
+        int selectedIndex = Integer.parseInt(getParamTabExButtonStyle());
+        return buildSelectButtonStyle(htmlAttributes, selectedIndex);
+    }
+    
+    /**
+     * Builds the html for the explorer number of entries per page select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the explorer number of entries per page select box
+     */
+    public String buildSelectExplorerFileEntries(String htmlAttributes) {
+        String [] opts = new String[] {"10", "25", "50", "100", key("preferences.fileentries.unlimited")};
+        List options = new ArrayList(java.util.Arrays.asList(opts));
+        String [] vals = new String[] {"10", "25", "50", "100", "" + Integer.MAX_VALUE};
+        int selectedIndex = 2;
+        for (int i=0; i<vals.length; i++) {
+            if (vals[i].equals(getParamTabExFileEntries())) {
+                selectedIndex = i;
+            }
+        }
+        List values = new ArrayList(java.util.Arrays.asList(vals));
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
     
     /**
@@ -272,7 +340,7 @@ public class CmsPreferences extends CmsTabDialog {
             for (char k='a'; k<'d'; k++) {
                 options.add(key(I_CmsConstants.C_TASK_FILTER + k + i));
                 values.add("" + k + i);
-                if (("" + k + i).equals(getParamTab2Filter())) {
+                if (("" + k + i).equals(getParamTabWfFilter())) {
                     selectedIndex = counter;
                 }
                 counter++;
@@ -284,7 +352,7 @@ public class CmsPreferences extends CmsTabDialog {
         for (int i=1; i<4; i++) {
             options.add(key(I_CmsConstants.C_TASK_FILTER + "d" + i));
             values.add("d" + i);
-            if (("d" + i).equals(getParamTab2Filter())) {
+            if (("d" + i).equals(getParamTabWfFilter())) {
                 selectedIndex = counter;
             }
             counter++;
@@ -310,7 +378,7 @@ public class CmsPreferences extends CmsTabDialog {
                 CmsXmlLanguageFile langFile = new CmsXmlLanguageFile(getCms(), folder.getName());
                 options.add(langFile.getLanguageValue("name"));
                 values.add(folder.getName());
-                if (getParamTab3Language().equals(folder.getName())) {
+                if (getParamTabWpLanguage().equals(folder.getName())) {
                     checkedIndex = i;
                 }
             }
@@ -334,7 +402,7 @@ public class CmsPreferences extends CmsTabDialog {
             int checkedIndex = 0;
             int startProjectId = -1;
             try {
-                startProjectId = Integer.parseInt(getParamTab3Project());
+                startProjectId = Integer.parseInt(getParamTabWpProject());
             } catch (NumberFormatException e) {
                 // ignore this exception
             }
@@ -351,6 +419,25 @@ public class CmsPreferences extends CmsTabDialog {
         } catch (CmsException e) {
             return getSettings().getProject() + "";
         }
+    }
+    
+    /**
+     * Builds the html for the workplace report type select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the workplace report type select box
+     */
+    public String buildSelectReportType(String htmlAttributes) {
+        List options = new ArrayList(2);      
+        options.add(key("preferences.report.simple"));
+        options.add(key("preferences.report.extended"));
+        String [] vals = new String[] {CmsReport.REPORT_TYPE_SIMPLE, CmsReport.REPORT_TYPE_EXTENDED};
+        List values = new ArrayList(java.util.Arrays.asList(vals));
+        int selectedIndex = 0;
+        if (CmsReport.REPORT_TYPE_EXTENDED.equals(getParamTabWpReportType())) {
+            selectedIndex = 1;
+        }
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
     
     /**
@@ -387,13 +474,24 @@ public class CmsPreferences extends CmsTabDialog {
                 options.add(key(loopName));
                 values.add(loopLink);
 
-                if (loopLink.equals(getParamTab3View())) {
+                if (loopLink.equals(getParamTabWpView())) {
                     selectedIndex = i;
                 }
             }
         }        
   
         return buildSelect(htmlAttributes, options, values, selectedIndex);        
+    }
+    
+    /**
+     * Builds the html for the workplace button style select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the workplace button style select box
+     */
+    public String buildSelectWorkplaceButtonStyle(String htmlAttributes) {
+        int selectedIndex = Integer.parseInt(getParamTabWpButtonStyle());
+        return buildSelectButtonStyle(htmlAttributes, selectedIndex);
     }
     
     /**
@@ -409,14 +507,14 @@ public class CmsPreferences extends CmsTabDialog {
         result.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\">\n");
         result.append("<tr>\n");
         result.append("\t<td style=\"width: 25%;\">" + key("input.user") + "</td>\n");
-        result.append("\t<td style=\"width: 25%;\">" + user.getName() + "</td>\n");
+        result.append("\t<td class=\"textbold\" style=\"width: 25%;\">" + user.getName() + "</td>\n");
         result.append("\t<td style=\"width: 25%;\">" + key("input.email") + "</td>\n");
-        result.append("\t<td style=\"width: 25%;\">" + user.getEmail() + "</td>\n");        
+        result.append("\t<td class=\"textbold\" style=\"width: 25%;\">" + user.getEmail() + "</td>\n");        
         result.append("</tr>\n");
         
         result.append("<tr>\n");
         result.append("\t<td>" + key("input.lastname") + "</td>\n");
-        result.append("\t<td>" + user.getLastname() + "</td>\n");
+        result.append("\t<td class=\"textbold\">" + user.getLastname() + "</td>\n");
         result.append("\t<td rowspan=\"3\" style=\"vertical-align: top;\">" + key("input.adress") + "</td>\n");
         
         String address = user.getAddress();
@@ -425,17 +523,17 @@ public class CmsPreferences extends CmsTabDialog {
             address += "<br>" + settings.getAddressZip();
             address += " " + settings.getAddressTown();
         }        
-        result.append("\t<td rowspan=\"3\" style=\"vertical-align: top;\">" + address + "</td>\n");        
+        result.append("\t<td rowspan=\"3\" class=\"textbold\" style=\"vertical-align: top;\">" + address + "</td>\n");        
         result.append("</tr>\n");
         
         result.append("<tr>\n");
         result.append("\t<td>" + key("input.firstname") + "</td>\n");
-        result.append("\t<td>" + user.getFirstname() + "</td>\n");       
+        result.append("\t<td class=\"textbold\">" + user.getFirstname() + "</td>\n");       
         result.append("</tr>\n");
         
         result.append("<tr>\n");
         result.append("\t<td>" + key("input.description") + "</td>\n");
-        result.append("\t<td>" + user.getDescription() + "</td>\n");       
+        result.append("\t<td class=\"textbold\">" + user.getDescription() + "</td>\n");       
         result.append("</tr>\n");       
         result.append("</table>\n");
         
@@ -492,11 +590,33 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
+     * Returns the "explorer button style" setting.<p>
+     * 
+     * @return the "explorer button style" setting
+     */
+    public final String getParamTabExButtonStyle() {
+        return "" + m_userSettings.getExplorerButtonStyle();
+    }
+    
+    /**
+     * Sets the "explorer button style" setting.<p>
+     * 
+     * @param value a String representation of an int value to set the "explorer button style" setting
+     */
+    public final void setParamTabExButtonStyle(String value) {
+        try {
+            m_userSettings.setExplorerButtonStyle(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+    }
+    
+    /**
      * Returns the "display file creation date" setting.<p>
      * 
      * @return "true" if the file creation date input field is checked, otherwise ""
      */
-    public String getParamTab1FileDateCreated() {
+    public final String getParamTabExFileDateCreated() {
         return isParamEnabled(m_userSettings.showExplorerFileDateCreated());
     }
 
@@ -505,7 +625,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display file creation date" setting, all others to disable
      */
-    public void setParamTab1FileDateCreated(String value) {
+    public final void setParamTabExFileDateCreated(String value) {
         m_userSettings.setShowExplorerFileDateCreated("true".equals(value));
     }
     
@@ -514,7 +634,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the file last modification date input field is checked, otherwise ""
      */
-    public String getParamTab1FileDateLastModified() {
+    public final String getParamTabExFileDateLastModified() {
         return isParamEnabled(m_userSettings.showExplorerFileDateLastModified());
     }
 
@@ -523,8 +643,30 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display file last modification date" setting, all others to disable
      */
-    public void setParamTab1FileDateLastModified(String value) {
+    public final void setParamTabExFileDateLastModified(String value) {
         m_userSettings.setShowExplorerFileDateLastModified("true".equals(value));
+    }
+    
+    /**
+     * Returns the "explorer number of entries per page" setting.<p>
+     * 
+     * @return the "explorer number of entries per page" setting
+     */
+    public final String getParamTabExFileEntries() {
+        return "" + m_userSettings.getExplorerFileEntries();
+    }
+    
+    /**
+     * Sets the "explorer number of entries per page" setting.<p>
+     * 
+     * @param value a String representation of an int value to set the "number of entries per page" setting
+     */
+    public final void setParamTabExFileEntries(String value) {
+        try {
+            m_userSettings.setExplorerFileEntries(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
     }
     
     /**
@@ -532,7 +674,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the file locked by input field is checked, otherwise ""
      */
-    public String getParamTab1FileLockedBy() {
+    public final String getParamTabExFileLockedBy() {
         return isParamEnabled(m_userSettings.showExplorerFileLockedBy());
     }
 
@@ -541,7 +683,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display file locked by" setting, all others to disable
      */
-    public void setParamTab1FileLockedBy(String value) {
+    public final void setParamTabExFileLockedBy(String value) {
         m_userSettings.setShowExplorerFileLockedBy("true".equals(value));
     }
     
@@ -550,7 +692,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the file permissions input field is checked, otherwise ""
      */
-    public String getParamTab1FilePermissions() {
+    public final String getParamTabExFilePermissions() {
         return isParamEnabled(m_userSettings.showExplorerFilePermissions());
     }
 
@@ -559,7 +701,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display file permissions" setting, all others to disable
      */
-    public void setParamTab1FilePermissions(String value) {
+    public final void setParamTabExFilePermissions(String value) {
         m_userSettings.setShowExplorerFilePermissions("true".equals(value));
     }
     
@@ -568,7 +710,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the file size input field is checked, otherwise ""
      */
-    public String getParamTab1FileSize() {
+    public final String getParamTabExFileSize() {
         return isParamEnabled(m_userSettings.showExplorerFileSize());
     }
     
@@ -577,7 +719,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display file size" setting, all others to disable
      */
-    public void setParamTab1FileSize(String value) {
+    public final void setParamTabExFileSize(String value) {
         m_userSettings.setShowExplorerFileSize("true".equals(value));
     }
     
@@ -586,7 +728,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the file state input field is checked, otherwise ""
      */
-    public String getParamTab1FileState() {
+    public final String getParamTabExFileState() {
         return isParamEnabled(m_userSettings.showExplorerFileState());
     }
 
@@ -595,7 +737,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display file state" setting, all others to disable
      */
-    public void setParamTab1FileState(String value) {
+    public final void setParamTabExFileState(String value) {
         m_userSettings.setShowExplorerFileState("true".equals(value));
     }
     
@@ -604,7 +746,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the file title input field is checked, otherwise ""
      */
-    public String getParamTab1FileTitle() {
+    public final String getParamTabExFileTitle() {
         return isParamEnabled(m_userSettings.showExplorerFileTitle());
     }
 
@@ -613,7 +755,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display file title" setting, all others to disable
      */
-    public void setParamTab1FileTitle(String value) {
+    public final void setParamTabExFileTitle(String value) {
         m_userSettings.setShowExplorerFileTitle("true".equals(value));
     }
     
@@ -622,7 +764,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the file type input field is checked, otherwise ""
      */
-    public String getParamTab1FileType() {
+    public final String getParamTabExFileType() {
         return isParamEnabled(m_userSettings.showExplorerFileType());
     }
 
@@ -631,7 +773,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display file type" setting, all others to disable
      */
-    public void setParamTab1FileType(String value) {
+    public final void setParamTabExFileType(String value) {
         m_userSettings.setShowExplorerFileType("true".equals(value));
     }
     
@@ -640,7 +782,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the file created by input field is checked, otherwise ""
      */
-    public String getParamTab1FileUserCreated() {
+    public final String getParamTabExFileUserCreated() {
         return isParamEnabled(m_userSettings.showExplorerFileUserCreated());
     }
 
@@ -649,7 +791,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display file created by" setting, all others to disable
      */
-    public void setParamTab1FileUserCreated(String value) {
+    public final void setParamTabExFileUserCreated(String value) {
         m_userSettings.setShowExplorerFileUserCreated("true".equals(value));
     }
     
@@ -658,7 +800,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the file last modified by input field is checked, otherwise ""
      */
-    public String getParamTab1FileUserLastModified() {
+    public final String getParamTabExFileUserLastModified() {
         return isParamEnabled(m_userSettings.showExplorerFileUserLastModified());
     }
 
@@ -667,7 +809,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display file last modified by" setting, all others to disable
      */
-    public void setParamTab1FileUserLastModified(String value) {
+    public final void setParamTabExFileUserLastModified(String value) {
         m_userSettings.setShowExplorerFileUserLastModified("true".equals(value));
     }
     
@@ -676,7 +818,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the "task startup filter" setting
      */
-    public String getParamTab2Filter() {
+    public final String getParamTabWfFilter() {
         return m_userSettings.getTaskStartupFilter();
     }
     
@@ -685,7 +827,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param filter the "task startup filter" setting
      */
-    public void setParamTab2Filter(String filter) {
+    public final void setParamTabWfFilter(String filter) {
         if ("".equals(filter)) {
             filter = "a1";
         }
@@ -697,7 +839,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the "show all projects" setting
      */
-    public String getParamTab2ShowAllProjects() {
+    public final String getParamTabWfShowAllProjects() {
         return isParamEnabled(m_userSettings.taskShowAllProjects());
     }
     
@@ -706,7 +848,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value the "show all projects" setting
      */
-    public void setParamTab2ShowAllProjects(String value) {
+    public final void setParamTabWfShowAllProjects(String value) {
         m_userSettings.setTaskShowAllProjects("true".equals(value));
     }
     
@@ -715,7 +857,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the "message when accepted" setting
      */
-    public String getParamTab2MessageAccepted() {
+    public final String getParamTabWfMessageAccepted() {
         return isParamEnabled(m_userSettings.taskMessageAccepted());
     }
     
@@ -724,7 +866,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value the "message when accepted" setting
      */
-    public void setParamTab2MessageAccepted(String value) {
+    public final void setParamTabWfMessageAccepted(String value) {
         m_userSettings.setTaskMessageAccepted("true".equals(value));
     }
     
@@ -733,7 +875,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the "message when forwarded" setting
      */
-    public String getParamTab2MessageForwarded() {
+    public final String getParamTabWfMessageForwarded() {
         return isParamEnabled(m_userSettings.taskMessageForwarded());
     }
     
@@ -742,7 +884,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value the "message when forwarded" setting
      */
-    public void setParamTab2MessageForwarded(String value) {
+    public final void setParamTabWfMessageForwarded(String value) {
         m_userSettings.setTaskMessageForwarded("true".equals(value));
     }
     
@@ -751,7 +893,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the "message when completed" setting
      */
-    public String getParamTab2MessageCompleted() {
+    public final String getParamTabWfMessageCompleted() {
         return isParamEnabled(m_userSettings.taskMessageCompleted());
     }
     
@@ -760,7 +902,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value the "message when completed" setting
      */
-    public void setParamTab2MessageCompleted(String value) {
+    public final void setParamTabWfMessageCompleted(String value) {
         m_userSettings.setTaskMessageCompleted("true".equals(value));
     }
     
@@ -769,7 +911,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the "inform all role members" input field is checked, otherwise ""
      */
-    public String getParamTab2MessageMembers() {
+    public final String getParamTabWfMessageMembers() {
         return isParamEnabled(m_userSettings.taskMessageMembers());
     }
     
@@ -778,8 +920,30 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "inform all role members" setting, all others to disable
      */
-    public void setParamTab2MessageMembers(String value) {
+    public final void setParamTabWfMessageMembers(String value) {
         m_userSettings.setTaskMessageMembers("true".equals(value));
+    }
+    
+    /**
+     * Returns the "workplace button style" setting.<p>
+     * 
+     * @return the "workplace button style" setting
+     */
+    public final String getParamTabWpButtonStyle() {
+        return "" + m_userSettings.getWorkplaceButtonStyle();
+    }
+    
+    /**
+     * Sets the "workplace button style" setting.<p>
+     * 
+     * @param value a String representation of an int value to set the "workplace button style" setting
+     */
+    public final void setParamTabWpButtonStyle(String value) {
+        try {
+            m_userSettings.setWorkplaceButtonStyle(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
     }
     
     /**
@@ -787,7 +951,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the "display lock dialog" input field is checked, otherwise ""
      */
-    public String getParamTab3ShowLock() {
+    public final String getParamTabWpShowLock() {
         return isParamEnabled(m_userSettings.showLockDialog());
     }
 
@@ -796,7 +960,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display lock dialog" setting, all others to disable
      */
-    public void setParamTab3ShowLock(String value) {
+    public final void setParamTabWpShowLock(String value) {
         m_userSettings.setShowLockDialog("true".equals(value));
     }
     
@@ -805,7 +969,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the "use upload applet" input is checked, otherwise ""
      */
-    public String getParamTab3UseUploadApplet() {
+    public final String getParamTabWpUseUploadApplet() {
         return isParamEnabled(m_userSettings.useUploadApplet());
     }
 
@@ -814,8 +978,29 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "use upload applet" setting, all others to disable
      */
-    public void setParamTab3UseUploadApplet(String value) {
+    public final void setParamTabWpUseUploadApplet(String value) {
         m_userSettings.setUseUploadApplet("true".equals(value));
+    }
+    
+    /**
+     * Returns the "workplace report type" setting.<p>
+     * 
+     * @return the "workplace report type" setting
+     */
+    public final String getParamTabWpReportType() {
+        return m_userSettings.getWorkplaceReportType();
+    }
+
+    /**
+     * Sets the "workplace report type" setting.<p>
+     * 
+     * @param value the "workplace report type" setting
+     */
+    public final void setParamTabWpReportType(String value) {
+        if (CmsReport.REPORT_TYPE_SIMPLE.equals(value) || CmsReport.REPORT_TYPE_EXTENDED.equals(value)) {
+            // set only if valid parameter value is found
+            m_userSettings.setWorkplaceReportType(value);
+        }
     }
     
     /**
@@ -823,7 +1008,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the start language setting
      */
-    public String getParamTab3Language() {
+    public final String getParamTabWpLanguage() {
         return m_userSettings.getStartLanguage();
     }
 
@@ -832,7 +1017,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value the start language setting
      */
-    public void setParamTab3Language(String value) {
+    public final void setParamTabWpLanguage(String value) {
         m_userSettings.setStartLanguage(value);
     }
     
@@ -841,7 +1026,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the start project setting
      */
-    public String getParamTab3Project() {
+    public final String getParamTabWpProject() {
         return m_userSettings.getStartProject();
     }
 
@@ -850,7 +1035,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value the start project setting
      */
-    public void setParamTab3Project(String value) {
+    public final void setParamTabWpProject(String value) {
         m_userSettings.setStartProject(value);
     }
     
@@ -859,7 +1044,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the start view setting
      */
-    public String getParamTab3View() {
+    public final String getParamTabWpView() {
         return m_userSettings.getStartView();
     }
 
@@ -868,7 +1053,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value the start view setting
      */
-    public void setParamTab3View(String value) {
+    public final void setParamTabWpView(String value) {
         m_userSettings.setStartView(value);
     }
     
@@ -877,7 +1062,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the new password value
      */
-    public String getParamNewPassword() {
+    public final String getParamNewPassword() {
         return m_paramNewPassword;
     }
     
@@ -886,7 +1071,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param newPwd the new password value
      */
-    public void setParamNewPassword(String newPwd) {
+    public final void setParamNewPassword(String newPwd) {
         m_paramNewPassword = newPwd;
     }
     
@@ -895,7 +1080,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the old password value
      */
-    public String getParamOldPassword() {
+    public final String getParamOldPassword() {
         return m_paramOldPassword;
     }
     
@@ -904,7 +1089,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param oldPwd the old password value
      */
-    public void setParamOldPassword(String oldPwd) {
+    public final void setParamOldPassword(String oldPwd) {
         m_paramOldPassword = oldPwd;
     }
     

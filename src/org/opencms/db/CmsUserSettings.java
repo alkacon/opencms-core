@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2003/12/02 16:24:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/03 17:06:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,22 +36,39 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.workplace.CmsReport;
+
 import java.util.Hashtable;
 
 /**
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
 public class CmsUserSettings {
     
+    /** Identifier for the explorer button style setting key */
+    public static final String C_EXPLORER_BUTTONSTYLE = "EXPLORER_BUTTONSTYLE";
+    /** Identifier for the explorer number of file entries per page setting key */
+    public static final String C_EXPLORER_FILEENTRIES = "USER_EXPLORER_FILEENTRIES";
+    /** Identifier for the workplace button style setting key */
+    public static final String C_WORKPLACE_BUTTONSTYLE = "WORKPLACE_BUTTONSTYLE";
+    /** Identifier for the workplace report type setting key */
+    public static final String C_WORKPLACE_REPORTTYPE = "WORKPLACE_REPORTTYPE";
+    
+    private static final int C_ENTRYS_PER_PAGE_DEFAULT = 50;
+    private static final int C_BUTTONSTYLE_DEFAULT = 1;
+    private static final String C_REPORTTYPE_DEFAULT = CmsReport.REPORT_TYPE_SIMPLE;
+    
+    private int m_explorerButtonStyle;
+    private int m_explorerFileEntries;
     private int m_explorerSettings;
     private Hashtable m_taskSettings;
     private int m_taskMessages;
-    private Hashtable m_startSettings;
+    private Hashtable m_workplaceSettings;
     private String m_town;
     private String m_zipCode;
     private CmsUser m_user;
@@ -60,10 +77,12 @@ public class CmsUserSettings {
      * Creates an empty new user settings object.<p>
      */
     public CmsUserSettings() {
+        m_explorerButtonStyle = C_BUTTONSTYLE_DEFAULT;
+        m_explorerFileEntries = C_ENTRYS_PER_PAGE_DEFAULT;
         m_explorerSettings = I_CmsWpConstants.C_FILELIST_NAME;
         m_taskSettings = new Hashtable();
         m_taskMessages = 0;
-        m_startSettings = new Hashtable();
+        m_workplaceSettings = new Hashtable();
         m_user = null;
         m_town = "";
         m_zipCode = "";
@@ -85,18 +104,28 @@ public class CmsUserSettings {
      * @param user the current CmsUser
      */
     public void init(CmsUser user) {
-        m_user = user;
-        String explorerSettingsString = (String)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS); 
-        m_explorerSettings = I_CmsWpConstants.C_FILELIST_NAME;
+        m_user = user; 
         try {
+            m_explorerFileEntries = Integer.parseInt((String)m_user.getAdditionalInfo(C_EXPLORER_FILEENTRIES));
+        } catch (Throwable t) {
+            m_explorerFileEntries = C_ENTRYS_PER_PAGE_DEFAULT;
+        }
+        try {
+            m_explorerButtonStyle = Integer.parseInt((String)m_user.getAdditionalInfo(C_EXPLORER_BUTTONSTYLE));
+        } catch (Throwable t) {
+            m_explorerButtonStyle = C_BUTTONSTYLE_DEFAULT;
+        }
+        try {
+            String explorerSettingsString = (String)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS);
             m_explorerSettings = Integer.parseInt(explorerSettingsString);
         } catch (NumberFormatException e) {
             // explorer start settings are not present, set them to default
+            m_explorerSettings = I_CmsWpConstants.C_FILELIST_NAME;
             setShowExplorerFileTitle(true);
             setShowExplorerFileType(true);
             setShowExplorerFileDateLastModified(true);
         }
-        m_startSettings = (Hashtable)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
+        m_workplaceSettings = (Hashtable)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
         m_taskSettings = (Hashtable)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TASKSETTINGS);
         m_zipCode = (String)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
         m_town = (String)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
@@ -114,8 +143,10 @@ public class CmsUserSettings {
      * @throws CmsException if user cannot be written to the db
      */
     public void save(CmsObject cms) throws CmsException {
+        m_user.setAdditionalInfo(C_EXPLORER_BUTTONSTYLE, "" + m_explorerButtonStyle);
+        m_user.setAdditionalInfo(C_EXPLORER_FILEENTRIES, "" + m_explorerFileEntries);
         m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS, "" + m_explorerSettings);
-        m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS, m_startSettings);
+        m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS, m_workplaceSettings);
         m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN, m_town);
         m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE, m_zipCode);
         m_taskSettings.put(I_CmsConstants.C_TASK_MESSAGES, new Integer(m_taskMessages));
@@ -385,6 +416,42 @@ public class CmsUserSettings {
    public void setShowExplorerFileUserLastModified(boolean show) {
        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED);
    }
+   
+   /**
+    * Returns the style of the explorer buttons of the user.<p>
+    * 
+    * @return the style of the explorer buttons of the user
+    */
+   public int getExplorerButtonStyle() {
+       return m_explorerButtonStyle;
+   }
+   
+   /**
+    * Sets the style of the explorer buttons of the user.<p>
+    * 
+    * @param style the style of the explorer buttons of the user
+    */
+   public void setExplorerButtonStyle(int style) {
+       m_explorerButtonStyle = style;
+   }
+   
+   /**
+    * Returns the number of displayed files per page of the user.<p>
+    * 
+    * @return the number of displayed files per page of the user
+    */
+   public int getExplorerFileEntries() {
+       return m_explorerFileEntries;
+   }
+   
+   /**
+    * Sets the number of displayed files per page of the user.<p>
+    * 
+    * @param entries the number of displayed files per page of the user
+    */
+   public void setExplorerFileEntries(int entries) {
+       m_explorerFileEntries = entries;
+   }
     
     /**
      * Determines if the lock dialog should be shown.<p>
@@ -394,7 +461,7 @@ public class CmsUserSettings {
     public boolean showLockDialog() {
         String show = null;
         try {
-            show = (String)m_startSettings.get(I_CmsConstants.C_START_LOCKDIALOG);
+            show = (String)m_workplaceSettings.get(I_CmsConstants.C_START_LOCKDIALOG);
         } catch (NullPointerException e) {
             // do nothing
         }
@@ -408,9 +475,9 @@ public class CmsUserSettings {
      */
     public void setShowLockDialog(boolean show) {
         if (show) {
-            m_startSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "on");
+            m_workplaceSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "on");
         } else {
-            m_startSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");
+            m_workplaceSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");
         }
     }
     
@@ -420,7 +487,7 @@ public class CmsUserSettings {
      * @return the start language of the user
      */
     public String getStartLanguage() {
-        return (String)m_startSettings.get(I_CmsConstants.C_START_LANGUAGE);
+        return (String)m_workplaceSettings.get(I_CmsConstants.C_START_LANGUAGE);
     }
     
     /**
@@ -429,7 +496,7 @@ public class CmsUserSettings {
      * @param language the start language of the user
      */
     public void setStartLanguage(String language) {
-        m_startSettings.put(I_CmsConstants.C_START_LANGUAGE, language);
+        m_workplaceSettings.put(I_CmsConstants.C_START_LANGUAGE, language);
     }
     
     /** 
@@ -438,7 +505,7 @@ public class CmsUserSettings {
      * @return the start project of the user
      */
     public String getStartProject() {
-        Integer projectId = (Integer)m_startSettings.get(I_CmsConstants.C_START_PROJECT);       
+        Integer projectId = (Integer)m_workplaceSettings.get(I_CmsConstants.C_START_PROJECT);       
         return projectId.toString();
     }
 
@@ -448,7 +515,7 @@ public class CmsUserSettings {
      * @param projectId the start project id of the user
      */
     public void setStartProject(String projectId) {
-        m_startSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(projectId));
+        m_workplaceSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(projectId));
     }
     
     /**
@@ -457,7 +524,7 @@ public class CmsUserSettings {
      * @return the current start view of the user
      */
     public String getStartView() {
-        return (String)m_startSettings.get(I_CmsConstants.C_START_VIEW);
+        return (String)m_workplaceSettings.get(I_CmsConstants.C_START_VIEW);
     }
     
     /**
@@ -466,7 +533,55 @@ public class CmsUserSettings {
      * @param view the current start view of the user
      */
     public void setStartView(String view) {
-        m_startSettings.put(I_CmsConstants.C_START_VIEW, view);
+        m_workplaceSettings.put(I_CmsConstants.C_START_VIEW, view);
+    }
+    
+    /**
+     * Returns the style of the workplace buttons of the user.<p>
+     * 
+     * @return the style of the workplace buttons of the user
+     */
+    public int getWorkplaceButtonStyle() {
+        int style = C_BUTTONSTYLE_DEFAULT;
+        try {
+            style = Integer.parseInt((String)m_workplaceSettings.get(C_WORKPLACE_BUTTONSTYLE));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+        return style;
+    }
+    
+    /**
+     * Sets the style of the workplace buttons of the user.<p>
+     * 
+     * @param style the style of the workplace buttons of the user
+     */
+    public void setWorkplaceButtonStyle(int style) {
+        m_workplaceSettings.put(C_WORKPLACE_BUTTONSTYLE, "" + style);
+    }
+    
+    /**
+     * Returns the type of the report (simple or extended) of the user.<p>
+     * 
+     * @return the type of the report (simple or extended) of the user
+     */
+    public String getWorkplaceReportType() {
+        String type = C_REPORTTYPE_DEFAULT;
+        try {
+            type = (String)m_workplaceSettings.get(C_WORKPLACE_REPORTTYPE);
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+        return type;
+    }
+    
+    /**
+     * Sets the type of the report (simple or extended) of the user.<p>
+     * 
+     * @param type the type of the report (simple or extended) of the user
+     */
+    public void setWorkplaceReportType(String type) {
+        m_workplaceSettings.put(C_WORKPLACE_REPORTTYPE, type);
     }
     
     /**
@@ -477,7 +592,7 @@ public class CmsUserSettings {
     public boolean useUploadApplet() {
         String use = null;
         try {
-            use = (String)m_startSettings.get(I_CmsConstants.C_START_UPLOADAPPLET);
+            use = (String)m_workplaceSettings.get(I_CmsConstants.C_START_UPLOADAPPLET);
         } catch (NullPointerException e) {
             // do nothing
         }
@@ -491,9 +606,9 @@ public class CmsUserSettings {
      */
     public void setUseUploadApplet(boolean use) {
         if (use) {
-            m_startSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, "on");
+            m_workplaceSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, "on");
         } else {
-            m_startSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, "");
+            m_workplaceSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, "");
         }
     }
     

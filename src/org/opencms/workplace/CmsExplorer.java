@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/12/05 16:22:27 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/02/03 17:06:44 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,13 +60,11 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 5.1
  */
 public class CmsExplorer extends CmsWorkplace {
-    
-    private static final int C_ENTRYS_PER_PAGE = 50;
     
     /**
      * Public constructor.<p>
@@ -269,6 +267,11 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.autolock=");        
         content.append(getSettings().getAutoLockResources());
         content.append(";\n");
+        
+        // the button type setting
+        content.append("top.buttonType=");        
+        content.append(getSettings().getUserSettings().getExplorerButtonStyle());
+        content.append(";\n");
 
         // the help_url
         content.append("top.head.helpUrl='explorer/index.html';\n");
@@ -325,7 +328,7 @@ public class CmsExplorer extends CmsWorkplace {
         int stopat = resources.size();
         int selectedPage = 1;
         int numberOfPages = 0;
-        int maxEntrys = C_ENTRYS_PER_PAGE;
+        int maxEntrys = getSettings().getUserSettings().getExplorerFileEntries();
         
         if (!(galleryView || projectView || showVfsLinks)) {
             selectedPage = getSettings().getExplorerPage();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/03 17:06:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -128,6 +128,20 @@ public abstract class CmsTabDialog extends CmsDialog {
     public abstract List getTabs();
     
     /**
+     * Returns the order of the parameter prefixes for each tab.<p>
+     * 
+     * For example, all parameters stored in tab 1 have the prefix "Tab1", i.e.
+     * the getter and setter methods must be getParam<b>Tab1</b>MyParameterName().<p>
+     * 
+     * To change the tab order, simply change the order in the String array 
+     * and in the generated tab list.<p> 
+     * 
+     * @return the ordered parameter prefix List
+     * @see org.opencms.workplace.CmsTabDialog#getTabs()
+     */
+    public abstract List getTabParameterOrder();
+    
+    /**
      * Returns the number of the currently active tab depending on the request parameter.<p>
      * 
      * This method has to be called once in initWorkplaceRequestValues after filling the request parameters.<p>
@@ -146,13 +160,6 @@ public abstract class CmsTabDialog extends CmsDialog {
         }
         setParamTab("" + tab);
         return tab;
-    }
-       
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // empty
     }
     
     /**
@@ -314,7 +321,7 @@ public abstract class CmsTabDialog extends CmsDialog {
      */
     public String paramsAsHidden() {
         StringBuffer result = new StringBuffer(512);
-        String activeTab = PARAM_TAB + getActiveTab();
+        String activeTab = (String)getTabParameterOrder().get(getActiveTab() - 1);
         Map params = paramValues();
         Iterator i = params.keySet().iterator();
         while (i.hasNext()) {

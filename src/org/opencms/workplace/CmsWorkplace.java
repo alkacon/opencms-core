@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/01/30 11:34:25 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/02/03 17:06:44 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -67,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 5.1
  */
@@ -165,7 +166,22 @@ public abstract class CmsWorkplace {
      */
     public String key(String keyName) {
         return m_settings.getMessages().key(keyName);
-    } 
+    }
+    
+    /**
+     * Get a localized short key value for the workplace.<p>
+     * 
+     * @param keyName name of the key
+     * @return a localized short key value
+     */
+    public String shortKey(String keyName) {
+        String value = key(keyName + ".short");
+        if (value == null || value.startsWith("???")) {
+            // short key value not found, return default key value
+            return key(keyName);
+        }
+        return value;
+    }
     
     /**
      * Returns the current workplace encoding.<p>
@@ -247,8 +263,9 @@ public abstract class CmsWorkplace {
         CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, language);
         settings.setMessages(messages);        
         
-        // save current workplace user
+        // save current workplace user & user settings object
         settings.setUser(cms.getRequestContext().currentUser());
+        settings.setUserSettings(new CmsUserSettings(settings.getUser()));
         
         // save the autolock resources setting
         settings.setAutoLockResources("true".equals(OpenCms.getRuntimeProperty("workplace.autolock.resources")));
@@ -443,7 +460,7 @@ public abstract class CmsWorkplace {
             if (value == null) {
                 result.append("<option");
                 if (i == selected) {
-                    result.append(" selected");
+                    result.append(" selected=\"selected\"");
                 }
                 result.append(">");  
                 result.append(options.get(i));
@@ -456,7 +473,7 @@ public abstract class CmsWorkplace {
                 result.append(value);
                 result.append("\""); 
                 if (i == selected) {
-                    result.append(" selected");
+                    result.append(" selected=\"selected\"");
                 }
                 result.append(">");                
                 result.append(options.get(i));
@@ -1119,7 +1136,7 @@ public abstract class CmsWorkplace {
                 result.append(image);
                 result.append(".gif");
                 result.append("');\">");
-                result.append(key(label));
+                result.append(shortKey(label));
                 result.append("</span></span>");
                 if (href != null) {
                     result.append("</a>");
@@ -1146,7 +1163,7 @@ public abstract class CmsWorkplace {
                     result.append("class=\"disabled\"");
                 }
                 result.append("><span unselectable=\"on\" class=\"txtbutton\">");
-                result.append(key(label));
+                result.append(shortKey(label));
                 result.append("</span></span>");
                 if (href != null) {
                     result.append("</a>");

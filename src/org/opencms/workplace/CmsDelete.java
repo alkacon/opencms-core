@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/02/03 17:06:44 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
@@ -181,12 +181,8 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
             return false;
         }
         
-        // TODO: remove check finally
-        //if (sourceRes.isHardLink()) {
-            deleteOption = "true".equalsIgnoreCase(getParamDeleteVfsLinks()) ? I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS : I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS;
-        //} else {
-        //    deleteOption = I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS;
-        //}
+        // determine the correct delete option
+        deleteOption = "true".equalsIgnoreCase(getParamDeleteVfsLinks()) ? I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS : I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS;
          
         // delete the resource
         getCms().deleteResource(getParamResource(), deleteOption);
@@ -226,7 +222,8 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
             return false;           
         }
         int type = lock.getType();
-        return (type == CmsLock.C_TYPE_EXCLUSIVE || type == CmsLock.C_TYPE_INHERITED);
+        boolean autoLockFeature = lock.isNullLock() && getSettings().getAutoLockResources();
+        return (autoLockFeature || type == CmsLock.C_TYPE_EXCLUSIVE || type == CmsLock.C_TYPE_INHERITED);
     }
     
     /**

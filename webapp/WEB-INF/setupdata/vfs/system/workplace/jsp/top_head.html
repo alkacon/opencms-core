@@ -7,7 +7,7 @@
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsFrameset wp = new CmsFrameset(cms);
 
-	int buttonStyle = 1;
+	int buttonStyle = wp.getSettings().getUserSettings().getWorkplaceButtonStyle();
 
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
@@ -101,9 +101,10 @@ if (wp.isHelpEnabled()) {
 <%= wp.buttonBarSeparator(5, 0) %>  
 <%= wp.button("../../login/index.html?logout=true", "_top", "logout", "button.exit", buttonStyle) %>
 
+<% if (buttonStyle != 2) {%>
 <td>&nbsp;</td>
 <td><span style="display: block; width: 80px; height: 22px; background-image: url('<%= wp.getSkinUri() %>/logos/workplace.gif'); "></span></td>
-
+<% } %>
 <%= wp.buttonBar(wp.HTML_END) %>
 
 </body>

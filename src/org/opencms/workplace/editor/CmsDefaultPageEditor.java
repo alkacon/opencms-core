@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/27 10:49:10 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/02/03 17:06:44 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1.12
  */
@@ -392,10 +392,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * Builds the html to display the special action button for the direct edit mode of the editor.<p>
      * 
      * @param jsFunction the JavaScript function which will be executed on the mouseup event 
+     * @param type 0: image only (default), 1: image and text, 2: text only
      * @return the html to display the special action button
      */
-    public String buttonActionDirectEdit(String jsFunction) {
-        //StringBuffer retValue = new StringBuffer(256);
+    public String buttonActionDirectEdit(String jsFunction, int type) {
         // get the action class from the OpenCms runtime property
         I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
         String url;
@@ -418,10 +418,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         
         if (active) {
             // create the link for the button
-            return button("javascript:" + jsFunction, null, image, name, 0, url.substring(0, url.lastIndexOf("/") + 1));
+            return button("javascript:" + jsFunction, null, image, name, type, url.substring(0, url.lastIndexOf("/") + 1));
         } else {
             // create the inactive button
-            return button(null, null, image, name + "_in", 0, url.substring(0, url.lastIndexOf("/") + 1));
+            return button(null, null, image, name + "_in", type, url.substring(0, url.lastIndexOf("/") + 1));
         }
     }
     
