@@ -687,6 +687,8 @@
 				<empty> </empty>
 				<existsreason>This module already exists.</existsreason>
 				<existsugg>Change the packetname.</existsugg>
+				<noprojectreason>Could not create the modulefolder in /system/modules/ .</noprojectreason>
+				<noprojectsugg>Create a project including the rootfolder.</noprojectsugg>
 			</error>			
 		</module>
 

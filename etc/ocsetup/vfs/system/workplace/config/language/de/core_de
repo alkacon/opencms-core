@@ -691,6 +691,8 @@
 				<empty> </empty>
 				<existsreason>Es existiert schon ein Modul mit diesem Namen.</existsreason>
 				<existsugg>Ändern Sie den Namen für ein neues Modul oder wählen Sie aus dem Kontexmenu administrieren für dieses Modul.</existsugg>
+				<noprojectreason>Der Modulordner im Verzeichniss /system/modules/ konnte nicht angelegt werden.</noprojectreason>
+				<noprojectsugg>Legen Sie ein Project an in dem das Hauptverzeichniss enthalten ist.</noprojectsugg>
 			</error>
 		</module>
 		

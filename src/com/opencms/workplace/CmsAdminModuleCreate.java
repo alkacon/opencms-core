@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/06 14:35:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/11/08 09:25:48 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -132,6 +132,15 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 						templateSelector = "errornoname";
 					}
 				}else{
+					// create the module (first test if we are in a project including /system/
+					try{
+						cms.createFolder("/system/modules/", packetname);
+					}catch(Exception e){
+						//throw new CmsException("couldn't create Module, sorry ", e);
+						templateDocument.setData("details", Utils.getStackTrace(e));
+						return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
+					}
+					
 					long createDateLong = 0;
 					try{
 						createDateLong = dateFormat.parse(createDate).getTime();
@@ -162,8 +171,6 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 						tryToCreateFolder(cms, workString, (String)cFolders.elementAt(i));
 						workString = workString + (String)cFolders.elementAt(i) + "/";
 					}
-					
-					tryToCreateFolder(cms, "/system/modules/", packetname);
 					String modulePath = "/system/modules/"+ packetname+"/";
 					tryToCreateFolder(cms, modulePath, "templates");
 					tryToCreateFolder(cms, modulePath, "language");
@@ -243,11 +250,9 @@ private String getStringValue(String param) {
  */
 private void tryToCreateFolder(CmsObject cms, String folder, String newFolder) {
 
-System.err.println("mgm----tryToCreateFolder: "+ folder+" - "+ newFolder);		
 	try{
 		cms.createFolder(folder, newFolder);
 	}catch(Exception e){
-System.err.println("mgm-Exception: "+e.toString());		
 	}	
 }
 }
