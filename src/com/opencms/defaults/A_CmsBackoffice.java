@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/11/08 14:11:42 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2001/11/22 14:18:37 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1506,6 +1506,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         String url = "";
         int columns = 0;
         String style = ">";
+        String url_style = "";
 
         // get number of columns
         Vector columnsVector = new Vector();
@@ -1617,6 +1618,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             // set the fontformat of the current row
             // each entry is formated depending on the state of the cd object
             style = this.getStyle(cms, template, entryObject)+">";
+            //style entry for backoffice with getUrl method
+            url_style = this.getStyle(cms, template, entryObject);
             //style = ">";
             //set data of single row
             for (int j = 0; j < columns; j++) {
@@ -1672,6 +1675,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
                     }
                     if(!url.equals("")) {
                         // enable url
+                        template.setData("url_style",url_style);
                         entry += (template.getDataValue("tabledatabegin"))
                                 + style
                                 + (template.getProcessedDataValue("url", this, parameters))
@@ -3002,6 +3006,10 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
           session.removeValue(this.getContentDefinitionClass().getName());
           session.removeValue("backofficepageselectorvector");
           session.removeValue("backofficepagetemplateselector");
+          session.removeValue("media");
+          session.removeValue("selectedmediaCD");
+          session.removeValue("media_position");
+
           //do the redirect
           // to do: replace the getUri method with getPathInfo if aviable
           //String uri=  cms.getRequestContext().getUri();
