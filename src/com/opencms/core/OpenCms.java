@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/02/29 16:44:45 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/03/09 10:11:42 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.20 $ $Date: 2000/02/29 16:44:45 $  
+* @version $Revision: 1.21 $ $Date: 2000/03/09 10:11:42 $  
 * 
 */
 
@@ -79,15 +79,9 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
      private CmsSession m_sessionStorage;
  
      /**
-      * The reference to the resource broker
-      */
-     private I_CmsResourceBroker m_rb;
-
-     /**
       * Reference to the OpenCms launcer manager
       */
      private CmsLauncherManager m_launcherManager;
-
      
      /**
       * Hashtable with all available Mimetypes.
@@ -108,18 +102,14 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
         // invoke the ResourceBroker via the initalizer
         try {
 			
-            if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating main resourcebroker");
-			}
-  		    m_rb = ((A_CmsInit) Class.forName(classname).newInstance() ).init(driver, connect);
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating first cms-object");
 			}
             CmsObject cms=new CmsObject();
 			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the cms-object with the main resource-broker");
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the cms-object and the main resource-broker");
 			}
-            cms.init(m_rb);
+            cms.init(((A_CmsInit) Class.forName(classname).newInstance() ).init(driver, connect));
 			printCopyrightInformation(cms);
             // initalize the Hashtable with all available mimetypes
 			if(A_OpenCms.isLogging()) {
