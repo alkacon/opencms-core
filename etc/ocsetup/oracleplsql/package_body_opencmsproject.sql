@@ -434,7 +434,7 @@ PACKAGE BODY OpenCmsProject IS
       -- resource is deleted
       ELSIF recFiles.state = opencmsConstants.C_STATE_DELETED THEN
         --checkExport ???
-        curNewFile := opencmsResource.readFileHeader(pUserId, pOnlineProjectId, pOnlineProjectId, recFiles.resource_name);
+        curNewFile := opencmsResource.readFileNoAccess(pUserId, pOnlineProjectId, pOnlineProjectId, recFiles.resource_name);
         FETCH curNewFile INTO recNewFile;
         CLOSE curNewFile;
         delete from cms_properties where resource_id = recNewFile.resource_id;
@@ -471,7 +471,7 @@ PACKAGE BODY OpenCmsProject IS
       -- resource is changed
       ELSIF recFiles.state = opencmsConstants.C_STATE_CHANGED THEN
         -- does the folder exist in the online-project?
-        curNewFile := opencmsResource.readFileHeader(pUserId, pOnlineProjectId, pOnlineProjectId, recFiles.resource_name);
+        curNewFile := opencmsResource.readFileNoAccess(pUserId, pOnlineProjectId, pOnlineProjectId, recFiles.resource_name);
         FETCH curNewFile INTO recNewFile;
         CLOSE curNewFile;
         -- folder does not exist in online-project => create folder

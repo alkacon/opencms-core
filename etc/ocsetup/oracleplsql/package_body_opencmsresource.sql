@@ -6,7 +6,6 @@ PACKAGE BODY opencmsresource IS
   bAnyList VARCHAR2(32767);
   bResourceList VARCHAR2(32767) := '';
   FUNCTION addInList(pName VARCHAR2) RETURN BOOLEAN;
-  FUNCTION readFileNoAccess(pUserId NUMBER, pProjectID NUMBER, pOnlineProjectId NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor;
 --------------------------------------------------------------------------------------------------------------
 -- this procedure is called from DbAccess. It calls the second lockResource-procedure and returns a resultset
 -- which is needed to update the resource-cache
