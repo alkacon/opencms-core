@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchAnalyzer.java,v $
- * Date   : $Date: 2004/07/02 16:05:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/05 14:32:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,8 @@ import java.io.Serializable;
  * with trimmed endings etc.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
+ * @since 5.3.6
  */
 public class CmsSearchAnalyzer implements Serializable, Cloneable {
     

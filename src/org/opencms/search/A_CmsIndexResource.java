@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/A_CmsIndexResource.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/05 14:32:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,9 @@ import org.opencms.util.CmsUUID;
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.2 $ $Date: 2004/07/05 14:32:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public abstract class A_CmsIndexResource {
@@ -62,12 +63,6 @@ public abstract class A_CmsIndexResource {
     /** Mimetype of the object, <code>null</code> if the object is a <code>CmsMasterDataSet</code>. */
     protected String m_mimeType;
 
-    /** Channel of the object, <code>null</code> if the object is a <code>CmsResource</code>. */
-    protected String m_channel;
-    
-    /** Content definition of the object, <code>null</code> if the object is a <code>CmsResource</code>. */
-    protected String m_contentDefinition;
-    
     /**
      * Returns the wrapped data object.<p>
      * 
@@ -117,24 +112,6 @@ public abstract class A_CmsIndexResource {
      */
     public String getRootPath() {
         return m_path;
-    }
-    
-    /**
-     * Returns the channel of the wrapped object.<p>
-     * 
-     * @return the channel of the wrapped object or <code>null</code>
-     */
-    public String getChannel() {
-        return m_channel;
-    }
-    
-    /**
-     * Returns the content definition of the wrapped object.<p>
-     * 
-     * @return the content definition or <code>null</code>
-     */
-    public String getContentDefinition() {
-        return m_contentDefinition;
     }
     
     /**

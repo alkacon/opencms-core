@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/05 14:32:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@ package com.opencms.legacy;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.search.CmsIndexException;
 import org.opencms.search.A_CmsIndexResource;
+import org.opencms.search.CmsIndexException;
 import org.opencms.search.documents.CmsHtmlExtractor;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
@@ -50,10 +50,11 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.4 $ $Date: 2004/07/05 14:32:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  */
-public class CmsCosDocument implements I_CmsDocumentFactory {
+public class CmsCosDocument implements I_CmsCosDocumentFactory {
 
     /* Matches anything that is not a number, hex-number, uuid or whitespace */
     private static final Pattern C_NON_NUM_UUID_WS = Pattern.compile("[^a-fA-F0-9\\-_\\s]");
@@ -149,11 +150,11 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, 
             DateField.timeToString(content.m_dateLastModified)));
 
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_CHANNEL, resource.getChannel()));
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_CONTENT_DEFINITION, resource.getContentDefinition()));
+        document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CHANNEL, ((CmsCosIndexResource)resource).getChannel()));
+        document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CONTENT_DEFINITION, ((CmsCosIndexResource)resource).getContentDefinition()));
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_PATH, path));
         
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_CONTENT_ID, resource.getId().toString()));
+        document.add(Field.UnIndexed(I_CmsCosDocumentFactory.DOC_CONTENT_ID, resource.getId().toString()));
         document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(resource, language)));
 
         return document;

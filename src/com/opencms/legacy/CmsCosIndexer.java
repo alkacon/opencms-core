@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/07/05 14:16:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/05 14:32:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,8 +63,9 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2004/07/05 14:16:41 $
+ * @version $Revision: 1.10 $ $Date: 2004/07/05 14:32:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
@@ -250,10 +251,10 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     public A_CmsIndexResource readResource(CmsObject cms, Document doc) throws CmsException {
         
         try {
-            String channel   = doc.getField(I_CmsDocumentFactory.DOC_CHANNEL).stringValue();
+            String channel   = doc.getField(I_CmsCosDocumentFactory.DOC_CHANNEL).stringValue();
             String path      = doc.getField(I_CmsDocumentFactory.DOC_PATH).stringValue();
-            String cdClass   = doc.getField(I_CmsDocumentFactory.DOC_CONTENT_DEFINITION).stringValue();
-            String contentId = doc.getField(I_CmsDocumentFactory.DOC_CONTENT_ID).stringValue();
+            String cdClass   = doc.getField(I_CmsCosDocumentFactory.DOC_CONTENT_DEFINITION).stringValue();
+            String contentId = doc.getField(I_CmsCosDocumentFactory.DOC_CONTENT_ID).stringValue();
             
             Class clazz = Class.forName(cdClass);
             CmsMasterContent contentDefinition = (CmsMasterContent)clazz.getDeclaredConstructor(
@@ -282,7 +283,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
         String channel = null;
         A_CmsIndexResource result = null;
         
-        if ((f = doc.getField(I_CmsDocumentFactory.DOC_CHANNEL)) != null) {
+        if ((f = doc.getField(I_CmsCosDocumentFactory.DOC_CHANNEL)) != null) {
             channel = f.stringValue();
             
             if (channel != null) {

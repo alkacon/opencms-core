@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexResource.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/05 14:32:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,9 @@ import com.opencms.defaults.master.CmsMasterDataSet;
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.3 $ $Date: 2004/07/05 14:32:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsCosIndexResource extends A_CmsIndexResource {
@@ -70,5 +71,32 @@ public class CmsCosIndexResource extends A_CmsIndexResource {
      */
     public String getDocumentKey() {
         return "COS" + getType();
+    }
+
+    /**
+     * Channel of the object, <code>null</code> if the object is a <code>CmsResource</code>. 
+     */
+    protected String m_channel;
+    /**
+     * Content definition of the object, <code>null</code> if the object is a <code>CmsResource</code>. 
+     */
+    protected String m_contentDefinition;
+
+    /**
+     * Returns the channel of the wrapped object.<p>
+     * 
+     * @return the channel of the wrapped object or <code>null</code>
+     */
+    public String getChannel() {
+        return m_channel;
+    }
+
+    /**
+     * Returns the content definition of the wrapped object.<p>
+     * 
+     * @return the content definition or <code>null</code>
+     */
+    public String getContentDefinition() {
+        return m_contentDefinition;
     }    
 }

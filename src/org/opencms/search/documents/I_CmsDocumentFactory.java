@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/07/05 14:32:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,23 +39,15 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.9 $ $Date: 2004/07/05 14:32:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  */
 public interface I_CmsDocumentFactory {
-
-    /** Channel of cos document. */
-    String DOC_CHANNEL = "channel";
 
     /** Search field for document content. */
     String DOC_CONTENT = "content";
     
-    /** Content definition of cos document. */
-    String DOC_CONTENT_DEFINITION = "contentdefinition";
-    
-    /** Content id of cos document. */
-    String DOC_CONTENT_ID = "contentid";
-
     /** Search field for document creation date. */
     String DOC_DATE_CREATED = "created";
 
