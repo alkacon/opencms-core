@@ -30,6 +30,7 @@
     addMenuEntry(resource_id, "language_key(explorer.context.chgrp)",           "chgrp.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.access)",          "chmod.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.type)",            "chtype.html?initial=true",             "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
+    addMenuEntry(resource_id, "language_key(explorer.context.chnav)",           "chnav.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa dddd dddd dddd)");
 
     addMenuEntry(resource_id, "language_key(explorer.context.history)",         "history.html?initial=true",            "''",   "rules_key(a a aaaa aaaa aaaa aaaa aaaa)");
