@@ -8,8 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.12 Bela Tegeuse - xx xxx 2001
+OpenCms 4.3.12 Bela Tegeuse - 17 May 2001
 ! Added db2 sql setup script. Thanks to Uwe Heldt.
+! Timeout for the new element cache. 
 - Logging can be generally disabled by setting C_PREPROCESSOR_IS_LOGGING to false.
 - Removed all System.err.println() - debug messages.
 - Removed all excpetion.printStackTrace() - debug messages.
