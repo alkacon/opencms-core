@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/08 15:16:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/11/08 17:14:13 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -202,8 +202,8 @@ private void fillHashtable(CmsObject cms, I_CmsRegistry reg, Hashtable table, St
 			}
 			if("propsready".equals(from)){
 				// ready; save changes in registry
-				// TODO: if error in updateTheModule => show errorPage
 				updateTheModule(cms, reg, sessionData, packetName);
+				session.removeValue(C_SESSION_MODULE_ADMIN_DATA);
 				templateSelector = "done";
 			}
  		}
