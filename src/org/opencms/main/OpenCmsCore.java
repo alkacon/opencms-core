@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/27 14:24:16 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2004/03/02 21:53:45 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.cron.CmsCronEntry;
 import org.opencms.cron.CmsCronScheduleJob;
 import org.opencms.cron.CmsCronScheduler;
@@ -101,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.96 $
+ * @version $Revision: 1.97 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -233,9 +235,9 @@ public final class OpenCmsCore {
             if (m_instance != null && (m_instance.getRunLevel() > 0)) {
                 throw new CmsInitException("OpenCms already initialized!");
             }
-            m_instance = this;
             initMembers();
             setRunLevel(1);
+            m_instance = this;
         }
     }
 
@@ -245,7 +247,7 @@ public final class OpenCmsCore {
      * @return the initialized OpenCms instance
      * @throws RuntimeException in case the OpenCms instance was not properly initialized
      */
-    public static synchronized OpenCmsCore getInstance() {
+    public static OpenCmsCore getInstance() {
         if (m_instance == null) {
             try {
                 // create a new core object with runlevel 1
@@ -548,9 +550,11 @@ public final class OpenCmsCore {
     /**
      * This method returns the runtime configuration.
      * 
+     * HACK: I need this for loader init as long as loaders still need properties
+     * 
      * @return The runtime configuration.
      */
-    protected ExtendedProperties getConfiguration() {
+    public ExtendedProperties getConfiguration() {
         return m_configuration;
     }
 
@@ -1095,10 +1099,39 @@ public final class OpenCmsCore {
         // read the default user configuration
         m_defaultUsers = CmsDefaultUsers.initialize(configuration);
 
+        // save the configuration
+        // HACK: I need this for loader init as long as loaders still need properties
+        m_configuration = configuration;        
+        
+        // try to initialize the flex cache
+        try {
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : starting");
+            }
+            // pass configuration to flex cache for initialization
+            new CmsFlexCache(configuration);
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : finished");
+            }
+        } catch (Exception e) {
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". Flex cache init      : non-critical error " + e.toString());
+            }
+        }        
+        
+        // load the XML configuration
+        CmsConfigurationManager configurationManager = new CmsConfigurationManager();        
+        configurationManager.loadXmlConfiguration(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/opencms.xml"));
+        
+        // get the VFS configuration
+        CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)configurationManager.getConfiguration(CmsVfsConfiguration.class);
+        m_loaderManager = vfsConfiguation.getLoaderManager();        
+        List resourceTypes = vfsConfiguation.getResourceTypes();
+        
         try {
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
-            m_driverManager = CmsDriverManager.newInstance(configuration);
+            m_driverManager = CmsDriverManager.newInstance(configuration, resourceTypes);
         } catch (Exception e) {
             if (getLog(this).isErrorEnabled()) {
                 getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "3", e);
@@ -1147,37 +1180,6 @@ public final class OpenCmsCore {
         setRuntimeProperty(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, flexErrorPageCommit);
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info(". JSP errorPage commit : " + (flexErrorPageCommit.booleanValue() ? "enabled" : "disabled"));
-        }
-
-        // try to initialize the flex cache
-        try {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : starting");
-            }
-            // pass configuration to flex cache for initialization
-            new CmsFlexCache(configuration);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : finished");
-            }
-        } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Flex cache init      : non-critical error " + e.toString());
-            }
-        }
-
-        // initialize the loaders
-        try {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader init  : starting");
-            }
-            m_loaderManager = new CmsLoaderManager(configuration);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader init  : finished");
-            }
-        } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". ResourceLoader init  : non-critical error " + e.toString());
-            }
         }
 
         // try to initialize directory translations
@@ -1324,10 +1326,6 @@ public final class OpenCmsCore {
         // initializes the cron manager
         // TODO enable the cron manager
         //m_cronManager = new CmsCronManager();
-
-        // save the configuration
-        m_configuration = configuration;
-
     }
 
     /**
