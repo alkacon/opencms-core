@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/11 13:20:06 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/01/12 16:46:11 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
+import org.opencms.util.CmsStringMapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsStringMapper;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
@@ -62,7 +63,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -180,7 +181,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         String defaultValue = (String)m_defaultValues.get(type.getElementName());
         if (defaultValue != null) {
             // return the string set in the appinfo with processed macros
-            return CmsStringUtil.substituteMacros(defaultValue, new CmsDefaultXmlStringMapper(this, null, locale, cms));
+            return CmsStringUtil.substituteMacros(defaultValue, new CmsStringMapper(this, null, locale, cms));
         }
 
         // default implementation currently just uses the "getDefault" mehod of the given value
@@ -532,7 +533,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         additionalValues.put(I_CmsStringMapper.KEY_VALIDATION_PATH, value.getPath());
 
         return CmsStringUtil
-            .substituteMacros(message, new CmsDefaultXmlStringMapper(this, additionalValues, null, cms));
+            .substituteMacros(message, new CmsStringMapper(this, additionalValues, null, cms));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2004/12/11 12:35:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/01/12 16:46:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagContentContainer {
@@ -169,14 +169,6 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
         m_parentTag = null;
         m_index = 0;
         super.release();
-    }
-
-    /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#resolveMagicName(java.lang.String)
-     */
-    public String resolveMagicName(String name) {
-
-        return m_parentTag.resolveMagicName(name);
     }
 
     /**

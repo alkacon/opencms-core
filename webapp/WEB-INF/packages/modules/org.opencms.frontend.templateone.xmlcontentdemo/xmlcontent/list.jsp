@@ -6,7 +6,7 @@
 
 <cms:include file="list_content.html" element="header" editable="true"/> 
 
-<cms:contentload collector="allInFolderDateReleasedDesc" property="xmlcontent-demo" param="article_${number}.html|12" editable="true">
+<cms:contentload collector="${property.collector}" param="${property.xmlcontent-demo}article_${number}.html|12" editable="true">
 
 <div class="element">
 
@@ -16,7 +16,7 @@
 <cms:contentshow element="Teaser" /></br>
 <small>
 By <cms:contentshow element="Author" />
-<a href="<cms:link><cms:contentshow element="opencms:filename" /></cms:link>">read more...</a>
+<a href="<cms:link><cms:contentshow element="${opencms:filename}" /></cms:link>">read more...</a>
 </small>
 </p>
 </div>

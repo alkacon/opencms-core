@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2004/12/11 12:35:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/01/12 16:46:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringMapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlException;
@@ -54,13 +55,16 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
 
     /** Name of the content node element to show. */
     private String m_element;
+    
+    /** The string mapper to resolve EL like strings in tag attributes. */
+    private CmsStringMapper m_stringMapper;
 
     /**
      * Internal action method to show an element from a XML content document.<p>
@@ -107,6 +111,11 @@ public class CmsJspTagContentShow extends TagSupport {
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     public int doStartTag() throws JspException {
+        
+        // initialize a string mapper to resolve EL like strings in tag attributes
+        CmsFlexController controller = (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsObject cms = controller.getCmsObject();        
+        m_stringMapper = new CmsStringMapper(cms, pageContext);
 
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
@@ -118,7 +127,7 @@ public class CmsJspTagContentShow extends TagSupport {
         // get loaded content from parent <contentload> tag
         A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
         Locale locale = contentContainer.getXmlDocumentLocale();
-
+ 
         String element = getElement();
 
         if (CmsStringUtil.isEmpty(element)) {
@@ -128,10 +137,11 @@ public class CmsJspTagContentShow extends TagSupport {
         }
 
         String content;
-        if (element.startsWith(I_CmsJspTagContentContainer.C_MAGIC_PREFIX)) {
+        if (element.startsWith(CmsStringUtil.C_MACRO_DELIMITER + CmsStringUtil.C_MACRO_START)
+            && element.endsWith(CmsStringUtil.C_MACRO_END)) {
 
-            // this is a "magic" element name, resolve it
-            content = contentContainer.resolveMagicName(element);
+            // this is an EL like string
+            content = m_stringMapper.map(element, contentContainer);
         } else {
 
             // now get the content element value to display

@@ -6,7 +6,7 @@
 
 <cms:include file="list_content.html" element="header" editable="true"/>
 
-<cms:contentload collector="allInFolderDateReleasedDesc" property="xmlcontent-demo" param="widgetdemo_${number}|13" editable="true">
+<cms:contentload collector="allInFolderDateReleasedDesc" param="${property.xmlcontent-demo}widgetdemo_${number}|13" editable="true">
 
 <%@ include file="detail_include.txt" %>
 
@@ -15,5 +15,3 @@
 </div>
 
 <cms:include property="template" element="foot" />
-
-

@@ -5,7 +5,7 @@
 <div class="element">
 <cms:include file="list_content.html" element="header" editable="true"/> 
 
-<cms:contentload collector="allInFolderDateReleasedDesc" property="xmlcontent-demo" param="bookmark_${number}.html|14" editable="true">
+<cms:contentload collector="allInFolderDateReleasedDesc" param="${property.xmlcontent-demo}bookmark_${number}.html|14" editable="true">
 
 <%@ include file="detail_include.txt" %>
 
@@ -14,5 +14,3 @@
 </div>
 
 <cms:include property="template" element="foot" />
-
-

@@ -116,7 +116,13 @@
         </attribute>
         <attribute>
             <name>editable</name>
-        </attribute>      
+        </attribute>    
+        <attribute>
+            <name>pageIndex</name>
+        </attribute> 
+        <attribute>
+            <name>pageSize</name>
+        </attribute>  
     </tag>    
         
     <tag>
@@ -129,7 +135,25 @@
         <attribute>
             <name>element</name>
         </attribute>
-    </tag>    
+    </tag>  
+    
+    <tag>
+        <name>contentinfo</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentInfo</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag provides access to individual XML content node element values.
+        </description>              
+        <attribute>
+            <name>var</name>
+        </attribute>
+        <attribute>
+            <name>value</name>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+        </attribute>        
+    </tag>      
     
     <tag>
         <name>contentloop</name>

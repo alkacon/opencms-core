@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/I_CmsStringMapper.java,v $
- * Date   : $Date: 2004/12/11 13:20:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/01/12 16:46:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,35 @@
 
 package org.opencms.util;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Used to resolve macro names of the form <code>${name}</code>.<p>
  */
 public interface I_CmsStringMapper {
+
+    /** Identifier for "magic" parameter names. */
+    String C_KEY_OPENCMS = "opencms:";
+
+    /** The prefix indicating that the key represents a page context object. */
+    String C_KEY_PAGE_CONTEXT = "pageContext.";
+
+    /** The prefix indicating that the key represents a Cms property to be read on the current request URI. */
+    String C_KEY_PROPERTY = "property.";
+
+    /** The prefix indicating that the key represents a Cms property to be read on the current element. */
+    String C_KEY_PROPERTY_ELEMENT = "elementProperty.";
+
+    /** The prefix indicating that the key represents a Http request parameter. */
+    String C_KEY_REQUEST_PARAM = "param.";
+
+    /** Identified for "magic" parameter commands. */
+    String[] C_VALUE_NAMES_ARRAY_OPENCMS = {"uri", "filename"};
+
+    /** The "magic" commands wrapped in a List. */
+    List C_VALUE_NAMES_OPENCMS = Collections.unmodifiableList(Arrays.asList(C_VALUE_NAMES_ARRAY_OPENCMS));
 
     /** Key used to specify the current time as macro value. */
     String KEY_CURRENT_TIME = "currenttime";
@@ -95,4 +120,5 @@ public interface I_CmsStringMapper {
      * @return the mapped value or <code>null</code>
      */
     String getValue(String key);
+    
 }

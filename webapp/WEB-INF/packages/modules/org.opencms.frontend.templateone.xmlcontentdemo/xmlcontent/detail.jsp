@@ -4,7 +4,7 @@
 
 
 <div class="element">
-<cms:contentload collector="singleFile" param="opencms:uri" editable="true">
+<cms:contentload collector="${elementProperty.collector}" param="${opencms:uri}" editable="true">
 
 <h1><cms:contentshow element="Title" /></h1>
 

@@ -4,7 +4,7 @@
 
 
 <div class="element">
-<cms:contentload collector="singleFile" param="opencms:uri" editable="true">
+<cms:contentload collector="singleFile" param="${opencms:uri}" editable="true">
 
 <%@ include file="detail_include.txt" %>
 
@@ -12,5 +12,3 @@
 </div>
 
 <cms:include property="template" element="foot" />
-
-
