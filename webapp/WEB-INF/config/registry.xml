@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <registry>
 	<system>
-		<importexport>
-            <handler>com.opencms.legacy.CmsCosImportExportHandler</handler>
-            <handler>org.opencms.importexport.CmsVfsImportExportHandler</handler>
-            <handler>org.opencms.importexport.CmsModuleImportExportHandler</handler>
-			<vfsdataimport>
-				<class>com.opencms.legacy.CmsImportVersion1</class>
-				<class>org.opencms.importexport.CmsImportVersion2</class>
-				<class>org.opencms.importexport.CmsImportVersion3</class>
-				<class>org.opencms.importexport.CmsImportVersion4</class>
-			</vfsdataimport>
-		</importexport>
 		<dialoghandler>
 			<class>org.opencms.workplace.CmsDelete</class>
 			<class>org.opencms.workplace.CmsLock</class>
