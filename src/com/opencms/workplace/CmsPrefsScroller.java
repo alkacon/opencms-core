@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPrefsScroller.java,v $
-* Date   : $Date: 2001/01/24 09:43:30 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/05/15 19:29:07 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -41,7 +41,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PREFSSCROLLER&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2001/01/24 09:43:30 $
+ * @version $Revision: 1.5 $ $Date: 2001/05/15 19:29:07 $
  */
 
 public class CmsPrefsScroller extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
@@ -127,8 +127,6 @@ public class CmsPrefsScroller extends A_CmsWpElement implements I_CmsWpElement,I
             Throwable e = targetEx.getTargetException();
             if(!(e instanceof CmsException)) {
                 
-                // Only print an error if this is NO CmsException
-                e.printStackTrace();
                 throwException("Prefs scroller fill method " + methodName + " in calling class " 
                         + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
             }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2001/04/24 08:57:49 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2001/05/15 19:29:00 $
+* Version: $Revision: 1.18 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2001/04/24 08:57:49 $
+ * @version $Revision: 1.18 $ $Date: 2001/05/15 19:29:00 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -134,15 +134,17 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
         if((type != null) && type.startsWith("multipart/form-data")&& (req.getContentLength() > -1)) {
             readRequest();
         }
-        if(A_OpenCms.isLogging() && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
             A_OpenCms.log(C_OPENCMS_INFO, "WARNING: unescaped \"/\" found in URL parameter! This may cause problems with some servlet environments.");
             A_OpenCms.log(C_OPENCMS_INFO, javax.servlet.http.HttpUtils.getRequestURL(m_req).toString());
         }
         if(m_req.getPathInfo().indexOf("?") != -1) {
-            A_OpenCms.log(C_OPENCMS_CRITICAL, "WARNING: URL parameters were not extracted properly.");
-            A_OpenCms.log(C_OPENCMS_CRITICAL, "This may be caused by a bug in your servlet environment with handling \"/\" characters. ");
-            A_OpenCms.log(C_OPENCMS_CRITICAL, "Please make sure you are escaping all special chars (including \"/\") in your HTML forms.");
-            A_OpenCms.log(C_OPENCMS_CRITICAL, m_req.getPathInfo());
+	        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
+				A_OpenCms.log(C_OPENCMS_CRITICAL, "WARNING: URL parameters were not extracted properly.");
+				A_OpenCms.log(C_OPENCMS_CRITICAL, "This may be caused by a bug in your servlet environment with handling \"/\" characters. ");
+				A_OpenCms.log(C_OPENCMS_CRITICAL, "Please make sure you are escaping all special chars (including \"/\") in your HTML forms.");
+				A_OpenCms.log(C_OPENCMS_CRITICAL, m_req.getPathInfo());
+			}
             throw new IOException("URL parameters not extracted properly by servlet environment. " + m_req.getPathInfo());
         }
     }
@@ -336,8 +338,8 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
         }
 
         /*   if(parameter != null && !"".equals(parameter) && (parameter.indexOf("%") != -1)) {
-        if(A_OpenCms.isLogging()) {
-        A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRequestHttpServlet] encoding required for parameter " + name + "=" + parameter);
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        	A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRequestHttpServlet] encoding required for parameter " + name + "=" + parameter);
         }
         parameter = Encoder.unescape(parameter);
         }*/

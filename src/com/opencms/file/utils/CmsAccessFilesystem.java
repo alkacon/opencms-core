@@ -2,8 +2,8 @@ package com.opencms.file.utils;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsAccessFilesystem.java,v $
- * Date   : $Date: 2000/08/15 16:25:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/05/15 19:29:04 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -84,7 +84,7 @@ public void createFolder(String foldername, String key) throws CmsException {
 	// check if this folder already exits
 	if (!discFolder.exists()) {
 		boolean success = discFolder.mkdir();
-		if ((!success) && A_OpenCms.isLogging()) {
+		if ((!success) && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + absoluteName(foldername, key) + ".");
 		}
 		//	throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_FILESYSTEM_ERROR);

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2001/03/05 11:37:19 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2001/05/15 19:29:00 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2001/03/05 11:37:19 $
+ * @version $Revision: 1.19 $ $Date: 2001/05/15 19:29:00 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -380,7 +380,6 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 			m_exportZipStream.closeEntry();
 		} catch(Exception exc) {
 			System.out.println("Error");
-			exc.printStackTrace();
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 
@@ -616,7 +615,6 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             writeXmlGroupEntrys(group);
         } catch(Exception e) {
             System.out.println("Error");
-            e.printStackTrace();
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }
         System.out.println("OK");
@@ -636,7 +634,6 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             writeXmlUserEntrys(user);
         } catch(Exception e) {
             System.out.println("Error");
-            e.printStackTrace();
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }
         System.out.println("OK");

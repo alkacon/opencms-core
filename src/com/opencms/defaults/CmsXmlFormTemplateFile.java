@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2001/01/24 09:41:53 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/05/15 19:29:00 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * See the handleXxxTag Methods for more details.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2001/01/24 09:41:53 $
+ * @version $Revision: 1.6 $ $Date: 2001/05/15 19:29:00 $
  */
 public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
     
@@ -252,7 +252,6 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
             if(!(e instanceof CmsException)) {
                 
                 // Only print an error if this is NO CmsException
-                e.printStackTrace();
                 throwException("Radio button method " + radioMethod + " in calling class " + callingObject.getClass().getName() 
                         + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
             }
@@ -409,7 +408,6 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
             if(!(e instanceof CmsException)) {
                 
                 // Only print an error if this is NO CmsException
-                e.printStackTrace();
                 throwException("User method " + selectMethod + " in calling class " + callingObject.getClass().getName() 
                         + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
             }

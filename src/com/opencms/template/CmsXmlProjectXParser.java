@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlProjectXParser.java,v $
-* Date   : $Date: 2001/01/24 09:42:40 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/05/15 19:29:05 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2001/01/24 09:42:40 $
+ * @version $Revision: 1.5 $ $Date: 2001/05/15 19:29:05 $
  */
 public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
     
@@ -93,7 +93,7 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
             serializer.serialize(doc);
         }
         catch(Exception e) {
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlXerxesParser] " + e);
             }
         }
@@ -241,7 +241,7 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
             doc = docBuilder.parse(input);
         }
         catch(SAXException e) {
-            if(A_OpenCms.isLogging() && !c_xercesWarning) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) && !c_xercesWarning) {
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] Cannot set parser feature for apache xerces XML parser.");
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] This is NOT critical, but you should better use xerces 1.0.3 or higher.");
                 c_xercesWarning = true;

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
-* Date   : $Date: 2001/02/20 14:22:25 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/05/15 19:29:05 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * be cached and re-used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2001/02/20 14:22:25 $
+ * @version $Revision: 1.22 $ $Date: 2001/05/15 19:29:05 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels {
 
@@ -56,7 +56,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * Clears the cache for template class instances.
      */
     public static void clearCache() {
-        if(A_OpenCms.isLogging()) {
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsClassManager] clearing class instance cache.");
         }
         instanceCache.clear();
@@ -145,7 +145,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
                         }
                     }
                 }
-                if(A_OpenCms.isLogging()) {
+                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
                 }
                 throw new CmsException(errorMessage, CmsException.C_CLASSLOADER_ERROR, e);

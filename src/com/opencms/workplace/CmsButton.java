@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButton.java,v $
-* Date   : $Date: 2001/01/24 09:43:26 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/05/15 19:29:06 $
+* Version: $Revision: 1.14 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -42,7 +42,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2001/01/24 09:43:26 $
+ * @version $Revision: 1.14 $ $Date: 2001/05/15 19:29:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -106,8 +106,6 @@ public class CmsButton extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpC
                 Throwable e = targetEx.getTargetException();
                 if(!(e instanceof CmsException)) {
                     
-                    // Only print an error if this is NO CmsException
-                    e.printStackTrace();
                     throwException("Button activation method " + buttonMethod 
                             + " in calling class " + callingObject.getClass().getName() 
                             + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);

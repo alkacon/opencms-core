@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2001/03/23 10:32:21 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2001/05/15 19:29:01 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2001/03/23 10:32:21 $
+ * @version $Revision: 1.31 $ $Date: 2001/05/15 19:29:01 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1818,7 +1818,6 @@ public void setModuleRepositories(String modulename, String[] repositories) thro
 		// save the registry
 		saveRegistry();
 	} catch (Exception exc) {
-		exc.printStackTrace();
 		// ignore the exception - reg is not welformed
 	}
 }

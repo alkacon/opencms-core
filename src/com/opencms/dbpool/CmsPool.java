@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
- * Date   : $Date: 2001/05/04 12:30:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2001/05/15 19:29:00 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -105,7 +105,6 @@ public class CmsPool extends Thread {
 			throw new SQLException("Driver not found: " + exc.getMessage());
 		}
         m_originalDriver = DriverManager.getDriver(m_url);
-System.err.println("m_originalDriver " + m_originalDriver);
 
 		// create the initial amount of connections
 		createConnections(m_minConn);
@@ -114,7 +113,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
         setDaemon(true);
         // start the connection-guard for this pool
         start();
-		if(A_OpenCms.isLogging()) {
+		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": created");
 		}
 	}
@@ -123,7 +122,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
      * The run-method for the connection-guard
      */
     public void run() {
-        if(A_OpenCms.isLogging()) {
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": starting connection-guard");
         }
         // never stop
@@ -134,7 +133,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
             } catch(InterruptedException exc) {
                 // ignore this exception
             }
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": checking for outtimed connections");
             }
             synchronized(m_availableConnections) {
@@ -146,7 +145,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
                         m_availableConnections.removeElement(con);
                         m_connectionAmount--;
                         con.closeOriginalConnection();
-                        if(A_OpenCms.isLogging()) {
+                        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": closing one outtimed connection");
                         }
                     }
@@ -156,7 +155,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
                     try {
                         createConnections(m_minConn - m_connectionAmount);
                     } catch(SQLException exc) {
-                        if(A_OpenCms.isLogging()) {
+                        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": unable to create new connection for broken one");
                         }
                     }
@@ -193,7 +192,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
                 } else {
                     // no connection available - have to wait
                     // wait until there are available connections
-                    if(A_OpenCms.isLogging()) {
+                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                           A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": no connections available - have to wait");
                     }
                     try {
@@ -227,7 +226,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
         if((con.getEstablishedTime() + (m_maxage)) < System.currentTimeMillis()) {
             // this connection is to old. destroy it and create a new-one!
             alive = false;
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": connection is to old, destroy it.");
             }
         }
@@ -238,7 +237,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
                 m_availableConnections.push(con);
                 m_availableConnections.notify();
             } else {
-                if(A_OpenCms.isLogging()) {
+                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": connection was broken");
                 }
                 // no, the connection is dead -> trhow it away and close it
@@ -250,7 +249,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
                     createConnections(1);
                     m_availableConnections.notify();
                 } catch(SQLException exc) {
-                    if(A_OpenCms.isLogging()) {
+                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": unable to create new connection for broken one");
                     }
                 }
@@ -277,7 +276,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
 	 * @exception SQLException if a database-access error occurs.
 	 */
 	private Connection createConnection() throws SQLException {
-		if(A_OpenCms.isLogging()) {
+		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": creating new connection. Current Amount is:" + m_connectionAmount);
 		}
         Connection con = null;
@@ -320,7 +319,7 @@ System.err.println("m_originalDriver " + m_originalDriver);
                 m_connectionAmount--;
             }
         }
-		if(A_OpenCms.isLogging()) {
+		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": destroyed");
 		}
     }

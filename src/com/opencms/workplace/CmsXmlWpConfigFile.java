@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2001/01/24 09:43:31 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/05/15 19:29:07 $
+* Version: $Revision: 1.27 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2001/01/24 09:43:31 $
+ * @version $Revision: 1.27 $ $Date: 2001/05/15 19:29:07 $
  */
 
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsConstants {
@@ -70,7 +70,6 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
             init(cms, C_WORKPLACE_INI);
         }
         catch(Exception e) {
-            e.printStackTrace();
             throwException("Could not read configuration file \"workplace.ini\".", CmsException.C_NOT_FOUND);
         }
     }
@@ -161,7 +160,7 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
         String result = null;
         if(!hasData(tag)) {
             String errorMessage = "Mandatory tag \"" + tag + "\" missing in workplace definition file.";
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_XML_TAG_MISSING);

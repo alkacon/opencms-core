@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/04/20 09:50:54 $
- * Version: $Revision: 1.193 $
+ * Date   : $Date: 2001/05/15 19:29:01 $
+ * Version: $Revision: 1.194 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.193 $ $Date: 2001/04/20 09:50:54 $ *
+ * @version $Revision: 1.194 $ $Date: 2001/05/15 19:29:01 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -192,7 +192,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		boolean fillDefaults = true;
 
 
-		if(A_OpenCms.isLogging()) {
+		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] init the dbaccess-module.");
 		}
 
@@ -212,23 +212,23 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
 		// read all needed parameters from the configuration
 		m_poolName = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_POOL);
-		if(A_OpenCms.isLogging()) {
+		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read pool-name from configurations: " + m_poolName);
 		}
 
 		digest = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST, "MD5");
-		if(A_OpenCms.isLogging()) {
+		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read digest from configurations: " + digest);
 		}
 
 		// create the digest
 		try {
 			m_digest = MessageDigest.getInstance(digest);
-			if(A_OpenCms.isLogging()) {
+			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] digest created, using: " + m_digest.toString() );
 			}
 		} catch (NoSuchAlgorithmException e){
-			if(A_OpenCms.isLogging()) {
+			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error creating digest - using clear paswords: " + e.getMessage());
 			}
 		}
@@ -244,7 +244,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		}
 		if(fillDefaults) {
 			// YES!
-			if(A_OpenCms.isLogging()) {
+			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fill default resources");
 			}
 			fillDefaults();
@@ -861,9 +861,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 						statementFileWrite.setBytes(2, file.getContents());
 						statementFileWrite.executeUpdate();
 					} catch (SQLException se) {
-						if(A_OpenCms.isLogging()) {
+						if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 							A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsAccessFileMySql] " + se.getMessage());
-							se.printStackTrace();
 							}
 						}finally {
 							if(statementFileWrite != null) {
@@ -1547,7 +1546,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 oout.close();
                 value=bout.toByteArray();
 
-                if(A_OpenCms.isLogging() && (notSerializable.length()>0)) {
+                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) && (notSerializable.length()>0)) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] warning, following entrys are not serializeable in the session: " + notSerializable.toString() + ".");
                 }
 
@@ -2152,7 +2151,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 			statement.execute();
 		 }
 		catch (Exception e){
-			if(A_OpenCms.isLogging()) {
+			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error while deleting old sessions: " + com.opencms.util.Utils.getStackTrace(e));
 			}
 		} finally {
@@ -2296,7 +2295,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             // destroy not possible - ignoring the exception
         }
 
-		if(A_OpenCms.isLogging()) {
+		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
 		}
 	}
@@ -2447,7 +2446,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
     if(launcher == null) {
         String errorMessage = "Could not launch file " + file.getName() + ". Launcher for requested launcher ID "
                 + launcherId + " could not be found.";
-        if(A_OpenCms.isLogging()) {
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] exportStaticResource() " + errorMessage);
         }
         throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
@@ -2464,7 +2463,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 	 */
 	protected void fillDefaults() throws CmsException
 	{
-		if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fillDefaults() starting NOW!");	}
+		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {		
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fillDefaults() starting NOW!");	
+		}
 
 		// the resourceType "folder" is needed always - so adding it
 		Hashtable resourceTypes = new Hashtable(1);
@@ -4332,7 +4333,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 					}
 					catch (CmsException exc)
 					{
-						if (A_OpenCms.isLogging())
+						if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING))
 						{
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + newFolder.toString() + " Message= " + exc.getMessage());
 						}
@@ -4413,7 +4414,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 							Hashtable props = readAllProperties(currentFolder.getResourceId(), currentFolder.getType());
 							writeProperties(props, onlineFolder.getResourceId(), currentFolder.getType());
 						}catch (CmsException exc){
-							if (A_OpenCms.isLogging()){
+							if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)){
 								A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
 							}
 						}
@@ -4441,7 +4442,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 										Hashtable props = readAllProperties(currentFolder.getResourceId(), currentFolder.getType());
 										writeProperties(props, onlineFolder.getResourceId(), onlineFolder.getType());
 									}catch (CmsException exc2){
-										if (A_OpenCms.isLogging()){
+										if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)){
 											A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
 										}
 									}
@@ -4476,13 +4477,13 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 					try{
 						deleteAllProperties(currentOnlineFile.getResourceId());
 					}catch (CmsException exc){
-						if (A_OpenCms.isLogging()){
+						if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)){
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
 						}
 					}try{
 						deleteResource(currentOnlineFile.getResourceId());
 					}catch (CmsException exc){
-						if (A_OpenCms.isLogging()){
+						if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)){
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
 						}
 					}
@@ -4558,7 +4559,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 							Hashtable props = readAllProperties(currentFile.getResourceId(), currentFile.getType());
 							writeProperties(props, onlineFile.getResourceId(), currentFile.getType());
 						}catch (CmsException exc){
-							if (A_OpenCms.isLogging()){
+							if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)){
 								A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + onlineFile.toString() + " Message= " + exc.getMessage());
 							}
 						}
@@ -4641,7 +4642,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 								Hashtable props = readAllProperties(currentFile.getResourceId(), currentFile.getType());
 								writeProperties(props, newFile.getResourceId(), newFile.getType());
 							}catch (CmsException exc){
-								if (A_OpenCms.isLogging()){
+								if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)){
 									A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + newFile.toString() + " Message= " + exc.getMessage());
 								}
 							}
@@ -4657,7 +4658,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 			try{
 				deleteAllProperties(currentFolder.getResourceId());
 			}catch (CmsException exc){
-				if (A_OpenCms.isLogging()){
+				if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)){
 					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentFolder.toString() + " Message= " + exc.getMessage());
 				}
 			}
@@ -7881,9 +7882,8 @@ public CmsTask readTask(int id) throws CmsException {
 						statementFileWrite.setBytes(2,content);
 						statementFileWrite.executeUpdate();
 					} catch (SQLException se) {
-						if(A_OpenCms.isLogging()) {
+						if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 							A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsAccessFileMySql] " + se.getMessage());
-							se.printStackTrace();
 							}
 						}finally {
 							if(statementFileWrite != null) {

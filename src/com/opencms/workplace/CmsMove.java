@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2001/01/24 09:43:28 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/05/15 19:29:07 $
+* Version: $Revision: 1.39 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.38 $ $Date: 2001/01/24 09:43:28 $
+ * @version $Revision: 1.39 $ $Date: 2001/05/15 19:29:07 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -307,7 +307,6 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                             CmsFolder folder = (CmsFolder)allFolders.elementAt(i);
                             if(folder.getState() != C_STATE_DELETED) {
                                 
-                                //System.err.println("move folder "+folder.getAbsolutePath());
                                 String newname = newFolder + file.getName() + "/" 
                                         + folder.getAbsolutePath().substring(file.getAbsolutePath().length());
                                 cms.copyFolder(folder.getAbsolutePath(), newname);
@@ -320,7 +319,6 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                             if(newfile.getState() != C_STATE_DELETED) {
                                 String newFolderPath = newfile.getAbsolutePath().substring(file.getAbsolutePath().length());
                                 
-                                //    System.err.println("#-#"+newFolderPath);
                                 if(newFolderPath.indexOf("/") > 0) {
                                     newFolderPath = newFolderPath.substring(0, newFolderPath.lastIndexOf("/")) + "/";
                                 }
@@ -328,9 +326,6 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                                     newFolderPath = "";
                                 }
                                 
-                                //System.err.println("###"+newFolderPath);                                
-                                //System.err.println("move file "+newfile.getAbsolutePath());                                
-                                //System.err.println(" -> "+newFolder+file.getName()+"/"+newFolderPath);
                                 moveFile(cms, newfile, newFolder + file.getName() + "/" 
                                         + newFolderPath, "true");
                             }
@@ -341,7 +336,6 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                             CmsFolder folder = (CmsFolder)allFolders.elementAt(allFolders.size() - i - 1);
                             if(folder.getState() != C_STATE_DELETED) {
                                 
-                                //System.err.println("delete folder "+folder.getAbsolutePath());                              
                                 cms.deleteFolder(folder.getAbsolutePath());
                                 try {
                                     cms.deleteFolder(C_CONTENTBODYPATH + folder.getAbsolutePath().substring(1));
@@ -353,7 +347,6 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                         }
                         
                         // as the last step, delete the original folder                        
-                        //System.err.println("delete last folder "+filename);  
                         cms.deleteFolder(filename);
                         try {
                             cms.deleteFolder(C_CONTENTBODYPATH + filename.substring(1));

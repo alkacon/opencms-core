@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/05/14 14:30:56 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2001/05/15 19:29:04 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.26 $ $Date: 2001/05/14 14:30:56 $ *
+ * @version $Revision: 1.27 $ $Date: 2001/05/15 19:29:04 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -3365,7 +3365,7 @@ public void writeUser(CmsUser user) throws CmsException {
             // destroy not possible - ignoring the exception
         }
 
-		if(A_OpenCms.isLogging()) {
+		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
 		}
 	}

@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/04/11 10:30:29 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/05/15 19:29:05 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -83,7 +83,7 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
         }
         catch(CmsException e) {
             m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }
         }

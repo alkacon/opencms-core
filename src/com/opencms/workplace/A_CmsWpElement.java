@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
-* Date   : $Date: 2001/01/24 09:43:25 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2001/05/15 19:29:05 $
+* Version: $Revision: 1.30 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -46,7 +46,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2001/01/24 09:43:25 $
+ * @version $Revision: 1.30 $ $Date: 2001/05/15 19:29:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -498,7 +498,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      */
     
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(A_OpenCms.isLogging()) {
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
         }
         throw new CmsException(errorMessage, type);

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2001/01/24 09:43:30 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/05/15 19:29:07 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2001/01/24 09:43:30 $
+ * @version $Revision: 1.24 $ $Date: 2001/05/15 19:29:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -106,7 +106,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
                 mail.start();
             }
             catch(Exception exc) {
-                if(A_OpenCms.isLogging()) {
+                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " 
                             + exc.getMessage());
                 }
@@ -199,7 +199,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             mail = new com.opencms.defaults.CmsMail(cms, cms.readOwner(task), users, subject, contentBuf.toString(), "text/plain");
         }
         catch(CmsException e) {
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] Could not generate mail while creating task for " 
                         + cms.readOwner(task).getName() + ". ");
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] " + e);
@@ -216,7 +216,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
                             subject, contentBuf.toString(), "text/plain");
                 }
                 catch(CmsException e) {
-                    if(A_OpenCms.isLogging()) {
+                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                         A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] Could not generate mail while creating task for " 
                                 + cms.readOwner(task).getName() + ". ");
                         A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] " + e);
@@ -317,7 +317,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
                 mail.start();
             }
             catch(Exception exc) {
-                if(A_OpenCms.isLogging()) {
+                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " 
                             + exc.getMessage());
                 }
@@ -397,7 +397,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
                     mail.start();
                 }
                 catch(Exception exc) {
-                    if(A_OpenCms.isLogging()) {
+                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " 
                                 + exc.getMessage());
                     }
@@ -415,7 +415,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
                     mail1.start();
                 }
                 catch(Exception exc) {
-                    if(A_OpenCms.isLogging()) {
+                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
                     }
                 }
@@ -430,7 +430,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
                     mail2.start();
                 }
                 catch(Exception exc) {
-                    if(A_OpenCms.isLogging()) {
+                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, 
                                 "[CmsTaskAction] error while sending mail " + exc.getMessage());
                     }
@@ -530,7 +530,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             mail.start();
         }
         catch(Exception exc) {
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
             }
         }
@@ -620,7 +620,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             mail.start();
         }
         catch(Exception exc) {
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
             }
         }
@@ -719,7 +719,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             mail.start();
         }
         catch(Exception exc) {
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
             }
         }
@@ -789,7 +789,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             mail.start();
         }
         catch(Exception exc) {
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
             }
         }

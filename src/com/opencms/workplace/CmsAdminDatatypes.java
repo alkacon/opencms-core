@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2001/01/24 09:43:25 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/05/15 19:29:05 $
+* Version: $Revision: 1.11 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.10 $ $Date: 2001/01/24 09:43:25 $
+ * @version $Revision: 1.11 $ $Date: 2001/05/15 19:29:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -107,7 +107,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
     
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
+        if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " 
                     + ((elementName == null) ? "<root>" : elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() 

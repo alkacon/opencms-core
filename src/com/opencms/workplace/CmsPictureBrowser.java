@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2001/03/16 15:02:33 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/05/15 19:29:07 $
+* Version: $Revision: 1.25 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.24 $ $Date: 2001/03/16 15:02:33 $
+ * @version $Revision: 1.25 $ $Date: 2001/05/15 19:29:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -62,7 +62,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
+        if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "getting content of element "
                     + ((elementName == null) ? "<root>" : elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName()

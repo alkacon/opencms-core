@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/04/26 07:28:49 $
- * Version: $Revision: 1.238 $
+ * Date   : $Date: 2001/05/15 19:29:02 $
+ * Version: $Revision: 1.239 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.238 $ $Date: 2001/04/26 07:28:49 $
+ * @version $Revision: 1.239 $ $Date: 2001/05/15 19:29:02 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -442,7 +442,9 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 
         if (res == null)
         {
-            A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
+			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
+            }
             throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
         }
         if (!accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ)) {
@@ -2777,7 +2779,6 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
 
     // Todo: add caching for getFilesInFolder
     //files=(Vector)m_subresCache.get(C_FILE+currentProject.getId()+foldername);
-    //System.err.println("--fof:"+foldername+":"+files);
     //if ((files==null) || (files.size()==0)) {
 
 
@@ -3463,7 +3464,6 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 
             }
         } catch (CmsException exc) {
-           exc.printStackTrace();
         }
     }
     /**
@@ -3631,7 +3631,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         }
 
         // initialize the access-module.
-        if(A_OpenCms.isLogging()) {
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init the dbaccess-module.");
         }
         m_dbAccess = createDbAccess(config);
@@ -3652,7 +3652,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
 
         // initialize the registry#
-        if(A_OpenCms.isLogging()) {
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init registry.");
         }
 
@@ -4163,7 +4163,7 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
                 con.connect();
                 InputStream in = con.getInputStream();
                 in.close();
-                System.err.println(in.toString());
+                // System.err.println(in.toString());
             } catch (Exception ex) {
                 throw new CmsException(0, ex);
             }

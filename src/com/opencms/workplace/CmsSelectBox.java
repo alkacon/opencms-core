@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSelectBox.java,v $
-* Date   : $Date: 2001/01/24 09:43:30 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/05/15 19:29:07 $
+* Version: $Revision: 1.14 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2001/01/24 09:43:30 $
+ * @version $Revision: 1.14 $ $Date: 2001/05/15 19:29:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -128,7 +128,6 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement,I_Cms
             if(!(e instanceof CmsException)) {
                 
                 // Only print an error if this is NO CmsException
-                e.printStackTrace();
                 throwException("User method " + selectMethod + " in calling class " + callingObject.getClass().getName() 
                         + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
             }

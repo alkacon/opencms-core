@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
- * Date   : $Date: 2001/04/02 14:30:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/05/15 19:29:01 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2001/04/02 14:30:38 $
+ * @version $Revision: 1.7 $ $Date: 2001/05/15 19:29:01 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -131,7 +131,7 @@ public class CmsImportFolder implements I_CmsConstants {
 
             CmsFolder impFold = m_cms.readFolder(importPath);
 
-            System.err.println("impPath: " + importPath);/*
+			/*
             if( !impFold.isLocked() && !importPath.equals("/") ) {
                 // frist lock the path to import into.
     			m_cms.lockResource(m_importPath);
@@ -300,7 +300,6 @@ public class CmsImportFolder implements I_CmsConstants {
                 try {
                     m_cms.createFolder(actImportPath, path[r] );
                 } catch(CmsException e) {
-                    // System.err.println(e.toString() );
                     // of course some folders did already exist!
                 }
                 actImportPath += path[r] += "/";
@@ -374,7 +373,6 @@ public class CmsImportFolder implements I_CmsConstants {
                                                             buffer, type);
                 } catch(CmsException e) {
                     // ignore the exception
-                    //System.err.println(Utils.getStackTrace(e));
                     throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
             }

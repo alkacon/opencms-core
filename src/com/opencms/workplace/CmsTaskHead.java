@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
-* Date   : $Date: 2001/01/24 09:43:30 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2001/05/15 19:29:07 $
+* Version: $Revision: 1.15 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2001/01/24 09:43:30 $
+ * @version $Revision: 1.15 $ $Date: 2001/05/15 19:29:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -93,7 +93,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
     
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, 
             String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
+        if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " 
                     + ((elementName == null) ? "<root>" : elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);

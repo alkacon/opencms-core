@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2001/04/06 10:13:50 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/05/15 19:29:07 $
+* Version: $Revision: 1.23 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2001/04/06 10:13:50 $
+ * @version $Revision: 1.23 $ $Date: 2001/05/15 19:29:07 $
  */
 
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants,I_CmsConstants {
@@ -83,7 +83,6 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
             }
         }
         catch(Exception e) {
-            e.printStackTrace();
             throwException("Error while merging language files in folder " + m_languagePath + currentLanguage + "/.");
         }
     }
@@ -192,7 +191,7 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
         String result = null;
         if(!hasData(tag)) {
             String errorMessage = "Mandatory tag \"" + tag + "\" missing in language file \"" + getFilename() + "\".";
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_XML_TAG_MISSING);

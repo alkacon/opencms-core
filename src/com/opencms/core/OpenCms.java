@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/05/15 14:00:35 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2001/05/15 19:29:00 $
+* Version: $Revision: 1.53 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2001/05/15 14:00:35 $
+ * @version $Revision: 1.53 $ $Date: 2001/05/15 19:29:00 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -121,11 +121,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 
         // invoke the ResourceBroker via the initalizer
         try {
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating first cms-object");
             }
             CmsObject cms = new CmsObject();
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the main resource-broker");
             }
             m_sessionFailover = conf.getBoolean("sessionfailover.enabled", false);
@@ -136,23 +136,23 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             printCopyrightInformation(cms);
 
             // initalize the Hashtable with all available mimetypes
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] read mime types");
             }
             m_mt = c_rb.readMimeTypes(null, null);
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] found "
                         + m_mt.size() + " mime-type entrys");
             }
 
             // Check, if the HTTP streaming should be enabled
             m_streaming = conf.getBoolean("httpstreaming.enabled", true);
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] HTTP streaming " + (m_streaming?"en":"dis") + "abled. ");
             }
         }
         catch(Exception e) {
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
             }
             throw e;
@@ -160,20 +160,20 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 
         // try to initialize the launchers.
         try {
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize launchers...");
             }
             m_launcherManager = new CmsLauncherManager();
         }
         catch(Exception e) {
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
             }
         }
 
         // Check, if the element cache should be enabled
         m_enableElementCache = conf.getBoolean("elementcache.enabled", false);
-        if(A_OpenCms.isLogging()) {
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] element cache " + (m_enableElementCache?"en":"dis") + "abled. ");
         }
         if(m_enableElementCache) {
@@ -182,7 +182,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                                                     conf.getInteger("elementcache.elements", 50000));
             }
             catch(Exception e) {
-                if(A_OpenCms.isLogging()) {
+                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
                 }
             }
@@ -294,13 +294,13 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     private void printCopyrightInformation(CmsObject cms) {
         System.err.println(cms.version());
-        if(isLogging()) {
+        if(isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
             this.log(C_OPENCMS_INFO, cms.version());
         }
         String copy[] = cms.copyright();
         for(int i = 0;i < copy.length;i++) {
             System.err.println(copy[i]);
-            if(isLogging()) {
+            if(isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
                 this.log(C_OPENCMS_INFO, copy[i]);
             }
         }
@@ -377,7 +377,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         if(launcher == null) {
             String errorMessage = "Could not launch file " + file.getName() + ". Launcher for requested launcher ID "
                     + launcherId + " could not be found.";
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(C_OPENCMS_INFO, "[OpenCms] " + errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);

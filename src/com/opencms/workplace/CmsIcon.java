@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsIcon.java,v $
-* Date   : $Date: 2001/01/24 09:43:28 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/05/15 19:29:06 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -42,7 +42,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2001/01/24 09:43:28 $
+ * @version $Revision: 1.12 $ $Date: 2001/05/15 19:29:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -109,8 +109,6 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpCon
                 Throwable e = targetEx.getTargetException();
                 if(!(e instanceof CmsException)) {
                     
-                    // Only print an error if this is NO CmsException
-                    e.printStackTrace();
                     throwException("Icon activation method " + iconActiveMethod 
                             + " in calling class " + callingObject.getClass().getName() 
                             + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
@@ -155,8 +153,6 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpCon
                 Throwable e = targetEx.getTargetException();
                 if(!(e instanceof CmsException)) {
                     
-                    // Only print an error if this is NO CmsException
-                    e.printStackTrace();
                     throwException("Icon activation method " + iconVisibleMethod 
                             + " in calling class " + callingObject.getClass().getName() 
                             + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);

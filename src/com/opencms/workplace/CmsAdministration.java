@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2001/01/24 09:43:26 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/05/15 19:29:06 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * 
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.11 $ $Date: 2001/01/24 09:43:26 $
+ * @version $Name:  $ $Revision: 1.12 $ $Date: 2001/05/15 19:29:06 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -107,8 +107,6 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                 Throwable e = targetEx.getTargetException();
                 if(!(e instanceof CmsException)) {
                     
-                    // Only print an error if this is NO CmsException
-                    e.printStackTrace();
                     throwException("Icon activation method " + iconActiveMethod + " in calling class " 
                             + className + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
                 }
@@ -155,8 +153,6 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                 Throwable e = targetEx.getTargetException();
                 if(!(e instanceof CmsException)) {
                     
-                    // Only print an error if this is NO CmsException
-                    e.printStackTrace();
                     throwException("Icon activation method " + iconVisibleMethod + " in calling class " 
                             + className + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
                 }
@@ -210,7 +206,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
      */
     
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
+        if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " 
                     + ((elementName == null) ? "<root>" : elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " 

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/05/07 16:23:07 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/05/15 19:29:07 $
+* Version: $Revision: 1.23 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2001/05/07 16:23:07 $
+ * @version $Revision: 1.23 $ $Date: 2001/05/15 19:29:07 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -147,7 +147,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
+        if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file "
                     + templateFile);
         }
@@ -337,7 +337,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         content.append("}\n");
         content.append("</script>\n</head> \n<BODY onLoad=\"initialize()\"></BODY> \n</html>\n");
 
-        //  System.err.println("\n\n THE FILELIST:\n\n"+content.toString());
         return (content.toString()).getBytes();
     }
 

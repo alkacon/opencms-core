@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.12 Bela Tegeuse - xx xxx 2001
+- Logging can be generally disabled by setting C_PREPROCESSOR_IS_LOGGING to false.
+- Removed all System.err.println() - debug messages.
+- Removed all excpetion.printStackTrace() - debug messages.
+
 OpenCms 4.3.11 Bela Tegeuse - 15 May 2001
 ! Added first version of Lru-Cache for the element cache
 * fixed bug in OpenCmsHttpServlet.initUser() WebUsers can use http Authentification now

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRadioButtons.java,v $
-* Date   : $Date: 2001/01/24 09:43:30 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/05/15 19:29:07 $
+* Version: $Revision: 1.9 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2001/01/24 09:43:30 $
+ * @version $Revision: 1.9 $ $Date: 2001/05/15 19:29:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -113,8 +113,6 @@ public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement,I_
             Throwable e = targetEx.getTargetException();
             if(!(e instanceof CmsException)) {
                 
-                // Only print an error if this is NO CmsException
-                e.printStackTrace();
                 throwException("Radio button method " + radioMethod + " in calling class " 
                         + callingObject.getClass().getName() + " throwed an exception. " 
                         + e, CmsException.C_UNKNOWN_EXCEPTION);

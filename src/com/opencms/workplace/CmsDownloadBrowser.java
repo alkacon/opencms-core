@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2001/01/24 09:43:27 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/05/15 19:29:06 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.11 $ $Date: 2001/01/24 09:43:27 $
+ * @version $Revision: 1.12 $ $Date: 2001/05/15 19:29:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -60,7 +60,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      */
     
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
+        if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "getting content of element " 
                     + ((elementName == null) ? "<root>" : elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "template file is: " 

@@ -83,15 +83,6 @@ public abstract String getBackofficeUrl(CmsObject cms, String tagcontent, A_CmsX
  */
 
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-	/*
-  System.err.println("******");
-	Enumeration enu = parameters.keys();
-	while (enu.hasMoreElements()) {
-		String key = (String) enu.nextElement();
-		String values = (String) parameters.get(key);
-		System.err.println(key + " : " + values);
-	}
-	System.err.println("-------");*/
 
 	//return var
 	byte[] returnProcess = null;
@@ -112,7 +103,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   String parentId = (String) parameters.get("parentId");
 	String ok = (String) parameters.get("ok");
 	String setaction = (String) parameters.get("setaction");
-  //System.err.println("getContent: action: "+ action + " idedit: "+ idedit + " id: "+ id+ " idlock: "+ idlock);
 
 	String hasFilterParam = (String) session.getValue("filterparameter");
 	template.setData("filternumber","0");
@@ -122,7 +112,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 				if (selectBox != null) {
 					session.putValue("filter", selectBox);
 					template.setData("filternumber",selectBox);
-					// System.err.println("### changed filter to " + session.getValue("filter"));
 				}
 	} else {
 		template.setData("filternumber", (String)session.getValue("filter"));
@@ -263,19 +252,19 @@ private Object getContentDefinition(CmsObject cms, Class cdClass, Integer id) {
 		Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, Integer.class});
 		o = c.newInstance(new Object[] {cms, id});
 	} catch (InvocationTargetException ite) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
 		}
 	} catch (NoSuchMethodException nsm) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
 		}
 	} catch (InstantiationException ie) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
 		}
 	} catch (Exception e) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception!");
 		}
 		e.printStackTrace();
@@ -294,19 +283,19 @@ private Object getContentDefinition(CmsObject cms, Class cdClass, String id) {
 		Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, String.class});
 		o = c.newInstance(new Object[] {cms, id});
 	} catch (InvocationTargetException ite) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
 		}
 	} catch (NoSuchMethodException nsm) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
 		}
 	} catch (InstantiationException ie) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
 		}
 	} catch (Exception e) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception!");
 		}
 		e.printStackTrace();
@@ -401,13 +390,10 @@ private byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, St
 				//Method deleteMethod = (Method) cdClass.getMethod("delete", new Class[] {CmsObject.class});
 				//deleteMethod.invoke(o, new Object[] {cms});
 			} catch (Exception e1) {
-                    // System.err.println("error: ");
-				if (A_OpenCms.isLogging()) {
+				if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: delete method throwed an exception!");
 				}
-                // System.err.println("error: ");
 				templateSelector = "deleteerror";
-                // System.err.println("error: " +  e1.getMessage());
 				template.setData("deleteerror", e1.getMessage());
 			}
 			//finally start the processing
@@ -488,7 +474,6 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
     }else {
         filterChanged = true;
     }
-    // System.err.println("getContentHead selectBoxValue: " + selectBoxValue + " session: " + (String)session.getValue("selectBoxValue"));
 
     //get vector of filter names from the content definition
 	Vector filterMethods = getFilterMethods(cms);
@@ -501,10 +486,8 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
     session.putValue("filter",selectBoxValue);  // store filter in session for getContentList!
 
 	String filterParam = (String) parameters.get("filterparameter");
-    //System.err.println("getContentHead selectBoxValue: " + selectBoxValue + " filterParam: " + filterParam);
     String action = (String) parameters.get("action");
     String setaction = (String) parameters.get("setaction");
-    //System.err.println("getContentHead: action: "+ action);
     // create the key for the filterparameter in the session ... should be unique to avoid problems...
 
     String sessionFilterParam = uri+selectBoxValue+"filterparameter";
@@ -529,7 +512,6 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	//no filter selected so far, store a default filter in the session
 	CmsFilterMethod filterMethod = null;
 	if (selectBoxValue == null) {
-        //System.err.println("store the default filter in the session...");
 		CmsFilterMethod defaultFilter = (CmsFilterMethod) filterMethods.firstElement();
 		session.putValue("selectbox", defaultFilter.getFilterName());
 	}/*
@@ -600,7 +582,6 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	Class cdClass = getContentDefinitionClass();
 
   String action = (String) parameters.get("action");
-  //System.err.println("getContentList: action: "+ action);
 
 	//read value of the selected filter
 	String filterMethodName = (String) session.getValue("filter");
@@ -614,7 +595,6 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	String filterParam = (String) session.getValue(sessionFilterParam);
 	if (filterParam == "") filterParam = null;
 
-	//System.err.println("getContentList: filter "+filterMethodName + " filterparam "+filterParam);
 	//change template to list section for data list output
 	templateSelector = "list";
 
@@ -679,7 +659,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		tableContent = (Vector) cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
 	} catch (InvocationTargetException ite) {
 		//error occured while applying the filter
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter throwed an InvocationTargetException!");
 		}
 		templateSelector = "error";
@@ -691,7 +671,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
     session.removeValue(sessionFilterParam);
 		//session.removeValue("filter");
 	} catch (NoSuchMethodException nsm) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter method was not found!");
 		}
 		templateSelector = "error";
@@ -700,7 +680,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		session.removeValue(sessionFilterParam);
     //session.removeValue("filterparameter");
 	} catch (Exception e) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter: Other Exception!");
 		}
 		templateSelector = "error";
@@ -719,7 +699,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	try {
 		fieldMethods = (Vector) cdClass.getMethod("getFieldMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
 	} catch (Exception exc) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentList: getFieldMethods throwed an exception");
 		}
 		templateSelector = "error";
@@ -744,7 +724,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			try {
 				getMethod = (Method) fieldMethods.elementAt(j);
 			} catch (Exception e) {
-				if (A_OpenCms.isLogging()) {
+				if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method - check for correct spelling!");
 				}
 			}
@@ -755,11 +735,11 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 				if (fieldEntryObject != null) fieldEntry = fieldEntryObject.toString();
 				else fieldEntry = null;
 			} catch (InvocationTargetException ite) {
-				if (A_OpenCms.isLogging()) {
+				if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object throwed an InvocationTargetException!");
 				}
 			} catch (Exception e) {
-				if (A_OpenCms.isLogging()) {
+				if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object: Other exception!");
 				}
 			}
@@ -767,7 +747,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		try {
             id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
 		} catch (Exception e) {
-			if (A_OpenCms.isLogging()) {
+			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
 			}
 		}
@@ -797,7 +777,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		try {
      id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
 		} catch (Exception e) {
-			if (A_OpenCms.isLogging()) {
+			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
 			}
 		}
@@ -990,7 +970,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		try {
       ls = ((A_CmsContentDefinition) o).getLockstate();
 		} catch (Exception e) {
-			if (A_OpenCms.isLogging()) {
+			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method getLockstate throwed an exception!");
 			}
 		}
@@ -1002,7 +982,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			try {
         ((A_CmsContentDefinition) o).setLockstate(C_NOT_LOCKED);
 			} catch (Exception e) {
-				if (A_OpenCms.isLogging()) {
+				if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
 				}
 			}
@@ -1010,7 +990,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			try {
         ((A_CmsContentDefinition) o).write(cms);   // reflection is not neccessary!
 			} catch (Exception e) {
-				if (A_OpenCms.isLogging()) {
+				if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method write throwed an exception!");
 				}
 			}
@@ -1021,7 +1001,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 				try {
           ((A_CmsContentDefinition) o).setLockstate(actUserId);
 				} catch (Exception e) {
-					if (A_OpenCms.isLogging()) {
+					if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 						A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
 					}
 				}
@@ -1029,7 +1009,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 				try {
           ((A_CmsContentDefinition) o).write(cms);
 				} catch (Exception e) {
-					if (A_OpenCms.isLogging()) {
+					if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 						A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
 					}
 				}
@@ -1039,7 +1019,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 				try {
           ((A_CmsContentDefinition) o).setLockstate(actUserId);
 				} catch (Exception e) {
-					if (A_OpenCms.isLogging()) {
+					if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 						A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
 					}
 				}
@@ -1047,7 +1027,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 				try {
           ((A_CmsContentDefinition) o).write(cms);
 				} catch (Exception e) {
-					if (A_OpenCms.isLogging()) {
+					if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 						A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not write to content definition!");
 					}
 				}
@@ -1071,16 +1051,16 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
 		try {
 			retObject = cdClass.getMethod(method, paramClasses).invoke(null, params);
 		} catch (InvocationTargetException ite) {
-			if (A_OpenCms.isLogging()) {
+			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + " throwed an InvocationTargetException!");
 			}
 			ite.getTargetException().printStackTrace();
 		} catch (NoSuchMethodException nsm) {
-			if (A_OpenCms.isLogging()) {
+			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + ": Requested method was not found!");
 			}
 		} catch (Exception e) {
-			if (A_OpenCms.isLogging()) {
+			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + ": Other Exception!");
 			}
 		}
@@ -1180,15 +1160,15 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
 		//get the returned object
 		laObject = laMethod.invoke(null, null);
 	} catch (InvocationTargetException ite) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an Invocation target exception!");
 		}
 	} catch (NoSuchMethodException nsm) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Requested method isLockable was not found!");
 		}
 	} catch (Exception e) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an exception!");
 		}
 	}
@@ -1201,7 +1181,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
 			template.setData("backofficecontextmenue", "backofficeedit");
 			template.setData("lockedby", template.getDataValue("nolock"));
 		} catch  (Exception e) {
-			if (A_OpenCms.isLogging()) {
+			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates:'not lockable' section hrowed an exception!");
 			}
 		}
@@ -1211,7 +1191,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
 			//get the method lockstate
       ls = ((A_CmsContentDefinition) entryObject).getLockstate();
 		} catch (Exception e) {
-			if (A_OpenCms.isLogging()) {
+			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception!");
 			}
 		}
@@ -1241,7 +1221,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
 				}
 			}
 		} catch (Exception e) {
-			if (A_OpenCms.isLogging()) {
+			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates throwed an exception!");
 			}
 		}
@@ -1284,15 +1264,15 @@ private Vector getFilterMethods(CmsObject cms) {
 		filterMethods = (Vector) cdClass.getMethod("getFilterMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
 	} catch (InvocationTargetException ite) {
 		//error occured while applying the filter
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: InvocationTargetException!");
 		}
 	} catch (NoSuchMethodException nsm) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: Requested method was not found!");
 		}
 	} catch (Exception e) {
-		if (A_OpenCms.isLogging()) {
+		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: Problem occured with your filter methods!");
 		}
 	}

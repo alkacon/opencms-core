@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/01/24 09:43:25 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/05/15 19:29:05 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -80,8 +80,7 @@ public class CmsAdminModuleImport extends Thread implements I_CmsConstants {
             m_cms.publishProject(project.getId());
         }
         catch(CmsException e) {
-            System.err.println(">>>>>>>>> Import failed: " + e.getMessage());
-            if(A_OpenCms.isLogging()) {
+            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }
         }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2001/05/07 08:49:37 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/15 19:29:05 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2001/05/07 08:49:37 $
+ * @version $Revision: 1.3 $ $Date: 2001/05/15 19:29:05 $
  */
 public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_CmsLogChannels {
 
@@ -263,7 +263,7 @@ public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_
      * @exception CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(A_OpenCms.isLogging()) {
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
         }
         throw new CmsException(errorMessage, type);
@@ -278,7 +278,7 @@ public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_
      * @exception CmsException
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
-        if(A_OpenCms.isLogging()) {
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Exception: " + e);
         }
