@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2000/06/06 09:30:52 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/06/06 10:11:26 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/06/06 09:30:52 $
+ * @version $Revision: 1.19 $ $Date: 2000/06/06 10:11:26 $
  */
 
 public class CmsUser implements I_CmsConstants,
@@ -55,13 +55,13 @@ public class CmsUser implements I_CmsConstants,
     /**
      * The password of the user.
      */
-    private String m_password=null;
+    private String m_password = null;
      
     
     /**
      * The description of the user.
      */
-    private String m_description=null;
+    private String m_description = null;
         
      /**
      * A storage for additional user information.
@@ -133,14 +133,26 @@ public class CmsUser implements I_CmsConstants,
      * @param name The name of the new user.
      * @param description The description of the new user.
      */
-     CmsUser (int id, String name, String description) {
+     CmsUser (int id, String name, String password, String description, String firstname,
+					String lastname, String email, long lastlogin, long lastused, int flags,
+					Hashtable additionalInfo, CmsGroup defaultGroup, String address,
+					String section, int typ) {
             
         m_id=id;
         m_name=name;
+        m_password = password;
         m_description=description;
-        m_defaultGroup=null;
-        m_additionalInfo=null;
-        m_additionalInfo=new Hashtable();
+        m_firstname = firstname;
+        m_lastname = lastname;
+        m_email = email;
+        m_lastlogin = lastlogin;
+        m_lastused = lastused;
+        m_flags  = flags;
+        this.setDefaultGroup(defaultGroup);
+        m_additionalInfo=additionalInfo;
+        m_address = address;
+        m_section = section;
+        m_typ = typ;
     }
     
 	/**
@@ -169,6 +181,15 @@ public class CmsUser implements I_CmsConstants,
 	 */
 	public String getDescription() {
     return m_description;
+    }
+	
+	/**
+	 * Sets the description of this user.
+	 * 
+	 * @param the description of this user.
+	 */
+	public void getDescription(String value) {
+		m_description = value;
     }
 	
     /**
@@ -512,15 +533,11 @@ public class CmsUser implements I_CmsConstants,
     * @return Cloned CmsUser.
     */
     public Object clone() {
-        CmsUser user= new CmsUser(m_id,new String(m_name),new String (m_description));
-        user.setDefaultGroup( (CmsGroup)((CmsGroup)getDefaultGroup()).clone() );
-        user.setAdditionalInfo((Hashtable)getAdditionalInfo().clone());
-		user.setFlags(m_flags);
-		user.setEmail(m_email);
-		user.setLastUsed(m_lastused);
-		user.setFirstname(new String(m_firstname));
-		user.setLastname(new String(m_lastname));
-		user.setLastlogin(m_lastlogin);
+        CmsUser user= new CmsUser(m_id,new String(m_name),new String(m_password),
+								  new String (m_description),new String(m_firstname),
+								  new String(m_lastname),new String(m_email),m_lastlogin,
+								  m_lastused, m_flags, (Hashtable)getAdditionalInfo().clone(),
+								  m_defaultGroup, new String(m_address), new String(m_section),m_typ);
         return user;   
     }
     
