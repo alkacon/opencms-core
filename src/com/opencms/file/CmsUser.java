@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
-* Date   : $Date: 2003/07/03 14:34:53 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/07 15:08:52 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.I_CmsPrincipal;
  * Describes the Cms user object and the methods to access it.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2003/07/03 14:34:53 $
+ * @version $Revision: 1.40 $ $Date: 2003/07/07 15:08:52 $
  */
 public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
 
@@ -376,10 +376,9 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
     }
     
     /**
-     * Gets the lastlogin.<p>
+     * Gets the lastlogin - DEPRECATED, don't use.<p>
      *
      * @return the USER_LASTLOGIN, or C_UNKNOWN_LONG.
-     * @deprecated use getLastlogin only
      */
     public long getLastUsed() {
         return m_lastused;
@@ -413,10 +412,9 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
     }
     
     /**
-     * Gets the section of the user.<p>
+     * Gets the section of the user - DEPRECATED, don't use..<p>
      *
      * @return the USER_SECTION, or null.
-     * @deprecated will be removed without substitution
      */
     public String getSection() {
         return m_section;
@@ -558,10 +556,9 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
     }
     
     /**
-     * Sets the lastlogin.<p>
+     * Sets the lastlogin - DEPRECATED, don't use.<p>
      *
      * @param value the time stamp
-     * @deprecated use setLastlogin only
      */
     void setLastUsed(long value) {
         m_lastused = value;
@@ -577,10 +574,9 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
     }
     
     /**
-     * Sets the section of the user.<p>
+     * Sets the section of the user - DEPRECATED, don't use..<p>
      *
      * @param value The new user section.
-     * @deprecated will be removed without substitution
      */
     public void setSection(String value) {
         m_section = value;
