@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/04/10 13:22:24 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2004/06/06 10:35:29 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -204,7 +204,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         } finally {
             if (oldController != null) {
                 // update "date last modified"
-                oldController.updateDateLastModified(controller.getDateLastModified());
+                oldController.updateDates(controller.getDateLastModified(), controller.getDateExpires());
                 // reset saved controller                
                 req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, oldController);
             }
@@ -440,6 +440,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     // check if the content was modified since the last request
                     if (controller.isTop()
                         && CmsFlexController.isNotModifiedSince(f_req, controller.getDateLastModified())) {
+                        CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
                         res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                         return null;
                     }
@@ -456,6 +457,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         res.setContentLength(result.length);
                         // set date last modified header
                         CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());
+                        CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);
                         res.getOutputStream().flush();
@@ -989,8 +991,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 }
             }
 
-            // update "last modified" date on controller
-            controller.updateDateLastModified(f.lastModified());
+            // update "last modified" and "expires" date on controller
+            controller.updateDates(f.lastModified(), CmsResource.DATE_EXPIRED_DEFAULT);
 
             return jspTargetName;
         } finally {
