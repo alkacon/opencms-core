@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/06/19 08:45:45 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/06/25 08:26:11 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -75,7 +75,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2000/06/19 08:45:45 $
+ * @version $Revision: 1.28 $ $Date: 2000/06/25 08:26:11 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -1305,7 +1305,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @see #processNode
      * @see #firstRunParameters
 	 */
-    private Document parse(String content) throws CmsException {
+    protected Document parse(String content) throws CmsException {
         Document parsedDoc = null;
         StringReader reader = new StringReader(content);
         
