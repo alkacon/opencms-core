@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
- * Date   : $Date: 2000/10/11 12:43:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2001/01/10 15:57:21 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.9 $ $Date: 2000/10/11 12:43:27 $  
+ * @version $Revision: 1.10 $ $Date: 2001/01/10 15:57:21 $  
  */
 public interface I_CmsResponse { 
 	
@@ -128,4 +128,11 @@ public boolean isRedirected() ;
 	 * @param time The last-modified time.
 	 */
 	public void setLastModified(long time);
+	
+	/**
+	 * Checks, if the header was set already.
+	 * @param key, the header-key to check.
+	 * @return true, if the header was set before else false.
+	 */
+	public boolean containsHeader(String key);
 }

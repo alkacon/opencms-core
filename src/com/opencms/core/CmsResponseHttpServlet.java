@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
- * Date   : $Date: 2000/10/11 08:07:56 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2001/01/10 15:57:21 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,10 +40,9 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/10/11 08:07:56 $  
+ * @version $Revision: 1.15 $ $Date: 2001/01/10 15:57:21 $  
  */
-public class CmsResponseHttpServlet implements I_CmsConstants,  
-											   I_CmsResponse{ 
+public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse{ 
 	
 	private static String C_LAST_MODIFIED = "Last-Modified";
 	
@@ -60,15 +59,12 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
 	/**
 	 * The clusterurl.
 	 */
-	private String m_clusterurl=null;;
+	private String m_clusterurl=null;
 	
 	/**
 	 * The type of this CmsResponset.
 	 */
 	private int m_type=C_RESPONSE_HTTP;
-
-	/** We should remember all setted headers to ensure not setting twice */
-	private Vector m_headers = new Vector();
 
 	/** Remember, if a redirect was sent */
 	private boolean m_redir = false;
@@ -215,9 +211,8 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
 	 * @param value The value for the header.
 	 */
 	public void setHeader(String key, String value) {
-		if(!m_headers.contains(key)) {
+		if(!m_res.containsHeader(key)) {
 		    m_res.setHeader(key, value);
-		    m_headers.addElement(key);
 		} 		
 	}
 	/**
@@ -227,5 +222,14 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
 	 */
 	public void setLastModified(long time) {
 		m_res.setDateHeader(C_LAST_MODIFIED, time);
+	}
+	
+	/**
+	 * Checks, if the header was set already.
+	 * @param key, the header-key to check.
+	 * @return true, if the header was set before else false.
+	 */
+	public boolean containsHeader(String key) {
+		return m_res.containsHeader(key);
 	}
 }
