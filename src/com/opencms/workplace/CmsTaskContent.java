@@ -1,3 +1,31 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
+ * Date   : $Date: 2000/02/29 16:44:48 $
+ * Version: $Revision: 1.5 $
+ *
+ * Copyright (C) 2000  The OpenCms Group 
+ * 
+ * This File is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.com
+ * 
+ * You should have received a copy of the GNU General Public License
+ * long with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 package com.opencms.workplace;
 
 import com.opencms.file.*;
@@ -14,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/02/20 19:22:52 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/29 16:44:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -51,7 +79,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+        // TODO: check, if this is neede: A_CmsRequestContext reqCont = cms.getRequestContext();
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
 		// Now load the template file and start the processing

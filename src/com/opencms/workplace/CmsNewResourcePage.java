@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/25 16:55:09 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/02/29 16:44:48 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/02/25 16:55:09 $
+ * @version $Revision: 1.15 $ $Date: 2000/02/29 16:44:48 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -74,10 +74,9 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        String result = null;     
         // the template to be displayed
         String template=null;
-        String type=null;
+        // TODO: check, if this is neede: String type=null;
         byte[] content=new byte[0];
         CmsFile contentFile=null;
         
@@ -90,7 +89,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         // get request parameters
         String newFile=(String)parameters.get(C_PARA_NEWFILE);
         String title=(String)parameters.get(C_PARA_TITLE);
-        String flags=(String)parameters.get(C_PARA_FLAGS);
+        // TODO: check, if this is neede: String flags=(String)parameters.get(C_PARA_FLAGS);
         String templatefile=(String)parameters.get(C_PARA_TEMPLATE);
         String navtitle=(String)parameters.get(C_PARA_NAVTITLE);       
         String navpos=(String)parameters.get(C_PARA_NAVPOS);   
@@ -265,10 +264,10 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
               String foldername=t.nextToken();
                try {
                 // try to read the folder. if this fails, an exception is thrown  
-                CmsFolder folder= cms.readFolder(completePath+foldername+"/");
+                cms.readFolder(completePath+foldername+"/");
               } catch (CmsException e) {
                   // the folder could not be read, so create it.
-                  CmsFolder folder=cms.createFolder(completePath,foldername);                              
+                  cms.createFolder(completePath,foldername);                              
               }
               completePath+=foldername+"/";        
           }          
@@ -319,8 +318,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 filefolders.addElement(file);
             }
                       
-            int count=0;
-             //now check files and folders that are not deleted and include navigation
+            //now check files and folders that are not deleted and include navigation
             // information
             enum=filefolders.elements();
             while (enum.hasMoreElements()) {

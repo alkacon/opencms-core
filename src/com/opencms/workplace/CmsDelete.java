@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/02/22 11:16:44 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/29 16:44:47 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.8 $ $Date: 2000/02/22 11:16:44 $
+  * @version $Revision: 1.9 $ $Date: 2000/02/29 16:44:47 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -78,7 +78,6 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        String result = null;     
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
         
        // the template to be displayed

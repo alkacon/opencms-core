@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/02/23 19:44:39 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/29 16:44:48 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/02/23 19:44:39 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/29 16:44:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -80,7 +80,6 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 
-        A_CmsRequestContext reqCont = cms.getRequestContext();
         String folder = (String)parameters.get(C_PARA_FOLDER);
         String pageText = (String)parameters.get(C_PARA_PAGE);
         String filter = (String)parameters.get(C_PARA_FILTER);
@@ -144,7 +143,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 
         StringBuffer result = new StringBuffer();
 
-        String folder = (String)parameters.get(C_PARA_FOLDER);
+		// TODO:check, if this is needed: String folder = (String)parameters.get(C_PARA_FOLDER);
         String pageText = (String)parameters.get(C_PARA_PAGE);
         String filter = (String)parameters.get(C_PARA_FILTER);
 
@@ -159,7 +158,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         
         String picsUrl = getConfigFile(cms).getCommonPictureUrl();
         HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
-        HttpServletResponse resp = (HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse());
+        // TODO:check, if this is needed: HttpServletResponse resp = (HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse());
         String hostName = req.getScheme() + "://" + req.getHeader("HOST");
                            
              

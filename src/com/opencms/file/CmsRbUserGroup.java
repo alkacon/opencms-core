@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroup.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.20 $ $Date: 2000/02/29 16:44:46 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -362,7 +362,6 @@ import com.opencms.core.*;
 	 */	
 	 public void deleteGroup(String delgroup)
          throws CmsException {
-         A_CmsGroup group = null;
          Vector childs=null;
          // get all child groups of the group
          childs=getChild(delgroup);

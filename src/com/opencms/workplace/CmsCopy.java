@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/02/22 11:16:44 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/29 16:44:47 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.8 $ $Date: 2000/02/22 11:16:44 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/29 16:44:47 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -76,7 +76,6 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        String result = null;     
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
         
         // the template to be displayed
@@ -261,10 +260,10 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
               String foldername=t.nextToken();
                try {
                 // try to read the folder. if this fails, an exception is thrown  
-                CmsFolder folder= cms.readFolder(completePath+foldername+"/");
+                cms.readFolder(completePath+foldername+"/");
               } catch (CmsException e) {
                   // the folder could not be read, so create it.
-                  CmsFolder folder=cms.createFolder(completePath,foldername);                              
+                  cms.createFolder(completePath,foldername);                              
               }
               completePath+=foldername+"/";        
           }          

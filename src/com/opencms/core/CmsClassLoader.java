@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/29 16:44:45 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -110,7 +110,7 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:53:48 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/29 16:44:45 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -184,7 +184,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 
             // Check to see if we have proper access.
             try {
-                CmsFolder repFolder = cms.readFolder(file);
+                cms.readFolder(file);
             } catch (Exception exc) {
                 throw new IllegalArgumentException("Repository "
                     + file + " could not be accessed while initializing class loader.");

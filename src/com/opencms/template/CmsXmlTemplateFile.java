@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/02/21 22:23:42 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/02/29 16:44:47 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/02/21 22:23:42 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/29 16:44:47 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -309,7 +309,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public void setEditedTemplateContent(String content, String templateSelector, 
                                          boolean html) throws CmsException {
         String datablockName = this.getTemplateDatablockName(templateSelector);
-        Element data = getData(datablockName);
+		// TODO:is this needed? Element data = getData(datablockName);
 
         if(html) {
             int startIndex = content.indexOf("<BODY");

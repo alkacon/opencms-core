@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImport.java,v $
- * Date   : $Date: 2000/02/16 18:06:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.4 $ $Date: 2000/02/16 18:06:27 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/29 16:44:46 $
  */
 class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 	
@@ -292,7 +292,7 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 			}
 			// end for
 			try {
-				A_CmsGroup group = m_RB.addGroup(m_user, m_project, m_gName, m_gDesc, Integer.parseInt(m_gFlag), m_gParent);
+				m_RB.addGroup(m_user, m_project, m_gName, m_gDesc, Integer.parseInt(m_gFlag), m_gParent);
 			}catch (CmsException e){
 					m_errMsg.addElement(e.getMessage());			
 			}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/02/20 15:24:36 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.51 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  *  
- * @version $Revision: 1.50 $ $Date: 2000/02/20 15:24:36 $ 
+ * @version $Revision: 1.51 $ $Date: 2000/02/29 16:44:46 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -286,8 +286,6 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * CmsException will be thrown, because the file cannot be created without
 	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * If there is already a file with this filename, a CmsDuplicateKey exception will
-	 * be thrown.
 	 * 
 	 * @param folder The complete path to the folder in which the file will be created.
 	 * @param filename The name of the new file (No pathinformation allowed).
@@ -318,8 +316,6 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * CmsException will be thrown, because the file cannot be created without
 	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * If there is already a file with this filename, a CmsDuplicateKey exception will
-	 * be thrown.
 	 * 
 	 * @param folder The complete path to the folder in which the file will be created.
 	 * @param filename The name of the new file (No pathinformation allowed).
@@ -538,8 +534,6 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * If there are some mandatory Metadefinitions for the folder-resourcetype, a 
 	 * CmsException will be thrown, because the folder cannot be created without
 	 * the mandatory Metainformations.<BR/>
-	 * If there is already a folder with this filename, a CmsDuplicateKey exception 
-	 * will be thrown.
 	 * 
 	 * @param folder The complete path to the folder in which the new folder 
 	 * will be created.
@@ -1210,8 +1204,6 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @return user The added user will be returned.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a user with the given username exists already.
 	 */
 	public A_CmsUser addUser(String name, String password, String group, 
 							 String description, Hashtable additionalInfos, int flags)
@@ -1320,8 +1312,6 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @return Group
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
-	 * same group already exists.
 	 */	
 	public A_CmsGroup addGroup(String name, String description, int flags, String parent)
 		throws CmsException { 

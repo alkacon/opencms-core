@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlNewsTemplate.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/29 16:44:47 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import org.xml.sax.*;
  * <CODE>CmsXmlNewsContentDefinition</CODE>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/29 16:44:47 $
  * @see com.opencms.template.CmsXmlNewsContentDefinition
  */
 public class CmsXmlNewsTemplate extends CmsXmlTemplate implements I_CmsLogChannels {
@@ -136,7 +136,6 @@ public class CmsXmlNewsTemplate extends CmsXmlTemplate implements I_CmsLogChanne
             throws CmsException {
         
         Hashtable parameters = (Hashtable)userObj;
-        String result = null;
         
         String read = (String)parameters.get("elem1.read");
         String folder = (String)parameters.get("elem1.newsfolder");

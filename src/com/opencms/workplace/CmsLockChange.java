@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
- * Date   : $Date: 2000/02/22 11:16:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/29 16:44:48 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.7 $ $Date: 2000/02/22 11:16:44 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/29 16:44:48 $
  */
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                   I_CmsConstants {
@@ -76,7 +76,6 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        String result = null;     
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
         
         // the template to be displayed
@@ -96,7 +95,7 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
 				if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
 					String bodyPath = getBodyPath(cms, file);
 					try{
-						CmsFile bodyFile=(CmsFile)cms.readFile(bodyPath);
+						cms.readFile(bodyPath);
 						cms.lockResource( bodyPath,true );
 					}catch (CmsException e){
 						//TODO: ErrorHandling

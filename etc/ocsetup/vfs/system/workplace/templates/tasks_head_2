@@ -26,8 +26,6 @@
 
 <SCRIPT LANGUAGE="JavaScript">
 function goback() {
-	//window.top.body.tasks_body.location.href=window.top.head.lastVisited;
-	//alert(window.top.head.document.lastVisited);
 	updateFrame('body.tasks_body','tasks_content.html');	
 	updateFrame('body.tasks_head','tasks_head.html');	
 } 

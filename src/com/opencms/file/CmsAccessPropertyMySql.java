@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessPropertyMySql.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/29 16:44:46 $
  */
 public class CmsAccessPropertyMySql implements I_CmsAccessProperty, I_CmsConstants {
 
@@ -105,7 +105,6 @@ public class CmsAccessPropertyMySql implements I_CmsAccessProperty, I_CmsConstan
 	 public Serializable addProperty(String name, Serializable object)
          throws CmsException {
          
-        Serializable property=null;
         byte[] value;
         
          try	{			

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/02/20 15:24:36 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.50 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.49 $ $Date: 2000/02/20 15:24:36 $ 
+ * @version $Revision: 1.50 $ $Date: 2000/02/29 16:44:46 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -229,8 +229,6 @@ public abstract class A_CmsObject {
 	 * CmsException will be thrown, because the file cannot be created without
 	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * If there is already a file with this filename, a CmsDuplicateKey exception will
-	 * be thrown.
 	 * 
 	 * @param folder The complete path to the folder in which the file will be created.
 	 * @param filename The name of the new file (No pathinformation allowed).
@@ -243,8 +241,6 @@ public abstract class A_CmsObject {
 	 * resourcetype is set to folder. The CmsException is also thrown, if the 
 	 * filename is not valid. The CmsException will also be thrown, if the user
 	 * has not the rights for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * this name.
 	 */
 	abstract public CmsFile createFile(String folder, String filename, 
 									   byte[] contents, String type)
@@ -256,8 +252,6 @@ public abstract class A_CmsObject {
 	 * CmsException will be thrown, because the file cannot be created without
 	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * If there is already a file with this filename, a CmsDuplicateKey exception will
-	 * be thrown.
 	 * 
 	 * @param folder The complete path to the folder in which the file will be created.
 	 * @param filename The name of the new file (No pathinformation allowed).
@@ -273,8 +267,6 @@ public abstract class A_CmsObject {
 	 * or if resourcetype is set to folder. The CmsException is also thrown, if the 
 	 * filename is not valid. The CmsException will also be thrown, if the user
 	 * has not the rights for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * this name.
 	 */
 	abstract public CmsFile createFile(String folder, String filename, byte[] contents, 
 									   String type, Hashtable metainfos)
@@ -438,8 +430,6 @@ public abstract class A_CmsObject {
 	 * If there are some mandatory Metadefinitions for the folder-resourcetype, a 
 	 * CmsException will be thrown, because the folder cannot be created without
 	 * the mandatory Metainformations.<BR/>
-	 * If there is already a folder with this filename, a CmsDuplicateKey exception 
-	 * will be thrown.
 	 * 
 	 * @param folder The complete path to the folder in which the new folder 
 	 * will be created.
@@ -451,8 +441,7 @@ public abstract class A_CmsObject {
 	 * The CmsException is also thrown, if the foldername is not valid. 
 	 * The CmsException will also be thrown, if the user has not the rights for 
 	 * this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * this name.
+	 * @exception CmsException if something goes wrong.
 	 */
 	abstract public CmsFolder createFolder(String folder, String newFolderName)
 		throws CmsException;
@@ -463,8 +452,6 @@ public abstract class A_CmsObject {
 	 * CmsException will be thrown, because the file cannot be created without
 	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * If there is already a file with this filename, a CmsDuplicateKey exception will
-	 * be thrown.
 	 * 
 	 * @param folder The complete path to the folder in which the new folder will 
 	 * be created.
@@ -478,8 +465,6 @@ public abstract class A_CmsObject {
 	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
 	 * or if the filename is not valid. The CmsException will also be thrown, if the 
 	 * user has not the rights for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * this name.
 	 */
 	abstract public CmsFolder createFolder(String folder, String newFolderName, 
 											 Hashtable metainfos)
@@ -990,8 +975,6 @@ public abstract class A_CmsObject {
 	 * @return user The added user will be returned.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a user with the given username exists already.
 	 */
 	abstract public A_CmsUser addUser(String name, String password, String group, 
 							 String description, Hashtable additionalInfos, int flags)
@@ -1110,8 +1093,6 @@ public abstract class A_CmsObject {
 	 * @return Group
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
-	 * same group already exists.
 	 */	
 	abstract public A_CmsGroup addGroup(String name, String description, int flags, 
 										String parent)

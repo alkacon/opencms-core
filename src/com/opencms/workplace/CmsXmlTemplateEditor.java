@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/02/24 14:42:50 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/02/29 16:44:48 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/02/24 14:42:50 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/29 16:44:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -86,7 +86,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         A_CmsRequestContext reqCont = cms.getRequestContext();
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
         HttpSession session = orgReq.getSession(true);
-        CmsFile editFile = null;
+        // TODO: check, if this is neede: CmsFile editFile = null;
         Encoder encoder = new Encoder();
         
         String content = (String)parameters.get("CONTENT");
@@ -100,7 +100,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String bodyElementFilename = (String)parameters.get("bodyfile");
         String action = (String)parameters.get("action");
         String oldEdit = (String)session.getValue("te_oldedit");
-        String bodytag = (String)session.getValue("bodytag");
+        // TODO: check, if this is neede: String bodytag = (String)session.getValue("bodytag");
         String oldLayoutFilename = (String)session.getValue("te_oldlayout");
         String oldTitle = (String)session.getValue("te_title");
         String oldBody = (String)session.getValue("te_oldbody");
@@ -469,7 +469,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         for(int i=0; i<numTemplates; i++) {
             A_CmsResource file = (A_CmsResource)allTemplateFiles.elementAt(i);
             if(file.getState() != C_STATE_DELETED) {
-                String filename = file.getName();
+                // TODO: check, if this is needed: String filename = file.getName();
                 String title = cms.readMetainformation(file.getAbsolutePath(), C_METAINFO_TITLE);
                 if(title == null || "".equals(title)) {
                     title = file.getName();
@@ -515,7 +515,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             throws CmsException {
         
         Hashtable parameters = (Hashtable)userObj;
-        String filename = (String)parameters.get("file");
+        // TODO: check, if this is needed: String filename = (String)parameters.get("file");
 
         String content = (String)parameters.get("CONTENT");        
         boolean existsContentParam = (content!=null && (!"".equals(content)));
@@ -604,7 +604,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
         }*/         
         
-        A_CmsResource tempFile = null;
+        // TODO: check, if this is needed: A_CmsResource tempFile = null;
         String extendedTempFile = null;
         boolean ok = true;
         

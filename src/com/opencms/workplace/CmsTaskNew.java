@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/02/23 20:09:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/29 16:44:48 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/02/23 20:09:59 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/29 16:44:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -124,7 +124,6 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		
-        A_CmsRequestContext reqCont = cms.getRequestContext();
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 
 		// are the constants read from the cms already?

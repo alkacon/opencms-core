@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/02/20 16:10:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/29 16:44:47 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/02/20 16:10:24 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/29 16:44:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -87,7 +87,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         String action = (String)parameters.get("action");
         String jsfile = (String)parameters.get("editor.jsfile");
         
-        boolean existsContentParam = (content!=null && (!"".equals(content)));
+        //boolean existsContentParam = (content!=null && (!"".equals(content)));
         boolean existsFileParam = ((file != null) && (!"".equals(file)));
         //boolean saveRequested = ((save != null) && "1".equals(save));
         //boolean exitRequested = ((exit != null) && "1".equals(exit));
@@ -163,7 +163,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         
         Hashtable parameters = (Hashtable)userObj;
         String content = (String)parameters.get("CONTENT");        
-        boolean existsContentParam = (content!=null && (!"".equals(content)));
+        //boolean existsContentParam = (content!=null && (!"".equals(content)));
                 
         // Check the existance of the "file" parameter
         if(content==null || "".equals(content)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
- * Date   : $Date: 2000/02/15 17:59:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.util.*;
  * given launcher id.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/02/15 17:59:35 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/29 16:44:46 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
        
@@ -76,6 +76,8 @@ public class CmsLauncherManager implements I_CmsLogChannels {
         
         // Initialize Hashtable
         launchers = new Hashtable();
+
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsLauncherManager] launcher package is:" + launcherPackage);
         
         // try to load launcher classes.
         for(int i=0; i<C_KNOWN_LAUNCHERS.length; i++) {
@@ -88,7 +90,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
                     // This is no critical error.
                     // We assume the launcher should not be integrated into the OpenCms system.
                     if(A_OpenCms.isLogging()) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[CmsLauncherManager] OpenCms launcher \"" + C_KNOWN_LAUNCHERS[i] + "\" not found. Ignoring.");
+                        A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] OpenCms launcher \"" + C_KNOWN_LAUNCHERS[i] + "\" not found. Ignoring.");
                     }
                     continue;
                 } else if(e instanceof ClassCastException) {
@@ -98,13 +100,13 @@ public class CmsLauncherManager implements I_CmsLogChannels {
                     // We have to stop the system.
                     String errorMessage = "Loaded launcher class \"" + C_KNOWN_LAUNCHERS[i] + "\" is no OpenCms launcher (does not implement I_CmsLauncher).";
                     if(A_OpenCms.isLogging()) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[CmsLauncherManager] " + errorMessage);
+                        A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
                     }
                     throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
                 } else {
                     String errorMessage = "Unknown error while initializing launcher \"" + C_KNOWN_LAUNCHERS[i] + "\". " + e.toString();
                     if(A_OpenCms.isLogging()) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[CmsLauncherManager] " + errorMessage);
+                        A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
                     }
                     throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
                 }                
@@ -117,7 +119,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
             if(launchers.containsKey(launcherId)) {
                 String errorMessage = "Duplicate launcher ID " + launcherId + " in launcher \"" + C_KNOWN_LAUNCHERS[i] + "\".";
                 if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsLauncherManager] " + errorMessage);
+                    A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
                 }
                 throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
             }
@@ -126,7 +128,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
             // We can store the launcher in our Hashtable.
             launchers.put(launcherId, launcherInstance);
             if(A_OpenCms.isLogging()) {                
-                A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsLauncherManager] OpenCms launcher \"" + C_KNOWN_LAUNCHERS[i] 
+                A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] OpenCms launcher \"" + C_KNOWN_LAUNCHERS[i] 
                         + "\" with launcher ID " + launcherId + " loaded successfully."); 
             }
         }

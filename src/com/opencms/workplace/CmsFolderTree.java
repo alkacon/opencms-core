@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
- * Date   : $Date: 2000/02/22 13:32:08 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/02/29 16:44:47 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/02/22 13:32:08 $
+ * @version $Revision: 1.16 $ $Date: 2000/02/29 16:44:47 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -154,7 +154,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
      */
      public Object getTree(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
-            Hashtable parameters = (Hashtable)userObj;
+            // TODO: check, if this is needed: Hashtable parameters = (Hashtable)userObj;
             StringBuffer output=new StringBuffer();  
             HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
             

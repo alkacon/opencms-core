@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/02/17 16:52:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.7 $ $Date: 2000/02/17 16:52:57 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/29 16:44:46 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -264,7 +264,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 				s_value=meta.item(i).getFirstChild().getNodeValue();
 				h_meta.put(s_key,s_value);
 				try {
-					A_CmsMetadefinition newMetaDef = m_RB.createMetadefinition(m_user,m_project, s_key, s_rtype, 0);
+					m_RB.createMetadefinition(m_user,m_project, s_key, s_rtype, 0);
 				} catch (CmsException e) {
 					m_errMsg.addElement(e.getMessage());
 				}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/28 16:57:33 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2000/02/28 16:57:33 $
+ * @version $Revision: 1.36 $ $Date: 2000/02/29 16:44:46 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -1549,7 +1549,7 @@ import com.opencms.util.*;
     /**
 	 * Calculates the absolute path to a file mounted in this database.
 	 * 
-	 * @param filename Name of a file in the MhtCms system.
+	 * @param filename Name of a file in the Cms system.
 	 * @return absolute path of a the file in the database.
 	 */
 	private String absoluteName(String filename){

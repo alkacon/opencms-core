@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/02/23 19:44:28 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/02/29 16:44:47 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2000/02/23 19:44:28 $
+ * @version $Revision: 1.18 $ $Date: 2000/02/29 16:44:47 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -100,7 +100,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @return key that can be used for caching
      */
     public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
-        Vector v = new Vector();
+        //Vector v = new Vector();
         A_CmsRequestContext reqContext = cms.getRequestContext();
         
         //v.addElement(reqContext.currentProject().getName());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/02/22 11:16:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/29 16:44:48 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.7 $ $Date: 2000/02/22 11:16:44 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/29 16:44:48 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -77,13 +77,12 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        String result = null;     
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
         
         // the template to be displayed
         String template=null;
         
-        String lock=(String)parameters.get(C_PARA_LOCK);
+        // TODO: check, if this is neede: String lock=(String)parameters.get(C_PARA_LOCK);
         String filename=(String)parameters.get(C_PARA_FILE);
         if (filename != null) {
             session.putValue(C_PARA_FILE,filename);        

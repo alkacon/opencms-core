@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySqlFillDefaults.java,v $
- * Date   : $Date: 2000/02/17 15:51:01 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/02/17 15:51:01 $
+ * @version $Revision: 1.17 $ $Date: 2000/02/29 16:44:46 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -58,101 +58,108 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 		
 			// TODO: write the SQLDriver and the connectString to the propertys
 
-			I_CmsRbUserGroup userRb = new CmsRbUserGroup( 
-				new CmsAccessUserGroup(
-					new CmsAccessUserMySql(propertyDriver, propertyConnectString),
-					new CmsAccessUserInfoMySql(propertyDriver, propertyConnectString),
-					new CmsAccessGroupMySql(propertyDriver, propertyConnectString)));
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlFillDefaults] initialized rb-network and filling in some defaults...");
+		}
+		
+		I_CmsRbUserGroup userRb = new CmsRbUserGroup( 
+			new CmsAccessUserGroup(
+				new CmsAccessUserMySql(propertyDriver, propertyConnectString),
+				new CmsAccessUserInfoMySql(propertyDriver, propertyConnectString),
+				new CmsAccessGroupMySql(propertyDriver, propertyConnectString)));
 			
-			I_CmsRbTask taskRb = new CmsRbTask( 
-				new CmsAccessTask(propertyDriver, propertyConnectString ) );
+		I_CmsRbTask taskRb = new CmsRbTask( 
+			new CmsAccessTask(propertyDriver, propertyConnectString ) );
 
-			userRb.addGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
-			A_CmsGroup adminGroup = userRb.addGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED, null);
-			userRb.addGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED, null);
-			userRb.addGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED, C_GROUP_GUEST);
+		userRb.addGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
+		A_CmsGroup adminGroup = userRb.addGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED, null);
+		userRb.addGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED, null);
+		userRb.addGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED, C_GROUP_GUEST);
 			
-			A_CmsUser user = userRb.addUser(C_USER_GUEST, "", C_GROUP_GUEST, 
-											"the guest-user", new Hashtable(), 
-											C_FLAG_ENABLED);
-			A_CmsUser admin = userRb.addUser(C_USER_ADMIN, "admin", C_GROUP_ADMIN, 
-											 "the admin-user", new Hashtable(), 
-											 C_FLAG_ENABLED);
+		userRb.addUser(C_USER_GUEST, "", C_GROUP_GUEST, "the guest-user", 
+					   new Hashtable(), C_FLAG_ENABLED);
+		A_CmsUser admin = userRb.addUser(C_USER_ADMIN, "admin", C_GROUP_ADMIN, 
+										 "the admin-user", new Hashtable(), 
+										 C_FLAG_ENABLED);
 			
-			I_CmsRbProject projectRb = new CmsRbProject(
-				new CmsAccessProjectMySql(propertyDriver, propertyConnectString));
+		I_CmsRbProject projectRb = new CmsRbProject(
+			new CmsAccessProjectMySql(propertyDriver, propertyConnectString));
 			
-			A_CmsTask task = taskRb.createProject(admin, C_PROJECT_ONLINE, adminGroup, 
-												  new java.sql.Timestamp(new Date().getTime()), 
-												  C_TASK_PRIORITY_NORMAL);
+		A_CmsTask task = taskRb.createProject(admin, C_PROJECT_ONLINE, adminGroup, 
+											  new java.sql.Timestamp(new Date().getTime()), 
+											  C_TASK_PRIORITY_NORMAL);
 
-			A_CmsProject project = projectRb.createProject(C_PROJECT_ONLINE, "the online-project", task,
-														   userRb.readUser(C_USER_ADMIN), 
-														   userRb.readGroup(C_GROUP_GUEST), 
-														   userRb.readGroup(C_GROUP_PROJECTLEADER),
-														   C_FLAG_ENABLED);
+		A_CmsProject project = projectRb.createProject(C_PROJECT_ONLINE, "the online-project", task,
+													   userRb.readUser(C_USER_ADMIN), 
+													   userRb.readGroup(C_GROUP_GUEST), 
+													   userRb.readGroup(C_GROUP_PROJECTLEADER),
+													   C_FLAG_ENABLED);
 			
 			
-			I_CmsRbProperty propertyRb = new CmsRbProperty(
-				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));
+		I_CmsRbProperty propertyRb = new CmsRbProperty(
+			new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));
 
-			// the resourceType "folder" is needed always - so adding it
-			Hashtable resourceTypes = new Hashtable(1);
-			resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, 
-																	  C_TYPE_FOLDER_NAME, ""));
+		// the resourceType "folder" is needed always - so adding it
+		Hashtable resourceTypes = new Hashtable(1);
+		resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, 
+																  C_TYPE_FOLDER_NAME, ""));
 			
-			// sets the last used index of resource types.
-			resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
+		// sets the last used index of resource types.
+		resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
 			
-            // add the mime-types to the database
-			propertyRb.addProperty( C_PROPERTY_RESOURCE_TYPE, resourceTypes );
+        // add the mime-types to the database
+		propertyRb.addProperty( C_PROPERTY_RESOURCE_TYPE, resourceTypes );
             
             
-            // set the mimetypes
-            propertyRb.addProperty(C_PROPERTY_MIMETYPES,initMimetypes());
+        // set the mimetypes
+        propertyRb.addProperty(C_PROPERTY_MIMETYPES,initMimetypes());
 			
-			// create the root-mountpoint
-			Hashtable mount = new Hashtable(1);
-			mount.put("/", new CmsMountPoint("/", propertyDriver, 
-											 propertyConnectString,
-											 "The root-mountpoint"));
+		// create the root-mountpoint
+		Hashtable mount = new Hashtable(1);
+		mount.put("/", new CmsMountPoint("/", propertyDriver, 
+										 propertyConnectString,
+										 "The root-mountpoint"));
 			
-			propertyRb.addProperty( C_PROPERTY_MOUNTPOINT, mount );
+		propertyRb.addProperty( C_PROPERTY_MOUNTPOINT, mount );
 
-			// read all mountpoints from the properties.
-			A_CmsMountPoint mountPoint;
-			Hashtable mountedAccessModules = new Hashtable();
-			Enumeration keys = mount.keys();
-			Object key;
+		// read all mountpoints from the properties.
+		A_CmsMountPoint mountPoint;
+		Hashtable mountedAccessModules = new Hashtable();
+		Enumeration keys = mount.keys();
+		Object key;
 			
-			// walk throug all mount-points.
-			while(keys.hasMoreElements()) {
-				key = keys.nextElement();
-				mountPoint = (A_CmsMountPoint) mount.get(key);
+		// walk throug all mount-points.
+		while(keys.hasMoreElements()) {
+			key = keys.nextElement();
+			mountPoint = (A_CmsMountPoint) mount.get(key);
 					
-				// select the right access-module for the mount-point
-				if( mountPoint.getMountpointType() == C_MOUNTPOINT_MYSQL ) {
-					mountedAccessModules.put(key, new CmsAccessFileMySql(mountPoint));
-				} else {
-					mountedAccessModules.put(key, new CmsAccessFileFilesystem(mountPoint));
-				}
+			// select the right access-module for the mount-point
+			if( mountPoint.getMountpointType() == C_MOUNTPOINT_MYSQL ) {
+				mountedAccessModules.put(key, new CmsAccessFileMySql(mountPoint));
+			} else {
+				mountedAccessModules.put(key, new CmsAccessFileFilesystem(mountPoint));
 			}
-			I_CmsAccessFile accessFile = new CmsAccessFile(mountedAccessModules);
+		}
+		I_CmsAccessFile accessFile = new CmsAccessFile(mountedAccessModules);
 			
-			// create the root-folder
-			accessFile.createFolder(admin, project, C_ROOT, 0);
+		// create the root-folder
+		accessFile.createFolder(admin, project, C_ROOT, 0);
 									
-			I_CmsRbFile fileRb = new CmsRbFile(accessFile);
+		I_CmsRbFile fileRb = new CmsRbFile(accessFile);
 
-			I_CmsRbMetadefinition metadefinitionRb = 
-				new CmsRbMetadefinition(
-					new CmsAccessMetadefinitionMySql(propertyDriver, propertyConnectString));
+		I_CmsRbMetadefinition metadefinitionRb = 
+			new CmsRbMetadefinition(
+				new CmsAccessMetadefinitionMySql(propertyDriver, propertyConnectString));
 			
        
             
             
-			return new CmsResourceBroker(userRb, fileRb, metadefinitionRb, 
-										 propertyRb, projectRb, taskRb);
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlFillDefaults] rb-network initialized");
+		}
+		
+		return new CmsResourceBroker(userRb, fileRb, metadefinitionRb, 
+									 propertyRb, projectRb, taskRb);
 	}
     
     /**

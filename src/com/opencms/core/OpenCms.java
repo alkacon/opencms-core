@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/02/16 10:47:57 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/02/29 16:44:45 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.19 $ $Date: 2000/02/16 10:47:57 $  
+* @version $Revision: 1.20 $ $Date: 2000/02/29 16:44:45 $  
 * 
 */
 
@@ -108,24 +108,44 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
         // invoke the ResourceBroker via the initalizer
         try {
 			
+            if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating main resourcebroker");
+			}
   		    m_rb = ((A_CmsInit) Class.forName(classname).newInstance() ).init(driver, connect);
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating first cms-object");
+			}
             CmsObject cms=new CmsObject();
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the cms-object with the main resource-broker");
+			}
             cms.init(m_rb);
 			printCopyrightInformation(cms);
             // initalize the Hashtable with all available mimetypes
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] read mime types");
+			}
             m_mt=cms.readMimeTypes();
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] found " + m_mt.size() + " mime-type entrys");			
+			}
         } catch (Exception e) {
-            System.err.println(e.getMessage());    
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
+			}
         }
         
         // try to initialize the launchers.
         try {
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize launchers...");			
+			}
             m_launcherManager = new CmsLauncherManager();
         } catch (Exception e) {
-            System.err.println(e.getMessage());    
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
+			}
         }            
-        
-      
      }
      
      /**

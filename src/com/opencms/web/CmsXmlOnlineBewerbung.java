@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $ 
- * Author : $Author: m.emmerich $
- * Date   : $Date: 2000/02/23 20:09:58 $
- * Version: $Revision: 1.16 $
+ * Author : $Author: a.schouten $
+ * Date   : $Date: 2000/02/29 16:44:47 $
+ * Version: $Revision: 1.17 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -41,8 +41,8 @@ import java.io.*;
  * This class is used to display the application form of mindfact and makes it
  * possible to send the application form as a mail.
  * 
- * @author $Author: m.emmerich $
- * @version $Name:  $ $Revision: 1.16 $ $Date: 2000/02/23 20:09:58 $
+ * @author $Author: a.schouten $
+ * @version $Name:  $ $Revision: 1.17 $ $Date: 2000/02/29 16:44:47 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -598,6 +598,8 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		}
 		
 		// Salary
+		// TODO:check, if this is needed:
+		/*
 		if (!value[6].trim().equals("")) {
 			try {
 				int salary=new Integer(value[6]).parseInt(value[6]);
@@ -606,7 +608,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 					errorMessage=errorMessage+parameter[6]+", ";
 				}
 			}
-		}
+		} */
 		if (value[6].length()>10) {
 			if (errorMessage.indexOf(parameter[6])==-1) {
 				errorMessage=errorMessage+parameter[6]+", ";
@@ -787,7 +789,8 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 	private void check(String value, String parameter) throws Exception {
 		
 		if (!value.equals("")) {
-			String pattern="01234567890 (abcdefghijklmnopqrstuvwxyz)[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{הצüִײÜß}<.@:,;?$|!&+-#_=%*/>";
+			// TODO: use pattern correctly
+			// String pattern="01234567890 (abcdefghijklmnopqrstuvwxyz)[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{הצüִײÜß}<.@:,;?$|!&+-#_=%*/>";
 			for (int i=0;i<value.length();i++) {
 				if (value.indexOf(value.charAt(i))==-1) {
 					throw new Exception(parameter);

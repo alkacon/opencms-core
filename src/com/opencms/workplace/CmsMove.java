@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/02/22 11:16:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/29 16:44:48 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.3 $ $Date: 2000/02/22 11:16:44 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/29 16:44:48 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -77,7 +77,6 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        String result = null;     
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
         
         // the template to be displayed
@@ -176,8 +175,8 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         Integer selected=new Integer(0);
         // Let's see if we have a session
-        A_CmsRequestContext reqCont = cms.getRequestContext();
-        HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
+        // TODO: check, if this is neede: A_CmsRequestContext reqCont = cms.getRequestContext();
+        // TODO: check, if this is neede: HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
        
         // get current and root folder
         CmsFolder rootFolder=cms.rootFolder();
@@ -235,10 +234,10 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
               String foldername=t.nextToken();
                try {
                 // try to read the folder. if this fails, an exception is thrown  
-                CmsFolder folder= cms.readFolder(completePath+foldername+"/");
+                cms.readFolder(completePath+foldername+"/");
               } catch (CmsException e) {
                   // the folder could not be read, so create it.
-                  CmsFolder folder=cms.createFolder(completePath,foldername);                              
+                  cms.createFolder(completePath,foldername);                              
               }
               completePath+=foldername+"/";        
           }          

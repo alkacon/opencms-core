@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessGroupMySql.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.18 $ $Date: 2000/02/29 16:44:46 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -355,7 +355,6 @@ import com.opencms.core.*;
 	 public A_CmsGroup createGroup(String name, String description, int flags,String parent)
          throws CmsException {
          
-         int id=C_UNKNOWN_ID;
          int parentId=C_UNKNOWN_ID;
          A_CmsGroup group=null;
         

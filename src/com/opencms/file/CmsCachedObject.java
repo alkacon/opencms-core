@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCachedObject.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,10 +29,10 @@
 package com.opencms.file;
 
 /**
- * This class defines one individual object stored in the MhtDBCacheFile and method to access it
+ * This class defines one individual object stored in the DBCacheFile and method to access it
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/29 16:44:46 $
  */
 public class CmsCachedObject implements Cloneable
 {
@@ -91,7 +91,7 @@ public class CmsCachedObject implements Cloneable
 	}
 	
      /**
-	 * Clones the MhtCachedObject. 
+	 * Clones the CachedObject. 
 	 * This is needed to return only clones of the objects stored in the cache
 	 * @param content Flag for cloning the file content, too.
 	 */

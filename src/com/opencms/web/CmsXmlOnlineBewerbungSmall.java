@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungSmall.java,v $ 
  * Author : $Author: a.schouten $
- * Date   : $Date: 2000/02/24 15:16:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/29 16:44:47 $
+ * Version: $Revision: 1.7 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,7 +42,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: a.schouten $
- * @version $Name:  $ $Revision: 1.6 $ $Date: 2000/02/24 15:16:44 $
+ * @version $Name:  $ $Revision: 1.7 $ $Date: 2000/02/29 16:44:47 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
@@ -388,7 +388,8 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 	private void check(String value, String parameter) throws Exception {
 		
 		if (!value.equals("")) {
-			String pattern="01234567890 (abcdefghijklmnopqrstuvwxyz)[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{‰ˆ¸ƒ÷‹ﬂ}<.@:,;?$|!&+-#_=%*/>";
+			// TODO: use pattern correctly
+			// String pattern="01234567890 (abcdefghijklmnopqrstuvwxyz)[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{‰ˆ¸ƒ÷‹ﬂ}<.@:,;?$|!&+-#_=%*/>";
 			for (int i=0;i<value.length();i++) {
 				if (value.indexOf(value.charAt(i))==-1) {
 					throw new Exception(parameter);

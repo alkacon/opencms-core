@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartRequest.java,v $
- * Date   : $Date: 2000/02/20 09:49:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/29 16:44:45 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,7 +54,7 @@ import com.opencms.file.*;
 * 
 * @author Alexander Kandzior
 * @author Michael Emmerich
-* @version $Revision: 1.3 $ $Date: 2000/02/20 09:49:11 $  
+* @version $Revision: 1.4 $ $Date: 2000/02/29 16:44:45 $  
 * 
 */
 public class CmsMultipartRequest implements HttpServletRequest {
@@ -626,7 +626,7 @@ public class CmsMultipartRequest implements HttpServletRequest {
 
     // Parse the content-disposition line
     String[] dispInfo = extractDispositionInfo(line);
-    String disposition = dispInfo[0];
+    // String disposition = dispInfo[0];
     String name = dispInfo[1];
     String filename = dispInfo[2];
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/25 16:55:09 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.74 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.73 $ $Date: 2000/02/25 16:55:09 $
+ * @version $Revision: 1.74 $ $Date: 2000/02/29 16:44:46 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -106,6 +106,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_projectRb = projectRb;
 		m_taskRb = taskRb;
     
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_userRb.getClass().getName());
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_fileRb.getClass().getName());
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_metadefRb.getClass().getName());
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_propertyRb.getClass().getName());
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_projectRb.getClass().getName());
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_taskRb.getClass().getName());
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] all rb's stored");
+		}
 	}
 
 	// Projects:
@@ -3392,16 +3401,15 @@ System.err.println(">>> readFile(2) error for\n" +
 	public void importDb(A_CmsUser currentUser,  A_CmsProject currentProject, String importFile, String importPath)
 	throws Exception {
 		boolean admin=false;
-		int filesimported = 0;
-			admin = this.isAdmin(currentUser, currentProject);
-			if (admin) {
-				CmsDbImport cmsImport= new CmsDbImport(this, currentUser, currentProject, importFile, importPath);
-				Vector errLogImport= cmsImport.xmlImport();
+		admin = this.isAdmin(currentUser, currentProject);
+		if (admin) {
+			CmsDbImport cmsImport= new CmsDbImport(this, currentUser, currentProject, importFile, importPath);
+			cmsImport.xmlImport();
 				
-				if(cmsImport.getFilesImported()==C_FILES_IMPORTED) {
-					this.fileSystemChanged(currentProject.getName(), importPath);
-				}
+			if(cmsImport.getFilesImported()==C_FILES_IMPORTED) {
+				this.fileSystemChanged(currentProject.getName(), importPath);
 			}
+		}
 	}
 	
 	

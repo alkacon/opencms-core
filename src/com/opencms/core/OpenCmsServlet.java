@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/02/21 22:25:09 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/02/29 16:44:45 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.21 $ $Date: 2000/02/21 22:25:09 $  
+* @version $Revision: 1.22 $ $Date: 2000/02/29 16:44:45 $  
 * 
 */
 
@@ -130,17 +130,23 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
     		throw new ServletException(e.getMessage() + ".  Properties file is: " + config.getInitParameter("properties"));
     	}
         
-        // get the connect information for the property db from the configuration
-        propertyDriver=(String)m_configurations.getString(C_PROPERTY_DRIVER);
-        propertyConnect=(String)m_configurations.getString(C_PROPERTY_CONNECT);
-        // get the classname of the initializer class
-        initializerClassname=(String)m_configurations.getString(C_INILITALIZER_CLASSNAME);
-        
         // Initialize the logging
         A_OpenCms.initializeServletLogging(m_configurations);
+
+		// get the connect information for the property db from the configuration
+        propertyDriver=(String)m_configurations.getString(C_PROPERTY_DRIVER);
+        propertyConnect=(String)m_configurations.getString(C_PROPERTY_CONNECT);
+
+		// get the classname of the initializer class
+        initializerClassname=(String)m_configurations.getString(C_INILITALIZER_CLASSNAME);
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing opencms with initializer: " + initializerClassname);
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] connecting to propertyDB via " + propertyDriver);
+		}
         
         // invoke the OpenCms
         m_opencms=new OpenCms(propertyDriver,propertyConnect,initializerClassname);
+
         
         // build the database scheduler for keeping connections alive
         CmsObject cms=new CmsObject();
@@ -153,8 +159,14 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         m_schedulerDbConnector.start();
         
         //initalize the session storage
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing session storage");
+		}
         m_sessionStorage=new CmsSession();
         
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing... DONE");
+		}
     }
          
     /**
@@ -379,7 +391,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
       
         // get the original ServletRequest and response
         HttpServletRequest req=(HttpServletRequest)cmsReq.getOriginalRequest();
-        HttpServletResponse res=(HttpServletResponse)cmsRes.getOriginalResponse();
            
         //get the session if it is there
         session=req.getSession(false);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySqlCache.java,v $
- * Date   : $Date: 2000/02/19 11:57:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/19 11:57:08 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/29 16:44:46 $
  */
 public class CmsInitMySqlCache extends A_CmsInit implements I_CmsConstants {
 	
@@ -67,21 +67,41 @@ public class CmsInitMySqlCache extends A_CmsInit implements I_CmsConstants {
 					new CmsAccessUserInfoMySql(propertyDriver, propertyConnectString),
 					new CmsAccessGroupMySql(propertyDriver, propertyConnectString)));
 
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlCache] initialized rb for user and groups");
+		}
+		
 		I_CmsRbMetadefinition metadefinitionRb = 
 			new CmsRbMetadefinitionCache(
 				new CmsAccessMetadefinitionMySql(propertyDriver, propertyConnectString));
+		
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlCache] initialized rb for metadefinitions and metainformations");
+		}
 		
 		I_CmsRbProperty propertyRb =
 			new CmsRbProperty(
 				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));
 		
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlCache] initialized rb for properties");
+		}
+		
 		I_CmsRbProject projectRb = 
 			new CmsRbProjectCache(
 				new CmsAccessProjectMySql(propertyDriver, propertyConnectString));
 		
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlCache] initialized rb for projects");
+		}
+		
 		I_CmsRbTask taskRb = 
 			new CmsRbTask(
 				new CmsAccessTask(propertyDriver, propertyConnectString));
+		
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlCache] initialized rb for tasks");
+		}
 		
 		// read all mountpoints from the properties.
 		Hashtable mountPoints = (Hashtable) propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
@@ -89,6 +109,7 @@ public class CmsInitMySqlCache extends A_CmsInit implements I_CmsConstants {
 		Hashtable mountedAccessModules = new Hashtable();
 		Enumeration keys = mountPoints.keys();
 		Object key;
+		Object accessModule;
 		
 		// walk throug all mount-points.
 		while(keys.hasMoreElements()) {
@@ -97,13 +118,22 @@ public class CmsInitMySqlCache extends A_CmsInit implements I_CmsConstants {
 			
 			// select the right access-module for the mount-point
 			if( mountPoint.getMountpointType() == C_MOUNTPOINT_MYSQL ) {
-				mountedAccessModules.put(key, new CmsAccessFileMySql(mountPoint));
+				accessModule = new CmsAccessFileMySql(mountPoint);
 			} else {
-				mountedAccessModules.put(key, new CmsAccessFileFilesystem(mountPoint));
+				accessModule = new CmsAccessFileFilesystem(mountPoint);
+			}
+			mountedAccessModules.put(key, accessModule);
+			
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlCache] added mountpoint " + key + " via access module: " + accessModule.getClass().getName());
 			}
 		}
 		
 		I_CmsRbFile fileRb = new CmsRbFileCache(new CmsAccessFile(mountedAccessModules));
+		
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySql] initialized rb for files");
+		}
 		
 		return( new CmsResourceBroker( userGroupRb, fileRb, metadefinitionRb, 
 									   propertyRb, projectRb, taskRb) );

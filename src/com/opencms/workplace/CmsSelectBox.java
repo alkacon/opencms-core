@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/29 16:44:48 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:51:19 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/29 16:44:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -123,7 +123,7 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
         // check the returned elements and put them into option tags.
         // The element with index "selectedOption" has to get the "selected" tag.
         int numValues = values.size();
-        int numNames = names.size();
+        // TODO: check, if this is neede: int numNames = names.size();
         
         for(int i=0; i<numValues; i++) {
             if(i == selectedOption) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/02/17 15:51:01 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2000/02/17 15:51:01 $
+ * @version $Revision: 1.30 $ $Date: 2000/02/29 16:44:46 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -81,7 +81,6 @@ public class CmsShell implements I_CmsConstants {
 				shell.commands();	
 			}
 		} catch(Exception exc) {
-			System.out.println(exc);
 			exc.printStackTrace();
 		}
 	}
@@ -104,7 +103,8 @@ public class CmsShell implements I_CmsConstants {
 	 */
 	private void commands() {
 		try{
-			StreamTokenizer tokenizer = new StreamTokenizer(System.in);
+			Reader reader = new FileReader(java.io.FileDescriptor.in);
+			StreamTokenizer tokenizer = new StreamTokenizer(reader);
 			tokenizer.eolIsSignificant(true);
 			Vector input;
 			System.out.println("Type help to get a list of commands.");
@@ -160,7 +160,6 @@ public class CmsShell implements I_CmsConstants {
 			getClass().getMethod(toCall, paramClasses).invoke(this,params);
 		} catch(Exception exc) {
 			printException(exc);
-			exc.printStackTrace();
 		}
 	}
 
@@ -394,7 +393,6 @@ public class CmsShell implements I_CmsConstants {
 			user.setLastname(lastname);
 			user.setAdditionalInfo("test", "AS");
 			m_cms.writeUser(user);
-			A_CmsUser newUser = m_cms.readUser(name);
 			System.out.println(user);
 			System.out.println(user.getFirstname());
 			System.out.println(user.getLastname());

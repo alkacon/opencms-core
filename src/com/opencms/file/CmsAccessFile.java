@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/02/25 16:55:08 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/29 16:44:46 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/02/25 16:55:08 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/29 16:44:46 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -244,7 +244,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
         } else {
             // copy the file form the old filesystem to the new one
             CmsFile file=oldFs.readFile(project,onlineProject,oldname);
-            CmsFile newFile=newFs.createFile(project,onlineProject,file,newname);
+            newFs.createFile(project,onlineProject,file,newname);
             oldFs.deleteFile(project,oldname);
         }
      }
@@ -314,7 +314,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
         } else {
             // copy the file form the source filesystem to the destination one
             CmsFile file=sourceFs.readFile(project,onlineProject,source);
-            CmsFile newFile=destinationFs.createFile(project,onlineProject,file,destination);
+            destinationFs.createFile(project,onlineProject,file,destination);
          }
      }
 			
@@ -510,7 +510,6 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
      private I_CmsAccessFile getFilesystem(String name)
 	{
 		String mountpoint=null;
-		String bestmountpoint = null;
 		String bestmatch=new String("");
 		I_CmsAccessFile accessFile=null;
 		

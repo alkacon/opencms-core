@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRadioButtons.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/29 16:44:48 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;RADIOBUTTON&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/29 16:44:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -82,7 +82,7 @@ public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement, I
       
          // call the method for generating listbox elements
         Method groupsMethod = null;
-        int selectedOption = 0;
+        // TODO:check, if this is needed: int selectedOption = 0;
         try {
             groupsMethod = callingObject.getClass().getMethod(radioMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Vector.class, Vector.class, Hashtable.class});
             groupsMethod.invoke(callingObject, new Object[] {cms, lang, names, values, parameters});
@@ -108,7 +108,7 @@ public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement, I
  
         // process the vectors with the elelmetns of the radio buttons to be displayed.
         int numValues = values.size();
-        int numNames = names.size();
+        // TODO:check, if this is needed: int numNames = names.size();
         
         CmsXmlWpRadioDefFile radiodef = getRadioDefinitions(cms); 
   

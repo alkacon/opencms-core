@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsSimpleNav.java,v $
- * Date   : $Date: 2000/02/21 22:24:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/29 16:44:47 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * used for the CeBIT online application form.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/21 22:24:21 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/29 16:44:47 $
  */
 public class CmsSimpleNav extends CmsXmlTemplate implements I_CmsConstants {
     
@@ -101,7 +101,6 @@ public class CmsSimpleNav extends CmsXmlTemplate implements I_CmsConstants {
             throws CmsException {
 
         // First create a copy of the parameter hashtable
-        Hashtable parameterHashtable = (Hashtable)((Hashtable)userObject).clone();
 
         // Reference to our own document.
         CmsSimpleNavFile xmlTemplateDocument = (CmsSimpleNavFile)doc;     
