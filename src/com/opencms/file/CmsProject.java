@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/06/05 13:37:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/06 11:31:30 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/06/05 13:37:54 $
+ * @version $Revision: 1.14 $ $Date: 2000/06/06 11:31:30 $
  */
 public class CmsProject implements I_CmsConstants,
                                                         Cloneable{
@@ -102,9 +102,15 @@ public class CmsProject implements I_CmsConstants,
 	 */
 	private int m_countLockedResources = 0;
 
+	/**
+	 * The project type
+	 */
+	private int m_type = C_UNKNOWN_ID;
+	
+
 	CmsProject(int projectId, String name, String description, int taskId, 
 			   int ownerId, int groupId, int managergroupId, int flags, Timestamp createdate, 
-			   Timestamp publishingdate, int publishedBy, int countLockedResources) {
+			   Timestamp publishingdate, int publishedBy, int countLockedResources, int type) {
 		m_id = projectId;
 		m_name = name;
 		m_description = description;
@@ -115,6 +121,7 @@ public class CmsProject implements I_CmsConstants,
 		m_flags = flags;
 		m_publishedBy = publishedBy;
 		m_countLockedResources = countLockedResources;
+		m_type = type;
 		if( createdate != null) {
 			m_createdate = createdate.getTime();
 		} else {
@@ -268,6 +275,25 @@ public class CmsProject implements I_CmsConstants,
 	}
 	
 	/**
+	 * Gets the type.
+	 * 
+	 * @return the type.
+	 */
+	int getType() {
+		return m_type;
+	}
+	
+	/**
+	 * Sets the type.
+	 * 
+	 * @param the type.
+	 */
+	void setType(int id) {
+		m_type = id;
+	}
+	
+	
+	/**
 	 * Gets the counter for locked resources in this project.
 	 * 
 	 * @return the counter for locked resources in this project.
@@ -344,7 +370,7 @@ public class CmsProject implements I_CmsConstants,
                                        this.m_ownerId,this.m_groupId,this.m_managergroupId,
                                        this.m_flags,new Timestamp(this.m_createdate),
                                        new Timestamp(this.m_publishingdate),this.m_publishedBy,
-									   this.m_countLockedResources);
+									   this.m_countLockedResources, this.m_type);
         return project;    
     }  
 }
