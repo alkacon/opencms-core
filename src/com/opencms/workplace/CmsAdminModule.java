@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModule.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/01/23 10:39:31 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.file.CmsRequestContext;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.template.CmsXmlTemplateFile;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -115,6 +116,7 @@ public class CmsAdminModule extends CmsWorkplaceDefault implements I_CmsConstant
         while (e.hasMoreElements()){
             retVec.addElement(e.nextElement());
         }       
+        Collections.sort(retVec);
         return retVec;
     }
 }
