@@ -147,9 +147,7 @@ create table CMS_SESSIONS               (SESSION_ID varchar(255) not null,
 										   roleref int(11),
 										   PRIMARY KEY (id)
 										 );
-										 
-										 INSERT INTO CMS_TaskType VALUES (1,0,'../taskforms/adhoc.asp',1,'Ad-Hoc','30308',1,1);
-										 
+										 										 
 #
 # Table structure for table 'GlobeTaskLog'
 #

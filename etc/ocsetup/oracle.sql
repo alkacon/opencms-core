@@ -156,8 +156,6 @@ CREATE TABLE CMS_TaskType
  roleref int,
  PRIMARY KEY (id));
  
-INSERT INTO CMS_TaskType VALUES (1,0,'../taskforms/adhoc.asp',1,'Ad-Hoc','30308',1,1);
-
 CREATE TABLE CMS_TaskLog 
 (coment long,
  externalusername varchar(254),

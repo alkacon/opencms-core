@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/11/22 10:34:56 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/11/24 13:49:38 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.33 $ $Date: 2000/11/22 10:34:56 $
+ * @version $Revision: 1.34 $ $Date: 2000/11/24 13:49:38 $
  */
 public class CmsQueries
 {
@@ -409,6 +409,10 @@ public class CmsQueries
 	public String C_TASKPAR_GET = "SELECT * FROM " + C_TABLENAME_TASKPAR + " WHERE " + C_PAR_TASK + "=? AND " + C_PAR_NAME + "=?";
 	public Integer C_TASK_GET_TASKTYPE_KEY = new Integer(815);
 	public String C_TASK_GET_TASKTYPE = "SELECT id FROM " + C_TABLENAME_TASKTYPE + " where name=?";
+	public Integer C_TASKTYPE_UPDATE_KEY = new Integer(816);
+	public String C_TASKTYPE_UPDATE = "UPDATE " + C_TABLENAME_TASKTYPE + " SET autofinish=?, escalationtyperef=?, htmllink=?, name=?, permission=?, priorityref=?, roleref =? WHERE " + C_PAR_ID + "=?";
+	public Integer C_TASKTYPE_INSERT_KEY = new Integer(817);
+	public String C_TASKTYPE_INSERT = "INSERT INTO " + C_TABLENAME_TASKTYPE + "( autofinish, escalationtyperef, htmllink, " + C_PAR_ID + ", name, permission, priorityref, roleref) VALUES (?,?,?,?,?,?,?,?)";
 
 	// Constants for systemid table
 	public String C_SYSTEMID_ID = "ID";

@@ -121,8 +121,6 @@ GROUPUSER_FLAGS int not null );
 CREATE TABLE CMS_Task 
 ( autofinish int, endtime date, escalationtyperef int, id int NOT NULL, initiatoruserref int, milestoneref int, name varchar(254), originaluserref int, agentuserref int, parent int, percentage varchar(50), permission varchar(50), priorityref int DEFAULT '2', roleref int, root int, starttime date, state int, tasktyperef int, timeout date, wakeuptime date, htmllink varchar(254), estimatetime int DEFAULT '86400', PRIMARY KEY (id));
 CREATE TABLE CMS_TaskType ( autofinish int, escalationtyperef int, htmllink varchar(254), id int NOT NULL, name varchar(50), permission varchar(50), priorityref int, roleref int, PRIMARY KEY (id) );
-INSERT INTO CMS_TaskType VALUES (1,0,'../taskforms/adhoc.asp',1,'Ad-Hoc','30308',1,1);
-COMMIT;
 CREATE TABLE CMS_TaskLog ( coment long, externalusername varchar(254), id int NOT NULL, starttime date, taskref int, userref int, type int DEFAULT '0', PRIMARY KEY (id) );
 CREATE TABLE CMS_TaskPar ( id int NOT NULL, parname varchar(50), parvalue varchar(50), ref int, PRIMARY KEY (id) );
 

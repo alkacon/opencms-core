@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/11/23 09:12:37 $
- * Version: $Revision: 1.170 $
+ * Date   : $Date: 2000/11/24 13:49:32 $
+ * Version: $Revision: 1.171 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.170 $ $Date: 2000/11/23 09:12:37 $ * 
+ * @version $Revision: 1.171 $ $Date: 2000/11/24 13:49:32 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -1841,7 +1841,8 @@ protected void fillDefaults() throws CmsException
 	CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", C_USER_TYPE_SYSTEMUSER);
 	addUserToGroup(guest.getId(), guests.getId());
 	addUserToGroup(admin.getId(), administrators.getId());
-	CmsTask task = createTask(0, 0, 1, // standart project type,
+	writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
+    CmsTask task = createTask(0, 0, 1, // standart project type,
 	admin.getId(), admin.getId(), administrators.getId(), C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), C_TASK_PRIORITY_NORMAL);
 	CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 
@@ -3107,7 +3108,11 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 		m_pool.initPreparedStatement(m_cq.C_TASKPAR_UPDATE_KEY,m_cq.C_TASKPAR_UPDATE);	
 		m_pool.initPreparedStatement(m_cq.C_TASKPAR_INSERT_KEY,m_cq.C_TASKPAR_INSERT);	
 		m_pool.initPreparedStatement(m_cq.C_TASKPAR_GET_KEY,m_cq.C_TASKPAR_GET);	
-		
+
+        // init statements for tasktypes
+		m_pool.initPreparedStatement(m_cq.C_TASKTYPE_UPDATE_KEY,m_cq.C_TASKTYPE_UPDATE);	
+		m_pool.initPreparedStatement(m_cq.C_TASKTYPE_INSERT_KEY,m_cq.C_TASKTYPE_INSERT);	
+        
 		// init statements for tasklogs
 		m_pool.initPreparedStatement(m_cq.C_TASKLOG_WRITE_KEY,m_cq.C_TASKLOG_WRITE);
 		m_pool.initPreparedStatement(m_cq.C_TASKLOG_READ_KEY,m_cq.C_TASKLOG_READ);
@@ -3146,6 +3151,32 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 		} finally {
 			if(statement != null) {
 				m_pool.putPreparedStatement(m_cq.C_TASKPAR_INSERT_KEY, statement);
+			}
+		}
+		return newId;
+	}
+	protected int insertTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref)        
+		throws CmsException {
+		PreparedStatement statement = null;
+		int newId = C_UNKNOWN_ID;
+		
+		try {
+			newId = nextId(C_TABLE_TASKPAR);
+			statement = m_pool.getPreparedStatement(m_cq.C_TASKTYPE_INSERT_KEY);
+			statement.setInt(1, autofinish);
+			statement.setInt(2, escalationtyperef);
+			statement.setString(3, htmllink);
+			statement.setInt(4, newId);
+			statement.setString(5, name);
+			statement.setString(6, permission);
+			statement.setInt(7, priorityref);
+			statement.setInt(8, roleref);
+			statement.executeUpdate();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_TASKTYPE_INSERT_KEY, statement);
 			}
 		}
 		return newId;
@@ -5846,6 +5877,30 @@ public void updateLockstate(CmsResource res) throws CmsException {
 			}
 		}
 	}
+	protected void updateTaskType(int taskId, int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref)        
+		throws CmsException {
+		
+		PreparedStatement statement = null;
+		try {
+			
+			statement = m_pool.getPreparedStatement(m_cq.C_TASKTYPE_UPDATE_KEY);
+			statement.setInt(1, autofinish);
+			statement.setInt(2, escalationtyperef);
+			statement.setString(3, htmllink);
+			statement.setString(4, name);
+			statement.setString(5, permission);
+			statement.setInt(6, priorityref);
+			statement.setInt(7, roleref);
+			statement.setInt(8, taskId);
+			statement.executeUpdate();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_TASKTYPE_UPDATE_KEY, statement);
+			}
+		}
+	}
 	/**
 	 * Checks if a user is member of a group.<P/>
 	 *  
@@ -6378,6 +6433,44 @@ public void updateLockstate(CmsResource res) throws CmsException {
 				m_pool.putPreparedStatement(m_cq.C_TASKLOG_WRITE_KEY, statement);
 			}
 		}
+	}
+	/**
+	 * Creates a new tasktype set in the database.
+	 * @return The id of the inserted parameter or 0 if the parameter exists for this task.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int writeTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref)        
+        throws CmsException {
+		ResultSet res;
+		int result = 0;
+		PreparedStatement statement = null;
+		
+		try {
+			// test if the parameter already exists for this task
+			statement = m_pool.getPreparedStatement(m_cq.C_TASK_GET_TASKTYPE_KEY);
+			statement.setString(1, name);
+			res = statement.executeQuery();
+			
+			if(res.next()) {
+				//Parameter exisits, so make an update
+	            updateTaskType(res.getInt(m_cq.C_PAR_ID), autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);        
+
+            }
+			else {
+                //Parameter is not exisiting, so make an insert
+	            result = insertTaskType(autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);        
+				
+			}
+			res.close();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_TASK_GET_TASKTYPE_KEY, statement);
+			}
+		}
+		return result;
 	}
 	/**
 	 * Writes a user to the database.
