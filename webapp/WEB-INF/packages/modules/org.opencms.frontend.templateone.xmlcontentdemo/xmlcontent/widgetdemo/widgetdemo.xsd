@@ -19,6 +19,7 @@
 			<xsd:element name="Image" type="OpenCmsVfsFile" />
 			<xsd:element name="Download" type="OpenCmsVfsFile" />
 			<xsd:element name="Link" type="OpenCmsVfsFile" />
+			<xsd:element name="HtmlSnippet" type="OpenCmsString" />
 			<xsd:element name="Color" type="OpenCmsColor" />
 			<xsd:element name="DateTime" type="OpenCmsDateTime" />
 			<xsd:element name="Boolean" type="OpenCmsBoolean" />
@@ -36,6 +37,7 @@
 				<layout element="Image" widget="ImageGalleryWidget" />
 				<layout element="Download" widget="DownloadGalleryWidget" />
 				<layout element="Link" widget="LinkGalleryWidget" />
+				<layout element="HtmlSnippet" widget="HtmlGalleryWidget" />
 			</layouts>	
 		</xsd:appinfo>
 	</xsd:annotation>  
