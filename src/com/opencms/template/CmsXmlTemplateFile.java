@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/01/20 23:59:21 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2003/01/24 20:37:21 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.58 $ $Date: 2003/01/20 23:59:21 $
+ * @version $Revision: 1.59 $ $Date: 2003/01/24 20:37:21 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -999,9 +999,11 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         String editDatablockName = getEditTemplateDatablockName(templateSelector);
         String copyOfContent = content;
         if(html) {
-            int startIndex = content.indexOf("<BODY");
+            
+            int startIndex = content.toUpperCase().indexOf("<BODY");
             startIndex = content.indexOf(">", startIndex + 1) + 1;
-            int endIndex = content.lastIndexOf("</BODY>");
+            int endIndex = content.toUpperCase().lastIndexOf("</BODY>");
+            
             if(startIndex > 0) {
                 content = content.substring(startIndex, endIndex);
             }
