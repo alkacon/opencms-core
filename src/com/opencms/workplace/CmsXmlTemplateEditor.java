@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/02/25 13:08:36 $
-* Version: $Revision: 1.85 $
+* Date   : $Date: 2003/02/26 15:29:42 $
+* Version: $Revision: 1.86 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.85 $ $Date: 2003/02/25 13:08:36 $
+ * @version $Revision: 1.86 $ $Date: 2003/02/26 15:29:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -674,11 +674,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 		
 		// set the context & servlet path in editor content
         String contextPath = CmsStringSubstitution.escapePattern(A_OpenCms.getOpenCmsContext()); 
-        List webAppNames = (List)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");  
-        if (webAppNames == null) webAppNames = new ArrayList(); 
-        for (int i=0; i<webAppNames.size(); i++) {
-            content = CmsStringSubstitution.substitute(content, CmsStringSubstitution.escapePattern((String)webAppNames.get(i)),contextPath);
-        }
 		content = CmsStringSubstitution.substitute(content,CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT),contextPath);
         
         // escape content
