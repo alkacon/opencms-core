@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/02/25 14:12:43 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2004/02/26 16:14:30 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.2 $ $Date: 2004/02/25 14:12:43 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/26 16:14:30 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -468,60 +468,72 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @throws CmsException in case something goes wrong
      */
     private CmsMasterMedia getMediaData(String mediaFilename) throws CmsException {
-        String position, width, height, size, mimetype, type, title, name, description, contentfile;
-        // get the new media object
-        CmsMasterMedia newMedia = new CmsMasterMedia();
-        // get the file with the data of the media
-        Document mediaXml = CmsImport.getXmlDocument(getFileReader(mediaFilename));
-        Element media = mediaXml.getRootElement();
-        position = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_POSITION);
+        String position = null, width = null, height = null, size = null, mimetype = null, 
+            type = null, title = null, name = null, description = null, contentfile = null;
+        CmsMasterMedia newMedia = null;
+        Document mediaXml = null;
+        Element rootElement = null;
+        byte[] mediacontent = null;
+        
+        newMedia = new CmsMasterMedia();
+        mediaXml = CmsImport.getXmlDocument(getFileReader(mediaFilename));
+        rootElement = mediaXml.getRootElement();
+        
+        position = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_POSITION).get(0)).getTextTrim();        
         try {
             newMedia.setPosition(Integer.parseInt(position));
         } catch (Exception e) {
             // ignore
         }
-        width = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_WIDTH);
+        
+        width = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_WIDTH).get(0)).getTextTrim();
         try {
             newMedia.setWidth(Integer.parseInt(width));
         } catch (Exception e) {
             // ignore
         }
-        height = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_HEIGHT);
+        
+        height = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_HEIGHT).get(0)).getTextTrim();
         try {
             newMedia.setHeight(Integer.parseInt(height));
         } catch (Exception e) {
             // ignore
         }
-        size = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_SIZE);
+        
+        size = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_SIZE).get(0)).getTextTrim();
         try {
             newMedia.setSize(Integer.parseInt(size));
         } catch (Exception e) {
             // ignore
         }
-        mimetype = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_MIMETYPE);
+        
+        mimetype = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_MIMETYPE).get(0)).getTextTrim();
         newMedia.setMimetype(mimetype);
-        type = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_TYPE);
+        
+        type = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_TYPE).get(0)).getTextTrim();
         try {
             newMedia.setType(Integer.parseInt(type));
         } catch (Exception e) {
             // ignore
         }
-        title = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_TITLE);
+        
+        title = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_TITLE).get(0)).getTextTrim();
         newMedia.setTitle(title);
-        name = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_NAME);
+        
+        name = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_NAME).get(0)).getTextTrim();
         newMedia.setName(name);
-        description = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_DESCRIPTION);
+        
+        description = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_DESCRIPTION).get(0)).getTextTrim();
         newMedia.setDescription(description);
-        // get the content of the media
-        contentfile = CmsImport.getChildElementTextValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_CONTENT);
-        byte[] mediacontent = null;
+        
+        contentfile = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_CONTENT).get(0)).getTextTrim();
         try {
             mediacontent = getFileBytes(contentfile);
         } catch (Exception e) {
             m_report.println(e);
-        }
+        }       
         newMedia.setMedia(mediacontent);
-        mediacontent = null;
+        
         return newMedia;
     }
 

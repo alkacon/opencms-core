@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2004/02/25 15:35:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/26 16:14:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  * Import/export handler implementation for VFS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/02/25 15:35:21 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/26 16:14:30 $
  * @since 5.3
  */
 public class CmsVfsImportExportHandler extends Object implements I_CmsImportExportHandler {
@@ -258,10 +258,10 @@ public class CmsVfsImportExportHandler extends Object implements I_CmsImportExpo
     public boolean matches(Document manifest) {
         Element rootElement = manifest.getRootElement();
         
-        boolean hasModuleNodes = (rootElement.selectNodes("./module/name").size() > 0);
+        boolean hasModuleNode = (rootElement.selectNodes("./module/name").size() > 0);
         boolean hasFileNodes = (rootElement.selectNodes("./files/file").size() > 0);
         
-        return (!hasModuleNodes && hasFileNodes);
+        return (!hasModuleNode && hasFileNodes);
     }    
 
 }

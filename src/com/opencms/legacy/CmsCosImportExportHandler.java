@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosImportExportHandler.java,v $
- * Date   : $Date: 2004/02/25 15:35:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/26 16:14:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,12 +41,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.Element;
 
 /**
  * Import/export handler implementation for COS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/02/25 15:35:21 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/26 16:14:30 $
  * @since 5.3
  */
 public class CmsCosImportExportHandler extends Object implements I_CmsImportExportHandler {
@@ -201,7 +202,13 @@ public class CmsCosImportExportHandler extends Object implements I_CmsImportExpo
      * @see org.opencms.importexport.I_CmsImportExportHandler#matches(org.dom4j.Document)
      */
     public boolean matches(Document manifest) {
-        return (I_CmsConstants.C_EXPORT_TAG_MODULEXPORT.equalsIgnoreCase(manifest.getRootElement().getName()));
+        Element rootElement = manifest.getRootElement();
+        
+        boolean hasModuleExportNode = (I_CmsConstants.C_EXPORT_TAG_MODULEXPORT.equalsIgnoreCase(rootElement.getName()));
+        boolean hasChannelNodes = (rootElement.selectNodes("./channels/file").size() > 0);
+        boolean hasDatasetNodes = (rootElement.selectNodes("./masters/master").size() > 0);
+        
+        return (hasModuleExportNode && hasChannelNodes && hasDatasetNodes);
     }
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2004/02/25 16:42:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/26 16:14:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,12 +45,13 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.dom4j.Document;
+import org.dom4j.Element;
 
 /**
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2004/02/25 16:42:06 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/26 16:14:30 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
@@ -260,7 +261,10 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
      * @see org.opencms.importexport.I_CmsImportExportHandler#matches(org.dom4j.Document)
      */
     public boolean matches(Document manifest) {
-        return ((manifest.getRootElement().selectNodes("./module/name").size() > 0));
+        Element rootElement = manifest.getRootElement();
+        
+        boolean hasModuleNode = (rootElement.selectNodes("./module/name").size() > 0);        
+        return (hasModuleNode);
     }    
 
 }
