@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/02/11 17:11:27 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/02/11 18:37:05 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,12 +36,12 @@ import com.opencms.core.I_CmsRequest;
 import com.opencms.core.OpenCms;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
+import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.template.cache.CmsElementLink;
 import com.opencms.template.cache.CmsElementVariant;
 import com.opencms.template.cache.CmsMethodLink;
 import com.opencms.util.LinkSubstitution;
 import com.opencms.workplace.I_CmsWpConstants;
-import com.opencms.flex.util.*;
 
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -49,18 +49,18 @@ import java.io.StringWriter;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.63 $ $Date: 2003/02/11 17:11:27 $
+ * @version $Revision: 1.64 $ $Date: 2003/02/11 18:37:05 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConstants {
 
@@ -1011,10 +1011,9 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
             }
         }
         
-        HttpServletRequest req = (HttpServletRequest) cms.getRequestContext().getRequest().getOriginalRequest();        
-		String contextpath = req.getContextPath() + req.getServletPath() + "/";
+        String contextPath = A_OpenCms.getOpenCmsContext();
 		// substitute contextpath with variable
-		content = CmsStringSubstitution.substitute(content,CmsStringSubstitution.escapePattern(contextpath),CmsStringSubstitution.escapePattern(C_MACRO_PATH));			
+		content = CmsStringSubstitution.substitute(content,CmsStringSubstitution.escapePattern(contextPath),CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT));			
         
         
         StringBuffer tempXmlString = new StringBuffer();

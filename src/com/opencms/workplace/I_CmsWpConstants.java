@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2003/02/11 17:11:27 $
-* Version: $Revision: 1.121 $
+* Date   : $Date: 2003/02/11 18:37:05 $
+* Version: $Revision: 1.122 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.121 $ $Date: 2003/02/11 17:11:27 $
+ * @version $Revision: 1.122 $ $Date: 2003/02/11 18:37:05 $
  */
 
 public interface I_CmsWpConstants {
@@ -1306,6 +1306,6 @@ public interface I_CmsWpConstants {
     
     // Constants for macros
     
-    public final static String C_MACRO_PATH = "${path}";
+    public final static String C_MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
 
 }

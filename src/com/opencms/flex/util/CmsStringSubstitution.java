@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2003/02/11 17:09:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/02/11 18:37:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,11 @@ import org.apache.oro.text.perl.Perl5Util;
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
 
 /**
- * This class provides a String substitution funcionality
+ * Provides a String substitution funcionality
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.0
  */
 public class CmsStringSubstitution {
@@ -50,7 +50,8 @@ private static final int DEBUG = 0;
 public CmsStringSubstitution() {}
 
 /**
- * substitues searchString in content with replaceItem
+ * Substitutes searchString in content with replaceItem.<p>
+ * 
  * @param content the content which is scanned
  * @param searchString the String which is searched in content
  * @param replaceItem the new String which replaces searchString
@@ -61,7 +62,8 @@ public static String substitute(String content, String searchString, String repl
 }
 
 /**
- * substitues first occurance of searchString in content with replaceItem
+ * Substitutes first occurance of searchString in content with replaceItem.<p>
+ * 
  * @param content the content which is scanned
  * @param searchString the String which is searched in content
  * @param replaceItem the new String which replaces searchString
@@ -72,7 +74,8 @@ public static String substituteFirst(String content, String searchString, String
 }
 
 /**
- * substitues searchString in content with replaceItem
+ * Substitutes searchString in content with replaceItem.<p>
+ * 
  * @param content the content which is scanned
  * @param searchString the String which is searched in content
  * @param replaceItem the new String which replaces searchString
@@ -94,7 +97,7 @@ public static String substitute(String content, String searchString, String repl
 
 /**
  * Escapes a String so it may be used as a Perl5 regular expression.<p>
-  * 
+ * 
  * This method replaces the following characters in a String:
  * <ul>
  * <li><b>/</b> with \/
