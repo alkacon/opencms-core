@@ -123,6 +123,9 @@
         <attribute>
             <name>pageSize</name>
         </attribute>  
+        <attribute>
+            <name>pageNavLength</name>
+        </attribute>        
     </tag>    
         
     <tag>

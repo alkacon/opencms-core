@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/01/12 16:43:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/01/13 12:44:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * Used to access and display XML content item information from the VFS.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0 alpha 3
  */
 public class CmsJspTagContentInfo extends TagSupport {
@@ -64,7 +64,15 @@ public class CmsJspTagContentInfo extends TagSupport {
     private String m_scope;
 
     /** The keys of the supported content info values. */
-    private static final String[] m_keys = {"resultSize", "resultIndex", "pageCount", "pageIndex", "pageSize"};
+    private static final String[] m_keys = {
+        "resultSize",
+        "resultIndex",
+        "pageCount",
+        "pageIndex",
+        "pageSize",
+        "pageNavStartIndex",
+        "pageNavEndIndex",
+        "pageNavLength"};
 
     /** The keys of the supported content info values as a list. */
     private static final List m_valueKeys = Collections.unmodifiableList(Arrays.asList(m_keys));
@@ -148,6 +156,18 @@ public class CmsJspTagContentInfo extends TagSupport {
                 // "pageSize"
                 tagContent = Integer.toString(contentInfoBean.getPageSize());
                 break;
+            case 5:
+                // pageNavStartIndex
+                tagContent = Integer.toString(contentInfoBean.getPageNavStartIndex());
+                break;
+            case 6:
+                // pageNavEndIndex
+                tagContent = Integer.toString(contentInfoBean.getPageNavEndIndex());
+                break; 
+            case 7:
+                // pageNavLength
+                tagContent = Integer.toString(contentInfoBean.getPageNavLength());
+                break;                 
             default:
                 throw new JspException("Unsupported content info value requested: " + value);
         }

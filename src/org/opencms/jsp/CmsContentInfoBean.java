@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsContentInfoBean.java,v $
- * Date   : $Date: 2005/01/12 16:43:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/01/13 12:44:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.util.CmsStringUtil;
  * A container to store information about a collector's result.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0 alpha 3
  */
 public class CmsContentInfoBean {
@@ -54,11 +54,20 @@ public class CmsContentInfoBean {
     /** The number of pages of browse through the result list. */
     private int m_pageCount;
     
-    /** The size of a page to be displayed. */
+    /** The number of entries to be displayed on a page. */
     private int m_pageSize;
     
-    /** The index of the current page that gets displayed. */
+    /** The index of the current page that to be displayed. */
     private int m_pageIndex;
+    
+    /** The page index of the first element in the Google-like page navigation. */
+    private int m_pageNavStartIndex;
+    
+    /** The page index of the last element in the Google-like page navigation. */
+    private int m_pageNavEndIndex;
+    
+    /** The number of page links in the Google-like page navigation. */
+    private int m_pageNavLength;
 
     /**
      * Creates a new content info bean.<p>
@@ -69,9 +78,13 @@ public class CmsContentInfoBean {
 
         m_resultSize = -1;
         m_resultIndex = -1;
-        m_pageCount = -1;
-        m_pageSize = -1;
+        
+        m_pageCount = 1;
+        m_pageSize = 10;
         m_pageIndex = 1;
+        m_pageNavStartIndex = 1;
+        m_pageNavEndIndex = 1;
+        m_pageNavLength = 10;
     }
 
     /**
@@ -223,6 +236,118 @@ public class CmsContentInfoBean {
         } catch (NumberFormatException e) {
             // intentionally left blank
         }    
+    }
+    
+    /**
+     * Returns the page index of the first element in the Google-like page navigation.<p>
+     * 
+     * @return the page index of the first element in the Google-like page navigation
+     */
+    public int getPageNavStartIndex() {
+        
+        return m_pageNavStartIndex;
+    }
+    
+    /**
+     * Sets the page index of the first element in the Google-like page navigation.<p>
+     * 
+     * @param index the page index of the first element in the Google-like page navigation
+     */
+    void setPageNavStartIndex(int index) {
+        
+        m_pageNavStartIndex = index;
+    }
+    
+    /**
+     * Returns the page index of the first element in the Google-like page navigation.<p>
+     * 
+     * @return the page index of the first element in the Google-like page navigation
+     */
+    public int getPageNavEndIndex() {
+        
+        return m_pageNavEndIndex;
+    }
+    
+    /**
+     * Sets the page index of the last element in the Google-like page navigation.<p>
+     * 
+     * @param index the page index of the last element in the Google-like page navigation
+     */
+    void setPageNavEndIndex(int index) {
+        
+        m_pageNavEndIndex = index;
+    }    
+    
+    /**
+     * Returns the page index of the last element in the Google-like page navigation.<p>
+     * 
+     * @return page index of the last element in the Google-like page navigation
+     */
+    public int getPageNavLength() {
+        
+        return m_pageNavLength;
+    }
+    
+    /**
+     * Sets the number of page links in the Google-like page navigation.<p>
+     * 
+     * @param length the number of page links in the Google-like page navigation
+     */
+    void setPageNavLength(int length) {
+        
+        m_pageNavLength = length;
+    }   
+    
+    /**
+     * Sets number of page links in the Google-like page navigation as a string.<p>
+     * 
+     * @param pageNavLength the number of page links in the Google-like page navigation
+     */
+    void setPageNavLengthAsString(String pageNavLength) {
+        
+        if (CmsStringUtil.isEmpty(pageNavLength)) {
+            return;
+        }
+        
+        try {
+            m_pageNavLength = Integer.parseInt(pageNavLength);
+        } catch (NumberFormatException e) {
+            // intentionally left blank
+        }
+    }
+    
+    /**
+     * Initializes the start and end indexes to build a Google-like page navigation.<p>
+     */
+    void initPageNavIndexes() {
+
+        if (m_pageIndex < m_pageNavLength) {
+        
+            m_pageNavStartIndex = 1;
+            m_pageNavEndIndex = m_pageCount < m_pageNavLength ? m_pageCount : m_pageNavLength;
+            
+        } else {
+        
+            int middle = m_pageNavLength / 2;
+            m_pageNavStartIndex = m_pageIndex - middle;            
+            m_pageNavEndIndex = m_pageNavStartIndex + m_pageNavLength - 1;
+            
+            if (m_pageNavStartIndex < 1) {
+                m_pageNavStartIndex = 1;
+            } else if (m_pageNavEndIndex < 1) {                
+                m_pageNavEndIndex = m_pageCount;                
+            } else if (m_pageNavEndIndex > m_pageCount) {
+                
+                // adjust end index
+                m_pageNavEndIndex = m_pageCount;
+                m_pageNavStartIndex = m_pageNavEndIndex - m_pageNavLength + 1;
+                
+                if (m_pageNavStartIndex < 1) {
+                    // adjust the start index again
+                    m_pageNavStartIndex = 1;
+                }
+            }
+        }
     }
 
 }

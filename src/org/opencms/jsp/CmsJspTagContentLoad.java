@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/01/12 16:46:11 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/01/13 12:44:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
@@ -109,6 +109,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     
     /** The index of the current page that gets displayed. */
     private String m_pageIndex;
+    
+    /** The number of page links in the Google-like page navigation. */
+    private String m_pageNavLength;
     
     /** The string mapper to resolve EL like strings in tag attributes. */
     private CmsStringMapper m_stringMapper;
@@ -238,16 +241,25 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      */
     public int doStartTag() throws JspException {
         
-        // check if the tag contains both a pageSize and pageIndex attribute, or none of them
-        if ((CmsStringUtil.isEmpty(m_pageSize) && CmsStringUtil.isNotEmpty(m_pageIndex))
-            || (CmsStringUtil.isNotEmpty(m_pageSize) && CmsStringUtil.isEmpty(m_pageIndex))) {            
-            throw new IllegalArgumentException("The 'cms:contentload' tag requires both a 'pageIndex' and 'pageSize' attribute!");
+        // check if the tag contains a pageSize, pageIndex and pageNavLength attribute, or none of them
+        int pageAttribCount = 0;
+        pageAttribCount += CmsStringUtil.isNotEmpty(m_pageSize) ? 1 : 0;
+        pageAttribCount += CmsStringUtil.isNotEmpty(m_pageIndex) ? 1 : 0;
+        //pageAttribCount += CmsStringUtil.isNotEmpty(m_pageNavLength) ? 1 : 0;
+        
+        if (pageAttribCount > 0 && pageAttribCount < 2) {            
+            throw new IllegalArgumentException("The 'cms:contentload' tag requires a 'pageIndex' and 'pageSize' attribute, or none of them!");
         }
         
-        // check the tag contains a collector attribute
+        // check if the tag contains a collector attribute
         if (CmsStringUtil.isEmpty(m_collector)) {
-            throw new IllegalArgumentException("The 'cms:contentload' tag requires 'collector' attribute!");
+            throw new IllegalArgumentException("The 'cms:contentload' tag requires a 'collector' attribute!");
         }
+        
+        // check if the tag contains a param attribute
+        if (CmsStringUtil.isEmpty(m_param)) {
+            throw new IllegalArgumentException("The 'cms:contentload' tag requires a 'param' attribute!");
+        }        
         
         // initialize OpenCms access objects
         m_controller = (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
@@ -257,13 +269,13 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         m_stringMapper = new CmsStringMapper(m_cms, pageContext);
 
         // resolve the collector name
-        String collectorName = m_stringMapper.map(getCollector(), this);        
+        String collectorName = m_stringMapper.map(getCollector(), this, true);        
 
         // store the current locale    
         m_locale = m_cms.getRequestContext().getLocale();
 
         // resolve the parameter
-        String param = m_stringMapper.map(getParam(), this);
+        String param = m_stringMapper.map(getParam(), this, true);
         
         // now collect the resources
         I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);
@@ -273,12 +285,14 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             m_collectorResult = collector.getResults(m_cms, collectorName, param); 
             
             m_contentInfoBean = new CmsContentInfoBean();
-            m_contentInfoBean.setPageSizeAsString(m_stringMapper.map(m_pageSize, this));
-            m_contentInfoBean.setPageIndexAsString(m_stringMapper.map(m_pageIndex, this));            
+            m_contentInfoBean.setPageSizeAsString(m_stringMapper.map(m_pageSize, this, true));
+            m_contentInfoBean.setPageIndexAsString(m_stringMapper.map(m_pageIndex, this, true));     
+            m_contentInfoBean.setPageNavLengthAsString(m_stringMapper.map(m_pageNavLength, this, true));          
             m_contentInfoBean.setResultSize(m_collectorResult.size());
             m_contentInfoBean.initResultIndex();
         
-            m_collectorResult = CmsJspTagContentLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);
+            m_collectorResult = CmsJspTagContentLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);            
+            m_contentInfoBean.initPageNavIndexes();
             
             if ((m_collectorResult == null) || (m_collectorResult.size() == 0)) {
                 // the collector returned an empty list, there's no content to iterate
@@ -522,6 +536,26 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     CmsContentInfoBean getContentInfoBean() {
         
         return m_contentInfoBean;
+    }
+    
+    /**
+     * Sets the number of page links in the Google-like page navigation.<p>
+     * 
+     * @param pageNavLength the number of page links in the Google-like page navigation
+     */
+    public void setPageNavLength(String pageNavLength) {
+        
+        m_pageNavLength = pageNavLength;
+    }
+    
+    /**
+     * Returns the number of page links in the Google-like page navigation.<p>
+     * 
+     * @return the number of page links in the Google-like page navigation
+     */
+    public String getPageNavLength() {
+        
+        return m_pageNavLength;
     }
     
 }
