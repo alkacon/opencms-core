@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/09/04 12:50:16 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -293,7 +293,7 @@ public final class Utils {
             nextIndex = toSplit.indexOf(at, index);
         }
         parts.add(toSplit.substring(index));
-        return (String[])parts.toArray();
+        return (String[])parts.toArray(new String[parts.size()]);
     }
 
     /**
