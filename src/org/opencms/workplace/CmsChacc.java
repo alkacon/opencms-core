@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/07 16:44:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/09 08:48:50 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,14 +58,18 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
 public class CmsChacc extends CmsDialog {
     
-    /** Stores the URL to the JSP which uses this class */
-    private String m_chaccUrl;
+    public static final String DIALOG_TYPE = "move";
+    
+    // always start individual action id's with 100 to leave enough room for more default actions
+    public static final int ACTION_SET = 100;
+    public static final int ACTION_DELETE = 200;
+    public static final int ACTION_ADDACE = 300;
     
     /** Stores eventual error message Strings */
     private ArrayList m_errorMessages = new ArrayList(); 
@@ -126,8 +130,6 @@ public class CmsChacc extends CmsDialog {
      * @param request the Http Servlet request
      */
     public void init(HttpServletRequest request) {
-        // the URL of the chacc JSP
-        setChaccUrl(getCms().getLinkSubstitution("/system/workplace/jsp/chacc.html"));
         
         // the currently viewed file
         String file = getSettings().getFileUri();
@@ -440,7 +442,7 @@ public class CmsChacc extends CmsDialog {
         
         // build the form depending on the editable flag
         if (editable) {
-            retValue.append("<form action=\""+getChaccUrl()+"\" method=\"post\" class=\"nomargin\" name=\"set"+type+name+entry.getResource()+"\">\n");
+            retValue.append("<form action=\""+getDialogUri()+"\" method=\"post\" class=\"nomargin\" name=\"set"+type+name+entry.getResource()+"\">\n");
             retValue.append("<input type=\"hidden\" name=\"name\" value=\""+name+"\">\n");    
             retValue.append("<input type=\"hidden\" name=\"type\" value=\""+type+"\">\n");
             retValue.append("<input type=\"hidden\" name=\"action\" value=\"set\">\n");
@@ -498,7 +500,7 @@ public class CmsChacc extends CmsDialog {
             retValue.append("\t<td>&nbsp;</td>\n");
             retValue.append("\t<td class=\"textcenter\"><input class=\"dialogbutton\" type=\"submit\" value=\""+key("button.submit")+"\"></form></td>\n");           
             retValue.append("\t<td class=\"textcenter\">\n");            
-            retValue.append("\t\t<form class=\"nomargin\" action=\""+getChaccUrl()+"\" method=\"post\" name=\"delete"+type+name+entry.getResource()+"\">\n");
+            retValue.append("\t\t<form class=\"nomargin\" action=\""+getDialogUri()+"\" method=\"post\" name=\"delete"+type+name+entry.getResource()+"\">\n");
             retValue.append("\t\t<input type=\"hidden\" name=\"name\" value=\""+name+"\">\n");    
             retValue.append("\t\t<input type=\"hidden\" name=\"type\" value=\""+type+"\">\n");
             retValue.append("\t\t<input type=\"hidden\" name=\"action\" value=\"delete\">\n");
@@ -608,7 +610,7 @@ public class CmsChacc extends CmsDialog {
         retValue.append("<table border=\"0\">\n<tr>\n");
         retValue.append("\t<td>"+key("dialog.permission.viewselect")+"</td>\n");
         String selectedView = getSettings().getDetailView();   
-        retValue.append("\t<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"selectshortview\">\n");            
+        retValue.append("\t<form action=\""+getDialogUri()+"\" method=\"post\" name=\"selectshortview\">\n");            
         retValue.append("\t<td>\n");
         retValue.append("\t<input type=\"hidden\" name=\"view\" value=\"short\">\n");
         retValue.append("\t<input  type=\"submit\" class=\"dialogbutton\" value=\""+key("button.short")+"\"");
@@ -617,7 +619,7 @@ public class CmsChacc extends CmsDialog {
         }
         retValue.append(">\n");
         retValue.append("\t</td>\n");
-        retValue.append("\t</form>\n\t<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"selectlongview\">\n");
+        retValue.append("\t</form>\n\t<form action=\""+getDialogUri()+"\" method=\"post\" name=\"selectlongview\">\n");
         retValue.append("\t<td>\n");
         retValue.append("\t<input type=\"hidden\" name=\"view\" value=\"long\">\n");
         retValue.append("\t<input type=\"submit\" class=\"dialogbutton\" value=\""+key("button.long")+"\"");
@@ -684,7 +686,7 @@ public class CmsChacc extends CmsDialog {
             }            
 
             // create the input form
-            retValue.append("<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"add\" class=\"nomargin\">\n");
+            retValue.append("<form action=\""+getDialogUri()+"\" method=\"post\" name=\"add\" class=\"nomargin\">\n");
             retValue.append("<input type=\"hidden\" name=\"action\" value=\"addACE\">\n");            
             retValue.append("<table border=\"0\" width=\"100%\">\n");
             retValue.append("<tr>\n");
@@ -947,24 +949,5 @@ public class CmsChacc extends CmsDialog {
     protected boolean getShowInherit() {
         return m_showinherit;
     }
-    
-    /**
-     * Returns the URL of the corresponding workplace JSP (is set in init() method).<p>
-     * 
-     * @return the URL of the workplace JSP 
-     */
-    protected String getChaccUrl() {
-        return m_chaccUrl;
-    }
-    
-    /**
-     * Sets the URL of the corresponding workplace JSP.
-     * This is set in the init() method.<p>
-     * 
-     * @param value the URL of the workplace JSP
-     */
-    protected void setChaccUrl(String value) {
-        m_chaccUrl = value;
-    }
-    
+      
 }
