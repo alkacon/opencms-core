@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/02/19 14:23:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/03/08 14:38:47 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -72,7 +72,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2000/02/19 14:23:03 $
+ * @version $Revision: 1.17 $ $Date: 2000/03/08 14:38:47 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -169,16 +169,26 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @see #lookupAbsoluteFilename
      */
     public void init(A_CmsObject cms, String filename) throws CmsException {
-        if(filename.startsWith("/")) {
-            // this is an absolute filename. fine.
-            CmsFile file = cms.readFile(filename);            
-            init(cms, file);
-        } else {
-            // no absolute filename given.
-            String fullPath = lookupAbsoluteFilename(cms, filename, this);
-            CmsFile file = cms.readFile(fullPath);
-            init(cms, file);
+        if(! filename.startsWith("/")) {
+            // this is no absolute filename. 
+            filename = lookupAbsoluteFilename(cms, filename, this);
         }
+        String currentProject = cms.getRequestContext().currentProject().getName();
+        Document parsedContent = null;
+
+        m_cms = cms;
+        m_filename = filename;
+        parsedContent = loadCachedDocument(filename);
+        if(parsedContent == null) {            
+            CmsFile file = cms.readFile(filename);
+            parsedContent = parse(new String(file.getContents()));                
+            m_filecache.put(currentProject + ":" + filename, parsedContent.cloneNode(true));
+        } else {
+            // File was found in cache.
+            // We have to read the file header to check access rights.
+            cms.readFileHeader(filename);
+        }
+        init(cms, parsedContent, filename);                                                     
     }
             
     /**
@@ -190,14 +200,15 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */    
     public void init(A_CmsObject cms, CmsFile file) throws CmsException {
         String filename = file.getAbsolutePath();
-        String currentProject = cms.getRequestContext().currentGroup().getName();
+        String currentProject = cms.getRequestContext().currentProject().getName();
         Document parsedContent = null;
 
         m_cms = cms;
+        m_filename = filename;            
+
         parsedContent = loadCachedDocument(filename);
         if(parsedContent == null) {            
-            m_filename = filename;            
-            parsedContent = parse(file);                
+            parsedContent = parse(new String(file.getContents()));                
             m_filecache.put(currentProject + ":" + filename, parsedContent.cloneNode(true));
         }    
         init(cms, parsedContent, filename);
@@ -1196,55 +1207,20 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
         }        throw new CmsException(errorMessage, type);
     }
-        
-    /**
-     * Used by the init method to load a template file if only a filename 
-     * is given instead of a CmsFile Object. 
-     * Previously cached documents will be considered.
-     *
-     * @param cms A_CmsObject Object for accessing system resources.
-     * @param filename Template file name to be loaded.
-     * @return parsed XML document in DOM format.
-     * @exception CmsException
-     */
-    /*private Document readTemplateFile(A_CmsObject cms, String filename) throws CmsException {
-        Document retValue = null;
-        retValue = loadCachedDocument(filename);
-        if(retValue == null) {
-            // no cached document found.
-            // try to load it from the system
-            CmsFile file = null;
-            try {
-                file = cms.readFile(filename);
-            } catch(Exception e) {
-                file = null;
-            }
-            if(file != null) {
-                m_filename = filename;            
-                retValue = parse(file);                
-                m_filecache.put(filename, retValue);
-            }    
-        }        
-        return retValue;
-    }*/
-    
+            
     /**
 	 * Starts the XML parser with the content of the given CmsFile object.
 	 * After parsing the document it is scanned for INCLUDE and DATA tags
 	 * by calling processNode with m_firstRunParameters.
 	 * 
-	 * @param file - CmsFile object of the file to read and parse
+	 * @param content String to be parsed
      * @return Parsed DOM document.
      * @see #processNode
      * @see #firstRunParameters
 	 */
-    private Document parse(CmsFile file) throws CmsException {
+    private Document parse(String content) throws CmsException {
         Document parsedDoc = null;
-        String cont = new String(file.getContents());
-        m_filename = file.getAbsolutePath();
-        StringReader reader = new StringReader(cont);
-        
-        A_CmsXmlContent include;
+        StringReader reader = new StringReader(content);
         
         // First parse the String for XML Tags and
         // get a DOM representation of the document
@@ -1374,7 +1350,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         }
         
         // finally we cat put the new datablock into the hashtable
-        //m_blocks.put(blockname, (Element)n.cloneNode(true));
         m_blocks.put(blockname, n);
         //return null;
     }
@@ -1395,7 +1370,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "handleProcessTag() started. Request for datablock \"" + blockname + "\".");
         }
     
-        //datablock = (Element)m_blocks.get(blockname);
         datablock = (Element)((Element)m_blocks.get(blockname));
         if(datablock == null) {
             if(A_OpenCms.isLogging()) {
