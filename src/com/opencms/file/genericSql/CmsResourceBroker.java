@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 13:26:59 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/06/09 13:44:46 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2000/06/09 13:26:59 $
+ * @version $Revision: 1.42 $ $Date: 2000/06/09 13:44:46 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2649,7 +2649,31 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
 								String folder, String folderName)
         throws CmsException {
-     return null;
+        CmsFolder cmsFolder;
+		// read the resource from the currentProject, or the online-project
+		 try {
+			 cmsFolder = cmsFolder = m_dbAccess.readFolder(currentProject.getId(), 
+													       folder + folderName);
+		 } catch(CmsException exc) {
+			 // the resource was not readable
+			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+				 // this IS the onlineproject - throw the exception
+				 throw exc;
+			 } else {
+				 // try to read the resource in the onlineproject
+				 cmsFolder = cmsFolder = m_dbAccess.readFolder(onlineProject(currentUser, currentProject).getId(), 
+															 folder + folderName);
+			 }
+		 }
+		 
+		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
+				
+			// acces to all subfolders was granted - return the folder.
+			return cmsFolder;
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + folder + folderName, 
+				CmsException.C_ACCESS_DENIED);
+		}
     }
 	
 	/**
