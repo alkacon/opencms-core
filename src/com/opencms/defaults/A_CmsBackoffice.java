@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/31 17:09:34 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2001/11/05 08:42:25 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1163,10 +1163,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     } else {
         boolean buttonActiv = true;
         Boolean isProjectDependend = new Boolean(true);
-        try{
-            isProjectDependend = (Boolean)cdClass.getMethod("isExtendedList", new Class[]{} ).invoke(null, new Object[]{});
-        }catch(Exception e){}
-        if((isProjectDependend.booleanValue()) && (cms.getRequestContext().currentProject().getId() == cms.onlineProject().getId())){
+        if(isExtendedList() && (cms.getRequestContext().currentProject().getId() == cms.onlineProject().getId())){
             buttonActiv = false;
         }
         if(buttonActiv){
