@@ -38,16 +38,16 @@ function doEdit(para)
 		history.back();
 		break;
 	}
-	case 2:
-	{
-		history.back();
-		break;
-	}
-	case 3:
-	{
+	//case 2:
+	//{
+	//	history.back();
+	//	break;
+	//}
+	//case 3:
+	//{
 		//	history.back();
-			break;
-	}
+	//		break;
+	//}
 	
 	case 4:
 	{
@@ -107,6 +107,11 @@ function doEdit(para)
 	case 15:
 	{
 	    document.all.edit1.PrintText();
+		break;
+	}
+	case 16:
+	{
+		// dummy tag for help
 		break;
 	}
 	default:
