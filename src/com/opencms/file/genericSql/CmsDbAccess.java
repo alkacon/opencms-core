@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/12/05 10:45:57 $
-* Version: $Revision: 1.229 $
+* Date   : $Date: 2001/12/18 17:06:10 $
+* Version: $Revision: 1.230 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.229 $ $Date: 2001/12/05 10:45:57 $ *
+ * @version $Revision: 1.230 $ $Date: 2001/12/18 17:06:10 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -155,6 +155,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * Constant to get property from configurations.
      */
+    protected static String C_CONFIGURATIONS_DIGEST_FILE_ENCODING = "digest.fileencoding";
+
+    /**
+     * Constant to get property from configurations.
+     */
     protected static String C_CONFIGURATIONS_POOL = "pool";
 
     /**
@@ -166,6 +171,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * A digest to encrypt the passwords.
      */
     protected MessageDigest m_digest = null;
+
+    /**
+     * The file.encoding to code passwords after encryption with digest.
+     */
+    protected String m_digestFileEncoding = null;
 
     /**
      * Storage for all exportpoints.
@@ -222,6 +232,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         digest = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST, "MD5");
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read digest from configurations: " + digest);
+        }
+
+        m_digestFileEncoding = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST_FILE_ENCODING, "ISO8859_1");
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read digestFileEncoding from configurations: " + m_digestFileEncoding);
         }
 
         // create the digest
@@ -2519,7 +2534,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     protected String digest(String value) {
         // is there a valid digest?
         if( m_digest != null ) {
-            return new String(m_digest.digest(value.getBytes()));
+            try {
+                return new String(m_digest.digest(value.getBytes(m_digestFileEncoding)), m_digestFileEncoding);
+            } catch(UnsupportedEncodingException exc) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDbAccess] file.encoding " + m_digestFileEncoding + " for passwords not supported. Using the default one.");
+                }
+                return new String(m_digest.digest(value.getBytes()));
+            }
         } else {
             // no digest - use clear passwords
             return value;
