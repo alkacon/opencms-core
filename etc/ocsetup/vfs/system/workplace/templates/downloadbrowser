@@ -3,17 +3,17 @@
 <TEMPLATE>
 <![CDATA[
 <html>
-<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>]]><LABEL value="label.downloadlist" /><![CDATA[ </title>
 <SCRIPT LANGUAGE="JavaScript">
-	var selectedGallery=0;
+    var selectedGallery=0;
 </SCRIPT>
 </head>
 
 <!-- Beginn Aufbau der Frames Task -->
 <frameset rows="70,*" border=0 frameborder=0 framespacing=0>
-	<frame name="edit_html_downlist_head" src="downctrl.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" marginwidth=1 marginheight=5 leftmargin=1 topmargin=1 noresize scrolling=no>
-	<frame name="edit_html_downlist_content" src="downlist.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" marginwidth=8 marginheight=8 leftmargin=8 topmargin=8>
+    <frame name="edit_html_downlist_head" src="downctrl.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" marginwidth=1 marginheight=5 leftmargin=1 topmargin=1 noresize scrolling=no>
+    <frame name="edit_html_downlist_content" src="downlist.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" marginwidth=8 marginheight=8 leftmargin=8 topmargin=8>
 </frameset>
 <!-- Ende Definition Frames Task -->
 

@@ -8,7 +8,7 @@
 <!--
 function show_help()
 {
-	//return '5_2_2_2.html';
+    //return '5_2_2_2.html';
 }
 //-->
 </script>
@@ -16,7 +16,7 @@ function show_help()
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 
 <!-- Beginn Style -->

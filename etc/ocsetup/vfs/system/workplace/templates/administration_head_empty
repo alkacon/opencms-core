@@ -3,22 +3,22 @@
 <TEMPLATE>
 <![CDATA[
 <html>
-<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 <SCRIPT LANGUAGE="JavaScript">
-	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
 </SCRIPT>
 </head>
 
 <body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed>
 <!--ksjfdlskjdf-->
 <table cellspacing=0 cellpadding=0 border=0>
-	<tr valign=center>
-		<td class=menu valign=middle></td>
-	</tr>
+    <tr valign=center>
+        <td class=menu valign=middle></td>
+    </tr>
 </table>
 </body>
 </html>
