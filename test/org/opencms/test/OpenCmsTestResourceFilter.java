@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/05/26 15:52:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/26 17:04:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,8 @@ package org.opencms.test;
 import org.opencms.file.CmsProperty;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -47,7 +45,7 @@ import java.util.Map;
  * be tested to a new, specified value, the equal test must be disabled in the filter.<p>
  * 
  *  @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class OpenCmsTestResourceFilter {
 
@@ -114,41 +112,12 @@ public class OpenCmsTestResourceFilter {
     }
     
     /**
-     * Creates a new filter used for the "touch" method.<p>
-     * @return OpenCmsTestResourceFilter object
-     */
-    private static OpenCmsTestResourceFilter getFilterTouch() {
-        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
-        filter.disableProjectLastModifiedTest();
-        filter.disableStateTest();
-        filter.disableDateLastModifiedTest();
-        filter.disableUserLastModifiedTest();
-        return filter; 
-
-    }
-    
-    /**
-     * Creates a new filter used for the "touch" method.<p>
-     * @return OpenCmsTestResourceFilter object
-     */
-    private static OpenCmsTestResourceFilter getFilterWriteProperty() {
-        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
-        filter.disableProjectLastModifiedTest();
-        filter.disableStateTest();
-        filter.disableDateLastModifiedTest();
-        filter.disableUserLastModifiedTest();
-        filter.disablePropertiesTest();
-        return filter;
-    }
-    
-    /**
      * Compares two lists of properties and returns those 
      * that are included only in the source but not in the targer list and not
      * part of a seperade exclude list.<p>
      * 
      * @param source the source properties
      * @param target the target properties
-     * @param exclude the exclude list
      * @param exclude the exclude list
      * @return list of not matching properties
      */    
@@ -189,6 +158,34 @@ public class OpenCmsTestResourceFilter {
         
 		return result;
 	}            
+    
+    /**
+     * Creates a new filter used for the "touch" method.<p>
+     * @return OpenCmsTestResourceFilter object
+     */
+    private static OpenCmsTestResourceFilter getFilterTouch() {
+        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+        filter.disableProjectLastModifiedTest();
+        filter.disableStateTest();
+        filter.disableDateLastModifiedTest();
+        filter.disableUserLastModifiedTest();
+        return filter; 
+
+    }
+    
+    /**
+     * Creates a new filter used for the "touch" method.<p>
+     * @return OpenCmsTestResourceFilter object
+     */
+    private static OpenCmsTestResourceFilter getFilterWriteProperty() {
+        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+        filter.disableProjectLastModifiedTest();
+        filter.disableStateTest();
+        filter.disableDateLastModifiedTest();
+        filter.disableUserLastModifiedTest();
+        filter.disablePropertiesTest();
+        return filter;
+    }
     
     
 	/**
@@ -542,25 +539,4 @@ public class OpenCmsTestResourceFilter {
 	public boolean testUserLastModified() {
 		return m_userLastModified;
 	}
-    
-    /**
-     * Converts a list of CmsProperty objects to a map of CmsPropery objects. The property
-     * keys are used as keys for the map.<p>
-     * 
-     * This method is used for easier comparison of two property lists.
-     * 
-     * @param list a list of CmsProperty objects
-     * @return map of CmsProperty objects
-     */
-    private HashMap getProperyMapFromPropertyList(List list) {
-        Map propertyMap = new HashMap();
-        Iterator i = list.iterator();
-        while (i.hasNext()) {
-            CmsProperty property = (CmsProperty)i.next();
-            propertyMap.put(property.getKey(), property);
-        }      
-        return new HashMap(propertyMap);        
-    }
-    
-    
 }

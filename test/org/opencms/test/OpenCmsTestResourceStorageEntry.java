@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2004/05/26 11:30:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/26 17:04:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class OpenCmsTestResourceStorageEntry {
     
@@ -119,6 +119,7 @@ public class OpenCmsTestResourceStorageEntry {
      * Creates a new empty OpenCmsTestResourceStorageEntry.<p>
      */
     public OpenCmsTestResourceStorageEntry() {
+        // noop
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2004/05/26 11:30:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/26 17:04:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.test;
 
 import org.opencms.file.CmsObject;
@@ -42,69 +42,100 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class OpenCmsTestResourceStorage {
-    
+
     /** A CmsObject to use to access resources */
-    CmsObject m_cms;
-  
+    private CmsObject m_cms;
+
     /** Strings for mapping the filename */
-    String m_mapSource;
-    String m_mapTarget;
-    
+    private String m_sourceNameMapping;
+
     /** internal storage */
-    Map m_storage;
-       
+    private Map m_storage;
+
+    /** Prefix mapping for target name */
+    private String m_targetNameMapping;
+
     /**
      * Creates a new OpenCmsTestResourceStorage.<p>
      * 
      * @param cms the current CmsObject
      */
     public OpenCmsTestResourceStorage(CmsObject cms) {
+
         m_storage = new HashMap();
-        m_mapSource = null;
-        m_mapTarget = null;
+        m_sourceNameMapping = null;
+        m_targetNameMapping = null;
         m_cms = cms;
     }
-    
+
     /** 
      * Adds a CmsResource to the resource storage.<p>
-     * @param res the resource to add
+     * 
+     * @param resourceName the resource name to add
+     * @param resource the resource to add
      * @throws CmsException if something goes wrong
      */
-    public void add(String resourceName, CmsResource resource) throws CmsException{
+    public void add(String resourceName, CmsResource resource) throws CmsException {
+
         m_storage.put(resourceName, new OpenCmsTestResourceStorageEntry(m_cms, resourceName, resource));
     }
-    
+
     /**
      * Gets an entry from the storage.<p>
      * 
      * @param resourceName the name of the resource to get 
      * @return OpenCmsTestResourceStorageEntry with all the attributes of a CmsResource
+     * @throws CmsException in case something goes wrong
      */
     public OpenCmsTestResourceStorageEntry get(String resourceName) throws CmsException {
+
         //TODO: do the name mapping here
         String mappedResourceName = resourceName;
-        
-        OpenCmsTestResourceStorageEntry entry= null;
+
+        OpenCmsTestResourceStorageEntry entry = null;
         entry = (OpenCmsTestResourceStorageEntry)m_storage.get(mappedResourceName);
-        
+
         if (entry == null) {
-            throw new CmsException("Not found in storage "+resourceName+" -> "+mappedResourceName, CmsException.C_NOT_FOUND);
+            throw new CmsException(
+                "Not found in storage " + resourceName + " -> " + mappedResourceName,
+                CmsException.C_NOT_FOUND);
         }
-        
+
         return entry;
     }
-    
+
+    /**
+     * Returns the source name mapping.<p>
+     * 
+     * @return the source name mapping
+     */
+    public String getSourceNameMapping() {
+
+        return m_sourceNameMapping;
+    }
+
+    /**
+     * Returns the target name mapping.<p>
+     * 
+     * @return the the target name mapping
+     */
+    public String getTargetNameMapping() {
+
+        return m_targetNameMapping;
+    }
+
     /**
      * Sets the mapping for resourcenames.<p>
      *
      * @param source the source resource name
      * @param target the target resource name
      */
-    public void setMapping(String source, String target) {        
-        m_mapSource = source;
-        m_mapTarget = target;
+    public void setMapping(String source, String target) {
+
+        m_sourceNameMapping = source;
+        m_targetNameMapping = target;
     }
 }
