@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2001/01/02 14:59:10 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2001/01/05 14:59:07 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.39 $ $Date: 2001/01/02 14:59:10 $
+ * @version $Revision: 1.40 $ $Date: 2001/01/05 14:59:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -190,7 +190,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		action = (String) parameters.get("action");
 
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);	
-			
+		xmlTemplateDocument.setData("onlineId", ""+cms.onlineProject().getId());	
 		newName = (String) parameters.get(C_PROJECTNEW_NAME);
 		newGroup = (String) parameters.get(C_PROJECTNEW_GROUP);
 		newDescription = (String) parameters.get(C_PROJECTNEW_DESCRIPTION);

@@ -10,7 +10,7 @@
 <script language=JavaScript>
 <!--
 
-if(top.frames[0].document.projectchange.project.options[top.frames[0].document.projectchange.project.selectedIndex].value != 1){
+if(top.frames[0].document.projectchange.project.options[top.frames[0].document.projectchange.project.selectedIndex].value !=]]><PROCESS>onlineId</PROCESS><![CDATA[){
 	window.top.head.location.href='../../../action/head.html';
 }
 
