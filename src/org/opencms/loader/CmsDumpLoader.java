@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/11/10 08:12:58 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import source.org.apache.java.util.Configurations;
+import org.apache.commons.collections.ExtendedProperties;
 
 
 /**
@@ -59,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -129,9 +129,9 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * Initialize the ResourceLoader,
      * not much done here, only the FlexCache is initialized for dump elements.<p>
      *
-     * @param conf the OpenCms configuration 
+     * @param configuration the OpenCms configuration 
      */
-    public void init(Configurations conf) {        
+    public void init(ExtendedProperties configuration) {        
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized!");
         }        

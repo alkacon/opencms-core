@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/10/31 17:07:49 $
-* Version: $Revision: 1.430 $
+* Date   : $Date: 2003/11/10 08:12:57 $
+* Version: $Revision: 1.431 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import source.org.apache.java.util.Configurations;
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * This class provides access to the OpenCms and its resources.
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.430 $
+ * @version $Revision: 1.431 $
  */
 public class CmsObject {
 
@@ -1817,7 +1817,7 @@ public class CmsObject {
      * Gets the configurations of the properties-file.
      * @return the configurations of the properties-file.
      */
-    public Configurations getConfigurations() {
+    public ExtendedProperties getConfigurations() {
         return m_driverManager.getConfigurations();
     }
 

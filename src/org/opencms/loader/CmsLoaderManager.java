@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/11/10 08:12:58 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.main.OpenCms;
 import java.util.Iterator;
 import java.util.List;
 
-import source.org.apache.java.util.Configurations;
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Collects all available resource loaders at startup and provides
@@ -46,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -56,9 +56,9 @@ public class CmsLoaderManager {
     /**
      * Collects all available resource loaders from the registry at startup.<p>
      * 
-     * @param conf the OpenCms configuration 
+     * @param configuration the OpenCms configuration 
      */
-    public CmsLoaderManager(Configurations conf) {
+    public CmsLoaderManager(ExtendedProperties configuration) {
         List loaders = OpenCms.getRegistry().getResourceLoaders();
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -72,7 +72,7 @@ public class CmsLoaderManager {
             try {
                 loaderName = (String)i.next();
                 I_CmsResourceLoader loaderInstance = (I_CmsResourceLoader)Class.forName(loaderName).newInstance();
-                loaderInstance.init(conf);                
+                loaderInstance.init(configuration);                
                 addLoader(loaderInstance);
                 if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader loaded: " + loaderName + " with id " + loaderInstance.getLoaderId());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/11/10 08:12:58 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.dbcp.DelegatingResultSet;
-
-import source.org.apache.java.util.Configurations;
 
 /**
  * Oracle implementation of the backup driver methods.<p>
@@ -60,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.24 $ $Date: 2003/11/10 08:12:58 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -130,10 +129,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
-
-        m_enableServerCopy = "true".equals(config.getString("db.oracle.servercopy"));
-        super.init(config, successiveDrivers, driverManager);
+    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
+        m_enableServerCopy = "true".equals(configuration.getString("db.oracle.servercopy"));
+        super.init(configuration, successiveDrivers, driverManager);
     }
     
     /**

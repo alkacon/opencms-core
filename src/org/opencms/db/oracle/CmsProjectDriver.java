@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/11/10 08:12:58 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,14 +53,13 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.dbcp.DelegatingResultSet;
-
-import source.org.apache.java.util.Configurations;
 
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.15 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.16 $ $Date: 2003/11/10 08:12:58 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -179,10 +178,10 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
+    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
 
-        m_enableServerCopy = "true".equals(config.getString("db.oracle.servercopy"));
-        super.init(config, successiveDrivers, driverManager);
+        m_enableServerCopy = "true".equals(configuration.getString("db.oracle.servercopy"));
+        super.init(configuration, successiveDrivers, driverManager);
     }
     
     /**

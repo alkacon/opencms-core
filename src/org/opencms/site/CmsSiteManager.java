@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/10/09 09:40:31 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/11/10 08:12:57 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import source.org.apache.java.util.Configurations;
+import org.apache.commons.collections.ExtendedProperties;
 
 
 /**
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -277,23 +277,23 @@ public final class CmsSiteManager implements Cloneable {
     /**
      * Initializes the site manager with the OpenCms system configuration.<p>
      * 
-     * @param conf the OpenCms configuration
+     * @param configuration the OpenCms configuration
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @return the initialized site manager
      */
-    public static CmsSiteManager initialize(Configurations conf, CmsObject cms) {        
+    public static CmsSiteManager initialize(ExtendedProperties configuration, CmsObject cms) {        
         // try to initialize the site root list from the configuration
-        String[] siteRoots = conf.getStringArray("site.root.list");            
+        String[] siteRoots = configuration.getStringArray("site.root.list");            
         if (siteRoots == null) {
             // if no site root list is defined we use only the site root default
             siteRoots = new String[0];
         }
 
         // read the site root default from the configuration 
-        String siteDefault = conf.getString("site.root.default");            
+        String siteDefault = configuration.getString("site.root.default");            
 
         // read the workplace site from the configuration 
-        String siteWorkplace = conf.getString("site.workplace");            
+        String siteWorkplace = configuration.getString("site.workplace");            
         
         // create ad return the site manager 
         return new CmsSiteManager(cms, siteRoots, siteDefault, siteWorkplace);

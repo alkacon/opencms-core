@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/11/10 08:12:58 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,10 @@
 
 package org.opencms.loader;
 
+import org.opencms.flex.CmsFlexCache;
+import org.opencms.flex.CmsFlexController;
+import org.opencms.flex.CmsFlexRequest;
+import org.opencms.flex.CmsFlexResponse;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
@@ -42,10 +46,6 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
-import org.opencms.flex.CmsFlexCache;
-import org.opencms.flex.CmsFlexController;
-import org.opencms.flex.CmsFlexRequest;
-import org.opencms.flex.CmsFlexResponse;
 import com.opencms.util.Encoder;
 
 import java.io.ByteArrayOutputStream;
@@ -70,14 +70,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import source.org.apache.java.util.Configurations;
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * The JSP loader which enables the execution of JSP in OpenCms.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -494,15 +494,15 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * Initialize the ResourceLoader,
      * here the configuration for the JSP repository (directories used) is set.
      *
-     * @param conf the OpenCms configuration 
+     * @param configuration the OpenCms configuration 
      */
-    public void init(Configurations conf) {
+    public void init(ExtendedProperties configuration) {
         m_jspRepository = OpenCms.getBasePath();
         if (m_jspRepository.indexOf("WEB-INF") >= 0) {
             // Should always be true, just make sure we don't generate an exception in untested environments
             m_jspRepository = m_jspRepository.substring(0, m_jspRepository.indexOf("WEB-INF")-1);
         }
-        m_jspWebAppRepository = conf.getString("flex.jsp.repository", "/WEB-INF/jsp");
+        m_jspWebAppRepository = configuration.getString("flex.jsp.repository", "/WEB-INF/jsp");
         m_jspRepository += m_jspWebAppRepository.replace('/', File.separatorChar);
         if (!m_jspRepository.endsWith(File.separator)) {
             m_jspRepository += File.separator;

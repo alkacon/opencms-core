@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.154 $
+ * Date   : $Date: 2003/11/10 08:12:57 $
+ * Version: $Revision: 1.155 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,14 +68,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import source.org.apache.java.util.Configurations;
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.154 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.155 $ $Date: 2003/11/10 08:12:57 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -904,17 +904,17 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
+    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
         String offlinePoolUrl = null;
         String onlinePoolUrl = null;
         String backupPoolUrl = null;
         boolean hasDistinctPoolUrls = false;
 
-        if ((offlinePoolUrl = config.getString("db.vfs.pool")) == null) {
+        if ((offlinePoolUrl = configuration.getString("db.vfs.pool")) == null) {
             hasDistinctPoolUrls = true;
-            offlinePoolUrl = config.getString("db.vfs.offline.pool");
-            onlinePoolUrl = config.getString("db.vfs.online.pool");
-            backupPoolUrl = config.getString("db.vfs.backup.pool");
+            offlinePoolUrl = configuration.getString("db.vfs.offline.pool");
+            onlinePoolUrl = configuration.getString("db.vfs.online.pool");
+            backupPoolUrl = configuration.getString("db.vfs.backup.pool");
         } else {
             hasDistinctPoolUrls = false;
             onlinePoolUrl = offlinePoolUrl;

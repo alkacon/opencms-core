@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/11/10 08:12:58 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.LRUMap;
-
-import source.org.apache.java.util.Configurations;
 
 /**
  * This class implements the FlexCache.<p>
@@ -89,7 +88,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -151,17 +150,17 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * This is because you need some of the FlexCache data structures
      * for JSP inclusion buffering.<p>
      *
-     * @param conf the OpenCms configuration
+     * @param configuration the OpenCms configuration
      */
-    public CmsFlexCache(Configurations conf) {
-        m_enabled = conf.getBoolean("flex.cache.enabled", true);
-        m_cacheOffline = conf.getBoolean("flex.cache.offline", true);
+    public CmsFlexCache(ExtendedProperties configuration) {
+        m_enabled = configuration.getBoolean("flex.cache.enabled", true);
+        m_cacheOffline = configuration.getBoolean("flex.cache.offline", true);
         
-        boolean forceGC = conf.getBoolean("flex.cache.forceGC", false);
-        int maxCacheBytes = conf.getInteger("flex.cache.maxCacheBytes", 2000000);
-        int avgCacheBytes = conf.getInteger("flex.cache.avgCacheBytes", 1500000);
-        int maxEntryBytes = conf.getInteger("flex.cache.maxEntryBytes", 400000);  
-        int maxKeys = conf.getInteger("flex.cache.maxKeys", 4000);
+        boolean forceGC = configuration.getBoolean("flex.cache.forceGC", false);
+        int maxCacheBytes = configuration.getInteger("flex.cache.maxCacheBytes", 2000000);
+        int avgCacheBytes = configuration.getInteger("flex.cache.avgCacheBytes", 1500000);
+        int maxEntryBytes = configuration.getInteger("flex.cache.maxEntryBytes", 400000);  
+        int maxKeys = configuration.getInteger("flex.cache.maxKeys", 4000);
      
         this.m_variationCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes, forceGC);             
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
- * Date   : $Date: 2003/09/29 11:08:50 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2003/11/10 08:12:59 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import source.org.apache.java.util.ExtendedProperties;
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Bean with get / set methods for all properties stored in the
@@ -561,11 +561,13 @@ public class CmsSetup {
 
     /** Sets the cache value for online project to the given value */
     public void setCacheOnlineProject(String cacheOnlineProject) {
+        // TODO: remove this, property is never read
         setExtProperty("cache.onlineproject", cacheOnlineProject);
     }
 
     /** Returns the cache value for online project */
     public String getCacheOnlineProject() {
+        // TODO: remove this, property is never read
         return this.getExtProperty("cache.onlineproject");
     }
 
@@ -601,11 +603,13 @@ public class CmsSetup {
 
     /** Sets the cache value for property def. to the given value */
     public void setCachePropertyDef(String cachePropertyDef) {
+        // TODO: remove this, property is never read
         setExtProperty("cache.propertydef", cachePropertyDef);
     }
 
     /** Returns the cache value for property def. */
     public String getCachePropertyDef() {
+        // TODO: remove this, property is never read
         return this.getExtProperty("cache.propertydef");
     }
 

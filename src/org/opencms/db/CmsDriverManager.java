@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.292 $
+ * Date   : $Date: 2003/11/10 08:12:58 $
+ * Version: $Revision: 1.293 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,6 @@
 
 package org.opencms.db;
 
-import com.opencms.boot.CmsBase;
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.core.exceptions.CmsResourceNotFoundException;
-import com.opencms.file.*;
-import com.opencms.template.A_CmsXmlContent;
-
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsExportModuledata;
 import org.opencms.importexport.CmsImport;
@@ -62,6 +55,13 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
+import com.opencms.boot.CmsBase;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.exceptions.CmsResourceNotFoundException;
+import com.opencms.file.*;
+import com.opencms.template.A_CmsXmlContent;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -75,10 +75,9 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.LRUMap;
 import org.w3c.dom.Document;
-
-import source.org.apache.java.util.Configurations;
 
 /**
  * This is the driver manager.<p>
@@ -87,7 +86,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.292 $ $Date: 2003/11/08 10:32:43 $
+ * @version $Revision: 1.293 $ $Date: 2003/11/10 08:12:58 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -259,7 +258,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /**
      * The configuration of the property-file.
      */
-    protected Configurations m_configuration = null;
+    protected ExtendedProperties m_configuration = null;
 
     /**
      * The configured drivers 
@@ -335,11 +334,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * <li>finally, the driver instances are passed to the driver manager during initialization</li>
      * </ul>
      * 
-     * @param configurations The configurations from the propertyfile.
+     * @param configuration The configurations from the propertyfile.
      * @return CmsDriverManager the instanciated driver manager.
      * @throws CmsException if the driver manager couldn't be instanciated.
      */
-    public static final CmsDriverManager newInstance(Configurations configurations) throws CmsException {
+    public static final CmsDriverManager newInstance(ExtendedProperties configuration) throws CmsException {
 
         List drivers = null;
         String driverName = null;
@@ -370,7 +369,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
 
         // read the pool names to initialize
-        String driverPoolNames[] = configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
+        String driverPoolNames[] = configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             String names = "";
             for (int p = 0; p < driverPoolNames.length; p++) {
@@ -381,7 +380,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // initialize each pool
         for (int p = 0; p < driverPoolNames.length; p++) {
-            driverManager.newPoolInstance(configurations, driverPoolNames[p]);
+            driverManager.newPoolInstance(configuration, driverPoolNames[p]);
         }
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -389,38 +388,38 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
 
         // read the vfs driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_VFS));
-        driverName = configurations.getString((String)drivers.get(0) + ".vfs.driver");
+        drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_VFS));
+        driverName = configuration.getString((String)drivers.get(0) + ".vfs.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        vfsDriver = (I_CmsVfsDriver)driverManager.newDriverInstance(configurations, driverName, drivers);
+        vfsDriver = (I_CmsVfsDriver)driverManager.newDriverInstance(configuration, driverName, drivers);
 
         // read the user driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_USER));
-        driverName = configurations.getString((String)drivers.get(0) + ".user.driver");
+        drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_USER));
+        driverName = configuration.getString((String)drivers.get(0) + ".user.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        userDriver = (I_CmsUserDriver)driverManager.newDriverInstance(configurations, driverName, drivers);
+        userDriver = (I_CmsUserDriver)driverManager.newDriverInstance(configuration, driverName, drivers);
 
         // read the project driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_PROJECT));
-        driverName = configurations.getString((String)drivers.get(0) + ".project.driver");
+        drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_PROJECT));
+        driverName = configuration.getString((String)drivers.get(0) + ".project.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configurations, driverName, drivers);
+        projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configuration, driverName, drivers);
 
         // read the workflow driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_WORKFLOW));
-        driverName = configurations.getString((String)drivers.get(0) + ".workflow.driver");
+        drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_WORKFLOW));
+        driverName = configuration.getString((String)drivers.get(0) + ".workflow.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        workflowDriver = (I_CmsWorkflowDriver)driverManager.newDriverInstance(configurations, driverName, drivers);
+        workflowDriver = (I_CmsWorkflowDriver)driverManager.newDriverInstance(configuration, driverName, drivers);
 
         // read the backup driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_BACKUP));
-        driverName = configurations.getString((String)drivers.get(0) + ".backup.driver");
+        drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_BACKUP));
+        driverName = configuration.getString((String)drivers.get(0) + ".backup.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        backupDriver = (I_CmsBackupDriver)driverManager.newDriverInstance(configurations, driverName, drivers);
+        backupDriver = (I_CmsBackupDriver)driverManager.newDriverInstance(configuration, driverName, drivers);
 
         try {
             // invoke the init method of the driver manager
-            driverManager.init(configurations, vfsDriver, userDriver, projectDriver, workflowDriver, backupDriver);
+            driverManager.init(configuration, vfsDriver, userDriver, projectDriver, workflowDriver, backupDriver);
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 4 ok - finished");
             }
@@ -435,7 +434,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // set the pool for the COS
         // TODO: check if there is a better place for this
-        String cosPoolUrl = configurations.getString("db.cos.pool");
+        String cosPoolUrl = configuration.getString("db.cos.pool");
         OpenCms.setRuntimeProperty("cosPoolUrl", cosPoolUrl);
         CmsDbUtil.setDefaultPool(cosPoolUrl);
 
@@ -3299,7 +3298,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @return the Configurations of the properties-file
      */
-    public Configurations getConfigurations() {
+    public ExtendedProperties getConfigurations() {
         return m_configuration;
     }
 
@@ -4400,7 +4399,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * @throws Exception if something goes wrong
      */
-    public void init(Configurations config, I_CmsVfsDriver vfsDriver, I_CmsUserDriver userDriver, I_CmsProjectDriver projectDriver, I_CmsWorkflowDriver workflowDriver, I_CmsBackupDriver backupDriver) throws CmsException, Exception {
+    public void init(ExtendedProperties config, I_CmsVfsDriver vfsDriver, I_CmsUserDriver userDriver, I_CmsProjectDriver projectDriver, I_CmsWorkflowDriver workflowDriver, I_CmsBackupDriver backupDriver) throws CmsException, Exception {
 
         // store the limited workplace port
         m_limitedWorkplacePort = config.getInteger("workplace.limited.port", -1);
@@ -4453,7 +4452,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resourceCache", hashMap);
         }
         
-        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".subres", 100));    
+        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".resourcelist", 100));    
         m_resourceListCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resourceListCache", hashMap);
@@ -4471,7 +4470,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyDefCache", hashMap);
         }
         
-        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
+        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertydefvector", 100));
         m_propertyDefVectorCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) { 
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyDefVectorCache", hashMap);
@@ -4998,16 +4997,16 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /**
      * Gets a new driver instance.<p>
      * 
-     * @param configurations the configurations
+     * @param configuration the configurations
      * @param driverName the driver name
      * @param successiveDrivers the list of successive drivers
      * @return the driver object
      * @throws CmsException if something goes wrong
      */
-    public Object newDriverInstance(Configurations configurations, String driverName, List successiveDrivers) throws CmsException {
+    public Object newDriverInstance(ExtendedProperties configuration, String driverName, List successiveDrivers) throws CmsException {
 
-        Class initParamClasses[] = {Configurations.class, List.class, CmsDriverManager.class };
-        Object initParams[] = {configurations, successiveDrivers, this };
+        Class initParamClasses[] = {ExtendedProperties.class, List.class, CmsDriverManager.class };
+        Object initParams[] = {configuration, successiveDrivers, this };
 
         Class driverClass = null;
         Object driver = null;
@@ -5047,16 +5046,16 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /**
      * Method to create a new instance of a driver.<p>
      * 
-     * @param configurations the configurations from the propertyfile
+     * @param configuration the configurations from the propertyfile
      * @param driverName the class name of the driver
      * @param driverPoolUrl the pool url for the driver
      * @return an initialized instance of the driver
      * @throws CmsException if something goes wrong
      */
-    public Object newDriverInstance(Configurations configurations, String driverName, String driverPoolUrl) throws CmsException {
+    public Object newDriverInstance(ExtendedProperties configuration, String driverName, String driverPoolUrl) throws CmsException {
 
-        Class initParamClasses[] = {Configurations.class, String.class, CmsDriverManager.class };
-        Object initParams[] = {configurations, driverPoolUrl, this };
+        Class initParamClasses[] = {ExtendedProperties.class, String.class, CmsDriverManager.class };
+        Object initParams[] = {configuration, driverPoolUrl, this };
 
         Class driverClass = null;
         Object driver = null;
@@ -5099,7 +5098,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @return the pool url
      * @throws CmsException if something goes wrong
      */
-    public String newPoolInstance(Configurations configurations, String poolName) throws CmsException {
+    public String newPoolInstance(ExtendedProperties configurations, String poolName) throws CmsException {
 
         String poolUrl = null;
 

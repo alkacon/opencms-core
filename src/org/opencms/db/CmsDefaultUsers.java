@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/11/10 08:12:58 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,23 +31,23 @@
  
 package org.opencms.db;
 
-import com.opencms.core.I_CmsConstants;
-
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 
+import com.opencms.core.I_CmsConstants;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import source.org.apache.java.util.Configurations;
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Provides access to the names of the OpenCms default users and groups.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $ $Date: 2003/11/08 10:32:43 $
+ * @version $Revision: 1.15 $ $Date: 2003/11/10 08:12:58 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -97,18 +97,18 @@ public class CmsDefaultUsers {
     /**
      * Initializes the default user configuration with the OpenCms system configuration.<p>
      * 
-     * @param conf the OpenCms configuration
+     * @param configuration the OpenCms configuration
      * @return the initialized default user configuration 
      * @throws Exception if something goes wrong
      */
-    public static CmsDefaultUsers initialize(Configurations conf) throws Exception {
+    public static CmsDefaultUsers initialize(ExtendedProperties configuration) throws Exception {
         CmsDefaultUsers defaultUsers = null;
         // Read the default user configuration
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {            
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Default user names   : checking...");
         }        
         try {
-            String[] defaultUserArray = conf.getStringArray("db.default.users");
+            String[] defaultUserArray = configuration.getStringArray("db.default.users");
             defaultUsers = new CmsDefaultUsers(defaultUserArray);        
         } catch (Exception e) {
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isFatalEnabled()) {
@@ -126,7 +126,7 @@ public class CmsDefaultUsers {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Guests group         : " + defaultUsers.getGroupGuests());
         } 
         try {
-            String[] translationArray = conf.getStringArray("import.name.translations");
+            String[] translationArray = configuration.getStringArray("import.name.translations");
             defaultUsers.setNameTranslations(translationArray);  
         } catch (Exception e) {
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/11/10 08:12:57 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.db.generic;
 
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.main.CmsLog;
@@ -64,12 +64,12 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import source.org.apache.java.util.Configurations;
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.44 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.45 $ $Date: 2003/11/10 08:12:57 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -446,8 +446,8 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
-        String poolUrl = config.getString("db.user.pool");
+    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
+        String poolUrl = configuration.getString("db.user.pool");
 
         m_sqlManager = this.initQueries();
         m_sqlManager.setPoolUrlOffline(poolUrl);
@@ -460,12 +460,12 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assigned pool        : " + poolUrl);
         }
 
-        String digest = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
+        String digest = configuration.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest configured    : " + digest);
         }
 
-        m_digestFileEncoding = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", "UTF-8");
+        m_digestFileEncoding = configuration.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", "UTF-8");
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest file encoding : " + m_digestFileEncoding);
         }

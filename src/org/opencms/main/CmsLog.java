@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2003/10/09 08:12:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/11/10 08:12:57 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,9 @@
  
 package org.opencms.main;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import source.org.apache.java.util.Configurations;
 
 /**
  * Provides the OpenCms logging mechanism.<p>
@@ -45,7 +44,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsLog implements Log {
 
@@ -77,7 +76,7 @@ public class CmsLog implements Log {
      * @param configuration the OpenCms configuration
      * @param configFile the path to the logger configuration file 
      */    
-    protected void init(Configurations configuration, String configFile) {
+    protected void init(ExtendedProperties configuration, String configFile) {
         m_configFile = configFile;
         // clean up previously initialized loggers
         LogFactory.releaseAll();

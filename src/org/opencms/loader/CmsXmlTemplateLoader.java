@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/11/10 08:12:58 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import source.org.apache.java.util.Configurations;
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Implementation of the {@link I_CmsResourceLoader} for 
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -566,17 +566,17 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     /** 
      * Initialize the ResourceLoader.<p>
      * 
-     * @param conf the OpenCms configuration 
+     * @param configuration the OpenCms configuration 
      */
-    public void init(Configurations conf) {
+    public void init(ExtendedProperties configuration) {
         // Check, if the element cache should be enabled
-        boolean enableElementCache = conf.getBoolean("elementcache.enabled", false);
+        boolean enableElementCache = configuration.getBoolean("elementcache.enabled", false);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Element cache        : " + (enableElementCache ? "enabled" : "disabled"));
         }
         if (enableElementCache) {
             try {
-                m_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000), conf.getInteger("elementcache.elements", 50000), conf.getInteger("elementcache.variants", 100));
+                m_elementCache = new CmsElementCache(configuration.getInteger("elementcache.uri", 10000), configuration.getInteger("elementcache.elements", 50000), configuration.getInteger("elementcache.variants", 100));
             } catch (Exception e) {
                 if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                     OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Element cache        : non-critical error " + e.toString());

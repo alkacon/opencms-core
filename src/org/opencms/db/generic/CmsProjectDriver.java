@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.133 $
+ * Date   : $Date: 2003/11/10 08:12:57 $
+ * Version: $Revision: 1.134 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,12 +71,12 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
-import source.org.apache.java.util.Configurations;
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.133 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.134 $ $Date: 2003/11/10 08:12:57 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -615,8 +615,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
-        String poolUrl = config.getString("db.project.pool");
+    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
+        String poolUrl = configuration.getString("db.project.pool");
 
         m_sqlManager = this.initQueries();
         m_sqlManager.setPoolUrlOffline(poolUrl);

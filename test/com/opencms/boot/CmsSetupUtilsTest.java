@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/boot/Attic/CmsSetupUtilsTest.java,v $
- * Date   : $Date: 2003/09/12 11:49:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/11/10 08:12:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,12 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import junit.framework.TestCase;
-import source.org.apache.java.util.ExtendedProperties;
+
+import org.apache.commons.collections.ExtendedProperties;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0
  */

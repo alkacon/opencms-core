@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/11/10 08:12:59 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,13 +48,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
 
-import source.org.apache.java.util.ExtendedProperties;
+import org.apache.commons.collections.ExtendedProperties;
+
 /**
  * Provides utilities methodsused by the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public class CmsSetupUtils {
 
