@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/07/11 11:48:52 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2001/07/23 07:40:55 $
+* Version: $Revision: 1.35 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.34 $ $Date: 2001/07/11 11:48:52 $
+ * @version $Revision: 1.35 $ $Date: 2001/07/23 07:40:55 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -2144,7 +2144,7 @@ public class CmsShellCommands implements I_CmsConstants {
      *
      * @param resourcetype The name of the resource type to read the
      * propertydefinitions for.
-     * @param type The type of the propertydefinition (normal|mandatory|optional).
+     * @param type The type of the propertydefinition (normal|optional).
      */
     public void readAllPropertydefinitions(String resourcetype, String type) {
         try {
@@ -3240,7 +3240,7 @@ public class CmsShellCommands implements I_CmsConstants {
      * @param name The name of the propertydefinition to overwrite.
      * @param resourcetype The name of the resource type to read the
      * propertydefinitions for.
-     * @param type The new type of the propertydefinition (normal|mandatory|optional).
+     * @param type The new type of the propertydefinition (normal|optional).
      *
      * @exception CmsException Throws CmsException if something goes wrong.
      * @deprecated Do not use this method any longer because there is no type of propertydefinition

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/23 07:21:47 $
- * Version: $Revision: 1.251 $
+ * Date   : $Date: 2001/07/23 07:40:55 $
+ * Version: $Revision: 1.252 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.251 $ $Date: 2001/07/23 07:21:47 $
+ * @version $Revision: 1.252 $ $Date: 2001/07/23 07:40:55 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1629,9 +1629,6 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      }
     /**
      * Creates a new folder.
-     * If some mandatory propertydefinitions for the resourcetype are missing, a
-     * CmsException will be thrown, because the file cannot be created without
-     * the mandatory propertyinformations.<BR/>
      *
      * <B>Security:</B>
      * Access is granted, if:
@@ -2261,9 +2258,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         I_CmsResourceType resType = getResourceType(currentUser,currentProject,res.getType());
         CmsPropertydefinition metadef = readPropertydefinition(currentUser,currentProject,property, resType.getResourceTypeName());
 
-        // is this a mandatory metadefinition?
         if(  (metadef != null)  ) {
-            // no - delete the information
             m_dbAccess.deleteProperty(property,currentProject.getId(),res,res.getType());
             // set the file-state to changed
             if(res.isFile()){
@@ -2288,7 +2283,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         } else {
             // yes - throw exception
              throw new CmsException("[" + this.getClass().getName() + "] " + resource,
-                CmsException.C_MANDATORY_PROPERTY);
+                CmsException.C_UNKNOWN_EXCEPTION);
         }
     }
     /**

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/18 15:08:55 $
- * Version: $Revision: 1.148 $
+ * Date   : $Date: 2001/07/23 07:40:55 $
+ * Version: $Revision: 1.149 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.148 $ $Date: 2001/07/18 15:08:55 $
+ * @version $Revision: 1.149 $ $Date: 2001/07/23 07:40:55 $
  *
  */
 
@@ -530,9 +530,6 @@ public interface I_CmsResourceBroker {
 		 throws CmsException;
 	/**
 	 * Creates a new folder.
-	 * If some mandatory propertydefinitions for the resourcetype are missing, a
-	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory propertyinformations.<BR/>
 	 *
 	 * <B>Security:</B>
 	 * Access is granted, if:

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/20 09:36:16 $
- * Version: $Revision: 1.207 $
+ * Date   : $Date: 2001/07/23 07:40:55 $
+ * Version: $Revision: 1.208 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.207 $ $Date: 2001/07/20 09:36:16 $ *
+ * @version $Revision: 1.208 $ $Date: 2001/07/23 07:40:55 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1469,7 +1469,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	 *
 	 * @param name The name of the propertydefinitions to overwrite.
 	 * @param resourcetype The resource-type for the propertydefinitions.
-	 * @param type The type of the propertydefinitions (normal|mandatory|optional)
+	 * @param type The type of the propertydefinitions (normal|optional)
 	 *
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
@@ -2320,7 +2320,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		try {
 			if(countProperties(metadef) != 0) {
 				throw new CmsException("[" + this.getClass().getName() + "] " + metadef.getName(),
-					CmsException.C_MANDATORY_PROPERTY);
+					CmsException.C_UNKNOWN_EXCEPTION);
 			}
 			// delete the propertydef from offline db
 			con = DriverManager.getConnection(m_poolName);

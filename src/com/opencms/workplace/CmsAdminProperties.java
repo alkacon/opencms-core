@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2001/06/29 13:44:06 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/07/23 07:40:56 $
+* Version: $Revision: 1.11 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.10 $ $Date: 2001/06/29 13:44:06 $
+ * @version $Revision: 1.11 $ $Date: 2001/07/23 07:40:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -132,20 +132,8 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
                 if("true".equals((String)parameters.get("sure"))) {
 
                     // the user is sure to delete the property definition
-                    try {
-                        cms.deletePropertydefinition(propDefName, resTypeName);
-                        templateSelector = "";
-                    }
-                    catch(CmsException e) {
-                        if(e.getType() == CmsException.C_MANDATORY_PROPERTY) {
-
-                            // tried to delete a property definition which is still in use
-                            templateSelector = "errordeletemanda";
-                        }
-                        else {
-                            throw e;
-                        }
-                    }
+                    cms.deletePropertydefinition(propDefName, resTypeName);
+                    templateSelector = "";
                 }
                 else {
                     templateSelector = "RUsuredelete";

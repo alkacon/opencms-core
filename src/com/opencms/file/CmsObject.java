@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/18 15:08:40 $
- * Version: $Revision: 1.172 $
+ * Date   : $Date: 2001/07/23 07:40:55 $
+ * Version: $Revision: 1.173 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.172 $ $Date: 2001/07/18 15:08:40 $
+ * @version $Revision: 1.173 $ $Date: 2001/07/23 07:40:55 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -771,8 +771,7 @@ public int countLockedResources(int id) throws CmsException {
  *
  * @return file a <code>CmsFile</code> object representing the newly created file.
  *
- * @exception CmsException if the mandatory property-definitions for this file are missing
- * or if the resourcetype is set to folder. The CmsException is also thrown, if the
+ * @exception if the resourcetype is set to folder. The CmsException is also thrown, if the
  * filename is not valid or if the user has not the appropriate rights to create a new file.
  *
  * @deprecated Use createResource instead.
@@ -793,8 +792,7 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
  *
  * @return file a <code>CmsFile</code> object representing the newly created file.
  *
- * @exception CmsException if the mandatory property-definitions for this file are missing,
- * the wrong properties are given, or if the resourcetype is set to folder.
+ * @exception CmsException or if the resourcetype is set to folder.
  * The CmsException is also thrown, if the filename is not valid or if the user
  * has not the appropriate rights to create a new file.
  *
@@ -812,8 +810,7 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
  *
  * @return folder a <code>CmsFolder</code> object representing the newly created folder.
  *
- * @exception CmsException if the mandatory property-definitions for this folder are missing
- * , the foldername is not valid, or if the user has not the appropriate rights to create
+ * @exception CmsException if the foldername is not valid, or if the user has not the appropriate rights to create
  * a new folder.
  *
  * @deprecated Use createResource instead.
@@ -832,8 +829,7 @@ public CmsFolder createFolder(String folder, String newFolderName) throws CmsExc
  * the values for the properties.
  *
  * @return a <code>CmsFolder</code> object representing the newly created folder.
- * @exception CmsException if the mandatory property-definitions for this folder are missing
- * , the foldername is not valid, or if the user has not the appropriate rights to create
+ * @exception CmsException if the foldername is not valid, or if the user has not the appropriate rights to create
  * a new folder.
  *
  * @deprecated Use createResource instead.
@@ -865,8 +861,7 @@ public CmsResource createResource(String folder, String name, String type, Hasht
  *
  * @return file a <code>CmsFile</code> object representing the newly created file.
  *
- * @exception CmsException if the mandatory property-definitions for this file are missing
- * or if the resourcetype is set to folder. The CmsException is also thrown, if the
+ * @exception CmsException if the resourcetype is set to folder. The CmsException is also thrown, if the
  * filename is not valid or if the user has not the appropriate rights to create a new file.
  */
 protected CmsFile doCreateFile(String folder, String filename, byte[] contents, String type) throws CmsException {
@@ -902,8 +897,7 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
  *
  * @return file a <code>CmsFile</code> object representing the newly created file.
  *
- * @exception CmsException if the mandatory property-definitions for this file are missing,
- * the wrong properties are given, or if the resourcetype is set to folder.
+ * @exception CmsException if the wrong properties are given, or if the resourcetype is set to folder.
  * The CmsException is also thrown, if the filename is not valid or if the user
  * has not the appropriate rights to create a new file.
  */
@@ -937,8 +931,7 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
  *
  * @return folder a <code>CmsFolder</code> object representing the newly created folder.
  *
- * @exception CmsException if the mandatory property-definitions for this folder are missing
- * , the foldername is not valid, or if the user has not the appropriate rights to create
+ * @exception CmsException if the foldername is not valid, or if the user has not the appropriate rights to create
  * a new folder.
  */
 protected CmsFolder doCreateFolder(String folder, String newFolderName) throws CmsException {
@@ -973,8 +966,7 @@ protected CmsFolder doCreateFolder(String folder, String newFolderName) throws C
  * the values for the properties.
  *
  * @return a <code>CmsFolder</code> object representing the newly created folder.
- * @exception CmsException if the mandatory property-definitions for this folder are missing
- * , the foldername is not valid, or if the user has not the appropriate rights to create
+ * @exception CmsException if the foldername is not valid, or if the user has not the appropriate rights to create
  * a new folder.
  *
  */
@@ -1053,7 +1045,7 @@ public CmsProject createProject(String name, String description, String groupnam
  *
  * @param name the name of the property-definition to overwrite.
  * @param resourcetype the name of the resource-type for the property-definition.
- * @param type the type of the property-definition (normal|mandatory|optional)
+ * @param type the type of the property-definition (normal|optional)
  *
  * @exception CmsException if operation was not successful.
  * @deprecated Use createPropertydefinition without type of propertydefinition instead.
@@ -2404,7 +2396,7 @@ public Hashtable readAllProperties(String name) throws CmsException {
  * Reads all property-definitions for the given resource type.
  *
  * @param id the id of the resource type to read the property-definitions for.
- * @param type the type of the property-definition (normal|mandatory|optional).
+ * @param type the type of the property-definition (normal|optional).
  *
  * @return a Vector with property-defenitions for the resource type.
  * The Vector may be empty.
@@ -2450,7 +2442,7 @@ public Vector readAllPropertydefinitions(String resourcetype) throws CmsExceptio
  *
  * @param resourcetype The name of the resource type to read the
  * property-definitions for.
- * @param type the type of the property-definition (normal|mandatory|optional).
+ * @param type the type of the property-definition (normal|optional).
  *
  * @return a Vector with property-defenitions for the resource type.
  * The Vector may be empty.
@@ -3341,8 +3333,7 @@ public void writeExportPath(String path) throws CmsException {
  *
  * @param file the file to write.
  *
- * @exception CmsException if mandatory property-definitions for this resource are missing,
- * or if resourcetype is set to folder. The CmsException will also be thrown,
+ * @exception CmsException if resourcetype is set to folder. The CmsException will also be thrown,
  * if the user has not the rights write the file.
  */
 public void writeFile(CmsFile file) throws CmsException {
@@ -3365,8 +3356,7 @@ public void writeFileExtensions(Hashtable extensions) throws CmsException {
  *
  * @param file the file to write.
  *
- * @exception CmsException if mandatory property-definitions are missing,
- * or if resourcetype is set to folder. The CmsException will also be thrown,
+ * @exception CmsException if resourcetype is set to folder. The CmsException will also be thrown,
  * if the user has not the rights to write the file header..
  */
 public void writeFileHeader(CmsFile file) throws CmsException {

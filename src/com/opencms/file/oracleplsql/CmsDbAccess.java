@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/19 13:18:41 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2001/07/23 07:40:56 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.36 $ $Date: 2001/07/19 13:18:41 $ *
+ * @version $Revision: 1.37 $ $Date: 2001/07/23 07:40:56 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1219,7 +1219,8 @@ private CmsException getCmsException(String errorIn, Exception exc) {
 			cmsException = new CmsException(errorIn, CmsException.C_INTERNAL_FILE);
 			break;
 		case 20016 :
-			cmsException = new CmsException(errorIn, CmsException.C_MANDATORY_PROPERTY);
+            // this exception is obselete and should not be used
+			cmsException = new CmsException(errorIn, 16);
 			break;
 		case 20017 :
 			cmsException = new CmsException(errorIn, CmsException.C_SERVICE_UNAVAILABLE);
