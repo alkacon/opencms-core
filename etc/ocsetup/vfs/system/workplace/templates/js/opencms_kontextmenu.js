@@ -188,40 +188,40 @@ function doAction(action) {
 	
 	switch(action)	{
 		case 1: {
-			location.href='lock.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='lock.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 2:	{
-			location.href='lockchange.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='lockchange.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 3: {
-			location.href='unlock.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='unlock.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 4: {
-			location.href='copy.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='copy.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 5: {
-			location.href='move.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='move.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 6: {
-			location.href='rename.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='rename.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 7: {
-			location.href='delete.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='delete.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 8: {
-			location.href='chown.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='chown.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 9: {
-			location.href='chgrp.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='chgrp.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 10: {
-			location.href='chmod.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='chmod.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 11: {
-			location.href='chtype.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+			location.href='chtype.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		} case 12: {
-		    location.href='property.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+		    location.href='property.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		}
 		case 13:
@@ -250,7 +250,7 @@ function doAction(action) {
 	    case 23: 
 		{
 		    // News Editor
-		    top.body.location.href='news_edit.html?action=edit&lasturl=' + top.body.location.href + '&file='+ kontextparam;
+		    top.body.location.href='news_edit.html?action=edit&lasturl=' + top.body.location.href + '&file='+ kontextparam + '&initial=true';
 			break;
 		}
 		
@@ -274,7 +274,7 @@ function doAction(action) {
 			location.href='explorer_files_deletef.html';
 			break;
 		} case 40:{
-		    location.href='history.html?lasturl=' + encLasturl + '&file='+ kontextparam;
+		    location.href='history.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
 			break;
 		}
 		case 41:
@@ -296,7 +296,7 @@ function doPAction(action) // which action on layer Project is clicked
 	{
 		case 1:
 		{
-			location.href='administration_content_lockchange.html?projectid=' + kontextparam;
+			location.href='administration_content_lockchange.html?projectid=' + kontextparam+ '&initial=true';
 			break;
 		}
 		case 2:
@@ -306,12 +306,12 @@ function doPAction(action) // which action on layer Project is clicked
 		}
 		case 3:
 		{
-			location.href='administration_content_publish_project.html?projectid=' + kontextparam;
+			location.href='administration_content_publish_project.html?projectid=' + kontextparam+ '&initial=true';
 			break;
 		}
 		case 4:
 		{
-			location.href='administration_content_delete_project.html?projectid=' + kontextparam;
+			location.href='administration_content_delete_project.html?projectid=' + kontextparam+ '&initial=true';
 			break;
 		}
 		case 10:
