@@ -31,7 +31,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/01/26 15:49:23 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/27 15:04:23 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
@@ -233,6 +233,9 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      */
     protected I_CmsTemplate getTemplateClass(A_CmsObject cms, String classname) throws CmsException {
    
+        if(C_DEBUG && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Getting start template class " + classname + ". ");
+        }
         Object o = CmsTemplateClassManager.getClassInstance(cms, classname);
         
         // Check, if the loaded class really is a OpenCms template class.
