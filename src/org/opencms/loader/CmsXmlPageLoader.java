@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/03/29 10:39:54 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/05/13 11:09:00 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -57,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   

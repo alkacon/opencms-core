@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/04/28 22:28:16 $
- * Version: $Revision: 1.113 $
+ * Date   : $Date: 2004/05/13 11:09:00 $
+ * Version: $Revision: 1.114 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.113 $
+ * @version $Revision: 1.114 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1667,6 +1667,8 @@ public final class OpenCmsCore {
             exception = CmsStringSubstitution.substitute(exception, "\"", "\\\"");
             exception = CmsStringSubstitution.substitute(exception, "\r\n", "\\n");        
             exception = CmsStringSubstitution.substitute(exception, "\n", "\\n");
+            exception = CmsStringSubstitution.substitute(exception, ">", "&gt;");
+            exception = CmsStringSubstitution.substitute(exception, "<", "&lt;");
             details = "<html><body style='background-color: Window;'><pre>" + exception + "</pre></body></html>";
         }
 

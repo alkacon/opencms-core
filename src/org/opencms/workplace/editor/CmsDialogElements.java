@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/05/05 08:42:27 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/05/13 11:09:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,9 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.xml.page.CmsXmlPage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.3.0
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/05/13 11:09:35 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,10 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
-import org.opencms.page.CmsXmlPageException;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 5.1.12
  */
@@ -238,7 +238,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
              // copy the temporary file content back to the original file
              commitTempFile();
 
-         } catch (CmsXmlPageException e) {
+         } catch (CmsXmlException e) {
              showErrorPage(e, "xml");
          } catch (CmsException e) {
              showErrorPage(e, "save");

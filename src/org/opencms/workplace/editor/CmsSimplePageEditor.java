@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/05/08 03:12:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/05/13 11:09:35 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.xml.page.CmsXmlPage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -50,7 +50,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.0
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/05/03 13:09:44 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/05/13 11:09:35 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 5.1
  */
@@ -424,7 +424,9 @@ public class CmsDialog extends CmsWorkplace {
             exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
             exception = CmsStringSubstitution.substitute(exception, "\"", "\\\"");
             exception = CmsStringSubstitution.substitute(exception, "\r\n", "\\n");        
-            exception = CmsStringSubstitution.substitute(exception, "\n", "\\n");            
+            exception = CmsStringSubstitution.substitute(exception, "\n", "\\n");   
+            exception = CmsStringSubstitution.substitute(exception, ">", "&gt;");
+            exception = CmsStringSubstitution.substitute(exception, "<", "&lt;");            
             return "<html><body style='background-color: Window; overflow: scroll;'><pre>" + exception + "</pre></body></html>";
         }
     }

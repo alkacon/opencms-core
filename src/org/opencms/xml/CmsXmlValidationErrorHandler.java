@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPageValidationErrorHandler.java,v $
- * Date   : $Date: 2004/04/30 10:09:34 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlValidationErrorHandler.java,v $
+ * Date   : $Date: 2004/05/13 11:09:35 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.page;
+package org.opencms.xml;
 
 import org.opencms.main.OpenCms;
 
@@ -41,16 +41,16 @@ import org.xml.sax.SAXParseException;
  * Error hander for processing errors found during xmlPage validation.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
-public class CmsXmlPageValidationErrorHandler implements ErrorHandler {
+public class CmsXmlValidationErrorHandler implements ErrorHandler {
 
     /**
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
     public void error(SAXParseException exception) throws SAXException {
 
-        OpenCms.getLog(this).error("Error parsing xmlPage resource", exception);
+        OpenCms.getLog(this).error("Error parsing xml resource", exception);
         throw exception;
     }
 
@@ -59,7 +59,7 @@ public class CmsXmlPageValidationErrorHandler implements ErrorHandler {
      */
     public void fatalError(SAXParseException exception) throws SAXException {
 
-        OpenCms.getLog(this).error("Fatel error parsing xmlPage resource", exception);
+        OpenCms.getLog(this).error("Fatel error parsing xml resource", exception);
         throw exception;
     }
 
@@ -69,7 +69,7 @@ public class CmsXmlPageValidationErrorHandler implements ErrorHandler {
     public void warning(SAXParseException exception) {
         
         if (OpenCms.getLog(this).isWarnEnabled()) {
-            OpenCms.getLog(this).warn("Warning parsing xmlPage resource", exception);
+            OpenCms.getLog(this).warn("Warning parsing xml resource", exception);
         }
     }  
 }

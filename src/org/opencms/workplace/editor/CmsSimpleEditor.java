@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/05/08 03:12:53 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/05/13 11:09:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,10 @@ import org.opencms.file.CmsFile;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.page.CmsXmlPageException;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.xml.CmsXmlException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1.12
  */
@@ -185,7 +185,7 @@ public class CmsSimpleEditor extends CmsEditor {
                 decodedContent = new String(writtenFile.getContents());
             }
             setParamContent(encodeContent(decodedContent));            
-        } catch (CmsXmlPageException e) {
+        } catch (CmsXmlException e) {
             showErrorPage(e, "xml");
         } catch (CmsException e) {
             showErrorPage(e, "save");

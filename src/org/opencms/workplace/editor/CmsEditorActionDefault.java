@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/03/22 16:34:54 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/05/13 11:09:35 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,12 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.3.0
  */

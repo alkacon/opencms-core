@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPageException.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlException.java,v $
+ * Date   : $Date: 2004/05/13 11:09:35 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,28 +29,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.page;
+package org.opencms.xml;
 
 import org.opencms.main.CmsException;
 
 /**
- * Signals that an error occured while processing an XmlPage.<p>
+ * Signals that an error occured while processing an xml resource.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @version $Revision: 1.1 $
  * @since 5.1.4
  */
-public class CmsXmlPageException extends CmsException {
+public class CmsXmlException extends CmsException {
     
     // the allowed type range for this exception is >=400 and <500    
     
     /** Generic init error */
-    public static final int C_XMLPAGE_GENERIC_ERROR = 400;
+    public static final int C_XML_GENERIC_ERROR = 400;
         
     /**
      * Default constructor for a CmsXmlPageException.<p>
      */
-    public CmsXmlPageException() {
+    public CmsXmlException() {
         super();
     }
     
@@ -59,7 +59,7 @@ public class CmsXmlPageException extends CmsException {
      * 
      * @param type the type of the exception
      */
-    public CmsXmlPageException(int type) {
+    public CmsXmlException(int type) {
         super(type);
     }
         
@@ -69,7 +69,7 @@ public class CmsXmlPageException extends CmsException {
      * @param message the description message
      * @param type the type of the exception
      */
-    public CmsXmlPageException(String message, int type) {
+    public CmsXmlException(String message, int type) {
         super(message, type);
     }
     
@@ -78,8 +78,8 @@ public class CmsXmlPageException extends CmsException {
      * 
      * @param message the description message
      */
-    public CmsXmlPageException(String message) {
-        super(message, C_XMLPAGE_GENERIC_ERROR);
+    public CmsXmlException(String message) {
+        super(message, C_XML_GENERIC_ERROR);
     }    
     
     /**
@@ -88,8 +88,8 @@ public class CmsXmlPageException extends CmsException {
      * @param message the description message
      * @param rootCause the root cause
      */
-    public CmsXmlPageException(String message, Throwable rootCause) {
-        super(message, C_XMLPAGE_GENERIC_ERROR, rootCause);
+    public CmsXmlException(String message, Throwable rootCause) {
+        super(message, C_XML_GENERIC_ERROR, rootCause);
     }        
     
     /**
@@ -100,8 +100,8 @@ public class CmsXmlPageException extends CmsException {
      */    
     protected String getErrorDescription(int type) {
         switch (type) {
-            case C_XMLPAGE_GENERIC_ERROR:
-                return "Error in XmlPage processing";
+            case C_XML_GENERIC_ERROR:
+                return "Error in xml processing";
             default:
                 return super.getErrorDescription(type);
         }

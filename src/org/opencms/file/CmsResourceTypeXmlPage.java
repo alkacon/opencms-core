@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/05/08 03:09:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/05/13 11:07:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
-import org.opencms.page.CmsXmlPageException;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.validation.I_CmsHtmlLinkValidatable;
+import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.page.CmsXmlPage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +55,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -147,7 +147,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
                     }
                 }
             }
-        } catch (CmsXmlPageException e) {
+        } catch (CmsXmlException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error processing HTML content of " + resource.getRootPath(), e);
             }

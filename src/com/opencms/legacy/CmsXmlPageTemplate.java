@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlPageTemplate.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/13 11:07:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPage;
 
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsDumpTemplate;
@@ -51,7 +51,7 @@ import java.util.Locale;
  *
  * @author  Carsten Weinholz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class CmsXmlPageTemplate extends CmsDumpTemplate {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/03/29 10:39:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/05/13 11:09:00 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,8 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
 import org.opencms.util.CmsStringSubstitution;
+import org.opencms.xml.page.CmsXmlPage;
 
 import java.util.Locale;
 
@@ -51,7 +51,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
