@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/26 15:36:48 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2003/02/27 10:00:52 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.75 $ $Date: 2003/02/26 15:36:48 $
+ * @version $Revision: 1.76 $ $Date: 2003/02/27 10:00:52 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -972,19 +972,20 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param content the file content
      * @return String the found encoding
      */
-    private String getEncoding(String content) {
-        String encoding = content;
-        int index = encoding.toLowerCase().indexOf("encoding=\"") + 10;
-        // encoding attribute found, get the value
-        if (index != -1) {
-            encoding = encoding.substring(index);
-            index = encoding.indexOf("\"");
-            encoding = encoding.substring(0,index);
-            return encoding.toUpperCase();
-        }
-        // no encoding attribute found
-        return "";
-    }	
+	private String getEncoding(String content) {
+		String encoding = content;
+		int index = encoding.toLowerCase().indexOf("encoding=\"");
+		// encoding attribute found, get the value
+		if (index != -1) {
+			encoding = encoding.substring(index + 10);
+			if ((index = encoding.indexOf("\"")) != -1) {
+				encoding = encoding.substring(0, index);
+				return encoding.toUpperCase();
+			}
+		}
+		// no encoding attribute found
+		return "";
+	}	
     
     /** 
      * Scans the given content of a frametemplate and returns the result.<p>
