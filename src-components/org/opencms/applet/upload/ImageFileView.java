@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFileView.java,v $
- * Date   : $Date: 2004/04/01 04:43:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/18 13:56:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,10 +49,10 @@ import javax.swing.filechooser.FileView;
  */
 public class ImageFileView extends FileView {
 
-    /** Extension storage */
+    /** Extension storage. */
     private HashMap m_extensions;
 
-    /** The path to opencms, required to read the images */
+    /** The path to OpenCms, required to read the images. */
     private String m_opencms;
 
     /**

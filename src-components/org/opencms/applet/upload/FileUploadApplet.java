@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2004/06/13 23:43:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/18 13:56:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,79 +61,79 @@ import org.apache.commons.httpclient.methods.MultipartPostMethod;
  */
 public class FileUploadApplet extends JApplet implements Runnable {
 
-    /** Applet threat */
+    /** Applet thread. */
     Thread m_runner;
 
-    /** The URL of the opencms */
+    /** The URL of the OpenCms instance. */
     private String m_opencms = "";
 
-    /** The URL to send the uploaded files to */
+    /** The URL to send the uploaded files to. */
     private String m_targetUrl = "";
 
-    /** The URL to retun to after upload */
+    /** The URL to return to after uploading the files. */
     private String m_redirectUrl = "";
 
-    /** The URL to retun to after an error */
+    /** The URL to return to after an error. */
     private String m_errorUrl = "";
 
-    /** The name of the temporary zip file */
+    /** The name of the temporary zip file. */
     private String m_zipfile = "_tmpupload.zip";
 
-    /** The name of the folder to upload to */
+    /** The name of the folder to upload to. */
     private String m_uploadFolder = "";
 
-    /** Maximum file upload size */
+    /** Maximum file upload size. */
     private long m_maxsize = -1;
 
-    /** Number of resources to upload */
+    /** Number of resources to upload. */
     private int m_resources;
 
-    /** File extensions, used to find the correct icons for the selectbox */
+    /** File extensions, used to find the correct icons for the selectbox. */
     private String m_fileExtensions = "";
 
-    /** Color defintions */
+    /** Color defintions. */
     private HashMap m_colors = new HashMap();
 
-    /** Output string for action messages */
+    /** Output string for action messages. */
     private String m_action = "";
 
-    /** Output string for loggin messages */
+    /** Output string for loggin messages. */
     private String m_message = "";
 
-    /** Output mode selector */
+    /** Output mode selector. */
     private int m_outputMode;
 
-    /** Counter for creating the progress bar */
+    /** Counter for creating the progress bar. */
     private int m_step;
 
-    /** Definition of the images during upload */
+    /** Definition of the images during upload. */
     private Image m_source;
     private Image m_target;
     private Image m_floater;
 
-    /** image position for the floater during upload */
+    /** Image position for the floater during upload. */
     private int m_floaterPos = 80;
 
-    /** Defintion of output strings*/
+    /** Defintion of output strings.*/
     private String m_actionOutputSelect = "Seleting files for upload....";
     private String m_actionOutputCount = "Counting resources ....";
     private String m_actionOutputCreate = "Creating Zip-File...";
     private String m_actionOutputUpload = "Upload Zip-File";
     private String m_actionOutputError = "Error";
     private String m_messageNoPreview = "no preview available";
-    private String m_errorLine1 = "An error has been occurred on the server:";
+    private String m_errorLine1 = "An error has occurred on the server:";
     private String m_messageOutputUpload = "Please wait, uploading data...";
     private String m_messageOutputAdding = "Adding ";
     private String m_messageOutputErrorSize = "Zip file too big:";
     private String m_messageOutputErrorZip = "Error creating Zip-File, see Java Console.";
 
-    /** Definition variables for graphics output */
+    /** Definition variables for graphics output. */
     private Font m_font;
     private FontMetrics m_metrics;
     private Image m_offscreen;
     private Graphics m_offgraphics;
 
-    /** The file selector */
+    /** The file selector. */
     private JFileChooser m_fileSelector;
 
     /**
@@ -436,7 +436,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     }
 
     /**
-     * Move the floating upload image to right, wrap aroud on right side.<p>
+     * Move the floating upload image to right, wrap around on right side.<p>
      */
     public void moveFloater() {
 
@@ -460,7 +460,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
         try {
             // create a new zipStream
             ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(m_zipfile));
-            // loop thorugh all files
+            // loop through all files
             for (int i = 0; i < files.length; i++) {
 
                 // if its a file, add it to the zipfile
@@ -645,7 +645,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     }
 
     /**
-     * Gets a color for drawing the ourput.<p>
+     * Gets a color for drawing the output.<p>
      * 
      * @param colorName the name of the color
      * @return color

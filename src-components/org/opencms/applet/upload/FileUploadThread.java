@@ -3,8 +3,8 @@ package org.opencms.applet.upload;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadThread.java,v $
- * Date   : $Date: 2004/04/01 04:43:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/18 13:56:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,17 +33,17 @@ package org.opencms.applet.upload;
  */
 
 /**
- * File Upload Applet Threat, creates upload animation.<p>
+ * File Upload Applet Thread, creates the upload animation.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
 public class FileUploadThread extends Thread {
 
-    /** The upload applet */
+    /** The upload applet. */
     FileUploadApplet m_fileupload;
 
     /**
-     * Initializes the threat. <p>
+     * Initializes the thread. <p>
      * 
      * @param fileupload reference to the upload applet
      */
