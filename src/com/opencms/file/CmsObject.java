@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/23 11:12:35 $
- * Version: $Revision: 1.176 $
+ * Date   : $Date: 2001/07/24 12:28:33 $
+ * Version: $Revision: 1.177 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.176 $ $Date: 2001/07/23 11:12:35 $
+ * @version $Revision: 1.177 $ $Date: 2001/07/24 12:28:33 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2301,6 +2301,10 @@ public void publishProject(int id) throws CmsException {
  */
 public void publishResource(String resourcename) throws CmsException {
     int oldProjectId = m_context.currentProject().getId();
+    CmsResource res = readFileHeader(resourcename);
+    if(res.isLocked()){
+        throw new CmsException("[CmsObject] cannot publish locked resource", CmsException.C_NO_ACCESS);
+    }
     if(oldProjectId != C_PROJECT_ONLINE_ID){
         // check access to project
         if(isAdmin() || isManagerOfProject()){
@@ -2308,7 +2312,6 @@ public void publishResource(String resourcename) throws CmsException {
                                               "__forPublish","project for single resource publishing","Users",
                                               "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
             getRequestContext().setCurrentProject(newProjectId);
-	        CmsResource res = readFileHeader(resourcename);
 	        I_CmsResourceType rt = getResourceType(res.getType());
             // copy the resource to the
 	        rt.copyResourceToProject(this, resourcename);
