@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsShellReport.java,v $
- * Date   : $Date: 2003/06/13 11:14:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  *  
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsShellReport implements I_CmsReport {
 
@@ -62,14 +62,14 @@ public class CmsShellReport implements I_CmsReport {
     /**
      * @see com.opencms.report.I_CmsReport#println()
      */
-    public void println(){
+    public void println() {
         System.out.println();
     }
 
     /**
      * @see com.opencms.report.I_CmsReport#print(java.lang.String)
      */
-    public void print(String value){
+    public void print(String value) {
         this.print(value, C_FORMAT_DEFAULT);
     }
     
@@ -135,7 +135,7 @@ public class CmsShellReport implements I_CmsReport {
     /**
      * @see com.opencms.report.I_CmsReport#getReportUpdate()
      */
-    public String getReportUpdate(){
+    public String getReportUpdate() {
         return "";
     }
     
@@ -156,7 +156,7 @@ public class CmsShellReport implements I_CmsReport {
     public void println(CmsPageLinks value) {     
         m_hasBrokenLinks = true;           
         this.println((String)value.getResourceName());
-        for(int index=0; index<value.getLinkTargets().size(); index++){
+        for (int index=0; index<value.getLinkTargets().size(); index++) {
             this.println("     " + m_messages.key("report.broken_link_to") + (String)value.getLinkTargets().elementAt(index));
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/07/11 06:25:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -116,12 +116,12 @@ public class CmsFrameset extends CmsWorkplace {
         } catch (CmsException e) {
             resTypes = new Vector();
         }
-        for(int i = 0; i < resTypes.size(); i++) {
+        for (int i = 0; i < resTypes.size(); i++) {
             CmsFile resourceTyp = (CmsFile)resTypes.get(i);
             try {
                 int resId = getCms().getResourceType(resourceTyp.getName()).getResourceType();
                 result.append(getResourceEntry(new String(getCms().readFile(getCms().readAbsolutePath(resourceTyp)).getContents()), resId));
-            } catch(CmsException e) {
+            } catch (CmsException e) {
             }
         }  
         return result.toString();      
@@ -134,7 +134,7 @@ public class CmsFrameset extends CmsWorkplace {
      */
     public int getExplorerSettings() {
         String explorerSettings = (String)getCms().getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS);
-        if(explorerSettings != null) {
+        if (explorerSettings != null) {
             return new Integer(explorerSettings).intValue();
         } else {
             return I_CmsWpConstants.C_FILELIST_NAME + I_CmsWpConstants.C_FILELIST_TITLE + I_CmsWpConstants.C_FILELIST_TYPE + I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED;
@@ -166,7 +166,7 @@ public class CmsFrameset extends CmsWorkplace {
         myToken = "language_key(";
         index = 0;
         foundAt = data.indexOf(myToken, index);
-        while(foundAt != -1) {
+        while (foundAt != -1) {
             int endIndex = data.indexOf(")", foundAt);
             String langKey = data.substring(foundAt + 13, endIndex);
             langKey = key(langKey);
@@ -183,7 +183,7 @@ public class CmsFrameset extends CmsWorkplace {
         myToken = "rules_key(";
         index = 0;
         foundAt = data.indexOf(myToken, index);
-        while(foundAt != -1) {
+        while (foundAt != -1) {
             int endIndex = data.indexOf(")", foundAt);
             String rulesKey = data.substring(foundAt + 10, endIndex);
             result.append(data.substring(index, foundAt));

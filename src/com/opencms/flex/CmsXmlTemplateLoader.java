@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -198,7 +198,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
             // process the included XMLTemplate
             result = generateOutput(cms, fx, fx.getLauncherClassname(), cms_req);                                    
             // append the result to the output stream
-            if(result != null) {
+            if (result != null) {
                 // Encoding project:
                 // The byte array must internally be encoded in the OpenCms
                 // default encoding. It will be converted to the requested encoding 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/07/06 13:44:58 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -116,7 +116,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_parameters = req.getParameterMap();
         try {
             m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();
-        } catch (Exception e) {}        
+        } catch (Exception e) { }        
         String[] paras = req.getParameterValues("_flex");
         boolean nocachepara = false;
         boolean dorecompile = false;
@@ -124,7 +124,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         if (paras != null) {
             try {
                 isAdmin = cms.getRequestContext().isAdmin();
-            } catch (Exception e) {}
+            } catch (Exception e) { }
             if (isAdmin) {                        
                 List l = Arrays.asList(paras);
                 String context = (String)req.getAttribute(ATTRIBUTE_PROCESSED);
@@ -319,7 +319,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
      */
     public String getParameter(String name) {
-        String values[] = (String[]) m_parameters.get(name);
+        String[] values = (String[]) m_parameters.get(name);
         if (values != null)
             return (values[0]);
         else
@@ -365,7 +365,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      */
     public String[] getParameterValues(String name) {
 
-        String values[] = (String[]) m_parameters.get(name);
+        String[] values = (String[]) m_parameters.get(name);
         if (values != null)
             return (values);
         else
@@ -385,39 +385,39 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @param map the map to add
      * @return the merged map of parameters
      */
-	public Map addParameterMap(Map map) {
-		if (map == null)
-			return m_parameters;
-		if ((m_parameters == null) || (m_parameters.size() == 0)) {
+    public Map addParameterMap(Map map) {
+        if (map == null)
+            return m_parameters;
+        if ((m_parameters == null) || (m_parameters.size() == 0)) {
             m_parameters = Collections.unmodifiableMap(map);
-		} else {
+        } else {
             HashMap parameters = new HashMap();
             parameters.putAll(m_parameters);
-            
+
             Iterator it = map.keySet().iterator();
             while (it.hasNext()) {
-                String key = (String) it.next();
+                String key = (String)it.next();
                 // Check if the parameter name (key) exists
                 if (parameters.containsKey(key)) {
-                                
-                    String[] oldValues = (String[]) parameters.get(key);
-                    String[] newValues = (String[]) map.get(key);     
-                               
+
+                    String[] oldValues = (String[])parameters.get(key);
+                    String[] newValues = (String[])map.get(key);
+
                     String[] mergeValues = new String[oldValues.length + newValues.length];
                     System.arraycopy(newValues, 0, mergeValues, 0, newValues.length);
                     System.arraycopy(oldValues, 0, mergeValues, newValues.length, oldValues.length);
-                    
+
                     parameters.put(key, mergeValues);
                 } else {
                     // No: Add new value array
                     parameters.put(key, map.get(key));
-                }                                     
-			}
+                }
+            }
             m_parameters = Collections.unmodifiableMap(parameters);
-		}
+        }
 
-		return m_parameters;
-	}
+        return m_parameters;
+    }
     
     /**
      * Sets the specified Map as paramter map of the request.<p>

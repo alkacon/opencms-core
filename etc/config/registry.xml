@@ -4,43 +4,43 @@
         <restype>
             <name>folder</name>
             <launcherType>0</launcherType>
-            <launcherClass></launcherClass>
+            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeFolder</resourceClass>
         </restype>
         <restype>
             <name>page</name>
             <launcherType>3</launcherType>
-            <launcherClass></launcherClass>
+            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypePage</resourceClass>
         </restype>
         <restype>
             <name>link</name>
             <launcherType>4</launcherType>
-            <launcherClass></launcherClass>
+            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeLink</resourceClass>
         </restype>
         <restype>
             <name>plain</name>
             <launcherType>1</launcherType>
-            <launcherClass></launcherClass>
+            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypePlain</resourceClass>
         </restype>
         <restype>
             <name>XMLTemplate</name>
             <launcherType>3</launcherType>
-            <launcherClass></launcherClass>
+            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeXMLTemplate</resourceClass>
         </restype>
         <restype>
             <name>binary</name>
             <launcherType>1</launcherType>
-            <launcherClass></launcherClass>
+            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeBinary</resourceClass>
         </restype>
         <restype>
             <name>image</name>
             <launcherType>1</launcherType>
-            <launcherClass></launcherClass>
+            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeImage</resourceClass>
         </restype>
         <restype>

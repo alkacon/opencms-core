@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/11 10:49:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -229,7 +229,7 @@ public class CmsChacc extends CmsDialog {
             if (resource.isFolder()) {
                 setShowInherit(true);
             }
-        } catch (CmsException e) {}
+        } catch (CmsException e) { }
 
         // check the current users permission to change access control entries
         try {
@@ -237,7 +237,7 @@ public class CmsChacc extends CmsDialog {
                 && !((m_curPermissions.getDeniedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0))) {
                     setEditable(true);
             }
-        } catch (CmsException e) {}
+        } catch (CmsException e) { }
     }
     
     /**
@@ -270,7 +270,7 @@ public class CmsChacc extends CmsDialog {
         int arrayPosition = -1;
         try {
             arrayPosition = Integer.parseInt(type);
-        } catch (Exception e) {}
+        } catch (Exception e) { }
                
         if (checkNewEntry(name, arrayPosition)) {
             try {
@@ -340,12 +340,12 @@ public class CmsChacc extends CmsDialog {
                 param = (String)request.getParameter(value+PERMISSION_ALLOW);
                 paramInt = Integer.parseInt(param);
                 allowValue |= paramInt;
-            } catch (Exception e) {}
+            } catch (Exception e) { }
             try {           
                 param = (String)request.getParameter(value+PERMISSION_DENY);
                 paramInt = Integer.parseInt(param);
                 denyValue |= paramInt;
-            } catch (Exception e) {}
+            } catch (Exception e) { }
             
         }
        
@@ -405,10 +405,11 @@ public class CmsChacc extends CmsDialog {
                 getCms().readGroup(id);
                 flags = I_CmsConstants.C_ACCESSFLAGS_GROUP;
             } catch (CmsException e) {
-            try {
-                getCms().readUser(id);
-                flags = I_CmsConstants.C_ACCESSFLAGS_USER;
-            } catch (CmsException exc) {}}
+                try {
+                    getCms().readUser(id);
+                    flags = I_CmsConstants.C_ACCESSFLAGS_USER;
+                } catch (CmsException exc) { }
+            }
             CmsResource res = getCms().readFileHeader(fileName);
             CmsUUID fileId = res.getFileId();
             CmsAccessControlEntry entry = new CmsAccessControlEntry(fileId, id, curSet, flags);
@@ -435,7 +436,7 @@ public class CmsChacc extends CmsDialog {
         String name = "";
         try {
             name = getCms().lookupPrincipal(entry.getPrincipal()).getName();
-        } catch (CmsException e) {}
+        } catch (CmsException e) { }
         String type = getEntryType(entry.getFlags());
         
         // set the parameters for the hidden fields
@@ -610,7 +611,7 @@ public class CmsChacc extends CmsDialog {
                     // build the list with enabled extended view only
                     retValue.append(buildPermissionEntryForm(principalId, permissions, false, false, true));
                 }
-            } catch (CmsException e) {}
+            } catch (CmsException e) { }
         }
         return retValue;
     }
@@ -693,7 +694,7 @@ public class CmsChacc extends CmsDialog {
         Vector allEntries = new Vector();
         try {
             allEntries = getCms().getAccessControlEntries(getParamFile(), true);
-        } catch (CmsException e) {}
+        } catch (CmsException e) { }
 
         // create new ArrayLists in which inherited and non inherited entries are stored
         ArrayList ownEntries = new ArrayList(0);

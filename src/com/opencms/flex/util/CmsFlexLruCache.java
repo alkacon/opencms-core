@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2003/06/13 11:10:40 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.core.A_OpenCms;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -96,8 +96,10 @@ public class CmsFlexLruCache extends java.lang.Object {
         this.m_avgCacheCosts = theAvgCacheCosts;
         this.m_maxObjectCosts = theMaxObjectCosts;
         
-        this.m_objectCosts = this.m_objectCount = 0;
-        this.m_listHead = this.m_listTail = null;
+        this.m_objectCosts = 0; 
+        this.m_objectCount = 0;
+        this.m_listHead = null; 
+        this.m_listTail = null;
     }
     
     /**
@@ -164,7 +166,7 @@ public class CmsFlexLruCache extends java.lang.Object {
      * @return true if the object was added to the cache, false if the object was denied because its cache costs were higher than the allowed max. cache costs per object
      */
     public synchronized boolean add(I_CmsFlexLruCacheObject theCacheObject) {
-        if (theCacheObject==null) {
+        if (theCacheObject == null) {
             // null can't be added or touched in the cache 
             return false;
         }
@@ -198,7 +200,7 @@ public class CmsFlexLruCache extends java.lang.Object {
      * @return true if the object is inside the cache, false otherwise
      */
     private boolean isCached(I_CmsFlexLruCacheObject theCacheObject) {
-        if (theCacheObject==null || this.m_objectCount==0) {
+        if (theCacheObject == null || this.m_objectCount == 0) {
             // the cache is empty or the object is null (which is never cached)
             return false;
         }
@@ -277,7 +279,8 @@ public class CmsFlexLruCache extends java.lang.Object {
             this.m_listHead = theCacheObject;
         } else {
             // it is the first object to be added to the list
-            this.m_listTail = this.m_listHead = theCacheObject;
+            this.m_listTail = theCacheObject;
+            this.m_listHead = theCacheObject;
             theCacheObject.setPreviousLruObject(null);
         }
         theCacheObject.setNextLruObject(null);
@@ -350,7 +353,8 @@ public class CmsFlexLruCache extends java.lang.Object {
                 this.m_listTail = newTail;
             } else {
                 // we removed the last object from the list
-                this.m_listTail = this.m_listHead = null;
+                this.m_listTail = null; 
+                this.m_listHead = null;
             }
             
             // update cache stats. and notify the cached object
@@ -443,8 +447,10 @@ public class CmsFlexLruCache extends java.lang.Object {
         }
         
         // reset the data structure
-        this.m_objectCosts = this.m_objectCount = 0;
-        this.m_listHead = this.m_listTail = null;
+        this.m_objectCosts = 0;
+        this.m_objectCount = 0;
+        this.m_listHead = null; 
+        this.m_listTail = null;
         
         if (m_forceFinalization) {
             // force a finalization/system garbage collection optionally
@@ -453,40 +459,40 @@ public class CmsFlexLruCache extends java.lang.Object {
         }        
     }
     
-	/**
-	 * Returns the average costs of all cached objects.<p>
+    /**
+     * Returns the average costs of all cached objects.<p>
      * 
-	 * @return the average costs of all cached objects
-	 */
-	public int getAvgCacheCosts() {
-		return this.m_avgCacheCosts;
-	}
+     * @return the average costs of all cached objects
+     */
+    public int getAvgCacheCosts() {
+        return this.m_avgCacheCosts;
+    }
 
-	/**
-	 * Returns the max costs of all cached objects.<p>
+    /**
+     * Returns the max costs of all cached objects.<p>
      * 
-	 * @return the max costs of all cached objects
-	 */
-	public int getMaxCacheCosts() {
-		return this.m_maxCacheCosts;
-	}
+     * @return the max costs of all cached objects
+     */
+    public int getMaxCacheCosts() {
+        return this.m_maxCacheCosts;
+    }
 
-	/**
-	 * Returns the max allowed costs per cached object.<p>
+    /**
+     * Returns the max allowed costs per cached object.<p>
      * 
-	 * @return the max allowed costs per cached object
-	 */
-	public int getMaxObjectCosts() {
-		return this.m_maxObjectCosts;
-	}
+     * @return the max allowed costs per cached object
+     */
+    public int getMaxObjectCosts() {
+        return this.m_maxObjectCosts;
+    }
 
-	/**
-	 * Returns the current costs of all cached objects.<p>
+    /**
+     * Returns the current costs of all cached objects.<p>
      * 
-	 * @return the current costs of all cached objects
-	 */
-	public int getObjectCosts() {
-		return this.m_objectCosts;
-	}
+     * @return the current costs of all cached objects
+     */
+    public int getObjectCosts() {
+        return this.m_objectCosts;
+    }
 
 }

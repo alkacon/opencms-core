@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/07/11 13:03:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -226,7 +226,7 @@ public class CmsProperty extends CmsDialog {
         Vector propertyDef = new Vector();
         try {
             propertyDef = getPropertyDefinitions();
-        } catch (CmsException e) {}
+        } catch (CmsException e) { }
         
         for (int i=0; i<propertyDef.size(); i++) {
             CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
@@ -251,13 +251,13 @@ public class CmsProperty extends CmsDialog {
         Vector propertyDef = new Vector();
         try {
             propertyDef = getPropertyDefinitions();
-        } catch (CmsException e) {}
+        } catch (CmsException e) { }
         
         // get all used properties for the resource
         Map activeProperties = null;
         try {
             activeProperties = getCms().readProperties(getParamFile());
-        } catch (CmsException e) {}
+        } catch (CmsException e) { }
         boolean present = false;
         if (propertyDef.size() > 0) {
             present = true; 
@@ -375,7 +375,7 @@ public class CmsProperty extends CmsDialog {
             setParamDialogtype("newprop");
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
          
-        } catch (IOException exc){
+        } catch (IOException exc) {
             getJsp().include(C_FILE_EXPLORER_FILELIST);
         }
     }
@@ -419,7 +419,7 @@ public class CmsProperty extends CmsDialog {
             setParamDialogtype("newprop");
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
      
-            } catch (IOException exc){
+            } catch (IOException exc) {
                 getJsp().include(C_FILE_EXPLORER_FILELIST);
             }
     }

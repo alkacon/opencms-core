@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/11 10:38:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/12 11:29:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import com.opencms.file.CmsResource;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/07/11 10:38:38 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/12 11:29:23 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -143,15 +143,15 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
         m_resourcePath = resourcePath;
         // do the synchronization only if the synchonization folders in the VFS
-        // and the FS are valid 	
+        // and the FS are valid
         if ((m_resourcePath != null) && (m_synchronizePath != null)) {
             // get the sync from the previous run list
             m_syncList = readSyncList();
-            // create the sync list for this run	 
+            // create the sync list for this run
             m_newSyncList = new HashMap();
             // create the error sync list
             m_errorList = new HashMap();
-            // synchronice the VFS and the FS			
+            // synchronice the VFS and the FS
             syncVfsFs(m_resourcePath);
             // remove files from the FS
             removeFromFs(m_synchronizePath);
@@ -187,12 +187,12 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
      */
     private void syncVfsFs(String folder) throws CmsException {
         int action = 0;
-        //get all resources in the given folder	
+        //get all resources in the given folder
         Vector resources = m_cms.getResourcesInFolder(folder);
         // now look through all resources in the folder
         for (int i = 0; i < resources.size(); i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
-            // test if the resource is marked as deleted. if so, 		
+            // test if the resource is marked as deleted. if so,
             // do nothing, the corrsponding file in the FS will be removed later
             if (res.getState() != C_STATE_DELETED) {
                 // do a recursion if the current resource is a folder
@@ -215,7 +215,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                     // if the current resource is a file, check if it has to 
                     // be synchronized
                     action = testSyncVFS(res);
-                    // do the correct action according to the test result				
+                    // do the correct action according to the test result
                     switch (action) {
                         case C_EXPORT_VFS :
                             exportToFS(res);
@@ -256,7 +256,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         res = fsFile.listFiles();
         // now loop through all resources
         for (int i = 0; i < res.length; i++) {
-            // get the corrsponding name in the VFS	
+            // get the corrsponding name in the VFS
             String vfsFile = getFilenameInVfs(res[i]);
             // recurse if it is an directory, we must go depth first to delete 
             // files
@@ -328,14 +328,14 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                 // translate the folder seperator if nescessary
                 resname = resname.replace(File.separatorChar, '/');
                 // now check if this resource was already processed, by looking 
-                // up the new sync list		
+                // up the new sync list
                 if (res[i].isFile()) {
                     if (!m_newSyncList.containsKey(translate(resname))) {
-                        // this file does not exist in the VFS, so import it	
+                        // this file does not exist in the VFS, so import it
                         importToVfs(res[i], resname, folder);
                     }
                 } else {
-                    // do a recursion if the current resource is a folder		
+                    // do a recursion if the current resource is a folder
                     copyFromFs(resname + "/");
                 }
             }
@@ -356,7 +356,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         //data from sync list
         String resourcename = m_cms.readAbsolutePath(res);
         if (m_syncList.containsKey(resourcename)) {
-            // this resource was already used in a previous syncprocess	
+            // this resource was already used in a previous syncprocess
             CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
             // get the corresponding resource from the FS
             fsFile = getFileInFs(sync.getResName());
@@ -390,7 +390,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             }
         } else {
             // the resource name was not found in the sync list
-            // this is a new resource	 	
+            // this is a new resource
 
             action = C_EXPORT_VFS;
         }
@@ -476,7 +476,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         // filename.
         CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(m_cms.readAbsolutePath(res)));
         // if no entry in the sync list was found, its a new resource and we 
-        // can use the name of the VFS resource	
+        // can use the name of the VFS resource
         if (sync != null) {
             resourcename = sync.getResName();
         } else {
@@ -501,9 +501,9 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         try {
             // if the resource is marked for deletion, do not export it!
             if (res.getState() != C_STATE_DELETED) {
-                // if its a file, create export the file to the FS			
+                // if its a file, create export the file to the FS
                 if (res.isFile()) {
-                    // create the resource if nescessary						
+                    // create the resource if nescessary
                     if (!fsFile.exists()) {
                         createNewLocalFile(fsFile);
                     }
@@ -527,7 +527,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                 // add resource to synchronisation list
                 CmsSynchronizeList syncList = new CmsSynchronizeList(resourcename, translate(resourcename), res.getDateLastModified(), fsFile.lastModified());
                 m_newSyncList.put(translate(resourcename), syncList);
-                // and remove it fomr the old one	
+                // and remove it fomr the old one
                 m_syncList.remove(translate(resourcename));
             }
             // free mem
@@ -572,14 +572,14 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                     break;
                 }
             }
-            // everything is done now, so unlock the resource			
+            // everything is done now, so unlock the resource
             m_cms.unlockResource(resourcename, false);
             //read the resource again, nescessary to get the actual timestamps
             res = m_cms.readFileHeader(resourcename);
             //add resource to synchronisation list
             CmsSynchronizeList syncList = new CmsSynchronizeList(sync.getResName(), translate(resourcename), res.getDateLastModified(), fsFile.lastModified());
             m_newSyncList.put(translate(resourcename), syncList);
-            // and remove it from the old one	
+            // and remove it from the old one
             m_syncList.remove(translate(resourcename));
             vfsFile = null;
         } catch (CmsException ex) {
@@ -591,7 +591,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                 CmsSynchronizeList syncList = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
                 m_newSyncList.put(translate(resourcename), syncList);
                 m_errorList.put(translate(resourcename), syncList);
-                // and remove it from the old one	
+                // and remove it from the old one
                 m_syncList.remove(translate(resourcename));
             } else {
                 throw ex;
@@ -615,7 +615,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             // lock the file in the VFS, so that it can be updated
             m_cms.lockResource(resourcename);
             m_cms.deleteResource(resourcename);
-            // Remove it from the sync list	
+            // Remove it from the sync list
             m_syncList.remove(translate(resourcename));
 
         } catch (CmsException ex) {
@@ -626,7 +626,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                 CmsSynchronizeList syncList = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
                 m_newSyncList.put(translate(resourcename), syncList);
                 m_errorList.put(translate(resourcename), syncList);
-                // and remove it from the old one	
+                // and remove it from the old one
                 m_syncList.remove(translate(resourcename));
             } else {
                 throw ex;
@@ -648,12 +648,12 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         HashMap syncList = new HashMap();
         String line = "";
         StringTokenizer tok;
-        
+
         // check the registry if the sync process was run on this computer before.
         // if not, do NOT read the sync list form the server fielsysten, otherweise
         // all entries in the synchronization folder would be deleted.
-        String syncrun=m_cms.getRegistry().getSystemValue("syncrun");
-        if (syncrun!=null) {
+        String syncrun = m_cms.getRegistry().getSystemValue("syncrun");
+        if (syncrun != null) {
             //the sync list file in the server fs
             File syncListFile;
             syncListFile = new File(m_synchronizePath, C_SYNCLIST_FILENAME);
@@ -685,7 +685,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                     }
                 } catch (IOException e) {
                     throw new CmsException(e.getMessage());
-                } finally {    
+                } finally {
                     // close all streams that were used
                     try {
                         if (lIn != null) {
@@ -694,10 +694,10 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                         if (fIn != null) {
                             fIn.close();
                         }
-                    } catch (IOException e) {}
+                    } catch (IOException e) { }
                 }
             }
-        }  
+        }
         return syncList;
     }
 
@@ -721,7 +721,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             pOut = new PrintWriter(fOut);
             pOut.println(CmsSynchronizeList.getFormatDescription());
 
-            // get all keys from the hashmap and make an iterator on it	
+            // get all keys from the hashmap and make an iterator on it
             Iterator values = m_newSyncList.values().iterator();
             // loop throush all values and write them to the sync list file in 
             // a human readable format
@@ -735,7 +735,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         } finally {
             // update the registry and mark that the sync process has run at least
             // one time
-            m_cms.getRegistry().setSystemValue("syncrun","true");    
+            m_cms.getRegistry().setSystemValue("syncrun", "true");
             // close all streams that were used
             try {
                 pOut.flush();
@@ -746,7 +746,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                 if (fOut != null) {
                     fOut.close();
                 }
-            } catch (IOException e) {}
+            } catch (IOException e) { }
         }
     }
 
@@ -864,7 +864,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             if (fOut != null) {
                 try {
                     fOut.close();
-                } catch (IOException e) {}
+                } catch (IOException e) { }
             }
         }
     }
@@ -896,7 +896,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             try {
                 if (fileStream != null)
                     fileStream.close();
-            } catch (IOException e) {}
+            } catch (IOException e) { }
         }
     }
 
@@ -946,7 +946,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             try {
                 if (fOut != null)
                     fOut.close();
-            } catch (IOException e) {}
+            } catch (IOException e) { }
         }
     }
 

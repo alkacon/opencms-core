@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsSyncModification.java,v $
- * Date   : $Date: 2003/07/09 16:01:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/15 13:43:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.io.File;
  * Where the "x" in "classx" is a number (1,2,3,...)
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.4 $
  */
 public interface I_CmsSyncModification {
 
@@ -72,7 +72,7 @@ public interface I_CmsSyncModification {
      * @param cms the current CmsObject
      * @param vfsRes the resource in the VFS
      * @param fsFile the resource in the FS
-     * @throws CmsSynchronizeException if something goes wrong		  
+     * @throws CmsSynchronizeException if something goes wrong
      */
     void modifyFs(CmsObject cms, CmsResource vfsRes, File fsFile) throws CmsSynchronizeException;
 
@@ -88,7 +88,7 @@ public interface I_CmsSyncModification {
      * @param cms the current CmsObject
      * @param resName the resource name to be translated
      * @return the translated resource name or null
-     * @throws CmsSynchronizeException if something goes wrong			  
+     * @throws CmsSynchronizeException if something goes wrong
      */
     String translate(CmsObject cms, String resName) throws CmsSynchronizeException;
 }

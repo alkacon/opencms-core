@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/06/30 18:13:04 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -239,13 +239,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     String prop = controller.getCmsObject().readProperty(controller.getCmsObject().getRequestContext().getUri(), m_property, true);
                     if (DEBUG) System.err.println("IncludeTag: property=" + m_property + " is " + prop);                    
                     if (prop != null) target = prop + getSuffix();
-                } catch (Exception e) {} // target will be null
+                } catch (Exception e) { } // target will be null
             } else if (m_attribute != null) {            
                 // Option 3: target is set in "attribute" parameter
                 try { 
                     String attr = (String)req.getAttribute(m_attribute);
                     if (attr != null) target = attr + getSuffix();
-                } catch (Exception e) {} // target will be null
+                } catch (Exception e) { } // target will be null
             } else {
                 // Option 4: target might be set in body
                 String body = null;
@@ -389,7 +389,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         }           
     }
     
-	/**
+    /**
      * This methods adds parameters to the current request.
      * Parameters added here will be treated like parameters from the 
      * HttpRequest on included pages.<p>
@@ -403,19 +403,21 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * 
      * @param name the name to add
      * @param value the value to add
-	 * @see com.opencms.flex.jsp.I_CmsJspTagParamParent#addParameter(String, String)
-	 */
-	public void addParameter(String name, String value) {
+     * @see com.opencms.flex.jsp.I_CmsJspTagParamParent#addParameter(String, String)
+     */
+    public void addParameter(String name, String value) {
         // No null values allowed in parameters
-        if ((name == null) || (value == null)) return;
+        if ((name == null) || (value == null))
+            return;
 
-        if (DEBUG) System.err.println("CmsJspIncludeTag.addParameter: param=" + name + " value=" + value);
-        
+        if (DEBUG)
+            System.err.println("CmsJspIncludeTag.addParameter: param=" + name + " value=" + value);
+
         // Check if internal map exists, create new one if not
         if (m_parameterMap == null) {
             m_parameterMap = new HashMap();
         }
-        
+
         addParameter(m_parameterMap, name, value, false);
     }
 

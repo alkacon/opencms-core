@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/07/12 11:29:23 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,221 +38,224 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.53 $ $Date: 2003/07/10 14:38:59 $
+ * @version $Revision: 1.54 $ $Date: 2003/07/12 11:29:23 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
-    
-     /**
-      * The ID of the file header database entry.
-      */
-     private CmsUUID m_resourceId;
 
-     /**
-      * The ID of the parent's file tree/hierarchy database entry.
-      */
-     private CmsUUID m_parentId;
+    /**
+     * The ID of the file header database entry.
+     */
+    private CmsUUID m_resourceId;
 
-     /**
-      * The ID of the file content database entry.
-      */
-     private CmsUUID m_fileId;
-     
-     /**
-      * The ID of the file tree/hierarchy database entry.
-      */
-     private CmsUUID m_structureId;
+    /**
+     * The ID of the parent's file tree/hierarchy database entry.
+     */
+    private CmsUUID m_parentId;
 
-     /**
-      * The name of this resource.
-      */
-     private String m_resourceName;
-     
-     /**
-      * The full name of a resource include it's path.
-      */
-     private String m_fullResourceName;
+    /**
+     * The ID of the file content database entry.
+     */
+    private CmsUUID m_fileId;
 
-     /**
-      * The type of this resource.
-      */
-     private int m_resourceType;
+    /**
+     * The ID of the file tree/hierarchy database entry.
+     */
+    private CmsUUID m_structureId;
 
-     /**
-      * The flags of this resource ( not used yet; the Accessflags are stored in m_accessFlags).
-      */
-     private int m_resourceFlags;
+    /**
+     * The name of this resource.
+     */
+    private String m_resourceName;
 
-     /**
-      * The project id this recouce belongs to.
-      */
-     private int m_projectId;
+    /**
+     * The full name of a resource include it's path.
+     */
+    private String m_fullResourceName;
 
-      /**
-      * The owner  of this resource.
-      */
-     private CmsUUID m_userId;
+    /**
+     * The type of this resource.
+     */
+    private int m_resourceType;
 
-     /**
-      * The group  of this resource.
-      */
-     private CmsUUID m_groupId;
+    /**
+     * The flags of this resource ( not used yet; the Accessflags are stored in m_accessFlags).
+     */
+    private int m_resourceFlags;
 
-     /**
-      * The access flags of this resource.
-      */
-     private int m_accessFlags;
+    /**
+     * The project id this recouce belongs to.
+     */
+    private int m_projectId;
 
-     /**
-      * The creation date of this resource.
-      */
-     private long m_dateCreated;
+    /**
+    * The owner  of this resource.
+    */
+    private CmsUUID m_userId;
 
-     /**
-      * The date of the last modification of this resource.
-      */
-     private long m_dateLastModified;
-     
-      /** Boolean flag whether the timestamp of this resource was modified by a touch command. */
-      private boolean m_isTouched;
+    /**
+     * The group  of this resource.
+     */
+    private CmsUUID m_groupId;
 
-      /**
-      * The size of the file content.
-      */
-      protected int m_size;
+    /**
+     * The access flags of this resource.
+     */
+    private int m_accessFlags;
 
-      /**
-      * The state of this resource. <br>
-      * A resource can have the following states:
-      * <ul>
-      * <li> unchanged </li>
-      * <li> changed </li>
-      * <li> new </li>
-      * <li> deleted </li>
-      * </ul>
-      */
-     private int m_state;
+    /**
+     * The creation date of this resource.
+     */
+    private long m_dateCreated;
 
-     /**
-      * The user id of the usrer who locked this resource.
-      */
-     private CmsUUID m_lockedByUserId;
+    /**
+     * The date of the last modification of this resource.
+     */
+    private long m_dateLastModified;
 
-     /**
-      * The type of the launcher which is used to process this resource.
-      */
-     private int m_launcherType;
+    /** Boolean flag whether the timestamp of this resource was modified by a touch command. */
+    private boolean m_isTouched;
 
-     /**
-      * The Java class thas is invoked by the launcher to process this resource.
-      */
-     private String m_launcherClassname;
+    /**
+    * The size of the file content.
+    */
+    protected int m_size;
 
-     /**
-      * The UserId of the user who modified this resource last.
-      */
-     private CmsUUID m_resourceLastModifiedByUserId;
+    /**
+    * The state of this resource. <br>
+    * A resource can have the following states:
+    * <ul>
+    * <li> unchanged </li>
+    * <li> changed </li>
+    * <li> new </li>
+    * <li> deleted </li>
+    * </ul>
+    */
+    private int m_state;
 
-     /**
-      * The projectId of the project where the resource was locked or modified in
-      */
+    /**
+     * The user id of the usrer who locked this resource.
+     */
+    private CmsUUID m_lockedByUserId;
+
+    /**
+     * The type of the launcher which is used to process this resource.
+     */
+    private int m_launcherType;
+
+    /**
+     * The Java class thas is invoked by the launcher to process this resource.
+     */
+    private String m_launcherClassname;
+
+    /**
+     * The UserId of the user who modified this resource last.
+     */
+    private CmsUUID m_resourceLastModifiedByUserId;
+
+    /**
+     * The projectId of the project where the resource was locked or modified in
+     */
     private int m_lockedInProject;
-     /**
-      * Constructor, creates a new CmsRecource object.
-      *
-      * @param resourceId The database Id.
-      * @param parentId The database Id of the parent folder.
-      * @param fileId The id of the content.
-      * @param resourceName The name (including complete path) of the resouce.
-      * @param resourceType The type of this resource.
-      * @param rescourceFlags The flags of thei resource.
-      * @param userId The id of the user of this resource.
-      * @param groupId The id of the group of this resource.
-      * @param projectId The project id this resource belongs to.
-      * @param accessFlags The access flags of this resource.
-      * @param state The state of this resource.
-      * @param lockedBy The user id of the user who has locked this resource.
-      * @param launcherType The launcher that is require to process this recource.
-      * @param launcherClassname The name of the Java class invoked by the launcher.
-      * @param dateCreated The creation date of this resource.
-      * @param dateLastModified The date of the last modification of the resource.
-      * @param resourceLastModifiedBy The user who changed the file.
-      */
-     public CmsResource(CmsUUID structureId, CmsUUID resourceId,
-                        CmsUUID parentId,CmsUUID fileId,
-                        String resourceName, int resourceType,
-                        int resourceFlags, CmsUUID userId, CmsUUID groupId,
-                        int projectId, int accessFlags, int state,
-                        CmsUUID lockedByUserId, int launcherType,
-                        String launcherClassname, long dateCreated,
-                        long dateLastModified,CmsUUID resourceLastModifiedByUserId, int size, int lockedInProject){
+    
+    /**
+     * Constructor, creates a new CmsRecource object.<p>
+     *
+     * @param structureId the structure id of the resource
+     * @param resourceId the resource id of the resource
+     * @param parentId the id of the parent resource in the structure table
+     * @param fileId the file content id of the resource 
+     * @param resourceName the name (including complete path) of the resouce
+     * @param resourceType the type of the resource
+     * @param resourceFlags the flags of the resource
+     * @param userId the id of the user of this resource
+     * @param groupId the id of the group of this resource
+     * @param projectId the project id this resource belongs to
+     * @param accessFlags the access flags of this resource
+     * @param state the state of this resource
+     * @param lockedByUserId the user id of the user who has locked this resource
+     * @param launcherType the launcher that is require to process this recource
+     * @param launcherClassname the name of the Java class invoked by the launcher
+     * @param dateCreated the creation date of this resource
+     * @param dateLastModified the date of the last modification of the resource
+     * @param resourceLastModifiedByUserId the user who changed the file
+     * @param size the file content size of the resource
+     * @param lockedInProject id of the project the resource was last modified in
+     */
+    public CmsResource(
+        CmsUUID structureId, 
+        CmsUUID resourceId, 
+        CmsUUID parentId, 
+        CmsUUID fileId, 
+        String resourceName, 
+        int resourceType, 
+        int resourceFlags, 
+        CmsUUID userId, 
+        CmsUUID groupId, 
+        int projectId,
+        int accessFlags, 
+        int state, 
+        CmsUUID lockedByUserId, 
+        int launcherType, 
+        String launcherClassname, 
+        long dateCreated, 
+        long dateLastModified, 
+        CmsUUID resourceLastModifiedByUserId, 
+        int size, 
+        int lockedInProject
+    ) {
         m_structureId = structureId;
         m_resourceId = resourceId;
         m_parentId = parentId;
         m_fileId = fileId;
-        m_resourceName=resourceName;
-        m_resourceType=resourceType;
-        m_resourceFlags=resourceFlags;
-        m_userId=userId;
-        m_groupId=groupId;
-        m_projectId=projectId;
-        m_accessFlags=accessFlags;
-        m_launcherType=launcherType;
-        m_launcherClassname=launcherClassname;
-        m_state=state;
-        m_lockedByUserId=lockedByUserId;
-        m_dateCreated=dateCreated;
-        m_dateLastModified=dateLastModified;
+        m_resourceName = resourceName;
+        m_resourceType = resourceType;
+        m_resourceFlags = resourceFlags;
+        m_userId = userId;
+        m_groupId = groupId;
+        m_projectId = projectId;
+        m_accessFlags = accessFlags;
+        m_launcherType = launcherType;
+        m_launcherClassname = launcherClassname;
+        m_state = state;
+        m_lockedByUserId = lockedByUserId;
+        m_dateCreated = dateCreated;
+        m_dateLastModified = dateLastModified;
         m_resourceLastModifiedByUserId = resourceLastModifiedByUserId;
-        m_size=size;
-        m_lockedInProject=lockedInProject;
+        m_size = size;
+        m_lockedInProject = lockedInProject;
         m_isTouched = false;
-        
         m_fullResourceName = null;
-     }
+    }
+    
     /**
-     * Clones the CmsResource by creating a new CmsObject.
-     * @return Cloned CmsObject.
+     * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new CmsResource(m_structureId, m_resourceId,m_parentId,
-                               m_fileId, m_resourceName, m_resourceType,
-                               m_resourceFlags, m_userId, m_groupId,
-                               m_projectId, m_accessFlags, m_state,
-                               m_lockedByUserId, m_launcherType,
-                               m_launcherClassname, m_dateCreated,
-                               m_dateLastModified,m_resourceLastModifiedByUserId, m_size, m_lockedInProject);
+        return new CmsResource(m_structureId, m_resourceId, m_parentId, m_fileId, m_resourceName, m_resourceType, m_resourceFlags, m_userId, m_groupId, m_projectId, m_accessFlags, m_state, m_lockedByUserId, m_launcherType, m_launcherClassname, m_dateCreated, m_dateLastModified, m_resourceLastModifiedByUserId, m_size, m_lockedInProject);
     }
+    
     /**
-     * Compares the overgiven object with this object.
-     *
-     * @return true, if the object is identically else it returns false.
+     * @see java.lang.Object#equals(java.lang.Object)
      */
-      public boolean equals(Object obj) {
-        boolean equal=false;
+    public boolean equals(Object obj) {
+        boolean equal = false;
         // check if the object is a CmsResource object
         if (obj instanceof CmsResource) {
             // same ID than the current user?
-            if (((CmsResource)obj).getResourceName().equals(m_resourceName)){
+            if (((CmsResource)obj).getResourceName().equals(m_resourceName)) {
                 equal = true;
             }
         }
         return equal;
-      }
-      
+    }
+    
     /**
-     * Returns the absolute path of this resource,
-     * e.g. <code>/system/workplace/action/index.html</code>.<p>
-     * 
-     * Use this method with caution! The full name of a resource including the path
-     * is only available if the resource has been fetched from the database by it's 
-     * name.
-     *
-     * @return I_CmsConstants.C_FULL_RESOURCENAME_UNAVAILABLE or the resource name including the path
+     * @see java.lang.Object#hashCode()
      */
-//    public String getAbsolutePath() {
-//        String fullResourceName = getFullResourceName(); 
-//        return CmsResource.getAbsolutePath(fullResourceName);
-//    }
+    public int hashCode() {
+        if (m_structureId != null) return m_structureId.hashCode();
+        return CmsUUID.getNullUUID().hashCode();
+    }
 
     /**
      * Returns the absolute path of the provided resource,
@@ -261,11 +264,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * Use this method with caution! The full name of a resource including the path
      * is only available if the resource has been fetched from the database by it's 
      * name. getFullResourceName() will return I_CmsConstants.C_FULL_RESOURCENAME_UNAVAILABLE
-     * or the full resource name including the path.
+     * or the full resource name including the path.<p>
      *
+     * @param resourceName the resource name to check
      * @return the absolute path of the provided resource
      */
     public static String getAbsolutePath(String resourceName) {
+        // TODO: Check this with new site management
         if (resourceName == null) return null;
         return resourceName.substring(resourceName.indexOf("/", resourceName.indexOf("/", 1) + 1));
     }
@@ -277,147 +282,166 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the site root name for this resource
      */
     public String getRootName() {
-        String fullResourceName = getFullResourceName(); 
+        // TODO: Check this with new site management
+        String fullResourceName = getFullResourceName();
         int rootIndex = fullResourceName.indexOf("/", fullResourceName.indexOf("/", 1) + 1);
         return fullResourceName.substring(0, rootIndex);
     }
-    
+
     /**
-     * Returns the resource name of this resource,
-     * e.g. <code>/default/vfs/system/workplace/action/index.html</code><p>
+     * Returns the folder path of this resource,
+     * if the resource is a folder, the complete path of the folder is returned 
+     * (not the parent folder path).<p>
+     * 
+     * Example: Returns <code>/system/def/</code> for the
+     * resource <code>/system/def/file.html</code> and 
+     * <code>/system/def/</code> for the (folder) resource <code>/system/def/</code>.
+     * 
+     * Does not append the repository information to the result, 
+     * i.e. <code>/system/def/</code> will be returned, not <code>/default/vfs/system/def/</code>.
+     *
+     * @return the folder of this resource
+     */
+    public String getPath() {
+        // TODO: Check this with new site management
+        return getPath(getAbsolutePath(getFullResourceName()));
+    }
+
+    /**
+     * Returns the resource name of this resource without path information,
+     * e.g. <code>index.html</code><p>
      *
      * @return the resource name for this resource.
      */
     public String getResourceName() {
+        // TODO: unify getResourceName() and getName()
         return m_resourceName;
     }
-     
-    /**
-     * Returns the accessflags of this resource.
-     *
-     * @return the accessflags of this resource.
-     */
-      public int getAccessFlags() {
-         return m_accessFlags;
-      }
-    /**
-     * Returns the date of the creation for this resource.
-     *
-     * @return the date of the creation for this resource.
-     */
-     public long getDateCreated() {
-         return m_dateCreated;
-     }
-    /**
-     * Returns the date of the last modification for this resource.
-     *
-     * @return the date of the last modification for this resource.
-     */
-     public long getDateLastModified() {
-         return m_dateLastModified;
-     }
-     
-     /**
-      * Sets the date of the last modification for this resource.
-      */
-     public void setDateLastModified( long time ) {
-        m_isTouched = true;
-        m_dateLastModified = time;
-     }
-          
-    /**
-     * Gets the ID of the file content database entry.
-     *
-     * @return the ID of the file content database entry
-     */
-     public CmsUUID getFileId(){
-        return m_fileId;
-     }
-     
-    /**
-     * Returns the flags of this resource ( not used yet; the Accessflags are served in getAccessFlags).
-     *
-     * @return the flags of this resource (this are not the AccessFlags!!).
-     */
-      public int getFlags() {
-         return m_resourceFlags;
-      }
-    /**
-     * Creates a Unix-Style string of access rights from the access right flag of a
-     * CmsResource
-     *
-     * @return String of access rights
-     */
-    public String getFlagString()
-    {
-        String str = "NOT YET";
-// 		TODO: check if neccessary and reimplement using acl
-/*
-        str += ((m_accessFlags & C_PERMISSION_READ)>0?"r":"-");
-        str += ((m_accessFlags & C_PERMISSION_WRITE)>0?"w":"-");
-        str += ((m_accessFlags & C_PERMISSION_VIEW)>0?"v":"-");
-        str += ((m_accessFlags & C_ACCESS_GROUP_READ)>0?"r":"-");
-        str += ((m_accessFlags & C_ACCESS_GROUP_WRITE)>0?"w":"-");
-        str += ((m_accessFlags & C_ACCESS_GROUP_VISIBLE)>0?"v":"-");
-        str += ((m_accessFlags & C_ACCESS_PUBLIC_READ)>0?"r":"-");
-        str += ((m_accessFlags & C_ACCESS_PUBLIC_WRITE)>0?"w":"-");
-        str += ((m_accessFlags & C_ACCESS_PUBLIC_VISIBLE)>0?"v":"-");
-        str += ((m_accessFlags & C_ACCESS_INTERNAL_READ)>0?"i":"-");
-*/
-        return str;
-    }
-    /**
-     * Returns the groupid of this resource.
-     *
-     * @return the groupid of this resource.
-     */
-     public CmsUUID getGroupId() {
-         return  m_groupId;
-      }
-    /**
-     * Gets the launcher classname for this resource.
-     *
-     * @return the launcher classname for this resource.
-     */
-     public String getLauncherClassname() {
-         return m_launcherClassname;
-     }
-     /**
-     * Gets the launcher type id for this resource.
-     *
-     * @return the launcher type id of this resource.
-     */
-     public int getLauncherType() {
-         return m_launcherType;
-     }
-     /**
-     * Gets the length of the content (filesize).
-     *
-     * @return the length of the content.
-     */
-     public int getLength() {
-        return m_size;
-     }
-     
+
     /**
      * Returns the name of this resource, e.g. <code>index.html</code>.<p>
      *
      * @return the name of this resource
      * 
      */
-    public String getName() {     
-        return getResourceName();   
+    public String getName() {
+        // TODO: unify getResourceName() and getName()
+        return getResourceName();
     }
     
     /**
-     * Returns the userid of the resource owner.
+     * Returns the full resource name of this resource including the path,
+     * e.g. <code>/default/vfs/system/workplace/action/index.html</code>.<p>
+     * 
+     * Use this method with caution. In the worst case scenario, the complete
+     * path of this resources has to be calculated first!
      *
-     * @return the userid of the resource owner.
+     * @return the resource name including it's path
+     */
+    public String getFullResourceName() {
+        return m_fullResourceName;
+    }    
+    
+    /**
+     * Returns the accessflags of this resource.<p>
+     *
+     * @return the accessflags of this resource
+     */
+    public int getAccessFlags() {
+        return m_accessFlags;
+    }
+    
+    /**
+     * Returns the date of the creation of this resource.<p>
+     *
+     * @return the date of the creation of this resource
+     */
+    public long getDateCreated() {
+        return m_dateCreated;
+    }
+    
+    /**
+     * Returns the date of the last modification of this resource.<p>
+     *
+     * @return the date of the last modification of this resource
+     */
+    public long getDateLastModified() {
+        return m_dateLastModified;
+    }
+
+    /**
+     * Sets the date of the last modification of this resource.<p>
+     * 
+     * @param time the date to set
+     */
+    public void setDateLastModified(long time) {
+        m_isTouched = true;
+        m_dateLastModified = time;
+    }
+
+    /**
+     * Gets the id of the file content database entry.<p>
+     *
+     * @return the ID of the file content database entry
+     */
+    public CmsUUID getFileId() {
+        return m_fileId;
+    }
+
+    /**
+     * Returns the flags of this resource.<p>
+     *
+     * @return the flags of this resource
+     */
+    public int getFlags() {
+        return m_resourceFlags;
+    }
+    
+    /**
+     * Returns the group id of this resource.<p>
+     *
+     * @return the group id of this resource
+     */
+    public CmsUUID getGroupId() {
+        return m_groupId;
+    }
+    
+    /**
+     * Gets the launcher class name of this resource.<p>
+     *
+     * @return the launcher class name of this resource
+     */
+    public String getLauncherClassname() {
+        return m_launcherClassname;
+    }
+    
+    /**
+     * Gets the launcher type id of this resource.<p>
+     *
+     * @return the launcher type id of this resource
+     */
+    public int getLauncherType() {
+        return m_launcherType;
+    }
+    
+    /**
+     * Gets the length of the content (i.e. the file size).<p>
+     *
+     * @return the length of the content
+     */
+    public int getLength() {
+        return m_size;
+    }
+
+    /**
+     * Returns the userid of the resource owner.<p>
+     *
+     * @return the userid of the resource owner
      */
     public CmsUUID getOwnerId() {
-         return m_userId;
-      }
-      
+        return m_userId;
+    }
+
     /**
      * Returns the absolute parent folder name of this resource.<p>
      * 
@@ -429,10 +453,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * 
      * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
      */
-     public String getParent() {
+    public String getParent() {
         return getParent(getAbsolutePath(getFullResourceName()));
-     }
-     
+    }
+
     /**
      * Returns the absolute parent folder name of a resource.<p>
      * 
@@ -446,7 +470,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
      */
     public static String getParent(String resource) {
-        if (I_CmsConstants.C_ROOT.equals(resource)) return null;
+        if (I_CmsConstants.C_ROOT.equals(resource))
+            return null;
         // remove the last char, for a folder this will be "/", for a file it does not matter
         String parent = (resource.substring(0, resource.length() - 1));
         // now as the name does not end with "/", check for the last "/" which is the parent folder name
@@ -464,15 +489,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * 
      * @param resource the resource to get the name for
      * @return the name of a resource without the path information
-     */    
+     */
     public static String getName(String resource) {
-        if (I_CmsConstants.C_ROOT.equals(resource)) return I_CmsConstants.C_ROOT;
+        if (I_CmsConstants.C_ROOT.equals(resource))
+            return I_CmsConstants.C_ROOT;
         // remove the last char, for a folder this will be "/", for a file it does not matter
         String parent = (resource.substring(0, resource.length() - 1));
         // now as the name does not end with "/", check for the last "/" which is the parent folder name
         return resource.substring(parent.lastIndexOf("/") + 1);
-    }    
-    
+    }
+
     /**
      * Returns true if the resource name is a folder name, i.e. ends with a "/".<p>
      * 
@@ -502,25 +528,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public static String getPath(String resource) {
         return resource.substring(0, resource.lastIndexOf("/") + 1);
     }
-                
-    /**
-     * Returns the folder path of this resource,
-     * if the resource is a folder, the complete path of the folder is returned 
-     * (not the parent folder path).<p>
-     * 
-     * Example: Returns <code>/system/def/</code> for the
-     * resource <code>/system/def/file.html</code> and 
-     * <code>/system/def/</code> for the (folder) resource <code>/system/def/</code>.
-     * 
-     * Does not append the repository information to the result, 
-     * i.e. <code>/system/def/</code> will be returned, not <code>/default/vfs/system/def/</code>.
-     *
-     * @return the folder of this resource
-     */
-    public String getPath() {
-        return getPath(getAbsolutePath(getFullResourceName()));
-    }
-        
+
     /**
      * Returns the name of a parent folder of the given resource, 
      * that is either minus levels up 
@@ -528,40 +536,37 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * root folder.<p>
      * 
      * @param resource the name of a resource
-     * @param number of levels to walk up or down
-     * @return the name of a parent folder of the given resource, 
-     * that is either minus levels up 
-     * from the current folder, or that is plus levels down from the 
-     * root folder
+     * @param level of levels to walk up or down
+     * @return the name of a parent folder of the given resource 
      */
     public static String getPathPart(String resource, int level) {
-        resource = getPath(resource); 
+        resource = getPath(resource);
         String result = null;
         int pos = 0, count = 0;
         if (level >= 0) {
             // Walk down from the root folder /
             while ((count < level) && (pos > -1)) {
-                count ++;
-                pos = resource.indexOf('/', pos+1);
+                count++;
+                pos = resource.indexOf('/', pos + 1);
             }
         } else {
             // Walk up from the current folder
             pos = resource.length();
             while ((count > level) && (pos > -1)) {
                 count--;
-                pos = resource.lastIndexOf('/', pos-1);
-            }      
+                pos = resource.lastIndexOf('/', pos - 1);
+            }
         }
         if (pos > -1) {
             // To many levels walked
-            result = resource.substring(0, pos+1);
+            result = resource.substring(0, pos + 1);
         } else {
             // Add trailing slash
-            result = (level < 0)?"/":resource;
-        }        
+            result = (level < 0) ? "/" : resource;
+        }
         return result;
     }
-    
+
     /**
      * Returns the directory level of a resource.<p>
      * 
@@ -569,6 +574,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * a folder "/foo/" would have level 1,
      * a folfer "/foo/bar/" level 2 etc.<p> 
      * 
+     * @param resource the resource to determin the directory level for
      * @return the directory level of a resource
      */
     public static int getPathLevel(String resource) {
@@ -579,8 +585,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             level++;
         }
         return level;
-    }    
-        
+    }
+
     /**
      * Gets the ID of the parent's file tree/hierarchy database entry.
      *
@@ -589,83 +595,90 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public CmsUUID getParentId() {
         return m_parentId;
     }
-          
+
     /**
-     * Returns the project id for this resource.
+     * Returns the project id of this resource.<p>
      *
-     * @return the project id for this resource.
+     * @return the project id of this resource.
      */
     public int getProjectId() {
         return m_projectId;
     }
-      
+
     /**
-     * Gets the ID of the file header database entry.
+     * Returns the id of the resource database entry of this resource.<p>
      *
-     * @return the ID of the file header database entry
+     * @return the id of the resource database entry
      */
-     public CmsUUID getResourceId(){
+    public CmsUUID getResourceId() {
         return m_resourceId;
-     }
-     
-     /**
-      * Gets the ID of the file tree/hierarchy database entry to identify a resource.
-      * 
-      * @return the ID of the file tree/hierarchy database entry
-      */
-     public CmsUUID getId() {
-         return m_structureId;
-     }
-     
+    }
+
     /**
-     * Gets the userId from the user who made the last change.
-     *
-     * @return the userId from the user who made the last change.
+     * Returns the id of the file structure database entry of this resource.<p>
+     * 
+     * @return the id of the file structure database
      */
-     public CmsUUID getResourceLastModifiedBy(){
+    public CmsUUID getId() {
+        return m_structureId;
+    }
+
+    /**
+     * Returns the user id of the user who made the last change on this resource.<p>
+     *
+     * @return the user id of the user who made the last change<p>
+     */
+    public CmsUUID getResourceLastModifiedBy() {
         return m_resourceLastModifiedByUserId;
-     }
+    }
+    
     /**
-     * Returns the state of this resource.<BR/>
-     * This may be C_STATE_UNCHANGED, C_STATE_CHANGED, C_STATE_NEW or C_STATE_DELETED.
+     * Returns the state of this resource.<p>
+     * 
+     * This may be C_STATE_UNCHANGED, C_STATE_CHANGED, C_STATE_NEW or C_STATE_DELETED.<p>
      *
-     * @return the state of this resource.
+     * @return the state of this resource
      */
-      public int getState() {
-      return m_state;
-      }
+    public int getState() {
+        return m_state;
+    }
+    
     /**
-     * Gets the type id for this resource.
+     * Returns the type id for this resource.<p>
      *
      * @return the type id of this resource.
      */
-     public int getType() {
-       return m_resourceType;
-     }
+    public int getType() {
+        return m_resourceType;
+    }
+    
     /**
-     * Gets the project id of the project that has locked this resource.
+     * Returns the project id of the project that has locked this resource.<p>
      *
-     * @return the project id.
+     * @return the project id
      */
-     public int getLockedInProject() {
-       return m_lockedInProject;
-     }
-     /**
-      * Checks if a resource belongs to a project.
-      * @param project The project which the resources is checked about.
-      * @return true if the resource is in the project, false otherwise.
-      */
-     public boolean inProject(CmsProject project){
+    public int getLockedInProject() {
+        return m_lockedInProject;
+    }
+    
+    /**
+     * Checks if this resource belongs to a project.<p>
+     * 
+     * @param project the project which this resources is checked against
+     * @return true if this resource is in the project, false otherwise
+     */
+    public boolean inProject(CmsProject project) {
         return project.getId() == getProjectId();
-     }
+    }
+    
     /**
-     * Determines, if this resource is a file.
+     * Determines if this resource is a file.<p>
      *
-     * @return true, if this resource is a file, else it returns false.
+     * @return true if this resource is a file, false otherwise
      */
-      public boolean isFile() {
+    public boolean isFile() {
         return getType() != I_CmsConstants.C_TYPE_FOLDER;
-      }
+    }
 
     /**
      * Determines, if this resource is locked by a user.
@@ -675,139 +688,147 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public boolean isLocked() {
         return !isLockedBy().equals(CmsUUID.getNullUUID());
     }
+    
     /**
-     * Returns the user idthat locked this resource.
+     * Returns the user id that locked this resource.<p>
      *
-     * @return the user id that locked this resource.
-     * If this resource is free it returns the unknown user id.
+     * @return the user id that locked this resource
      */
-      public CmsUUID isLockedBy() {
+    public CmsUUID isLockedBy() {
         return m_lockedByUserId;
-      }
-     /**
-     * Sets the accessflags of this resource.
-     *
-     * @param The new accessflags of this resource.
-     */
-      public void setAccessFlags(int flags){
-          m_accessFlags=flags;
-      }
-    /**
-     * Sets the File id for this resource.
-     *
-     * @param The File id of this resource.
-     */
-    public void setFileId(CmsUUID fileId){
-        m_fileId = fileId;
     }
-     /**
-     * Sets the flags of this resource.
-     *
-     * @param The new flags of this resource.
-     */
-      void setFlags(int flags){
-          m_resourceFlags=flags;
-      }
+    
     /**
-     * Sets the groupId of this resource.
+     * Sets the access flags of this resource.<p>
      *
-     * @param The new groupId of this resource.
+     * @param flags the access flags to set
      */
-      public void setGroupId(CmsUUID groupId) {
-          m_groupId= groupId;
-      }
-     /**
-     * Sets launcher classname for this resource.
-     *
-     * @param The new launcher classname for this resource.
-     */
-     void setLauncherClassname(String name) {
-      m_launcherClassname=name;
-         }
-     /**
-     * Sets launcher the type id for this resource.
-     *
-     * @param The new launcher type id of this resource.
-     */
-     public void setLauncherType(int type){
-         m_launcherType=type;
-     }
-     /**
-     * Sets the the user id that locked this resource.
-     *
-     * @param The new the user id that locked this resource.
-     */
-     public void setLocked(CmsUUID userId) {
-          m_lockedByUserId=userId;
-      }
-     /**
-     * Sets the parent database id for this resource.
-     *
-     * @param The new database id of this resource.
-     */
-    public void setParentId(CmsUUID parentId){
-        m_parentId = parentId;
+    public void setAccessFlags(int flags) {
+        m_accessFlags = flags;
     }
+    
     /**
-     * Sets the user id from the user who changes the resource.
+     * Sets the file id of this resource.<p>
      *
-     * @param The userId from the user who changes the resource.
+     * @param file the file id to set
      */
-    void setResourceLastModifiedBy(CmsUUID resourceLastModifiedByUserId){
+    public void setFileId(CmsUUID file) {
+        m_fileId = file;
+    }
+    
+    /**
+     * Sets the flags of this resource.<p>
+     *
+     * @param flags the flags to set
+     */
+    void setFlags(int flags) {
+        m_resourceFlags = flags;
+    }
+
+    /**
+     * Sets the group id of this resource.<p>
+     *
+     * @param group the group id to set
+     */
+    public void setGroupId(CmsUUID group) {
+        m_groupId = group;
+    }
+
+    /**
+     * Sets the launcher class name of this resource.<p>
+     *
+     * @param name the launcher class name to set
+     */
+    void setLauncherClassname(String name) {
+        m_launcherClassname = name;
+    }
+
+    /**
+     * Sets the launcher type id of this resource.<p>
+     *
+     * @param type the launcher type to set
+     */
+    public void setLauncherType(int type) {
+        m_launcherType = type;
+    }
+    
+    /**
+     * Sets the the user id that locked this resource.<p>
+     *
+     * @param user the user id to set
+     */
+    public void setLocked(CmsUUID user) {
+        m_lockedByUserId = user;
+    }
+    
+    /**
+     * Sets the parent structure id of this resource.<p>
+     *
+     * @param parent the parent structure id to set
+     */
+    public void setParentId(CmsUUID parent) {
+        m_parentId = parent;
+    }
+    
+    /**
+     * Sets the user id of the user who changed this resource.<p>
+     *
+     * @param resourceLastModifiedByUserId the user id of the user who changed the resource
+     */
+    void setResourceLastModifiedBy(CmsUUID resourceLastModifiedByUserId) {
         m_resourceLastModifiedByUserId = resourceLastModifiedByUserId;
     }
-      /**
-     * Sets the state of this resource.
-     *
-     * @param The new state of this resource.
-     */
-      public void setState(int state) {
-          m_state=state;
-      }
-     /**
-     * Sets the type id for this resource.
-     *
-     * @param The new type id of this resource.
-     */
-     public void setType(int type) {
-         m_resourceType=type;
-     }
+    
     /**
-     * Sets the userId of this resource.
+     * Sets the state of this resource.<p>
      *
-     * @param The new userId of this resource.
+     * @param state the state to set
      */
-    public  void setUserId(CmsUUID userId) {
-          m_userId = userId;
-      }
+    public void setState(int state) {
+        m_state = state;
+    }
+    
+    /**
+     * Sets the type of this resource.<p>
+     *
+     * @param type the type to set
+     */
+    public void setType(int type) {
+        m_resourceType = type;
+    }
+    
+    /**
+     * Sets the user id of this resource.<p>
+     *
+     * @param user a user id
+     */
+    public void setUserId(CmsUUID user) {
+        m_userId = user;
+    }
 
     /**
-     * Sets the projectId of this resource.
+     * Sets the project id of this resource.<p>
      *
-     * @param The new projectId of this resource.
+     * @param project a project id
      */
-    public  void setProjectId(int project) {
-          m_projectId = project;
-      }
-
-
-    /**
-     * Sets the projectId in which this resource is locked.
-     *
-     * @param The new projectId of this resource.
-     */
-    public  void setLockedInProject(int project) {
-          m_lockedInProject = project;
-      }
+    public void setProjectId(int project) {
+        m_projectId = project;
+    }
 
     /**
-     * Returns a string-representation for this object.
-     * This can be used for debugging.
+     * Sets the project id in which this resource is locked.<p>
      *
-     * @return string-representation for this object.
+     * @param project a project id
      */
-      public String toString() {
-        StringBuffer output=new StringBuffer();
+    public void setLockedInProject(int project) {
+        m_lockedInProject = project;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        StringBuffer output = new StringBuffer();
         output.append("[Resource]:");
         output.append(m_resourceName);
         output.append(" ID: ");
@@ -820,8 +841,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         output.append(m_userId);
         output.append(" , Group=");
         output.append(m_groupId);
-        output.append(" : Access=");
-        output.append(getFlagString());
         output.append(" : Resource-type=");
         output.append(getType());
         output.append(" : Locked=");
@@ -831,24 +850,26 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         output.append(" : state=");
         output.append(getState());
         return output.toString();
-      }
-	/**
-	 * Returns the isTouched.
-	 * @return boolean
-	 */
-	public boolean isTouched() {
-		return m_isTouched;
-	}
-    
-    /**
-     * Helper to encapsulate which ID of a resource is used to handle ACE's for resources/files/folders.
-     * 
-     * @return the "resource-ID" of a resource
-     */
-    public CmsUUID getResourceAceId() {
-        return this.getResourceId();
     }
     
+    /**
+     * Returns true if this resource was touched.<p>
+     * 
+     * @return boolean true if this resource was touched
+     */
+    public boolean isTouched() {
+        return m_isTouched;
+    }
+
+    /**
+     * Encapsulates which id of this resource is used to handle ACE's for resources/files/folders.<p>
+     * 
+     * @return the resource id of this resource
+     */
+    public CmsUUID getResourceAceId() {
+        return getResourceId();
+    }
+
     /**
      * Sets the resource name including the path.<p>
      * 
@@ -859,26 +880,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the resource name of this resource including the path,
-     * e.g. <code>/default/vfs/system/workplace/action/index.html</code>.<p>
-     * 
-     * Use this method with caution. In the worst case scenario, the complete
-     * path of this resources has to be calculated first!
-     *
-     * @return the resource name including it's path
-     */
-    public String getFullResourceName() {
-        return m_fullResourceName;
-    }
-    
-    /**
      * Checks whether the current state of this resource contains the full resource
-     * path including the site root or not.
+     * path including the site root or not.<p>
      * 
      * @return true if the current state of this resource contains the full resource path
      */
     public boolean hasFullResourceName() {
-        return (getFullResourceName()!=null);
+        return (getFullResourceName() != null);
     }
 
     /**
@@ -888,13 +896,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         if ((o == null) || (!(o instanceof CmsResource))) {
             return 0;
         }
-        
+
         String ownResourceName = getResourceName();
-        String otherResourceName = ((CmsResource) o).getResourceName();
-        
+        String otherResourceName = ((CmsResource)o).getResourceName();
+
         return ownResourceName.compareTo(otherResourceName);
     }
-    
+
     /**
      * Proves if this resource is a folder.<p>
      * 

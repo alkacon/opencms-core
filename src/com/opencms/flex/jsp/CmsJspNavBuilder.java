@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/07/09 10:58:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -65,7 +65,7 @@ public class CmsJspNavBuilder {
      * 
      * @see java.lang.Object#Object()
      */    
-    public CmsJspNavBuilder() {}
+    public CmsJspNavBuilder() { }
 
     /**
      * Default constructor.<p>
@@ -391,7 +391,7 @@ public class CmsJspNavBuilder {
      * @param endLevel the end level of the navigation.
      * @return ArrayList of CmsJspNavElement, in depth first order.
      */
-    public static ArrayList getSiteNavigation(CmsObject cms, String folder, int endLevel){
+    public static ArrayList getSiteNavigation(CmsObject cms, String folder, int endLevel) {
         // check if a specific end level was given, if not, build the complete navigation
         boolean noLimit = false;
         if (endLevel < 0) {

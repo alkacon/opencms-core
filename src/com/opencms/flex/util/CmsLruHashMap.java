@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsLruHashMap.java,v $
- * Date   : $Date: 2003/06/13 11:10:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Map;
  * and a "last-recently-used" cache policy of the mapped key/values.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @see CmsFlexLruCache
  * @see I_CmsFlexLruCacheObject
  */
@@ -251,7 +251,8 @@ public class CmsLruHashMap extends HashMap {
          * @param theParentHashMap the parent cache 
          */
         public CmsLruCacheObject(Object theInitialValue, Object theParentKey, CmsLruHashMap theParentHashMap) {
-            this.m_next = this.m_previous = null;
+            this.m_next = null; 
+            this.m_previous = null;
             this.m_value = theInitialValue;
             this.m_parentKey = theParentKey;
             this.m_parentHashMap = theParentHashMap;
@@ -261,7 +262,8 @@ public class CmsLruHashMap extends HashMap {
          * @see java.lang.Object#finalize()
          */
         protected void finalize() throws Throwable {
-            this.m_next = this.m_previous = null;
+            this.m_next = null; 
+            this.m_previous = null;
             this.m_value = null;  
             this.m_parentKey = null;
             this.m_parentHashMap = null;          

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2003/06/25 13:49:14 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -169,7 +169,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         this.m_variationCache = new CmsFlexLruCache(maxVariations, (int)(maxVariations*0.75), -1, false);
         
         if (m_enabled) {
-            this.m_resourceMap = java.util.Collections.synchronizedMap(new CmsLruHashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE,maxKeys));     
+            this.m_resourceMap = java.util.Collections.synchronizedMap(new CmsLruHashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE, maxKeys));     
             A_OpenCms.addCmsEventListener(this);
         }
         
@@ -378,7 +378,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      */
     private void purgeDirectory(File d) {
         if (d.canRead() && d.isDirectory()) {
-            java.io.File files[] = d.listFiles();
+            java.io.File[] files = d.listFiles();
             if (DEBUG > 0) {
                 System.err.println("FlexCache.purgeDirectory() Deleting directory = " + d.getAbsolutePath());
                 System.err.println("FlexCache.purgeDirectory() Files in directory = " + files.length);
@@ -529,7 +529,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
                 Integer it = null;
                 try {
                     it = (Integer)m.get("action");
-                } catch (Exception e) {}
+                } catch (Exception e) { }
                 if (it == null) break;
                 int i = it.intValue();
                 switch (i) {
@@ -554,7 +554,11 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
                     case C_CLEAR_WORKPLACE_ALL:
                         clearWorkplace(event.getCmsObject());
                         break;
+                    default:
+                        // no operation
                 }
+            default:
+                // no operation
         }
     }
     
@@ -853,7 +857,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.20 $ 
+     * @version $Revision: 1.21 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         

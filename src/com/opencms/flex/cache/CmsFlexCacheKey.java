@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/06/25 13:49:14 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsFlexCacheKey {
     
@@ -405,12 +405,12 @@ public class CmsFlexCacheKey {
                     str.append(o);
                     try {
                         // TODO: handle multiple occurences of the same parameter value
-                        String param[] = (String[])m_params.get(o);
+                        String[] param = (String[])m_params.get(o);
                         if (! "&?&".equals(param[0])) {
                             str.append("=");
                             str.append(param[0]);
                         }
-                    } catch(Exception e) {                        
+                    } catch (Exception e) {                        
                         if (DEBUG) System.err.println("Exception! o=" + o + "  Exception is " + e);
                     }
                     if (i.hasNext()) str.append(",");
@@ -470,7 +470,7 @@ public class CmsFlexCacheKey {
      * @param key the String to parse (usually read from the file property "cache")
      */    
     private void parseFlexKey(String key) {
-        java.util.StringTokenizer toker = new java.util.StringTokenizer(key,";");
+        java.util.StringTokenizer toker = new java.util.StringTokenizer(key, ";");
         try {
             while (toker.hasMoreElements()) {
                 String t = toker.nextToken();
@@ -563,8 +563,8 @@ public class CmsFlexCacheKey {
      */    
     private java.util.Map parseValueMap(String value) {
         if (value.charAt(0) == '(') value = value.substring(1);
-        int len;
-        if (value.charAt(len = (value.length()-1)) == ')') value = value.substring(0, len);
+        int len = value.length() - 1;
+        if (value.charAt(len) == ')') value = value.substring(0, len);
         if (value.charAt(len-1) == ',') value = value.substring(0, len-1);
         if (DEBUG) System.err.println("Parsing map: " + value);
         java.util.StringTokenizer toker = new java.util.StringTokenizer(value, ",");

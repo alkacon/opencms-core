@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/07/11 06:25:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -62,7 +62,7 @@ public class CmsWorkplaceSettings {
     /**
      * Constructor, only package visible.<p>
      */
-    CmsWorkplaceSettings() {}
+    CmsWorkplaceSettings() { }
     
     /**
      * Returns the currently selected user language.<p>
@@ -132,11 +132,11 @@ public class CmsWorkplaceSettings {
     /**
      * Sets the current site for the user.<p>
      * 
-     * @param string the current site for the user
+     * @param value the current site for the user
      */
     public synchronized void setSite(String value) {
         m_currentSite = value;
-    }  
+    }
 
     /**
      * Returns the currently selected default group of the workplace user.<p>

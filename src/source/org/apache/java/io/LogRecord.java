@@ -64,55 +64,55 @@ package source.org.apache.java.io;
  * <li>Name of the thread which issued the log message.
  * <li>Name of the object on whose behalf the message was issued.
  * </ul>
- * @version $Revision: 1.4 $ $Date: 2003/06/13 10:56:35 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/12 11:29:23 $
  * @author <a href="mailto:vt@freehold.crocodile.org">Vadim Tkachenko</a>
  */
 
 public class LogRecord {
 
-	/**
-	 * Creation time.
-	 */
-	public long m_date;
+    /**
+     * Creation time.
+     */
+    public long m_date;
 
-	/**
-	 * Log channel.
-	 * To be used in the log filters.
-	 */
-	public String m_channel;
+    /**
+     * Log channel.
+     * To be used in the log filters.
+     */
+    public String m_channel;
 
-	/**
-	 * Message to log, if any.
-	 */
-	 public String m_message;
+    /**
+     * Message to log, if any.
+     */
+    public String m_message;
 
-	/**
-	 * Exception to log, if any.
-	 */
-	public Throwable m_t;
+    /**
+     * Exception to log, if any.
+     */
+    public Throwable m_t;
 
-	/**
-	 * Constructor.
-	 * Performs inexpensive operations:
-	 * <ul>
-	 * <li>Records the system time;
-	 * <li>Stores the message channel;
-	 * <li>Stores the message itself, if any;
-	 * <li>Stores the exception, if any.
-	 * </ul>
-	 * @param t Owner thread
+    /**
+     * Constructor.
+     * Performs inexpensive operations:
+     * <ul>
+     * <li>Records the system time;
+     * <li>Stores the message channel;
+     * <li>Stores the message itself, if any;
+     * <li>Stores the exception, if any.
+     * </ul>
+     * @param t Owner thread
      * @param channel the channel to put the message on
      * @param message the message to log
-	 */
-	public LogRecord(String channel, String message, Throwable t) {
+     */
+    public LogRecord(String channel, String message, Throwable t) {
 
-		//  Note, no new Date() here - it's EXPENSIVE!
-		//  You can do whatever you want with it later, in the logging
-		//  thread.
+        //  Note, no new Date() here - it's EXPENSIVE!
+        //  You can do whatever you want with it later, in the logging
+        //  thread.
 
-		m_date = System.currentTimeMillis();
-		this.m_channel = channel;
-		this.m_message = message;
-		this.m_t = t;
-	}
+        m_date = System.currentTimeMillis();
+        this.m_channel = channel;
+        this.m_message = message;
+        this.m_t = t;
+    }
 }

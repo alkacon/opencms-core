@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInfo.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,12 +78,12 @@ import javax.servlet.jsp.tagext.TagSupport;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsJspTagInfo extends TagSupport {
     
     // member variables    
-	private String m_property = null;
+    private String m_property = null;
 
     /** Static array with allowed info property values */
     private static final String[] m_systemProperties =
@@ -108,40 +108,40 @@ public class CmsJspTagInfo extends TagSupport {
      * 
      * @param name the info property name to set
      */
-	public void setProperty(String name) {
-		if (name != null) {
-			m_property = name.toLowerCase();
-		}
-	}
+    public void setProperty(String name) {
+        if (name != null) {
+            m_property = name.toLowerCase();
+        }
+    }
 
     /**
      * Returns the selected info property.
      * 
      * @return the selected info property 
      */
-	public String getProperty() {
-		return m_property != null ? m_property : "";
-	}
+    public String getProperty() {
+        return m_property != null ? m_property : "";
+    }
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
-	public void release() {
-		super.release();
-		m_property = null;
-	}
-    
+    public void release() {
+        super.release();
+        m_property = null;
+    }
+
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
-	public int doStartTag() throws JspException {
+    public int doStartTag() throws JspException {
 
-		ServletRequest req = pageContext.getRequest();
-        
+        ServletRequest req = pageContext.getRequest();
+
         // This will always be true if the page is called through OpenCms 
         if (CmsFlexController.isCmsRequest(req)) {
 
-            try {       
+            try {
                 String result = infoTagAction(m_property, (HttpServletRequest)req);
                 // Return value of selected property
                 pageContext.getOut().print(result);
@@ -162,48 +162,49 @@ public class CmsJspTagInfo extends TagSupport {
      * @param req the currents request
      * @return the looked up property value 
      */    
-	public static String infoTagAction(String property, HttpServletRequest req) {   
-		if (property == null) return "+++ Invalid info property selected: null +++";
+    public static String infoTagAction(String property, HttpServletRequest req) {
+        if (property == null)
+            return "+++ Invalid info property selected: null +++";
 
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        			
-		String result = null;
-		switch (m_userProperty.indexOf(property)) {
-			case 0 : // opencms.version
-				result = A_OpenCms.getVersionName();
-				break;
-			case 1 : // opencms.url
-				result = req.getRequestURL().toString();
-				break;
-			case 2 : // opencms.uri
-				result = req.getRequestURI();
-				break;
-			case 3 : // opencms.webapp
-				result = CmsBase.getWebAppName();
-				break;
-			case 4 : // opencms.webbasepath
-				result = CmsBase.getWebBasePath();
-				break;
-            case 5: // opencms.request.uri
+
+        String result = null;
+        switch (m_userProperty.indexOf(property)) {
+            case 0 : // opencms.version
+                result = A_OpenCms.getVersionName();
+                break;
+            case 1 : // opencms.url
+                result = req.getRequestURL().toString();
+                break;
+            case 2 : // opencms.uri
+                result = req.getRequestURI();
+                break;
+            case 3 : // opencms.webapp
+                result = CmsBase.getWebAppName();
+                break;
+            case 4 : // opencms.webbasepath
+                result = CmsBase.getWebBasePath();
+                break;
+            case 5 : // opencms.request.uri
                 result = controller.getCmsObject().getRequestContext().getUri();
-                break;   
-            case 6: // opencms.request.element.uri
+                break;
+            case 6 : // opencms.request.element.uri
                 result = controller.getCurrentRequest().getElementUri();
-                break;                               
-            case 7: // opencms.request.folder
+                break;
+            case 7 : // opencms.request.folder
                 result = com.opencms.file.CmsResource.getParent(controller.getCmsObject().getRequestContext().getUri());
-                break;  
-            case 8: // opencms.request.encoding
+                break;
+            case 8 : // opencms.request.encoding
                 result = controller.getCmsObject().getRequestContext().getEncoding();
-                break;          
+                break;
             default :
                 result = System.getProperty(property);
                 if (result == null) {
-				    result = "+++ Invalid info property selected: " + property + " +++";
+                    result = "+++ Invalid info property selected: " + property + " +++";
                 }
-		}
-        
+        }
+
         return result;
-	}
+    }
 
 }

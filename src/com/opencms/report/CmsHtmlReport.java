@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/06/13 11:14:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.0 rc 1
  */
@@ -258,15 +258,15 @@ public class CmsHtmlReport implements I_CmsReport {
     /**
      * @see com.opencms.report.I_CmsReport#getReportUpdate()
      */
-    public synchronized String getReportUpdate(){
+    public synchronized String getReportUpdate() {
         StringBuffer result = new StringBuffer();
         int indexEnd = m_content.size();
-        for(int i=m_indexNext; i<indexEnd; i++){
+        for (int i=m_indexNext; i<indexEnd; i++) {
             Object obj = m_content.get(i);
             if (obj instanceof CmsPageLinks) {
                 CmsPageLinks links = (CmsPageLinks)m_content.get(i);
                 result.append(getLinkElement((String)links.getResourceName()));                                
-                for(int index=0; index<links.getLinkTargets().size(); index++){                    
+                for (int index=0; index<links.getLinkTargets().size(); index++) {                    
                     result.append(getLinkTargetElement((String)links.getLinkTargets().elementAt(index)));
                 }                                
             } else if (obj instanceof String || obj instanceof StringBuffer) {

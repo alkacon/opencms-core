@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/11 13:03:31 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -738,7 +738,7 @@ public class CmsDialog extends CmsWorkplace {
      * @return formatted state string
      */
     public String getState(CmsResource file) {  
-        if(file.inProject(getCms().getRequestContext().currentProject())) {
+        if (file.inProject(getCms().getRequestContext().currentProject())) {
             int state = file.getState();
             return key("explorer.state" + state);
         } else {

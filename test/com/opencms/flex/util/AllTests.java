@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/AllTests.java,v $
- * Date   : $Date: 2003/06/12 17:22:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/12 11:29:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.0
  */
-public class AllTests {
+public final class AllTests {
 
     /**
      * Hide constructor to prevent generation of class instances.<p>

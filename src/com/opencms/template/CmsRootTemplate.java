@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/07/12 11:29:22 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * generation of the master template class to be used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.32 $ $Date: 2003/07/12 11:29:22 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
 
@@ -66,7 +66,7 @@ public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
      *
      * @return Byte array containing the results of the master template.
      */
-    public byte[] getMasterTemplate(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, com.opencms.launcher.I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
+    public byte[] getMasterTemplate(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, com.opencms.template.I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
         byte[] result;
 
         // Collect cache directives from subtemplates

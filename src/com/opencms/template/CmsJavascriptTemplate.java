@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsJavascriptTemplate.java,v $
-* Date   : $Date: 2003/01/20 23:59:21 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/07/12 11:29:22 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.template;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.launcher.I_CmsTemplateCache;
 import com.opencms.template.cache.A_CmsElement;
 
 import java.util.Hashtable;

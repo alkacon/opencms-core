@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/06/11 17:05:01 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/07/12 11:29:22 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.launcher.I_CmsTemplateCache;
 import com.opencms.template.cache.A_CmsElement;
 import com.opencms.template.cache.CmsElementDump;
 import com.opencms.util.Encoder;
@@ -48,7 +47,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.34 $ $Date: 2003/06/11 17:05:01 $
+ * @version $Revision: 1.35 $ $Date: 2003/07/12 11:29:22 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 

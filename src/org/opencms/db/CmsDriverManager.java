@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/11 13:53:07 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/07/12 11:29:23 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.35 $ $Date: 2003/07/11 13:53:07 $
+ * @version $Revision: 1.36 $ $Date: 2003/07/12 11:29:23 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -99,8 +99,18 @@ public class CmsDriverManager extends Object {
             this.m_path = path;
         }
         
+        /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
         public boolean equals(Object obj) {
-            return ( (obj instanceof CmsResource) && m_path.equals( ((CmsResource) obj).getResourceName() ));
+            return ((obj instanceof CmsResource) && m_path.equals(((CmsResource) obj).getResourceName()));
+        }
+        
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        public int hashCode() {
+            return m_path.hashCode();
         }
     }
 
@@ -134,11 +144,11 @@ public class CmsDriverManager extends Object {
      */
     protected int m_limitedWorkplacePort = -1;
     
-	/**
-	 * The configured drivers 
-	 */
-	protected HashMap m_drivers = null;
-	
+    /**
+     * The configured drivers 
+     */
+    protected HashMap m_drivers = null;
+    
     // Define caches for often read resources
     protected Map m_userCache = null;
     protected Map m_groupCache = null;
@@ -160,54 +170,54 @@ public class CmsDriverManager extends Object {
     protected int m_cachelimit = 0;
     protected String m_refresh = null;
 
-	/**
-	 * Method to create a new instance of a driver.<p>
-	 * 
-	 * @param configurations the configurations from the propertyfile
-	 * @param driverName the class name of the driver
-	 * @param driverPoolUrl the pool url for the driver
-	 * @return an initialized instance of the driver
-	 */
-	public Object newDriverInstance(Configurations configurations, String driverName, String driverPoolUrl) //throws CmsException
- 	{
-		
-		Class initParamClasses[] = {Configurations.class, String.class, CmsDriverManager.class};
-		Object initParams[] = {configurations, driverPoolUrl, this};
-		 
-		Class driverClass = null;
-		Object driver = null;
-		
-		try {
-			// try to get the class
-			driverClass = Class.forName(driverName);                          
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName);
-			}
-            
-			// try to create a instance
-			driver = driverClass.newInstance();
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName);
-			}
-            
-			// invoke the init-method of this access class
-			driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : finished, assigned pool " + driverPoolUrl);
-			}
+    /**
+     * Method to create a new instance of a driver.<p>
+     * 
+     * @param configurations the configurations from the propertyfile
+     * @param driverName the class name of the driver
+     * @param driverPoolUrl the pool url for the driver
+     * @return an initialized instance of the driver
+     */
+    public Object newDriverInstance(Configurations configurations, String driverName, String driverPoolUrl) //throws CmsException
+    {
 
-		} catch(Exception exc) {
-			String message = "Critical error while initializing " + driverName;
-			if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
-			}
-            
-			exc.printStackTrace(System.err);
-			// throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
-		}
-		
-		return driver;
-	}
+        Class initParamClasses[] = { Configurations.class, String.class, CmsDriverManager.class };
+        Object initParams[] = { configurations, driverPoolUrl, this };
+
+        Class driverClass = null;
+        Object driver = null;
+
+        try {
+            // try to get the class
+            driverClass = Class.forName(driverName);
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName);
+            }
+
+            // try to create a instance
+            driver = driverClass.newInstance();
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName);
+            }
+
+            // invoke the init-method of this access class
+            driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : finished, assigned pool " + driverPoolUrl);
+            }
+
+        } catch (Exception exc) {
+            String message = "Critical error while initializing " + driverName;
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
+            }
+
+            exc.printStackTrace(System.err);
+            // throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
+        }
+
+        return driver;
+    }
 
 	/**
 	 * Method to create a new instance of a pool.<p>
@@ -258,8 +268,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if the driver manager couldn't be instanciated.
      */
     public static final CmsDriverManager newInstance(Configurations configurations) throws CmsException {
-        
-    
+            
         String driverName = null;
         String driverPoolUrl = null;
         //Class driverClass = null;

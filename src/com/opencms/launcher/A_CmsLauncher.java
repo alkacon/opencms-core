@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2003/02/26 10:30:36 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/07/12 11:29:22 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.core.I_CmsResponse;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
+import com.opencms.template.*;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsRootTemplate;
 import com.opencms.template.CmsTemplateClassManager;
@@ -68,17 +69,17 @@ import java.util.Hashtable;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.41 $ $Date: 2003/02/26 10:30:36 $
+ * @version $Revision: 1.42 $ $Date: 2003/07/12 11:29:22 $
  */
-abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
+abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants {
 
-    /** Boolean for additional debug output control */
-    private static final boolean C_DEBUG = false;
+    /** Debug flag */
+    private static final boolean DEBUG = false;
 
-    /** Value of the filesystem counter, when the last template clear cache was done. */
+    /** Value of the filesystem counter, when the last template clear cache was done */
     private static long m_lastFsCounterTemplate = 0;
 
-    /** Value of the filesystem counter, when the last XML file clear cache was done. */
+    /** Value of the filesystem counter, when the last XML file clear cache was done */
     private static long m_lastFsCounterFile = 0;
 
     /** The template cache that holds all cached templates */
@@ -86,33 +87,31 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
 
     /**
      * Utility method used by the launcher implementation to give control
-     * to the CanonicalRoot.
+     * to the CanonicalRoot.<p>
+     * 
      * The CanonicalRoot will call the master template and return a byte array of the
-     * generated output.
+     * generated output.<p>
      *
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateClass Class that should generate the output of the master template.
-     * @param masterTemplate CmsFile Object with masterTemplate for the output.
-     * @param parameters Hashtable with all parameters for the template class.
-     * @return byte array with the generated output or null if there were errors.
-     * @throws CmsException
-     *
+     * @param cms the cms context object
+     * @param templateClass to generate the output of the master template
+     * @param masterTemplate masterTemplate for the output
+     * @param parameters contains all parameters for the template class
+     * @return the generated output or null if there were errors
+     * @throws CmsException if something goes wrong
      */
     protected byte[] callCanonicalRoot(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, Hashtable parameters) throws CmsException {
         try {
             com.opencms.template.CmsRootTemplate root = (CmsRootTemplate)CmsTemplateClassManager.getClassInstance(cms, "com.opencms.template.CmsRootTemplate");
             return root.getMasterTemplate(cms, templateClass, masterTemplate, m_templateCache, parameters);
-        }
-        catch(Exception e) {
-
-            // There is no document we could show.
+        } catch (Exception e) {
+            // no document we could show...
             handleException(cms, e, "Received error while calling canonical root for requested file " + masterTemplate.getName() + ". ");
         }
         return null;
     }
 
     /**
-     * Method for clearing this launchers template cache.
+     * Clears this launchers template cache.<p>
      */
     public void clearCache() {
         m_templateCache.clearCache();
@@ -120,8 +119,9 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
     }
 
     /**
-     * Gets the name of the class in the form "[ClassName] "
-     * This can be used for error logging purposes.
+     * Returns the name of the class in the form "[ClassName] ",
+     * to be used for error logging purposes.<p>
+     * 
      * @return name of this class
      */
     protected String getClassName() {
@@ -129,41 +129,37 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
         return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
     }
 
-    /** Default constructor to create a new launcher */
-
-    /*public A_CmsLauncher() {
-    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-        A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Initialized successfully.");
-    }
-    }*/
-
     /**
-     * Gets the ID that indicates the type of the launcher.
-     * @return launcher ID
+     * Returns the ID that indicates the type of the launcher.<p>
+     *
+     * @return the ID that indicates the type of the launcher
      */
     public abstract int getLauncherId();
 
     /**
-     * Gets a reference to the global template cache
-     * @return Template cache
+     * Returns a reference to the global template cache.<p>
+     * 
+     * @return a reference to the global template cache
      */
     public static I_CmsTemplateCache getTemplateCache() {
         return m_templateCache;
     }
 
     /**
-     * Calls the CmsClassManager to get an instance of the given template class.
+     * Calls the CmsClassManager to get an instance of the given template class.<p>
+     * 
      * The returned object is checked to be an implementing class of the interface
      * I_CmsTemplate.
-     * If the template cache of the template class is not yet setted, this will
-     * be done, too.
-     * @param cms CmsObject object for accessing system resources.
-     * @param classname Name of the requested template class.
-     * @return Instance of the template class.
-     * @throws CmsException.
+     * If the template cache of the template class is not yet set up, 
+     * this will be done, too.<p>
+     * 
+     * @param cms the cms context object
+     * @param classname name of the requested template class
+     * @return instance of the template class
+     * @throws CmsException if something goes wrong
      */
     protected I_CmsTemplate getTemplateClass(CmsObject cms, String classname) throws CmsException {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && DEBUG) {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Getting start template class " + classname + ". ");
         }
         Object o = CmsTemplateClassManager.getClassInstance(cms, classname);
@@ -171,95 +167,93 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
         // Check, if the loaded class really is a OpenCms template class.
 
         // This is done be checking the implemented interface.
-        if(!(o instanceof I_CmsTemplate)) {
+        if (!(o instanceof I_CmsTemplate)) {
             String errorMessage = "Class " + classname + " is no OpenCms template class.";
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_XML_NO_TEMPLATE_CLASS);
         }
         I_CmsTemplate cmsTemplate = (I_CmsTemplate)o;
-        if(!cmsTemplate.isTemplateCacheSet()) {
+        if (!cmsTemplate.isTemplateCacheSet()) {
             cmsTemplate.setTemplateCache(m_templateCache);
         }
         return cmsTemplate;
     }
 
     /**
-     * Utility method to handle any occurence of an execption.
-     * <P>
+     * Utility method to handle any occurence of an execption.<p>
+     * 
      * If the Exception is NO CmsException (i.e. it was not detected previously)
-     * it will be written to the logfile.
-     * <P>
-     * If the current user is the anonymous user, no further execption will
+     * it will be written to the logfile.<p>
+     * 
+     * If the current user is the anonymous user, no further exception will
      * be thrown, but a server error will be sent
      * (we want to prevent the user from seeing any exeptions).
      * Otherwise a new Exception will be thrown.
+     * This will trigger the OpenCms error message box.<p>
      *
-     * @param cms CmsObject Object for accessing system resources.
-     * @param e Exception that should be handled.
-     * @param errorText Error message that should be shown.
-     * @throws CmsException
+     * @param cms the cms context object
+     * @param e Exception that should be handled
+     * @param errorText error message that should be shown
+     * @throws CmsException if 
      */
     public void handleException(CmsObject cms, Exception e, String errorText) throws CmsException {
 
         // Print out some error messages
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorText);
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Exception: " + com.opencms.util.Utils.getStackTrace(e));
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
         }
 
-        // If the user is "Guest", we send an servlet error.
-
-        // Otherwise we try to throw an exception.
+        // if the user is "Guest", we send an servlet error,
+        // otherwise we try to throw an exception.
         CmsRequestContext reqContext = cms.getRequestContext();
-        if((!C_DEBUG) && cms.anonymousUser().equals(reqContext.currentUser())) {
+        if ((!DEBUG) && cms.anonymousUser().equals(reqContext.currentUser())) {
             throw new CmsException(errorText, CmsException.C_SERVICE_UNAVAILABLE, e);
-        }
-        else {
-            if(e instanceof CmsException) {
+        } else {
+            if (e instanceof CmsException) {
                 throw (CmsException)e;
-            }
-            else {
+            } else {
                 throw new CmsException(errorText, CmsException.C_LAUNCH_ERROR, e);
             }
         }
     }
 
     /**
-     * Start method called by the OpenCms system to show a resource.
-     * <P>
+     * Start method called by the OpenCms system to show a resource.<p>
+     * 
      * In this method initial values valid for all launchers can be set
      * and the _clearcache parameter is checked.
      * After this the abstract method launch(...) is called to
-     * invoke the customized part of the launcher.
+     * invoke the customized part of the launcher.<p>
      *
-     * @param cms CmsObject Object for accessing system resources.
-     * @param file CmsFile Object with the selected resource to be shown.
-     * @param startTemplateClass Name of the template class to start with.
-     * @param openCms a instance of A_OpenCms for redirect-needs
-     * @throws CmsException
+     * @param cms  the cms context object
+     * @param file the selected resource to be shown
+     * @param startTemplateClass name of the template class to start with
+     * @param openCms an instance of A_OpenCms for redirects
+     * @throws CmsException if something goes wrong
      */
     public void initlaunch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
 
-        // First some debugging output.
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG ) {
+        // first some debugging output.
+        if (DEBUG && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Launcher started for " + file.getName());
         }
 
-        // Check all values to be valid
+        // check all values to be valid
         String errorMessage = null;
-        if(file == null) {
+        if (file == null) {
             errorMessage = "Got \"null\" CmsFile object. :-(";
         }
-        if(cms == null) {
+        if (cms == null) {
             errorMessage = "Actual cms object missing";
         }
-        if(errorMessage != null) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (errorMessage != null) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
-            }
+            } 
             throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagUser.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,12 @@ import javax.servlet.ServletRequest;
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
     
     // internal member variables
-	private String m_property = null;
+    private String m_property = null;
     
     /** static array of the possible user properties */
     private static final String[] m_userProperties =
@@ -75,40 +75,40 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
      * 
      * @param name the property name
      */
-	public void setProperty(String name) {
-		if (name != null) {
-			m_property = name.toLowerCase();
-		}
-	}
+    public void setProperty(String name) {
+        if (name != null) {
+            m_property = name.toLowerCase();
+        }
+    }
 
     /**
      * Returns the property name.<p>
      * 
      * @return String the property name
      */
-	public String getProperty() {
-		return m_property != null ? m_property : "";
-	}
+    public String getProperty() {
+        return m_property != null ? m_property : "";
+    }
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
-	public void release() {
-		super.release();
-		m_property = null;
-	}
+    public void release() {
+        super.release();
+        m_property = null;
+    }
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
-	public int doStartTag() throws javax.servlet.jsp.JspException {
+    public int doStartTag() throws javax.servlet.jsp.JspException {
 
-		javax.servlet.ServletRequest req = pageContext.getRequest();
-        
+        javax.servlet.ServletRequest req = pageContext.getRequest();
+
         // This will always be true if the page is called through OpenCms 
         if (CmsFlexController.isCmsRequest(req)) {
 
-            try {       
+            try {
                 String result = userTagAction(m_property, req);
                 // Return value of selected property
                 pageContext.getOut().print(result);
@@ -120,78 +120,72 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
         }
         return SKIP_BODY;
     }
-    
+
     /**
      * Internal action method.<p>
      * 
      * @param property the selected user property
      * @param req the current request
      * @return String the value of the selected user property
-     */    
-	static String userTagAction(String property, ServletRequest req) {   
-       
+     */
+    static String userTagAction(String property, ServletRequest req) {
+
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-             
+
         CmsObject cms = controller.getCmsObject();
         CmsUser user = cms.getRequestContext().currentUser();
         CmsGroup group = cms.getRequestContext().currentGroup();
 
-		if (property == null)
-			property = m_userProperties[0];
+        if (property == null)
+            property = m_userProperties[0];
 
-		String result = null;
-		switch (m_userProperty.indexOf(property)) {
-			case 0 : // name
-				result = user.getName();
-				break;
-			case 1 : // firstname
-				result = user.getFirstname();
-				break;
-			case 2 : // lastname
-				result = user.getLastname();
-				break;
-			case 3 : // email
-				result = user.getEmail();
-				break;
-			case 4 : // street
-				result = user.getAddress();
-				break;
-			case 5 : // zip
-				result =
-					(String) user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
-				break;
-			case 6 : // city
-				result =
-					(String) user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
-				break;
-			case 7 : // description
-				result = user.getDescription();
-				break;
-			case 8 : // group
-			case 9 : // currentgroup
-				result = group.getName();
-				break;
-			case 10 : // defaultgroup
-				result = user.getDefaultGroup().getName();
-				break;
-			case 11 : // otherstuff
-				java.util.Enumeration e = user.getAdditionalInfo().keys();
+        String result = null;
+        switch (m_userProperty.indexOf(property)) {
+            case 0 : // name
+                result = user.getName();
+                break;
+            case 1 : // firstname
+                result = user.getFirstname();
+                break;
+            case 2 : // lastname
+                result = user.getLastname();
+                break;
+            case 3 : // email
+                result = user.getEmail();
+                break;
+            case 4 : // street
+                result = user.getAddress();
+                break;
+            case 5 : // zip
+                result = (String)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
+                break;
+            case 6 : // city
+                result = (String)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
+                break;
+            case 7 : // description
+                result = user.getDescription();
+                break;
+            case 8 : // group
+            case 9 : // currentgroup
+                result = group.getName();
+                break;
+            case 10 : // defaultgroup
+                result = user.getDefaultGroup().getName();
+                break;
+            case 11 : // otherstuff
+                java.util.Enumeration e = user.getAdditionalInfo().keys();
                 result = "AdditionalInfo:";
-				while (e.hasMoreElements()) {
-					Object o = e.nextElement();
-                    result += " "
-						+ o
-						+ "="
-						+ user.getAdditionalInfo((String) o);
-				}
-				result += " Section=" + user.getSection();
-				break;
-			default :
-				result =
-					"+++ Invalid user property selected: " + property + " +++";
-		}
-        
+                while (e.hasMoreElements()) {
+                    Object o = e.nextElement();
+                    result += " " + o + "=" + user.getAdditionalInfo((String)o);
+                }
+                result += " Section=" + user.getSection();
+                break;
+            default :
+                result = "+++ Invalid user property selected: " + property + " +++";
+        }
+
         return result;
-	}
+    }
 
 }

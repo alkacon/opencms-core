@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagParam.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -115,17 +115,18 @@ public class CmsJspTagParam extends BodyTagSupport {
     /**
      * Public constructor.<p>
      */
-	public CmsJspTagParam() {
-		super();
-		init();
-	}
+    public CmsJspTagParam() {
+        super();
+        init();
+    }
 
     /**
      * Initializes the internal values.<p> 
      */
-	private void init() {
-		m_name = m_value = null;
-	}
+    private void init() {
+        m_name = null;
+        m_value = null;
+    }
 
     /**
      * Sets the attribute name.<p>
@@ -133,9 +134,9 @@ public class CmsJspTagParam extends BodyTagSupport {
      * @param name the name to set 
      * @throws JspTagException (never thrown, required by interface)
      */
-	public void setName(String name) throws JspTagException {
-		this.m_name = name;
-	}
+    public void setName(String name) throws JspTagException {
+        this.m_name = name;
+    }
 
     /**
      * Sets the attribute value.<p>
@@ -143,49 +144,47 @@ public class CmsJspTagParam extends BodyTagSupport {
      * @param value the name to set 
      * @throws JspTagException (never thrown, required by interface)
      */
-	public void setValue(String value) throws JspTagException {
-		this.m_value = value;
-	}
+    public void setValue(String value) throws JspTagException {
+        this.m_value = value;
+    }
 
     /**
-	 * Simply send our name and value to our appropriate ancestor.<p>
+     * Simply send our name and value to our appropriate ancestor.<p>
      * 
      * @throws JspException (never thrown, required by interface)
      * @return EVAL_PAGE
      */
-	public int doEndTag() throws JspException {
-		Tag t = findAncestorWithClass(this, I_CmsJspTagParamParent.class);
-		if (t == null)
-			throw new JspTagException("Parameter Tag <param> without parent found!");
+    public int doEndTag() throws JspException {
+        Tag t = findAncestorWithClass(this, I_CmsJspTagParamParent.class);
+        if (t == null)
+            throw new JspTagException("Parameter Tag <param> without parent found!");
 
-		// take no action for null or empty names
-		if (m_name == null || m_name.equals(""))
-			return EVAL_PAGE;
+        // take no action for null or empty names
+        if (m_name == null || m_name.equals(""))
+            return EVAL_PAGE;
 
-		// send the parameter to the appropriate ancestor
-		I_CmsJspTagParamParent parent = (I_CmsJspTagParamParent) t;
-		String value = this.m_value;
-		if (value == null) {
-			if (bodyContent == null || bodyContent.getString() == null)
-				value = "";
-			else
-				value = bodyContent.getString().trim();
-		}
-		if (m_encode) {
-			parent.addParameter(
-				Encoder.encode(m_name, A_OpenCms.getDefaultEncoding()),
-				Encoder.encode(value, A_OpenCms.getDefaultEncoding()));
-		} else
-			parent.addParameter(m_name, value);
+        // send the parameter to the appropriate ancestor
+        I_CmsJspTagParamParent parent = (I_CmsJspTagParamParent)t;
+        String value = this.m_value;
+        if (value == null) {
+            if (bodyContent == null || bodyContent.getString() == null)
+                value = "";
+            else
+                value = bodyContent.getString().trim();
+        }
+        if (m_encode) {
+            parent.addParameter(Encoder.encode(m_name, A_OpenCms.getDefaultEncoding()), Encoder.encode(value, A_OpenCms.getDefaultEncoding()));
+        } else
+            parent.addParameter(m_name, value);
 
-		return EVAL_PAGE;
-	}
+        return EVAL_PAGE;
+    }
 
     /**
      * Releases any resources we may have (or inherit)
      */
     public void release() {
-    	init();
+        init();
     }
 
 }

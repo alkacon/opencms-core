@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.0 beta 1
  */
 public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
@@ -73,7 +73,7 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
      * @throws CmsException in case something goes wrong
      */
     public byte[] getContent(CmsObject cms, String jspFile, String elementName, Hashtable parameters) throws CmsException {
-        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_FLEX_LOADER)) {
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_FLEX_LOADER)) {
             A_OpenCms.log(C_FLEX_LOADER, "[CmsJspTemplate] Now loading contents of file " + jspFile);
         }
 
@@ -88,12 +88,12 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
         } catch (com.opencms.core.CmsException e) {
             // File might not exist or no read permissions
             throw new CmsException("[CmsJspTemplate] Error while reading JSP " + jspFile + "\n" + e, e);
-        } catch(Exception e) {
+        } catch (Exception e) {
             String errorMessage = "[CmsJspTemplate] Error while loading jsp file " + jspFile + ": " + e;
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsJspTemplate] " + errorMessage);
             }
-            if(e instanceof CmsException) {
+            if (e instanceof CmsException) {
                 throw (CmsException)e;
             } else {
                 throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);

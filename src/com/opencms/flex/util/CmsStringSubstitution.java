@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,10 +41,10 @@ import org.apache.oro.text.perl.Perl5Util;
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.0
  */
-public class CmsStringSubstitution {
+public final class CmsStringSubstitution {
 
     /** DEBUG flag */
     private static final int DEBUG = 0;
@@ -57,7 +57,7 @@ public class CmsStringSubstitution {
      * Default constructor (empty), private because this class has only 
      * static methods.<p>
      */
-    private CmsStringSubstitution() {}
+    private CmsStringSubstitution() { }
     
     /**
      * Substitutes searchString in content with replaceItem.<p>
@@ -68,7 +68,7 @@ public class CmsStringSubstitution {
      * @return String the substituted String
      */
     public static String substitute(String content, String searchString, String replaceItem) {
-    	return substitutePerl(content, escapePattern(searchString), escapePattern(replaceItem), "g");
+        return substitutePerl(content, escapePattern(searchString), escapePattern(replaceItem), "g");
     }
     
     /**
@@ -80,7 +80,7 @@ public class CmsStringSubstitution {
      * @return String the substituted String
      */
     public static String substituteFirst(String content, String searchString, String replaceItem) {
-    	return substitutePerl(content, escapePattern(searchString), escapePattern(replaceItem), "");
+        return substitutePerl(content, escapePattern(searchString), escapePattern(replaceItem), "");
     }
     
     /**
@@ -93,14 +93,15 @@ public class CmsStringSubstitution {
      * @return String the substituted String
      */
     public static String substitutePerl(String content, String searchString, String replaceItem, String occurences) {
-    	String translationRule = "s#"+searchString+"#"+replaceItem+"#"+occurences;
-    	Perl5Util perlUtil = new Perl5Util();
-    	try {
-    		return perlUtil.substitute(translationRule, content); 
-    	} catch(MalformedPerl5PatternException e){
-    		if (DEBUG>0) System.err.println("[CmsStringSubstitution]: "+e.toString());				
-    	}
-    	return content;		
+        String translationRule = "s#" + searchString + "#" + replaceItem + "#" + occurences;
+        Perl5Util perlUtil = new Perl5Util();
+        try {
+            return perlUtil.substitute(translationRule, content);
+        } catch (MalformedPerl5PatternException e) {
+            if (DEBUG > 0)
+                System.err.println("[CmsStringSubstitution]: " + e.toString());
+        }
+        return content;
     }
         
     /**
@@ -130,62 +131,65 @@ public class CmsStringSubstitution {
      * @return the escaped string
      */
     public static String escapePattern(String source) {
-    	if (DEBUG>0) System.err.println("[CmsStringSubstitution]: escaping String: "+source);
-    	if (source == null) return null;
-    	StringBuffer result = new StringBuffer(source.length()*2);
-    	for(int i = 0;i < source.length(); ++i) {
-    		char ch = source.charAt(i);
-    		switch (ch) {
+        if (DEBUG > 0)
+            System.err.println("[CmsStringSubstitution]: escaping String: " + source);
+        if (source == null)
+            return null;
+        StringBuffer result = new StringBuffer(source.length() * 2);
+        for (int i = 0; i < source.length(); ++i) {
+            char ch = source.charAt(i);
+            switch (ch) {
                 case '\\' :
                     result.append("\\\\");
-                    break;                
-    			case '/' :
-    				result.append("\\/");
-    				break;
-    			case '$' :                
-    				result.append("\\$");
-    				break;
-                case '^' :                
+                    break;
+                case '/' :
+                    result.append("\\/");
+                    break;
+                case '$' :
+                    result.append("\\$");
+                    break;
+                case '^' :
                     result.append("\\^");
-                    break;    
-                case '.' :                
+                    break;
+                case '.' :
                     result.append("\\.");
-                    break; 
-                case '*' :                
+                    break;
+                case '*' :
                     result.append("\\*");
-                    break;   
-                case '+' :                
+                    break;
+                case '+' :
                     result.append("\\+");
-                    break;                      
-                case '|' :                
+                    break;
+                case '|' :
                     result.append("\\|");
-                    break;  
-                case '?' :                
+                    break;
+                case '?' :
                     result.append("\\?");
-                    break;   
+                    break;
                 case '{' :
                     result.append("\\{");
-                    break;          
+                    break;
                 case '}' :
                     result.append("\\}");
-                    break;    
+                    break;
                 case '[' :
                     result.append("\\[");
-                    break;          
+                    break;
                 case ']' :
                     result.append("\\]");
-                    break;        
+                    break;
                 case '(' :
                     result.append("\\(");
-                    break;          
+                    break;
                 case ')' :
                     result.append("\\)");
-                    break; 
-    			default :
-    				result.append(ch);
-    		}
-    	}
-    	if (DEBUG>0) System.err.println("[CmsStringSubstitution]: escaped String to: "+result.toString());
-    	return new String(result);
+                    break;
+                default :
+                    result.append(ch);
+            }
+        }
+        if (DEBUG > 0)
+            System.err.println("[CmsStringSubstitution]: escaped String to: " + result.toString());
+        return new String(result);
     }
 }

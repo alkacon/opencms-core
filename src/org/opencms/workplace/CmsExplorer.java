@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/11 12:03:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -99,7 +99,7 @@ public class CmsExplorer extends CmsWorkplace {
         }
         
         String selPage = request.getParameter("selPage");
-        if(selPage != null) {
+        if (selPage != null) {
             int page = 1;
             try {
                 page = Integer.parseInt(selPage);
@@ -119,7 +119,7 @@ public class CmsExplorer extends CmsWorkplace {
         int checksum = -1;
         int increment = (settings.getExplorerChecksum() == -2)?1:0;
         String check = request.getParameter("check");
-        if(check != null) {
+        if (check != null) {
             try {
                 checksum = Integer.parseInt(check);
             } catch (NumberFormatException e) {
@@ -139,11 +139,11 @@ public class CmsExplorer extends CmsWorkplace {
     private boolean folderExists(CmsObject cms, String folder) {
         try {
             CmsFolder test = cms.readFolder(folder);
-            if (test.isFile()){
+            if (test.isFile()) {
                 return false;
             }
             return true;            
-        } catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }    
@@ -157,9 +157,9 @@ public class CmsExplorer extends CmsWorkplace {
     private int getDefaultPreferences(CmsObject cms) {
         int filelist;
         String explorerSettings = (String)getSettings().getUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS);
-        if(explorerSettings != null) {
+        if (explorerSettings != null) {
             filelist = new Integer(explorerSettings).intValue();
-        }else {
+        } else {
             filelist = I_CmsWpConstants.C_FILELIST_NAME 
                 + I_CmsWpConstants.C_FILELIST_TITLE
                 + I_CmsWpConstants.C_FILELIST_TYPE
@@ -217,31 +217,31 @@ public class CmsExplorer extends CmsWorkplace {
         StringBuffer content = new StringBuffer(2048);
         content.append("function initialize() {\n");
 
-        if(listonly) {
+        if (listonly) {
             content.append("top.openfolderMethod='openthisfolderflat';\n");
         } else {
             content.append("top.openfolderMethod='openthisfolder';\n");
         }
         
-        if(projectView || vfslinkView) {
+        if (projectView || vfslinkView) {
             content.append("top.projectView=true;\n");
         } else {
             content.append("top.projectView=false;\n");
         }
 
         // show kontext
-        if(getSettings().getExplorerContext()) {
+        if (getSettings().getExplorerContext()) {
             content.append("top.showKon=true;\n");
         } else {
             content.append("top.showKon=false;\n");
         }
 
         // the flaturl
-        if(getSettings().getExplorerFlaturl() != null) {
+        if (getSettings().getExplorerFlaturl() != null) {
             content.append("top.flaturl='");
             content.append(getSettings().getExplorerFlaturl());
             content.append("';\n");
-        } else if (!listonly){
+        } else if (!listonly) {
             content.append("top.flaturl='';\n");
         }
 
@@ -311,13 +311,13 @@ public class CmsExplorer extends CmsWorkplace {
                     selectedPage = 1;
                 }
                 startat = (selectedPage - 1) * maxEntrys;
-                if ((startat + maxEntrys) < stopat){
+                if ((startat + maxEntrys) < stopat) {
                     stopat = startat + maxEntrys;
                 }
             }
         }
 
-        for (int i = startat;i < stopat;i++) {
+        for (int i = startat; i < stopat; i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
             content.append("top.aF(");
             // position 1: name
@@ -325,30 +325,29 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(res.getName());
             content.append("\",");
             // position 2: path
-            if(projectView || vfslinkView){
+            if (projectView || vfslinkView) {
                 content.append("\"");
                 // TODO: Check this (won't work with new repository)
                 content.append(CmsResource.getAbsolutePath(getCms().readAbsolutePath(res)));
                 content.append("\",");
-            }else{
+            } else {
                 //is taken from top.setDirectory
                 content.append("\"\",");
             }
             // position 3: title
-            if(showTitle){
+            if (showTitle) {
                 String title = "";
                 try {
                     title = getCms().readProperty(getCms().readAbsolutePath(res), I_CmsConstants.C_PROPERTY_TITLE);
-                }catch(CmsException e) {
-                }
-                if(title == null) {
+                } catch (CmsException e) { }
+                if (title == null) {
                     title = "";
                 }
                 content.append("\"");
                 if (title != null) content.append(Encoder.escapeHtml(title));
                 content.append("\",");
                 
-            }else{
+            } else {
                 content.append("\"\",");
             }
             // position 4: type
@@ -358,9 +357,9 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(i % 2);
             content.append(",");            
             // position 6: size
-            if(res.isFolder() || (!showSize)) {
+            if (res.isFolder() || (!showSize)) {
                 content.append("\"\",");
-            }else {
+            } else {
                 content.append(res.getLength());
                 content.append(",");                
             }
@@ -371,16 +370,16 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(res.getProjectId());
             content.append(",");                             
             // position 9: date of last modification
-            if(showDateLastModified){
+            if (showDateLastModified) {
                 content.append("\"");
                 content.append(getSettings().getMessages().getDateTime(res.getDateLastModified()));
                 content.append("\",");
                 
-            }else{
+            } else {
                 content.append("\"\",");
             }
             // position 10: user who last modified the resource
-            if(showUserWhoLastModified){
+            if (showUserWhoLastModified) {
                 content.append("\"");  
                 try {            
                     content.append(getCms().readUser(res.getResourceLastModifiedBy()).getName());
@@ -392,16 +391,16 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"\",");
             }
             // position 11: date of creation
-            if(showDateCreated){
+            if (showDateCreated) {
                 content.append("\"");
                 content.append(getSettings().getMessages().getDateTime(res.getDateCreated()));
                 content.append("\",");
                 
-            }else{
+            } else {
                 content.append("\"\",");
             }         
             // position 12: user who created the resource
-            if(showUserWhoCreated){
+            if (showUserWhoCreated) {
                 content.append("\"");                
                 try {
                     // TODO: Change this to user who created the resource
@@ -410,11 +409,11 @@ public class CmsExplorer extends CmsWorkplace {
                     content.append(e.getMessage());
                 }
                 content.append("\",");                
-            }else{
+            } else {
                 content.append("\"\",");
             }
             // position 13: permissions
-            if(showPermissions){
+            if (showPermissions) {
                 content.append("\"");  
                 try {            
                     content.append(getCms().getPermissions(getCms().readAbsolutePath(res)).getPermissionString());
@@ -426,9 +425,9 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"\",");
             }     
             // position 14: locked by
-            if(res.isLockedBy().isNullUUID()) {
+            if (res.isLockedBy().isNullUUID()) {
                 content.append("\"\",");
-            }else {
+            } else {
                 content.append("\"");                
                 try {
                     content.append(getCms().lockedBy(res).getName());
@@ -441,7 +440,7 @@ public class CmsExplorer extends CmsWorkplace {
             String lockedInProjectName = "";
             try {
                 lockedInProjectName = getCms().readProject(lockedInProject).getName();
-            } catch(CmsException exc) {
+            } catch (CmsException exc) {
                 // ignore the exception - this is an old project so ignore it
             }
             // position 15: name of project where resource belongs to            
@@ -454,7 +453,7 @@ public class CmsExplorer extends CmsWorkplace {
         }
 
         // now the tree, only if changed
-        if(newTreePlease && (!(listonly || vfslinkView))) {
+        if (newTreePlease && (!(listonly || vfslinkView))) {
             content.append("\ntop.rT();\n");
             List tree = null;
             try {
@@ -477,7 +476,7 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\", \"");
                 content.append(rootFolder.getParentId().hashCode());
                 content.append("\", false);\n");
-                for(int i = startAt;i < tree.size();i++) {
+                for (int i = startAt; i < tree.size(); i++) {
                     CmsFolder folder = (CmsFolder)tree.get(i);
                     content.append("top.aC(\"");
                     // id
@@ -496,7 +495,7 @@ public class CmsExplorer extends CmsWorkplace {
                 Hashtable idMixer = new Hashtable();
                 CmsFolder rootFolder = (CmsFolder)tree.get(0);
                 String folderToIgnore = null;
-                if(! CmsProject.isOnlineProject(rootFolder.getProjectId())) {
+                if (! CmsProject.isOnlineProject(rootFolder.getProjectId())) {
                     //startAt = 2;
                     grey = false;
                     /*
@@ -504,7 +503,7 @@ public class CmsExplorer extends CmsWorkplace {
                     CmsUUID id = rootFolder.getId();
                     idMixer.put(folder, id);
                     */
-                }else {
+                } else {
                     grey = true;
                 }
                 content.append("top.aC(\"");
@@ -517,29 +516,29 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\", ");
                 content.append(grey);
                 content.append(");\n");
-                for(int i = startAt;i < tree.size();i++) {
+                for (int i = startAt; i < tree.size(); i++) {
                     CmsFolder folder = (CmsFolder)tree.get(i);
-                    if((folder.getState() == I_CmsConstants.C_STATE_DELETED) || (getCms().readAbsolutePath(folder).equals(folderToIgnore))) {
+                    if ((folder.getState() == I_CmsConstants.C_STATE_DELETED) || (getCms().readAbsolutePath(folder).equals(folderToIgnore))) {
 
                         // if the folder is deleted - ignore it and the following online res
                         folderToIgnore = getCms().readAbsolutePath(folder);
-                    }else {
-                        if(! CmsProject.isOnlineProject(folder.getProjectId())) {
+                    } else {
+                        if (! CmsProject.isOnlineProject(folder.getProjectId())) {
                             grey = false;
                             parentId = folder.getParentId();
                             try {
                                 // the next res is the same res in the online-project: ignore it!
-                                if(getCms().readAbsolutePath(folder).equals(getCms().readAbsolutePath((CmsFolder)tree.get(i + 1)))) {
+                                if (getCms().readAbsolutePath(folder).equals(getCms().readAbsolutePath((CmsFolder)tree.get(i + 1)))) {
                                     i++;
                                     idMixer.put((CmsFolder)tree.get(i), folder.getId());
                                 }
-                            }catch(IndexOutOfBoundsException exc) {
+                            } catch (IndexOutOfBoundsException exc) {
                             // ignore the exception, this was the last resource
                             }
                         } else {
                             grey = true;
                             parentId = folder.getParentId();
-                            if(idMixer.containsKey(parentId)) {
+                            if (idMixer.containsKey(parentId)) {
                                 parentId = (CmsUUID) idMixer.get(parentId);
                             }
                         }
@@ -561,7 +560,7 @@ public class CmsExplorer extends CmsWorkplace {
             }
         }
         
-        if(listonly || projectView) {
+        if (listonly || projectView) {
             // only show the filelist
             content.append("top.dUL(document);\n");
         } else {

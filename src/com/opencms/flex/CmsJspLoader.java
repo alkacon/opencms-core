@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -107,7 +107,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
     public static final String C_DIRECTIVE_START = "<%@";
 
     /** Special JSP directive tag start (<code>%&gt;</code>)*/
-    public static final String C_DIRECTIVE_END ="%>";
+    public static final String C_DIRECTIVE_END = "%>";
     
     /** Encoding to write JSP files to disk (<code>ISO-8859-1</code>) */
     public static final String C_DEFAULT_JSP_ENCODING = "ISO-8859-1";
@@ -360,8 +360,8 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         Enumeration params = context.getRequest().getParameterNames();
         while (params.hasMoreElements()) {
             String key = (String)params.nextElement();
-            String values[] = (String[])context.getRequest().getParameterValues(key);
-            for (int i=0; i<values.length; i++) {
+            String[] values = (String[])context.getRequest().getParameterValues(key);
+            for (int i = 0; i<values.length; i++) {
                 exportUrl.append(key);
                 exportUrl.append("=");
                 exportUrl.append(Encoder.encode(values[i]));
@@ -879,13 +879,13 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                             while ((c1 == ' ') || (c1 == '=') || (c1 == '"')) c1 = sub.charAt(++t3);
                             t4 = t3;
                             while (c1 != '"') c1 = sub.charAt(++t4);
-                            if (t4 > t3) filename=sub.substring(t3,t4);
+                            if (t4 > t3) filename=sub.substring(t3, t4);
                             if (DEBUG > 2) System.err.println("JspLoader: File given in directive is: " + filename);                            
                         }
                         
                         if (filename != null) {
                             // a file was found, changes have to be made
-                            String pre = ((t7 == 0)?directive.substring(0,t2+t3+t5):"");
+                            String pre = ((t7 == 0)?directive.substring(0, t2+t3+t5):"");
                             String suf = ((t7 == 0)?directive.substring(t2+t3+t5+filename.length()):"");
                             // Now try to update the referenced file 
                             String absolute = controller.getCurrentRequest().toAbsolute(filename);
@@ -939,49 +939,50 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         }                      
         return jspfilename;
     }    
-        
+    
     /**
-	 * Does the job of including the JSP, 
-	 * this method should usually be called from a <code>CmsFlexRequestDispatcher</code> only.<p>
+     * Does the job of including the JSP, 
+     * this method should usually be called from a <code>CmsFlexRequestDispatcher</code> only.<p>
      * 
      * This method is called directly if the element is 
      * called as a sub-element from another I_CmsResourceLoader.<p>
-	 * 
-	 * One of the tricky issues is the correct cascading of the Exceptions, 
-	 * so that you are able to identify the true origin of the problem.
-	 * This ia achived by imprinting a String C_EXCEPTION_PREFIX to the 
-	 * exception message.
-	 * 
-	 * @param cms used to access the OpenCms VFS
-	 * @param file the reqested JSP file resource in the VFS
-	 * @param req the current request
-	 * @param res the current response
+     *
+     * One of the tricky issues is the correct cascading of the Exceptions, 
+     * so that you are able to identify the true origin of the problem.
+     * This ia achived by imprinting a String C_EXCEPTION_PREFIX to the 
+     * exception message.
+     * 
+     * @param cms used to access the OpenCms VFS
+     * @param file the reqested JSP file resource in the VFS
+     * @param req the current request
+     * @param res the current response
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
      * 
      * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
-	 */
-	public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
-	throws ServletException, IOException {              
-	    try {	
+     */
+    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) throws ServletException, IOException {
+        try {
             CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-	        // Get JSP target name on "real" file system
-	        String target = updateJsp(cms, file, req, controller, new HashSet(11));               
-	        // Important: Indicate that all output must be buffered
-	        controller.getCurrentResponse().setOnlyBuffering(true);   
-	        // Dispatch to external file
-            controller.getCurrentRequest().getRequestDispatcherToExternal(cms.readAbsolutePath(file), target).include(req, res);  	        
-	    } catch (ServletException e) {          
-	        // Check if this Exception has already been marked
-	        String msg = e.getMessage();
-	        if (DEBUG > 1) System.err.println("JspLauncher: Caught ServletException " + e);
-	        if ((msg != null) && msg.startsWith(C_LOADER_EXCEPTION_PREFIX)) throw e;
-	        // Not marked, imprint current JSP file and stack trace
-	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + cms.readAbsolutePath(file) + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);           
-	    } catch (Exception e) {
-	        // Imprint current JSP file and stack trace
-	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + cms.readAbsolutePath(file) + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);          
-	    }
-	} 
+            // Get JSP target name on "real" file system
+            String target = updateJsp(cms, file, req, controller, new HashSet(11));
+            // Important: Indicate that all output must be buffered
+            controller.getCurrentResponse().setOnlyBuffering(true);
+            // Dispatch to external file
+            controller.getCurrentRequest().getRequestDispatcherToExternal(cms.readAbsolutePath(file), target).include(req, res);
+        } catch (ServletException e) {
+            // Check if this Exception has already been marked
+            String msg = e.getMessage();
+            if (DEBUG > 1)
+                System.err.println("JspLauncher: Caught ServletException " + e);
+            if ((msg != null) && msg.startsWith(C_LOADER_EXCEPTION_PREFIX))
+                throw e;
+            // Not marked, imprint current JSP file and stack trace
+            throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + cms.readAbsolutePath(file) + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);
+        } catch (Exception e) {
+            // Imprint current JSP file and stack trace
+            throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + cms.readAbsolutePath(file) + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);
+        }
+    }
 }

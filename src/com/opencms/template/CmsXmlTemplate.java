@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/07/11 21:35:49 $
-* Version: $Revision: 1.114 $
+* Date   : $Date: 2003/07/12 11:29:22 $
+* Version: $Revision: 1.115 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import com.opencms.defaults.I_CmsTimedContentDefinition;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
-import com.opencms.launcher.I_CmsTemplateCache;
 import com.opencms.template.cache.A_CmsElement;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.template.cache.CmsElementDefinition;
@@ -60,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.114 $ $Date: 2003/07/11 21:35:49 $
+ * @version $Revision: 1.115 $ $Date: 2003/07/12 11:29:22 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -80,7 +79,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     /**
      * Template cache for storing cacheable results of the subtemplates.
      */
-    protected static com.opencms.launcher.I_CmsTemplateCache m_cache = null;
+    protected static com.opencms.template.I_CmsTemplateCache m_cache = null;
 
     /**
      * For debugging purposes only.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,37 +36,35 @@ import com.opencms.flex.util.CmsUUID;
  * Representation of an identity in the cms (currently user or group) 
  * used to define permissions on a resource.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/07/12 11:29:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsPrincipal {
-	
-	/**
-	 * Compares the given object with this principal.
-	 * 
-	 * @param obj	object to comapre
-	 * @return		true if the object is equal
-	 */
-	boolean equals(Object obj);
-
-	/**
-	 * @return	the hash code
-	 */
-	int hashCode();
-		
-	/**
-	 * Gets the id of this principal.
-	 * 
-	 * @return the unique id of the principal.
-	 */
-	CmsUUID getId();
-	
-	
-	/**
-	 * Gets the name of this principal.
-	 * 
-	 * @return the name of the principal
-	 */
-	String getName();
     
+    /**
+     * Compares the given object with this principal.
+     * 
+     * @param obj object to comapre
+     * @return true if the object is equal
+     */
+    boolean equals(Object obj);
+
+    /**
+     * @return the hash code
+     */
+    int hashCode();
+
+    /**
+     * Gets the id of this principal.
+     * 
+     * @return the unique id of the principal.
+     */
+    CmsUUID getId();
+
+    /**
+     * Gets the name of this principal.
+     * 
+     * @return the name of the principal
+     */
+    String getName();
 }

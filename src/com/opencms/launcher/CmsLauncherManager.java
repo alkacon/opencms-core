@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
-* Date   : $Date: 2003/02/26 10:30:36 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/12 11:29:22 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.*;
  * given launcher id.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2003/02/26 10:30:36 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/12 11:29:22 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
 
@@ -149,6 +149,15 @@ public class CmsLauncherManager implements I_CmsLogChannels {
     }
 
     /**
+     * Looks up the appropriate launcher class instance for the given
+     * launcher id in the internal hashtable.
+     * @return I_CmsLauncher object for the requested launcher id.
+     */
+    public I_CmsLauncher getLauncher(int launcherId) {
+        return (I_CmsLauncher)launchers.get(new Integer(launcherId));
+    }
+
+    /**
      * Clears all launchercaches.
      */
     public void clearCaches() {
@@ -156,15 +165,6 @@ public class CmsLauncherManager implements I_CmsLogChannels {
             I_CmsLauncher l = (I_CmsLauncher)e.nextElement();
             l.clearCache();
         }
-    }
-
-    /**
-     * Looks up the appropriate launcher class instance for the given
-     * launcher id in the internal hashtable.
-     * @return I_CmsLauncher object for the requested launcher id.
-     */
-    public I_CmsLauncher getLauncher(int launcherId) {
-        return (I_CmsLauncher)launchers.get(new Integer(launcherId));
     }
 
     /**

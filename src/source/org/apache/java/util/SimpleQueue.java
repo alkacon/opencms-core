@@ -65,79 +65,80 @@ import java.util.Vector;
  * logging.
  *
  * @author <a href="vt@freehold.crocodile.org">Vadim Tkachenko</a>
- * @version $Revision: 1.4 $ $Date: 2003/06/13 10:56:35 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/12 11:29:22 $
  */
 public class SimpleQueue {
-	/**
-	 * Data holder.
-	 */
-	private Vector m_queue;
+    /**
+     * Data holder.
+     */
+    private Vector m_queue;
 
-	/**
-	 * Default constructor.
-	 */
-	public SimpleQueue() {
-		m_queue = new Vector();
-	}
-	/**
-	 * Get the object waiting in the queue.
-	 * Asynchronous.
-	 * @return null if the queue is empty.
-	 */
-	public synchronized Object get() {
-		Object  found = peekAtHead();
-		if (found != null) {
-			m_queue.removeElementAt(0);
-		} else {
-			return found;
-		}
+    /**
+     * Default constructor.
+     */
+    public SimpleQueue() {
+        m_queue = new Vector();
+    }
+    /**
+     * Get the object waiting in the queue.
+     * Asynchronous.
+     * @return null if the queue is empty.
+     */
+    public synchronized Object get() {
+        Object found = peekAtHead();
+        if (found != null) {
+            m_queue.removeElementAt(0);
+        } else {
+            return found;
+        }
 
-	return found;
-	}
-	/**
-	 * Find out if the queue is empty.
+        return found;
+    }
+    /**
+     * Find out if the queue is empty.
      * @return true if the queue is empty
-	 */
-	public boolean isEmpty() {
-		return m_queue.isEmpty();
-   }   
-	/**
-	 * Get the object at the head of the queue.
-	 * @return null if the queue is empty.
-	 */
-	public synchronized Object peekAtHead() {
-		if (m_queue.isEmpty()) {
-			return null;
-		}
+     */
+    public boolean isEmpty() {
+        return m_queue.isEmpty();
+    }
+    /**
+     * Get the object at the head of the queue.
+     * @return null if the queue is empty.
+     */
+    public synchronized Object peekAtHead() {
+        if (m_queue.isEmpty()) {
+            return null;
+        }
 
-		return m_queue.elementAt(0);
-	}
-	/**
-	 * Put the object into the queue.
-	 *
-	 * @param toPut the object to put
-	 */
-	public synchronized void put(Object toPut) {
-		m_queue.addElement(toPut);
-		notify();
-	}
-   /**
-	* Get the number of elements in the queue.
-    * @return the number of elements in the queue
-	*/
-   public int size() {
-	   return m_queue.size();
-   }   
-	/**
-	 * Wait until the object appears in the queue, then return it.
-	 * @return The object from the queue.
-	 * @throws InterruptedException if this thread was interrupted by another thread.
-	 * @see #get
-	 */
-	public synchronized Object waitObject() throws InterruptedException {
-		while (isEmpty()) {
-			wait();
-		}
-		return get();
-	}
+        return m_queue.elementAt(0);
+    }
+    /**
+     * Put the object into the queue.
+     *
+     * @param toPut the object to put
+     */
+    public synchronized void put(Object toPut) {
+        m_queue.addElement(toPut);
+        notify();
+    }
+
+    /**
+     * Get the number of elements in the queue.
+     * @return the number of elements in the queue
+     */
+    public int size() {
+        return m_queue.size();
+    }
+    /**
+     * Wait until the object appears in the queue, then return it.
+     * @return The object from the queue.
+     * @throws InterruptedException if this thread was interrupted by another thread.
+     * @see #get
+     */
+    public synchronized Object waitObject() throws InterruptedException {
+        while (isEmpty()) {
+            wait();
+        }
+        return get();
+    }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsTemplate.java,v $
-* Date   : $Date: 2003/01/20 23:59:21 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/07/12 11:29:22 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Hashtable;
  * have to be implemtented.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:21 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/12 11:29:22 $
  */
 public interface I_CmsTemplate {
 
@@ -214,7 +214,7 @@ public interface I_CmsTemplate {
      * If the template cache is not set, caching will be disabled.
      * @param c Template cache to be used.
      */
-    public void setTemplateCache(com.opencms.launcher.I_CmsTemplateCache c);
+    public void setTemplateCache(com.opencms.template.I_CmsTemplateCache c);
 
     /**
      * Indicates if a previous cached result should be reloaded.

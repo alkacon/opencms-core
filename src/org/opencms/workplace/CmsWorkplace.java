@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/07/11 06:25:23 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -318,7 +318,7 @@ public abstract class CmsWorkplace {
      */
     public String getResourceUri() {
         if (m_resourceUri != null) return m_resourceUri;
-        synchronized(this) {
+        synchronized (this) {
             boolean useVfs = true;
             // check registry for setting of workplace images
             try {
@@ -507,7 +507,7 @@ public abstract class CmsWorkplace {
      */
     private List paramGetMethods() {
         List list = new ArrayList();
-        Method methods[] = this.getClass().getMethods();
+        Method[] methods = this.getClass().getMethods();
         int length = methods.length;
         for (int i=0; i<length; i++) {
             Method method = methods[i];
@@ -528,7 +528,7 @@ public abstract class CmsWorkplace {
      */
     private List paramSetMethods() {
         List list = new ArrayList();
-        Method methods[] = this.getClass().getMethods();
+        Method[] methods = this.getClass().getMethods();
         int length = methods.length;
         for (int i=0; i<length; i++) {
             Method method = methods[i];

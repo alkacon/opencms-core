@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/CmsBrowserMatcherTest.java,v $
- * Date   : $Date: 2003/07/10 12:28:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/12 11:29:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -113,6 +113,9 @@ public class CmsBrowserMatcherTest extends TestCase {
         }
     }
     
+    /**
+     * Tests for regular expressions.<p>
+     */
     public void testRegex() {
         String source = "addMenuEntry(resource_id, \"language_key(explorer.context.copy)\", \"/WORKPLACE/copy.html?initial=true\", \"''\", \"rules_key(d d aaai aaai dddd dddd dddd)\");";
         String target = "addMenuEntry(resource_id, \"language_key(explorer.context.copy)\", \"/system/workplace/jsp/copy.html?initial=true\", \"''\", \"rules_key(d d aaai aaai dddd dddd dddd)\");";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2003/07/09 15:54:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -198,7 +198,7 @@ public class CmsChnav extends CmsDialog {
             float selectedPos = -1;
             try {
                 selectedPos = Float.parseFloat(selectedPosString);
-            } catch (Exception e) {}
+            } catch (Exception e) { }
             
             // only update the position if a change is requested
             if (selectedPos != -1) {
@@ -242,7 +242,7 @@ public class CmsChnav extends CmsDialog {
         try {
             CmsJspNavElement ne = (CmsJspNavElement)navList.get(0);
             maxValue = ne.getNavPosition();
-        } catch (Exception e) {}
+        } catch (Exception e) { }
         
         if (maxValue != 0) {
             firstValue = maxValue / 2;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2003/07/09 11:38:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/12 11:29:22 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -164,7 +164,7 @@ public class CmsRename extends CmsDialog {
         try {
             getCms().readFileHeader(parentFolder + target);
             targetExists = true;
-        } catch (CmsException e) {} 
+        } catch (CmsException e) { } 
         if (targetExists) {
             throw new CmsException("The resource already exists", CmsException.C_FILE_EXISTS);       
         }
