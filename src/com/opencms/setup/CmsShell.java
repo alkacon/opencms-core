@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/01/25 15:46:19 $
+ * @version $Revision: 1.16 $ $Date: 2000/01/26 17:57:01 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1163,7 +1163,7 @@ public class CmsShell implements I_CmsConstants {
 	 */
 	public void readFileHeader(String filename) {
 		try {
-			m_cms.readFileHeader(filename);
+			System.out.println( m_cms.readFileHeader(filename) );
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}

@@ -6,14 +6,14 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/01/25 16:16:17 $
+ * @version $Revision: 1.22 $ $Date: 2000/01/26 17:57:00 $
  */
 public interface I_CmsConstants
 {
 	/**
 	 * The version-string for the cvs.
 	 */
-	 static String C_VERSION = "Release 3.01 \"pre Caladan Leto\" $Name:  $";
+	static String C_VERSION = "Release 3.3 Caladan: Jessica $Name:  $";
 
 	/**
 	 * The minimum-size of a passwordstring.

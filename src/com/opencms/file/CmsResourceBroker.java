@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.34 $ $Date: 2000/01/25 15:37:31 $
+ * @version $Revision: 1.35 $ $Date: 2000/01/26 17:57:00 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -484,13 +484,25 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public String readMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
 									  String resource, String meta)
 		throws CmsException {
-		
-		// read the resource
-		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		A_CmsResource res;
+		// read the resource from the currentProject, or the online-project
+		try {
+			res = m_fileRb.readFileHeader(currentProject, resource);
+		} catch(CmsException exc) {
+			// the resource was not readable
+			if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+				// this IS the onlineproject - throw the exception
+				throw exc;
+			} else {
+				// try to read the resource in the onlineproject
+				res = m_fileRb.readFileHeader(onlineProject(currentUser, currentProject),
+											  resource);
+			}
+		}
 		
 		// check the security
 		if( ! accessRead(currentUser, currentProject, res) ) {
-			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
+			throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
 				CmsException.C_NO_ACCESS);
 		}
 		
@@ -580,8 +592,21 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											 String resource)
 		throws CmsException {
 		
-		// read the resource
-		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		A_CmsResource res;
+		// read the resource from the currentProject, or the online-project
+		try {
+			res = m_fileRb.readFileHeader(currentProject, resource);
+		} catch(CmsException exc) {
+			// the resource was not readable
+			if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+				// this IS the onlineproject - throw the exception
+				throw exc;
+			} else {
+				// try to read the resource in the onlineproject
+				res = m_fileRb.readFileHeader(onlineProject(currentUser, currentProject),
+											  resource);
+			}
+		}
 		
 		// check the security
 		if( ! accessRead(currentUser, currentProject, res) ) {
@@ -1322,7 +1347,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			
 			// read the folder, to check if it exists.
 			// if it dosen't exist a exception will be thrown
-			readFolder(currentUser, currentProject, mountpoint, "");
+			readFolder(currentUser, onlineProject(currentUser, currentProject), 
+					   mountpoint, "");
 			
 			// create the new mountpoint			
 			A_CmsMountPoint newMountPoint = new CmsMountPoint(mountpoint, driver,
@@ -1378,7 +1404,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			
 			// read the folder, to check if it exists.
 			// if it dosen't exist a exception will be thrown
-			readFolder(currentUser, currentProject, mountpoint, "");
+			readFolder(currentUser, onlineProject(currentUser, currentProject), 
+					   mountpoint, "");
 			
 			// read the resource-type for this mountpoint.			
 			A_CmsResourceType resType = 
@@ -1740,9 +1767,25 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
 							 String filename)
 		 throws CmsException {
-		 CmsFile cmsFile = m_fileRb.readFile(currentProject, 
+		 CmsFile cmsFile;
+		 // read the resource from the currentProject, or the online-project
+		 try {
+			 cmsFile = m_fileRb.readFile(currentProject, 
+										 onlineProject(currentUser, currentProject),
+										 filename);
+		 } catch(CmsException exc) {
+			 // the resource was not readable
+			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+				 // this IS the onlineproject - throw the exception
+				 throw exc;
+			 } else {
+				 // try to read the resource in the onlineproject
+				 cmsFile = m_fileRb.readFile(onlineProject(currentUser, currentProject), 
 											 onlineProject(currentUser, currentProject),
 											 filename);
+			 }
+		 }
+		 
 		 if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFile) ) {
 				
 			// acces to all subfolders was granted - return the file.
@@ -1777,7 +1820,22 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public A_CmsResource readFileHeader(A_CmsUser currentUser, 
 										 A_CmsProject currentProject, String filename)
 		 throws CmsException {
-		 A_CmsResource cmsFile = m_fileRb.readFileHeader(currentProject, filename);
+		 A_CmsResource cmsFile;
+		 // read the resource from the currentProject, or the online-project
+		 try {
+			 cmsFile = m_fileRb.readFileHeader(currentProject, filename);
+		 } catch(CmsException exc) {
+			 // the resource was not readable
+			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+				 // this IS the onlineproject - throw the exception
+				 throw exc;
+			 } else {
+				 // try to read the resource in the onlineproject
+				 cmsFile = m_fileRb.readFileHeader(onlineProject(currentUser, currentProject),
+												   filename);
+			 }
+		 }
+		 
 		 if( accessRead(currentUser, currentProject, cmsFile) ) {
 				
 			// acces to all subfolders was granted - return the file-header.
@@ -1813,9 +1871,24 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsFolder readFolder(A_CmsUser currentUser, A_CmsProject currentProject,
 								String folder, String folderName)
 		throws CmsException {
-			
-		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
-												  folder + folderName);
+		
+		CmsFolder cmsFolder;
+		// read the resource from the currentProject, or the online-project
+		 try {
+			 cmsFolder = cmsFolder = m_fileRb.readFolder(currentProject, 
+													   folder + folderName);
+		 } catch(CmsException exc) {
+			 // the resource was not readable
+			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+				 // this IS the onlineproject - throw the exception
+				 throw exc;
+			 } else {
+				 // try to read the resource in the onlineproject
+				 cmsFolder = cmsFolder = m_fileRb.readFolder(onlineProject(currentUser, currentProject), 
+															 folder + folderName);
+			 }
+		 }
+		 
 		if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
 			// acces to all subfolders was granted - return the folder.
@@ -1955,6 +2028,96 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public Vector getSubFolders(A_CmsUser currentUser, A_CmsProject currentProject,
 								String foldername)
+		throws CmsException {
+		Vector folders = new Vector();
+		
+		// try to get the folders in the current project
+		try {
+			folders = helperGetSubFolders(currentUser, currentProject, foldername);
+		} catch (CmsException exc) {
+			// no folders, ignoring them
+		}
+		
+		if( !currentProject.equals(onlineProject(currentUser, currentProject))) {
+			// this is not the onlineproject, get the files 
+			// from the onlineproject, too
+			try {
+				Vector onlineFolders = 
+					helperGetSubFolders(currentUser, 
+										onlineProject(currentUser, currentProject), 
+										foldername);
+				// merge the resources
+				folders = mergeResources(folders, onlineFolders);
+			} catch(CmsException exc) {
+				// no onlinefolders, ignoring them
+			}			
+		}
+		// return the folders
+		return(folders);
+	}
+
+	/**
+	 * Merges two resource-vectors into one vector.
+	 * All offline-resources will be putted to the return-vector. All additional 
+	 * online-resources will be putted to the return-vector, too. All online resources,
+	 * which are present in the offline-vector will be ignored.
+	 * 
+	 * The merged-vector is sorted by the complete path, if the two input-vectors were
+	 * sorted correctly.
+	 * 
+	 * @param offline The vector with the offline resources.
+	 * @param online The vector with the online resources.
+	 * @return The merged vector.
+	 */
+	private Vector mergeResources(Vector offline, Vector online) {
+		
+		// create a vector for the merged offline
+		Vector merged = new Vector(offline.size() + online.size());
+		// merge the online to the offline, use the correct sorting
+		while( (offline.size() != 0) && (online.size() != 0) ) {
+			int compare = 
+				((A_CmsResource)offline.firstElement()).getAbsolutePath().compareTo(
+					((A_CmsResource)online.firstElement()).getAbsolutePath());
+			if( compare < 0 ) {
+				merged.addElement(offline.firstElement());
+				offline.removeElementAt(0);
+			} else if( compare == 0) {
+				merged.addElement(offline.firstElement());
+				offline.removeElementAt(0);
+				online.removeElementAt(0);
+			} else {
+				merged.addElement(online.firstElement());
+				online.removeElementAt(0);
+			}
+		}
+		while(offline.size() != 0) {
+			merged.addElement(offline.firstElement());
+			offline.removeElementAt(0);
+		}
+		while(online.size() != 0) {
+			merged.addElement(online.firstElement());
+			online.removeElementAt(0);
+		}
+		return(merged);
+	}
+	
+   	/**
+   	 * A helper method for this resource-broker.
+	 * Returns a Hashtable with all subfolders.<br>
+	 * 
+	 * Subfolders can be read from an offline project and the online project. <br>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project to read the folders from.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfolders A Hashtable with all subfolders for the given folder.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	private Vector helperGetSubFolders(A_CmsUser currentUser, 
+									   A_CmsProject currentProject,
+									   String foldername)
 		throws CmsException{
 		
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
@@ -1969,12 +2132,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				// read the current folder
 				folder = (CmsFolder)folders.elementAt(z);
 				// check the readability for the folder
-				if( ! ( accessOther(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_PUBLIC_READ) || 
-						accessOwner(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_OWNER_READ) ||
-						accessGroup(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_GROUP_READ) ) ) {
-					// no access, delete the folder
+				if( !( accessOther(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_PUBLIC_READ) || 
+					   accessOwner(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_OWNER_READ) ||
+					   accessGroup(currentUser, currentProject, (A_CmsResource)folder, C_ACCESS_GROUP_READ) ) ) {
+					// access to the folder was not granted delete him
 					folders.removeElementAt(z);
-					// correct the current index
+					// correct the index
 					z--;
 				}
 			}
@@ -2555,6 +2718,51 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getFilesInFolder(A_CmsUser currentUser, A_CmsProject currentProject,
 								   String foldername)
 		throws CmsException {
+		Vector files = new Vector();
+		
+		// try to get the files in the current project
+		try {
+			files = helperGetFilesInFolder(currentUser, currentProject, foldername);
+		} catch (CmsException exc) {
+			// no files, ignoring them
+		}
+		
+		if( !currentProject.equals(onlineProject(currentUser, currentProject))) {
+			// this is not the onlineproject, get the files 
+			// from the onlineproject, too
+			try {
+				Vector onlineFiles = 
+					helperGetFilesInFolder(currentUser, 
+										   onlineProject(currentUser, currentProject), 
+										   foldername);
+				// merge the resources
+				files = mergeResources(files, onlineFiles);
+			} catch(CmsException exc) {
+				// no onlinefiles, ignoring them
+			}			
+		}
+		// return the files
+		return(files);
+	}
+	
+	/**
+	 * A helper method for this resource-broker.
+	 * Returns a Vector with all files of a folder.<br>
+	 * 
+	 * Files of a folder can be read from an offline Project and the online Project.<br>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfiles A Vector with all subfiles for the overgiven folder.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	private Vector helperGetFilesInFolder(A_CmsUser currentUser, 
+										  A_CmsProject currentProject,
+										  String foldername)
+		throws CmsException {
 
 		// get the folder to read from, to check access
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
@@ -2618,7 +2826,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				 CmsException.C_NO_ACCESS);
 		}
-     }
+	 }
 	 
 	/**
 	 * This method can be called, to determine if the file-system was changed 
@@ -2664,9 +2872,17 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) ||
 				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 				
-				// read next resource
+				// read next resource in ...
 				if(resource.getParent() != null) {
-					resource = m_fileRb.readFolder(currentProject, resource.getParent());
+					// ... current project
+					try {
+						resource = m_fileRb.readFolder(currentProject, resource.getParent());
+					} catch( CmsException exc ) {
+						// ... or in the online-project
+						resource = m_fileRb.readFolder(onlineProject(currentUser, 
+																	 currentProject), 
+													   resource.getParent());
+					}
 				}
 			} else {
 				// last check was negative
