@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/09/15 15:30:42 $
-* Version: $Revision: 1.272 $
+* Date   : $Date: 2003/09/17 16:15:06 $
+* Version: $Revision: 1.273 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.272 $ $Date: 2003/09/15 15:30:42 $
+ * @version $Revision: 1.273 $ $Date: 2003/09/17 16:15:06 $
  */
 public interface I_CmsConstants {
 
@@ -542,7 +542,7 @@ public interface I_CmsConstants {
      */
     // Encoding project:
     String C_SESSION_CONTENT_ENCODING = "content-encoding";
-
+    
     /** Identifier for request type http */
     int C_REQUEST_HTTP = 0;
 

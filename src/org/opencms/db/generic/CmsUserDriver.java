@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/17 14:30:44 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/09/17 16:15:06 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.31 $ $Date: 2003/09/17 14:30:44 $
+ * @version $Revision: 1.32 $ $Date: 2003/09/17 16:15:06 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -833,7 +833,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#readGroupsOfUser(org.opencms.util.CmsUUID)
      */
-    public Vector readGroupsOfUser(CmsUUID userId) throws CmsException {
+    public Vector readGroupsOfUser(CmsUUID userId, String paramStr) throws CmsException {
         //CmsGroup group;
         Vector groups = new Vector();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/17 12:05:48 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/09/17 16:15:06 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2003/09/17 12:05:48 $
+ * @version $Revision: 1.25 $ $Date: 2003/09/17 16:15:06 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -286,11 +286,12 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Returns a list of groups of a user.<p>
      *
-     * @param userId the id of the user.
+     * @param userId the id of the user
+     * @param paramStr additional parameter
      * @return vector of groups
      * @throws CmsException if operation was not succesful
      */
-    Vector readGroupsOfUser(CmsUUID userId) throws CmsException;
+    Vector readGroupsOfUser(CmsUUID userId, String paramStr) throws CmsException;
 
     /**
      * Reads a user from the database.<p>
@@ -412,7 +413,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return true if user is member of group
      * @throws CmsException if operation was not succesful
      */
-    boolean validateUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
+    // boolean validateUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
 
     /**
      * Writes an access control entry to the cms.<p>

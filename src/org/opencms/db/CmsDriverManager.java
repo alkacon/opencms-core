@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/17 16:11:16 $
- * Version: $Revision: 1.234 $
+ * Date   : $Date: 2003/09/17 16:15:06 $
+ * Version: $Revision: 1.235 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.234 $ $Date: 2003/09/17 16:11:16 $
+ * @version $Revision: 1.235 $ $Date: 2003/09/17 16:15:06 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -3321,7 +3321,7 @@ public class CmsDriverManager extends Object {
     public Vector getDirectGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
         CmsUser user = readUser(username);
-        return m_userDriver.readGroupsOfUser(user.getId());
+        return m_userDriver.readGroupsOfUser(user.getId(), context.getRemoteAddress());
     }
 
     /**
@@ -3455,7 +3455,7 @@ public class CmsDriverManager extends Object {
             CmsGroup subGroup;
             CmsGroup group;
             // get all groups of the user
-            Vector groups = m_userDriver.readGroupsOfUser(user.getId());
+            Vector groups = m_userDriver.readGroupsOfUser(user.getId(), context.getRemoteAddress());
             allGroups = new Vector();
             // now get all childs of the groups
             Enumeration enu = groups.elements();
