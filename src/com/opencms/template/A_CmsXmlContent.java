@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/06/25 11:40:24 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/08/07 09:38:01 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -75,7 +75,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2000/06/25 11:40:24 $
+ * @version $Revision: 1.30 $ $Date: 2000/08/07 09:38:01 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -1324,8 +1324,24 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             String errorMessage = "Unknown error. Parsed DOM document is null.";
             throwException(errorMessage, CmsException.C_XML_PARSING_ERROR);
         }        
-
-        parsedDoc.getDocumentElement().normalize();
+        
+        /* Try to normalize the XML document.
+           We should not call the normalize() method in the usual way
+           here, since the DOM interface changed at this point between
+           Level 1 and Level 2.
+           It's better to lookup the normalize() method first using reflection
+           API and call it then. So we will get the appropriate method for the
+           currently used DOM level and avoid NoClassDefFound exceptions. */
+        try {
+            Class elementClass = Class.forName("org.w3c.dom.Element");        
+            Method normalizeMethod = elementClass.getMethod("normalize", new Class[] {});
+            normalizeMethod.invoke(parsedDoc.getDocumentElement(), new Object[] {});
+        } catch(Exception e) {
+            // Sorry. The workaround using reflection API failed.
+            // We have to throw an exception.
+            throwException("Normalizing the XML document failed. Possibly you are using concurrent versions of "
+                    + "the XML parser with different DOM levels. ", e, CmsException.C_XML_PARSING_ERROR);
+        }
         
         // Delete all unnecessary text nodes from the tree.
         // These nodes could cause errors when serializing this document otherwise
