@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.32 Bela Tegeuse - ?? July 2001
+! Added a ecmascript-engine to the OpenCms-shell. You can start it with like this:
+  cmsshell -mode=ecmascript
+- Update of shellscripts to start the cmsshell.
+
 OpenCms 4.3.31 Bela Tegeuse - 23 July 2001
 * Fixed bug in rename dialog.
 * Fixed bug in htmleditor not deleting the ~files.
