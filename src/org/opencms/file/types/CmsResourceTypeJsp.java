@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2004/08/11 16:55:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/09/22 11:56:23 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -114,10 +114,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     public ExtendedProperties getConfiguration() {
 
         ExtendedProperties result = new ExtendedProperties();
-        if (!OpenCms.getSystemInfo().getDefaultEncoding().equals(m_defaultEncoding)) {
-            // only write encoding back to configuration if different from default
-            result.put(C_CONFIGURATION_JSP_ENCODING, m_defaultEncoding);
-        }
+        result.put(C_CONFIGURATION_JSP_ENCODING, m_defaultEncoding);
         return result;
     }
 
