@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/22 09:37:06 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2004/12/22 16:36:45 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.105 $
+ * @version $Revision: 1.106 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -88,8 +88,8 @@ public class CmsObject {
     /**
      * Connects an OpenCms user context to a running database.<p>
      * 
-     * @param securityManager the security manager.
-     * @param context the request context that contains the user authentification.
+     * @param securityManager the security manager
+     * @param context the request context that contains the user authentification
      */
     public CmsObject(CmsSecurityManager securityManager, CmsRequestContext context) {
 
@@ -99,7 +99,7 @@ public class CmsObject {
     /**
      * Returns the current session info manager object.<p>
      * 
-     * @return the current session info manager object.
+     * @return the current session info manager object
      */
     public CmsTaskService getTaskService() {
 
@@ -109,11 +109,11 @@ public class CmsObject {
     /**
      * Checks if the user can access a given project.<p>
      *
-     * @param projectId the id of the project.
+     * @param projectId the id of the project
      * 
-     * @return <code>true</code>, if the user may access this project; <code>false</code> otherwise.
+     * @return <code>true</code>, if the user may access this project; <code>false</code> otherwise
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public boolean accessProject(int projectId) throws CmsException {
 
@@ -123,22 +123,22 @@ public class CmsObject {
     /**
      * Creates a new user by import.<p>
      * 
-     * @param id the id of the user.
-     * @param name the new name for the user.
-     * @param password the new password for the user.
-     * @param description the description for the user.
-     * @param firstname the firstname of the user.
-     * @param lastname the lastname of the user.
-     * @param email the email of the user.
-     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>).
+     * @param id the id of the user
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param description the description for the user
+     * @param firstname the firstname of the user
+     * @param lastname the lastname of the user
+     * @param email the email of the user
+     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>)
      * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
-     *                      infos may be stored into the Usertables (depending on the implementation).
-     * @param address the address of the user.
-     * @param type the type of the user.
+     *                      infos may be stored into the Usertables (depending on the implementation)
+     * @param address the address of the user
+     * @param type the type of the user
      *
-     * @return a new <code>{@link CmsUser}</code> object representing the added user.
+     * @return a new <code>{@link CmsUser}</code> object representing the added user
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsUser addImportUser(
         String id,
@@ -171,15 +171,15 @@ public class CmsObject {
     /**
      * Creates a new user.<p>
      * 
-     * @param name the name for the new user.
-     * @param password the password for the user.
-     * @param group the default groupname for the user.
-     * @param description the description for the user.
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user.
+     * @param name the name for the new user
+     * @param password the password for the user
+     * @param group the default groupname for the user
+     * @param description the description for the user
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user
      * 
-     * @return the newly created user.
+     * @return the newly created user
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser addUser(String name, String password, String group, String description, Map additionalInfos)
     throws CmsException {
@@ -190,10 +190,10 @@ public class CmsObject {
     /**
      * Adds a user to a group.<p>
      * 
-     * @param username the name of the user that is to be added to the group.
-     * @param groupname the name of the group.
+     * @param username the name of the user that is to be added to the group
+     * @param groupname the name of the group
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void addUserToGroup(String username, String groupname) throws CmsException {
 
@@ -209,15 +209,15 @@ public class CmsObject {
      * Moreover, a web user can be created by any user, the intention being that
      * a "Guest" user can create a personalized account for himself.<p>
      *
-     * @param name the name for the new web user.
-     * @param password the password for the user.
-     * @param group the default groupname for the user.
-     * @param description the description for the user.
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user.
+     * @param name the name for the new web user
+     * @param password the password for the user
+     * @param group the default groupname for the user
+     * @param description the description for the user
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user
      * 
-     * @return the newly created user.
+     * @return the newly created user
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser addWebUser(String name, String password, String group, String description, Map additionalInfos)
     throws CmsException {
@@ -228,11 +228,11 @@ public class CmsObject {
     /**
      * Creates a backup of the published project.<p>
      *
-     * @param projectId the id of the project in which the resource was published.
-     * @param versionId the version of the backup.
-     * @param publishDate the date of publishing.
+     * @param projectId the id of the project in which the resource was published
+     * @param versionId the version of the backup
+     * @param publishDate the date of publishing
      *
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public void backupProject(int projectId, int versionId, long publishDate) throws CmsException {
 
@@ -243,14 +243,14 @@ public class CmsObject {
     /**
      * Changes the access control for a given resource and a given principal(user/group).<p>
      * 
-     * @param resourceName name of the resource.
-     * @param principalType the type of the principal (currently group or user).
-     * @param principalName name of the principal.
-     * @param allowedPermissions bitset of allowed permissions.
-     * @param deniedPermissions bitset of denied permissions.
-     * @param flags additional flags of the access control entry.
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (currently group or user)
+     * @param principalName name of the principal
+     * @param allowedPermissions bitset of allowed permissions
+     * @param deniedPermissions bitset of denied permissions
+     * @param flags additional flags of the access control entry
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void chacc(
         String resourceName,
@@ -290,12 +290,12 @@ public class CmsObject {
     /**
      * Changes the access control for a given resource and a given principal(user/group).<p>
      * 
-     * @param resourceName name of the resource.
-     * @param principalType the type of the principal (group or user).
-     * @param principalName name of the principal.
-     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*.
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (group or user)
+     * @param principalName name of the principal
+     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void chacc(String resourceName, String principalType, String principalName, String permissionString)
     throws CmsException {
@@ -326,9 +326,9 @@ public class CmsObject {
      * to the project (i.e. have the id of the project set) are published
      * with the project.<p>
      * 
-     * @param resourcename the name of the resource to change the project id for (full path).
+     * @param resourcename the name of the resource to change the project id for (full path)
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void changeLastModifiedProjectId(String resourcename) throws CmsException {
 
@@ -342,9 +342,9 @@ public class CmsObject {
      * 
      * This is the "steal lock" operation.<p>
      * 
-     * @param resourcename the name of the resource to change the lock with complete path.
+     * @param resourcename the name of the resource to change the lock with complete path
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void changeLock(String resourcename) throws CmsException {
 
@@ -356,13 +356,13 @@ public class CmsObject {
      * Returns a list with all sub resources of a given folder that have set the given property, 
      * matching the current property's value with the given old value and replacing it by a given new value.<p>
      *
-     * @param resourcename the name of the resource to change the property value.
-     * @param property the name of the property to change the value.
-     * @param oldValue the old value of the property, can be a regular expression.
-     * @param newValue the new value of the property.
-     * @param recursive if true, change recursively all property values on sub-resources (only for folders).
+     * @param resourcename the name of the resource to change the property value
+     * @param property the name of the property to change the value
+     * @param oldValue the old value of the property, can be a regular expression
+     * @param newValue the new value of the property
+     * @param recursive if true, change recursively all property values on sub-resources (only for folders)
      *
-     * @return a list with the <code>{@link CmsResource}</code>'s where the property value has been changed.
+     * @return a list with the <code>{@link CmsResource}</code>'s where the property value has been changed
      *
      * @throws CmsException if operation was not successful
      */
@@ -386,10 +386,10 @@ public class CmsObject {
     /**
      * Changes the type of a user given its id.<p>
      *
-     * @param userId The id of the user to change.
-     * @param userType The new type of the user.
+     * @param userId The id of the user to change
+     * @param userType The new type of the user
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void changeUserType(CmsUUID userId, int userType) throws CmsException {
 
@@ -399,10 +399,10 @@ public class CmsObject {
     /**
      * Changes the type of a user given its name.<p>
      *
-     * @param username The name of the user to change.
-     * @param userType The new type of the user.
+     * @param username The name of the user to change
+     * @param userType The new type of the user
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void changeUserType(String username, int userType) throws CmsException {
 
@@ -416,10 +416,10 @@ public class CmsObject {
      * for a resource. Most notably, the "internal only" setting which signals 
      * that a resource can not be directly requested with it's URL.<p>
      *
-     * @param resourcename the name of the resource to change the flags for (full path).
-     * @param flags the new flags for this resource.
+     * @param resourcename the name of the resource to change the flags for (full path)
+     * @param flags the new flags for this resource
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void chflags(String resourcename, int flags) throws CmsException {
 
@@ -436,10 +436,10 @@ public class CmsObject {
      * makes sense e.g. if you want to make a plain text file a JSP resource,
      * or a binary file an image, etc.<p> 
      *
-     * @param resourcename the name of the resource to change the type for (full path).
-     * @param type the new resource type for this resource.
+     * @param resourcename the name of the resource to change the type for (full path)
+     * @param type the new resource type for this resource
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void chtype(String resourcename, int type) throws CmsException {
 
@@ -456,10 +456,10 @@ public class CmsObject {
      * Siblings will be treated according to the
      * <code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code> mode.<p>
      * 
-     * @param source the name of the resource to copy (full path).
-     * @param destination the name of the copy destination (full path).
+     * @param source the name of the resource to copy (full path)
+     * @param destination the name of the copy destination (full path)
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #copyResource(String, String, int)
      */
@@ -483,11 +483,11 @@ public class CmsObject {
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code></li>
      * </ul><p>
      * 
-     * @param source the name of the resource to copy (full path).
-     * @param destination the name of the copy destination (full path).
-     * @param siblingMode indicates how to handle siblings during copy.
+     * @param source the name of the resource to copy (full path)
+     * @param destination the name of the copy destination (full path)
+     * @param siblingMode indicates how to handle siblings during copy
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void copyResource(String source, String destination, int siblingMode) throws CmsException {
 
@@ -503,9 +503,9 @@ public class CmsObject {
      * The resource is not really copied like in a regular copy operation, 
      * it is in fact only "enabled" in the current users project.<p>   
      * 
-     * @param resourcename the name of the resource to copy to the current project (full path).
+     * @param resourcename the name of the resource to copy to the current project (full path)
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void copyResourceToProject(String resourcename) throws CmsException {
 
@@ -516,11 +516,11 @@ public class CmsObject {
     /**
      * Counts the locked resources in a project.<p>
      *
-     * @param id the id of the project.
+     * @param id the id of the project
      * 
-     * @return the number of locked resources in this project.
+     * @return the number of locked resources in this project
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public int countLockedResources(int id) throws CmsException {
 
@@ -530,11 +530,11 @@ public class CmsObject {
     /**
      * Counts the locked resources within a folder.<p>
      *
-     * @param foldername the name of the folder.
+     * @param foldername the name of the folder
      * 
-     * @return the number of locked resources in this folder.
+     * @return the number of locked resources in this folder
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public int countLockedResources(String foldername) throws CmsException {
 
@@ -546,10 +546,10 @@ public class CmsObject {
      * 
      * Already existing access control entries of the destination resource are removed.<p>
      * 
-     * @param sourceName the name of the resource of which the access control entries are copied.
-     * @param destName the name of the resource to which the access control entries are applied.
+     * @param sourceName the name of the resource of which the access control entries are copied
+     * @param destName the name of the resource to which the access control entries are applied
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void cpacc(String sourceName, String destName) throws CmsException {
 
@@ -561,14 +561,14 @@ public class CmsObject {
     /**
      * Creates a new user group.<p>
      * 
-     * @param name the name of the new group.
-     * @param description the description of the new group.
-     * @param flags the flags for the new group.
-     * @param parent the parent group (or <code>null</code>).
+     * @param name the name of the new group
+     * @param description the description of the new group
+     * @param flags the flags for the new group
+     * @param parent the parent group (or <code>null</code>)
      *
-     * @return a <code>{@link CmsGroup}</code> object representing the newly created group.
+     * @return a <code>{@link CmsGroup}</code> object representing the newly created group
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException {
 
@@ -578,14 +578,14 @@ public class CmsObject {
     /**
      * Creates a new project.<p>
      *
-     * @param name the name of the project to create.
-     * @param description the description for the new project.
-     * @param groupname the name of the project user group.
-     * @param managergroupname the name of the project manager group.
+     * @param name the name of the project to create
+     * @param description the description for the new project
+     * @param groupname the name of the project user group
+     * @param managergroupname the name of the project manager group
      * 
-     * @return the created project.
+     * @return the created project
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsProject createProject(String name, String description, String groupname, String managergroupname)
     throws CmsException {
@@ -602,15 +602,15 @@ public class CmsObject {
     /**
      * Creates a new project.<p>
      *
-     * @param name the name of the project to create.
-     * @param description the description for the new project.
-     * @param groupname the name of the project user group.
-     * @param managergroupname the name of the project manager group.
-     * @param projecttype the type of the project (normal or temporary).
+     * @param name the name of the project to create
+     * @param description the description for the new project
+     * @param groupname the name of the project user group
+     * @param managergroupname the name of the project manager group
+     * @param projecttype the type of the project (normal or temporary)
      * 
-     * @return the created project.
+     * @return the created project
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsProject createProject(
         String name,
@@ -625,27 +625,29 @@ public class CmsObject {
     /**
      * Creates a property definition.<p>
      *
-     * @param name the name of the property definition to create.
+     * Property definitions are valid for all resource types.<p>
      * 
-     * @return the created property definition.
+     * @param name the name of the property definition to create
      * 
-     * @throws CmsException if something goes wrong.
+     * @return the created property definition
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public CmsPropertydefinition createPropertydefinition(String name) throws CmsException {
+    public CmsPropertyDefinition createPropertyDefinition(String name) throws CmsException {
 
-        return (m_securityManager.createPropertydefinition(m_context, name));
+        return (m_securityManager.createPropertyDefinition(m_context, name));
     }
 
     /**
      * Creates a new resource of the given resource type with 
      * empty content and no properties.<p>
      * 
-     * @param resourcename the name of the resource to create (full path).
-     * @param type the type of the resource to create.
+     * @param resourcename the name of the resource to create (full path)
+     * @param type the type of the resource to create
      * 
-     * @return the created resource.
+     * @return the created resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #createResource(String, int, byte[], List)
      */
@@ -658,14 +660,14 @@ public class CmsObject {
      * Creates a new resource of the given resource type
      * with the provided content and properties.<p>
      * 
-     * @param resourcename the name of the resource to create (full path).
-     * @param type the type of the resource to create.
-     * @param properties the properties for the new resource.
-     * @param content the contents for the new resource.
+     * @param resourcename the name of the resource to create (full path)
+     * @param type the type of the resource to create
+     * @param properties the properties for the new resource
+     * @param content the contents for the new resource
      * 
-     * @return the created resource.
+     * @return the created resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsResource createResource(String resourcename, int type, byte[] content, List properties)
     throws CmsException {
@@ -676,11 +678,11 @@ public class CmsObject {
     /**
      * Creates a new sibling of the source resource.<p>
      * 
-     * @param source the name of the resource to create a sibling for with complete path.
-     * @param destination the name of the sibling to create with complete path.
-     * @param properties the individual properties for the new sibling.
+     * @param source the name of the resource to create a sibling for with complete path
+     * @param destination the name of the sibling to create with complete path
+     * @param properties the individual properties for the new sibling
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void createSibling(String source, String destination, List properties) throws CmsException {
 
@@ -691,9 +693,9 @@ public class CmsObject {
     /**
      * Creates the project for the temporary workplace files.<p>
      *
-     * @return the created project for the temporary workplace files.
+     * @return the created project for the temporary workplace files
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsProject createTempfileProject() throws CmsException {
 
@@ -703,9 +705,9 @@ public class CmsObject {
     /**
      * Deletes all published resource entries.<p>
      * 
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void deleteAllStaticExportPublishedResources(int linkType) throws CmsException {
 
@@ -721,11 +723,11 @@ public class CmsObject {
      * 
      * Deletion will delete file header, content and properties. <p>
      * 
-     * @param timestamp timestamp which defines the date after which backup resources must be deleted.
-     * @param versions the number of versions per file which should kept in the system.
-     * @param report the report for output logging.
+     * @param timestamp timestamp which defines the date after which backup resources must be deleted
+     * @param versions the number of versions per file which should kept in the system
+     * @param report the report for output logging
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void deleteBackups(long timestamp, int versions, I_CmsReport report) throws CmsException {
 
@@ -737,9 +739,9 @@ public class CmsObject {
      *
      * Only groups that contain no subgroups can be deleted.<p>
      * 
-     * @param delgroup the name of the group.
+     * @param delgroup the name of the group
      * 
-     * @throws CmsException  if operation was not successful.
+     * @throws CmsException  if operation was not successful
      */
     public void deleteGroup(String delgroup) throws CmsException {
 
@@ -751,9 +753,9 @@ public class CmsObject {
      *
      * All resources inside the project have to be be reset to their online state.<p>
      * 
-     * @param id the id of the project to delete.
+     * @param id the id of the project to delete
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void deleteProject(int id) throws CmsException {
 
@@ -763,10 +765,10 @@ public class CmsObject {
     /**
      * Deletes a property for a file or folder.<p>
      *
-     * @param resourcename the name of a resource for which the property should be deleted.
-     * @param key the name of the property.
+     * @param resourcename the name of a resource for which the property should be deleted
+     * @param key the name of the property
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @deprecated use <code>{@link #writePropertyObject(String, CmsProperty)}</code> instead.
      */
@@ -782,13 +784,13 @@ public class CmsObject {
     /**
      * Deletes a property definition.<p>
      *
-     * @param name the name of the property definition to delete.
+     * @param name the name of the property definition to delete
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
-    public void deletePropertydefinition(String name) throws CmsException {
+    public void deletePropertyDefinition(String name) throws CmsException {
 
-        m_securityManager.deletePropertydefinition(m_context, name);
+        m_securityManager.deletePropertyDefinition(m_context, name);
     }
 
     /**
@@ -802,10 +804,10 @@ public class CmsObject {
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS}</code></li>
      * </ul><p>
      * 
-     * @param resourcename the name of the resource to delete (full path).
-     * @param siblingMode indicates how to handle siblings of the deleted resource.
+     * @param resourcename the name of the resource to delete (full path)
+     * @param siblingMode indicates how to handle siblings of the deleted resource
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void deleteResource(String resourcename, int siblingMode) throws CmsException {
 
@@ -816,11 +818,11 @@ public class CmsObject {
     /**
      * Deletes a published resource entry.<p>
      * 
-     * @param resourceName The name of the resource to be deleted in the static export.
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
-     * @param linkParameter the parameters of the resource.
+     * @param resourceName The name of the resource to be deleted in the static export
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters of the resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void deleteStaticExportPublishedResource(String resourceName, int linkType, String linkParameter)
     throws CmsException {
@@ -831,9 +833,9 @@ public class CmsObject {
     /**
      * Deletes a user.<p>
      *
-     * @param userId the id of the user to be deleted.
+     * @param userId the id of the user to be deleted
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void deleteUser(CmsUUID userId) throws CmsException {
 
@@ -843,9 +845,9 @@ public class CmsObject {
     /**
      * Deletes a user.<p>
      * 
-     * @param username the name of the user to be deleted.
+     * @param username the name of the user to be deleted
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void deleteUser(String username) throws CmsException {
 
@@ -855,9 +857,9 @@ public class CmsObject {
     /**
      * Deletes a web user.<p>
      *
-     * @param userId the id of the user to be deleted.
+     * @param userId the id of the user to be deleted
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void deleteWebUser(CmsUUID userId) throws CmsException {
 
@@ -875,9 +877,9 @@ public class CmsObject {
      * the given resource exists, but the current user has not the required 
      * permissions, then this method will return <code>false</code>.<p>
      *
-     * @param resourcename the name of the resource to check (full path).
+     * @param resourcename the name of the resource to check (full path)
      *
-     * @return <code>true</code> if the resource is available.
+     * @return <code>true</code> if the resource is available
      *
      * @see #readResource(String)
      * @see #existsResource(String, CmsResourceFilter)
@@ -904,10 +906,10 @@ public class CmsObject {
      * the given resource exists, but the current user has not the required 
      * permissions, then this method will return <code>false</code>.<p>
      *
-     * @param resourcename the name of the resource to check (full path).
-     * @param filter the resource filter to use while checking.
+     * @param resourcename the name of the resource to check (full path)
+     * @param filter the resource filter to use while checking
      *
-     * @return <code>true</code> if the resource is available.
+     * @return <code>true</code> if the resource is available
      * 
      * @see #readResource(String)
      * @see #readResource(String, CmsResourceFilter)
@@ -920,11 +922,11 @@ public class CmsObject {
     /**
      * Returns the list of access control entries of a resource given its name.<p>
      * 
-     * @param resourceName the name of the resource.
+     * @param resourceName the name of the resource
      * 
-     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects.
+     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List getAccessControlEntries(String resourceName) throws CmsException {
 
@@ -934,12 +936,12 @@ public class CmsObject {
     /**
      * Returns the list of access control entries of a resource given its name.<p>
      * 
-     * @param resourceName the name of the resource.
-     * @param getInherited <code>true</code>, if inherited access control entries should be returned, too.
+     * @param resourceName the name of the resource
+     * @param getInherited <code>true</code>, if inherited access control entries should be returned, too
      * 
-     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects defining all permissions for the given resource.
+     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects defining all permissions for the given resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
 
@@ -950,11 +952,11 @@ public class CmsObject {
     /**
      * Returns the access control list (summarized access control entries) of a given resource.<p>
      * 
-     * @param resourceName the name of the resource.
+     * @param resourceName the name of the resource
      * 
-     * @return the access control list of the resource.
+     * @return the access control list of the resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
 
@@ -966,12 +968,12 @@ public class CmsObject {
      * 
      * If <code>inheritedOnly</code> is set, only inherited access control entries are returned.<p>
      * 
-     * @param resourceName the name of the resource.
-     * @param inheritedOnly if set, the non-inherited entries are skipped.
+     * @param resourceName the name of the resource
+     * @param inheritedOnly if set, the non-inherited entries are skipped
      * 
-     * @return the access control list of the resource.
+     * @return the access control list of the resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(String resourceName, boolean inheritedOnly) throws CmsException {
 
@@ -980,11 +982,12 @@ public class CmsObject {
     }
 
     /**
-     * Returns all projects which the current user can access.<p>
+     * Returns all projects which are owned by the current user or which are 
+     * accessible for the group of the user.<p>
      *
-     * @return a list of objects of type <code>{@link CmsProject}</code>.
+     * @return a list of objects of type <code>{@link CmsProject}</code>
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List getAllAccessibleProjects() throws CmsException {
 
@@ -997,7 +1000,7 @@ public class CmsObject {
      * @return list of <code>{@link CmsBackupProject}</code> objects 
      *           with all projects from history.
      *
-     * @throws CmsException  if operation was not succesful.
+     * @throws CmsException  if operation was not succesful
      */
     public List getAllBackupProjects() throws CmsException {
 
@@ -1008,9 +1011,9 @@ public class CmsObject {
      * Returns all projects which are owned by the current user or which are manageable
      * for the group of the user.<p>
      *
-     * @return a list of objects of type <code>{@link CmsProject}</code>.
+     * @return a list of objects of type <code>{@link CmsProject}</code>
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List getAllManageableProjects() throws CmsException {
 
@@ -1020,7 +1023,7 @@ public class CmsObject {
     /**
      * Returns the next version id for the published backup resources.<p>
      *
-     * @return int The new version id.
+     * @return int the new version id
      */
     public int getBackupTagId() {
 
@@ -1030,11 +1033,11 @@ public class CmsObject {
     /**
      * Returns all child groups of a group.<p>
      *
-     * @param groupname the name of the group.
+     * @param groupname the name of the group
      * 
-     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List getChild(String groupname) throws CmsException {
 
@@ -1044,11 +1047,11 @@ public class CmsObject {
     /**
      * Returns all child groups of a group.<p>
      * 
-     * @param groupname the name of the group.
+     * @param groupname the name of the group
      * 
-     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List getChilds(String groupname) throws CmsException {
 
@@ -1058,7 +1061,7 @@ public class CmsObject {
     /**
      * Gets the configurations of the OpenCms properties file.<p>
      * 
-     * @return the configurations of the properties file.
+     * @return the configurations of the properties file
      */
     public ExtendedProperties getConfigurations() {
 
@@ -1068,11 +1071,11 @@ public class CmsObject {
     /**
      * Returns all groups to which a given user directly belongs.<p>
      *
-     * @param username the name of the user to get all groups for.
+     * @param username the name of the user to get all groups for
      * 
-     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * @return a list of <code>{@link CmsGroup}</code> objects
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List getDirectGroupsOfUser(String username) throws CmsException {
 
@@ -1087,9 +1090,9 @@ public class CmsObject {
      * 
      * @param resourcename the full path of the resource to return the child resources for. 
      * 
-     * @return a list of all child file <code>{@link CmsResource}</code>s.
+     * @return a list of all child file <code>{@link CmsResource}</code>s
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #getFilesInFolder(String, CmsResourceFilter)
      */
@@ -1107,10 +1110,10 @@ public class CmsObject {
      * 
      * @param resourcename the full path of the resource to return the child resources for. 
      * 
-     * @return a list of all child file <code>{@link CmsResource}</code>s.
-     * @param filter the resource filter to use.
+     * @return a list of all child file <code>{@link CmsResource}</code>s
+     * @param filter the resource filter to use
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List getFilesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
@@ -1121,7 +1124,7 @@ public class CmsObject {
     /**
      * Returns all groups.<p>
      *
-     * @return a list of all <code>{@link CmsGroup}</code> objects.
+     * @return a list of all <code>{@link CmsGroup}</code> objects
      *
      * @throws CmsException if operation was not successful
      */
@@ -1133,11 +1136,11 @@ public class CmsObject {
     /**
      * Returns all the groups the given user, directly or indirectly, belongs to.<p>
      *
-     * @param username the name of the user.
+     * @param username the name of the user
      * 
-     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * @return a list of <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getGroupsOfUser(String username) throws CmsException {
 
@@ -1147,12 +1150,12 @@ public class CmsObject {
     /**
      * Returns the groups of a user filtered by the specified IP address.<p>
      *
-     * @param username the name of the user.
-     * @param remoteAddress the IP address to filter the groups in the result list.
+     * @param username the name of the user
+     * @param remoteAddress the IP address to filter the groups in the result list
      * 
-     * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address.
+     * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getGroupsOfUser(String username, String remoteAddress) throws CmsException {
 
@@ -1162,11 +1165,11 @@ public class CmsObject {
     /**
      * Returns the lock state for a specified resource.<p>
      * 
-     * @param resource the resource to return the lock state for.
+     * @param resource the resource to return the lock state for
      * 
-     * @return the lock state for the specified resource.
+     * @return the lock state for the specified resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsResource resource) throws CmsException {
 
@@ -1176,11 +1179,11 @@ public class CmsObject {
     /**
      * Returns the lock state for a specified resource name.<p>
      * 
-     * @param resourcename the name if the resource to get the lock state for (full path).
+     * @param resourcename the name if the resource to get the lock state for (full path)
      * 
-     * @return the lock state for the specified resource.
+     * @return the lock state for the specified resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(String resourcename) throws CmsException {
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
@@ -1195,11 +1198,11 @@ public class CmsObject {
      * if a resource in the "lost and found" folder with the same name already exists. 
      * In such case, a counter is added to the resource name.<p>
      * 
-     * @param resourcename the name of the resource to get the "lost and found" name for (full path).
+     * @param resourcename the name of the resource to get the "lost and found" name for (full path)
      *
-     * @return the tentative name of the resource inside the "lost and found" folder.
+     * @return the tentative name of the resource inside the "lost and found" folder
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #moveToLostAndFound(String)
      */
@@ -1211,11 +1214,11 @@ public class CmsObject {
     /**
      * Returns the parent group of a group.<p>
      *
-     * @param groupname the name of the group.
+     * @param groupname the name of the group
      * 
-     * @return group the parent group or <code>null</code>.
+     * @return group the parent group or <code>null</code>
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsGroup getParent(String groupname) throws CmsException {
 
@@ -1225,11 +1228,11 @@ public class CmsObject {
     /**
      * Returns the set of permissions of the current user for a given resource.<p>
      * 
-     * @param resourceName the name of the resource.
+     * @param resourceName the name of the resource
      * 
-     * @return the bitset of the permissions of the current user.
+     * @return the bitset of the permissions of the current user
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
 
@@ -1243,12 +1246,12 @@ public class CmsObject {
     /**
      * Returns the set of permissions of a given user for a given resource.<p>
      * 
-     * @param resourceName the name of the resource.
-     * @param userName the name of the user.
+     * @param resourceName the name of the resource
+     * @param userName the name of the user
      * 
-     * @return the current permissions on this resource.
+     * @return the current permissions on this resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsPermissionSet getPermissions(String resourceName, String userName) throws CmsException {
 
@@ -1261,9 +1264,9 @@ public class CmsObject {
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published.<p>
      * 
-     * @return a publish list.
+     * @return a publish list
      * 
-     * @throws Exception if something goes wrong.
+     * @throws Exception if something goes wrong
      */
     public CmsPublishList getPublishList() throws Exception {
 
@@ -1271,16 +1274,16 @@ public class CmsObject {
     }
 
     /**
-     * Returns a publish list for the specified resource to be published directly, plus 
-     * optionally it's siblings.<p>
+     * Returns a publish list with all new/changed/deleted resources of the current (offline)
+     * project that actually get published.<p>
      * 
-     * @param directPublishResource the resource which will be directly published.
+     * @param directPublishResource the resource which will be directly published
      * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
      *                      published resource should also get published.
      * 
-     * @return a publish list.
+     * @return a publish list
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings)
     throws CmsException {
@@ -1295,7 +1298,7 @@ public class CmsObject {
      * OpenCms operations. It also contains the request runtime settings, e.g.
      * about the current site this request was made on.<p>
      *
-     * @return the current users request context.
+     * @return the current users request context
      */
     public CmsRequestContext getRequestContext() {
 
@@ -1312,12 +1315,12 @@ public class CmsObject {
      * 
      * This method is mainly used by the workplace explorer.<p>
      * 
-     * @param resourcename the full path of the resource to return the child resources for.
-     * @param filter the resource filter to use.
+     * @param resourcename the full path of the resource to return the child resources for
+     * @param filter the resource filter to use
      * 
-     * @return a list of all child <code>{@link CmsResource}</code>s.
+     * @return a list of all child <code>{@link CmsResource}</code>s
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List getResourcesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
@@ -1329,16 +1332,16 @@ public class CmsObject {
      * Returns a list with all sub resources of the given parent folder (and all of it's subfolders) 
      * that have been modified in the given time range.<p>
      * 
-     * The result list is sorted descending (newest resource first).<p>
+     * The result list is descending sorted (newest resource first).<p>
      *
-     * @param folder the folder to get the subresources from.
-     * @param starttime the begin of the time range.
-     * @param endtime the end of the time range.
+     * @param folder the folder to get the subresources from
+     * @param starttime the begin of the time range
+     * @param endtime the end of the time range
      * 
      * @return a list with all <code>{@link CmsResource}</code> objects 
      *               that have been modified in the given time range.
      *
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
 
@@ -1353,9 +1356,9 @@ public class CmsObject {
      * of the current site root using 
      * <code>{@link CmsRequestContext#removeSiteRoot(String)}</code>.<p>
      * 
-     * @param resource the resource to get the adjusted site root path for.
+     * @param resource the resource to get the adjusted site root path for
      * 
-     * @return the absolute resource path adjusted for the current site.
+     * @return the absolute resource path adjusted for the current site
      * 
      * @see CmsRequestContext#removeSiteRoot(String)
      * @see CmsRequestContext#getSitePath(CmsResource)
@@ -1374,9 +1377,9 @@ public class CmsObject {
      * 
      * @param resourcename the full path of the resource to return the child resources for. 
      * 
-     * @return a list of all child file <code>{@link CmsResource}</code>s.
+     * @return a list of all child file <code>{@link CmsResource}</code>s
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #getSubFolders(String, CmsResourceFilter)
      */
@@ -1394,10 +1397,10 @@ public class CmsObject {
      * 
      * @param resourcename the full path of the resource to return the child resources for. 
      * 
-     * @return a list of all child folder <code>{@link CmsResource}</code>s.
-     * @param filter the resource filter to use.
+     * @return a list of all child folder <code>{@link CmsResource}</code>s
+     * @param filter the resource filter to use
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List getSubFolders(String resourcename, CmsResourceFilter filter) throws CmsException {
 
@@ -1408,9 +1411,9 @@ public class CmsObject {
     /**
      * Returns all users.<p>
      *
-     * @return a list of all <code>{@link CmsUser}</code> objects.
+     * @return a list of all <code>{@link CmsUser}</code> objects
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List getUsers() throws CmsException {
 
@@ -1420,11 +1423,11 @@ public class CmsObject {
     /**
      * Returns all users of the given type.<p>
      *
-     * @param type the type of the users.
+     * @param type the type of the users
      * 
-     * @return a list of all <code>{@link CmsUser}</code> objects of the given type.
+     * @return a list of all <code>{@link CmsUser}</code> objects of the given type
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List getUsers(int type) throws CmsException {
 
@@ -1434,11 +1437,11 @@ public class CmsObject {
     /**
      * Returns all users of a given group.<p>
      *
-     * @param groupname the name of the group to get all users for.
+     * @param groupname the name of the group to get all users for
      * 
-     * @return all <code>{@link CmsUser}</code> objects in the group.
+     * @return all <code>{@link CmsUser}</code> objects in the group
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List getUsersOfGroup(String groupname) throws CmsException {
 
@@ -1448,12 +1451,12 @@ public class CmsObject {
     /**
      * Checks if the current user has required permissions to access a given resource.<p>
      * 
-     * @param resource the resource to check the permissions for.
-     * @param requiredPermissions the set of permissions to check for.
+     * @param resource the resource to check the permissions for
+     * @param requiredPermissions the set of permissions to check for
      * 
-     * @return <code>true</code> if the required permissions are satisfied.
+     * @return <code>true</code> if the required permissions are satisfied
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
 
@@ -1468,16 +1471,16 @@ public class CmsObject {
     /**
      * Checks if the current user has required permissions to access a given resource.<p>
      * 
-     * @param resource the resource to check the permissions for.
-     * @param requiredPermissions the set of permissions to check for.
+     * @param resource the resource to check the permissions for
+     * @param requiredPermissions the set of permissions to check for
      * @param checkLock if <code>true</code>, a lock for the current user is required for 
      *      all write operations, if <code>false</code> it's ok to write as long as the resource
      *      is not locked by another user.
-     * @param filter the resource filter to use.
+     * @param filter the resource filter to use
      * 
-     * @return <code>true</code> if the required permissions are satisfied.
+     * @return <code>true</code> if the required permissions are satisfied
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(
         CmsResource resource,
@@ -1500,9 +1503,9 @@ public class CmsObject {
      * If the resource parameter is <code>null</code>, then the current project is checked,
      * otherwise the resource is checked for direct publish permissions.<p>
      * 
-     * @param resourcename the direct publish resource name (optional, if null only the current project is checked).
+     * @param resourcename the direct publish resource name (optional, if null only the current project is checked)
      * 
-     * @return <code>true</code>, if the current user can direct publish the given resource in his current context.
+     * @return <code>true</code>, if the current user can direct publish the given resource in his current context
      */
     public boolean hasPublishPermissions(String resourcename) {
 
@@ -1525,10 +1528,10 @@ public class CmsObject {
      * 
      * Already existing access control entries of this resource are removed before.<p>
      * 
-     * @param resource the resource to attach the control entries to.
-     * @param acEntries a list of <code>{@link CmsAccessControlEntry}</code> objects.
+     * @param resource the resource to attach the control entries to
+     * @param acEntries a list of <code>{@link CmsAccessControlEntry}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void importAccessControlEntries(CmsResource resource, List acEntries) throws CmsException {
 
@@ -1542,10 +1545,10 @@ public class CmsObject {
      * given folder or the root path inside the zip file, if not a 
      * <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param importFile the name (absolute Path) of the import resource (zipfile or folder).
-     * @param importPath the name (absolute Path) of the folder in which should be imported.
+     * @param importFile the name (absolute Path) of the import resource (zipfile or folder)
+     * @param importPath the name (absolute Path) of the folder in which should be imported
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void importFolder(String importFile, String importPath) throws CmsException {
 
@@ -1562,14 +1565,14 @@ public class CmsObject {
      * If a resource with the same name but a different id exists, 
      * the imported resource is (usually) moved to the "lost and found" folder.<p> 
      *
-     * @param resourcename the name for the resource after import (full path).
-     * @param resource the resource object to be imported.
-     * @param content the content of the resource.
-     * @param properties the properties of the resource.
+     * @param resourcename the name for the resource after import (full path)
+     * @param resource the resource object to be imported
+     * @param content the content of the resource
+     * @param properties the properties of the resource
      * 
-     * @return the imported resource.
+     * @return the imported resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#moveToLostAndFound(String)
      */
@@ -1591,7 +1594,7 @@ public class CmsObject {
      * Administrator permissions means that the user is a member of the 
      * administrators group, which per default is called "Administrators".<p>
      *
-     * @return <code>true</code>, if the current user has "Administrator" permissions.
+     * @return <code>true</code>, if the current user has "Administrator" permissions
      */
     public boolean isAdmin() {
 
@@ -1605,9 +1608,9 @@ public class CmsObject {
      * If the resource starts with any one of this prefixes, it is considered to 
      * be "inside" the project.<p>
      * 
-     * @param resourcename the specified resource name (full path).
+     * @param resourcename the specified resource name (full path)
      * 
-     * @return <code>true</code>, if the specified resource is inside the current project.
+     * @return <code>true</code>, if the specified resource is inside the current project
      */
     public boolean isInsideCurrentProject(String resourcename) {
 
@@ -1621,7 +1624,7 @@ public class CmsObject {
      * check. If the user has management access to a project depends on the
      * project settings.<p>
      *
-     * @return <code>true</code>, if the user has management access to the project.
+     * @return <code>true</code>, if the user has management access to the project
      * 
      * @see #isProjectManager()
      */
@@ -1637,7 +1640,7 @@ public class CmsObject {
      * check. If the user is a member of the project manager group, 
      * he can create new projects.<p>
      *
-     * @return <code>true</code>, if the user is a member of the project manager group.
+     * @return <code>true</code>, if the user is a member of the project manager group
      * 
      * @see #isManagerOfProject()
      */
@@ -1651,9 +1654,9 @@ public class CmsObject {
      *
      * The mode for the lock is <code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code>.<p>
      *
-     * @param resourcename the name of the resource to lock (full path).
+     * @param resourcename the name of the resource to lock (full path)
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#lockResource(String, int)
      */
@@ -1672,10 +1675,10 @@ public class CmsObject {
      * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_TEMP}</code></li>
      * </ul><p>
      * 
-     * @param resourcename the name of the resource to lock (full path).
-     * @param mode flag indicating the mode for the lock.
+     * @param resourcename the name of the resource to lock (full path)
+     * @param mode flag indicating the mode for the lock
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void lockResource(String resourcename, int mode) throws CmsException {
 
@@ -1686,12 +1689,12 @@ public class CmsObject {
     /**
      * Logs a user into the Cms, if the password is correct.<p>
      *
-     * @param username the name of the user.
-     * @param password the password of the user.
+     * @param username the name of the user
+     * @param password the password of the user
      * 
-     * @return the name of the logged in user.
+     * @return the name of the logged in user
      *
-     * @throws CmsSecurityException if operation was not successful.
+     * @throws CmsSecurityException if operation was not successful
      */
     public String loginUser(String username, String password) throws CmsSecurityException {
 
@@ -1701,13 +1704,13 @@ public class CmsObject {
     /**
      * Logs a user with a given ip address into the Cms, if the password is correct.<p>
      *
-     * @param username the name of the user.
-     * @param password the password of the user.
-     * @param remoteAddress the ip address.
+     * @param username the name of the user
+     * @param password the password of the user
+     * @param remoteAddress the ip address
      * 
-     * @return the name of the logged in user.
+     * @return the name of the logged in user
      *
-     * @throws CmsSecurityException if operation was not successful.
+     * @throws CmsSecurityException if operation was not successful
      */
     public String loginUser(String username, String password, String remoteAddress) throws CmsSecurityException {
 
@@ -1717,14 +1720,14 @@ public class CmsObject {
     /**
      * Logs a user with a given type and a given ip address into the Cms, if the password is correct.<p>
      *
-     * @param username the name of the user.
-     * @param password the password of the user.
-     * @param remoteAddress the ip address.
-     * @param type the user type (System or Web user).
+     * @param username the name of the user
+     * @param password the password of the user
+     * @param remoteAddress the ip address
+     * @param type the user type (System or Web user)
      * 
-     * @return the name of the logged in user.
+     * @return the name of the logged in user
      *
-     * @throws CmsSecurityException if operation was not successful.
+     * @throws CmsSecurityException if operation was not successful
      */
     public String loginUser(String username, String password, String remoteAddress, int type)
     throws CmsSecurityException {
@@ -1752,10 +1755,10 @@ public class CmsObject {
     /**
      * Logs a web user into the Cms, if the password is correct.
      *
-     * @param username the name of the user.
-     * @param password the password of the user.
+     * @param username the name of the user
+     * @param password the password of the user
      * 
-     * @return the name of the logged in user.
+     * @return the name of the logged in user
      *
      * @throws CmsSecurityException if operation was not successful
      */
@@ -1767,9 +1770,9 @@ public class CmsObject {
     /**
      * Lookups and reads the user or group with the given UUID.<p>
      *   
-     * @param principalId the uuid of a user or group.
+     * @param principalId the uuid of a user or group
      * 
-     * @return the user or group with the given UUID.
+     * @return the user or group with the given UUID
      */
     public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) {
 
@@ -1779,9 +1782,9 @@ public class CmsObject {
     /**
      * Lookups and reads the user or group with the given name.<p>
      * 
-     * @param principalName the name of the user or group.
+     * @param principalName the name of the user or group
      * 
-     * @return the user or group with the given name.
+     * @return the user or group with the given name
      */
     public I_CmsPrincipal lookupPrincipal(String principalName) {
 
@@ -1796,10 +1799,10 @@ public class CmsObject {
      * OpenCms VFS. This way you can see the deleted files/folders in the offline
      * project, and you will be unable to undelete them.<p>
      * 
-     * @param source the name of the resource to move (full path).
-     * @param destination the destination resource name (full path).
+     * @param source the name of the resource to move (full path)
+     * @param destination the destination resource name (full path)
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #renameResource(String, String)
      */
@@ -1818,11 +1821,11 @@ public class CmsObject {
      * already exists in the VFS. In this case, the imported resource is 
      * moved to the "lost and found" folder.<p>
      * 
-     * @param resourcename the name of the resource to move to "lost and found" (full path).
+     * @param resourcename the name of the resource to move to "lost and found" (full path)
      *
-     * @return the name of the resource inside the "lost and found" folder.
+     * @return the name of the resource inside the "lost and found" folder
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #getLostAndFoundName(String)
      */
@@ -1834,9 +1837,9 @@ public class CmsObject {
     /**
      * Publishes the current project, printing messages to a shell report.<p>
      *
-     * @return the publish history id of the published project.
+     * @return the publish history id of the published project
      * 
-     * @throws Exception if something goes wrong.
+     * @throws Exception if something goes wrong
      * 
      * @see CmsShellReport
      */
@@ -1848,11 +1851,11 @@ public class CmsObject {
     /**
      * Publishes the current project.<p>
      *
-     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages.
+     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
      * 
-     * @return the publish history id of the published project.
+     * @return the publish history id of the published project
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUUID publishProject(I_CmsReport report) throws CmsException {
 
@@ -1862,12 +1865,12 @@ public class CmsObject {
     /**
      * Publishes the resources of a specified publish list.<p>
      * 
-     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages.
-     * @param publishList a publish list.
+     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
+     * @param publishList a publish list
      * 
-     * @return the publish history id of the published project.
+     * @return the publish history id of the published project
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #getPublishList()
      * @see #getPublishList(CmsResource, boolean)
@@ -1896,16 +1899,16 @@ public class CmsObject {
     /**
      * Direct publishes a specified resource.<p>
      * 
-     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages.
+     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
      * @param directPublishResource a <code>{@link CmsResource}</code> that gets directly published; 
      *                          or <code>null</code> if an entire project gets published.
      * @param directPublishSiblings if a <code>{@link CmsResource}</code> that should get published directly is 
      *                          provided as an argument, all eventual siblings of this resource 
      *                          get publish too, if this flag is <code>true</code>.
      * 
-     * @return the publish history id of the published project.
+     * @return the publish history id of the published project
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #publishResource(String)
      * @see #publishResource(String, boolean, I_CmsReport)
@@ -1922,11 +1925,11 @@ public class CmsObject {
      * 
      * The siblings of the resource will not be published.<p>
      *
-     * @param resourcename the name of the resource to be published.
+     * @param resourcename the name of the resource to be published
      * 
-     * @return the publish history id of the published project.
+     * @return the publish history id of the published project
      * 
-     * @throws Exception if something goes wrong.
+     * @throws Exception if something goes wrong
      * 
      * @see CmsShellReport
      */
@@ -1938,13 +1941,13 @@ public class CmsObject {
     /**
      * Publishes a single resource.<p>
      * 
-     * @param resourcename the name of the resource to be published.
-     * @param publishSiblings if <code>true</code>, all siblings of the resource are also published.
-     * @param report the report to write the progress information to.
+     * @param resourcename the name of the resource to be published
+     * @param publishSiblings if <code>true</code>, all siblings of the resource are also published
+     * @param report the report to write the progress information to
      * 
-     * @return the publish history id of the published project.
+     * @return the publish history id of the published project
      * 
-     * @throws Exception if something goes wrong.
+     * @throws Exception if something goes wrong
      */
     public CmsUUID publishResource(String resourcename, boolean publishSiblings, I_CmsReport report) throws Exception {
 
@@ -1960,11 +1963,11 @@ public class CmsObject {
      *
      * The reading excludes the file content.<p>
      *
-     * @param filename the name of the file to be read.
+     * @param filename the name of the file to be read
      *
-     * @return a list of file headers, as <code>{@link CmsBackupResource}</code> objects, read from the Cms.
+     * @return a list of file headers, as <code>{@link CmsBackupResource}</code> objects, read from the Cms
      *
-     * @throws CmsException  if operation was not successful.
+     * @throws CmsException  if operation was not successful
      */
     public List readAllBackupFileHeaders(String filename) throws CmsException {
 
@@ -1975,11 +1978,11 @@ public class CmsObject {
     /**
      * Returns a list with all project resources for a given project.<p>
      * 
-     * @param projectId the ID of the project.
+     * @param projectId the ID of the project
      * 
-     * @return a list of all project <code>{@link CmsResource}</code> objects.
+     * @return a list of all project <code>{@link CmsResource}</code> objects
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List readAllProjectResources(int projectId) throws CmsException {
 
@@ -1989,13 +1992,13 @@ public class CmsObject {
     /**
      * Reads all property definitions.<p>
      *
-     * @return a list with the <code>{@link CmsPropertydefinition}</code> objects (may be empty).
+     * @return a list with the <code>{@link CmsPropertyDefinition}</code> objects (may be empty)
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
-    public List readAllPropertydefinitions() throws CmsException {
+    public List readAllPropertyDefinitions() throws CmsException {
 
-        return m_securityManager.readAllPropertydefinitions(m_context, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+        return m_securityManager.readAllPropertyDefinitions(m_context, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
     }
 
     /**
@@ -2003,10 +2006,10 @@ public class CmsObject {
      * 
      * The reading includes the file content.<p>
      *
-     * @param filename the complete path of the file to be read.
-     * @param tagId the tag id of the resource.
+     * @param filename the complete path of the file to be read
+     * @param tagId the tag id of the resource
      *
-     * @return file the read file.
+     * @return the file read
      *
      * @throws CmsException if the user has not the rights to read the file, or 
      *                      if the file couldn't be read.
@@ -2020,11 +2023,11 @@ public class CmsObject {
     /**
      * Returns a backup project.<p>
      *
-     * @param tagId  the tag of the backup project to be read.
+     * @param tagId the tag of the backup project to be read
      * 
-     * @return CmsBackupProject object of the requested project.
+     * @return the requested backup project
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsBackupProject readBackupProject(int tagId) throws CmsException {
 
@@ -2038,11 +2041,11 @@ public class CmsObject {
      * In case you do not need the file content, 
      * use <code>{@link #readResource(String)}</code> instead.<p>
      *
-     * @param resourcename the name of the resource to read (full path).
+     * @param resourcename the name of the resource to read (full path)
      *
-     * @return the file resource that was read.
+     * @return the file resource that was read
      *
-     * @throws CmsException if the file resource could not be read for any reason.
+     * @throws CmsException if the file resource could not be read for any reason
      * 
      * @see #readFile(String, CmsResourceFilter)
      * @see #readResource(String)
@@ -2065,12 +2068,12 @@ public class CmsObject {
      * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
      * will ignore the date release / date expired information of the resource.<p>
      *
-     * @param resourcename the name of the resource to read (full path).
-     * @param filter the resource filter to use while reading.
+     * @param resourcename the name of the resource to read (full path)
+     * @param filter the resource filter to use while reading
      *
-     * @return the file resource that was read.
+     * @return the file resource that was read
      *
-     * @throws CmsException if the file resource could not be read for any reason.
+     * @throws CmsException if the file resource could not be read for any reason
      * 
      * @see #readResource(String, CmsResourceFilter)
      */
@@ -2084,11 +2087,11 @@ public class CmsObject {
      * Reads a resource from the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
      *
-     * @param resourcename the name of the resource to read (full path).
+     * @param resourcename the name of the resource to read (full path)
      *
-     * @return the file resource that was read.
+     * @return the file resource that was read
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      *
      * @deprecated use <code>{@link #readResource(String, CmsResourceFilter)}</code> instead.
      */
@@ -2101,11 +2104,11 @@ public class CmsObject {
      * Reads a folder resource from the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
      *
-     * @param resourcename the name of the folder resource to read (full path).
+     * @param resourcename the name of the folder resource to read (full path)
      *
-     * @return the folder resource that was read.
+     * @return the folder resource that was read
      *
-     * @throws CmsException if the resource could not be read for any reason.
+     * @throws CmsException if the resource could not be read for any reason
      *
      * @see #readResource(String, CmsResourceFilter)
      * @see #readFolder(String, CmsResourceFilter)
@@ -2125,12 +2128,12 @@ public class CmsObject {
      * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
      * will ignore the date release / date expired information of the resource.<p>
      * 
-     * @param resourcename the name of the folder resource to read (full path).
-     * @param filter the resource filter to use while reading.
+     * @param resourcename the name of the folder resource to read (full path)
+     * @param filter the resource filter to use while reading
      *
-     * @return the folder resource that was read.
+     * @return the folder resource that was read
      *
-     * @throws CmsException if the resource could not be read for any reason.
+     * @throws CmsException if the resource could not be read for any reason
      * 
      * @see #readResource(String, CmsResourceFilter)
      */
@@ -2142,9 +2145,9 @@ public class CmsObject {
     /**
      * Reads the group of a project.<p>
      *
-     * @param project the project to read the group from.
+     * @param project the project to read the group from
      * 
-     * @return the group of the given project.
+     * @return the group of the given project
      */
     public CmsGroup readGroup(CmsProject project) {
 
@@ -2154,11 +2157,11 @@ public class CmsObject {
     /**
      * Reads a group based on its id.<p>
      *
-     * @param groupId the id of the group to be read.
+     * @param groupId the id of the group to be read
      * 
-     * @return the group that has the provided id.
+     * @return the group that has the provided id
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
 
@@ -2168,11 +2171,11 @@ public class CmsObject {
     /**
      * Reads a group based on its name.<p>
      * 
-     * @param groupName the name of the group to be read.
+     * @param groupName the name of the group to be read
      * 
-     * @return the group that has the provided name.
+     * @return the group that has the provided name
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsGroup readGroup(String groupName) throws CmsException {
 
@@ -2182,9 +2185,9 @@ public class CmsObject {
     /**
      * Returns the project manager group of a project.<p>
      *
-     * @param project the project.
+     * @param project the project
      * 
-     * @return the manager group of the project.
+     * @return the manager group of the project
      */
     public CmsGroup readManagerGroup(CmsProject project) {
 
@@ -2194,11 +2197,11 @@ public class CmsObject {
     /**
      * Reads the owner of a project.<p>
      *
-     * @param project the project to read the owner from.
+     * @param project the project to read the owner from
      * 
-     * @return the owner of the project.
+     * @return the owner of the project
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsProject project) throws CmsException {
 
@@ -2208,12 +2211,12 @@ public class CmsObject {
     /**
      * Builds a list of resources for a given path.<p>
      * 
-     * @param path the requested path.
-     * @param filter a filter object to filter the resources.
+     * @param path the requested path
+     * @param filter a filter object (only "includeDeleted" information is used!)
      * 
-     * @return list of <code>{@link CmsResource}</code>s.
+     * @return list of <code>{@link CmsResource}</code>s
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readPath(String path, CmsResourceFilter filter) throws CmsException {
 
@@ -2223,11 +2226,11 @@ public class CmsObject {
     /**
      * Reads the project with the given id.<p>
      *
-     * @param id the id of the project.
+     * @param id the id of the project
      * 
-     * @return the project with the given id.
+     * @return the project with the given id
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsProject readProject(int id) throws CmsException {
 
@@ -2237,11 +2240,11 @@ public class CmsObject {
     /**
      * Reads the project with the given name.<p>
      *
-     * @param name the name of the project.
+     * @param name the name of the project
      * 
-     * @return the project with the given name.
+     * @return the project with the given name
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsProject readProject(String name) throws CmsException {
 
@@ -2251,12 +2254,12 @@ public class CmsObject {
     /**
      * Returns the list of all resources that define the "view" of the given project.<p>
      * 
-     * @param project the project to get the project resources for.
+     * @param project the project to get the project resources for
      * 
      * @return the list of all resources, as <code>{@link String}</code> objects 
      *              that define the "view" of the given project.
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readProjectResources(CmsProject project) throws CmsException {
 
@@ -2274,12 +2277,12 @@ public class CmsObject {
      * <li><code>{@link I_CmsConstants#C_STATE_KEEP}</code>: Read all resources either "changed", "new" or "deleted" in the project</li>
      * </ul><p>
      * 
-     * @param projectId the id of the project to read the file resources for.
-     * @param state the resource state to match.
+     * @param projectId the id of the project to read the file resources for
+     * @param state the resource state to match
      *
-     * @return all <code>{@link CmsResource}</code>s of a project that match a given criteria from the VFS.
+     * @return all <code>{@link CmsResource}</code>s of a project that match a given criteria from the VFS
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readProjectView(int projectId, int state) throws CmsException {
 
@@ -2289,11 +2292,11 @@ public class CmsObject {
     /**
      * Reads the (compound) values of all properties mapped to a specified resource.<p>
      * 
-     * @param resourcePath the resource to look up the property for.
+     * @param resourcePath the resource to look up the property for
      * 
-     * @return a map of <code>String</code> objects representing all properties of the resource.
+     * @return a map of <code>String</code> objects representing all properties of the resource
      * 
-     * @throws CmsException in case there where problems reading the properties.
+     * @throws CmsException in case there where problems reading the properties
      * 
      * @deprecated use <code>{@link #readPropertyObjects(String, boolean)}</code> instead.
      */
@@ -2308,12 +2311,12 @@ public class CmsObject {
      * Reads the (compound) values of all properties mapped to a specified resource
      * with optional direcory upward cascading.<p>
      * 
-     * @param resourcePath the resource to look up the property for.
-     * @param search if <code>true</code>, the properties will also be looked up on all parent folders and the results will be merged, if <code>false</code> not (ie. normal property lookup).
+     * @param resourcePath the resource to look up the property for
+     * @param search if <code>true</code>, the properties will also be looked up on all parent folders and the results will be merged, if <code>false</code> not (ie. normal property lookup)
      * 
-     * @return Map of <code>String</code> objects representing all properties of the resource.
+     * @return Map of <code>String</code> objects representing all properties of the resource
      * 
-     * @throws CmsException in case there where problems reading the properties.
+     * @throws CmsException in case there where problems reading the properties
      * 
      * @deprecated use <code>{@link #readPropertyObjects(String, boolean)}</code> instead.
      */
@@ -2327,12 +2330,12 @@ public class CmsObject {
     /**
      * Reads the (compound) value of a property mapped to a specified resource.<p>
      *
-     * @param resourcePath the resource to look up the property for.
-     * @param property the name of the property to look up.
+     * @param resourcePath the resource to look up the property for
+     * @param property the name of the property to look up
      * 
-     * @return the value of the property found, <code>null</code> if nothing was found.
+     * @return the value of the property found, <code>null</code> if nothing was found
      * 
-     * @throws CmsException in case there where problems reading the property.
+     * @throws CmsException in case there where problems reading the property
      * 
      * @see CmsProperty#getValue()
      * 
@@ -2349,13 +2352,13 @@ public class CmsObject {
      * Reads the (compound) value of a property mapped to a specified resource 
      * with optional direcory upward cascading.<p>
      * 
-     * @param resourcePath the resource to look up the property for.
-     * @param property the name of the property to look up.
-     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if false not (ie. normal property lookup).
+     * @param resourcePath the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if false not (ie. normal property lookup)
      * 
-     * @return the value of the property found, <code>null</code> if nothing was found.
+     * @return the value of the property found, <code>null</code> if nothing was found
      * 
-     * @throws CmsException in case there where problems reading the property.
+     * @throws CmsException in case there where problems reading the property
      * 
      * @see CmsProperty#getValue()
      * 
@@ -2373,14 +2376,14 @@ public class CmsObject {
      * with optional direcory upward cascading, a default value will be returned if the property 
      * is not found on the resource (or it's parent folders in case search is set to <code>true</code>).<p>
      * 
-     * @param resourcePath the resource to look up the property for.
-     * @param property the name of the property to look up.
-     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if <code>false</code> not (ie. normal property lookup).
-     * @param propertyDefault a default value that will be returned if the property was not found on the selected resource.
+     * @param resourcePath the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if <code>false</code> not (ie. normal property lookup)
+     * @param propertyDefault a default value that will be returned if the property was not found on the selected resource
      * 
-     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned.
+     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
      * 
-     * @throws CmsException in case there where problems reading the property.
+     * @throws CmsException in case there where problems reading the property
      * 
      * @see CmsProperty#getValue()
      * 
@@ -2397,15 +2400,19 @@ public class CmsObject {
     /**
      * Reads a property definition.<p>
      *
-     * @param name the name of the property definition to read.
+     * If no property definition with the given name is found, 
+     * <code>null</code> is returned.<p>
      * 
-     * @return the property definition that was read.
+     * @param name the name of the property definition to read
+     * 
+     * @return the property definition that was read, 
+     *          or <code>null</code> if there is no property definition with the given name.
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
-    public CmsPropertydefinition readPropertydefinition(String name) throws CmsException {
+    public CmsPropertyDefinition readPropertyDefinition(String name) throws CmsException {
 
-        return (m_securityManager.readPropertydefinition(m_context, name));
+        return (m_securityManager.readPropertyDefinition(m_context, name));
     }
 
     /**
@@ -2413,14 +2420,14 @@ public class CmsObject {
      * 
      * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
      * 
-     * @param resourcePath the name of resource where the property is attached to.
-     * @param property the property name.
+     * @param resourcePath the name of resource where the property is attached to
+     * @param property the property name
      * @param search if true, the property is searched on all parent folders of the resource. 
      *      if it's not found attached directly to the resource.
      * 
-     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found.
+     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsProperty readPropertyObject(String resourcePath, String property, boolean search) throws CmsException {
 
@@ -2441,13 +2448,13 @@ public class CmsObject {
      * has the same property attached but with a differrent value, the result list will
      * contain only the property with the value from the resource, not form the parent folder(s).<p>
      * 
-     * @param resourcePath the name of resource where the property is mapped to.
+     * @param resourcePath the name of resource where the property is mapped to
      * @param search if <code>true</code>, the properties of all parent folders of the resource 
      *      are merged with the resource properties.
      * 
-     * @return a list of <code>{@link CmsProperty}</code> objects.
+     * @return a list of <code>{@link CmsProperty}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readPropertyObjects(String resourcePath, boolean search) throws CmsException {
 
@@ -2458,11 +2465,11 @@ public class CmsObject {
     /**
      * Reads the resources that were published in a publish task for a given publish history ID.<p>
      * 
-     * @param publishHistoryId unique int ID to identify each publish task in the publish history.
+     * @param publishHistoryId unique int ID to identify each publish task in the publish history
      * 
-     * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects.
+     * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
 
@@ -2481,11 +2488,11 @@ public class CmsObject {
      * required. To "upgrade" a resource to a file, 
      * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
      *
-     * @param resourcename the name of the resource to read (full path).
+     * @param resourcename the name of the resource to read (full path)
      *
-     * @return the resource that was read.
+     * @return the resource that was read
      *
-     * @throws CmsException if the resource could not be read for any reason.
+     * @throws CmsException if the resource could not be read for any reason
      *
      * @see #readFile(String) 
      * @see #readResource(String, CmsResourceFilter)
@@ -2514,12 +2521,12 @@ public class CmsObject {
      * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
      * will ignore the date release / date expired information of the resource.<p>
      * 
-     * @param resourcename the name of the resource to read (full path).
-     * @param filter the resource filter to use while reading.
+     * @param resourcename the name of the resource to read (full path)
+     * @param filter the resource filter to use while reading
      *
-     * @return the resource that was read.
+     * @return the resource that was read
      *
-     * @throws CmsException if the resource could not be read for any reason.
+     * @throws CmsException if the resource could not be read for any reason
      * 
      * @see #readFile(String, CmsResourceFilter)
      * @see #readFolder(String, CmsResourceFilter)
@@ -2534,12 +2541,12 @@ public class CmsObject {
      * Reads all resources below the given path matching the filter criteria, 
      * including the full tree below the path.<p>
      * 
-     * @param resourcename the parent path to read the resources from.
-     * @param filter the filter.
+     * @param resourcename the parent path to read the resources from
+     * @param filter the filter
      * 
-     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria.
+     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #readResources(String, CmsResourceFilter, boolean)
      */
@@ -2553,13 +2560,13 @@ public class CmsObject {
      * including the full tree below the path only in case the <code>readTree</code> 
      * parameter is <code>true</code>.<p>
      * 
-     * @param resourcename the parent path to read the resources from.
-     * @param filter the filter.
-     * @param readTree <code>true</code> to read all subresources.
+     * @param resourcename the parent path to read the resources from
+     * @param filter the filter
+     * @param readTree <code>true</code> to read all subresources
      * 
-     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria.
+     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readResources(String resourcename, CmsResourceFilter filter, boolean readTree) throws CmsException {
 
@@ -2572,12 +2579,12 @@ public class CmsObject {
      * 
      * Both individual and shared properties of a resource are checked.<p>
      *
-     * @param propertyDefinition the name of the property to check for.
+     * @param propertyDefinition the name of the property to check for
      * 
      * @return a list of all <code>{@link CmsResource}</code> objects 
      *          that have a value set for the specified property.
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readResourcesWithProperty(String propertyDefinition) throws CmsException {
 
@@ -2589,13 +2596,13 @@ public class CmsObject {
      * 
      * Both individual and shared properties of a resource are checked.<p>
      *
-     * @param path the folder to get the resources with the property from.
-     * @param propertyDefinition the name of the property to check for.
+     * @param path the folder to get the resources with the property from
+     * @param propertyDefinition the name of the property to check for
      * 
      * @return all <code>{@link CmsResource}</code> objects 
      *          that have a value set for the specified property in the given path.
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readResourcesWithProperty(String path, String propertyDefinition) throws CmsException {
 
@@ -2606,14 +2613,14 @@ public class CmsObject {
      * Returns a list of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
      * 
-     * @param resourcename the name of the specified resource.
-     * @param filter a resource filter.
+     * @param resourcename the name of the specified resource
+     * @param filter a resource filter
      * 
      * @return a list of <code>{@link CmsResource}</code>s that 
      *          are siblings to the specified resource, 
      *          including the specified resource itself.
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
 
@@ -2624,11 +2631,11 @@ public class CmsObject {
     /**
      * Returns the parameters of a resource in the list of all published template resources.<p>
      * 
-     * @param rfsName the rfs name of the resource.
+     * @param rfsName the rfs name of the resource
      * 
-     * @return the parameter string of the requested resource.
+     * @return the parameter string of the requested resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public String readStaticExportPublishedResourceParameters(String rfsName) throws CmsException {
 
@@ -2638,13 +2645,13 @@ public class CmsObject {
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
-     * @param parameterResources flag for reading resources with parameters (1) or without (0).
+     * @param parameterResources flag for reading resources with parameters (1) or without (0)
      * 
-     * @param timestamp a timestamp for reading the data from the db.
+     * @param timestamp a timestamp for reading the data from the db
      * 
-     * @return a list of template resources as <code>{@link String}</code> objects.
+     * @return a list of template resources as <code>{@link String}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readStaticExportResources(int parameterResources, long timestamp) throws CmsException {
 
@@ -2654,11 +2661,11 @@ public class CmsObject {
     /**
      * Reads a user based on its id.<p>
      *
-     * @param userId the id of the user to be read.
+     * @param userId the id of the user to be read
      * 
-     * @return the user with the given id.
+     * @return the user with the given id
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readUser(CmsUUID userId) throws CmsException {
 
@@ -2668,11 +2675,11 @@ public class CmsObject {
     /**
      * Reads a user based on its name.<p>
      *
-     * @param username the name of the user to be read.
+     * @param username the name of the user to be read
      * 
-     * @return the user with the given name.
+     * @return the user with the given name
      * 
-     * @throws CmsException if somthing goes wrong.
+     * @throws CmsException if somthing goes wrong
      */
     public CmsUser readUser(String username) throws CmsException {
 
@@ -2682,12 +2689,12 @@ public class CmsObject {
     /**
      * Returns a user given its name and type.
      *
-     * @param username the name of the user to be returned.
-     * @param type the type of the user.
+     * @param username the name of the user to be returned
+     * @param type the type of the user
      * 
-     * @return the user with the given name and type.
+     * @return the user with the given name and type
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(String username, int type) throws CmsException {
 
@@ -2699,12 +2706,12 @@ public class CmsObject {
      * 
      * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param username the name of the user to be returned.
-     * @param password the password of the user to be returned.
+     * @param username the name of the user to be returned
+     * @param password the password of the user to be returned
      * 
-     * @return the validated user.
+     * @return the validated user
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(String username, String password) throws CmsException {
 
@@ -2714,11 +2721,11 @@ public class CmsObject {
     /**
      * Returns a webuser.<p>
      *
-     * @param username the username of the webuser that is to be read.
+     * @param username the username of the webuser that is to be read
      * 
-     * @return the webuser.
+     * @return the webuser
      *
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser readWebUser(String username) throws CmsException {
 
@@ -2730,12 +2737,12 @@ public class CmsObject {
      *
      * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param username the username of the user that is to be read.
-     * @param password the password of the user that is to be read.
+     * @param username the username of the user that is to be read
+     * @param password the password of the user that is to be read
      * 
-     * @return a web user.
+     * @return a web user
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readWebUser(String username, String password) throws CmsException {
 
@@ -2745,10 +2752,10 @@ public class CmsObject {
     /**
      * Removes a user from a group.<p>
      *
-     * @param username the name of the user that is to be removed from the group.
-     * @param groupname the name of the group.
+     * @param username the name of the user that is to be removed from the group
+     * @param groupname the name of the group
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void removeUserFromGroup(String username, String groupname) throws CmsException {
 
@@ -2759,10 +2766,10 @@ public class CmsObject {
      * Renames a resource to the given destination name,
      * this is identical to a <code>move</code> operation.<p>
      *
-     * @param source the name of the resource to rename (full path).
-     * @param destination the new resource name (full path).
+     * @param source the name of the resource to rename (full path)
+     * @param destination the new resource name (full path)
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see #moveResource(String, String)
      */
@@ -2774,12 +2781,12 @@ public class CmsObject {
     /**
      * Replaces the content, type and properties of a resource.<p>
      * 
-     * @param resourcename the name of the resource to replace (full path).
-     * @param type the new type of the resource.
-     * @param content the new content of the resource.
-     * @param properties the new properties of the resource.
+     * @param resourcename the name of the resource to replace (full path)
+     * @param type the new type of the resource
+     * @param content the new content of the resource
+     * @param properties the new properties of the resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void replaceResource(String resourcename, int type, byte[] content, List properties) throws CmsException {
 
@@ -2796,10 +2803,10 @@ public class CmsObject {
     /**
      * Restores a file in the current project with a version from the backup archive.<p>
      * 
-     * @param resourcename the name of the resource to restore from the archive (full path).
-     * @param tag the tag (version) id to resource form the archive.
+     * @param resourcename the name of the resource to restore from the archive (full path)
+     * @param tag the tag (version) id to resource form the archive
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void restoreResourceBackup(String resourcename, int tag) throws CmsException {
 
@@ -2810,11 +2817,11 @@ public class CmsObject {
     /**
      * Removes an access control entry of a griven principal from a given resource.<p>
      * 
-     * @param resourceName name of the resource.
-     * @param principalType the type of the principal (currently group or user).
-     * @param principalName name of the principal.
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (currently group or user)
+     * @param principalName name of the principal
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void rmacc(String resourceName, String principalType, String principalName) throws CmsException {
 
@@ -2833,12 +2840,12 @@ public class CmsObject {
     /**
      * Sets a new parent-group for an already existing group.<p>
      *
-     * @param groupName the name of the group that should be updated.
+     * @param groupName the name of the group that should be updated
      * @param parentGroupName the name of the parent group to set, 
      *                      or <code>null</code> if the parent
      *                      group should be deleted.
      * 
-     * @throws CmsException  if operation was not successfull.
+     * @throws CmsException  if operation was not successfull
      */
     public void setParentGroup(String groupName, String parentGroupName) throws CmsException {
 
@@ -2848,10 +2855,10 @@ public class CmsObject {
     /**
      * Sets the password for a user.<p>
      *
-     * @param username the name of the user.
-     * @param newPassword the new password.
+     * @param username the name of the user
+     * @param newPassword the new password
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void setPassword(String username, String newPassword) throws CmsException {
 
@@ -2861,9 +2868,9 @@ public class CmsObject {
     /**
      * Sets the password for a specified user.<p>
      *
-     * @param username the name of the user.
-     * @param oldPassword the old password.
-     * @param newPassword the new password.
+     * @param username the name of the user
+     * @param oldPassword the old password
+     * @param newPassword the new password
      * 
      * @throws CmsException if the user data could not be read from the database
      */
@@ -2879,15 +2886,15 @@ public class CmsObject {
      * of a resource, the "release" date of a resource, 
      * and also the "expire" date of a resource.<p>
      * 
-     * @param resourcename the name of the resource to change (full path).
-     * @param dateLastModified timestamp the new timestamp of the changed resource.
+     * @param resourcename the name of the resource to change (full path)
+     * @param dateLastModified timestamp the new timestamp of the changed resource
      * @param dateReleased the new release date of the changed resource, 
      *              set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param dateExpired the new expire date of the changed resource. 
      *              set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void touch(String resourcename, long dateLastModified, long dateReleased, long dateExpired, boolean recursive)
     throws CmsException {
@@ -2913,9 +2920,9 @@ public class CmsObject {
      * the version from the online project, that is to the state of last 
      * publishing.<p>
      * 
-     * @param resourcename the name of the resource to undelete (full path).
+     * @param resourcename the name of the resource to undelete (full path)
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#undoChanges(String, boolean)
      */
@@ -2928,10 +2935,10 @@ public class CmsObject {
      * Undos all changes to a resource by restoring the version from the 
      * online project to the current offline project.<p>
      * 
-     * @param resourcename the name of the resource to undo the changes for (full path).
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder.
+     * @param resourcename the name of the resource to undo the changes for (full path)
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void undoChanges(String resourcename, boolean recursive) throws CmsException {
 
@@ -2942,9 +2949,9 @@ public class CmsObject {
     /**
      * Unlocks all resources of a project.
      *
-     * @param id the id of the project to be unlocked.
+     * @param id the id of the project to be unlocked
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void unlockProject(int id) throws CmsException {
 
@@ -2954,9 +2961,9 @@ public class CmsObject {
     /**
      * Unlocks a resource.<p>
      * 
-     * @param resourcename the name of the resource to unlock (full path).
+     * @param resourcename the name of the resource to unlock (full path)
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void unlockResource(String resourcename) throws CmsException {
 
@@ -2967,10 +2974,10 @@ public class CmsObject {
     /**
      * Tests if a user is member of the given group.<p>
      *
-     * @param username the name of the user to test.
-     * @param groupname the name of the group to test.
+     * @param username the name of the user to test
+     * @param groupname the name of the group to test
      * 
-     * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise.
+     * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise
      *
      * @throws CmsException if operation was not successful
      */
@@ -2984,12 +2991,12 @@ public class CmsObject {
      * publish list, if a file resource type implements the interface 
      * <code>{@link org.opencms.validation.I_CmsHtmlLinkValidatable}</code>.<p>
      * 
-     * @param publishList an OpenCms publish list.
-     * @param report a report to write the messages to.
+     * @param publishList an OpenCms publish list
+     * @param report a report to write the messages to
      * 
-     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names.
+     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names
      * 
-     * @throws Exception if something goes wrong.
+     * @throws Exception if something goes wrong
      * 
      * @see org.opencms.validation.I_CmsHtmlLinkValidatable
      */
@@ -3006,7 +3013,7 @@ public class CmsObject {
      * 
      * If this method throws no exception the password is valid.<p>
      *
-     * @param password the new password that has to be checked.
+     * @param password the new password that has to be checked
      *
      * @throws CmsSecurityException if the password is not valid
      */
@@ -3025,11 +3032,11 @@ public class CmsObject {
      * before the resource is actually written to the VFS. The returned result
      * might therefore be a modified version from the provided original.<p>
      *
-     * @param resource the resource to write.
+     * @param resource the resource to write
      *
-     * @return the written resource (may have been modified).
+     * @return the written resource (may have been modified)
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsFile writeFile(CmsFile resource) throws CmsException {
 
@@ -3039,7 +3046,7 @@ public class CmsObject {
     /**
      * Writes a file-header.<p>
      *
-     * @param file the file to write.
+     * @param file the file to write
      *
      * @throws CmsException if resourcetype is set to folder, or
      *                      if the user has not the rights to write the file header.
@@ -3057,9 +3064,9 @@ public class CmsObject {
      * The group with the given id will be completely overriden
      * by the given data.<p>
      *
-     * @param group the group that should be written.
+     * @param group the group that should be written
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void writeGroup(CmsGroup group) throws CmsException {
 
@@ -3069,10 +3076,10 @@ public class CmsObject {
     /**
      * Writes a couple of properties as structure values for a file or folder.
      *
-     * @param resourceName the resource-name of which the Property has to be set.
-     * @param properties a Hashtable with property-definitions and property values as Strings.
+     * @param resourceName the resource-name of which the Property has to be set
+     * @param properties a Hashtable with property-definitions and property values as Strings
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      * 
      * @deprecated use <code>{@link #writePropertyObjects(String, List)}</code> instead.
      */
@@ -3084,11 +3091,11 @@ public class CmsObject {
     /**
      * Writes a couple of Properties for a file or folder.
      *
-     * @param name the resource-name of which the Property has to be set.
-     * @param properties a Hashtable with property-definitions and property values as Strings.
-     * @param addDefinition flag to indicate if unknown definitions should be added.
+     * @param name the resource-name of which the Property has to be set
+     * @param properties a Hashtable with property-definitions and property values as Strings
+     * @param addDefinition flag to indicate if unknown definitions should be added
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      * 
      * @deprecated use <code>{@link #writePropertyObjects(String, List)}</code> instead.
      */
@@ -3102,11 +3109,11 @@ public class CmsObject {
     /**
      * Writes a property as a structure value for a file or folder.<p>
      *
-     * @param resourceName the resource-name for which the property will be set.
-     * @param key the property definition name.
-     * @param value the value for the property to be set.
+     * @param resourceName the resource-name for which the property will be set
+     * @param key the property definition name
+     * @param value the value for the property to be set
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      * 
      * @deprecated use <code>{@link #writePropertyObject(String, CmsProperty)}</code> instead.
      */
@@ -3122,12 +3129,12 @@ public class CmsObject {
     /**
      * Writes a property for a file or folder.<p>
      *
-     * @param resourcename the resource-name for which the property will be set.
-     * @param key the property-definition name.
-     * @param value the value for the property to be set.
-     * @param addDefinition flag to indicate if unknown definitions should be added.
+     * @param resourcename the resource-name for which the property will be set
+     * @param key the property-definition name
+     * @param value the value for the property to be set
+     * @param addDefinition flag to indicate if unknown definitions should be added
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      * 
      * @deprecated use <code>{@link #writePropertyObject(String, CmsProperty)}</code> instead.
      */
@@ -3144,10 +3151,10 @@ public class CmsObject {
     /**
      * Writes a property for a specified resource.<p>
      * 
-     * @param resourcename the name of resource with complete path.
-     * @param property the property to write.
+     * @param resourcename the name of resource with complete path
+     * @param property the property to write
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void writePropertyObject(String resourcename, CmsProperty property) throws CmsException {
 
@@ -3162,10 +3169,10 @@ public class CmsObject {
      * <code>a, b</code> are contained in the specified list so that <code>a.equals(b)</code>, 
      * otherwise an exception is thrown.<p>
      * 
-     * @param resourcename the name of resource with complete path.
-     * @param properties the list of properties to write.
+     * @param resourcename the name of resource with complete path
+     * @param properties the list of properties to write
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void writePropertyObjects(String resourcename, List properties) throws CmsException {
 
@@ -3178,12 +3185,12 @@ public class CmsObject {
      * 
      * This is done during static export.<p>
      * 
-     * @param resourceName The name of the resource to be added to the static export.
-     * @param linkType the type of resource exported (0= non-paramter, 1=parameter).
-     * @param linkParameter the parameters added to the resource.
-     * @param timestamp a timestamp for writing the data into the db.
+     * @param resourceName The name of the resource to be added to the static export
+     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters added to the resource
+     * @param timestamp a timestamp for writing the data into the db
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void writeStaticExportPublishedResource(
         String resourceName,
@@ -3207,9 +3214,9 @@ public class CmsObject {
      * The user with the given id will be completely overriden
      * by the given data.<p>
      *
-     * @param user the user to be written.
+     * @param user the user to be written
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void writeUser(CmsUser user) throws CmsException {
 
@@ -3226,9 +3233,9 @@ public class CmsObject {
      * The user with the given id will be completely overriden
      * by the given data.<p>
      *
-     * @param user the user to be written.
+     * @param user the user to be written
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void writeWebUser(CmsUser user) throws CmsException {
 
@@ -3239,9 +3246,9 @@ public class CmsObject {
      * Convenience method to add the site root from the current user's 
      * request context to the given resource name.<p>
      *
-     * @param resourcename the resource name.
+     * @param resourcename the resource name
      * 
-     * @return the resource name with the site root added.
+     * @return the resource name with the site root added
      * 
      * @see CmsRequestContext#addSiteRoot(String)
      */
@@ -3255,8 +3262,8 @@ public class CmsObject {
      * 
      * The event will be given to all registered <code>{@link I_CmsEventListener}</code>s.<p>
      * 
-     * @param type the type of the event.
-     * @param data a data object that contains data used by the event listeners.
+     * @param type the type of the event
+     * @param data a data object that contains data used by the event listeners
      * 
      * @see OpenCms#addCmsEventListener(I_CmsEventListener)
      * @see OpenCms#addCmsEventListener(I_CmsEventListener, int[])
@@ -3270,11 +3277,11 @@ public class CmsObject {
      * Convenience method to return the initialized resource type 
      * instance for the given id.<p>
      * 
-     * @param resourceType the id of the resource type to get.
+     * @param resourceType the id of the resource type to get
      * 
-     * @return the initialized resource type instance for the given id.
+     * @return the initialized resource type instance for the given id
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      * 
      * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
      */
@@ -3286,8 +3293,8 @@ public class CmsObject {
     /**
      * Initializes this <code>{@link CmsObject}</code> with the provided user context and database connection.<p>
      * 
-     * @param securityManager the security manager.
-     * @param context the request context that contains the user authentification.
+     * @param securityManager the security manager
+     * @param context the request context that contains the user authentification
      */
     private void init(CmsSecurityManager securityManager, CmsRequestContext context) {
 

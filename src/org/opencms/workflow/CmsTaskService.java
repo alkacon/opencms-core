@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTaskService.java,v $
- * Date   : $Date: 2004/12/22 09:37:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/22 16:36:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,8 +62,8 @@ public class CmsTaskService {
     /**
      * Creates a new  <code>{@link CmsTaskService}</code>.<p>
      * 
-     * @param context the request context that contains the user authentification.
-     * @param securityManager the security manager.
+     * @param context the request context that contains the user authentification
+     * @param securityManager the security manager
      * 
      */
     public CmsTaskService(CmsRequestContext context, CmsSecurityManager securityManager) {
@@ -75,9 +75,9 @@ public class CmsTaskService {
     /**
      * Updates the state of the given task as accepted by the current user.<p>
      *
-     * @param taskId the id of the task to accept.
+     * @param taskId the id of the task to accept
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void acceptTask(int taskId) throws CmsException {
 
@@ -87,18 +87,18 @@ public class CmsTaskService {
     /**
      * Creates a new task.<p>
      * 
-     * @param projectid the id of the current project task of the user.
-     * @param agentName the user who will edit the task.
-     * @param roleName a usergroup for the task.
-     * @param taskname a name of the task.
-     * @param tasktype the type of the task.
-     * @param taskcomment a description of the task, which is written as task log entry.
-     * @param timeout the time when the task must finished.
-     * @param priority the id for the priority of the task.
+     * @param projectid the id of the current project task of the user
+     * @param agentName the user who will edit the task
+     * @param roleName a usergroup for the task
+     * @param taskname a name of the task
+     * @param tasktype the type of the task
+     * @param taskcomment a description of the task, which is written as task log entry
+     * @param timeout the time when the task must finished
+     * @param priority the id for the priority of the task
      * 
-     * @return the created task.
+     * @return the created task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsTask createTask(
         int projectid,
@@ -135,15 +135,15 @@ public class CmsTaskService {
      * <il>with no comments</il>
      * </ul><p>
      * 
-     * @param agentName the user who will edit the task.
-     * @param roleName a usergroup for the task.
-     * @param taskname the name of the task.
-     * @param timeout the time when the task must finished.
-     * @param priority the id for the priority of the task.
+     * @param agentName the user who will edit the task
+     * @param roleName a usergroup for the task
+     * @param taskname the name of the task
+     * @param timeout the time when the task must finished
+     * @param priority the id for the priority of the task
      * 
-     * @return the created task.
+     * @return the created task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsTask createTask(String agentName, String roleName, String taskname, long timeout, int priority)
     throws CmsException {
@@ -154,9 +154,9 @@ public class CmsTaskService {
     /**
      * Ends a task.<p>
      *
-     * @param taskid the id of the task to end.
+     * @param taskid the id of the task to end
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void endTask(int taskid) throws CmsException {
 
@@ -166,11 +166,11 @@ public class CmsTaskService {
     /**
      * Forwards a task to a new user.<p>
      *
-     * @param taskid the id of the task which will be forwarded.
-     * @param newRoleName the new group for the task.
-     * @param newUserName the new user who gets the task. if it is empty, a new agent will automatic selected.
+     * @param taskid the id of the task which will be forwarded
+     * @param newRoleName the new group for the task
+     * @param newUserName the new user who gets the task. if it is empty, a new agent will automatic selected
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void forwardTask(int taskid, String newRoleName, String newUserName) throws CmsException {
 
@@ -180,12 +180,12 @@ public class CmsTaskService {
     /**
      * Returns the value of the given parameter for the given task.<p>
      *
-     * @param taskid the id of the task.
-     * @param parname the name of the parameter.
+     * @param taskid the id of the task
+     * @param parname the name of the parameter
      * 
-     * @return the parameter value.
+     * @return the parameter value
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public String getTaskPar(int taskid, String parname) throws CmsException {
 
@@ -195,11 +195,11 @@ public class CmsTaskService {
     /**
      * Returns the template task id for a given taskname.<p>
      *
-     * @param taskname the name of the task.
+     * @param taskname the name of the task
      * 
-     * @return the id of the task template.
+     * @return the id of the task template
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public int getTaskType(String taskname) throws CmsException {
 
@@ -209,11 +209,11 @@ public class CmsTaskService {
     /**
      * Reads the agent of a task.<p>
      *
-     * @param task the task to read the agent from.
+     * @param task the task to read the agent from
      * 
-     * @return the agent of a task.
+     * @return the agent of a task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readAgent(CmsTask task) throws CmsException {
 
@@ -232,15 +232,15 @@ public class CmsTaskService {
      * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
-     * @param projectId the id of the project in which the tasks are defined.
-     * @param ownerName the owner of the task.
-     * @param taskType the type of task you want to read.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sorting of the tasks.
+     * @param projectId the id of the project in which the tasks are defined
+     * @param ownerName the owner of the task
+     * @param taskType the type of task you want to read
+     * @param orderBy specifies how to order the tasks
+     * @param sort sorting of the tasks
      * 
-     * @return a list of given <code>{@link CmsTask}</code> objects for a user for a project.
+     * @return a list of given <code>{@link CmsTask}</code> objects for a user for a project
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort)
     throws CmsException {
@@ -251,11 +251,11 @@ public class CmsTaskService {
     /**
      * Reads the group (role) of a task.<p>
      *
-     * @param task the task to read the group (role) from.
+     * @param task the task to read the group (role) from
      * 
-     * @return the group (role) of the task.
+     * @return the group (role) of the task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsGroup readGroup(CmsTask task) throws CmsException {
 
@@ -265,11 +265,11 @@ public class CmsTaskService {
     /**
      * Reads the original agent of a task.<p>
      *
-     * @param task the task to read the original agent from.
+     * @param task the task to read the original agent from
      * 
-     * @return the original agent of the task.
+     * @return the original agent of the task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
 
@@ -279,11 +279,11 @@ public class CmsTaskService {
     /**
      * Reads the owner (initiator) of a task.<p>
      *
-     * @param task the task to read the owner from.
+     * @param task the task to read the owner from
      * 
-     * @return the owner of the task.
+     * @return the owner of the task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsTask task) throws CmsException {
 
@@ -293,11 +293,11 @@ public class CmsTaskService {
     /**
      * Reads the owner of a task log.<p>
      *
-     * @param log the task log.
+     * @param log the task log
      * 
-     * @return the owner of the task log.
+     * @return the owner of the task log
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsTaskLog log) throws CmsException {
 
@@ -307,11 +307,11 @@ public class CmsTaskService {
     /**
      * Reads a project of a given task.<p>
      *
-     * @param task the task for which the project will be read.
+     * @param task the task for which the project will be read
      * 
-     * @return the project of the task.
+     * @return the project of the task
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsProject readProject(CmsTask task) throws CmsException {
 
@@ -321,11 +321,11 @@ public class CmsTaskService {
     /**
      * Reads all task log entries for a project.
      *
-     * @param projectId the id of the project for which the tasklog will be read.
+     * @param projectId the id of the project for which the tasklog will be read
      * 
-     * @return a list of <code>{@link CmsTaskLog}</code> objects.
+     * @return a list of <code>{@link CmsTaskLog}</code> objects
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List readProjectLogs(int projectId) throws CmsException {
 
@@ -335,11 +335,11 @@ public class CmsTaskService {
     /**
      * Reads the task with the given id.<p>
      *
-     * @param id the id of the task to be read.
+     * @param id the id of the task to be read
      * 
-     * @return the task with the given id.
+     * @return the task with the given id
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsTask readTask(int id) throws CmsException {
 
@@ -349,11 +349,11 @@ public class CmsTaskService {
     /**
      * Reads log entries for a task.<p>
      *
-     * @param taskid the task for which the tasklog will be read.
+     * @param taskid the task for which the tasklog will be read
      * 
-     * @return a list of <code>{@link CmsTaskLog}</code> objects.
+     * @return a list of <code>{@link CmsTaskLog}</code> objects
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List readTaskLogs(int taskid) throws CmsException {
 
@@ -372,14 +372,14 @@ public class CmsTaskService {
      * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
-     * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks.
-     * @param tasktype the type of task you want to read.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null.
+     * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks
+     * @param tasktype the type of task you want to read
+     * @param orderBy specifies how to order the tasks
+     * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null
      * 
-     * @return a list of <code>{@link CmsTask}</code> objects for the project.
+     * @return a list of <code>{@link CmsTask}</code> objects for the project
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
 
@@ -398,15 +398,15 @@ public class CmsTaskService {
      * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
-     * @param projectId the id of the Project in which the tasks are defined.
-     * @param roleName the role who has to process the task.
-     * @param tasktype the type of task you want to read.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null.
+     * @param projectId the id of the Project in which the tasks are defined
+     * @param roleName the role who has to process the task
+     * @param tasktype the type of task you want to read
+     * @param orderBy specifies how to order the tasks
+     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
      * 
-     * @return list of <code>{@link CmsTask}</code> objects for the role.
+     * @return list of <code>{@link CmsTask}</code> objects for the role
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort)
     throws CmsException {
@@ -426,15 +426,15 @@ public class CmsTaskService {
      * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
-     * @param projectId the id of the Project in which the tasks are defined.
-     * @param userName the user who has to process the task.
-     * @param tasktype the type of task you want to read.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null.
+     * @param projectId the id of the Project in which the tasks are defined
+     * @param userName the user who has to process the task
+     * @param tasktype the type of task you want to read
+     * @param orderBy specifies how to order the tasks
+     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
      * 
-     * @return a list of <code>{@link CmsTask}</code> objects for the user
+     * @return a list of <code>{@link CmsTask}</code> objects for the user 
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort)
     throws CmsException {
@@ -448,9 +448,9 @@ public class CmsTaskService {
      * Setting its state to <code>{@link org.opencms.main.I_CmsConstants#C_TASK_STATE_STARTED}</code> and
      * the percentage to <b>zero</b>.<p>
      *
-     * @param taskId the id of the task to reactivate.
+     * @param taskId the id of the task to reactivate
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void reactivateTask(int taskId) throws CmsException {
 
@@ -460,10 +460,10 @@ public class CmsTaskService {
     /**
      * Sets a new name for a task.<p>
      *
-     * @param taskId the id of the task.
-     * @param name the new name of the task.
+     * @param taskId the id of the task
+     * @param name the new name of the task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void setName(int taskId, String name) throws CmsException {
 
@@ -473,10 +473,10 @@ public class CmsTaskService {
     /**
      * Sets the priority of a task.<p>
      *
-     * @param taskId the id of the task.
-     * @param priority the new priority value.
+     * @param taskId the id of the task
+     * @param priority the new priority value
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void setPriority(int taskId, int priority) throws CmsException {
 
@@ -486,11 +486,11 @@ public class CmsTaskService {
     /**
      * Sets a parameter for a task.<p>
      *
-     * @param taskid the id of the task.
-     * @param parname the name of the parameter.
-     * @param parvalue the value of the parameter.
+     * @param taskid the id of the task
+     * @param parname the name of the parameter
+     * @param parvalue the value of the parameter
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void setTaskPar(int taskid, String parname, String parvalue) throws CmsException {
 
@@ -500,10 +500,10 @@ public class CmsTaskService {
     /**
      * Sets the timeout of a task.<p>
      *
-     * @param taskId the id of the task.
-     * @param timeout the new timeout value.
+     * @param taskId the id of the task
+     * @param timeout the new timeout value
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void setTimeout(int taskId, long timeout) throws CmsException {
 
@@ -513,10 +513,10 @@ public class CmsTaskService {
     /**
      * Writes a new user tasklog for a task.<p>
      *
-     * @param taskid the Id of the task.
-     * @param comment the description for the log.
+     * @param taskid the Id of the task
+     * @param comment the description for the log
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public void writeTaskLog(int taskid, String comment) throws CmsException {
 
@@ -526,11 +526,11 @@ public class CmsTaskService {
     /**
      * Writes a new user tasklog for a task.<p>
      *
-     * @param taskId the id of the task.
-     * @param comment the description for the log.
-     * @param taskType the type of the tasklog, user task types must be greater than 100.
+     * @param taskId the id of the task
+     * @param comment the description for the log
+     * @param taskType the type of the tasklog, user task types must be greater than 100
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void writeTaskLog(int taskId, String comment, int taskType) throws CmsException {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/12/22 09:39:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/12/22 16:36:45 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.20 $ $Date: 2004/12/22 09:39:11 $
+ * @version $Revision: 1.21 $ $Date: 2004/12/22 16:36:45 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
@@ -60,21 +60,21 @@ public interface I_CmsWorkflowDriver {
     /**
      * Creates a new task.<p>
      * 
-     * @param dbc the current database context.
-     * @param rootId id of the root task project.
-     * @param parentId id of the parent task.
-     * @param tasktype type of the task.
-     * @param ownerId id of the owner.
-     * @param agentId id of the agent.
-     * @param roleId id of the role.
-     * @param taskname name of the task.
-     * @param wakeuptime time when the task will be wake up.
-     * @param timeout time when the task times out.
-     * @param priority priority of the task.
+     * @param dbc the current database context
+     * @param rootId id of the root task project
+     * @param parentId id of the parent task
+     * @param tasktype type of the task
+     * @param ownerId id of the owner
+     * @param agentId id of the agent
+     * @param roleId id of the role
+     * @param taskname name of the task
+     * @param wakeuptime time when the task will be wake up
+     * @param timeout time when the task times out
+     * @param priority priority of the task
      *
-     * @return the Task object of the generated task.
+     * @return the Task object of the generated task
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsTask createTask(
         CmsDbContext dbc,
@@ -100,22 +100,22 @@ public interface I_CmsWorkflowDriver {
     /**
      * Ends a task.<p>
      *
-     * @param dbc the current database context.
-     * @param taskId Id of the task to end.
+     * @param dbc the current database context
+     * @param taskId Id of the task to end
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void endTask(CmsDbContext dbc, int taskId) throws CmsException;
 
     /**
      * Forwards a task to a new user.<p>
      *
-     * @param dbc the current database context.
-     * @param taskId the Id of the task to forward.
-     * @param newRoleId the new group name for the task.
-     * @param newUserId the new user who gets the task.
+     * @param dbc the current database context
+     * @param taskId the Id of the task to forward
+     * @param newRoleId the new group name for the task
+     * @param newUserId the new user who gets the task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void forwardTask(CmsDbContext dbc, int taskId, CmsUUID newRoleId, CmsUUID newUserId) throws CmsException;
 
@@ -153,36 +153,36 @@ public interface I_CmsWorkflowDriver {
     /**
      * Reads a project of a given task.<p>
      *
-     * @param dbc the current database context.
-     * @param task the task to read the project of.
+     * @param dbc the current database context
+     * @param task the task to read the project of
      * 
-     * @return the project of the task.
+     * @return the project of the task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsProject readProject(CmsDbContext dbc, CmsTask task) throws CmsException;
 
     /**
      * Reads all task log entries for a project.
      *
-     * @param dbc the current database context.
-     * @param projectId the id of the project for which the tasklog will be read.
+     * @param dbc the current database context
+     * @param projectId the id of the project for which the tasklog will be read
      * 
-     * @return a list of <code>{@link CmsTaskLog}</code> objects.
+     * @return a list of <code>{@link CmsTaskLog}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     List readProjectLogs(CmsDbContext dbc, int projectId) throws CmsException;
 
     /**
      * Reads the task with the given id.<p>
      *
-     * @param dbc the current database context.
-     * @param id the id for the task to read.
+     * @param dbc the current database context
+     * @param id the id for the task to read
      * 
-     * @return the task with the given id.
+     * @return the task with the given id
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsTask readTask(CmsDbContext dbc, int id) throws CmsException;
 
@@ -200,25 +200,25 @@ public interface I_CmsWorkflowDriver {
     /**
      * Reads log entries for a task.<p>
      *
-     * @param dbc the current satabase context.
-     * @param taskId the task for the tasklog to read.
+     * @param dbc the current satabase context
+     * @param taskId the task for the tasklog to read
      * 
-     * @return a list of <code>{@link CmsTaskLog}</code> objects.
+     * @return a list of <code>{@link CmsTaskLog}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     List readTaskLogs(CmsDbContext dbc, int taskId) throws CmsException;
 
     /**
      * Returns the value of the given parameter for the given task.<p>
      *
-     * @param dbc the current database context.
-     * @param taskId the Id of the task.
-     * @param parName name of the parameter.
+     * @param dbc the current database context
+     * @param taskId the Id of the task
+     * @param parName name of the parameter
      * 
-     * @return task parameter value.
+     * @return task parameter value
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     String readTaskParameter(CmsDbContext dbc, int taskId, String parName) throws CmsException;
 
@@ -238,17 +238,17 @@ public interface I_CmsWorkflowDriver {
      * </ul>
      *
      * @param dbc the current database context
-     * @param project the id of the project in which the tasks are defined. 
-     * @param agent the owner of the task.
-     * @param owner the owner of the task.
-     * @param role the owner of the task.
-     * @param taskType the type of task you want to read.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sorting of the tasks.
+     * @param project the id of the project in which the tasks are defined
+     * @param agent the owner of the task
+     * @param owner the owner of the task
+     * @param role the owner of the task
+     * @param taskType the type of task you want to read
+     * @param orderBy specifies how to order the tasks
+     * @param sort sorting of the tasks
      * 
-     * @return a list of given <code>{@link CmsTask}</code> objects for a user for a project.
+     * @return a list of given <code>{@link CmsTask}</code> objects for a user for a project
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     List readTasks(
         CmsDbContext dbc,
@@ -297,14 +297,14 @@ public interface I_CmsWorkflowDriver {
     /**
      * Writes new log for a task.<p>
      *
-     * @param dbc the current database context.
-     * @param taskId The id of the task.
-     * @param userId User who added the Log.
-     * @param starttime Time when the log is created.
-     * @param comment Description for the log.
-     * @param type Type of the log. 0 = Sytem log, 1 = User Log.
+     * @param dbc the current database context
+     * @param taskId The id of the task
+     * @param userId User who added the Log
+     * @param starttime Time when the log is created
+     * @param comment Description for the log
+     * @param type Type of the log. 0 = Sytem log, 1 = User Log
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void writeTaskLog(
         CmsDbContext dbc,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2004/12/22 10:46:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/22 16:36:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -218,7 +218,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      *
      * The additional infos must be requested via the CmsObject.
      *
-     * @return additional information about the user.
+     * @return additional information about the user
      *
      */
     public Map getAdditionalInfo() {
@@ -229,7 +229,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * Returns additional information about the user which are usually set 
      * in the users preferences.<p>
      *
-     * @param key the key to the additional information.
+     * @param key the key to the additional information
      * @return additional information Object about the user, if the additional info
      * does not exists, it returns <code>null</code>
      */
@@ -249,7 +249,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Gets the address.<p>
      *
-     * @return the USER_ADDRESS, or null.
+     * @return the USER_ADDRESS, or null
      */
     public String getAddress() {
         return m_address;
@@ -258,7 +258,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Gets the description of this user.<p>
      *
-     * @return the description of this user.
+     * @return the description of this user
      */
     public String getDescription() {
         return m_description;
@@ -316,7 +316,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Returns the time of the last login of this user.<p>
      *
-     * @return the time of the last login of this user, or C_UNKNOWN_LONG.
+     * @return the time of the last login of this user, or C_UNKNOWN_LONG
      */
     public long getLastlogin() {
         return m_lastlogin;
@@ -354,7 +354,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
      * C_USER_TYPE_WEBUSER for webuser.<p>
      *
-     * @return the type, or C_UNKNOWN_INT.
+     * @return the type, or C_UNKNOWN_INT
      */
     public int getType() {
         return m_type;
@@ -417,8 +417,8 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
      *
      *
-     * @param key The key to the additional information.
-     * @param obj The additinoal information value.
+     * @param key The key to the additional information
+     * @param obj The additinoal information value
      *
      */
     public void setAdditionalInfo(String key, Object obj) {
@@ -428,7 +428,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Sets the address.<p>
      *
-     * @param value The user adress.
+     * @param value The user adress
      */
     public void setAddress(String value) {
         m_address = value;
@@ -437,7 +437,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Sets the description of this user.<p>
      *
-     * @param value the description of this user.
+     * @param value the description of this user
      */
     public void setDescription(String value) {
         m_description = value;
@@ -453,7 +453,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Sets the email.<p>
      *
-     * @param value The new email adress.
+     * @param value The new email adress
      */
     public void setEmail(String value) {
         m_email = value;
@@ -469,7 +469,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Sets the firstname.<p>
      *
-     * @param firstname the USER_FIRSTNAME.
+     * @param firstname the USER_FIRSTNAME
      */
     public void setFirstname(String firstname) {
         m_firstname = firstname;
@@ -478,7 +478,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Sets the flags.<p>
      *
-     * @param value The new user flags.
+     * @param value The new user flags
      */
     void setFlags(int value) {
         m_flags = value;
@@ -487,7 +487,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Sets the lastlogin.<p>
      *
-     * @param value The new user section.
+     * @param value The new user section
      */
     public void setLastlogin(long value) {
         m_isTouched = true;
@@ -506,7 +506,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Sets the password.<p>
      *
-     * @param value The new password.
+     * @param value The new password
      */
     public void setPassword(String value) {
         m_password = value;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/22 09:39:11 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/12/22 16:36:45 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.45 $ $Date: 2004/12/22 09:39:11 $
+ * @version $Revision: 1.46 $ $Date: 2004/12/22 16:36:45 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -163,10 +163,10 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * Only groups that contain no subgroups can be deleted.<p>
      * 
-     * @param dbc the current database context.
-     * @param name the name of the group that is to be deleted.
+     * @param dbc the current database context
+     * @param name the name of the group that is to be deleted
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void deleteGroup(CmsDbContext dbc, String name) throws CmsException;
 
@@ -183,11 +183,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Removes a user from a group.<p>
      * 
-     * @param dbc the current database context.
-     * @param userId the id of the user that is to be removed from the group.
-     * @param groupId the id of the group.
+     * @param dbc the current database context
+     * @param userId the id of the user that is to be removed from the group
+     * @param groupId the id of the group
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId) throws CmsException;
 
@@ -235,24 +235,24 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * Creates a new user by import.<p>
      * 
      * @param dbc the current database context
-     * @param id the id of the user.
-     * @param name the new name for the user.
-     * @param password the new password for the user.
-     * @param description the description for the user.
-     * @param firstname the firstname of the user.
-     * @param lastname the lastname of the user.
-     * @param email the email of the user.
-     * @param lastlogin the user lastlogin time.
-     * @param flags the flags for a user (e.g. <code>{@link org.opencms.main.I_CmsConstants#C_FLAG_ENABLED}</code>).
+     * @param id the id of the user
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param description the description for the user
+     * @param firstname the firstname of the user
+     * @param lastname the lastname of the user
+     * @param email the email of the user
+     * @param lastlogin the user lastlogin time
+     * @param flags the flags for a user (e.g. <code>{@link org.opencms.main.I_CmsConstants#C_FLAG_ENABLED}</code>)
      * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
      *                      infos may be stored into the Usertables (depending on the implementation).
-     * @param address the address of the user.
-     * @param type the type of the user.
-     * @param reservedParam reserved optional parameter, should be <code>null</code> on standard OpenCms installations.
+     * @param address the address of the user
+     * @param type the type of the user
+     * @param reservedParam reserved optional parameter, should be <code>null</code> on standard OpenCms installations
      *
-     * @return a new <code>{@link CmsUser}</code> object representing the added user.
+     * @return a new <code>{@link CmsUser}</code> object representing the added user
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     CmsUser importUser(
         CmsDbContext dbc,
@@ -306,12 +306,12 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Reads all relevant access control entries for a given resource.<p>
      * 
-     * @param dbc the current database context.
-     * @param project the project to write the entry.
-     * @param resource the id of the resource.
-     * @param inheritedOnly flag to indicate that only inherited entries should be returned.
+     * @param dbc the current database context
+     * @param project the project to write the entry
+     * @param resource the id of the resource
+     * @param inheritedOnly flag to indicate that only inherited entries should be returned
      * 
-     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects defining all permissions for the given resource.
+     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects defining all permissions for the given resource
      * 
      * @throws CmsException if something goes wrong
      */
@@ -338,85 +338,85 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Reads all child groups of a group.<p>
      *
-     * @param dbc the current database context.
-     * @param groupname the name of the group to read the child groups from.
+     * @param dbc the current database context
+     * @param groupname the name of the group to read the child groups from
      * 
-     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     List readChildGroups(CmsDbContext dbc, String groupname) throws CmsException;
 
     /**
      * Reads a group based on the group id.<p>
      * 
-     * @param dbc the current database context.
-     * @param groupId the id of the group that is to be read.
+     * @param dbc the current database context
+     * @param groupId the id of the group that is to be read
      * 
-     * @return the group that was read.
+     * @return the group that was read
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsGroup readGroup(CmsDbContext dbc, CmsUUID groupId) throws CmsException;
 
     /**
      * Reads a group based on the group name.<p>
      * 
-     * @param dbc the current database context.
-     * @param groupName the name of the group that is to be read.
+     * @param dbc the current database context
+     * @param groupName the name of the group that is to be read
      * 
-     * @return the group that was read.
+     * @return the group that was read
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsGroup readGroup(CmsDbContext dbc, String groupName) throws CmsException;
 
     /**
      * Reads all existing groups.<p>
      *
-     * @param dbc the current database context.
+     * @param dbc the current database context
      * 
-     * @return a list of all <code>{@link CmsGroup}</code> objects.
+     * @return a list of all <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     List readGroups(CmsDbContext dbc) throws CmsException;
 
     /**
      * Reads all groups the given user is a member in.<p>
      *
-     * @param dbc the current database context.
-     * @param userId the id of the user.
-     * @param paramStr additional parameter.
+     * @param dbc the current database context
+     * @param userId the id of the user
+     * @param paramStr additional parameter
      * 
-     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * @return a list of <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsException;
 
     /**
      * Reads a user based on the user id.<p>
      * 
-     * @param dbc the current database context.
-     * @param id the id of the user to read.
+     * @param dbc the current database context
+     * @param id the id of the user to read
      *
-     * @return the user that was read.
+     * @return the user that was read
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsException;
 
     /**
      * Reads a user based in the user name and user type.<p>
      * 
-     * @param dbc the current database context.
-     * @param name the name of the user to read.
-     * @param type the type of the user to read.
+     * @param dbc the current database context
+     * @param name the name of the user to read
+     * @param type the type of the user to read
      *
-     * @return the user that was read.
+     * @return the user that was read
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsUser readUser(CmsDbContext dbc, String name, int type) throws CmsException;
 
@@ -425,14 +425,14 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      * 
-     * @param dbc the current database context.
-     * @param name the name of the user.
-     * @param password the password of the user.
-     * @param type the type of the user.
+     * @param dbc the current database context
+     * @param name the name of the user
+     * @param password the password of the user
+     * @param type the type of the user
      * 
-     * @return the user that was read.
+     * @return the user that was read
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     CmsUser readUser(CmsDbContext dbc, String name, String password, int type) throws CmsException;
 
@@ -454,25 +454,25 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Reads all existing users of the given type.<p>
      *
-     * @param dbc the current database context.
-     * @param type the type to read the users for.
+     * @param dbc the current database context
+     * @param type the type to read the users for
      * 
-     * @return a list of all <code>{@link CmsUser}</code> objects of the given type.
+     * @return a list of all <code>{@link CmsUser}</code> objects of the given type
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     List readUsers(CmsDbContext dbc, int type) throws CmsException;
 
     /**
      * Reads all users that are members of the given group.<p>
      *
-     * @param dbc the current database context.
-     * @param name the name of the group to read the users from.
-     * @param type the type of the users to read.
+     * @param dbc the current database context
+     * @param name the name of the group to read the users from
+     * @param type the type of the users to read
      * 
-     * @return all <code>{@link CmsUser}</code> objects in the group.
+     * @return all <code>{@link CmsUser}</code> objects in the group
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     List readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsException;
 
@@ -546,10 +546,10 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * The group with the given id will be completely overriden
      * by the given data.<p>
      * 
-     * @param dbc the current database context.
-     * @param group the group to update.
+     * @param dbc the current database context
+     * @param group the group to update
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException;
 
@@ -575,10 +575,10 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * The user with the given id will be completely overriden
      * by the given data.<p>
      *
-     * @param dbc the current database context.
-     * @param user the user to update.
+     * @param dbc the current database context
+     * @param user the user to update
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException;
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/12/22 16:41:24 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsProject;
-import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -55,7 +55,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.40 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.41 $ $Date: 2004/12/22 16:41:24 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -72,7 +72,7 @@ public interface I_CmsBackupDriver {
      * @return the new propertydefinition
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition createBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsException;
+    CmsPropertyDefinition createBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsException;
 
     /**
      * Creates a valid CmsBackupResource instance from a JDBC ResultSet.<p>
@@ -102,11 +102,11 @@ public interface I_CmsBackupDriver {
      * Deletes a property defintion.<p>
      * 
      * @param dbc the current database context
-     * @param metadef the propertydefinitions to be deleted.
+     * @param metadef the propertydefinitions to be deleted
      *
      * @throws CmsException if something goes wrong
      */
-    void deleteBackupPropertyDefinition(CmsDbContext dbc, CmsPropertydefinition metadef) throws CmsException;
+    void deleteBackupPropertyDefinition(CmsDbContext dbc, CmsPropertyDefinition metadef) throws CmsException;
 
     /**
      * Deletes backup versions of a resource.<p>
@@ -152,8 +152,9 @@ public interface I_CmsBackupDriver {
      * @param tagId the tagId of the file
      * @param resourcePath the path of the file to read
      * 
-     * @return CmsBackupResource the backup file
-     * @throws CmsException is something goes wrong
+     * @return the backup file
+     * 
+     * @throws CmsException if something goes wrong
      */
     CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, String resourcePath) throws CmsException;
 
@@ -180,12 +181,18 @@ public interface I_CmsBackupDriver {
     List readBackupFileHeaders(CmsDbContext dbc) throws CmsException;
 
     /**
-     * Reads all backup file headers of a file excluding the file content.<p>
+     * Reads all file headers of a file.<br>
+     * 
+     * This method returns a list with the history of all file headers, i.e.
+     * the file headers of a file, independent of the project they were attached to.<br>
+     *
+     * The reading excludes the file content.<p>
      * 
      * @param dbc the current database context
      * @param resourcePath the path of the file to read
      *
-     * @return List with all backup file headers
+     * @return a list of file headers, as <code>{@link CmsBackupResource}</code> objects, read from the Cms
+     * 
      * @throws CmsException if something goes wrong
      */
     List readBackupFileHeaders(CmsDbContext dbc, String resourcePath) throws CmsException;
@@ -196,7 +203,7 @@ public interface I_CmsBackupDriver {
      * @param dbc the current database context
      * @param resourceId the resource ID of the resource
      * 
-     * @return Returns the max. current backup version of a resource.
+     * @return Returns the max. current backup version of a resource
      * @throws CmsException if something goes wrong
      */
     int readBackupMaxVersion(CmsDbContext dbc, CmsUUID resourceId) throws CmsException;
@@ -207,7 +214,8 @@ public interface I_CmsBackupDriver {
      * @param dbc the current database context
      * @param tagId the versionId of the project
      * 
-     * @return CmsBackupProject the backup project 
+     * @return the requested backup project
+     * 
      * @throws CmsException is something goes wrong
      */
     CmsBackupProject readBackupProject(CmsDbContext dbc, int tagId) throws CmsException;
@@ -218,7 +226,7 @@ public interface I_CmsBackupDriver {
      * @param dbc the current database context
      * @param tagId the version ID of the backup
      * 
-     * @return all resources that belong to the given backup version ID.
+     * @return all resources that belong to the given backup version ID
      * @throws CmsException if something goes wrong
      */
     List readBackupProjectResources(CmsDbContext dbc, int tagId) throws CmsException;
@@ -228,7 +236,9 @@ public interface I_CmsBackupDriver {
      *
      * @param dbc the current database context
      * 
-     * @return a list of projects
+     * @return list of <code>{@link CmsBackupProject}</code> objects 
+     *           with all projects from history.
+     * 
      * @throws CmsException if an error occurs
      */
     List readBackupProjects(CmsDbContext dbc) throws CmsException;
@@ -263,10 +273,10 @@ public interface I_CmsBackupDriver {
      * @param dbc the current database context
      * @param name the name of the propertydefinition to read
      * 
-     * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition.
+     * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition readBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsException;
+    CmsPropertyDefinition readBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsException;
 
     /**
      * Reads the max. backup tag ID for a specified resource.<p>
@@ -280,11 +290,11 @@ public interface I_CmsBackupDriver {
     int readMaxTagId(CmsDbContext dbc, CmsResource resource) throws CmsException;
 
     /**
-     * Gets the next available backup version ID for a resource.<p>
+     * Returns the next available backup version ID for a resource.<p>
      * 
      * @param dbc the current database context
      * 
-     * @return int the next available backup version ID
+     * @return the next available backup version ID
      */
     int readNextBackupTagId(CmsDbContext dbc);
 
@@ -294,7 +304,7 @@ public interface I_CmsBackupDriver {
      * @param dbc the current database context
      * @param currentProject the current project
      * @param tagId the version ID of the backup
-     * @param publishDate long timestamp when the current project was published 
+     * @param publishDate long timestamp when the current project was published. 
      * @param currentUser the current user
      * 
      * @throws CmsException if something goes wrong

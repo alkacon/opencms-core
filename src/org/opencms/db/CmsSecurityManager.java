@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/22 09:39:11 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/12/22 16:36:45 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -136,7 +136,7 @@ public final class CmsSecurityManager {
      * Updates the state of the given task as accepted by the current user.<p>
      * 
      * @param context the current database context
-     * @param taskId the Id of the task to accept.
+     * @param taskId the Id of the task to accept
      *
      * @throws CmsException if something goes wrong
      */
@@ -153,13 +153,13 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Tests if the user can access the project.<p>
-     *
-     * All users are granted.<p>
+     * Checks if the user can access a given project.<p>
      *
      * @param context the current request context
      * @param projectId the id of the project
-     * @return true, if the user has access, else returns false
+     * 
+     * @return <code>true</code>, if the user may access this project; <code>false</code> otherwise
+     * 
      * @throws CmsException if something goes wrong
      */
     public boolean accessProject(CmsRequestContext context, int projectId) throws CmsException {
@@ -180,22 +180,22 @@ public final class CmsSecurityManager {
      * Creates a new user by import.<p>
      * 
      * @param context the current request context
-     * @param id the id of the user.
-     * @param name the new name for the user.
-     * @param password the new password for the user.
-     * @param description the description for the user.
-     * @param firstname the firstname of the user.
-     * @param lastname the lastname of the user.
-     * @param email the email of the user.
-     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>).
+     * @param id the id of the user
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param description the description for the user
+     * @param firstname the firstname of the user
+     * @param lastname the lastname of the user
+     * @param email the email of the user
+     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>)
      * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
      *                      infos may be stored into the Usertables (depending on the implementation).
-     * @param address the address of the user.
-     * @param type the type of the user.
+     * @param address the address of the user
+     * @param type the type of the user
      *
-     * @return a new <code>{@link CmsUser}</code> object representing the added user.
+     * @return a new <code>{@link CmsUser}</code> object representing the added user
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public CmsUser addImportUser(
         CmsRequestContext context,
@@ -250,17 +250,17 @@ public final class CmsSecurityManager {
     /**
      * Creates a new user.<p>
      *
-     * @param context the current request context.
-     * @param name the new name for the user.
-     * @param password the new password for the user.
-     * @param group the default groupname for the user.
-     * @param description the description for the user.
+     * @param context the current request context
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param group the default groupname for the user
+     * @param description the description for the user
      * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user, 
      *          these infos may be stored into the Usertables (depending on the implementation).
      * 
-     * @return the new user will be returned.
+     * @return the new user will be returned
      * 
-     * @throws CmsException if operation was not succesfull.
+     * @throws CmsException if operation was not succesfull
      */
     public CmsUser addUser(
         CmsRequestContext context,
@@ -291,11 +291,11 @@ public final class CmsSecurityManager {
     /**
      * Adds a user to a group.<p>
      *
-     * @param context the current request context.
-     * @param username the name of the user that is to be added to the group.
-     * @param groupname the name of the group.
+     * @param context the current request context
+     * @param username the name of the user that is to be added to the group
+     * @param groupname the name of the group
      *
-     * @throws CmsException if operation was not succesfull.
+     * @throws CmsException if operation was not succesfull
      */
     public void addUserToGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
@@ -318,16 +318,16 @@ public final class CmsSecurityManager {
      * Moreover, a web user can be created by any user, the intention being that
      * a "Guest" user can create a personalized account for himself.<p>
      * 
-     * @param context the current request context.
-     * @param name the new name for the user.
-     * @param password the new password for the user.
-     * @param group the default groupname for the user.
-     * @param description the description for the user.
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user.
+     * @param context the current request context
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param group the default groupname for the user
+     * @param description the description for the user
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user
      * 
-     * @return the new user will be returned.
+     * @return the new user will be returned
      * 
-     * @throws CmsException if operation was not succesfull.
+     * @throws CmsException if operation was not succesfull
      */
     public CmsUser addWebUser(CmsRequestContext context, String name, String password, String group, String description, Map additionalInfos)
     throws CmsException {
@@ -358,8 +358,8 @@ public final class CmsSecurityManager {
      * @param description the description for the user
      * @param additionalInfos a Hashtable with additional infos for the user, these infos may be stored into the Usertables (depending on the implementation)
      *
-     * @return the new user will be returned.
-     * @throws CmsException if operation was not succesfull.
+     * @return the new user will be returned
+     * @throws CmsException if operation was not succesfull
      */
     public CmsUser addWebUser(
         CmsRequestContext context,
@@ -396,6 +396,7 @@ public final class CmsSecurityManager {
      * @param backupProject the project to be backuped
      * @param tagId the version of the backup
      * @param publishDate the date of publishing
+     * 
      * @throws CmsException if operation was not succesful
      */
     public void backupProject(CmsRequestContext context, CmsProject backupProject, int tagId, long publishDate)
@@ -469,7 +470,7 @@ public final class CmsSecurityManager {
      * @param newValue the new value of the propertydefinition
      * @param recursive if true, change recursively all property values on sub-resources (only for folders)
      * 
-     * @return a list with the <code>{@link CmsResource}</code>'s where the property value has been changed.
+     * @return a list with the <code>{@link CmsResource}</code>'s where the property value has been changed
      *
      * @throws CmsException if operation was not successful
      */
@@ -521,11 +522,11 @@ public final class CmsSecurityManager {
     /**
      * Changes the user type of the user.<p>
      * 
-     * @param context the current request context.
-     * @param userId the id of the user to change.
-     * @param userType the new usertype of the user.
+     * @param context the current request context
+     * @param userId the id of the user to change
+     * @param userType the new usertype of the user
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void changeUserType(CmsRequestContext context, CmsUUID userId, int userType) throws CmsException {
 
@@ -671,9 +672,9 @@ public final class CmsSecurityManager {
      *
      * Already existing access control entries of the destination resource are removed.<p>
      * 
-     * @param context the current request context.
-     * @param source the resource to copy the access control entries from.
-     * @param destination the resource to which the access control entries are copied.
+     * @param context the current request context
+     * @param source the resource to copy the access control entries from
+     * @param destination the resource to which the access control entries are copied
      * 
      * @throws CmsException if something goes wrong
      */
@@ -759,11 +760,11 @@ public final class CmsSecurityManager {
     /**
      * Counts the locked resources in this project.<p>
      *
-     * Only the admin or the owner of the project can do this.<p>
-     *
      * @param context the current request context
      * @param id the id of the project
-     * @return the amount of locked resources in this project.
+     * 
+     * @return the amount of locked resources in this project
+     * 
      * @throws CmsException if something goes wrong
      */
     public int countLockedResources(CmsRequestContext context, int id) throws CmsException {
@@ -783,11 +784,11 @@ public final class CmsSecurityManager {
     /**
      * Counts the locked resources in a given folder.<p>
      *
-     * Only the admin or the owner of the project can do this.<p>
-     * 
      * @param context the current request context
      * @param foldername the folder to search in
+     * 
      * @return the amount of locked resources in this project
+     * 
      * @throws CmsException if something goes wrong
      */
     public int countLockedResources(CmsRequestContext context, String foldername) throws CmsException {
@@ -816,7 +817,7 @@ public final class CmsSecurityManager {
      * @param flags the flags for the new group
      * @param parent the name of the parent group (or null)
      * @return new created group
-     * @throws CmsException if operation was not successfull.
+     * @throws CmsException if operation was not successfull
      */
     public CmsGroup createGroup(
         CmsRequestContext context,
@@ -847,15 +848,15 @@ public final class CmsSecurityManager {
     /**
      * Creates a new user group.<p>
      *
-     * @param context the current request context.
-     * @param name the name of the new group.
-     * @param description the description for the new group.
-     * @param flags the flags for the new group.
-     * @param parent the name of the parent group (or <code>null</code>).
+     * @param context the current request context
+     * @param name the name of the new group
+     * @param description the description for the new group
+     * @param flags the flags for the new group
+     * @param parent the name of the parent group (or <code>null</code>)
      * 
-     * @return a <code>{@link CmsGroup}</code> object representing the newly created group.
+     * @return a <code>{@link CmsGroup}</code> object representing the newly created group
      * 
-     * @throws CmsException if operation was not successfull.
+     * @throws CmsException if operation was not successfull
      */
     public CmsGroup createGroup(CmsRequestContext context, String name, String description, int flags, String parent)
     throws CmsException {
@@ -881,15 +882,15 @@ public final class CmsSecurityManager {
     /**
      * Creates a project.<p>
      *
-     * Only the users which are in the admin or projectmanager groups are granted.<p>
-     *
      * @param context the current request context
      * @param name the name of the project to create
      * @param description the description of the project
      * @param groupname the project user group to be set
      * @param managergroupname the project manager group to be set
-     * @param projecttype type the type of the project
+     * @param projecttype the type of the project
+     * 
      * @return the created project
+     * 
      * @throws CmsException if something goes wrong
      */
     public CmsProject createProject(
@@ -924,7 +925,7 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsPropertydefinition createPropertydefinition(CmsRequestContext context, String name) throws CmsException {
+    public CmsPropertyDefinition createPropertyDefinition(CmsRequestContext context, String name) throws CmsException {
 
         if (!isAdmin(context)) {
             throw new CmsSecurityException(
@@ -933,9 +934,9 @@ public final class CmsSecurityManager {
         }
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsPropertydefinition result = null;
+        CmsPropertyDefinition result = null;
         try {
-            result = m_driverManager.createPropertydefinition(dbc, name);
+            result = m_driverManager.createPropertyDefinition(dbc, name);
         } catch (Exception e) {
             dbc.report(null, "Error creating property definition " + name, e);
         } finally {
@@ -1047,20 +1048,20 @@ public final class CmsSecurityManager {
     /**
      * Creates a new task.<p>
      *
-     * @param context the current request context.
-     * @param currentUser the current user.
-     * @param projectid the current project id.
-     * @param agentName user who will edit the task.
-     * @param roleName usergroup for the task.
-     * @param taskName name of the task.
-     * @param taskType type of the task.
-     * @param taskComment description of the task.
-     * @param timeout time when the task must finished.
-     * @param priority Id for the priority.
+     * @param context the current request context
+     * @param currentUser the current user
+     * @param projectid the current project id
+     * @param agentName user who will edit the task
+     * @param roleName usergroup for the task
+     * @param taskName name of the task
+     * @param taskType type of the task
+     * @param taskComment description of the task
+     * @param timeout time when the task must finished
+     * @param priority Id for the priority
      * 
-     * @return a new task object.
+     * @return a new task object
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsTask createTask(
         CmsRequestContext context,
@@ -1108,16 +1109,16 @@ public final class CmsSecurityManager {
      * <il>with no comments</il>
      * </ul><p>
      * 
-     * @param context the current request context.
-     * @param agentName the user who will edit the task.
-     * @param roleName a usergroup for the task.
-     * @param taskname the name of the task.
-     * @param timeout the time when the task must finished.
-     * @param priority the id for the priority of the task.
+     * @param context the current request context
+     * @param agentName the user who will edit the task
+     * @param roleName a usergroup for the task
+     * @param taskname the name of the task
+     * @param timeout the time when the task must finished
+     * @param priority the id for the priority of the task
      * 
-     * @return the created task.
+     * @return the created task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsTask createTask(
         CmsRequestContext context,
@@ -1140,12 +1141,12 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Creates the project for the temporary files.<p>
-     *
-     * Only the users which are in the admin or projectleader-group are granted.<p>
+     * Creates the project for the temporary workplace files.<p>
      *
      * @param context the current request context
-     * @return the new tempfile project
+     * 
+     * @return the created project for the temporary workplace files
+     * 
      * @throws CmsException if something goes wrong
      */
     public CmsProject createTempfileProject(CmsRequestContext context) throws CmsException {
@@ -1165,10 +1166,10 @@ public final class CmsSecurityManager {
     /**
      * Deletes all entries in the published resource table.<p>
      * 
-     * @param context the current request context.
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
+     * @param context the current request context
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void deleteAllStaticExportPublishedResources(CmsRequestContext context, int linkType) throws CmsException {
 
@@ -1183,16 +1184,19 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Deletes the versions from the backup tables that are older then the given timestamp  and/or number of 
-     * remaining versions.<p>
+     * Deletes the versions from the backup tables that are older then the given timestamp  
+     * and/or number of remaining versions.<p>
      * 
-     * The number of verions always wins, i.e. if the given timestamp would delete more versions than given in the
-     * versions parameter, the timestamp will be ignored. Deletion will delete file header, content and properties.<p>
+     * The number of verions always wins, i.e. if the given timestamp would delete more versions 
+     * than given in the versions parameter, the timestamp will be ignored. <p>
+     * 
+     * Deletion will delete file header, content and properties. <p>
      * 
      * @param context the current request context
-     * @param timestamp the max age of backup resources
-     * @param versions the number of remaining backup versions for each resource
+     * @param timestamp timestamp which defines the date after which backup resources must be deleted
+     * @param versions the number of versions per file which should kept in the system
      * @param report the report for output logging
+     * 
      * @throws CmsException if operation was not succesful
      */
     public void deleteBackups(CmsRequestContext context, long timestamp, int versions, I_CmsReport report)
@@ -1213,10 +1217,10 @@ public final class CmsSecurityManager {
      *
      * Only groups that contain no subgroups can be deleted.<p> 
      * 
-     * @param context the current request context.
-     * @param name the name of the group that is to be deleted.
+     * @param context the current request context
+     * @param name the name of the group that is to be deleted
      *
-     * @throws CmsException if operation was not succesfull.
+     * @throws CmsException if operation was not succesfull
      */
     public void deleteGroup(CmsRequestContext context, String name) throws CmsException {
 
@@ -1245,10 +1249,11 @@ public final class CmsSecurityManager {
     /**
      * Deletes a project.<p>
      *
-     * Only the admin or the owner of the project can do this.<p>
+     * All resources inside the project have to be be reset to their online state.<p>
      * 
      * @param context the current request context
      * @param projectId the ID of the project to be deleted
+     * 
      * @throws CmsException if something goes wrong
      */
     public void deleteProject(CmsRequestContext context, int projectId) throws CmsException {
@@ -1289,7 +1294,7 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException if something goes wrong
      */
-    public void deletePropertydefinition(CmsRequestContext context, String name) throws CmsException {
+    public void deletePropertyDefinition(CmsRequestContext context, String name) throws CmsException {
 
         if (!isAdmin(context)) {
             throw new CmsSecurityException(
@@ -1305,7 +1310,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            m_driverManager.deletePropertydefinition(dbc, name);
+            m_driverManager.deletePropertyDefinition(dbc, name);
         } catch (Exception e) {
             dbc.report(null, "Error deleting property definition " + name, e);
         } finally {
@@ -1347,12 +1352,12 @@ public final class CmsSecurityManager {
     /**
      * Deletes an entry in the published resource table.<p>
      * 
-     * @param context the current request context.
-     * @param resourceName The name of the resource to be deleted in the static export.
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
-     * @param linkParameter the parameters ofthe resource.
+     * @param context the current request context
+     * @param resourceName The name of the resource to be deleted in the static export
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters ofthe resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void deleteStaticExportPublishedResource(
         CmsRequestContext context,
@@ -1373,10 +1378,10 @@ public final class CmsSecurityManager {
     /**
      * Deletes a user.<p>
      *
-     * @param context the current request context.
-     * @param userId the Id of the user to be deleted.
+     * @param context the current request context
+     * @param userId the Id of the user to be deleted
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void deleteUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
 
@@ -1387,10 +1392,10 @@ public final class CmsSecurityManager {
     /**
      * Deletes a user.<p>
      *
-     * @param context the current request context.
-     * @param username the name of the user to be deleted.
+     * @param context the current request context
+     * @param username the name of the user to be deleted
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void deleteUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -1401,10 +1406,10 @@ public final class CmsSecurityManager {
     /**
      * Deletes a web user.<p>
      *
-     * @param context the current request context.
-     * @param userId the Id of the web user to be deleted.
+     * @param context the current request context
+     * @param userId the Id of the web user to be deleted
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void deleteWebUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
 
@@ -1430,10 +1435,10 @@ public final class CmsSecurityManager {
     /**
      * Ends a task.<p>
      *
-     * @param context the current request context.
-     * @param taskid the ID of the task to end.
+     * @param context the current request context
+     * @param taskid the ID of the task to end
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void endTask(CmsRequestContext context, int taskid) throws CmsException {
 
@@ -1450,12 +1455,12 @@ public final class CmsSecurityManager {
     /**
      * Forwards a task to a new user.<p>
      *
-     * @param context the current request context.
-     * @param taskid the Id of the task to forward.
-     * @param newRoleName the new group name for the task.
-     * @param newUserName the new user who gets the task. if it is empty, a new agent will automatic selected.
+     * @param context the current request context
+     * @param taskid the Id of the task to forward
+     * @param newRoleName the new group name for the task
+     * @param newUserName the new user who gets the task. if it is empty, a new agent will automatic selected
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void forwardTask(CmsRequestContext context, int taskid, String newRoleName, String newUserName)
     throws CmsException {
@@ -1473,13 +1478,13 @@ public final class CmsSecurityManager {
     /**
      * Returns the list of access control entries of a resource given its name.<p>
      * 
-     * @param context the current request context.
-     * @param resource the resource to read the access control entries for.
-     * @param getInherited true if the result should include all access control entries inherited by parent folders.
+     * @param context the current request context
+     * @param resource the resource to read the access control entries for
+     * @param getInherited true if the result should include all access control entries inherited by parent folders
      * 
-     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects defining all permissions for the given resource.
+     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects defining all permissions for the given resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List getAccessControlEntries(CmsRequestContext context, CmsResource resource, boolean getInherited)
     throws CmsException {
@@ -1501,13 +1506,13 @@ public final class CmsSecurityManager {
      * 
      * If <code>inheritedOnly</code> is set, only inherited access control entries are returned.<p>
      * 
-     * @param context the current request context.
-     * @param resource the resource.
-     * @param inheritedOnly skip non-inherited entries if set.
+     * @param context the current request context
+     * @param resource the resource
+     * @param inheritedOnly skip non-inherited entries if set
      * 
-     * @return the access control list of the resource.
+     * @return the access control list of the resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(
         CmsRequestContext context,
@@ -1530,10 +1535,10 @@ public final class CmsSecurityManager {
      * Returns all projects which are owned by the current user or which are 
      * accessible for the group of the user.<p>
      *
-     * All users are granted.<p>
-     *
      * @param context the current request context
-     * @return a list of Cms projects
+     * 
+     * @return a list of objects of type <code>{@link CmsProject}</code>
+     * 
      * @throws CmsException if something goes wrong
      */
     public List getAllAccessibleProjects(CmsRequestContext context) throws CmsException {
@@ -1555,8 +1560,10 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * 
-     * @return list with all projects from history.
-     * @throws CmsException if operation was not succesful.
+     * @return list of <code>{@link CmsBackupProject}</code> objects 
+     *           with all projects from history.
+     * 
+     * @throws CmsException if operation was not succesful
      */
     public List getAllBackupProjects(CmsRequestContext context) throws CmsException {
 
@@ -1573,12 +1580,13 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns all projects which are owned by the user or which are manageable for the group of the user.<p>
-     *
-     * All users are granted.<p>
+     * Returns all projects which are owned by the current user or which are manageable
+     * for the group of the user.<p>
      *
      * @param context the current request context
-     * @return a list of Cms projects
+     * 
+     * @return a list of objects of type <code>{@link CmsProject}</code>
+     * 
      * @throws CmsException if operation was not succesful
      */
     public List getAllManageableProjects(CmsRequestContext context) throws CmsException {
@@ -1596,7 +1604,7 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Get the next version id for the published backup resources.<p>
+     * Returns the next version id for the published backup resources.<p>
      *
      * @param context the current request context
      * 
@@ -1617,12 +1625,12 @@ public final class CmsSecurityManager {
     /**
      * Returns all child groups of a group.<p>
      *
-     * @param context the current request context.
-     * @param groupname the name of the group.
+     * @param context the current request context
+     * @param groupname the name of the group
      *
-     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getChild(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -1643,12 +1651,12 @@ public final class CmsSecurityManager {
      * 
      * This method also returns all sub-child groups of the current group.<p>
      *
-     * @param context the current request context.
-     * @param groupname the name of the group.
+     * @param context the current request context
+     * @param groupname the name of the group
      *
-     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getChilds(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -1667,7 +1675,7 @@ public final class CmsSecurityManager {
     /**
      * Gets the configurations of the OpenCms properties file.<p>
      *
-     * @return the configurations of the properties file.
+     * @return the configurations of the properties file
      */
     public ExtendedProperties getConfigurations() {
 
@@ -1677,12 +1685,12 @@ public final class CmsSecurityManager {
     /**
      * Returns the list of groups to which the user directly belongs to.<p>
      *
-     * @param context the current request context.
-     * @param username The name of the user.
+     * @param context the current request context
+     * @param username The name of the user
      *
-     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * @return a list of <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getDirectGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -1701,11 +1709,11 @@ public final class CmsSecurityManager {
     /**
      * Returns all groups.<p>
      *
-     * @param context the current request context.
+     * @param context the current request context
      *
-     * @return a list of all <code>{@link CmsGroup}</code> objects.
+     * @return a list of all <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getGroups(CmsRequestContext context) throws CmsException {
 
@@ -1724,12 +1732,12 @@ public final class CmsSecurityManager {
     /**
      * Returns the groups of a user.<p>
      * 
-     * @param context the current request context.
-     * @param username the name of the user.
+     * @param context the current request context
+     * @param username the name of the user
      * 
-     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * @return a list of <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -1748,13 +1756,13 @@ public final class CmsSecurityManager {
     /**
      * Returns the groups of a Cms user filtered by the specified IP address.<p>
      * 
-     * @param context the current request context.
-     * @param username the name of the user.
-     * @param remoteAddress the IP address to filter the groups in the result list.
+     * @param context the current request context
+     * @param username the name of the user
+     * @param remoteAddress the IP address to filter the groups in the result list
      * 
-     * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address.
+     * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getGroupsOfUser(CmsRequestContext context, String username, String remoteAddress) throws CmsException {
 
@@ -1795,12 +1803,12 @@ public final class CmsSecurityManager {
     /**
      * Returns the parent group of a group.<p>
      *
-     * @param context the current request context.
-     * @param groupname the name of the group.
+     * @param context the current request context
+     * @param groupname the name of the group
      * 
-     * @return group the parent group or <code>null</code>.
+     * @return group the parent group or <code>null</code>
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public CmsGroup getParent(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -1819,11 +1827,11 @@ public final class CmsSecurityManager {
     /**
      * Returns the set of permissions of the current user for a given resource.<p>
      * 
-     * @param context the current request context.
-     * @param resource the resource.
-     * @param user the user.
+     * @param context the current request context
+     * @param resource the resource
+     * @param user the user
      * 
-     * @return bitset with allowed permissions.
+     * @return bitset with allowed permissions
      * 
      * @throws CmsException if something goes wrong
      */
@@ -1856,18 +1864,22 @@ public final class CmsSecurityManager {
      * </li>
      * </ul>
      * 
-     * All Cms resources inside the publish ist are equipped with their full resource name including
-     * the site root.<p>
+     * All <code>{@link CmsResource}</code> objects inside the publish ist are equipped with their full 
+     * resource name including the site root.<p>
      * 
      * Please refer to the source code of this method for the rules on how to decide whether a
-     * new/changed/deleted Cms resource can be published or not.<p>
+     * new/changed/deleted <code>{@link CmsResource}</code> object can be published or not.<p>
      * 
      * @param context the current request context
-     * @param directPublishResource a Cms resource to be published directly (in case 2), or null (in case 1)
-     * @param publishSiblings true, if all eventual siblings of the direct published resource should also get published (in case 2)
+     * @param directPublishResource a <code>{@link CmsResource}</code> to be published directly (in case 2), 
+     *                              or <code>null</code> (in case 1).
+     * @param publishSiblings <code>true</code>, if all eventual siblings of the direct published resource 
+     *                              should also get published (in case 2).
      * 
      * @return a publish list with all new/changed/deleted files from the current (offline) project that will be published actually
+     * 
      * @throws CmsException if something goes wrong
+     * 
      * @see org.opencms.db.CmsPublishList
      */
     public synchronized CmsPublishList getPublishList(
@@ -1888,15 +1900,18 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns a list with all sub resources of a given folder that have benn modified in a given time range.<p>
-     *
-     * All users are granted.<p>
+     * Returns a list with all sub resources of the given parent folder (and all of it's subfolders) 
+     * that have been modified in the given time range.<p>
+     * 
+     * The result list is descending sorted (newest resource first).<p>
      *
      * @param context the current request context
      * @param folder the folder to get the subresources from
      * @param starttime the begin of the time range
      * @param endtime the end of the time range
-     * @return list with all resources
+     * 
+     * @return a list with all <code>{@link CmsResource}</code> objects 
+     *               that have been modified in the given time range.
      *
      * @throws CmsException if operation was not succesful
      */
@@ -1918,13 +1933,13 @@ public final class CmsSecurityManager {
     /**
      * Returns the value of the given parameter for the given task.<p>
      *
-     * @param context the current request context.
-     * @param taskId the Id of the task.
-     * @param parName name of the parameter.
+     * @param context the current request context
+     * @param taskId the Id of the task
+     * @param parName name of the parameter
      * 
-     * @return task parameter value.
+     * @return task parameter value
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public String getTaskPar(CmsRequestContext context, int taskId, String parName) throws CmsException {
 
@@ -1943,12 +1958,12 @@ public final class CmsSecurityManager {
     /**
      * Get the template task id for a given taskname.<p>
      *
-     * @param context the current request context.
-     * @param taskName name of the task.
+     * @param context the current request context
+     * @param taskName name of the task
      * 
-     * @return id from the task template.
+     * @return id from the task template
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public int getTaskType(CmsRequestContext context, String taskName) throws CmsException {
 
@@ -1967,11 +1982,11 @@ public final class CmsSecurityManager {
     /**
      * Returns all users.<p>
      *
-     * @param context the current request context.
+     * @param context the current request context
      * 
-     * @return a list of all <code>{@link CmsUser}</code> objects.
+     * @return a list of all <code>{@link CmsUser}</code> objects
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getUsers(CmsRequestContext context) throws CmsException {
         
@@ -1990,12 +2005,12 @@ public final class CmsSecurityManager {
     /**
      * Returns all users from a given type.<p>
      *
-     * @param context the current request context.
-     * @param type the type of the users.
+     * @param context the current request context
+     * @param type the type of the users
      * 
-     * @return a list of all <code>{@link CmsUser}</code> objects of the given type.
+     * @return a list of all <code>{@link CmsUser}</code> objects of the given type
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getUsers(CmsRequestContext context, int type) throws CmsException {
         
@@ -2014,12 +2029,12 @@ public final class CmsSecurityManager {
     /**
      * Returns a list of users in a group.<p>
      *
-     * @param context the current request context.
-     * @param groupname the name of the group to list users from.
+     * @param context the current request context
+     * @param groupname the name of the group to list users from
      *
-     * @return all <code>{@link CmsUser}</code> objects in the group.
+     * @return all <code>{@link CmsUser}</code> objects in the group
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public List getUsersOfGroup(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -2087,7 +2102,7 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param directPublishResource the direct publish resource (optional, if null only the current project is checked)
      * 
-     * @return <code>true</code>, if the current user can direct publish the given resource in his current context.
+     * @return <code>true</code>, if the current user can direct publish the given resource in his current context
      */
     public boolean hasPublishPermissions(CmsRequestContext context, CmsResource directPublishResource) {
 
@@ -2150,11 +2165,11 @@ public final class CmsSecurityManager {
      * <li>the current user has control permission on the resource</li>
      * </ul><p>
      * 
-     * @param context the current request context.
-     * @param resource the resource.
-     * @param acEntries a list of <code>{@link CmsAccessControlEntry}</code> objects.
+     * @param context the current request context
+     * @param resource the resource
+     * @param acEntries a list of <code>{@link CmsAccessControlEntry}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void importAccessControlEntries(CmsRequestContext context, CmsResource resource, List acEntries)
     throws CmsException {
@@ -2178,12 +2193,12 @@ public final class CmsSecurityManager {
      * given folder or the root path inside the zip file, if not a 
      * <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param cms the cms-object to use for the export.
-     * @param context the current request context.
-     * @param importFile the name (absolute Path) of the import resource (zip or folder).
-     * @param importPath the name (absolute Path) of folder in which should be imported.
+     * @param cms the cms-object to use for the export
+     * @param context the current request context
+     * @param importFile the name (absolute Path) of the import resource (zip or folder)
+     * @param importPath the name (absolute Path) of folder in which should be imported
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void importFolder(CmsObject cms, CmsRequestContext context, String importFile, String importPath)
     throws CmsException {
@@ -2247,9 +2262,9 @@ public final class CmsSecurityManager {
      * Administrator permissions means that the user is a member of the 
      * administrators group, which per default is called "Administrators".<p>
      *
-     * @param context the current request context.
+     * @param context the current request context
      * 
-     * @return <code>true</code>, if the current user has "Administrator" permissions.
+     * @return <code>true</code>, if the current user has "Administrator" permissions
      */
     public boolean isAdmin(CmsRequestContext context) {
         
@@ -2270,10 +2285,10 @@ public final class CmsSecurityManager {
      * If the resource starts with any one of this prefixes, it is considered to 
      * be "inside" the project.<p>
      * 
-     * @param context the current request context.
-     * @param resourcename the specified resource name (full path).
+     * @param context the current request context
+     * @param resourcename the specified resource name (full path)
      * 
-     * @return <code>true</code>, if the specified resource is inside the current project.
+     * @return <code>true</code>, if the specified resource is inside the current project
      */
     public boolean isInsideCurrentProject(CmsRequestContext context, String resourcename) {
 
@@ -2294,9 +2309,9 @@ public final class CmsSecurityManager {
      * check. If the user has management access to a project depends on the
      * project settings.<p>
      *
-     * @param context the current request context.
+     * @param context the current request context
      * 
-     * @return <code>true</code>, if the user has management access to the project.
+     * @return <code>true</code>, if the user has management access to the project
      * 
      * @see CmsObject#isManagerOfProject()
      * @see #isProjectManager(CmsRequestContext)
@@ -2322,7 +2337,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      *
-     * @return <code>true</code>, if the user is a member of the project manager group.
+     * @return <code>true</code>, if the user is a member of the project manager group
      * 
      * @see CmsObject#isProjectManager()
      * @see #isManagerOfProject(CmsRequestContext)
@@ -2375,15 +2390,13 @@ public final class CmsSecurityManager {
     /**
      * Attempts to authenticate a user into OpenCms with the given password.<p>
      * 
-     * For security reasons, all error / exceptions that occur here are "blocked" and 
-     * a simple security exception is thrown.<p>
-     * 
      * @param context the current request context
      * @param username the name of the user to be logged in
      * @param password the password of the user
      * @param remoteAddress the ip address of the request
      * @param userType the user type to log in (System user or Web user)
-     * @return the logged in users name
+     * 
+     * @return the logged in user
      *
      * @throws CmsSecurityException if login was not succesful
      */
@@ -2403,10 +2416,10 @@ public final class CmsSecurityManager {
     /**
      * Lookup and read the user or group with the given UUID.<p>
      * 
-     * @param context the current request context.
-     * @param principalId the UUID of the principal to lookup.
+     * @param context the current request context
+     * @param principalId the UUID of the principal to lookup
      * 
-     * @return the principal (group or user) if found, otherwise <code>null</code>.
+     * @return the principal (group or user) if found, otherwise <code>null</code>
      */
     public I_CmsPrincipal lookupPrincipal(CmsRequestContext context, CmsUUID principalId) {
 
@@ -2423,10 +2436,10 @@ public final class CmsSecurityManager {
     /**
      * Lookup and read the user or group with the given name.<p>
      * 
-     * @param context the current request context.
-     * @param principalName the name of the principal to lookup.
+     * @param context the current request context
+     * @param principalName the name of the principal to lookup
      * 
-     * @return the principal (group or user) if found, otherwise <code>null</code>.
+     * @return the principal (group or user) if found, otherwise <code>null</code>
      */
     public I_CmsPrincipal lookupPrincipal(CmsRequestContext context, String principalName) {
 
@@ -2480,15 +2493,14 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Publishes a project.<p>
+     * Publishes the resources of a specified publish list.<p>
      *
-     * Only the admin or the owner of the project can do this.<p>
-     * 
-     * @param cms the current CmsObject
-     * @param publishList a Cms publish list
-     * @param report a report object to provide the loggin messages
+     * @param cms the current request context
+     * @param publishList a publish list
+     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
      * 
      * @return the publish history id of the published project
+     * 
      * @throws Exception if something goes wrong
      * 
      * @see #getPublishList(CmsRequestContext, CmsResource, boolean)
@@ -2549,10 +2561,10 @@ public final class CmsSecurityManager {
      * Setting its state to <code>{@link I_CmsConstants#C_TASK_STATE_STARTED}</code> and
      * the percentage to <b>zero</b>.<p>
      *
-     * @param context the current request context.
-     * @param taskId the id of the task to reactivate.
+     * @param context the current request context
+     * @param taskId the id of the task to reactivate
      *
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void reactivateTask(CmsRequestContext context, int taskId) throws CmsException {
 
@@ -2569,12 +2581,12 @@ public final class CmsSecurityManager {
     /**
      * Reads the agent of a task.<p>
      *
-     * @param context the current request context.
-     * @param task the task to read the agent from.
+     * @param context the current request context
+     * @param task the task to read the agent from
      * 
-     * @return the owner of a task.
+     * @return the owner of a task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readAgent(CmsRequestContext context, CmsTask task) throws CmsException {
 
@@ -2591,12 +2603,17 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads all available backup resources for the specified resource from the OpenCms VFS.<p>
-     *
-     * @param context the current request context.
-     * @param resource the resource to be read.
+     * Reads all file headers of a file.<br>
      * 
-     * @return a List of backup resources.
+     * This method returns a list with the history of all file headers, i.e.
+     * the file headers of a file, independent of the project they were attached to.<br>
+     *
+     * The reading excludes the file content.<p>
+     *
+     * @param context the current request context
+     * @param resource the resource to be read
+     * 
+     * @return a list of file headers, as <code>{@link CmsBackupResource}</code> objects, read from the Cms
      * 
      * @throws CmsException if something goes wrong
      */
@@ -2619,7 +2636,9 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param projectId the ID of the project
-     * @return a list of all project resources
+     * 
+     * @return a list of all project <code>{@link CmsResource}</code> objects
+     * 
      * @throws CmsException if operation was not succesful
      */
     public List readAllProjectResources(CmsRequestContext context, int projectId) throws CmsException {
@@ -2639,19 +2658,19 @@ public final class CmsSecurityManager {
     /**
      * Reads all propertydefinitions for the given mapping type.<p>
      *
-     * All users are granted.<p>
-     *
      * @param context the current request context
      * @param mappingtype the mapping type to read the propertydefinitions for
-     * @return propertydefinitions a list with propertydefefinitions for the mapping type. The list is maybe empty.
+     * 
+     * @return a list with the <code>{@link CmsPropertyDefinition}</code> objects (may be empty)
+     * 
      * @throws CmsException if something goes wrong
      */
-    public List readAllPropertydefinitions(CmsRequestContext context, int mappingtype) throws CmsException {
+    public List readAllPropertyDefinitions(CmsRequestContext context, int mappingtype) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);      
         List result = null;
         try {
-            result = m_driverManager.readAllPropertydefinitions(dbc, mappingtype);
+            result = m_driverManager.readAllPropertyDefinitions(dbc, mappingtype);
         } catch (Exception e) {
             dbc.report(null, null, e);
         } finally {
@@ -2661,14 +2680,16 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads a file from the history of the Cms.<p>
+     * Returns a file from the history.<br>
      * 
-     * The reading includes the filecontent. A file is read from the backup resources.<p>
+     * The reading includes the file content.<p>
      *
      * @param context the current request context
      * @param tagId the id of the tag of the file
      * @param resource the resource to be read
-     * @return the file read from the Cms.
+     * 
+     * @return the file read
+     * 
      * @throws CmsException if operation was not succesful
      */
     public CmsBackupResource readBackupFile(CmsRequestContext context, int tagId, CmsResource resource) throws CmsException {
@@ -2686,12 +2707,13 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads the backupinformation of a project from the Cms.<p>
+     * Returns a backup project.<p>
      *
      * @param context the current request context
      * @param tagId the tagId of the project
      * 
-     * @return the backup project
+     * @return the requested backup project
+     * 
      * @throws CmsException if something goes wrong
      */
     public CmsBackupProject readBackupProject(CmsRequestContext context, int tagId) throws CmsException {
@@ -2762,13 +2784,13 @@ public final class CmsSecurityManager {
      * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
      * will ignore the date release / date expired information of the resource.<p>
      *
-     * @param context the current request context.
-     * @param resource the resource to be read.
-     * @param filter the filter object.
+     * @param context the current request context
+     * @param resource the resource to be read
+     * @param filter the filter object
      * 
-     * @return the file read from the VFS.
+     * @return the file read from the VFS
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsFile readFile(CmsRequestContext context, CmsResource resource, CmsResourceFilter filter) throws CmsException {
 
@@ -2831,15 +2853,15 @@ public final class CmsSecurityManager {
      * </ul>
      *
      * @param context the current request context
-     * @param projectId the id of the project in which the tasks are defined.
-     * @param ownerName the owner of the task.
-     * @param taskType the type of task you want to read.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sorting of the tasks.
+     * @param projectId the id of the project in which the tasks are defined
+     * @param ownerName the owner of the task
+     * @param taskType the type of task you want to read
+     * @param orderBy specifies how to order the tasks
+     * @param sort sorting of the tasks
      * 
-     * @return a list of given <code>{@link CmsTask}</code> objects for a user for a project.
+     * @return a list of given <code>{@link CmsTask}</code> objects for a user for a project
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List readGivenTasks(CmsRequestContext context, int projectId, String ownerName, int taskType, String orderBy, String sort)
     throws CmsException {
@@ -2859,10 +2881,10 @@ public final class CmsSecurityManager {
     /**
      * Reads the group of a project.<p>
      *
-     * @param context the current request context.
-     * @param project the project to read from.
+     * @param context the current request context
+     * @param project the project to read from
      * 
-     * @return the group of a resource.
+     * @return the group of a resource
      */
     public CmsGroup readGroup(CmsRequestContext context, CmsProject project) {
 
@@ -2879,12 +2901,12 @@ public final class CmsSecurityManager {
     /**
      * Reads the group (role) of a task from the OpenCms.<p>
      *
-     * @param context the current request context.
-     * @param task the task to read from.
+     * @param context the current request context
+     * @param task the task to read from
      * 
-     * @return the group of a resource.
+     * @return the group of a resource
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public CmsGroup readGroup(CmsRequestContext context, CmsTask task) throws CmsException {
 
@@ -2903,12 +2925,12 @@ public final class CmsSecurityManager {
     /**
      * Reads a group based on its id.<p>
      *
-     * @param context the current request context.
-     * @param groupId the id of the group that is to be read.
+     * @param context the current request context
+     * @param groupId the id of the group that is to be read
      *
-     * @return the requested group.
+     * @return the requested group
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public CmsGroup readGroup(CmsRequestContext context, CmsUUID groupId) throws CmsException {
 
@@ -2927,12 +2949,12 @@ public final class CmsSecurityManager {
     /**
      * Reads a group based on its name.<p>
      * 
-     * @param context the current request context.
-     * @param groupname the name of the group that is to be read.
+     * @param context the current request context
+     * @param groupname the name of the group that is to be read
      *
-     * @return the requested group.
+     * @return the requested group
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public CmsGroup readGroup(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -2951,10 +2973,10 @@ public final class CmsSecurityManager {
     /**
      * Reads the manager group of a project.<p>
      *
-     * @param context the current request context.
-     * @param project the project to read from.
+     * @param context the current request context
+     * @param project the project to read from
      *
-     * @return the group of a resource.
+     * @return the group of a resource
      */
     public CmsGroup readManagerGroup(CmsRequestContext context, CmsProject project) {
 
@@ -2971,12 +2993,12 @@ public final class CmsSecurityManager {
     /**
      * Reads the original agent of a task.<p>
      *
-     * @param context the current request context.
-     * @param task the task to read the original agent from.
+     * @param context the current request context
+     * @param task the task to read the original agent from
      * 
-     * @return the owner of a task.
+     * @return the owner of a task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOriginalAgent(CmsRequestContext context, CmsTask task) throws CmsException {
 
@@ -2995,12 +3017,12 @@ public final class CmsSecurityManager {
     /**
      * Reads the owner of a project from the OpenCms.<p>
      *
-     * @param context the current request context.
-     * @param project the project to get the owner from.
+     * @param context the current request context
+     * @param project the project to get the owner from
      * 
-     * @return the owner of a resource.
+     * @return the owner of a resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsRequestContext context, CmsProject project) throws CmsException {
 
@@ -3019,12 +3041,12 @@ public final class CmsSecurityManager {
     /**
      * Reads the owner (initiator) of a task.<p>
      *
-     * @param context the current request context.
-     * @param task the task to read the owner from.
+     * @param context the current request context
+     * @param task the task to read the owner from
      * 
-     * @return the owner of a task.
+     * @return the owner of a task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsRequestContext context, CmsTask task) throws CmsException {
 
@@ -3043,12 +3065,12 @@ public final class CmsSecurityManager {
     /**
      * Reads the owner of a tasklog.<p>
      *
-     * @param context the current request context.
-     * @param log the tasklog.
+     * @param context the current request context
+     * @param log the tasklog
      * 
-     * @return the owner of a resource.
+     * @return the owner of a resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsRequestContext context, CmsTaskLog log) throws CmsException {
 
@@ -3072,7 +3094,8 @@ public final class CmsSecurityManager {
      * @param path the requested path
      * @param filter a filter object (only "includeDeleted" information is used!)
      * 
-     * @return List of CmsResource's
+     * @return list of <code>{@link CmsResource}</code>s
+     * 
      * @throws CmsException if something goes wrong
      */
     public List readPath(CmsRequestContext context, int projectId, String path, CmsResourceFilter filter) throws CmsException {
@@ -3092,12 +3115,12 @@ public final class CmsSecurityManager {
     /**
      * Reads a project of a given task.<p>
      *
-     * @param context the current request context.
-     * @param task the task to read the project of.
+     * @param context the current request context
+     * @param task the task to read the project of
      * 
-     * @return the project of the task.
+     * @return the project of the task
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsProject readProject(CmsRequestContext context, CmsTask task) throws CmsException {
 
@@ -3114,11 +3137,13 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads a project from the Cms given the projects name.<p>
+     * Reads a project given the projects id.<p>
      *
      * @param id the id of the project
-     * @return the project read from the cms
-     * @throws CmsException if something goes wrong.
+     * 
+     * @return the project read
+     * 
+     * @throws CmsException if something goes wrong
      */
     public CmsProject readProject(int id) throws CmsException {
 
@@ -3135,7 +3160,7 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads a project from the Cms.<p>
+     * Reads a project.<p>
      *
      * Important: Since a project name can be used multiple times, this is NOT the most efficient 
      * way to read the project. This is only a convenience for front end developing.
@@ -3143,8 +3168,10 @@ public final class CmsSecurityManager {
      * All core classes must use the id version {@link #readProject(int)} to ensure the right project is read.<p>
      * 
      * @param name the name of the project
-     * @return the project read from the cms
-     * @throws CmsException if something goes wrong.
+     * 
+     * @return the project read
+     * 
+     * @throws CmsException if something goes wrong
      */
     public CmsProject readProject(String name) throws CmsException {
 
@@ -3163,12 +3190,12 @@ public final class CmsSecurityManager {
     /**
      * Reads all task log entries for a project.
      *
-     * @param context the current request context.
-     * @param projectId the id of the project for which the tasklog will be read.
+     * @param context the current request context
+     * @param projectId the id of the project for which the tasklog will be read
      * 
-     * @return a list of <code>{@link CmsTaskLog}</code> objects.
+     * @return a list of <code>{@link CmsTaskLog}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readProjectLogs(CmsRequestContext context, int projectId) throws CmsException {
 
@@ -3190,7 +3217,9 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param project the project to get the project resources for
      * 
-     * @return the list of all resource names that define the "view" of the given project
+     * @return the list of all resources, as <code>{@link String}</code> objects 
+     *              that define the "view" of the given project.
+     * 
      * @throws CmsException if something goes wrong
      */
     public List readProjectResources(CmsRequestContext context, CmsProject project) throws CmsException {
@@ -3222,7 +3251,7 @@ public final class CmsSecurityManager {
      * @param projectId the id of the project to read the file resources for
      * @param state the resource state to match 
      *
-     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria.
+     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -3251,17 +3280,18 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param name the name of the property definition to read
      * 
-     * @return the property definition that was read, or null if there is no property definition with the given name
+     * @return the property definition that was read, 
+     *          or <code>null</code> if there is no property definition with the given name.
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name)
+    public CmsPropertyDefinition readPropertyDefinition(CmsRequestContext context, String name)
     throws CmsException {
         
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        CmsPropertydefinition result = null;
+        CmsPropertyDefinition result = null;
         try {
-            result = m_driverManager.readPropertydefinition(dbc, name);
+            result = m_driverManager.readPropertyDefinition(dbc, name);
         } catch (Exception e) {
             dbc.report(null, null, e);
         } finally {
@@ -3281,7 +3311,7 @@ public final class CmsSecurityManager {
      * @param search if <code>true</code>, the property is searched on all parent folders of the resource. 
      *      if it's not found attached directly to the resource.
      * 
-     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found.
+     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3317,7 +3347,7 @@ public final class CmsSecurityManager {
      * @param resource the resource where the property is mapped to
      * @param search <code>true</code>, if the properties should be searched on all parent folders  if not found on the resource
      * 
-     * @return a list of <code>{@link CmsProperty}</code> objects.
+     * @return a list of <code>{@link CmsProperty}</code> objects
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3341,7 +3371,9 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param publishHistoryId unique int ID to identify each publish task in the publish history
-     * @return a List of CmsPublishedResource objects
+     * 
+     * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects
+     * 
      * @throws CmsException if something goes wrong
      */
     public List readPublishedResources(CmsRequestContext context, CmsUUID publishHistoryId) throws CmsException {
@@ -3380,9 +3412,9 @@ public final class CmsSecurityManager {
      * @param resourcePath the name of the resource to read (full path)
      * @param filter the resource filter to use while reading
      *
-     * @return the resource that was read.
+     * @return the resource that was read
      *
-     * @throws CmsException if the resource could not be read for any reason.
+     * @throws CmsException if the resource could not be read for any reason
      * 
      * @see CmsObject#readResource(String, CmsResourceFilter)
      * @see CmsObject#readResource(String)
@@ -3426,7 +3458,7 @@ public final class CmsSecurityManager {
      * @param resourcePath the name of the resource to read (full path)
      * @param filter the resource filter to use while reading
      *
-     * @return <code>true</code> if the resource is available.
+     * @return <code>true</code> if the resource is available
      * 
      * @see CmsObject#existsResource(String, CmsResourceFilter)
      * @see CmsObject#existsResource(String)
@@ -3454,14 +3486,14 @@ public final class CmsSecurityManager {
      * including the full tree below the path only in case the <code>readTree</code> 
      * parameter is <code>true</code>.<p>
      * 
-     * @param context the current request context.
-     * @param parent the parent path to read the resources from.
-     * @param filter the filter.
-     * @param readTree <code>true</code> to read all subresources.
+     * @param context the current request context
+     * @param parent the parent path to read the resources from
+     * @param filter the filter
+     * @param readTree <code>true</code> to read all subresources
      * 
-     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria.
+     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria
      *  
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readResources(CmsRequestContext context, CmsResource parent, CmsResourceFilter filter, boolean readTree)
     throws CmsException {
@@ -3489,7 +3521,8 @@ public final class CmsSecurityManager {
      * @param path the folder to get the resources with the property from
      * @param propertyDefinition the name of the property (definition) to check for
      * 
-     * @return all resources that have a value set for the specified property (definition) in the given path
+     * @return a list of all <code>{@link CmsResource}</code> objects 
+     *          that have a value set for the specified property.
      * 
      * @throws CmsException if something goes wrong
      */   
@@ -3512,13 +3545,15 @@ public final class CmsSecurityManager {
      * Returns a List of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
      * 
-     * @param context the request context.
-     * @param resource the specified resource.
-     * @param filter a filter object.
+     * @param context the request context
+     * @param resource the specified resource
+     * @param filter a filter object
      * 
-     * @return a List of CmsResources that are siblings to the specified resource, including the specified resource itself.
+     * @return a list of <code>{@link CmsResource}</code>s that 
+     *          are siblings to the specified resource, 
+     *          including the specified resource itself.
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readSiblings(CmsRequestContext context, CmsResource resource, CmsResourceFilter filter)
     throws CmsException {
@@ -3538,12 +3573,12 @@ public final class CmsSecurityManager {
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
      *
-     * @param context the current request context.
-     * @param rfsName the rfs name of the resource.
+     * @param context the current request context
+     * @param rfsName the rfs name of the resource
      * 
-     * @return the paramter string of the requested resource.
+     * @return the paramter string of the requested resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public String readStaticExportPublishedResourceParameters(CmsRequestContext context, String rfsName)
     throws CmsException {
@@ -3563,13 +3598,13 @@ public final class CmsSecurityManager {
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
-     * @param context the current request context.
-     * @param parameterResources flag for reading resources with parameters (1) or without (0).
-     * @param timestamp for reading the data from the db.
+     * @param context the current request context
+     * @param parameterResources flag for reading resources with parameters (1) or without (0)
+     * @param timestamp for reading the data from the db
      * 
-     * @return a list of template resources as <code>{@link String}</code> objects.
+     * @return a list of template resources as <code>{@link String}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readStaticExportResources(CmsRequestContext context, int parameterResources, long timestamp)
     throws CmsException {
@@ -3589,12 +3624,12 @@ public final class CmsSecurityManager {
     /**
      * Reads the task with the given id.<p>
      *
-     * @param context the current request context.
-     * @param id the id for the task to read.
+     * @param context the current request context
+     * @param id the id for the task to read
      * 
-     * @return the task with the given id.
+     * @return the task with the given id
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsTask readTask(CmsRequestContext context, int id) throws CmsException {
 
@@ -3613,12 +3648,12 @@ public final class CmsSecurityManager {
     /**
      * Reads log entries for a task.<p>
      *
-     * @param context the current request context.
-     * @param taskid the task for the tasklog to read.
+     * @param context the current request context
+     * @param taskid the task for the tasklog to read
      * 
-     * @return a list of <code>{@link CmsTaskLog}</code> objects.
+     * @return a list of <code>{@link CmsTaskLog}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List readTaskLogs(CmsRequestContext context, int taskid) throws CmsException {
 
@@ -3647,14 +3682,14 @@ public final class CmsSecurityManager {
      * </ul><p>
      *
      * @param context the current request context
-     * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks.
-     * @param tasktype the type of task you want to read.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null.
+     * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks
+     * @param tasktype the type of task you want to read
+     * @param orderBy specifies how to order the tasks
+     * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null
      * 
-     * @return a list of <code>{@link CmsTask}</code> objects for the project.
+     * @return a list of <code>{@link CmsTask}</code> objects for the project
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List readTasksForProject(CmsRequestContext context, int projectId, int tasktype, String orderBy, String sort) throws CmsException {
 
@@ -3682,16 +3717,16 @@ public final class CmsSecurityManager {
      * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
-     * @param context the current request context.
-     * @param projectId the id of the Project in which the tasks are defined.
-     * @param roleName the role who has to process the task.
-     * @param tasktype the type of task you want to read.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null.
+     * @param context the current request context
+     * @param projectId the id of the Project in which the tasks are defined
+     * @param roleName the role who has to process the task
+     * @param tasktype the type of task you want to read
+     * @param orderBy specifies how to order the tasks
+     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
      * 
-     * @return list of <code>{@link CmsTask}</code> objects for the role.
+     * @return list of <code>{@link CmsTask}</code> objects for the role
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List readTasksForRole(CmsRequestContext context, int projectId, String roleName, int tasktype, String orderBy, String sort)
     throws CmsException {
@@ -3720,16 +3755,16 @@ public final class CmsSecurityManager {
      * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
-     * @param context the current request context.
-     * @param projectId the id of the Project in which the tasks are defined.
-     * @param userName the user who has to process the task.
-     * @param taskType the type of task you want to read.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null.
+     * @param context the current request context
+     * @param projectId the id of the Project in which the tasks are defined
+     * @param userName the user who has to process the task
+     * @param taskType the type of task you want to read
+     * @param orderBy specifies how to order the tasks
+     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
      * 
-     * @return a list of <code>{@link CmsTask}</code> objects for the user .
+     * @return a list of <code>{@link CmsTask}</code> objects for the user 
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
     public List readTasksForUser(CmsRequestContext context, int projectId, String userName, int taskType, String orderBy, String sort)
     throws CmsException {
@@ -3749,12 +3784,12 @@ public final class CmsSecurityManager {
     /**
      * Returns a user object based on the id of a user.<p>
      *
-     * @param context the current request context.
-     * @param id the id of the user to read.
+     * @param context the current request context
+     * @param id the id of the user to read
      *
-     * @return the user read.
+     * @return the user read
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readUser(CmsRequestContext context, CmsUUID id) throws CmsException {
 
@@ -3773,13 +3808,13 @@ public final class CmsSecurityManager {
     /**
      * Returns a user object.<p>
      *
-     * @param context the current request context.
-     * @param username the name of the user that is to be read.
-     * @param type the type of the user.
+     * @param context the current request context
+     * @param username the name of the user that is to be read
+     * @param type the type of the user
      *
-     * @return user read.
+     * @return user read
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser readUser(CmsRequestContext context, String username, int type) throws CmsException {
 
@@ -3800,13 +3835,13 @@ public final class CmsSecurityManager {
      *
      * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param context the current request context.
-     * @param username the username of the user that is to be read.
-     * @param password the password of the user that is to be read.
+     * @param context the current request context
+     * @param username the username of the user that is to be read
+     * @param password the password of the user that is to be read
      * 
-     * @return user read.
+     * @return user read
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser readUser(CmsRequestContext context, String username, String password) throws CmsException {
 
@@ -3825,11 +3860,11 @@ public final class CmsSecurityManager {
     /**
      * Returns a user object.<p>
      *
-     * @param username the name of the user that is to be read.
+     * @param username the name of the user that is to be read
      *
-     * @return user read form the cms.
+     * @return user read form the cms
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser readUser(String username) throws CmsException {
 
@@ -3848,10 +3883,10 @@ public final class CmsSecurityManager {
     /**
      * Read a web user from the database.<p>
      * 
-     * @param context the current request context.
-     * @param username the web user to read.
+     * @param context the current request context
+     * @param username the web user to read
      * 
-     * @return the read web user.
+     * @return the read web user
      * 
      * @throws CmsException if the user could not be read. 
      */
@@ -3874,13 +3909,13 @@ public final class CmsSecurityManager {
      *
      * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param context the current request context.
-     * @param username the username of the user that is to be read.
-     * @param password the password of the user that is to be read.
+     * @param context the current request context
+     * @param username the username of the user that is to be read
+     * @param password the password of the user that is to be read
      * 
-     * @return the webuser read.
+     * @return the webuser read
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser readWebUser(CmsRequestContext context, String username, String password) throws CmsException {
 
@@ -3899,11 +3934,11 @@ public final class CmsSecurityManager {
     /**
      * Removes an access control entry for a given resource and principal.<p>
      * 
-     * @param context the current request context.
-     * @param resource the resource.
-     * @param principal the id of the principal to remove the the access control entry for.
+     * @param context the current request context
+     * @param resource the resource
+     * @param principal the id of the principal to remove the the access control entry for
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void removeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsUUID principal)
     throws CmsException {
@@ -3923,11 +3958,11 @@ public final class CmsSecurityManager {
     /**
      * Removes a user from a group.<p>
      *
-     * @param context the current request context.
-     * @param username the name of the user that is to be removed from the group.
-     * @param groupname the name of the group.
+     * @param context the current request context
+     * @param username the name of the user that is to be removed from the group
+     * @param groupname the name of the group
      * 
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public void removeUserFromGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
@@ -3983,13 +4018,13 @@ public final class CmsSecurityManager {
     /**
      * Resets the password for a specified user.<p>
      *
-     * @param context the current request context.
-     * @param username the name of the user.
-     * @param oldPassword the old password.
-     * @param newPassword the new password.
+     * @param context the current request context
+     * @param username the name of the user
+     * @param oldPassword the old password
+     * @param newPassword the new password
      * 
-     * @throws CmsException if the user data could not be read from the database.
-     * @throws CmsSecurityException if the specified username and old password could not be verified.
+     * @throws CmsException if the user data could not be read from the database
+     * @throws CmsSecurityException if the specified username and old password could not be verified
      */
     public void resetPassword(CmsRequestContext context, String username, String oldPassword, String newPassword)
     throws CmsException, CmsSecurityException {
@@ -4033,11 +4068,11 @@ public final class CmsSecurityManager {
     /**
      * Set a new name for a task.<p>
      *
-     * @param context the current request context.
-     * @param taskId the Id of the task to set the percentage.
-     * @param name the new name value.
+     * @param context the current request context
+     * @param taskId the Id of the task to set the percentage
+     * @param name the new name value
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void setName(CmsRequestContext context, int taskId, String name) throws CmsException {
 
@@ -4054,13 +4089,13 @@ public final class CmsSecurityManager {
     /**
      * Sets a new parent-group for an already existing group.<p>
      *
-     * @param context the current request context.
-     * @param groupName the name of the group that should be written.
+     * @param context the current request context
+     * @param groupName the name of the group that should be written
      * @param parentGroupName the name of the parent group to set, 
      *                      or <code>null</code> if the parent
      *                      group should be deleted.
      * 
-     * @throws CmsException if operation was not succesfull.
+     * @throws CmsException if operation was not succesfull
      */
     public void setParentGroup(CmsRequestContext context, String groupName, String parentGroupName) throws CmsException {
 
@@ -4083,11 +4118,11 @@ public final class CmsSecurityManager {
     /**
      * Sets the password for a user.<p>
      *
-     * @param context the current request context.
-     * @param username the name of the user.
-     * @param newPassword the new password.
+     * @param context the current request context
+     * @param username the name of the user
+     * @param newPassword the new password
      * 
-     * @throws CmsException if operation was not succesfull.
+     * @throws CmsException if operation was not succesfull
      */
     public void setPassword(CmsRequestContext context, String username, String newPassword) throws CmsException {
 
@@ -4104,11 +4139,11 @@ public final class CmsSecurityManager {
     /**
      * Set priority of a task.<p>
      *
-     * @param context the current request context.
-     * @param taskId the Id of the task to set the percentage.
-     * @param priority the priority value.
+     * @param context the current request context
+     * @param taskId the Id of the task to set the percentage
+     * @param priority the priority value
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void setPriority(CmsRequestContext context, int taskId, int priority) throws CmsException {
 
@@ -4125,12 +4160,12 @@ public final class CmsSecurityManager {
     /**
      * Set a Parameter for a task.<p>
      *
-     * @param context the current request context.
-     * @param taskId the Id of the task.
-     * @param parName name of the parameter.
-     * @param parValue value if the parameter.
+     * @param context the current request context
+     * @param taskId the Id of the task
+     * @param parName name of the parameter
+     * @param parValue value if the parameter
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void setTaskPar(CmsRequestContext context, int taskId, String parName, String parValue) throws CmsException {
 
@@ -4147,11 +4182,11 @@ public final class CmsSecurityManager {
     /**
      * Set timeout of a task.<p>
      *
-     * @param context the current request context.
-     * @param taskId the Id of the task to set the percentage.
-     * @param timeout new timeout value.
+     * @param context the current request context
+     * @param taskId the Id of the task to set the percentage
+     * @param timeout new timeout value
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void setTimeout(CmsRequestContext context, int taskId, long timeout) throws CmsException {
 
@@ -4174,7 +4209,7 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param resource the resource to touch
-     * @param dateLastModified timestamp the new timestamp of the changed resource.
+     * @param dateLastModified timestamp the new timestamp of the changed resource
      * @param dateReleased the new release date of the changed resource,
      *              set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param dateExpired the new expire date of the changed resource, 
@@ -4233,10 +4268,9 @@ public final class CmsSecurityManager {
     /**
      * Unlocks all resources in this project.<p>
      *
-     * Only the admin or the owner of the project can do this.<p>
-     *
      * @param context the current request context
      * @param projectId the id of the project to be published
+     * 
      * @throws CmsException if something goes wrong
      */
     public void unlockProject(CmsRequestContext context, int projectId) throws CmsException {
@@ -4279,13 +4313,13 @@ public final class CmsSecurityManager {
     /**
      * Tests if a user is member of the given group.<p>
      *
-     * @param context the current request context.
-     * @param username the name of the user to check.
-     * @param groupname the name of the group to check.
+     * @param context the current request context
+     * @param username the name of the user to check
+     * @param groupname the name of the group to check
      * 
-     * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise.
+     * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise
      *
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public boolean userInGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
@@ -4307,12 +4341,12 @@ public final class CmsSecurityManager {
      * <code>{@link org.opencms.validation.I_CmsHtmlLinkValidatable}</code>.<p>
      * 
      * @param cms the current user's Cms object
-     * @param publishList an OpenCms publish list.
-     * @param report a report to write the messages to.
+     * @param publishList an OpenCms publish list
+     * @param report a report to write the messages to
      * 
-     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names.
+     * @return a map with lists of invalid links (<code>String</code> objects) keyed by resource names
      * 
-     * @throws Exception if something goes wrong.
+     * @throws Exception if something goes wrong
      * 
      * @see #getPublishList(CmsRequestContext, CmsResource, boolean)
      */
@@ -4329,9 +4363,9 @@ public final class CmsSecurityManager {
      * 
      * If this method throws no exception the password is valid.<p>
      *
-     * @param password the new password that has to be checked.
+     * @param password the new password that has to be checked
      * 
-     * @throws CmsSecurityException if the password is not valid.
+     * @throws CmsSecurityException if the password is not valid
      */
     public void validatePassword(String password) throws CmsSecurityException {
 
@@ -4341,11 +4375,11 @@ public final class CmsSecurityManager {
     /**
      * Writes an access control entries to a given resource.<p>
      * 
-     * @param context the current request context.
-     * @param resource the resource.
-     * @param ace the entry to write.
+     * @param context the current request context
+     * @param resource the resource
+     * @param ace the entry to write
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry ace)
     throws CmsException {
@@ -4406,10 +4440,10 @@ public final class CmsSecurityManager {
      * The group with the given id will be completely overriden
      * by the given data.<p>
      *
-     * @param context the current request context.
-     * @param group the group that should be written.
+     * @param context the current request context
+     * @param group the group that should be written
      *
-     * @throws CmsException if operation was not succesfull.
+     * @throws CmsException if operation was not succesfull
      */
     public void writeGroup(CmsRequestContext context, CmsGroup group) throws CmsException {
 
@@ -4528,13 +4562,13 @@ public final class CmsSecurityManager {
      * 
      * This is done during static export.<p>
      * 
-     * @param context the current request context.
-     * @param resourceName The name of the resource to be added to the static export.
-     * @param linkType the type of resource exported (0= non-paramter, 1=parameter).
-     * @param linkParameter the parameters added to the resource.
-     * @param timestamp a timestamp for writing the data into the db.
+     * @param context the current request context
+     * @param resourceName The name of the resource to be added to the static export
+     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters added to the resource
+     * @param timestamp a timestamp for writing the data into the db
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void writeStaticExportPublishedResource(
         CmsRequestContext context,
@@ -4556,11 +4590,11 @@ public final class CmsSecurityManager {
     /**
      * Writes a new user tasklog for a task.<p>
      *
-     * @param context the current request context.
-     * @param taskid the Id of the task.
-     * @param comment description for the log.
+     * @param context the current request context
+     * @param taskid the Id of the task
+     * @param comment description for the log
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void writeTaskLog(CmsRequestContext context, int taskid, String comment) throws CmsException {
 
@@ -4577,12 +4611,12 @@ public final class CmsSecurityManager {
     /**
      * Writes a new user tasklog for a task.<p>
      *
-     * @param context the current request context.
-     * @param taskId the Id of the task.
-     * @param comment description for the log.
-     * @param type type of the tasklog. User tasktypes must be greater then 100.
+     * @param context the current request context
+     * @param taskId the Id of the task
+     * @param comment description for the log
+     * @param type type of the tasklog. User tasktypes must be greater then 100
      * 
-     * @throws CmsException something goes wrong.
+     * @throws CmsException something goes wrong
      */
     public void writeTaskLog(CmsRequestContext context, int taskId, String comment, int type) throws CmsException {
 
@@ -4604,10 +4638,10 @@ public final class CmsSecurityManager {
      * The user with the given id will be completely overriden
      * by the given data.<p>
      *
-     * @param context the current request context.
-     * @param user the user to be updated.
+     * @param context the current request context
+     * @param user the user to be updated
      *
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public void writeUser(CmsRequestContext context, CmsUser user) throws CmsException {
 
@@ -4637,10 +4671,10 @@ public final class CmsSecurityManager {
      * The user with the given id will be completely overriden
      * by the given data.<p>
      * 
-     * @param context the current request context.
-     * @param user the user to be updated.
+     * @param context the current request context
+     * @param user the user to be updated
      *
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful
      */
     public void writeWebUser(CmsRequestContext context, CmsUser user) throws CmsException {
 
@@ -4944,10 +4978,10 @@ public final class CmsSecurityManager {
     /**
      * Deletes a user.<p>
      *
-     * @param context the current request context.
-     * @param user the user to be deleted.
+     * @param context the current request context
+     * @param user the user to be deleted
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */    
     private void deleteUser(CmsRequestContext context, CmsUser user) throws CmsException {
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/12/20 17:04:25 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/12/22 16:41:24 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.60 $ $Date: 2004/12/20 17:04:25 $
+ * @version $Revision: 1.61 $ $Date: 2004/12/22 16:41:24 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -72,9 +72,10 @@ public interface I_CmsProjectDriver {
      * @param description the description for the project
      * @param flags the flags for the project
      * @param type the type for the project
-     * @param reservedParam reservedParam reserved optional parameter, should be null on standard OpenCms installations
+     * @param reservedParam reserved optional parameter, should be <code>null</code> on standard OpenCms installations
      * 
-     * @return the chreated CmsProject instance
+     * @return the created <code>{@link CmsProject}</code> instance
+     * 
      * @throws CmsException if something goes wrong
      */
     CmsProject createProject(
@@ -120,7 +121,7 @@ public interface I_CmsProjectDriver {
      * Therefore it deletes all files, resources and properties.
      * 
      * @param dbc the current database context
-     * @param project the project to delete.
+     * @param project the project to delete
      * @throws CmsException if something goes wrong
      */
     void deleteProject(CmsDbContext dbc, CmsProject project) throws CmsException;
@@ -160,13 +161,13 @@ public interface I_CmsProjectDriver {
     /**
      * Deletes an entry in the published resource table.<p>
      * 
-     * @param dbc the current database context.
-     * @param currentProject the current project.
-     * @param resourceName The name of the resource to be deleted in the static export.
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter).
-     * @param linkParameter the parameters of the resource.
+     * @param dbc the current database context
+     * @param currentProject the current project
+     * @param resourceName The name of the resource to be deleted in the static export
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters of the resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void deleteStaticExportPublishedResource(
         CmsDbContext dbc,
@@ -353,11 +354,12 @@ public interface I_CmsProjectDriver {
         int maxVersions) throws Exception;
 
     /**
-     * Reads a project.<p>
+     * Reads a project given the projects id.<p>
      *
      * @param dbc the current database context
      * @param id the id of the project
-     * @return the project with the given id
+     * 
+     * @return the project read
      * 
      * @throws CmsException if something goes wrong
      */
@@ -395,7 +397,8 @@ public interface I_CmsProjectDriver {
      * @param dbc the current database context
      * @param project the project for which the resource path is read
      * 
-     * @return the project's resource path
+     * @return a list of all project resource paths
+     * 
      * @throws CmsException if something goes wrong
      */
     List readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsException;
@@ -406,7 +409,8 @@ public interface I_CmsProjectDriver {
      * @param dbc the current database context
      * @param state the requested project state
      * 
-     * @return a list of Cms projects
+     * @return a list of objects of type <code>{@link CmsProject}</code>
+     * 
      * @throws CmsException if something goes wrong
      */
     List readProjects(CmsDbContext dbc, int state) throws CmsException;
@@ -438,7 +442,8 @@ public interface I_CmsProjectDriver {
      *
      * @param dbc the current database context
      * @param user the user
-     * @return a alist of Cms projects
+     * 
+     * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
      * @throws CmsException if something goes wrong
      */
@@ -464,7 +469,8 @@ public interface I_CmsProjectDriver {
      * @param projectId the ID of the current project
      * @param publishHistoryId unique int ID to identify the publish process in the publish history
      * 
-     * @return a List of CmsPublishedResource objects
+     * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects
+     * 
      * @throws CmsException if something goes wrong
      */
     List readPublishedResources(CmsDbContext dbc, int projectId, CmsUUID publishHistoryId) throws CmsException;
@@ -472,13 +478,13 @@ public interface I_CmsProjectDriver {
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
      *
-     * @param dbc the current database context.
-     * @param currentProject the current project.
-     * @param rfsName the rfs name of the resource.
+     * @param dbc the current database context
+     * @param currentProject the current project
+     * @param rfsName the rfs name of the resource
      * 
-     * @return the paramter string of the requested resource.
+     * @return the paramter string of the requested resource
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     String readStaticExportPublishedResourceParameters(CmsDbContext dbc, CmsProject currentProject, String rfsName)
     throws CmsException;
@@ -486,14 +492,14 @@ public interface I_CmsProjectDriver {
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
-     * @param dbc the current database context.
-     * @param currentProject the current project.
-     * @param parameterResources flag for reading resources with parameters (1) or without (0).
-     * @param timestamp the timestamp information.
+     * @param dbc the current database context
+     * @param currentProject the current project
+     * @param parameterResources flag for reading resources with parameters (1) or without (0)
+     * @param timestamp the timestamp information
      * 
-     * @return a list of template resources as <code>{@link String}</code> objects.
+     * @return a list of template resources as <code>{@link String}</code> objects
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     List readStaticExportResources(
         CmsDbContext dbc,
@@ -507,7 +513,7 @@ public interface I_CmsProjectDriver {
      * This must be done when a project will deleted
      * 
      * @param dbc the current database context
-     * @param project the project to delete.
+     * @param project the project to delete
      * @throws CmsException if something goes wrong
      */
     void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsException;
@@ -535,14 +541,14 @@ public interface I_CmsProjectDriver {
      * 
      * This is done during static export.<p>
      * 
-     * @param dbc the current database context.
-     * @param currentProject the current project.
-     * @param resourceName The name of the resource to be added to the static export.
-     * @param linkType the type of resource exported (0= non-paramter, 1=parameter).
-     * @param linkParameter the parameters added to the resource.
-     * @param timestamp a timestamp for writing the data into the db.
+     * @param dbc the current database context
+     * @param currentProject the current project
+     * @param resourceName The name of the resource to be added to the static export
+     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters added to the resource
+     * @param timestamp a timestamp for writing the data into the db
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     void writeStaticExportPublishedResource(
         CmsDbContext dbc,

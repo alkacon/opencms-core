@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/12/14 13:30:18 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2004/12/22 16:41:24 $
+ * Version: $Revision: 1.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -52,7 +52,7 @@ import java.util.List;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.101 $ $Date: 2004/12/14 13:30:18 $
+ * @version $Revision: 1.102 $ $Date: 2004/12/22 16:41:24 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -117,9 +117,10 @@ public interface I_CmsVfsDriver {
      * @param name the name of the propertydefinitions to overwrite
      * 
      * @return the new propertydefinition
+     * 
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition createPropertyDefinition(CmsDbContext dbc, int projectId, String name) throws CmsException;
+    CmsPropertyDefinition createPropertyDefinition(CmsDbContext dbc, int projectId, String name) throws CmsException;
 
     /**
      * Creates a new resource from a given CmsResource object.<p>
@@ -167,14 +168,12 @@ public interface I_CmsVfsDriver {
     /**
      * Deletes a property defintion.<p>
      *
-     * Only the admin can do this.
-     * 
      * @param dbc the current database context
      * @param name the property definitions to be deleted
      *
      * @throws CmsException if something goes wrong
      */
-    void deletePropertyDefinition(CmsDbContext dbc, CmsPropertydefinition name) throws CmsException;
+    void deletePropertyDefinition(CmsDbContext dbc, CmsPropertyDefinition name) throws CmsException;
 
     /**
      * Deletes all property values of a file or folder.<p>
@@ -335,14 +334,19 @@ public interface I_CmsVfsDriver {
     /**
      * Reads a property definition for the soecified resource type.<p>
      * 
+     * If no property definition with the given name is found, 
+     * <code>null</code> is returned.<p>
+     * 
      * @param dbc the current database context
      * @param name the name of the propertydefinition to read
      * @param projectId the id of the project
      * 
-     * @return the property definition that corresponds to the given arguments, or null if there is no such property definition.
+     * @return the property definition that was read, 
+     *          or <code>null</code> if there is no property definition with the given name.
+     * 
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition readPropertyDefinition(CmsDbContext dbc, String name, int projectId) throws CmsException;
+    CmsPropertyDefinition readPropertyDefinition(CmsDbContext dbc, String name, int projectId) throws CmsException;
 
     /**
      * Reads all property definitions for the specified mapping type.<p>
@@ -351,7 +355,8 @@ public interface I_CmsVfsDriver {
      * @param projectId the id of the project
      * @param mappingtype the mapping type to read the property definitions for
      * 
-     * @return a list with property definitions for the mapping type (can be empty)
+     * @return a list with the <code>{@link CmsPropertyDefinition}</code> objects (may be empty)
+     * 
      * @throws CmsException if something goes wrong
      */
     List readPropertyDefinitions(CmsDbContext dbc, int projectId, int mappingtype) throws CmsException;
@@ -391,7 +396,7 @@ public interface I_CmsVfsDriver {
      * 
      * @param dbc the current database context
      * @param projectId the Id of the project
-     * @param structureId the Id of the resource.
+     * @param structureId the Id of the resource
      * @param includeDeleted true if already deleted files are included
      *
      * @return the resource that was read
@@ -451,7 +456,8 @@ public interface I_CmsVfsDriver {
      * @param projectId the id of the project
      * @param propertyDefinition the id of the property definition
      * 
-     * @return a list of all resources that have a value set for the specified property (definition)
+     * @return a list of all <code>{@link CmsResource}</code> objects 
+     *          that have a value set for the specified property.
      * 
      * @throws CmsException if something goes wrong
      */
@@ -496,9 +502,11 @@ public interface I_CmsVfsDriver {
      * @param dbc the current database context
      * @param currentProject the current project
      * @param resource the specified resource
-     * @param includeDeleted true if deleted siblings should be included in the result List
+     * @param includeDeleted <code>true</code> if deleted siblings should be included in the result list
      * 
-     * @return a list with the sibling resources
+     * @return a list of <code>{@link CmsResource}</code>s that 
+     *          are siblings to the specified resource, 
+     *          including the specified resource itself.
      * 
      * @throws CmsException if something goes wrong
      */
