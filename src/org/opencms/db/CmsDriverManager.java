@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/30 13:25:31 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2003/07/30 13:28:16 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.103 $ $Date: 2003/07/30 13:25:31 $
+ * @version $Revision: 1.104 $ $Date: 2003/07/30 13:28:16 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -3503,7 +3503,7 @@ public class CmsDriverManager extends Object {
                     if (!lock.isNullLock()) {
                         res.setLocked(lock.getUserId());
                         res.setLockedInProject(lock.getProjectId());
-                        res.setProjectId(lock.getProjectId());
+                        //res.setProjectId(lock.getProjectId());
                     }
                 }
 
@@ -5884,7 +5884,7 @@ public class CmsDriverManager extends Object {
 
         // build the full path of the resource
         resourceName = path + resourceName;
-        if (isFolder) {
+        if (isFolder && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
         }
 
@@ -8219,6 +8219,49 @@ public class CmsDriverManager extends Object {
      */
     public boolean isLocked(CmsRequestContext context, String resourcename) throws CmsException {
         return m_lockDispatcher.isLocked(this, context, resourcename);
+    }
+    
+    /**
+     * Proves if a specified resource is inside the current project.<p>
+     * 
+     * @param context the current request context
+     * @param resource the specified resource
+     * @return true, if the resource name of the specified resource matches any of the current project's resources
+     * @throws CmsException if something goes wrong
+     */
+    public boolean isInsideCurrentProject(CmsRequestContext context, CmsResource resource) {        
+        return isInsideProject(context.currentProject(), resource);
     } 
+    
+    /**
+     * Proves if a resource is inside a specified project.<p>
+     * 
+     * @param project the project
+     * @param resource the resource
+     * @return true, if the resource name of the specified resource matches any of the project's resources
+     */
+    public boolean isInsideProject(CmsProject project, CmsResource resource) {
+        List projectResources = null;
+        
+        // TODO the result of these operations should be cached to minimize costs
+
+        try {
+            projectResources = m_vfsDriver.readProjectResources(project);
+        } catch (CmsException e) {
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager.isInsideProject()] error reading project resources " + e.getMessage());
+            }
+                        
+            return false;
+        }
+
+        for (int i = 0; i < projectResources.size(); i++) {
+            if (resource.getFullResourceName().startsWith((String) projectResources.get(i))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 }
