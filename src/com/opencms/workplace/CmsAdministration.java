@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/05/16 14:48:32 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.30 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Name:  $ $Revision: 1.31 $ $Date: 2003/05/16 14:48:32 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -264,7 +264,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                 for(int j = 0;j < moduleAdminPoints.size();j++) {
                     CmsFolder currentModuleAdminFolder = (CmsFolder) moduleAdminPoints.elementAt(j);
                     iconVector.addElement(currentModuleAdminFolder);
-                    System.err.println( currentModuleAdminFolder.getResourceName() );
+                    //System.err.println( currentModuleAdminFolder.getResourceName() );
                 }
             }
         }
