@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/05/05 08:06:24 $
-* Version: $Revision: 1.124 $
+* Date   : $Date: 2004/01/06 12:45:53 $
+* Version: $Revision: 1.124.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.124 $ $Date: 2003/05/05 08:06:24 $
+ * @version $Revision: 1.124.2.1 $ $Date: 2004/01/06 12:45:53 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -704,10 +704,15 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      * @throws CmsException If something goes wrong during shutdown.
      */
     public void destroy() throws CmsException {
-        m_scheduler.shutDown();
-        CmsObject cms = new CmsObject();
-        cms.init(m_resourceBroker);
-        cms.destroy();
+        if (m_scheduler!=null) {
+            m_scheduler.shutDown();
+        }
+        
+        if (m_resourceBroker!=null) {
+            CmsObject cms = new CmsObject();
+            cms.init(m_resourceBroker);
+            cms.destroy();
+        }
     }
 
     /**
