@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/04/24 16:09:29 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2001/05/14 14:30:56 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -40,7 +40,6 @@ import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.file.utils.*;
 import com.opencms.util.*;
-import com.opencms.file.genericSql.I_CmsDbPool;
 
 
 
@@ -52,7 +51,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.25 $ $Date: 2001/04/24 16:09:29 $ *
+ * @version $Revision: 1.26 $ $Date: 2001/05/14 14:30:56 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -789,33 +788,6 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 				}
 			}
 		}
-	}
-
-	/**
-	 * Create a new Connection guard.
-	 * This method should be overloaded if another connectionguard should be used.
-	 * Creation date: (06-09-2000 14:33:30)
-	 * @return com.opencms.file.genericSql.CmsConnectionGuard
-	 * @param m_pool com.opencms.file.genericSql.I_CmsDbPool
-	 * @param sleepTime long
-	 */
-	public com.opencms.file.genericSql.CmsConnectionGuard createCmsConnectionGuard(I_CmsDbPool m_pool, long sleepTime) {
-		return new com.opencms.file.oracleplsql.CmsConnectionGuard(m_pool, sleepTime);
-	}
-
-	/**
-	 * Creates a CmsDbPool
-	 * Creation date: (06-09-2000 14:08:10)
-	 * @return com.opencms.file.genericSql.CmsDbPool
-	 * @param driver java.lang.String
-	 * @param url java.lang.String
-	 * @param user java.lang.String
-	 * @param passwd java.lang.String
-	 * @param maxConn int
-	 * @exception com.opencms.core.CmsException The exception description.
-	 */
-	public I_CmsDbPool createCmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws com.opencms.core.CmsException {
-		return new com.opencms.file.oracleplsql.CmsDbPool(driver,url,user,passwd,maxConn);
 	}
 
 /**

@@ -10,6 +10,7 @@ Legend:
 
 OpenCms 4.3.11 Bela Tegeuse - XXX
 * fixed bug in OpenCmsHttpServlet.initUser() WebUsers can use http Authentification now
+- Removed old unused OpenCms-Pool. Use com.opencms.dbpool.* instead.
 
 OpenCms 4.3.10 Bela Tegeuse - 10 May 2001
 ! CmsMail can now be used without CmsObject
