@@ -34,7 +34,11 @@
 			<param name="additionalresources">/system/galleries/pics/ocms-templateone/;/system/modules/org.opencms.frontend.templateone/;/system/workplace/resources/filetypes/microsite.gif</param>
 		</parameters>
 		<resourcetypes>
-			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="microsite" id="19" />
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="microsite" id="19">
+				<copy-resources>
+					<copy-resource source="/system/modules/org.opencms.frontend.templateone/copyresources/_configuration" target="${resource.folder.path}" type="new"/>
+				</copy-resources>
+			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="microsite" key="fileicon.microsite" icon="microsite.gif" reference="folder">
@@ -362,6 +366,109 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/copyresources</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 30 Mar 2005 14:52:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Mar 2005 14:52:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 24 Sep 2004 13:38:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Mar 2005 14:52:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template configuration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/configuration_common</source>
+			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/configuration_common</destination>
+			<type>xmlcontent</type>
+			<uuidresource>62721764-a12b-11d9-8a96-1559aed72023</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 15:07:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Mar 2005 14:52:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Common configuration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/configuration_css</source>
+			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/configuration_css</destination>
+			<type>xmlcontent</type>
+			<uuidresource>62861499-a12b-11d9-8a96-1559aed72023</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 11:34:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Mar 2005 14:52:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[CSS style sheet]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/configuration_links</source>
+			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/configuration_links</destination>
+			<type>xmlcontent</type>
+			<uuidresource>6293d03e-a12b-11d9-8a96-1559aed72023</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 14:24:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Mar 2005 14:52:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Head links]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/imprint</source>
+			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/imprint</destination>
+			<type>xmlcontent</type>
+			<uuidresource>62986423-a12b-11d9-8a96-1559aed72023</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 14:45:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Mar 2005 14:52:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Imprint]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>

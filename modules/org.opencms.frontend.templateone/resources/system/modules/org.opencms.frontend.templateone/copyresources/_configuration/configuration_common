@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/common.xsd">
+  <configuration language="en">
+    <area.name/>
+    <navigation.startfolder/>
+    <headnav.menus>true</headnav.menus>
+    <headnav.menudepth><![CDATA[2]]></headnav.menudepth>
+    <headnav.markcurrent>true</headnav.markcurrent>
+    <navleft.showselected>false</navleft.showselected>
+    <login.uri/>
+    <help.uri/>
+    <page.form.letter/>
+    <page.form.recommend/>
+  </configuration>
+</configurations>
