@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.35 Chusuk       - XX February 2001
+- Removed old Usermanual. The usermanual is now part of the complete OpenCms documentation.
+
 OpenCms 4.5.34 Chusuk       - 05 February 2001
 ! The copy method of the mastermodule now returns the id of the new content definition. 
   The dataset can be cloned.
