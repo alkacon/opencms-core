@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/07 09:38:32 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/06/07 13:13:53 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/06/07 09:38:32 $
+ * @version $Revision: 1.15 $ $Date: 2000/06/07 13:13:53 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1578,7 +1578,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getChild(CmsUser currentUser, CmsProject currentProject, 
 						   String groupname)
         throws CmsException {
-     return null;
+        // check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_dbAccess.getChild(groupname);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + groupname, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 
     /**
@@ -1597,7 +1603,35 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getChilds(CmsUser currentUser, CmsProject currentProject, 
 							String groupname)
         throws CmsException {
-     return null;
+		// check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			Vector childs=new Vector();
+            Vector allChilds=new Vector();
+            Vector subchilds=new Vector();
+            CmsGroup group=null;
+        
+            // get all child groups if the user group
+            childs=m_dbAccess.getChild(groupname);
+            if (childs!=null) {
+                allChilds=childs;
+                // now get all subchilds for each group
+                Enumeration enu=childs.elements();
+                while (enu.hasMoreElements()) {
+                    group=(CmsGroup)enu.nextElement();
+                    subchilds=getChilds(currentUser,currentProject,group.getName());
+                    //add the subchilds to the already existing groups
+                    Enumeration enusub=subchilds.elements();
+                    while (enusub.hasMoreElements()) {
+                        group=(CmsGroup)enusub.nextElement();
+                        allChilds.addElement(group);
+                }       
+            }
+        }
+        return allChilds; 
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + groupname, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 							  
     /**
@@ -1615,7 +1649,14 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, 
 								String groupname)
         throws CmsException {
-     return null;
+        // check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			//return m_dbAccess.getParent(groupname);
+            return null;
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + groupname, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/** 

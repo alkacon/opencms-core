@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/07 09:38:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/07 13:13:53 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.10 $ $Date: 2000/06/07 09:38:32 $
+ * @version $Revision: 1.11 $ $Date: 2000/06/07 13:13:53 $
  */
 public interface I_CmsQuerys {
     
@@ -67,9 +67,16 @@ public interface I_CmsQuerys {
     public static final Integer C_GROUPS_DELETEGROUP_KEY = new Integer(205);
     public static final String C_GROUPS_DELETEGROUP = "DELETE FROM " + C_DATABASE_PREFIX + "GROUPS WHERE GROUP_NAME = ?";
    
-    public static final Integer C_GROUPS_GETALLGROUP_KEY = new Integer(206);
-    public static final String C_GROUPS_GETALLGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS";
+    public static final Integer C_GROUPS_GETGROUPS_KEY = new Integer(206);
+    public static final String C_GROUPS_GETGROUPS = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS";
   
+    public static final Integer C_GROUPS_GETCHILD_KEY = new Integer(207);
+    public static final String C_GROUPS_GETCHILD = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS WHERE PARENT_GROUP_ID = ?";
+    
+    public static final Integer C_GROUPS_GETPARENT_KEY = new Integer(208);
+    public static final String C_GROUPS_GETPARENT = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS WHERE GROUP_ID = ?";
+       
+    
     
     // Constants for Systemproperties
     public static final String C_SYSTEMPROPERTY_VALUE="SYSTEMPROPERTY_VALUE";

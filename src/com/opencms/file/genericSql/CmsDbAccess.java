@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 09:38:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/06/07 13:13:53 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.18 $ $Date: 2000/06/07 09:38:32 $ * 
+ * @version $Revision: 1.19 $ $Date: 2000/06/07 13:13:53 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -454,10 +454,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
          PreparedStatement statement = null;
          try { 
 			// create statement
-            statement=m_pool.getPreparedStatement(C_GROUPS_GETALLGROUP_KEY);
+            statement=m_pool.getPreparedStatement(C_GROUPS_GETGROUPS_KEY);
 			
            	res = statement.executeQuery();			
-            m_pool.putPreparedStatement(C_GROUPS_GETALLGROUP_KEY,statement);
+            m_pool.putPreparedStatement(C_GROUPS_GETGROUPS_KEY,statement);
             // create new Cms group objects
 		    while ( res.next() ) {
                     group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
@@ -470,13 +470,101 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
              res.close();
        
          } catch (SQLException e){
-            m_pool.putPreparedStatement(C_GROUPS_GETALLGROUP_KEY,statement);
+            m_pool.putPreparedStatement(C_GROUPS_GETGROUPS_KEY,statement);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
       return groups;
      }
      
+     /**
+	 * Returns all child groups of a groups<P/>
+	 * 
+	 * 
+	 * @param groupname The name of the group.
+	 * @return users A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+     public Vector getChild(String groupname) 
+      throws CmsException {
+         
+         Vector childs = new Vector();
+         CmsGroup group;
+         CmsGroup parent;
+         ResultSet res = null;
+         PreparedStatement statement = null;
+         try {
+             // get parent group
+             parent=readGroup(groupname);
+            // parent group exists, so get all childs
+            if (parent != null) {
+				// create statement
+                statement=m_pool.getPreparedStatement(C_GROUPS_GETCHILD_KEY);
+						
+				statement.setInt(1,parent.getId());
+				res = statement.executeQuery();
+                m_pool.putPreparedStatement(C_GROUPS_GETCHILD_KEY,statement);
+                // create new Cms group objects
+		    	while ( res.next() ) {
+                     group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+                                  res.getInt(C_GROUPS_PARENT_GROUP_ID),
+                                  res.getString(C_GROUPS_GROUP_NAME),
+                                  res.getString(C_GROUPS_GROUP_DESCRIPTION),
+                                  res.getInt(C_GROUPS_GROUP_FLAGS));
+                    childs.addElement(group);
+                }
+                res.close();
+             }
+       
+         } catch (SQLException e){
+            m_pool.putPreparedStatement(C_GROUPS_GETCHILD_KEY,statement);
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+         //check if the child vector has no elements, set it to null.
+         if (childs.size() == 0) {
+             childs=null;
+         }
+         return childs;
+     }
    
+     /**
+	 * Returns the parent group of  a groups<P/>
+	 * 
+	 * 
+	 * @param groupname The name of the group.
+	 * @return The parent group of the actual group or null;
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	/*public A_CmsGroup getParent(String groupname)
+        throws CmsException {
+        CmsGroup parent = null;
+        
+        // read the actual user group to get access to the parent group id.
+        CmsGroup group= readGroup(groupname);
+        ResultSet res = null;
+        PreparedStatement statement = null;
+ 
+        try{
+			 // create statement
+             statement=m_pool.getPreparedStatement(C_GROUPS_GETPARENT_KEY);
+			 statement.setInt(1,group.getParentId());
+			 res = statement.executeQuery();
+             m_pool.putPreparedStatement(C_GROUPS_GETPARENT_KEY,statement);
+        
+             // create new Cms group object
+			 if(res.next()) {
+                parent=new CmsGroup(res.getInt(C_GROUP_ID),
+                                    res.getInt(C_PARENT_GROUP_ID),
+                                    res.getString(C_GROUP_NAME),
+                                    res.getString(C_GROUP_DESCRIPTION),
+                                    res.getInt(C_GROUP_FLAGS));                                
+             }
+       
+         } catch (SQLException e){
+            putConnection(con);
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+        return parent;
+    }*/
      
 	/**
 	 * Adds a user to the database.
@@ -715,8 +803,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_GROUPS_CREATEGROUP_KEY,C_GROUPS_CREATEGROUP);
         m_pool.initPreparedStatement(C_GROUPS_WRITEGROUP_KEY,C_GROUPS_WRITEGROUP);
 	    m_pool.initPreparedStatement(C_GROUPS_DELETEGROUP_KEY,C_GROUPS_DELETEGROUP);	
-        m_pool.initPreparedStatement(C_GROUPS_GETALLGROUP_KEY,C_GROUPS_GETALLGROUP);
-         
+        m_pool.initPreparedStatement(C_GROUPS_GETGROUPS_KEY,C_GROUPS_GETGROUPS);
+        m_pool.initPreparedStatement(C_GROUPS_GETCHILD_KEY,C_GROUPS_GETCHILD);
+        m_pool.initPreparedStatement(C_GROUPS_GETPARENT_KEY,C_GROUPS_GETPARENT);
+        
 		// init statements for users
 		m_pool.initPreparedStatement(C_USERS_MAXID_KEY,C_USERS_MAXID);
 		m_pool.initPreparedStatement(C_USERS_ADD_KEY,C_USERS_ADD);
