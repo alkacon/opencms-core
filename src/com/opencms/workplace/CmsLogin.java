@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/03/09 14:30:52 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.13 $ $Date: 2000/03/09 14:30:52 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -80,6 +80,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         String username=null;
+        HttpSession session=null;
         A_CmsUser user;
         // the template to be displayed
         String template="template";
@@ -105,7 +106,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
             if (username!= null) {
                 // get a session for this user so that he is authentificated at the
                 // end of this request
-                HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+                session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
                 if(A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
                 }
@@ -121,7 +122,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         } else {
             // This is a new login!
             // If there is an old session, remove all user variables from this session
-            HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(false);
+            session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(false);
             if(session != null) {
                 String[] valueNames = session.getValueNames();
                 int numValues = valueNames.length;
@@ -134,7 +135,9 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // this is the first time the dockument is selected, so reade the page forwarding
         if (username == null) {
             xmlTemplateDocument.clearStartup();
-         }
+        } else {
+            xmlTemplateDocument.setXmlData("ID",session.getId().replace('.','_'));
+        }
         // process the selected template
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <WORKPLACE>
-<STARTUP>openwin('index.html', 'opencms', 0, 0); if(window.name != 'opencms') {window.close();}</STARTUP>
+<STARTUP>openwin('index.html', 'opencms<PROCESS>ID</PROCESS>', 0, 0); if(window.name != 'opencms') {window.close();}</STARTUP>
 <TEMPLATE>
 <![CDATA[
 <html>
