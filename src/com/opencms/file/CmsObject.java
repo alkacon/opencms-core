@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/03/20 10:04:21 $
-* Version: $Revision: 1.223 $
+* Date   : $Date: 2002/03/21 16:52:12 $
+* Version: $Revision: 1.224 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.223 $ $Date: 2002/03/20 10:04:21 $
+ * @version $Revision: 1.224 $ $Date: 2002/03/21 16:52:12 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2333,6 +2333,11 @@ public void publishProject(int id) throws CmsException {
             } catch (Exception ex){
                 System.err.println("Error while exporting static resources:");
                 ex.printStackTrace();
+            }
+        }else{
+            if("false_ssl".equalsIgnoreCase(this.getStaticExportEnabledValue())){
+                // just generate the link rules, in case there were properties changed
+                new CmsStaticExport(this, null, false, null, null);
             }
         }
         success = true;
