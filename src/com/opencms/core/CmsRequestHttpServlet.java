@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
- * Date   : $Date: 2000/04/20 15:27:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/05/09 08:47:06 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/04/20 15:27:07 $  
+ * @version $Revision: 1.9 $ $Date: 2000/05/09 08:47:06 $  
  */
 public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
                                               I_CmsRequest { 
@@ -212,9 +212,19 @@ public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
             // add all parameters from the original request
             return m_req.getParameterNames();
         }
-
     }
 
+    
+     /**
+     * Returns all parameter values of a parameter key.
+     *
+     * @return Aarray of String containing the parameter values.
+     */
+    public String[] getParameterValues(String key) {
+        return m_req.getParameterValues(key);       
+    }
+    
+    
     /**
      * Returns the content of an uploaded file.
      * Returns null if no file with this name has been uploaded with this request.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsRequest.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/09 08:47:06 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.2 $ $Date: 2000/02/15 17:53:48 $  
+ * @version $Revision: 1.3 $ $Date: 2000/05/09 08:47:06 $  
  */
 public interface I_CmsRequest { 
     
@@ -78,6 +78,14 @@ public interface I_CmsRequest {
      */
     public Enumeration getParameterNames();
 
+     
+     /**
+     * Returns all parameter values of a parameter key.
+     *
+     * @return Aarray of String containing the parameter values.
+     */
+    public String[] getParameterValues(String key);
+    
     /**
      * Returns the content of an uploaded file.
      * Returns null if no file with this name has been uploaded with this request.
