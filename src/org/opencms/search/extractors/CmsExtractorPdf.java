@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
- * Date   : $Date: 2005/03/27 20:37:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/30 10:49:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package org.opencms.search.extractors;
 
-import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.InputStream;
@@ -126,12 +125,10 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
                 metaInfo.put(I_CmsExtractionResult.META_PRODUCER, meta);                
             }
             if (info.getCreationDate() != null) {
-                meta = CmsDateUtil.getHeaderDate(info.getCreationDate().getTime().getTime());
-                metaInfo.put(I_CmsExtractionResult.META_DATE_CREATED, meta);                
+                metaInfo.put(I_CmsExtractionResult.META_DATE_CREATED, info.getCreationDate().getTime());                
             }
             if (info.getModificationDate() != null) {
-                meta = CmsDateUtil.getHeaderDate(info.getModificationDate().getTime().getTime());
-                metaInfo.put(I_CmsExtractionResult.META_DATE_LASTMODIFIED, meta);                
+                metaInfo.put(I_CmsExtractionResult.META_DATE_LASTMODIFIED, info.getModificationDate().getTime());                
             }
             
             // add the main document text

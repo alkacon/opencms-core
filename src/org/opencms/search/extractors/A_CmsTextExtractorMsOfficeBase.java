@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractorMsOfficeBase.java,v $
- * Date   : $Date: 2005/03/27 20:37:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/30 10:49:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Date;
@@ -134,13 +133,11 @@ public abstract class A_CmsTextExtractorMsOfficeBase extends A_CmsTextExtractor 
             if ((date != null) && (date.getTime() > 0)) {
                 // it's unlikley any PowerPoint documents where created before 1970, 
                 // and apparently POI contains an issue calculating the time correctly sometimes
-                meta = CmsDateUtil.getHeaderDate(date.getTime());
-                metaInfo.put(I_CmsExtractionResult.META_DATE_CREATED, meta);
+                metaInfo.put(I_CmsExtractionResult.META_DATE_CREATED, date);
             }
             date = (Date)section.getProperty(PropertyIDMap.PID_LASTSAVE_DTM);
             if ((date != null) && (date.getTime() > 0)) {
-                meta = CmsDateUtil.getHeaderDate(date.getTime());
-                metaInfo.put(I_CmsExtractionResult.META_DATE_LASTMODIFIED, meta);
+                metaInfo.put(I_CmsExtractionResult.META_DATE_LASTMODIFIED, date);
             }
         }
         if (m_documentSummary != null) {

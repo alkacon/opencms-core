@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/I_CmsExtractionResult.java,v $
- * Date   : $Date: 2005/03/27 20:37:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/30 10:49:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,40 +41,40 @@ import java.util.Map;
  */
 public interface I_CmsExtractionResult {
 
-    /** Key to access the document author name in the meta information map. */
+    /** Key to access the document author name in the meta information map (the value is a <code>{@link String}</code> object). */
     String META_AUTHOR = "author";
 
-    /** Key to access the document catrgory in the meta information map. */
+    /** Key to access the document catrgory in the meta information map (the value is a <code>{@link String}</code> object). */
     String META_CATEGORY = "category";
 
-    /** Key to access the document comments in the meta information map. */
+    /** Key to access the document comments in the meta information map (the value is a <code>{@link String}</code> object). */
     String META_COMMENTS = "comments";
 
-    /** Key to access the document company name in the meta information map. */
+    /** Key to access the document company name in the meta information map (the value is a <code>{@link String}</code> object). */
     String META_COMPANY = "company";
 
-    /** Key to access the document creator name in the meta information map. */
+    /** Key to access the document creator name in the meta information map (the value is a <code>{@link String}</code> object). */
     String META_CREATOR = "creator";
 
-    /** Key to access the document creation date in the meta information map, this should be in HTTP header format. */
+    /** Key to access the document creation date in the meta information map (the value is a <code>{@link java.util.Date}</code> object). */
     String META_DATE_CREATED = "creation date";
 
-    /** Key to access the document date of last modification in the meta information map, this should be in HTTP header format. */
+    /** Key to access the document date of last modification in the meta information map (the value is a <code>{@link java.util.Date}</code> object). */
     String META_DATE_LASTMODIFIED = "last modification date";
 
-    /** Key to access the document keywords in the meta information map. */
+    /** Key to access the document keywords in the meta information map (the value is a <code>{@link String}</code> object). */
     String META_KEYWORDS = "keywords";
 
-    /** Key to access the document manager name in the meta information map. */
+    /** Key to access the document manager name in the meta information map (the value is a <code>{@link String}</code> object). */
     String META_MANAGER = "manager";
 
-    /** Key to access the document producer name in the meta information map. */
+    /** Key to access the document producer name in the meta information map (the value is a <code>{@link String}</code> object). */
     String META_PRODUCER = "producer";
 
-    /** Key to access the document subject in the meta information map. */
+    /** Key to access the document subject in the meta information map (the value is a <code>{@link String}</code> object). */
     String META_SUBJECT = "subject";
 
-    /** Key to access the document title in the meta information map. */
+    /** Key to access the document title in the meta information map (the value is a <code>{@link String}</code> object). */
     String META_TITLE = "title";
 
     /**
@@ -88,7 +88,10 @@ public interface I_CmsExtractionResult {
      * Returns the extracted meta information.<p>
      *
      * The result Map contains all meta information extracted
-     * by the extractor, both key and value in the map are Strings.<p> 
+     * by the extractor. The key is always a String, and should be one of the constants 
+     * defined in the <code>{@link I_CmsExtractionResult}</code> interface. For example
+     * <code>{@link I_CmsExtractionResult#META_TITLE}</code> will contain the document title as 
+     * a String.<p>
      *
      * @return the extracted meta information
      */
