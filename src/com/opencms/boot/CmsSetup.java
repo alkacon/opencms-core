@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/05/23 12:45:13 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/05/23 16:26:46 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -246,26 +246,29 @@ public class CmsSetup {
 
 		m_database = database;
 		
-
 		String vfsDriver = this.getDbProperty(m_database + ".vfs.driver");
 		String userDriver = this.getDbProperty(m_database + ".user.driver");
 		String projectDriver = this.getDbProperty(m_database + ".project.driver");
 		String workflowDriver = this.getDbProperty(m_database + ".workflow.driver");
-
+        String backupDriver = this.getDbProperty(m_database + ".backup.driver");
+		
 		// Change/write configuration only if not available or database changed
 		setExtProperty("db.name", m_database);
 		if (getExtProperty("db.vfs.driver") == null || "".equals(getExtProperty("db.vfs.driver"))) {
-			setExtProperty("db.vfs.driver", vfsDriver);
+		setExtProperty("db.vfs.driver", vfsDriver);
 		}
 		if (getExtProperty("db.user.driver") == null || "".equals(getExtProperty("db.user.driver"))) {
-			setExtProperty("db.user.driver", userDriver);
+		setExtProperty("db.user.driver",userDriver);
 		}	
 		if (getExtProperty("db.project.driver") == null || "".equals(getExtProperty("db.project.driver"))) {
-			setExtProperty("db.project.driver", projectDriver);
+		setExtProperty("db.project.driver",projectDriver);
 		}	
-		if (getExtProperty("db.workflow.driver") == null || "".equals(getExtProperty("db.workflow.driver"))) {
-			setExtProperty("db.workflow.driver", workflowDriver);
-		}		
+		if (getExtProperty("db.workflow.driver") == null || "".equals(getExtProperty("db.workflow.driver"))) {	    
+			setExtProperty("db.workflow.driver",workflowDriver);
+		}
+        if (getExtProperty("db.backup.driver") == null || "".equals(getExtProperty("db.backup.driver"))) {	    
+	        setExtProperty("db.backup.driver",backupDriver);
+        }
 	}
 
 	/** Gets the database */

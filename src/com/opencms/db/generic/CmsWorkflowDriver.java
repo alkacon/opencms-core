@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/05/22 16:07:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/23 16:26:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,12 @@
 
 package com.opencms.db.generic;
 
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.db.*;
+import com.opencms.db.CmsDriverManager;
+import com.opencms.db.I_CmsWorkflowDriver;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsTask;
@@ -52,10 +55,10 @@ import java.util.Vector;
 import source.org.apache.java.util.Configurations;
 
 /**
- * Generic, database server independent, implementation of the workflow driver methods.
+ * Generic (ANSI-SQL) database server implementation of the workflow driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/22 16:07:00 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/23 16:26:47 $
  * @since 5.1.2
  */
 public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
@@ -81,7 +84,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
     protected static String C_TABLE_TASKTYPE = "CMS_TASKTYPE";
 
     protected com.opencms.db.generic.CmsSqlManager m_sqlManager;
-    protected CmsUserDriver m_userDriver;
+    protected CmsDriverManager m_driverManager;
 
     /**
      * Creates a new task.<p>
@@ -295,10 +298,31 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
 
         return result;
     }
+    
+    protected void finalize() throws Throwable {
+        if (m_sqlManager!=null) {
+            m_sqlManager.finalize();
+        }
+        
+        m_sqlManager = null;      
+        m_driverManager = null;        
+    }
+    
+    public void destroy() throws Throwable {
+        finalize();
+                
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
+        }
+    }    
 
-    public void init(Configurations config, String dbPoolUrl, CmsUserDriver userDriver) {
+    public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) {
         m_sqlManager = initQueries(dbPoolUrl);
-        m_userDriver = userDriver;
+        m_driverManager = driverManager;
+
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Workflow driver init : ok");
+        }        
     }
 
     public com.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl) {
@@ -731,7 +755,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             } else {
                 // no user is specified so set to system user is only valid for system task log
                 // TODO: this is a workaround. not sure if this is correct
-                stmt.setString(3, m_userDriver.readUser(I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
+                stmt.setString(3, m_driverManager.getUserDriver().readUser(I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
             }
             stmt.setTimestamp(4, starttime);
             stmt.setString(5, m_sqlManager.validateNull(comment));

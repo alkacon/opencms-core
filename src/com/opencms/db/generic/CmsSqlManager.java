@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/05/22 16:07:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/23 16:26:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,30 +50,37 @@ import java.sql.Statement;
 import java.util.Properties;
 
 /**
- * A helper object to manage SQL queries. First, it loads key/value encoded SQL queries from a Java
- * properties hash. Second, it has a set of methods to return JDBC connections and statements
- * from different connection pools in the Cms dependent on the CmsProject/project-ID.
+ * Reads SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
- * <p>
- * 
- * Things to know:
- * <ul>
- * <li>"name" parameters (e.g. "attributeName") identify an attribute in a table</li>
- * <li>"key" parameters (e.g. "queryKey") identify a key in query.properties to receive a SQL or attribute name</li>
- * </ul>
+ * This is our swiss knife for JDBC operations: it loads key/value encoded SQL queries from a Java
+ * properties hash. Second, it has a set of methods to return JDBC connections and prepared statements
+ * from different connection pools in the Cms depending on the CmsProject/project-ID and database pool.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:00 $
+ * @version $Revision: 1.3 $ $Date: 2003/05/23 16:26:47 $
  * @since 5.1.2
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
     
+    /**
+     * The filename/path of the SQL query properties file.
+     */
     private static final String C_PROPERTY_FILENAME = "com/opencms/db/generic/query.properties";
+    
+    /**
+     * The properties hash holding the SQL queries.
+     */
     private static Properties c_queries = null;
+    
+    /**
+     * The URL to access the correct connection pool.
+     */
     protected String m_dbPoolUrl;
 
     /**
      * CmsSqlManager constructor.
+     * 
+     * @param dbPoolUrl the URL to access the correct connection pool
      */
     public CmsSqlManager(String dbPoolUrl) {
         m_dbPoolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
@@ -85,6 +92,9 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     
     /**
      * CmsSqlManager constructor.
+     * 
+     * @param dbPoolUrl the URL to access the correct connection pool
+     * @param loadQueries flag indicating whether the query.properties should be loaded during initialization
      */
     protected CmsSqlManager(String dbPoolUrl, boolean loadQueries) {
         m_dbPoolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
@@ -131,8 +141,12 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * collection tries to trash this object.
      */
     protected void finalize() throws Throwable {
-        c_queries.clear();
+        if (c_queries != null) {
+            c_queries.clear();
+        }
+
         c_queries = null;
+        m_dbPoolUrl = null;
     }
 
     /**
@@ -315,8 +329,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @throws SQLException if a database access error occurs
      */
     public PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
-        // unfortunately, this wrapper is essential. some JDBC driver implementations 
-        // don't accept the delegated objects of DBCP's connection pool. 
+        // unfortunately, this wrapper is essential, because some JDBC driver 
+        // implementations don't accept the delegated objects of DBCP's connection pool. 
         return con.prepareStatement(query);
     }    
     

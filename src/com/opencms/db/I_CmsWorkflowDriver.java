@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/05/22 16:07:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/23 16:26:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package com.opencms.db;
 
 import com.opencms.core.CmsException;
-import com.opencms.db.generic.CmsUserDriver;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsTask;
@@ -48,16 +47,17 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required workflow driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/22 16:07:45 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/23 16:26:46 $
  * @since 5.1.2
  */
 public interface I_CmsWorkflowDriver {
 
+    void destroy() throws Throwable, CmsException;
     CmsTask createTask(int rootId, int parentId, int tasktype, CmsUUID ownerId, CmsUUID agentId, CmsUUID roleId, String taskname, java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout, int priority) throws CmsException;
     CmsUUID findAgent(CmsUUID roleId) throws CmsException;
     String getTaskPar(int taskId, String parname) throws CmsException;
     int getTaskType(String taskName) throws CmsException;
-    void init(Configurations config, String dbPoolUrl, CmsUserDriver userDriver);
+    void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
     com.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl);
     CmsTask readTask(int id) throws CmsException;
     CmsTaskLog readTaskLog(int id) throws CmsException;

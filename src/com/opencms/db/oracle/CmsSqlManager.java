@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/05/22 16:07:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/05/23 16:26:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,10 +42,10 @@ import oracle.jdbc.driver.OracleResultSet;
 import org.apache.commons.dbcp.DelegatingPreparedStatement;
 
 /**
- * Reads SQL queries from query.properties of this driver package.
+ * Reads SQL queries from query.properties of the Oracle/OCI package.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/05/22 16:07:26 $ 
+ * @version $Revision: 1.5 $ $Date: 2003/05/23 16:26:46 $ 
  * @since 5.1.2
  */
 public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {

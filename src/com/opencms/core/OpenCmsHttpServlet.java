@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/05/21 14:35:55 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/05/23 16:26:46 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.49 $ $Date: 2003/05/21 14:35:55 $
+ * @version $Revision: 1.50 $ $Date: 2003/05/23 16:26:46 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -265,7 +265,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         }
         try {
             m_opencms.destroy();
-        }catch(CmsException e) {
+        }catch(Throwable e) {
             if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
             }

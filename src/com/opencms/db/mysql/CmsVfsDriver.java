@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/mysql/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/05/22 16:07:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/23 16:26:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package com.opencms.db.mysql;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -53,10 +52,10 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:12 $
+ * @version $Revision: 1.3 $ $Date: 2003/05/23 16:26:46 $
  * @since 5.1.2
  */
-public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements I_CmsConstants, I_CmsLogChannels {
+public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
 
     /**
      * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
@@ -103,11 +102,11 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
-        if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + "Resourcename too long(>" + C_MAX_LENGTH_RESOURCE_NAME + ") ", CmsException.C_BAD_NAME);
+        if (filename.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + "Resourcename too long(>" + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + ") ", CmsException.C_BAD_NAME);
         }
 
-        int state = C_STATE_NEW;
+        int state = I_CmsConstants.C_STATE_NEW;
         // Test if the file is already there and marked as deleted.
         // If so, delete it
         try {
@@ -117,7 +116,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
             // if the file is maked as deleted remove it!
             if (e.getType() == CmsException.C_RESOURCE_DELETED) {
                 removeFile(project.getId(), filename);
-                state = C_STATE_CHANGED;
+                state = I_CmsConstants.C_STATE_CHANGED;
             }
             if (e.getType() == CmsException.C_FILE_EXISTS) {
                 throw e;
@@ -144,7 +143,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
             stmt.setString(7, user.getDefaultGroupId().toString());
             stmt.setInt(8, project.getId());
             stmt.setString(9, fileId.toString());
-            stmt.setInt(10, C_ACCESS_DEFAULT_FLAGS);
+            stmt.setInt(10, I_CmsConstants.C_ACCESS_DEFAULT_FLAGS);
             stmt.setInt(11, state);
             stmt.setString(12, CmsUUID.getNullUUID().toString());
             stmt.setInt(13, resourceType.getLauncherType());
@@ -200,7 +199,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
                 file = createCmsFileFromResultSet(res,projectId,filename);
                 
                 // check if this resource is marked as deleted
-                if (file.getState() == C_STATE_DELETED) {
+                if (file.getState() == I_CmsConstants.C_STATE_DELETED) {
                     throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {
@@ -244,7 +243,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver implements
                 file = createCmsFileFromResultSet(res,projectId,filename);
                 
                 // check if this resource is marked as deleted
-                if (file.getState() == C_STATE_DELETED && !includeDeleted) {
+                if (file.getState() == I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
                     throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {

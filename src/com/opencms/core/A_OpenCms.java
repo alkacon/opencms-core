@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/05/21 14:35:55 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/05/23 16:26:46 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.37 $ $Date: 2003/05/21 14:35:55 $
+ * @version $Revision: 1.38 $ $Date: 2003/05/23 16:26:46 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -98,7 +98,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     /**
      * Destructor, should be called when the the class instance is shut down.
      */
-    abstract void destroy() throws CmsException;
+    abstract void destroy() throws Throwable;
 
     /**
      * Initializes the logging mechanism of OpenCms.

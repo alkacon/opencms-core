@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/05/21 14:34:28 $
-* Version: $Revision: 1.270 $
+* Date   : $Date: 2003/05/23 16:26:47 $
+* Version: $Revision: 1.271 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.270 $
+ * @version $Revision: 1.271 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1411,7 +1411,7 @@ public void deleteWebUser(CmsUUID userId) throws CmsException {
  * Destroys the resource borker and required modules and connections.
  * @throws CmsException if operation was not successful.
  */
-public void destroy() throws CmsException {
+public void destroy() throws Throwable, CmsException {
     m_driverManager.destroy();
 }
 /**

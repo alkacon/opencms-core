@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/mysql/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/05/22 16:07:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/23 16:26:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,27 +34,20 @@ package com.opencms.db.mysql;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsTaskLog;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.util.SqlHelper;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Vector;
 
 /**
  * This is the generic access module to load and store resources from and into
  * the database.
  *
- * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:12 $ *
+ * @version $Revision: 1.3 $ $Date: 2003/05/23 16:26:46 $
+ * @since 5.1.2
  */
-public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver implements I_CmsConstants, I_CmsLogChannels {
+public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver {
 
     /**
      * Deletes all properties for a project.
@@ -68,64 +61,17 @@ public class CmsProjectDriver extends com.opencms.db.generic.CmsProjectDriver im
         Vector resources = m_driverManager.getVfsDriver().readResources(project);
         for (int i = 0; i < resources.size(); i++) {
             // delete the properties for each resource in project
-            deleteAllProperties(project.getId(),(CmsResource) resources.elementAt(i));
+            m_driverManager.getVfsDriver().deleteAllProperties(project.getId(),(CmsResource) resources.elementAt(i));
         }
     }
 
-    /**
-     * Returns all projects from the history.
-     *
-     *
-     * @return a Vector of projects.
-     */
-     public Vector getAllBackupProjects() throws CmsException {
-         Vector projects = new Vector();
-         ResultSet res = null;
-         PreparedStatement stmt = null;
-         Connection conn = null;
-
-         try {
-             // create the statement
-             conn = m_sqlManager.getConnectionForBackup();
-             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READLAST_BACKUP");
-             stmt.setInt(1, 300);
-             res = stmt.executeQuery();
-             while(res.next()) {
-                 Vector resources = m_driverManager.getVfsDriver().readBackupProjectResources(res.getInt("VERSION_ID"));
-                 projects.addElement( new CmsBackupProject(res.getInt("VERSION_ID"),
-                                                    res.getInt("PROJECT_ID"),
-                                                    res.getString("PROJECT_NAME"),
-                                                    SqlHelper.getTimestamp(res,"PROJECT_PUBLISHDATE"),
-                                                    new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
-                                                    res.getString("PROJECT_PUBLISHED_BY_NAME"),
-                                                    res.getString("PROJECT_DESCRIPTION"),
-                                                    res.getInt("TASK_ID"),
-                                                    new CmsUUID(res.getString("USER_ID")),
-                                                    res.getString("USER_NAME"),
-                                                    new CmsUUID(res.getString("GROUP_ID")),
-                                                    res.getString("GROUP_NAME"),
-                                                    new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                                                    res.getString("MANAGERGROUP_NAME"),
-                                                    SqlHelper.getTimestamp(res,"PROJECT_CREATEDATE"),
-                                                    res.getInt("PROJECT_TYPE"),
-                                                    resources));
-             }
-         } catch( SQLException exc ) {
-             throw m_sqlManager.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc);
-         } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-         }
-         return(projects);
-     }
-     
     /**
      * Destroys this access-module
      * @throws throws CmsException if something goes wrong.
      */
     public void destroy() throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] Destroyed");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
         }
     }
 

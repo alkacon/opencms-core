@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/23 09:16:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/05/23 16:26:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,10 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.db.*;
+import com.opencms.db.CmsDriverManager;
+import com.opencms.db.I_CmsUserDriver;
 import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.SqlHelper;
@@ -61,13 +63,13 @@ import java.util.Vector;
 import source.org.apache.java.util.Configurations;
 
 /**
- * Generic, database server independent, implementation of the user driver methods.
+ * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/05/23 09:16:02 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/23 16:26:47 $
  * @since 5.1.2
  */
-public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogChannels, I_CmsUserDriver {
+public class CmsUserDriver extends Object implements I_CmsUserDriver {
 
     /**
      * A digest to encrypt the passwords.
@@ -80,32 +82,7 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
     protected String m_digestFileEncoding = null;
 
     protected com.opencms.db.generic.CmsSqlManager m_sqlManager;
-	    
-    public void init(Configurations config, String dbPoolUrl) {
-        m_sqlManager = initQueries(dbPoolUrl);        
-
-        String digest = config.getString(C_CONFIGURATION_DB + ".user.digest.type", "MD5");
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest configured    : " + digest);
-        }
-
-        m_digestFileEncoding = config.getString(C_CONFIGURATION_DB + ".user.digest.encoding", "UTF-8");
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest file encoding : " + m_digestFileEncoding);
-        }
-
-        // create the digest
-        try {
-            m_digest = MessageDigest.getInstance(digest);
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Using digest encoding: " + m_digest.getAlgorithm() + " from " + m_digest.getProvider().getName() + " version " + m_digest.getProvider().getVersion());
-            }
-        } catch (NoSuchAlgorithmException e) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Error setting digest : using clear passwords - " + e.getMessage());
-            }
-        }        
-    }
+    protected CmsDriverManager m_driverManager;
 
     /**
      * Adds a user to the database.
@@ -263,7 +240,7 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
                 stmt.setString(1, groupid.toString());
                 stmt.setString(2, userid.toString());
                 // flag field is not used yet
-                stmt.setInt(3, C_UNKNOWN_INT);
+                stmt.setInt(3, I_CmsConstants.C_UNKNOWN_INT);
                 stmt.executeUpdate();
 
             } catch (SQLException e) {
@@ -345,6 +322,62 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
         }
 
         return returnValue;
+    }
+
+    /**
+     * Semi-constructor to create a CmsGroup instance from a JDBC result set.
+     * 
+     * @param res the JDBC ResultSet
+     * @param hasGroupIdInResultSet true if the SQL select query includes the GROUP_ID table attribute
+     * @return CmsGroup the new CmsGroup object
+     * @throws SQLException in case the result set does not include a requested table attribute
+     */
+    protected final CmsGroup createCmsGroupFromResultSet(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException {
+        // this method is final to allow the java compiler to inline this code!
+        CmsUUID groupId = null;        
+        
+        if (hasGroupIdInResultSet) {
+            groupId = new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_GROUP_ID")));
+        } else {
+            groupId = new CmsUUID(res.getString(m_sqlManager.get("C_USERS_USER_DEFAULT_GROUP_ID")));
+        }
+        
+        return new CmsGroup(groupId, new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.get("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.get("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.get("C_GROUPS_GROUP_FLAGS")));
+    }
+
+    /**
+     * Semi-constructor to create a CmsUser instance from a JDBC result set.
+     * 
+     * @param res the JDBC ResultSet
+     * @return CmsUser the new CmsUser object
+     * @throws SQLException in case the result set does not include a requested table attribute
+     */
+    protected final CmsUser createCmsUserFromResultSet(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException, IOException, ClassNotFoundException {
+        // this method is final to allow the java compiler to inline this code!
+        
+        // deserialize the additional userinfo hash
+        byte[] value = m_sqlManager.getBytes(res, m_sqlManager.get("C_USERS_USER_INFO"));
+        ByteArrayInputStream bin = new ByteArrayInputStream(value);
+        ObjectInputStream oin = new ObjectInputStream(bin);
+        Hashtable info = (Hashtable) oin.readObject();
+
+        return new CmsUser(
+            new CmsUUID(res.getString(m_sqlManager.get("C_USERS_USER_ID"))),
+            res.getString(m_sqlManager.get("C_USERS_USER_NAME")),
+            res.getString(m_sqlManager.get("C_USERS_USER_PASSWORD")),
+            res.getString(m_sqlManager.get("C_USERS_USER_RECOVERY_PASSWORD")),
+            res.getString(m_sqlManager.get("C_USERS_USER_DESCRIPTION")),
+            res.getString(m_sqlManager.get("C_USERS_USER_FIRSTNAME")),
+            res.getString(m_sqlManager.get("C_USERS_USER_LASTNAME")),
+            res.getString(m_sqlManager.get("C_USERS_USER_EMAIL")),
+            SqlHelper.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTLOGIN")).getTime(),
+            SqlHelper.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTUSED")).getTime(),
+            res.getInt(m_sqlManager.get("C_USERS_USER_FLAGS")),
+            info,
+            createCmsGroupFromResultSet(res, hasGroupIdInResultSet),
+            res.getString(m_sqlManager.get("C_USERS_USER_ADDRESS")),
+            res.getString(m_sqlManager.get("C_USERS_USER_SECTION")),
+            res.getInt(m_sqlManager.get("C_USERS_USER_TYPE")));
     }
 
     /**
@@ -508,6 +541,52 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
     }
 
     /**
+    * Returns all child groups of a groups<P/>
+    *
+    *
+    * @param groupname The name of the group.
+    * @return users A Vector of all child groups or null.
+    * @throws CmsException Throws CmsException if operation was not succesful.
+    */
+    public Vector getChild(String groupname) throws CmsException {
+    
+        Vector childs = new Vector();
+        CmsGroup group;
+        CmsGroup parent;
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            // get parent group
+            parent = readGroup(groupname);
+            // parent group exists, so get all childs
+            if (parent != null) {
+                // create statement
+                conn = m_sqlManager.getConnection();
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETCHILD");
+                stmt.setString(1, parent.getId().toString());
+                res = stmt.executeQuery();
+                // create new Cms group objects
+                while (res.next()) {
+                    group = new CmsGroup(new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_GROUP_ID"))), new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.get("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.get("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.get("C_GROUPS_GROUP_FLAGS")));
+                    childs.addElement(group);
+                }
+            }
+    
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+        } finally {
+            // close all db-resources
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        //check if the child vector has no elements, set it to null.
+        if (childs.size() == 0) {
+            childs = null;
+        }
+        return childs;
+    }
+
+    /**
     * Returns all groups<P/>
     *
     * @return users A Vector of all existing groups.
@@ -572,6 +651,49 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
             m_sqlManager.closeAll(conn, stmt, res);
         }
         return groups;
+    }
+    
+    /**
+     * Checks which Group can read the resource and all the parent folders.
+     *
+     * @param projectid the project to check the permission.
+     * @param res The resource name to be checked.
+     * @return The Group Id of the Group which can read the resource.
+     *          null for all Groups and
+     *          Admingroup for no Group.
+     */
+    public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
+        CmsResource res = m_driverManager.getVfsDriver().readFileHeader(projectId, resource, false);
+        CmsUUID groupId = CmsUUID.getNullUUID();
+        boolean noGroupCanReadThis = false;
+        do {
+            int flags = res.getAccessFlags();
+            if (!((flags & I_CmsConstants.C_ACCESS_PUBLIC_READ) == I_CmsConstants.C_ACCESS_PUBLIC_READ)) {
+                if ((flags & I_CmsConstants.C_ACCESS_GROUP_READ) == I_CmsConstants.C_ACCESS_GROUP_READ) {
+                    if ((groupId.isNullUUID()) || (groupId.equals(res.getGroupId()))) {
+                        groupId = res.getGroupId();
+                    } else {
+                        CmsUUID result = checkGroupDependence(groupId, res.getGroupId());
+                        if (result.isNullUUID()) {
+                            noGroupCanReadThis = true;
+                        } else {
+                            groupId = result;
+                        }
+                    }
+                } else {
+                    noGroupCanReadThis = true;
+                }
+            }
+            res = m_driverManager.getVfsDriver().readFileHeader(projectId, res.getParentId());
+        } while (!(noGroupCanReadThis || I_CmsConstants.C_ROOT.equals(res.getAbsolutePath())));
+        if (noGroupCanReadThis) {
+            return I_CmsConstants.C_GROUP_ADMIN;
+        }
+        if (groupId.isNullUUID()) {
+            return null;
+        } else {
+            return readGroup(groupId).getName();
+        }
     }
 
     /**
@@ -665,9 +787,9 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
         try {
             conn = m_sqlManager.getConnection();
             
-            if (wasLoggedIn == C_AT_LEAST_ONCE)
+            if (wasLoggedIn == I_CmsConstants.C_AT_LEAST_ONCE)
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_ONCE");
-            else if (wasLoggedIn == C_NEVER)
+            else if (wasLoggedIn == I_CmsConstants.C_NEVER)
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_NEVER");
             else // C_WHATEVER or whatever else
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_WHATEVER");
@@ -729,9 +851,92 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
 
         return users;
     }
+    
+    protected void finalize() throws Throwable {
+        if (m_sqlManager!=null) {
+            m_sqlManager.finalize();
+        }
+        
+        m_sqlManager = null;      
+        m_driverManager = null;        
+    }
+    
+    public void destroy() throws Throwable {
+        finalize();
+                
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
+        }
+    }    
+	    
+    public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) {
+        m_sqlManager = initQueries(dbPoolUrl);        
+        m_driverManager = driverManager;
+
+        String digest = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest configured    : " + digest);
+        }
+
+        m_digestFileEncoding = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", "UTF-8");
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest file encoding : " + m_digestFileEncoding);
+        }
+
+        // create the digest
+        try {
+            m_digest = MessageDigest.getInstance(digest);
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Using digest encoding: " + m_digest.getAlgorithm() + " from " + m_digest.getProvider().getName() + " version " + m_digest.getProvider().getVersion());
+            }
+        } catch (NoSuchAlgorithmException e) {
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Error setting digest : using clear passwords - " + e.getMessage());
+            }
+        }
+        
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". User driver init     : ok");
+        }
+    }
 
     public com.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl) {
         return new com.opencms.db.generic.CmsSqlManager(dbPoolUrl);
+    }
+
+    /**
+     * Checks if a user is member of a group.<P/>
+     *
+     * @param nameid The id of the user to check.
+     * @param groupid The id of the group to check.
+     * @return True or False
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
+    public boolean isUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
+        boolean userInGroup = false;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+
+        try {
+            // create statement
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_USERINGROUP");
+
+            stmt.setString(1, groupId.toString());
+            stmt.setString(2, userId.toString());
+            res = stmt.executeQuery();
+            if (res.next()) {
+                userInGroup = true;
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return userInGroup;
     }
 
     /**
@@ -999,6 +1204,25 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
     }
 
     /**
+     * Serialize additional user information to write it as byte array in the database.<p>
+     * 
+     * @param additionalUserInfo the HashTable with additional information
+     * @return byte[] the byte array which is written to the db
+     * @throws IOException
+     */
+    protected final byte[] serializeAdditionalUserInfo(Hashtable additionalUserInfo) throws IOException {
+        // this method is final to allow the java compiler to inline this code!
+        
+        // serialize the hashtable
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(additionalUserInfo);
+        oout.close();
+
+        return bout.toByteArray();
+    }
+
+    /**
      * Sets a new password for a user.
      *
      * @param user the user to set the password for.
@@ -1051,41 +1275,6 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
             // the update wasn't succesfull -> throw exception
             throw new CmsException("[" + this.getClass().getName() + "] new password couldn't be set.");
         }
-    }
-
-    /**
-     * Checks if a user is member of a group.<P/>
-     *
-     * @param nameid The id of the user to check.
-     * @param groupid The id of the group to check.
-     * @return True or False
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public boolean isUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
-        boolean userInGroup = false;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-
-        try {
-            // create statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_USERINGROUP");
-
-            stmt.setString(1, groupId.toString());
-            stmt.setString(2, userId.toString());
-            res = stmt.executeQuery();
-            if (res.next()) {
-                userInGroup = true;
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return userInGroup;
     }
 
     /**
@@ -1161,81 +1350,6 @@ public class CmsUserDriver extends Object implements I_CmsConstants, I_CmsLogCha
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
-    }
-
-    /**
-     * Semi-constructor to create a CmsGroup instance from a JDBC result set.
-     * 
-     * @param res the JDBC ResultSet
-     * @param hasGroupIdInResultSet true if the SQL select query includes the GROUP_ID table attribute
-     * @return CmsGroup the new CmsGroup object
-     * @throws SQLException in case the result set does not include a requested table attribute
-     */
-    protected final CmsGroup createCmsGroupFromResultSet(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException {
-        // this method is final to allow the java compiler to inline this code!
-        CmsUUID groupId = null;        
-        
-        if (hasGroupIdInResultSet) {
-            groupId = new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_GROUP_ID")));
-        } else {
-            groupId = new CmsUUID(res.getString(m_sqlManager.get("C_USERS_USER_DEFAULT_GROUP_ID")));
-        }
-        
-        return new CmsGroup(groupId, new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.get("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.get("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.get("C_GROUPS_GROUP_FLAGS")));
-    }
-
-    /**
-     * Semi-constructor to create a CmsUser instance from a JDBC result set.
-     * 
-     * @param res the JDBC ResultSet
-     * @return CmsUser the new CmsUser object
-     * @throws SQLException in case the result set does not include a requested table attribute
-     */
-    protected final CmsUser createCmsUserFromResultSet(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException, IOException, ClassNotFoundException {
-        // this method is final to allow the java compiler to inline this code!
-        
-        // deserialize the additional userinfo hash
-        byte[] value = m_sqlManager.getBytes(res, m_sqlManager.get("C_USERS_USER_INFO"));
-        ByteArrayInputStream bin = new ByteArrayInputStream(value);
-        ObjectInputStream oin = new ObjectInputStream(bin);
-        Hashtable info = (Hashtable) oin.readObject();
-
-        return new CmsUser(
-            new CmsUUID(res.getString(m_sqlManager.get("C_USERS_USER_ID"))),
-            res.getString(m_sqlManager.get("C_USERS_USER_NAME")),
-            res.getString(m_sqlManager.get("C_USERS_USER_PASSWORD")),
-            res.getString(m_sqlManager.get("C_USERS_USER_RECOVERY_PASSWORD")),
-            res.getString(m_sqlManager.get("C_USERS_USER_DESCRIPTION")),
-            res.getString(m_sqlManager.get("C_USERS_USER_FIRSTNAME")),
-            res.getString(m_sqlManager.get("C_USERS_USER_LASTNAME")),
-            res.getString(m_sqlManager.get("C_USERS_USER_EMAIL")),
-            SqlHelper.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTLOGIN")).getTime(),
-            SqlHelper.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTUSED")).getTime(),
-            res.getInt(m_sqlManager.get("C_USERS_USER_FLAGS")),
-            info,
-            createCmsGroupFromResultSet(res, hasGroupIdInResultSet),
-            res.getString(m_sqlManager.get("C_USERS_USER_ADDRESS")),
-            res.getString(m_sqlManager.get("C_USERS_USER_SECTION")),
-            res.getInt(m_sqlManager.get("C_USERS_USER_TYPE")));
-    }
-
-    /**
-     * Serialize additional user information to write it as byte array in the database.<p>
-     * 
-     * @param additionalUserInfo the HashTable with additional information
-     * @return byte[] the byte array which is written to the db
-     * @throws IOException
-     */
-    protected final byte[] serializeAdditionalUserInfo(Hashtable additionalUserInfo) throws IOException {
-        // this method is final to allow the java compiler to inline this code!
-        
-        // serialize the hashtable
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ObjectOutputStream oout = new ObjectOutputStream(bout);
-        oout.writeObject(additionalUserInfo);
-        oout.close();
-
-        return bout.toByteArray();
     }
 
 }

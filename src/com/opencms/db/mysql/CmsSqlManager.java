@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/mysql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/05/22 16:07:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/23 16:26:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,10 @@ import com.opencms.util.Encoder;
 import java.util.Properties;
 
 /**
- * Reads SQL queries from query.properties of this driver package.
+ * Reads SQL queries from query.properties of the MySQL driver package.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/22 16:07:12 $ 
+ * @version $Revision: 1.3 $ $Date: 2003/05/23 16:26:46 $ 
  * @since 5.1.2
  */
 public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {

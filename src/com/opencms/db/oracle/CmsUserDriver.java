@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/22 16:07:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/05/23 16:26:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,7 @@
  
 package com.opencms.db.oracle;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.db.I_CmsUserDriver;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
@@ -55,10 +52,10 @@ import oracle.jdbc.driver.OracleResultSet;
  * Oracle/OCI implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/05/22 16:07:26 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/23 16:26:46 $
  * @since 5.1.2
  */
-public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver implements I_CmsConstants, I_CmsLogChannels, I_CmsUserDriver {
+public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver {
 
     /**
      * Adds a user to the database.
