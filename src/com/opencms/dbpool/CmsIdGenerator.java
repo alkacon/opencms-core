@@ -3,11 +3,11 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsIdGenerator.java,v $
- * Date   : $Date: 2001/01/29 15:13:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/02/06 18:33:35 $
+ * Version: $Revision: 1.2 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -15,15 +15,15 @@ package com.opencms.dbpool;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a  of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -37,33 +37,33 @@ import com.opencms.core.*;
 
 /**
  * This class is used to create an connection-pool for opencms.
- * 
+ *
  * @author a.schouten
  */
 public class CmsIdGenerator {
-	
+
 	/**
 	 * Hashtable with current id's
 	 */
 	private static Hashtable c_currentId = new Hashtable();
-	
+
 	/**
 	 * Hashtable with border id's
 	 */
 	private static Hashtable c_borderId = new Hashtable();
-	
+
 	private static final int C_GROW_VALUE = 10;
-	
+
 	/**
 	 * Creates a new id for the given table.
 	 * @param pooName - the name of the pool.
 	 * @param tableName - the name of the table to create the id.
 	 * @return the next id for this resource.
 	 */
-	public static synchronized int nextId(String poolName, String tableName) 
+	public static synchronized int nextId(String poolName, String tableName)
 		throws CmsException {
 		String key = poolName + "." + tableName;
-		
+
 		if( c_currentId.containsKey(key) ) {
 			int id = ((Integer)c_currentId.get(key)).intValue();
 			int borderId = ((Integer)c_borderId.get(key)).intValue();
@@ -73,12 +73,12 @@ public class CmsIdGenerator {
 				return id;
 			}
 		}
-		
+
 		// there is no id in the cache - generate them
 		generateNextId(poolName, tableName, key);
 		return nextId(poolName, tableName);
 	}
-	
+
 	/**
 	 * Creates a new id for the given table.
 	 * @param pooName - the name of the pool.
@@ -86,12 +86,12 @@ public class CmsIdGenerator {
 	 * @param key - the key to store the generated values.
 	 * @return the next id for this resource.
 	 */
-	private static void generateNextId(String poolName, String tableName, String key) 
+	private static void generateNextId(String poolName, String tableName, String key)
 		throws CmsException {
 		Connection con = null;
 		int id;
 		int borderId;
-		try	{			
+		try	{
 			con = DriverManager.getConnection(poolName);
 			// repeat this operation, until the nextId is valid and can be saved
 			// (this is for clustering of several OpenCms)
@@ -107,9 +107,9 @@ public class CmsIdGenerator {
 			} while(!writeId(con, tableName, id, borderId));
 			// store the generated values in the cache
 			c_currentId.put(key, new Integer(id));
-			c_borderId.put(key, new Integer(borderId));			
+			c_borderId.put(key, new Integer(borderId - 1));
 		} catch (SQLException e){
-			throw new CmsException("["+CmsIdGenerator.class.getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+CmsIdGenerator.class.getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}finally {
 			 // close all db-resources
 			 if(con != null) {
@@ -119,9 +119,9 @@ public class CmsIdGenerator {
 					 // nothing to do here
 				 }
 			 }
-		 }	
+		 }
 	}
-	
+
 	/**
 	 * Static method to read the id for the given table.
 	 * @param con - The connection to read from.
@@ -129,11 +129,11 @@ public class CmsIdGenerator {
 	 * @return the id, or C_UNKNOWN_ID if there is no entry for the table-name
 	 * @exception CmsException - if an sql-error occures.
 	 */
-	private static int readId(Connection con, String table) 
+	private static int readId(Connection con, String table)
 		throws CmsException {
 		PreparedStatement statement = null;
 		ResultSet res = null;
-		 try	{			
+		 try	{
 			statement = con.prepareStatement("select ID from CMS_SYSTEMID where TABLE_KEY = ?");
 			statement.setString(1,table);
 			res = statement.executeQuery();
@@ -172,10 +172,10 @@ public class CmsIdGenerator {
 	 * @return if the row was updatet, or not.
 	 * @exception CmsException - if an sql-error occures.
 	 */
-	private static boolean writeId(Connection con, String table, int oldId, int newId) 
+	private static boolean writeId(Connection con, String table, int oldId, int newId)
 		throws CmsException {
 		PreparedStatement statement = null;
-		 try {			
+		 try {
 			statement = con.prepareStatement("update CMS_SYSTEMID set ID = ? where TABLE_KEY = ? and ID = ?");
 			statement.setInt(1, newId);
 			statement.setString(2, table);
@@ -203,7 +203,7 @@ public class CmsIdGenerator {
 	 * @param newId - The newId for this table
 	 * @exception CmsException - if an sql-error occures.
 	 */
-	private static void createId(Connection con, String table, int newId) 
+	private static void createId(Connection con, String table, int newId)
 		throws CmsException {
 		PreparedStatement statement = null;
 		 try {

@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsConnection.java,v $
- * Date   : $Date: 2001/02/06 12:42:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/02/06 18:33:35 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -65,6 +65,11 @@ public class CmsConnection implements Connection {
 	 */
 	private long m_lastUsed;
 
+	/**
+	 * The time, when this connection was established.
+	 */
+	private long m_establishTime;
+
         /**
          * A pool with all created different statements during the lifetime of
          * this connection.
@@ -75,20 +80,35 @@ public class CmsConnection implements Connection {
 	 * Constructs a new connection.
 	 */
 	CmsConnection(Connection originalConnection, CmsPool pool) {
-          this(originalConnection, pool, new Hashtable());
+          this(originalConnection, pool, new Hashtable(), System.currentTimeMillis());
 	}
 
 	/**
-	 * Constructs a new connection.
+	 * Reconstructs a connection.
 	 */
-	CmsConnection(Connection originalConnection, CmsPool pool, Hashtable statementPool) {
+	CmsConnection(Connection originalConnection, CmsPool pool, Hashtable statementPool, long establishTime) {
           m_originalConnection = originalConnection;
           m_pool = pool;
           // create an empty statement
           m_lastUsed = System.currentTimeMillis();
+          m_establishTime = establishTime;
           m_statementPool = statementPool;
           m_isClosed = false;
 	}
+
+        /**
+         * Returns the time (ms), when this connection was last used.
+         */
+        long getLastUsed() {
+          return m_lastUsed;
+        }
+
+        /**
+         * Returns the time (ms), when this connection was established.
+         */
+        long getEstablishedTime() {
+          return m_establishTime;
+        }
 
 	/**
 	 * If the connection was closed (and put back into the pool)
@@ -283,7 +303,7 @@ public class CmsConnection implements Connection {
 		m_isClosed = true;
 
 		// put the connection back to the pool
-		m_pool.putConnection(new CmsConnection(m_originalConnection, m_pool, m_statementPool));
+		m_pool.putConnection(new CmsConnection(m_originalConnection, m_pool, m_statementPool, m_establishTime));
 	}
 
 	/**
