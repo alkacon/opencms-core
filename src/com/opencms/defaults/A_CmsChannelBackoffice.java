@@ -151,7 +151,6 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
 	    public Object getContentMedia(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
 	        //return value
 	        String content="";
-	        System.err.println("");
 	        String row="";
 	        //get the template
 	        CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile) doc;
@@ -218,7 +217,15 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
 	        //if you are here for the fist time - get the medias from db
 	            if(media==null){
 	            //copy medias in your vector
-	                media=(Vector)dbmedia.clone();
+                    media=new Vector();
+	                //media=(Vector)dbmedia.clone();
+                    for(int i=0;i<dbmedia.size();i++){
+                        CmsMasterMedia cd = (CmsMasterMedia)dbmedia.elementAt(i);
+                        //if the type is == paragraph1
+                        if(cd.getType()>=0){
+                            media.add(cd);
+                        }
+                    }
 	            }
 	            for(int i=0;i<media.size();i++){
 	                if(posInt==i){
@@ -288,7 +295,6 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
 	            //set the url
 	            templateFile.setData("preview",templateFile.getProcessedDataValue("media_preview",this));
 	        }else{
-	        System.err.println("prevPicture else");
 	            //set the url to default
 	            templateFile.setData("preview","");
 	        }
@@ -328,7 +334,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
 	        content=templateFile.getProcessedDataValue("media_content",this);
 	        //put the vector in session
 	        if(media!=null){
-	        session.putValue("media",media);
+	            session.putValue("media",media);
 	        }
 	        //put the vector in session
 	        if(selectedmediaCD!=null){
