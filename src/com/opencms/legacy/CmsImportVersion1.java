@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2004/06/14 15:54:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/15 10:21:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -239,9 +239,9 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                 if (createTemplateTags) {
                     content = content.substring(0, content.lastIndexOf("</XMLTEMPLATE>"));
                     // get the keys
-                    Enumeration enum = templateElements.keys();
-                    while (enum.hasMoreElements()) {
-                        String key = (String) enum.nextElement();
+                    Enumeration en = templateElements.keys();
+                    while (en.hasMoreElements()) {
+                        String key = (String) en.nextElement();
                         String value = (String) templateElements.get(key);
                         // create the default template
                         if (key.equals("noNameKey")) {

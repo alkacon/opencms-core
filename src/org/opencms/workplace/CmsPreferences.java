@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/06/15 10:23:41 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1.12
  */
@@ -276,10 +276,10 @@ public class CmsPreferences extends CmsTabDialog {
         request.setAttribute(C_SESSION_WORKPLACE_CLASS, this);                 
         
         // special case: set the preferred editor settings the user settings object      
-        Enumeration enum = request.getParameterNames();
-        while (enum.hasMoreElements()) {
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
             // search all request parameters for the presence of the preferred editor parameters
-            String paramName = (String)enum.nextElement();
+            String paramName = (String)en.nextElement();
             if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX)) {
                 String paramValue = request.getParameter(paramName);
                 if (paramValue != null && !INPUT_DEFAULT.equals(paramValue.trim())) {
@@ -1177,9 +1177,9 @@ public class CmsPreferences extends CmsTabDialog {
     protected Map paramValues() {
         Map map = super.paramValues();
         HttpServletRequest request = getJsp().getRequest();
-        Enumeration enum = request.getParameterNames();
-        while (enum.hasMoreElements()) {
-            String paramName = (String)enum.nextElement();
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String)en.nextElement();
             if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX)) {
                 String paramValue = request.getParameter(paramName);
                 if (paramValue != null && !"".equals(paramValue.trim())) {

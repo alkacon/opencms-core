@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2004/06/04 10:48:52 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2004/06/15 10:19:21 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2004/06/04 10:48:52 $
+ * @version $Revision: 1.11 $ $Date: 2004/06/15 10:19:21 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -455,14 +455,14 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
 
         // combine folder and file vector
         Vector filefolders = new Vector();
-        Iterator enum = folders.iterator();
-        while(enum.hasNext()) {
-            folder = (CmsFolder)enum.next();
+        Iterator en = folders.iterator();
+        while(en.hasNext()) {
+            folder = (CmsFolder)en.next();
             filefolders.addElement(folder);
         }
-        enum = files.iterator();
-        while(enum.hasNext()) {
-            file = (CmsFile)enum.next();
+        en = files.iterator();
+        while(en.hasNext()) {
+            file = (CmsFile)en.next();
             filefolders.addElement(file);
         }
         if(filefolders.size() > 0) {
@@ -477,9 +477,9 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
 
             //now check files and folders that are not deleted and include navigation
             // information
-            enum = filefolders.iterator();
-            while(enum.hasNext()) {
-                CmsResource res = (CmsResource)enum.next();
+            en = filefolders.iterator();
+            while(en.hasNext()) {
+                CmsResource res = (CmsResource)en.next();
 
                 // check if the resource is not marked as deleted
                 if(res.getState() != C_STATE_DELETED) {

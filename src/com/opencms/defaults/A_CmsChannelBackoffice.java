@@ -257,12 +257,12 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
             } else if (media_action.equals("addPicture") && !media_name.equals("unknown")) {
                     // get the picture file and/or file from the RequestContext if there is any
                     CmsRequestContext reqCont = cms.getRequestContext();
-                    Enumeration enum = CmsXmlTemplateLoader.getRequest(reqCont).getFileNames();
+                    Enumeration en = CmsXmlTemplateLoader.getRequest(reqCont).getFileNames();
                     String filename = "";
                     byte[] mediafile = null;
                     //get the file
-                    while (enum.hasMoreElements()) {
-                        filename = (String) enum.nextElement();
+                    while (en.hasMoreElements()) {
+                        filename = (String) en.nextElement();
                         if (!filename.equals("unknown")) {
                             mediafile = CmsXmlTemplateLoader.getRequest(reqCont).getFile(filename);
                             //set the media_mimetype

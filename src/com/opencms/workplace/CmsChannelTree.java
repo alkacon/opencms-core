@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2004/06/15 10:19:21 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/06/15 10:27:31 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2004/06/15 10:19:21 $
+ * @version $Revision: 1.36 $ $Date: 2004/06/15 10:27:31 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault {
@@ -420,7 +420,6 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
         //CmsFolder folder=null;
         while(en.hasMoreElements()) {
             CmsResource res = (CmsResource)en.nextElement();
-            //CmsFolder folder=(CmsFolder)enum.nextElement();
             // check if this folder is visible
             if(checkAccess(cms, res)) {
                 subfolders = new Vector();

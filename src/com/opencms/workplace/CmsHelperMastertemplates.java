@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2004/06/15 10:19:21 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.26 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.27 $ $Date: 2004/06/15 10:19:21 $
  */
 
 public class CmsHelperMastertemplates {
@@ -115,9 +115,9 @@ public class CmsHelperMastertemplates {
         }
         
         // now read the "nice name" (ie. title property) for the found elements
-        Iterator enum = files.iterator();
-        while(enum.hasNext()) {
-            CmsFile file = (CmsFile)enum.next();
+        Iterator en = files.iterator();
+        while(en.hasNext()) {
+            CmsFile file = (CmsFile)en.next();
             if(file.getState() != I_CmsConstants.C_STATE_DELETED && checkVisible(cms, file)) {
                 String nicename = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_TITLE);
                 if(nicename == null) {
