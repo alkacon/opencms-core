@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2004/02/26 11:35:35 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/02/27 14:27:23 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.59 $ $Date: 2004/02/26 11:35:35 $
+ * @version $Revision: 1.60 $ $Date: 2004/02/27 14:27:23 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault {
@@ -262,7 +262,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
                                 checkurl = true;
                             } else {
                                                 
-                                // link URL is a file, so create the new file
+                                // link URL is a file, so create sibling of the new file
                                 Hashtable prop = new Hashtable();
                                 prop.put(C_PROPERTY_TITLE, title);
                                 if (step.equals("1")) {
@@ -279,8 +279,8 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
                                         } catch (Exception e) { }
                                     }
                                     
-                                    // TODO VFS links: creates an external HTTP link following the new linking paradigm
-                                    linkResource = cms.createVfsLink(foldername + filename, targetName, targetProperties);
+                                    // create the sibling
+                                    linkResource = cms.createSibling(foldername + filename, targetName, targetProperties);
                                 }
                             
                             }
