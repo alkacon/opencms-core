@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2003/06/25 13:50:29 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/07/14 14:29:41 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,12 +49,14 @@ import org.w3c.dom.Element;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2003/06/25 13:50:29 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/14 14:29:41 $
  */
 public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
     /**
      * Default constructor.
+     * 
+     * @throws CmsException if something goes wrong
      */
     public CmsXmlFormTemplateFile() throws CmsException {
         super();
@@ -63,10 +65,11 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
 
     /**
      * Constructor for creating a new object containing the content
-     * of the given filename.
+     * of the given file.<p>
      *
-     * @param cms CmsObject object for accessing system resources.
-     * @param filename Name of the body file that shoul be read.
+     * @param cms CmsObject object for accessing system resources
+     * @param file the file that should be read
+     * @throws CmsException if something goes wrong
      */
     public CmsXmlFormTemplateFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
@@ -76,10 +79,11 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
 
     /**
      * Constructor for creating a new object containing the content
-     * of the given filename.
+     * of the given filename.<p>
      *
-     * @param cms CmsObject object for accessing system resources.
-     * @param filename Name of the body file that shoul be read.
+     * @param cms CmsObject object for accessing system resources
+     * @param filename Name of the body file that shoul be read
+     * @throws CmsException if something goes wrong
      */
     public CmsXmlFormTemplateFile(CmsObject cms, String filename) throws CmsException {
         super();
@@ -88,7 +92,8 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
     }
 
     /**
-     * Gets the expected tagname for the XML documents of this content type
+     * Gets the expected tagname for the XML documents of this content type.<p>
+     * 
      * @return Expected XML tagname.
      */
     public String getXmlDocumentTagName() {
@@ -113,12 +118,13 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
      * <code>public Integer myMethod(CmsObject cms, Vector names, Vector values, Hashtable parameters)</code><br/>
      * and will be used to get the content of the requested radion button group. The vectors <code>names</code>
      * and <code>values</code> should be filled with the appropriate values. The return value should be an
-     * Integer containing the pre-selected radio button or -1, if no value should be pre-selected.
+     * Integer containing the pre-selected radio button or -1, if no value should be pre-selected.<p>
      *
-     * @param n XML element containing the current special workplace tag.
-     * @param callingObject reference to the calling object.
-     * @param userObj hashtable containig all user parameters.
-     * @throws CmsException
+     * @param n XML element containing the current special workplace tag
+     * @param callingObject reference to the calling object
+     * @param userObj hashtable containig all user parameters
+     * @return the radio button definition
+     * @throws CmsException if something goes wrong
      */
     public Object handleRadiobuttonTag(Element n, Object callingObject, Object userObj) throws CmsException {
         Hashtable parameters = (Hashtable)userObj;
@@ -136,7 +142,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
         String radioName = n.getAttribute(C_RADIO_NAME);
         String radioMethod = n.getAttribute(C_RADIO_METHOD);
         String radioOrder = n.getAttribute(C_RADIO_ORDER);
-        if(radioOrder == null || ((!"row".equals(radioOrder)) && (!"col".equals(radioOrder)))) {
+        if (radioOrder == null || ((!"row".equals(radioOrder)) && (!"col".equals(radioOrder)))) {
             radioOrder = "col";
         }
 
@@ -150,52 +156,47 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
             returnObject = (Integer)groupsMethod.invoke(callingObject, new Object[] {
                 m_cms, names, values, parameters
             });
-        }
-        catch(NoSuchMethodException exc) {
+        } catch (NoSuchMethodException exc) {
 
             // The requested method was not found.
             throwException("Could not find radio button method " + radioMethod + " in calling class " + callingObject.getClass().getName()
                     + " for generating select box content.", CmsException.C_NOT_FOUND);
-        }
-        catch(InvocationTargetException targetEx) {
+        } catch (InvocationTargetException targetEx) {
 
             // the method could be invoked, but throwed a exception
             // itself. Get this exception and throw it again.
             Throwable e = targetEx.getTargetException();
-            if(!(e instanceof CmsException)) {
+            if (!(e instanceof CmsException)) {
 
                 // Only print an error if this is NO CmsException
                 throwException("Radio button method " + radioMethod + " in calling class " + callingObject.getClass().getName()
                         + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
-            }
-            else {
+            } else {
 
                 // This is a CmsException
                 // Error printing should be done previously.
                 throw (CmsException)e;
             }
-        }
-        catch(Exception exc2) {
+        } catch (Exception exc2) {
             throwException("Radio button method " + radioMethod + " in calling class " + callingObject.getClass().getName()
                     + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
 
         // If the radio button method returned a value, use it for preselecting an option
-        if(returnObject != null) {
+        if (returnObject != null) {
             selectedOption = ((Integer)returnObject).intValue();
         }
 
         // process the vectors with the elelmetns of the radio buttons to be displayed.
         int numValues = values.size();
         CmsXmlTemplateFile radiodef = new CmsXmlTemplateFile(m_cms, I_CmsWpConstants.C_VFS_PATH_DEFAULT_INTERNAL + "HTMLFormDefs");
-        if(radioClass == null || "".equals(radioClass)) {
+        if (radioClass == null || "".equals(radioClass)) {
             radiodef.setData(C_RADIO_CLASS, "");
-        }
-        else {
+        } else {
             radiodef.setData(C_RADIO_CLASSNAME, radioClass);
             radiodef.setData(C_RADIO_CLASS, radiodef.getProcessedData(C_TAG_RADIO_CLASS));
         }
-        for(int i = 0;i < numValues;i++) {
+        for (int i = 0; i < numValues; i++) {
 
             // Set values for this radiobutton entry
             radiodef.setData(C_RADIO_RADIONAME, radioName);
@@ -203,20 +204,18 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
             radiodef.setData(C_RADIO_LINK, (String)values.elementAt(i));
 
             // Check, if this should be the preselected option
-            if(i == selectedOption) {
+            if (i == selectedOption) {
                 radiodef.setData(C_RADIO_SELECTEDENTRY, radiodef.getDataValue("radiobuttons." + C_RADIO_SELECTEDOPTION));
-            }
-            else {
+            } else {
                 radiodef.setData(C_RADIO_SELECTEDENTRY, "");
             }
 
             // Now get output for this option
-            if(radioOrder.equals("col")) {
+            if (radioOrder.equals("col")) {
 
                 // Buttons should be displayed in one column
                 result.append(radiodef.getProcessedDataValue(C_TAG_RADIO_COLENTRY, callingObject));
-            }
-            else {
+            } else {
 
                 // Buttons should be displayed in a row.
                 result.append(radiodef.getProcessedDataValue(C_TAG_RADIO_ROWENTRY, callingObject));
@@ -245,10 +244,11 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
      * and <code>values</code> should be filled with the appropriate values. The return value should be an
      * Integer containing the pre-selected option or -1, if no value should be pre-selected.
      *
-     * @param n XML element containing the current special workplace tag.
-     * @param callingObject reference to the calling object.
-     * @param userObj hashtable containig all user parameters.
-     * @throws CmsException
+     * @param n XML element containing the current special workplace tag
+     * @param callingObject reference to the calling object
+     * @param userObj hashtable containig all user parameters
+     * @return the definition of the select tag
+     * @throws CmsException if something goes wrong
      */
     public Object handleSelectTag(Element n, Object callingObject, Object userObj) throws CmsException {
 
@@ -271,7 +271,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
         String selectWidth = n.getAttribute(C_SELECTBOX_WIDTH);
         String selectOnchange = n.getAttribute(C_SELECTBOX_ONCHANGE);
         String selectSize = n.getAttribute(C_SELECTBOX_SIZE);
-        if((selectSize == null) || (selectSize.length() == 0)) {
+        if ((selectSize == null) || (selectSize.length() == 0)) {
             selectSize = "1";
         }
 
@@ -279,17 +279,15 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
         CmsXmlTemplateFile inputdef = new CmsXmlTemplateFile(m_cms, I_CmsWpConstants.C_VFS_PATH_DEFAULT_INTERNAL + "HTMLFormDefs");
 
         // Set the prefix string of the select box
-        if(selectClass == null || "".equals(selectClass)) {
+        if (selectClass == null || "".equals(selectClass)) {
             inputdef.setData(C_SELECTBOX_CLASS, "");
-        }
-        else {
+        } else {
             inputdef.setData(C_SELECTBOX_CLASSNAME, selectClass);
             inputdef.setData(C_SELECTBOX_CLASS, inputdef.getProcessedData(C_TAG_SELECTBOX_CLASS));
         }
-        if(selectWidth == null || "".equals(selectWidth)) {
+        if (selectWidth == null || "".equals(selectWidth)) {
             inputdef.setData(C_SELECTBOX_WIDTH, "");
-        }
-        else {
+        } else {
             inputdef.setData(C_SELECTBOX_WIDTHNAME, selectWidth);
             inputdef.setData(C_SELECTBOX_WIDTH, inputdef.getProcessedData(C_TAG_SELECTBOX_WIDTH));
         }
@@ -304,41 +302,34 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
         Method groupsMethod = null;
         int selectedOption = 0;
         try {
-
-
-
             groupsMethod = callingObject.getClass().getMethod(selectMethod, new Class[] {
                 CmsObject.class, Vector.class, Vector.class, Hashtable.class
             });
             selectedOption = ((Integer)groupsMethod.invoke(callingObject, new Object[] {
                 m_cms, values, names, parameters
             })).intValue();
-        }
-        catch(NoSuchMethodException exc) {
+        } catch (NoSuchMethodException exc) {
 
             // The requested method was not found.
             throwException("Could not find method " + selectMethod + " in calling class " + callingObject.getClass().getName()
                     + " for generating select box content.", CmsException.C_NOT_FOUND);
-        }
-        catch(InvocationTargetException targetEx) {
+        } catch (InvocationTargetException targetEx) {
 
             // the method could be invoked, but throwed a exception
             // itself. Get this exception and throw it again.
             Throwable e = targetEx.getTargetException();
-            if(!(e instanceof CmsException)) {
+            if (!(e instanceof CmsException)) {
 
                 // Only print an error if this is NO CmsException
                 throwException("User method " + selectMethod + " in calling class " + callingObject.getClass().getName()
                         + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
-            }
-            else {
+            } else {
 
                 // This is a CmsException
                 // Error printing should be done previously.
                 throw (CmsException)e;
             }
-        }
-        catch(Exception exc2) {
+        } catch (Exception exc2) {
             throwException("User method " + selectMethod + " in calling class " + callingObject.getClass().getName()
                     + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
@@ -346,13 +337,12 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
         // check the returned elements and put them into option tags.
         // The element with index "selectedOption" has to get the "selected" tag.
         int numValues = values.size();
-        for(int i = 0;i < numValues;i++) {
+        for (int i = 0; i < numValues; i++) {
             inputdef.setData(C_SELECTBOX_OPTIONNAME, (String)names.elementAt(i));
             inputdef.setData(C_SELECTBOX_OPTIONVALUE, (String)values.elementAt(i));
-            if(i == selectedOption) {
+            if (i == selectedOption) {
                 result.append(inputdef.getProcessedDataValue(C_TAG_SELECTBOX_SELOPTION));
-            }
-            else {
+            } else {
                 result.append(inputdef.getProcessedDataValue(C_TAG_SELECTBOX_OPTION));
             }
         }
