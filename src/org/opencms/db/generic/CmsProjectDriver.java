@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/31 10:23:34 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/07/31 16:14:32 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.38 $ $Date: 2003/07/31 10:23:34 $
+ * @version $Revision: 1.39 $ $Date: 2003/07/31 16:14:32 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1277,9 +1277,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     if (currentExportKey != null) {
                         discAccess.createFolder(currentResourceName, currentExportKey);
                         
-                        if (!onlineFolder.getResourceName().equals(currentResourceName)) {
-                            discAccess.removeResource(onlineFolder.getResourceName(), currentExportKey);
-                        }
+                        // TODO: this does not work currently since getResourceName results in the name and not in the path !
+                        // if (!onlineFolder.getResourceName().equals(currentResourceName)) {
+                        //    discAccess.removeResource(onlineFolder.getResourceName(), currentExportKey);
+                        //}
                     }                                    
     
                     m_driverManager.getVfsDriver().publishResource(onlineFolder, currentFolder);               
@@ -1964,15 +1965,15 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
 		// TODO: dangerous - move this somehow into query.properties
         if ("new".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_NEW;
+            whereClause = " AND (CMS_T_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_NEW + " OR CMS_T_RESOURCES.RESOURCE_STATE=" + I_CmsConstants.C_STATE_NEW + ")";
         } else if ("changed".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_CHANGED;
+            whereClause = " AND (CMS_T_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_CHANGED + " OR CMS_T_RESOURCES.RESOURCE_STATE=" + I_CmsConstants.C_STATE_CHANGED + ")";
         } else if ("deleted".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_DELETED;
+            whereClause = " AND (CMS_T_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_DELETED + " OR CMS_T_RESOURCES.RESOURCE_STATE=" + I_CmsConstants.C_STATE_DELETED + ")";
         } else if ("locked".equalsIgnoreCase(filter)) {
             whereClause = " AND CMS_T_STRUCTURE.LOCKED_BY!='" + CmsUUID.getNullUUID() + "'";
         } else {
-            whereClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
+            whereClause = " AND (CMS_T_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED + " OR CMS_T_RESOURCES.RESOURCE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED + ")";
         }        
 
         try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/31 13:11:14 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2003/07/31 16:14:32 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.68 $ $Date: 2003/07/31 13:11:14 $
+ * @version $Revision: 1.69 $ $Date: 2003/07/31 16:14:32 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -280,7 +280,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         int resourceType = res.getInt(m_sqlManager.get("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.get("C_RESOURCES_RESOURCE_FLAGS"));
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
-        // int resourceState = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
+        int resourceState = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
         int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
         CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
@@ -300,7 +300,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             resProjectId = lockedInProject = projectId;
         } 
 
-        return new CmsFolder(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, structureState, lockedBy, dateCreated, userCreated, dateLastModified, userLastModified, lockedInProject, linkCount);
+        int newState = (structureState > resourceState) ? structureState : resourceState;
+        
+        return new CmsFolder(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, dateCreated, userCreated, dateLastModified, userLastModified, lockedInProject, linkCount);
     }
 
     /**
@@ -2346,7 +2348,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         if (!includeUnchanged) {
         	// TODO: dangerous - move this to query.properties
-            changedClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
+            changedClause = " AND (CMS_T_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED + " OR CMS_T_RESOURCES.RESOURCE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED + ")";
         } else {
             projectClause = "";
         }        

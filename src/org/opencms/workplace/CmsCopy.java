@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/07/30 13:34:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/31 16:14:31 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -221,7 +221,7 @@ public class CmsCopy extends CmsDialog {
         
         // set the target parameter value
         setParamTarget(target);        
-            
+              
         // delete existing target resource if confirmed by the user
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);

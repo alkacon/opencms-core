@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/31 15:18:46 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2003/07/31 16:14:31 $
+ * Version: $Revision: 1.112 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.111 $ $Date: 2003/07/31 15:18:46 $
+ * @version $Revision: 1.112 $ $Date: 2003/07/31 16:14:31 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1051,7 +1051,7 @@ public class CmsDriverManager extends Object {
 
         // validate the destination path/filename
         validFilename(destination.replace('/', 'a'));
-
+        
         // extract the destination folder and filename
         destinationFolderName = destination.substring(0, destination.lastIndexOf("/") + 1);
         destinationFileName = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
@@ -1060,6 +1060,14 @@ public class CmsDriverManager extends Object {
         CmsFile sourceFile = readFile(context, source, false);
         CmsFolder destinationFolder = readFolder(context, destinationFolderName);
 
+        // checks, if the type is valid, i.e. the user can copy files of this type
+        // we can't utilize the access guard to do this, since it needs a resource to check   
+        if (!isAdmin(context) && 
+            (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID ||
+             sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) { 
+            throw new CmsException("[" + this.getClass().getName() + "] " + source, CmsException.C_NO_ACCESS);
+        }
+        
         // check if the user has read access to the source file and write access to the destination folder
         checkPermissions(context, sourceFile, I_CmsConstants.C_READ_ACCESS);
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
@@ -7176,11 +7184,13 @@ public class CmsDriverManager extends Object {
      */
     public void touch(CmsRequestContext context, String resourceName, long timestamp, CmsUUID user) throws CmsException {
         CmsResource res = readFileHeader(context, resourceName);
-        if (res.isFile()) {
-            touchResource(context, res, timestamp,user);
-        } else {
-        }
-        touchStructure(context, res, timestamp,user);
+        touchResource(context, res, timestamp, user);
+        
+        // if (res.isFile()) {
+        //    touchResource(context, res, timestamp,user);
+        //} else {
+        //}
+        // touchStructure(context, res, timestamp,user);
     }
 
     /**
@@ -7194,9 +7204,9 @@ public class CmsDriverManager extends Object {
     private void touchResource(CmsRequestContext context, CmsResource res, long timestamp, CmsUUID user) throws CmsException {
         
         // NOTE: this is the new way to update the state !
-        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
-            res.setState(I_CmsConstants.C_STATE_CHANGED);
-                
+        // if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
+        
+        res.setState(I_CmsConstants.C_STATE_CHANGED);        
         res.setDateLastModified(timestamp);
         res.setUserLastModified(user);
         m_vfsDriver.updateResourceState(context.currentProject(), res, C_UPDATE_RESOURCE);
