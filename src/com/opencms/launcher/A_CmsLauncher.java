@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/15 18:01:25 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,16 +59,22 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/15 18:01:25 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
     /** Boolean for additional debug output control */
     private static final boolean C_DEBUG = true;
 
+    /** Value of the filesystem counter, when the last template clear cache was done. */
+    private static long m_lastFsCounterTemplate = 0;
+
+    /** Value of the filesystem counter, when the last XML file clear cache was done. */
+    private static long m_lastFsCounterFile = 0;
+
     /** The template cache that holds all cached templates */
 	protected static I_CmsTemplateCache m_templateCache = new CmsTemplateCache();
-
+    
     /** Default constructor to create a new launcher */
     /*public A_CmsLauncher() {
         if(A_OpenCms.isLogging()) {
@@ -128,23 +134,24 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
         // Check the clearcache parameter        
         String clearcache = cms.getRequestContext().getRequest().getParameter("_clearcache");
+        long currentFsCounter = cms.getFileSystemChanges();
         
-        if(clearcache != null) {
-            if("all".equals(clearcache) || "class".equals(clearcache)) {
-                CmsTemplateClassManager.clearCache();
-            }
-        }
-        if(clearcache != null) {
-            if("all".equals(clearcache) || "file".equals(clearcache)) {
-                A_CmsXmlContent.clearFileCache();                
-            }        
-        }
-        if(clearcache != null) {
-            if("all".equals(clearcache) || "template".equals(clearcache)) {
-                m_templateCache.clearCache();
-            }        
-        }
+        if((clearcache != null) && ("all".equals(clearcache) || "class".equals(clearcache))) {
+            CmsTemplateClassManager.clearCache();
+        }        
         
+        if(((clearcache != null) && ("all".equals(clearcache) || "file".equals(clearcache)))
+                || (currentFsCounter > m_lastFsCounterFile )) {
+            A_CmsXmlContent.clearFileCache();                
+            m_lastFsCounterFile = currentFsCounter;
+        }
+                
+        if(((clearcache != null) && ("all".equals(clearcache) || "template".equals(clearcache)))
+                || (currentFsCounter > m_lastFsCounterTemplate )) {
+            m_templateCache.clearCache();
+            m_lastFsCounterTemplate = currentFsCounter;
+        }        
+                
         launch(cms, file, startTemplateClass);
     }
 

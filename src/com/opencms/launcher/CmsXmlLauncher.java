@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/15 18:01:21 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/15 18:01:21 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels { 	
         
@@ -70,15 +70,6 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
     protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException {
         // get the CmsRequest 
         I_CmsRequest req = cms.getRequestContext().getRequest();
-        
-        // Check the clearcache parameter for the xml filecache        
-        String clearcache = req.getParameter("_clearcache");
-        if(clearcache != null) {
-            if("all".equals(clearcache) || "file".equals(clearcache)) {
-                A_CmsXmlContent.clearFileCache();                
-            }        
-        }
-        
         byte[] result = null;
         
         CmsXmlControlFile doc = null;
@@ -163,7 +154,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] There were exceptions while generating output for " + file.getAbsolutePath());
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] Clearing template file cache for this file.");
             }
-            doc.clearFileCache(doc);
+            doc.removeFromFileCache();
             throw e;
         }
             
@@ -188,7 +179,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
             masterTemplate = cms.readFile(templateName);
         } catch(Exception e) {
             handleException(cms, e, "Cannot load master template " + templateName + ". ");
-            A_CmsXmlContent.clearFileCache(doc);
+            doc.removeFromFileCache();
         }
         return masterTemplate;
     }
