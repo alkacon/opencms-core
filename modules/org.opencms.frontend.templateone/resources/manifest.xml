@@ -966,19 +966,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.templateone/lib/opencms-templateone.jar</source>
-			<destination>system/modules/org.opencms.frontend.templateone/lib/opencms-templateone.jar</destination>
-			<type>binary</type>
-			<uuidresource>4f69c1cf-dcbd-11d8-9050-993e109d03c3</uuidresource>
-			<datelastmodified>Fri, 18 Feb 2005 16:08:47 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 23 Jul 2004 15:31:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/pages</destination>
 			<type>folder</type>
 			<datelastmodified>Wed, 14 Jul 2004 13:02:33 GMT</datelastmodified>
