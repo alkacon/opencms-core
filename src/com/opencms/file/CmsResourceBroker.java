@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/22 14:19:17 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2000/03/23 10:32:10 $
+ * Version: $Revision: 1.86 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.85 $ $Date: 2000/03/22 14:19:17 $
+ * @version $Revision: 1.86 $ $Date: 2000/03/23 10:32:10 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -387,7 +387,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 m_projectRb.writeProject(publishProject);
 			 
 			 // return the changed resources.
-			 return(resources);			 
+			 return(resources);
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + name, 
 				CmsException.C_NO_ACCESS);
@@ -2452,7 +2452,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + foldername, 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
      }
 	
