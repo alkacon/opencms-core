@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/12/20 10:46:48 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -32,11 +32,11 @@ package com.opencms.file;
 import java.util.*;
 import com.opencms.core.*;
 /**
- * This class implements a LRU cache storing CmsCachedObjects. It is used to  cache 
+ * This class implements a LRU cache storing CmsCachedObjects. It is used to  cache
  * data read from the File DB.
- * 
+ *
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.16 $ $Date: 2001/12/20 10:46:48 $
  */
 
 public class CmsCache implements I_CmsConstants {
@@ -46,7 +46,7 @@ public class CmsCache implements I_CmsConstants {
 
 
     /**
-     * Constructs a new cache. 
+     * Constructs a new cache.
      * If the cache Size has an illegal value (<= 0) it is set to the default value of 10.
      * @param cacheSize The size of the new cache
      */
@@ -54,7 +54,7 @@ public class CmsCache implements I_CmsConstants {
         // Illegal cach size? Set Default
         // If cacheSize=0 then cache is disabled (superflous)
         if (cacheSize < 0) {
-            max_objects=10;    
+            max_objects=10;
         } else {
             max_objects=cacheSize;
         }
@@ -64,7 +64,7 @@ public class CmsCache implements I_CmsConstants {
      /**
      * Deletes all entries in a Cache.
      * This method is needed because of the problems caused by storing all subfolders and
-     * files from a folder in a seperate subresource cache. Everytime a file or folder is 
+     * files from a folder in a seperate subresource cache. Everytime a file or folder is
      * updated, read or deleted the subresource cache must be cleared.
      */
     public  void clear() {
@@ -75,31 +75,31 @@ public class CmsCache implements I_CmsConstants {
      * Gets the contents of a CmsCachedObject form the cache.
      * If the object was found in the cache, it is updated to set its timestamp to the current
      * system time.
-     * 
+     *
      * @param id The id of the Object to be taken from the cache.
      *
      * @return Contents of the CmsCachedObject stored in the cache
      */
     public  Object get(int id) {
-        
+
         CmsCachedObject cachedObject=null;
         CmsCachedObject ret=null;
-    
+
         // get key for object
         String key = (String)index.get(new Integer(id));
         if (key == null) {
- 
+
             return null;
         }
 
         // get object from cache
-        cachedObject=(CmsCachedObject)cache.get(key);  
-                        
+        cachedObject=(CmsCachedObject)cache.get(key);
+
         // not empty?
         if (cachedObject != null) {
             // update  timestamp
-            cachedObject.setTimestamp(); 
-            ret=(CmsCachedObject)cachedObject.clone();              
+            cachedObject.setTimestamp();
+            ret=(CmsCachedObject)cachedObject.clone();
             return (((CmsCachedObject)ret).getContents());
             //return null;
 
@@ -111,7 +111,7 @@ public class CmsCache implements I_CmsConstants {
      * Gets the contents of a CmsCachedObject form the cache.
      * If the object was found in the cache, it is updated to set its timestamp to the current
      * system time.
-     * 
+     *
      * @param key The key of the Object to be taken from the cache.
      * @param content Flag for getting the file content.
      * @return Contents of the CmsCachedObject stored in the cache
@@ -119,14 +119,14 @@ public class CmsCache implements I_CmsConstants {
     public  Object get(String key) {
         CmsCachedObject cachedObject=null;
         CmsCachedObject ret=null;
-    
+
         // get object from cache
-        cachedObject=(CmsCachedObject)cache.get(key);   
+        cachedObject=(CmsCachedObject)cache.get(key);
         // not empty?
         if (cachedObject != null) {
             // update  timestamp
-            cachedObject.setTimestamp(); 
-            ret=(CmsCachedObject)cachedObject.clone();  
+            cachedObject.setTimestamp();
+            ret=(CmsCachedObject)cachedObject.clone();
             return (((CmsCachedObject)ret).getContents());
             //return null;
 
@@ -134,10 +134,10 @@ public class CmsCache implements I_CmsConstants {
            return null;
         }
     }
-    /** 
+    /**
      * Gets the Id of an object
      * @param value The object.
-     * @return The Id of the object 
+     * @return The Id of the object
      */
     private int getId(Object value){
         if(value instanceof CmsFile) {
@@ -154,10 +154,10 @@ public class CmsCache implements I_CmsConstants {
             return C_UNKNOWN_ID;
         }
     }
-    /** 
+    /**
      * Gets the SringKey of an object
      * @param value The object.
-     * @return The StringKey of the object 
+     * @return The StringKey of the object
      */
     private String getStrKey(Object value){
         if(value instanceof CmsFile) {
@@ -182,15 +182,15 @@ public class CmsCache implements I_CmsConstants {
      * @param value The value of the new object stroed in the cache.
      */
     public void put(int key, Object value) {
-        
+
         String strKey = getStrKey(value);
         if (strKey != null){
             if (cache.size()<max_objects) {
-                cache.put(strKey,new CmsCachedObject(value));
-    
+                cache.put(strKey,(new CmsCachedObject(value)).clone());
+
             } else {
                 removeLRU();
-                cache.put(strKey,new CmsCachedObject(value));       
+                cache.put(strKey,(new CmsCachedObject(value)).clone());
             }
             index.put(new Integer(key),strKey);
         }
@@ -201,18 +201,18 @@ public class CmsCache implements I_CmsConstants {
      * @param strKey The key for the new object stroed in the cache.
      * @param value The value of the new object stroed in the cache.
      */
-    public void put(String strKey, Object value) { 
+    public void put(String strKey, Object value) {
         if (cache.size() < max_objects) {
-            cache.put(strKey,new CmsCachedObject(value));
-    
+            cache.put(strKey,(new CmsCachedObject(value)).clone());
+
         } else {
             removeLRU();
-            cache.put(strKey,new CmsCachedObject(value));       
+            cache.put(strKey,(new CmsCachedObject(value)).clone());
         }
         int id = getId(value);
         if (id != C_UNKNOWN_INT){
             index.put(new Integer(id),strKey);
-        }       
+        }
     }
     /**
      * Removes a CmsCachedObject from the cache.
@@ -244,14 +244,14 @@ public class CmsCache implements I_CmsConstants {
         Object keyLRUObject = null;
         int indexKeyLRU = C_UNKNOWN_ID;
         // get the keys of all cache objets
-        Enumeration keys = cache.keys(); 
+        Enumeration keys = cache.keys();
         while (keys.hasMoreElements()) {
             Object key= keys.nextElement();
-            CmsCachedObject value = (CmsCachedObject) cache.get(key);  
+            CmsCachedObject value = (CmsCachedObject) cache.get(key);
             //actual object with a older timestamp than the current oldest?
             if ((minTimestamp == -1) || (minTimestamp > value.getTimestamp())) {
                 // this is the new least recent used cache object
-                minTimestamp = value.getTimestamp();  
+                minTimestamp = value.getTimestamp();
                 keyLRUObject= key;
                 indexKeyLRU = getId(value);
             }
@@ -260,7 +260,7 @@ public class CmsCache implements I_CmsConstants {
         if (max_objects > 0)
         {
             cache.remove(keyLRUObject);
-            index.remove(new Integer(indexKeyLRU));         
+            index.remove(new Integer(indexKeyLRU));
         }
     }
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceCache.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/12/20 10:47:06 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This class is used to cache resources read from the File DB.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.3 $ $Date: 2001/12/20 10:47:06 $
  */
 
 public class CmsResourceCache implements I_CmsConstants {
@@ -123,12 +123,12 @@ public class CmsResourceCache implements I_CmsConstants {
         }
         if (innerCache == null){
             innerCache = new Hashtable(max_objects);
-            innerCache.put(""+projectId, new CmsCachedObject(value));
+            innerCache.put(""+projectId, (new CmsCachedObject(value)).clone());
         } else {
             if(innerCache.size() > max_objects){
                 removeLRU(innerCache);
             }
-            innerCache.put(""+projectId, new CmsCachedObject(value));
+            innerCache.put(""+projectId, (new CmsCachedObject(value)).clone());
         }
         cache.put(resourceName, new CmsCachedObject(innerCache));
     }
