@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/11/07 09:29:31 $
-* Version: $Revision: 1.202 $
+* Date   : $Date: 2001/11/14 10:12:00 $
+* Version: $Revision: 1.203 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.202 $ $Date: 2001/11/07 09:29:31 $
+ * @version $Revision: 1.203 $ $Date: 2001/11/14 10:12:00 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2392,6 +2392,20 @@ public String readExportPath() throws CmsException {
  */
 public CmsFile readFile(String filename) throws CmsException {
     return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename)));
+}
+/**
+ * Reads a file from the Cms.
+ *
+ * @param filename the complete path to the file.
+ * @param includeDeleted If true the deleted file will be returned.
+ *
+ * @return file the read file.
+ *
+ * @exception CmsException if the user has not the rights to read this resource,
+ * or if the file couldn't be read.
+ */
+public CmsFile readFile(String filename, boolean includeDeleted) throws CmsException {
+    return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename), includeDeleted));
 }
 /**
  * Reads a file from the Cms.

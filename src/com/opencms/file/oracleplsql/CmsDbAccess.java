@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/22 14:34:46 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2001/11/14 10:08:53 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.44 $ $Date: 2001/10/22 14:34:46 $ *
+ * @version $Revision: 1.45 $ $Date: 2001/11/14 10:08:53 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1957,6 +1957,109 @@ public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onli
                                    content,resSize, lockedInProject);
                 // check if this resource is marked as deleted
                 if (file.getState() == C_STATE_DELETED) {
+                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
+                }
+            } else {
+                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
+            }
+        } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch (CmsException ex) {
+            throw ex;
+        } catch( Exception exc ) {
+            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                try {
+                    res.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(con != null) {
+                try {
+                    con.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+        }
+        return file;
+     }
+
+    /**
+     * Reads a file from the Cms.<BR/>
+     *
+     * @param projectId The Id of the project in which the resource will be used.
+     * @param onlineProjectId The online projectId of the OpenCms.
+     * @param filename The complete name of the new file (including pathinformation).
+     *
+     * @return file The read file.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+     public CmsFile readFile(int projectId,
+                             int onlineProjectId,
+                             String filename, boolean includeDeleted)
+         throws CmsException {
+        CmsFile file = null;
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        Connection con = null;
+        String usedPool;
+        String usedStatement;
+        if (projectId == onlineProjectId) {
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+        } else {
+            usedPool = m_poolName;
+            usedStatement = "";
+        }
+        try {
+            con = DriverManager.getConnection(usedPool);
+            // if the actual project is the online project read file header and content
+            // from the online project
+            statement = con.prepareStatement(m_cq.get("C_FILES_READ"+usedStatement));
+            statement.setString(1, filename);
+            statement.setInt(2, projectId);
+            res = statement.executeQuery();
+            if(res.next()) {
+                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
+                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+                // read the file_content from an oracle blob
+                oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_RESOURCES_FILE_CONTENT"));
+                byte[] content = new byte[ (int) blob.length()];
+                content = blob.getBytes(1, (int) blob.length());
+                int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
+                                   groupId,resProjectId,accessFlags,state,lockedBy,
+                                   launcherType,launcherClass,created,modified,modifiedBy,
+                                   content,resSize, lockedInProject);
+                // check if this resource is marked as deleted
+                if (file.getState() == C_STATE_DELETED && !includeDeleted) {
                     throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
                 }
             } else {

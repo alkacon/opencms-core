@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/11/07 09:29:31 $
-* Version: $Revision: 1.161 $
+* Date   : $Date: 2001/11/14 10:12:00 $
+* Version: $Revision: 1.162 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.161 $ $Date: 2001/11/07 09:29:31 $
+ * @version $Revision: 1.162 $ $Date: 2001/11/14 10:12:00 $
  *
  */
 
@@ -2021,6 +2021,29 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * */
      public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
                              String filename)
+        throws CmsException;
+
+    /**
+     * Reads a file from the Cms.<BR/>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read the resource</li>
+     * </ul>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param filename The name of the file to be read.
+     * @param includeDeleted If true the deleted file will be returned, too
+     *
+     * @return The file read from the Cms.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * */
+     public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
+                             String filename, boolean includeDeleted)
         throws CmsException;
     /**
      * Gets the known file extensions (=suffixes)

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/11/07 09:31:22 $
-* Version: $Revision: 1.289 $
+* Date   : $Date: 2001/11/14 10:10:54 $
+* Version: $Revision: 1.290 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.289 $ $Date: 2001/11/07 09:31:22 $
+ * @version $Revision: 1.290 $ $Date: 2001/11/14 10:10:54 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4822,6 +4822,59 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
         if (cmsFile == null) {
 
             cmsFile = m_dbAccess.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename);
+            // only put it in thecache until the size is below the max site
+            /*if (cmsFile.getContents().length <m_cachelimit) {
+                m_resourceCache.put(currentProject.getId()+C_FILECONTENT+filename,cmsFile);
+            } else {
+
+            }*/
+        }
+
+        }
+    catch (CmsException exc)
+    {
+        // the resource was not readable
+        throw exc;
+    }
+    if (accessRead(currentUser, currentProject, (CmsResource) cmsFile))
+    {
+
+        // acces to all subfolders was granted - return the file.
+        return cmsFile;
+    }
+    else
+    {
+        throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
+    }
+}
+/**
+ * Reads a file from the Cms.<BR/>
+ *
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can read the resource</li>
+ * </ul>
+ *
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param filename The name of the file to be read.
+ *
+ * @return The file read from the Cms.
+ *
+ * @exception CmsException  Throws CmsException if operation was not succesful.
+ * */
+public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String filename, boolean includeDeleted) throws CmsException
+{
+    CmsFile cmsFile = null;
+    // read the resource from the currentProject, or the online-project
+    try
+    {
+        //cmsFile=(CmsFile)m_resourceCache.get(currentProject.getId()+C_FILECONTENT+filename);
+        if (cmsFile == null) {
+
+            cmsFile = m_dbAccess.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename, includeDeleted);
             // only put it in thecache until the size is below the max site
             /*if (cmsFile.getContents().length <m_cachelimit) {
                 m_resourceCache.put(currentProject.getId()+C_FILECONTENT+filename,cmsFile);
