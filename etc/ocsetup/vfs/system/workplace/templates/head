@@ -64,7 +64,7 @@
 </TEMPLATE>
 
 <SYNC_DISABLED>
-<td></td>
+<![CDATA[<td></td>]]>
 </SYNC_DISABLED>	
 
 <SYNC_ENABLED>
