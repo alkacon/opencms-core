@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/04/01 04:49:40 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/04/01 12:27:22 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,51 +31,57 @@
 
 package org.opencms.db.mysql;
 
-import org.opencms.db.CmsProperty;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
 import java.util.List;
+import java.util.Vector;
 
 /**
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.30 $ $Date: 2004/04/01 04:49:40 $
+ * @version $Revision: 1.31 $ $Date: 2004/04/01 12:27:22 $
  * @since 5.1
  */
-public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
+public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
+
         return new org.opencms.db.mysql.CmsSqlManager();
     }
 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readPropertyObject(java.lang.String, org.opencms.file.CmsProject, org.opencms.file.CmsResource)
      */
-    public CmsProperty readPropertyObject(String key, CmsProject currentProject, CmsResource resource) throws CmsException {
+    public CmsProperty readPropertyObject(String key, CmsProject currentProject, CmsResource resource)
+    throws CmsException {
+
         CmsProperty property = super.readPropertyObject(key, currentProject, resource);
-        
+
         property.setStructureValue(CmsSqlManager.unescape(property.getStructureValue()));
         property.setResourceValue(CmsSqlManager.unescape(property.getResourceValue()));
-        
+
         return property;
     }
-    
+
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writePropertyObject(org.opencms.file.CmsProject, org.opencms.file.CmsResource, org.opencms.db.CmsProperty)
+     * @see org.opencms.db.I_CmsVfsDriver#writePropertyObject(org.opencms.file.CmsProject, org.opencms.file.CmsResource, org.opencms.file.CmsProperty)
      */
-    public void writePropertyObject(CmsProject currentProject, CmsResource resource, CmsProperty property) throws CmsException {
+    public void writePropertyObject(CmsProject currentProject, CmsResource resource, CmsProperty property)
+    throws CmsException {
+
         property.setStructureValue(CmsSqlManager.escape(property.getStructureValue()));
         property.setResourceValue(CmsSqlManager.escape(property.getResourceValue()));
-        
+
         super.writePropertyObject(currentProject, resource, property);
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readPropertyObjects(org.opencms.file.CmsProject, org.opencms.file.CmsResource)
      */
@@ -84,7 +90,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         List properties = super.readPropertyObjects(currentProject, resource);
         CmsProperty property = null;
 
-        for (int i = 0; i < properties.size(); i++) {
+        for (int i = 0, n = properties.size(); i < n; i++) {
             property = (CmsProperty)properties.get(i);
 
             property.setStructureValue(CmsSqlManager.unescape(property.getStructureValue()));
@@ -92,6 +98,25 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         }
 
         return properties;
-    }    
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readResources(int, java.lang.String, java.lang.String, int)
+     */
+    public Vector readResources(int projectId, String propertyDefinition, String propertyValue, int resourceType)
+    throws CmsException {
+
+        propertyValue = CmsSqlManager.escape(propertyValue);
+        return super.readResources(projectId, propertyDefinition, propertyValue, resourceType);
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readResourceNames(int, java.lang.String, java.lang.String)
+     */
+    public Vector readResourceNames(int projectId, String propertyDefinition, String propertyValue) throws CmsException {
+
+        propertyValue = CmsSqlManager.escape(propertyValue);
+        return super.readResourceNames(projectId, propertyDefinition, propertyValue);
+    }
 
 }
