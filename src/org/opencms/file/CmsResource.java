@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/07/01 16:30:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -363,8 +363,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             return 0;
         }
 
-        String ownResourceName = getName();
-        String otherResourceName = ((CmsResource)o).getName();
+        String ownResourceName = getRootPath();
+        String otherResourceName = ((CmsResource)o).getRootPath();
 
         return ownResourceName.compareTo(otherResourceName);
     }

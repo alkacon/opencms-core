@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/06/28 16:26:13 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2004/07/01 16:30:24 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  * 
  * @since 5.1
  */
@@ -694,9 +694,23 @@ public class CmsExplorer extends CmsWorkplace {
                 return Collections.EMPTY_LIST;
             }
         } else if ("projectview".equals(getSettings().getExplorerMode())) {
-            // show files in the selected project using some additional filter
+            
+            // select status to be shown
+            String criteria = getSettings().getExplorerProjectFilter();
+            int state;
+            if (criteria.equals("new")) {
+                state=I_CmsConstants.C_STATE_NEW;
+            } else if (criteria.equals("changed")) {
+                state=I_CmsConstants.C_STATE_CHANGED;
+            } else if (criteria.equals("deleted")) {
+                state=I_CmsConstants.C_STATE_DELETED;
+            } else {
+                state=I_CmsConstants.C_STATE_KEEP;
+            }
+                        
+            // show files in the selected project with the selected status
             try {
-                return new ArrayList(getCms().readProjectView(getSettings().getExplorerProjectId(), getSettings().getExplorerProjectFilter()));
+                return getCms().readProjectView(getSettings().getExplorerProjectId(), state);
             } catch (CmsException e) {
                 // should usually never happen
                 if (OpenCms.getLog(this).isInfoEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/29 14:38:57 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2004/07/01 16:30:24 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  */
 public class CmsObject {
 
@@ -1154,8 +1154,29 @@ public class CmsObject {
     public String getSitePath(CmsResource resource) {
         
         return m_context.getSitePath(resource);     
-    }    
+    }
 
+    /**
+     * Reads all resources of a project that match a given state from the VFS.<p>
+     * 
+     * Possible values for the <code>state<code> parameter are:<ul>
+     * <li><code>{@link I_CmsConstants#C_STATE_CHANGED}</code>: Read all "changed" resources in the project</li>
+     * <li><code>{@link I_CmsConstants#C_STATE_NEW}</code>: Read all "new" resources in the project</li>
+     * <li><code>{@link I_CmsConstants#C_STATE_DELETED}</code>: Read all "deleted" resources in the project</li>
+     * <li><code>{@link I_CmsConstants#C_STATE_KEEP}</code>: Read all resources either "changed", "new" or "deleted" in the project</li></ul>
+     *
+     * @param projectId the id of the project to read the file resources for
+     * @param state the resource state to match 
+     *
+     * @return all resources of a project that match a given criteria from the VFS
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readProjectView(int projectId, int state) throws CmsException {
+        
+        return m_driverManager.readProjectView(m_context, projectId, state);
+    }
+    
     //-----------------------------------------------------------------------------------
     // Permission related methods:
     private int warning1;
@@ -3143,21 +3164,6 @@ public class CmsObject {
      */
     public List readProjectResources(CmsProject project) throws CmsException {
         return m_driverManager.readProjectResources(project);
-    }
-
-    /**
-     * Reads all file headers of a project from the Cms.
-     *
-     * @param projectId the id of the project to read the file headers for.
-     * @param filter The filter for the resources (all, new, changed, deleted, locked)
-     *
-     * @return a Vector (of CmsResources objects) of resources.
-     * 
-     * @throws CmsException if something goes wrong
-     *
-     */
-    public Vector readProjectView(int projectId, String filter) throws CmsException {
-        return m_driverManager.readProjectView(m_context, projectId, filter);
     }
     
     /**

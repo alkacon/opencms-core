@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/01 10:39:01 $
- * Version: $Revision: 1.391 $
+ * Date   : $Date: 2004/07/01 16:30:24 $
+ * Version: $Revision: 1.392 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.391 $ $Date: 2004/07/01 10:39:01 $
+ * @version $Revision: 1.392 $ $Date: 2004/07/01 16:30:24 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2552,6 +2552,64 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public CmsFolder readFolder(CmsRequestContext context, String resourcename, CmsResourceFilter filter) throws CmsException {
         
         return (CmsFolder)readResource(context, resourcename, filter);
+    }    
+    
+    /**
+     * Reads all resources of a project that match a given state from the VFS.<p>
+     *
+     * @param context the current request context
+     * @param projectId the id of the project to read the file resources for
+     * @param state the resource state to match 
+     *
+     * @return all resources of a project that match a given criteria from the VFS
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#readProjectView(int, int)
+     */
+    public List readProjectView(CmsRequestContext context, int projectId, int state) throws CmsException {
+
+        List resources;
+        if ((state == I_CmsConstants.C_STATE_NEW)
+            || (state == I_CmsConstants.C_STATE_CHANGED)
+            || (state == I_CmsConstants.C_STATE_DELETED)) {
+            // get all resources form the database that match the selected state
+            resources = m_vfsDriver.readResources(
+                projectId, 
+                state, 
+                I_CmsConstants.C_READMODE_MATCHSTATE);
+        } else {
+            // get all resources form the database that are somehow changed (i.e. not unchanged)
+            resources = m_vfsDriver.readResources(
+                projectId,
+                I_CmsConstants.C_STATE_UNCHANGED,
+                I_CmsConstants.C_READMODE_UNMATCHSTATE);
+        }
+
+        List result = new ArrayList(resources.size());
+        for (int i=0; i<resources.size(); i++) {
+            CmsResource currentResource = (CmsResource)resources.get(i);
+            if (PERM_ALLOWED == hasPermissions(
+                context,
+                currentResource,
+                I_CmsConstants.C_READ_ACCESS,
+                true,
+                CmsResourceFilter.ALL)) {
+                
+                result.add(currentResource);
+            }
+        }
+
+        // free memory
+        resources.clear();
+        resources = null;
+
+        // set the full resource names
+        setFullResourceNames(context, result);
+        // sort the result
+        Collections.sort(result);
+
+        return result;
     }    
     
     //-----------------------------------------------------------------------------------
@@ -6497,81 +6555,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public List readProjectResources(CmsProject project) throws CmsException {
         return m_projectDriver.readProjectResources(project);
-    }
-
-    /**
-     * Reads all either new, changed, deleted or locked resources that are changed
-     * and inside a specified project.<p>
-     * 
-     * @param context the current request context
-     * @param projectId the project ID
-     * @param criteria specifies which resources inside the project should be read, {all|new|changed|deleted|locked}
-     * @return a Vector with the selected resources
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readProjectView(CmsRequestContext context, int projectId, String criteria) throws CmsException {
-        Vector retValue = new Vector();
-        List resources = null;
-        CmsResource currentResource = null;
-        CmsLock currentLock = null;
-        
-        // first get the correct status mode
-        int state=-1;
-        if (criteria.equals("new")) {
-            state=I_CmsConstants.C_STATE_NEW;
-        } else if (criteria.equals("changed")) {
-            state=I_CmsConstants.C_STATE_CHANGED;
-        } else if (criteria.equals("deleted")) {
-            state=I_CmsConstants.C_STATE_DELETED;
-        } else if (criteria.equals("all")) {
-            state=I_CmsConstants.C_STATE_UNCHANGED;
-        } else {
-            // this method was called with an unknown filter key
-            // filter all changed/new/deleted resources
-            state=I_CmsConstants.C_STATE_UNCHANGED;
-        }
-        
-        // depending on the selected filter, we must use different methods to get the required 
-        // resources
-        
-        // if the "lock" filter was selected, we must handle the DB access different since
-        // lock information aren ot sotred in the DB anymore
-        if (criteria.equals("locked")) {
-            resources=m_vfsDriver.readResources(projectId, state, I_CmsConstants.C_READMODE_IGNORESTATE);              
-        } else {
-        
-            if ((state == I_CmsConstants.C_STATE_NEW) || (state == I_CmsConstants.C_STATE_CHANGED) 
-                    || (state == I_CmsConstants.C_STATE_DELETED)) {
-                resources=m_vfsDriver.readResources(projectId, state, I_CmsConstants.C_READMODE_MATCHSTATE);
-               
-                // get all resources form the database which match to the selected state
-            } else if (state == I_CmsConstants.C_STATE_UNCHANGED) {
-                // get all resources form the database which are not unchanged
-                resources=m_vfsDriver.readResources(projectId, state, I_CmsConstants.C_READMODE_UNMATCHSTATE);
-            }
-        }
-
-          
-        Iterator i = resources.iterator();
-        while (i.hasNext()) {
-            currentResource = (CmsResource)i.next();          
-            if (PERM_ALLOWED == hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, true, CmsResourceFilter.ALL)) {
-                if (criteria.equals("locked")) {                    
-                    currentLock = getLock(context, currentResource);
-                    if (!currentLock.isNullLock()) {
-                        retValue.addElement(currentResource);
-                    }
-                } else {                      
-                    retValue.addElement(currentResource);
-                }
-            }
-        } 
-
-        resources.clear();
-        resources = null;
-
-        setFullResourceNames(context, retValue);                
-        return retValue;
     }
 
     /**

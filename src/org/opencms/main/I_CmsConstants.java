@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/06/28 11:18:09 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/07/01 16:30:24 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public interface I_CmsConstants {
 
@@ -432,31 +432,28 @@ public interface I_CmsConstants {
     int C_ACCESSFLAGS_GROUP = 32;
 
     /**
-     * Is set, if the resource is unchanged in this project.
-     * WARNING: Don't change the state values, they are used to calculate the importance !
+     * Indicates if a resource is unchanged in the offline version when compared to the online version.
      */
     int C_STATE_UNCHANGED = 0;
 
     /**
-     * Is set, if the resource was changed in this project.
-     * WARNING: Don't change the state values, they are used to calculate the importance !
+     * Indicates if a resource has been changed in the offline version when compared to the online version.
      */
     int C_STATE_CHANGED = 1;
 
     /**
-     * Is set, if the resource is new in this project.
-     * WARNING: Don't change the state values, they are used to calculate the importance !
+     * Indicates if a resource in new in the offline version when compared to the online version.
      */
     int C_STATE_NEW = 2;
 
     /**
-     * Is set, if the resource was deleted in this project.
-     * WARNING: Don't change the state values, they are used to calculate the importance !
+     * Indicates if a resource has been deleted in the offline version when compared to the online version.
      */
     int C_STATE_DELETED = 3;
     
     /**
-     * Special state value that indicates the current state must be kept on the resource.
+     * Special state value that indicates the current state must be kept on a resource.
+     * This value must not be written to the database!
      */
     int C_STATE_KEEP = 99;    
 
