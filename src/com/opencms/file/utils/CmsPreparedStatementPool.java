@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/07/06 13:35:45 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/07/07 07:09:05 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -108,6 +108,7 @@ public class CmsPreparedStatementPool {
 		this.m_passwd = passwd;
 		this.m_maxConn = maxConn;
 		
+        System.err.println("**** Create new pool");
 		// register the driver for the database
 		try {
 			Class.forName(m_driver);
@@ -150,7 +151,7 @@ public class CmsPreparedStatementPool {
 	public void initPreparedStatement(Integer key, String sql) throws CmsException {
 		Vector temp = new Vector(m_maxConn);
 		Connection conn = null;
-
+        System.err.println("**** Init Pool");
 		m_prepStatementsCache.put(key, sql);
 		
 		for (int i = 0; i < m_maxConn; i++) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/06 15:55:20 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2000/07/07 07:09:04 $
+ * Version: $Revision: 1.84 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file.genricSql;
+package com.opencms.file.genericSql;
 
 import javax.servlet.http.*;
 import java.util.*;
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.83 $ $Date: 2000/07/06 15:55:20 $
+ * @version $Revision: 1.84 $ $Date: 2000/07/07 07:09:04 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
