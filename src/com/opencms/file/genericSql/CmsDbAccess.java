@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/26 13:56:45 $
-* Version: $Revision: 1.225 $
+* Date   : $Date: 2001/11/14 10:10:19 $
+* Version: $Revision: 1.226 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.225 $ $Date: 2001/10/26 13:56:45 $ *
+ * @version $Revision: 1.226 $ $Date: 2001/11/14 10:10:19 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1740,7 +1740,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             con = DriverManager.getConnection(usedPool);
             statement = con.prepareStatement(m_cq.get("C_PROPERTIES_DELETEALL"+usedStatement));
             statement.setInt(1, resource.getResourceId());
-            statement.executeQuery();
+            statement.executeUpdate();
         } catch( SQLException exc ) {
             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
                 CmsException.C_SQL_ERROR, exc);
@@ -1790,7 +1790,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             con = DriverManager.getConnection(usedPool);
             statement = con.prepareStatement(m_cq.get("C_PROPERTIES_DELETEALL"+usedStatement));
             statement.setInt(1, resourceId);
-            statement.executeQuery();
+            statement.executeUpdate();
         } catch( SQLException exc ) {
             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
                 CmsException.C_SQL_ERROR, exc);
@@ -3494,6 +3494,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         Connection con = null;
         String usedPool = null;
         String usedStatement = null;
+        String add1 = null;
+        String add2 = null;
         //int onlineProject = getOnlineProject(projectId).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
@@ -3503,14 +3505,15 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
             usedPool = m_poolName;
             usedStatement = "";
         }
+        add1 = " "+m_cq.get("C_RESOURCES_GET_FOLDERTREE"+usedStatement+"_ADD1")+rootName;
+        add2 = m_cq.get("C_RESOURCES_GET_FOLDERTREE"+usedStatement+"_ADD2");
         try {
             // read file data from database
             con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_FOLDERTREE"+usedStatement));
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_FOLDERTREE"+usedStatement)+add1+add2);
             statement.setInt(1, projectId);
-            statement.setString(2, rootName+"%");
+            //statement.setString(2, rootName+"%");
             res = statement.executeQuery();
-
             // create new file
             while (res.next()) {
                 int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
@@ -5783,8 +5786,114 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                    groupId,resProjectId,accessFlags,state,lockedBy,
                                    launcherType,launcherClass,created,modified,modifiedBy,
                                    content,resSize, lockedInProject);
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
                 // check if this resource is marked as deleted
                 if (file.getState() == C_STATE_DELETED) {
+                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
+                }
+            } else {
+                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
+            }
+        } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch (CmsException ex) {
+            throw ex;
+        } catch( Exception exc ) {
+            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                try {
+                    res.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(con != null) {
+                try {
+                    con.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+        }
+        return file;
+     }
+
+    /**
+     * Reads a file from the Cms.<BR/>
+     *
+     * @param projectId The Id of the project in which the resource will be used.
+     * @param onlineProjectId The online projectId of the OpenCms.
+     * @param filename The complete name of the new file (including pathinformation).
+     *
+     * @return file The read file.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+     public CmsFile readFile(int projectId,
+                             int onlineProjectId,
+                             String filename, boolean includeDeleted)
+         throws CmsException {
+        CmsFile file = null;
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        Connection con = null;
+        String usedPool;
+        String usedStatement;
+        if (projectId == onlineProjectId) {
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+        } else {
+            usedPool = m_poolName;
+            usedStatement = "";
+        }
+        try {
+            con = DriverManager.getConnection(usedPool);
+            // if the actual project is the online project read file header and content
+            // from the online project
+            statement = con.prepareStatement(m_cq.get("C_FILES_READ"+usedStatement));
+            statement.setString(1, filename);
+            statement.setInt(2, projectId);
+            res = statement.executeQuery();
+            if(res.next()) {
+                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
+                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+                byte[] content=res.getBytes(m_cq.get("C_RESOURCES_FILE_CONTENT"));
+                int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
+                                   groupId,resProjectId,accessFlags,state,lockedBy,
+                                   launcherType,launcherClass,created,modified,modifiedBy,
+                                   content,resSize, lockedInProject);
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+                // check if this resource is marked as deleted
+                if (file.getState() == C_STATE_DELETED && !includeDeleted) {
                     throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
                 }
             } else {
@@ -5883,6 +5992,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                    groupId,projectId,accessFlags,state,lockedBy,
                                    launcherType,launcherClass,created,modified,modifiedBy,
                                    content,resSize, lockedInProject);
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
             }
@@ -6043,10 +6155,13 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
                                 new byte[0],resSize, lockedInProject);
-                         // check if this resource is marked as deleted
-                        if (file.getState() == C_STATE_DELETED) {
-                            throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
-                        }
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+                // check if this resource is marked as deleted
+                if (file.getState() == C_STATE_DELETED) {
+                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
+                }
             } else {
                 throw new CmsException("["+this.getClass().getName()+"] "+resourceId,CmsException.C_NOT_FOUND);
             }
@@ -6143,10 +6258,13 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
                                 new byte[0],resSize,lockedInProject);
-                         // check if this resource is marked as deleted
-                        if (file.getState() == C_STATE_DELETED) {
-                            throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
-                        }
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+                // check if this resource is marked as deleted
+                if (file.getState() == C_STATE_DELETED) {
+                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
+                }
             } else {
                 throw new CmsException("["+this.getClass().getName()+"] "+resource.getResourceId(),CmsException.C_NOT_FOUND);
             }
@@ -6244,7 +6362,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
                                 new byte[0],resSize,lockedInProject);
-
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
                 // check if this resource is marked as deleted
                 if (file.getState() == C_STATE_DELETED) {
                     throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
@@ -6347,6 +6467,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
                                 new byte[0],resSize,lockedInProject);
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
                 // check if this resource is marked as deleted
                 if ((file.getState() == C_STATE_DELETED) && !includeDeleted) {
                     throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
@@ -6442,6 +6565,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                            projectID,accessFlags,state,
                                            launcherType,launcherClass,created,modified,modifiedBy,
                                            modifiedByName,new byte[0],resSize, lockedInProject);
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
             }
@@ -6530,6 +6656,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                              resProjectId,accessFlags,state,
                                              launcherType,launcherClass,created,modified,modifiedBy,
                                              modifiedByName,content,resSize, lockedInProject);
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
             }
@@ -6627,7 +6756,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
                                 new byte[0],resSize,lockedInProject);
-
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
                 // check if this resource is marked as deleted
                 if (file.getState() == C_STATE_DELETED) {
                     throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
@@ -6839,6 +6970,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
                                       groupId,projectID,accessFlags,state,lockedBy,created,
                                       modified,modifiedBy,lockedInProject);
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);
             }
@@ -6930,6 +7064,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
                                       groupId,projectID,accessFlags,state,lockedBy,created,
                                       modified,modifiedBy,lockedInProject);
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsException("["+this.getClass().getName()+"] "+folderid,CmsException.C_NOT_FOUND);
             }
@@ -7021,6 +7158,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
                                       groupId,projectID,accessFlags,state,lockedBy,created,
                                       modified,modifiedBy,lockedInProject);
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);
             }
@@ -7875,6 +8015,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                      userId,groupId,projectId,accessFlags,state,lockedBy,
                                      launcherType,launcherClass,created,modified,modifiedBy,
                                      resSize,lockedInProject);
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 res.close();
                 res = null;
@@ -8031,10 +8174,15 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, CmsException.C_NOT_FOUND);
             }
-            res.close();
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
         } finally {
+            if(res != null){
+                try{
+                    res.close();
+                } catch (SQLException e) {
+                }
+            }
             if (statement != null) {
                 try{
                     statement.close();
@@ -8060,7 +8208,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
      *
      * @exception CmsException Throws CmsException if operation was not succesful
      */
-    private Vector readBackupProjectResources(int versionId) throws CmsException {
+    protected Vector readBackupProjectResources(int versionId) throws CmsException {
         PreparedStatement statement = null;
         Connection con = null;
         ResultSet res = null;
@@ -8612,13 +8760,12 @@ public CmsTask readTask(int id) throws CmsException {
 
             // create new Cms user object
             if(res.next()) {
-                // read the additional infos.
+                 // read the additional infos.
                 byte[] value = res.getBytes(m_cq.get("C_USERS_USER_INFO"));
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
                 Hashtable info=(Hashtable)oin.readObject();
-
                 user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
                                    res.getString(m_cq.get("C_USERS_USER_NAME")),
                                    res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
