@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsAccessFilesystem.java,v $
-* Date   : $Date: 2001/07/31 15:50:15 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/02/04 16:30:17 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -83,7 +83,7 @@ public void createFolder(String foldername, String key) throws CmsException {
     File discFolder = new File(absoluteName(foldername, key));
     // check if this folder already exits
     if (!discFolder.exists()) {
-        boolean success = discFolder.mkdir();
+        boolean success = discFolder.mkdirs();
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && (!success)) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + absoluteName(foldername, key) + ".");
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/01/23 15:16:21 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2002/02/04 16:30:17 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.77 $ $Date: 2002/01/23 15:16:21 $
+ * @version $Revision: 1.78 $ $Date: 2002/02/04 16:30:17 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -189,6 +189,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 osinfo += System.getProperty("os.version") + " ";
                 osinfo += System.getProperty("os.arch") + " ";
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] OS Info: " + osinfo);
+
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] file.encoding: " + System.getProperty("file.encoding"));
             }
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating first cms-object");
@@ -233,9 +235,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] CmsCronScheduler is disabled!");
                 }
             }
-
-            // Check the file.encoding
-            checkFileEncoding();
         }
         catch(Exception e) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -373,7 +372,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         CmsObject cms = new CmsObject();
         cms.init(c_rb);
         cms.destroy();
-        checkFileEncoding();
     }
 
     /**
@@ -671,19 +669,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public static I_CmsRegistry getRegistry() throws CmsException {
         return c_rb.getRegistry(null, null, null);
-    }
-
-    /**
-     * Method that checks the system-property file.encoding.
-     * If it is not the prefered encoding opencms logs a warning.
-     */
-    private void checkFileEncoding() {
-       if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            if(!System.getProperty("file.encoding").equals(C_PREFERED_FILE_ENCODING)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] You are not using the prefered file.encoding. It should be " + C_PREFERED_FILE_ENCODING + " but it is " + System.getProperty("file.encoding"));
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] You may get in trouble with user passwords if you change the encoding later on");
-            }
-        }
     }
 
     /**
