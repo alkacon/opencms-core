@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/09/25 15:43:41 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2001/01/03 14:30:34 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.37 $ $Date: 2000/09/25 15:43:41 $
+ * @version $Revision: 1.38 $ $Date: 2001/01/03 14:30:34 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -321,7 +321,10 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			        session.removeValue(C_PARA_NEWFILE);
 					session.removeValue(C_PARA_NEWFOLDER);
 					session.removeValue(C_PARA_FLAGS);
-					throw ex;
+					//throw ex;
+					template="error";
+					xmlTemplateDocument.setData("details", ex.getStackTrace());
+					return startProcessing(cms,xmlTemplateDocument,"", parameters, template);
 				}
 				// everything is done, so remove all session parameters
 				session.removeValue(C_PARA_FILE);
@@ -398,7 +401,10 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			        session.removeValue(C_PARA_NEWFILE);
 					session.removeValue(C_PARA_NEWFOLDER);
 					session.removeValue(C_PARA_FLAGS);
-					throw ex;
+					//throw ex;
+					template="error";
+					xmlTemplateDocument.setData("details", ex.getStackTrace());
+					return startProcessing(cms,xmlTemplateDocument,"", parameters, template);
 				}
 
 				}

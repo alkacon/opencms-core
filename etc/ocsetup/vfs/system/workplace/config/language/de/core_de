@@ -118,6 +118,7 @@
 				<chown>Leider konnte der Eigentümer nicht geändert werden.</chown>
 				<chpwd>Leider konnte das Kennwort nicht geändert werden.</chpwd>
 				<chtype>Leider konnte der Dateityp nicht geändert werden.</chtype>
+				<copy>Leider konnte die Datei nicht kopiert werden.</copy>
 				<datamissing>Sie haben noch nicht alle notwendigen Einträge in das Formular gemacht.</datamissing>
 				<delete>Leider konnte die Datei nicht gelöscht werden.</delete>
 				<deleteuser> Leider konnte der Benutzer nicht gelöscht werden.</deleteuser>
@@ -157,6 +158,7 @@
 				<chpwd2>Das alte Kennwort ist nicht korrekt.</chpwd2>
 				<chpwd3>Das Kennwort muß mindestens aus 4 Zeichen bestehen.</chpwd3>
 				<chtype>Sie haben dazu keine Berechtigung.</chtype>
+				<copy>Eventuell existiert der Zielordner nicht.</copy>
 				<delete>Die Datei ist gesperrt von</delete>
 				<deleteuser>Die Benutzer Admin und Guest können nicht gelöscht werden.</deleteuser>
 				<deleteextension>siehe Details</deleteextension>
@@ -207,6 +209,7 @@
 				<chpwd>Geben Sie das neue Kennwort erneut ein.</chpwd>
 				<chpwd2>Geben Sie das alte Kennwort erneut ein.</chpwd2>
 				<chtype>Kontaktieren Sie Ihren Systemadministrator.</chtype>
+				<copy></copy>
 				<delete>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</delete>
 				<deleteextension>Kontaktieren Sie Ihren Systemadministrator.</deleteextension>
 				<deleteuser></deleteuser>
@@ -243,6 +246,7 @@
 				<chown>Eigentümer ändern</chown>
 				<chpwd>Kennwort ändern</chpwd>
 				<chtype>Dateityp ändern</chtype>
+				<copy>Datei kopieren</copy>
 				<delete>Datei löschen</delete>
 				<deleteextension>Dateierweiterung löschen</deleteextension>
 				<deleteuser>Benutzer löschen</deleteuser>
