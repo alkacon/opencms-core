@@ -215,7 +215,7 @@ public class CmsShowContent extends CmsXmlTemplate {
             }
             try {
                 Method getUniqueIdMethod = cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class});
-                template.setData("uniqueid", (String)getUniqueIdMethod.invoke(cdClass, new Object[] {cms}));
+                template.setData("uniqueid", (String)getUniqueIdMethod.invoke(cdObject, new Object[] {cms}));
             } catch (Exception e) {}
             setDatablocks(template, cdObject, getMethods);
         } catch (InvocationTargetException e) {
@@ -301,8 +301,9 @@ public class CmsShowContent extends CmsXmlTemplate {
                 if(showIt){
                     try {
                         Method getUniqueIdMethod = cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class});
-                        template.setData("uniqueid", (String)getUniqueIdMethod.invoke(cdClass, new Object[] {cms}));
-                    } catch (Exception e) {}
+                        template.setData("uniqueid", (String)getUniqueIdMethod.invoke(curCont, new Object[] {cms}));
+                    } catch (Exception e) {
+                    }
                     setDatablocks(template, curCont, getMethods);
                     list.append(template.getProcessedDataValue(C_LISTENTRY_DATABLOCK, this));
                 }
