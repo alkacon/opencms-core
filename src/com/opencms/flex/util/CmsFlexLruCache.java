@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2002/09/12 08:59:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/09/13 15:15:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -84,7 +84,7 @@ public class CmsFlexLruCache extends java.lang.Object {
      *
      * @param theMaxCacheCosts the max. cache costs of all cached objects
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
-     * @param theMaxObjectCosts the max. allowed cache costs per object
+     * @param theMaxObjectCosts the max. allowed cache costs per object. Set theMaxObjectCosts to -1 if you don't want to limit the max. allowed cache costs per object
      * @param forceFinalization should be true if a system wide garbage collection/finalization is forced after objects were removed from the cache
      */
     public CmsFlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts, int theMaxObjectCosts, boolean forceFinalization ) {
@@ -102,10 +102,10 @@ public class CmsFlexLruCache extends java.lang.Object {
      *
      * @param theMaxCacheCosts the max. cache costs of all cached objects
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
-     * @param theMaxObjectCosts the max. allowed cache costs per object
+     * @param theMaxObjectCosts the max. allowed cache costs per object. Set theMaxObjectCosts to -1 if you don't want to limit the max. allowed cache costs per object
      */
     public CmsFlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts, int theMaxObjectCosts ) {
-        this( theMaxCacheCosts, theAvgCacheCosts, theMaxObjectCosts, true );
+        this( theMaxCacheCosts, theAvgCacheCosts, theMaxObjectCosts, false );
     }
     
     /**
@@ -116,7 +116,7 @@ public class CmsFlexLruCache extends java.lang.Object {
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
      */
     public CmsFlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts ) {
-        this( theMaxCacheCosts, theAvgCacheCosts, theMaxCacheCosts/4, true );
+        this( theMaxCacheCosts, theAvgCacheCosts, theMaxCacheCosts/4, false );
     }
     
     /**
@@ -151,20 +151,33 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
-     * Add a new object to the cache.
+     * Add a new object to the cache. If you try to add the same object more than once,
+     * the object is touched instead.
      *
      * @param theCacheObject the object being added to the cache
      * @return true if the object was added to the cache, false if the object was denied because its cache costs were higher than the allowed max. cache costs per object
      */
-    public boolean add( I_CmsFlexLruCacheObject theCacheObject ) {
+    public synchronized boolean add( I_CmsFlexLruCacheObject theCacheObject ) {
+        boolean retVal = false;
+        
+        if (theCacheObject==null) {
+            // null can't be added or touched in the cache 
+            return false;
+        }
+        
         // only objects with cache costs < the max. allowed object cache costs can be cached!
-        if (theCacheObject.getLruCacheCosts()>this.m_MaxObjectCosts) {
+        if ( (this.m_MaxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>this.m_MaxObjectCosts) ) {
             this.log( "you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_MaxObjectCosts );
             return false;
         }
         
-        // add the object to the list of all cached objects in the cache
-        this.addHead( theCacheObject );
+        if (!this.isCached(theCacheObject)) {
+            // add the object to the list of all cached objects in the cache
+            this.addHead( theCacheObject );
+        }
+        else {
+            this.touch( theCacheObject );
+        }
         
         // check if the cache has to trash the last-recently-used objects before adding a new object
         if (this.m_ObjectCosts>this.m_MaxCacheCosts) {
@@ -175,14 +188,42 @@ public class CmsFlexLruCache extends java.lang.Object {
     }
     
     /**
+     * Test if a given object resides inside the cache.
+     * @return true if the object is inside the cache, false otherwise
+     */
+    private boolean isCached( I_CmsFlexLruCacheObject theCacheObject ) {
+        if (theCacheObject==null || this.m_ObjectCount==0) {
+            // the cache is empty or the object is null (which is never cached)
+            return false;
+        }
+        
+        if (theCacheObject.getNextLruObject()!=null || theCacheObject.getPreviousLruObject()!=null) { 
+            // the object has either a predecessor or successor in the linked 
+            // list of all cached objects, so it is inside the cache
+            return true;
+        }
+        
+        if (theCacheObject.getNextLruObject()==null && theCacheObject.getPreviousLruObject()==null) {
+            if (this.m_ObjectCount==1 && this.m_ListHead.equals(theCacheObject) && this.m_ListTail.equals(theCacheObject)) {
+                // the object is the one and only object in the cache
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
      * Touch an existing object in the cache in the sense that it's "last-recently-used" state
      * is updated.
      *
      * @param theCacheObject the object being touched
      */
-    public boolean touch( I_CmsFlexLruCacheObject theCacheObject ) {
+    public synchronized boolean touch( I_CmsFlexLruCacheObject theCacheObject ) {
+        if (!this.isCached(theCacheObject)) return false;
+        
         // only objects with cache costs < the max. allowed object cache costs can be cached!
-        if (theCacheObject.getLruCacheCosts()>this.m_MaxObjectCosts) {
+        if ( (this.m_MaxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>this.m_MaxObjectCosts) ) {
             this.log( "you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_MaxObjectCosts );
             this.remove( theCacheObject );
             return false;
@@ -248,7 +289,7 @@ public class CmsFlexLruCache extends java.lang.Object {
      * @return a reference to the object that was removed
      */
     public synchronized I_CmsFlexLruCacheObject remove( I_CmsFlexLruCacheObject theCacheObject ) {
-        if (theCacheObject.getNextLruObject()==null && theCacheObject.getPreviousLruObject()==null && this.m_ObjectCount>0) {
+        if (!this.isCached(theCacheObject)) {
             // this object was never ever before added to the cache
             return null;
         }
@@ -341,10 +382,7 @@ public class CmsFlexLruCache extends java.lang.Object {
      * Removes the last recently used objects from the list of all cached objects as long
      * as the costs of all cached objects are higher than the allowed avg. costs of the cache.
      */
-    private void gc() {
-        //this.log( this.toString() );
-        //this.log( "free memory before garbage collection:\t" + Runtime.getRuntime().freeMemory() );
-        
+    private void gc() {       
         I_CmsFlexLruCacheObject currentObject = this.m_ListTail;
         while (currentObject!=null) {
             if (this.m_ObjectCosts<this.m_AvgCacheCosts) break;
@@ -357,9 +395,6 @@ public class CmsFlexLruCache extends java.lang.Object {
             Runtime.getRuntime().runFinalization();
             System.gc();
         }
-        
-        //this.log( this.toString() );
-        //this.log( "free memory after garbage collection:\t" + Runtime.getRuntime().freeMemory() );
     }
     
     /**
