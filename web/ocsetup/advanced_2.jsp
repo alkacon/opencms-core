@@ -73,40 +73,6 @@
 									expPointNr++;
 									}
 								%>
-									<!-- <tr><td colspan="2"><hr></td></tr>
-									<tr>
-										<td>
-											Exportpoint 1
-										</td>
-										<td>
-											<input type="text" size="55" name="exportPoint1" value="<%= Bean.getExportPoint1() %>">
-										</td>
-									</tr>																	
-									<tr>
-										<td>
-											Exportpoint path 1
-										</td>
-										<td>
-											<input type="text" size="55" name="exportPointPath1" value="<%= Bean.getExportPointPath1() %>">
-										</td>
-									</tr>
-									<tr><td colspan="2"><hr></td></tr>
-									<tr>
-										<td>
-											Exportpoint 2
-										</td>
-										<td>
-											<input type="text" size="55" name="exportPoint2" value="<%= Bean.getExportPoint2() %>">
-										</td>
-									</tr>																	
-									<tr>
-										<td>
-											Exportpoint path 2
-										</td>
-										<td>
-											<input type="text" size="55" name="exportPointPath2" value="<%= Bean.getExportPointPath2() %>">
-										</td>
-									</tr>														 -->
 								</table>
 								<p>
 							</td>
