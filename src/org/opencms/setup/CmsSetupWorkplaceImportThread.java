@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupWorkplaceImportThread.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/04/09 15:59:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.PrintStream;
  * Used for the workplace setup in the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsSetupWorkplaceImportThread extends Thread {
 
@@ -77,7 +77,7 @@ public class CmsSetupWorkplaceImportThread extends Thread {
         m_setupBean = setupBean;
         // init stream and logging thread
         m_pipedOut = new PipedOutputStream();
-        m_loggingThread = new CmsSetupLoggingThread(m_pipedOut);
+        m_loggingThread = new CmsSetupLoggingThread(m_pipedOut, m_setupBean.getSetupLogName());
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/04/01 10:14:57 $
- * Version: $Revision: 1.538 $
+ * Date   : $Date: 2004/04/09 15:59:34 $
+ * Version: $Revision: 1.539 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,8 @@ OpenCms 5.3.4 Ix - March xx, 2004
   one entry in the navigation changes it will export all pages that use this navigation
 ! Static export can also be triggered with a button in the Administration for a 
   "full static render" export of the complete website  
+! During setup, the output visible for the workplace import is now written 
+  to a "setup.log" file
 
 OpenCms 5.3.3 Ix - March 01, 2004
 - Refactored classes com.opencms.file.* to org.opencms.file.*

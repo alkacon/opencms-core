@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/04/05 05:41:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/04/09 15:59:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -987,7 +987,20 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             m_errors.addElement("No valid file: " + file + "\n");
         }
 
-    }    
+    } 
+    
+    /**
+     * Returns the name of the setup log file.<p>
+     * 
+     * @return the name of the setup log file
+     */
+    public String getSetupLogName() {
+        if (m_configRfsPath != null) {
+            return m_configRfsPath + "setup.log";
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Sets the webapp name

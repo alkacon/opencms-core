@@ -32,12 +32,19 @@ OpenCms Setup Wizard - Import workplace
 			if (enabled) {
 				document.forms[0].ctn.disabled = true;
 				document.forms[0].bck.disabled = true;
+				
 				temp = "";
-				for(var i=out.length-1;i>=0;i--)    {
+				for(var i=out.length-1; i>=0; i--) {
 					temp += unescape(out[i])+"\n";
 				}
-				var oldcontent = document.forms[0].output.value;
-				document.forms[0].output.value = temp + oldcontent;
+				
+				var pageBody = temp + document.forms[0].output.value;				
+				var size = 163840;		
+				if (pageBody.length > size) {
+					pageBody = pageBody.substring(0, size);
+				}
+			    
+				document.forms[0].output.value = pageBody;
 			}
 		}
 

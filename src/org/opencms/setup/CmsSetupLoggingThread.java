@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupLoggingThread.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/04/09 15:59:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 package org.opencms.setup;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -44,29 +46,45 @@ import java.util.Vector;
  * the getMessages() method.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsSetupLoggingThread extends Thread {
-    private LineNumberReader m_lineReader;
-   
+    
+    private LineNumberReader m_lineReader;   
     private Vector m_messages;
     private PipedInputStream m_pipedIn;
     private PipedOutputStream m_pipedOut;
     private boolean m_stopThread;
-
+    private FileWriter m_logWriter; 
+    
     /** 
      * Constructor.<p>
      * 
      * @param pipedOut the output stream to write to 
+     * @param log the file name to write the log to (if null, no log is written)
      */
-    public CmsSetupLoggingThread(PipedOutputStream pipedOut) {
+    public CmsSetupLoggingThread(PipedOutputStream pipedOut, String log) {
 
         super("OpenCms: Setup logging");
 
         m_pipedOut = pipedOut;
         m_messages = new Vector();
         m_stopThread = false;
-
+        
+        if (log != null) {
+            try {
+                File logFile = new File(log);
+                if (logFile.exists()) {
+                    logFile.delete();
+                }
+                m_logWriter = new FileWriter(logFile);
+            } catch (Throwable t) {
+                m_logWriter = null;
+            }
+        } else {
+            m_logWriter = null;
+        }
+        
         try {
             m_pipedIn = new PipedInputStream();
             m_pipedIn.connect(m_pipedOut);
@@ -110,17 +128,32 @@ public class CmsSetupLoggingThread extends Thread {
             }
             if (line != null) {
                 if (lineNr > lastLineNr) {
-                    // supress multiple output of the same line after "Write end dead" IO exception      
-                    m_messages.addElement(lineNr + ":\t" + line);
+                    // supress multiple output of the same line after "Write end dead" IO exception 
+                    String content = (lineNr + 1) + ":\t" + line;
+                    m_messages.addElement(content);
                     lastLineNr = lineNr;
+                    if (m_logWriter != null) {
+                        try {
+                            m_logWriter.write(content + "\n");
+                        } catch (IOException e) {
+                            m_logWriter = null;
+                        }
+                    }
                 }
-            }          
+            }
         }
         try {
             m_pipedIn.close();
         } catch (IOException e) {
             // ignore
         }
+        if (m_logWriter != null) {
+            try {
+                m_logWriter.close();
+            } catch (IOException e) {
+                m_logWriter = null;
+            }
+        }        
     }
 
     /** 
