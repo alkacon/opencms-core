@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2002/07/09 14:30:56 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2002/07/24 16:19:47 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2002/07/09 14:30:56 $
+ * @version $Revision: 1.45 $ $Date: 2002/07/24 16:19:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -66,7 +66,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     /** Constant for the current language
      * HACK: replace this by the corresponding value from the user object
      */
-    private final static String C_CURRENT_LANGUAGE = "de";
+    private final static String C_CURRENT_LANGUAGE = "uk";
 
     /**
      * Sorts two vectors using bubblesort. This is a quick hack to display templates sorted by title instead of
@@ -360,7 +360,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         return xmlTemplateDocument;
     }
-
+    
     /**
      * Checks if the current user is <strong>administrator</strong>.
      * <P>
@@ -374,12 +374,20 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @return <code>true</code> if the current user is in the Administrators Group, <code>false</code> otherwise.
      * @exception CmsException if there were errors while accessing project data.
      */
-
     public Boolean isAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
         return new Boolean(reqCont.isAdmin());
     }
 
+    /**
+     * Same as above, only that this returns always 'false'.
+     * Can be used to quickly deactivate unwanted icons on the workplace even
+     * for then admin by just adding "False" to isAdmin call in file property.
+     */
+    public Boolean isAdminFalse(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
+        return new Boolean(false);
+    }
+    
     /**
      * Checks if the current user is the administrator <strong>Admin</strong>.
      * <P>
@@ -392,7 +400,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @return <code>true</code> if the current user is the user Admin, <code>false</code> otherwise.
      * @exception CmsException if there were errors while accessing project data.
      */
-
     public Boolean isTheAdminUser(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
         if(reqCont.isAdmin()){
@@ -412,7 +419,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
