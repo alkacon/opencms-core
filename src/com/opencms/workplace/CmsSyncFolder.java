@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/09/05 12:22:25 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,9 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.report.A_CmsReportThread;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.*;
+
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Utils;
 
@@ -47,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.23 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.24 $ $Date: 2003/09/05 12:22:25 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -132,14 +134,13 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
                         "wait");
             } else {
                 // thread has come to an end, was there an error?
-                String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
-                if(errordetails == null) {
+                Throwable error = doProjectNew.getError();
+                if(error == null) {
                     return startProcessing(cms, xmlTemplateDocument, elementName,
                             parameters, "done");
                 } else {
                     // get errorpage:
-                    xmlTemplateDocument.setData("details", errordetails);
-                    session.removeValue(C_SESSION_THREAD_ERROR);
+                    xmlTemplateDocument.setData("details", Utils.getStackTrace(error));
                     return startProcessing(cms, xmlTemplateDocument, elementName,
                             parameters, "error");
                 }
@@ -204,11 +205,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
                             parameters, "error");
                     }
                     // start the thread for: synchronize the resources
-                    // first clear the session entry if necessary
-                    if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-                        session.removeValue(C_SESSION_THREAD_ERROR);
-                    }
-                    A_CmsReportThread doSyncFolder = new CmsSyncFolderThread(cms, synchronizeResources, m_newProject, session);
+                    A_CmsReportThread doSyncFolder = new CmsSynchronizeThread(cms, synchronizeResources, m_newProject);
                     doSyncFolder.start();
                     session.putValue(C_SYNCFOLDER_THREAD, doSyncFolder);
                     xmlTemplateDocument.setData("time", "5");

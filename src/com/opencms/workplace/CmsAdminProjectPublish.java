@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/09/05 12:22:25 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,9 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
-import com.opencms.report.A_CmsReportThread;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.*;
+
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -46,7 +48,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.34 $ $Date: 2003/09/05 12:22:25 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -111,7 +113,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault {
             // linkcheck is ready. Now we can start the publishing
             //int projectId = ((Integer)session.getValue(C_PROJECT_ID_FOR_PUBLISH)).intValue();
             session.removeValue(C_PROJECT_ID_FOR_PUBLISH);
-            A_CmsReportThread doPublish = new CmsAdminPublishProjectThread(cms, session);
+            A_CmsReportThread doPublish = new CmsProjectPublishThread(cms);
             doPublish.start();
             session.putValue(C_PUBLISH_THREAD, doPublish);
             xmlTemplateDocument.setData("actionParameter", "showPublishResult");
@@ -184,7 +186,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault {
                 cms.getRequestContext().setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
             }
             // first part of the publish: check for broken links
-            A_CmsReportThread doCheck = new CmsAdminLinkmanagementThread(cms, projectId);
+            A_CmsReportThread doCheck = new CmsLinkHrefManagementThread(cms, projectId);
             doCheck.start();
             session.putValue(C_PUBLISH_LINKCHECK_THREAD, doCheck);
             session.putValue(C_PROJECT_ID_FOR_PUBLISH, new Integer(projectId));

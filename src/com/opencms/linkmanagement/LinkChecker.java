@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/09/02 12:15:38 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/09/05 12:22:25 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.report.I_CmsReport;
+import org.opencms.report.I_CmsReport;
 import com.opencms.template.CmsTemplateClassManager;
 import com.opencms.template.CmsXmlControlFile;
 import com.opencms.template.CmsXmlTemplate;

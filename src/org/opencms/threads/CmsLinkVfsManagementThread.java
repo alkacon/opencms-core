@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminVfsLinkManagementThread.java,v $
- * Date   : $Date: 2003/07/31 13:19:36 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsLinkVfsManagementThread.java,v $
+ * Date   : $Date: 2003/09/05 12:22:25 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,39 +28,45 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package com.opencms.workplace;
+
+package org.opencms.threads;
+
+import org.opencms.report.A_CmsReportThread;
 
 import com.opencms.file.CmsObject;
-import com.opencms.report.CmsHtmlReport;
-import com.opencms.report.I_CmsReport;
 
 /**
- * A thread to join all VFS links with their target resources.
+ * Joins all VFS links with their target resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * 
+ * @version $Revision: 1.1 $
+ * @since 5.1.10
  */
-public class CmsAdminVfsLinkManagementThread extends Thread {
-
-    private CmsObject m_cms;
-    private I_CmsReport m_report;
-
-    public CmsAdminVfsLinkManagementThread(CmsObject cms) {
-        m_cms = cms;
-        m_cms.getRequestContext().setUpdateSessionEnabled(false);
-        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-        m_report = new CmsHtmlReport(locale);        
-    }
-    
-    public void run() {
-        m_report.println( "Disabled" );
-    }    
+public class CmsLinkVfsManagementThread extends A_CmsReportThread {
 
     /**
-     * returns the part of the report that is ready.
+     * Joins all VFS links with their target resources.<p>
+     * 
+     * @param cms the current OpenCms context object
      */
-    public String getReportUpdate(){
-        return m_report.getReportUpdate();
+    public CmsLinkVfsManagementThread(CmsObject cms) {
+        super("OpenCms: VFS link management");
+        // NYI
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
+     */
+    public String getReportUpdate() {
+        // NYI
+        return "";
+    }
+
+    /**
+     * @see java.lang.Runnable#run()
+     */
+    public void run() {
+        // NYI
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminVfsLinkManagement.java,v $
- * Date   : $Date: 2003/07/31 13:19:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/05 12:22:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.threads.*;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -41,7 +43,7 @@ import java.util.Hashtable;
  * Workplace class for the Check Project / Check Filesystem Links backoffice item.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public final class CmsAdminVfsLinkManagement extends CmsWorkplaceDefault {
     
@@ -55,7 +57,7 @@ public final class CmsAdminVfsLinkManagement extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile templateDocument = (CmsXmlWpTemplateFile) this.getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String action = (String) parameters.get("action");
-        CmsAdminVfsLinkManagementThread vfsLinkManagementThread = null;
+        CmsLinkVfsManagementThread vfsLinkManagementThread = null;
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
 
         String text = lang.getLanguageValue("linkmanagement.label.text1")
@@ -64,7 +66,7 @@ public final class CmsAdminVfsLinkManagement extends CmsWorkplaceDefault {
                         
         if ("start".equals(action)) {
             // first call - start checking
-            vfsLinkManagementThread = new CmsAdminVfsLinkManagementThread(cms);
+            vfsLinkManagementThread = new CmsLinkVfsManagementThread(cms);
             vfsLinkManagementThread.start();
             session.putValue(C_LINKCHECK_VFS_THREAD, vfsLinkManagementThread);
 
@@ -72,7 +74,7 @@ public final class CmsAdminVfsLinkManagement extends CmsWorkplaceDefault {
             templateDocument.setData("data", "");
             templateDocument.setData("endMethod", "");
         } else if ("working".equals(action)) {
-            vfsLinkManagementThread = (CmsAdminVfsLinkManagementThread)session.getValue(C_LINKCHECK_VFS_THREAD);
+            vfsLinkManagementThread = (CmsLinkVfsManagementThread)session.getValue(C_LINKCHECK_VFS_THREAD);
 
             if (vfsLinkManagementThread.isAlive()) {
                 templateDocument.setData("endMethod", "");

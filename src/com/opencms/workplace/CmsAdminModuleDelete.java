@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/09/05 12:22:25 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,9 @@
 package com.opencms.workplace;
 
 import org.opencms.main.OpenCms;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.CmsModuleDeleteThread;
+import org.opencms.threads.CmsModuleReplaceThread;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -36,10 +39,8 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.report.A_CmsReportThread;
 
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
@@ -49,13 +50,14 @@ import java.util.Vector;
  * @author Hanjo Riege
  */
 public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
-    private final String C_MODULE = "module";
-    private final String C_STEP = "step";
-    private final String C_DELETE = "delete";
-    private final String C_WARNING = "warning";
-    private final String C_ERROR = "error";
-    private final String C_SESSION_MODULENAME = "deletemodulename";
-    private final String C_MODULE_THREAD = "moduledeletethread";
+    
+    private static final  String C_MODULE = "module";
+    private static final String C_STEP = "step";
+    private static final String C_DELETE = "delete";
+    private static final String C_WARNING = "warning";
+    private static final String C_ERROR = "error";
+    private static final String C_SESSION_MODULENAME = "deletemodulename";
+    private static final String C_MODULE_THREAD = "moduledeletethread";
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -149,9 +151,9 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
             }   
                      
             // add the module resources to the project files
-            Vector projectFiles = CmsAdminModuleDelete.getProjectResources(cms, reg, moduleName);
+            Vector projectFiles = CmsModuleReplaceThread.getModuleResources(cms, reg, moduleName);
             
-            A_CmsReportThread doDelete = new CmsAdminModuleDeleteThread(cms, reg, moduleName, conflictFiles, projectFiles, false);
+            A_CmsReportThread doDelete = new CmsModuleDeleteThread(cms, reg, moduleName, conflictFiles, projectFiles, false);
             doDelete.start();
             session.putValue(C_MODULE_THREAD, doDelete);
             xmlTemplateDocument.setData("time", "5");
@@ -162,62 +164,6 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
     
-    /**
-     * Collects all resource names belonging to a module in a Vector.<p>
-     * 
-     * @param cms the CmsObject
-     * @param reg the registry
-     * @param moduleName the name of the module
-     * @return Vector with path Strings of resources
-     */
-    protected static Vector getProjectResources(CmsObject cms, CmsRegistry reg, String moduleName) {
-        Vector resNames = new Vector();
-        
-        // add the module folder to the project resources
-        resNames.add(C_VFS_PATH_MODULES + moduleName + "/");
-        
-        if (reg.getModuleType(moduleName).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
-            // SIMPLE MODULE
-           
-            // check if additional resources outside the system/modules/{exportName} folder were 
-            // specified as module resources by reading the property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
-            // to the module (in the module administration)
-            String additionalResources = null;
-            try {
-                additionalResources = OpenCms.getRegistry().getModuleParameterString(moduleName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
-            } catch (CmsException e) {
-                return resNames;
-            }
-            StringTokenizer additionalResourceTokens = null;
-
-            if (additionalResources != null && !additionalResources.equals("")) {
-                // add each additonal folder plus its content folder under "content/bodys"
-                additionalResourceTokens = new StringTokenizer(additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
-
-                // add each resource plus its equivalent at content/bodys to 
-                // the string array of all resources for the export
-                while (additionalResourceTokens.hasMoreTokens()) {
-                    String currentResource = additionalResourceTokens.nextToken().trim();
-                    
-                    if (! "-".equals(currentResource)) {  
-                        try {
-                            // check if the resource exists and then add it to the Vector
-                            cms.readFileHeader(currentResource);       
-                            resNames.add(currentResource);                 
-                        } catch (CmsException e) { }                        
-                    }
-                }
-            } else {
-                // no additional resources were specified...
-                return resNames;
-            }
-        } else {
-            // TRADITIONAL MODULE
-            return resNames;
-        }
-        return resNames;
-    }
-
     /**
      * Indicates if the results of this class are cacheable.
      *

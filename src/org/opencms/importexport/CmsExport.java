@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/08/19 14:38:07 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/05 12:22:25 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,8 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.report.CmsShellReport;
-import com.opencms.report.I_CmsReport;
+import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -82,7 +82,7 @@ import org.w3c.dom.Text;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.10 $ $Date: 2003/08/19 14:38:07 $
+ * @version $Revision: 1.11 $ $Date: 2003/09/05 12:22:25 $
  */
 public class CmsExport implements Serializable {
 

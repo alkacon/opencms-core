@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/08/20 16:01:56 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/09/05 12:22:25 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,9 @@ import com.opencms.boot.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.report.A_CmsReportThread;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.*;
+
 import com.opencms.util.Utils;
 
 import java.io.File;
@@ -51,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -243,7 +245,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                     exportUserdata = true;
                 }
                 // start the thread for: export
-                A_CmsReportThread doExport = new CmsAdminDatabaseExportThread(cms, 
+                A_CmsReportThread doExport = new CmsDatabaseExportThread(cms, 
                     CmsBase.getAbsolutePath(cms.readPackagePath()) + File.separator + fileName, 
                     exportPaths, excludeSystem, excludeUnchanged, exportUserdata, contentAge);
                     
@@ -275,7 +277,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 }
                 
                 // start the thread for: exportmodules
-                A_CmsReportThread doExport = new CmsAdminDatabaseExportThread(cms, 
+                A_CmsReportThread doExport = new CmsDatabaseExportThread(cms, 
                     CmsBase.getAbsolutePath(cms.readPackagePath()) + File.separator + fileName, 
                     exportChannels, exportModules);
                             
@@ -296,7 +298,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 }
                 if ("go".equals(step) ){
                     // start the thread for: import
-                    A_CmsReportThread doImport = new CmsAdminDatabaseImportThread(cms, 
+                    A_CmsReportThread doImport = new CmsDatabaseImportThread(cms, 
                         CmsBase.getAbsolutePath(cms.readPackagePath()) + File.separator + existingFile);
                         
                     doImport.start();

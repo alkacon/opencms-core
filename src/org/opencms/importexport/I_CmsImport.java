@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2003/08/07 09:04:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/05 12:22:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.importexport;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
-import com.opencms.report.I_CmsReport;
+import org.opencms.report.I_CmsReport;
 
 import java.io.File;
 import java.security.MessageDigest;

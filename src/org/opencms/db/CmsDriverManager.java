@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/05 08:14:03 $
- * Version: $Revision: 1.194 $
+ * Date   : $Date: 2003/09/05 12:22:25 $
+ * Version: $Revision: 1.195 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
 import com.opencms.flex.util.CmsLruHashMap;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.report.I_CmsReport;
+import org.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
 
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.194 $ $Date: 2003/09/05 08:14:03 $
+ * @version $Revision: 1.195 $ $Date: 2003/09/05 12:22:25 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {

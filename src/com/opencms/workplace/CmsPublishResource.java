@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/09/01 16:44:53 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/09/05 12:22:25 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,13 +30,14 @@
 package com.opencms.workplace;
 
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.threads.*;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.report.A_CmsReportThread;
+import org.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -46,7 +47,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.27 $ $Date: 2003/09/01 16:44:53 $
+ * @version $Revision: 1.28 $ $Date: 2003/09/05 12:22:25 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault {
@@ -219,7 +220,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
             
             if("ok".equals(action)) {
                 file = readResource(cms, filename);                                     
-                A_CmsReportThread doPublish = new CmsPublishResourceThread(cms, cms.readAbsolutePath(file));
+                A_CmsReportThread doPublish = new CmsProjectPublishResourceThread(cms, cms.readAbsolutePath(file));
                 doPublish.start();
                 session.putValue(C_PUBLISH_THREAD, doPublish);
                 // indicate that changes in the user project etc. must be ignored here

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/08/15 17:38:04 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/09/05 12:22:25 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,9 @@ import org.opencms.main.OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.report.A_CmsReportThread;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.*;
+
 import com.opencms.util.Encoder;
 
 import java.util.Hashtable;
@@ -46,7 +48,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -167,7 +169,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
             if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                 session.removeValue(C_SESSION_THREAD_ERROR);
             }
-            A_CmsReportThread doExport = new CmsAdminStaticExportThread(cms);
+            A_CmsReportThread doExport = new CmsStaticExportThread(cms);
             doExport.start();
             session.putValue(C_STATICEXPORT_THREAD , doExport);
             xmlTemplateDocument.setData("time", "10");

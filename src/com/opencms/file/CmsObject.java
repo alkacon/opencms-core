@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/03 14:09:21 $
-* Version: $Revision: 1.394 $
+* Date   : $Date: 2003/09/05 12:22:25 $
+* Version: $Revision: 1.395 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,8 +55,8 @@ import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
-import com.opencms.report.CmsShellReport;
-import com.opencms.report.I_CmsReport;
+import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.394 $
+ * @version $Revision: 1.395 $
  */
 public class CmsObject {
 

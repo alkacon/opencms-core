@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/09/05 12:22:25 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,9 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
-import com.opencms.report.A_CmsReportThread;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.*;
+
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.io.File;
@@ -305,11 +307,11 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
         	
         // add root folder as file list for the project
         if (importNewModule) {
-            A_CmsReportThread doTheImport = new CmsAdminModuleImportThread(cms, reg, moduleName, zipName, conflictFiles);
+            A_CmsReportThread doTheImport = new CmsModuleImportThread(cms, reg, moduleName, zipName, conflictFiles);
             doTheImport.start();
             session.putValue(C_MODULE_THREAD, doTheImport);
         } else {
-            A_CmsReportThread doTheReplace = new CmsAdminModuleReplaceThread(cms, reg, moduleName, zipName, conflictFiles);
+            A_CmsReportThread doTheReplace = new CmsModuleReplaceThread(cms, reg, moduleName, zipName, conflictFiles);
             doTheReplace.start();
             session.putValue(C_MODULE_THREAD, doTheReplace);
         }

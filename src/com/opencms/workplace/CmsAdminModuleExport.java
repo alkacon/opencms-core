@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/09/05 12:22:25 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,9 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
-import com.opencms.report.A_CmsReportThread;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.*;
+
 import com.opencms.util.Utils;
 
 import java.util.ArrayList;
@@ -206,7 +208,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
             }                            
             
             String filename = CmsBase.getAbsolutePath(cms.readPackagePath()) + "/" + CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName);
-            A_CmsReportThread doExport = new CmsAdminModuleExportThread(cms, reg, moduleName, resourcen, filename);
+            A_CmsReportThread doExport = new CmsModuleExportThread(cms, reg, moduleName, resourcen, filename);
             doExport.start();
             session.putValue(C_MODULE_THREAD, doExport);
             xmlTemplateDocument.setData("time", "5");

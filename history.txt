@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/09/03 15:42:47 $
- * Version: $Revision: 1.497 $
+ * Date   : $Date: 2003/09/05 12:22:25 $
+ * Version: $Revision: 1.498 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,11 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.1.10 Salusa Secundus - September xx, 2003
+! Links to special folders are shown as labled in the explorer
+* More bug fixed for special VFS scenarios
+- Rewrote report packages and worker threads 
 
 OpenCms 5.1.9 Salusa Secundus - September 03, 2003
 * XMLTemplate content was not updated after a publish

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2003/08/18 13:50:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/05 12:22:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsResourceTypePage;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.report.I_CmsReport;
+import org.opencms.report.I_CmsReport;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
