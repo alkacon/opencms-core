@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/09/20 08:16:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.I_CmsWpConstants;
-import org.opencms.xml.CmsXmlValidationErrorHandler;
+import org.opencms.xml.CmsXmlErrorHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,7 +67,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2004/08/03 07:19:04 $
+ * @version $Revision: 1.5 $ $Date: 2004/09/20 08:16:18 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
@@ -111,7 +111,7 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
         Digester digester = new Digester();
         digester.setValidating(false);
         digester.setRuleNamespaceURI(null);   
-        digester.setErrorHandler(new CmsXmlValidationErrorHandler());
+        digester.setErrorHandler(new CmsXmlErrorHandler());
 
         // add this class to the Digester
         CmsModuleImportExportHandler handler = new CmsModuleImportExportHandler();

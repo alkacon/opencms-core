@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlValidationErrorHandler.java,v $
- * Date   : $Date: 2004/05/13 11:09:35 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlErrorHandler.java,v $
+ * Date   : $Date: 2004/09/20 08:16:18 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -38,19 +38,21 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * Error hander for processing errors found during xmlPage validation.<p>
+ * Error hander for writing errors found during XML validation to the OpenCms log.<p>
+ * 
+ * Exceptions caused by warnings are suppressed (but written to the log if level is set to WARN).<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @version $Revision: 1.1 $
  */
-public class CmsXmlValidationErrorHandler implements ErrorHandler {
+public class CmsXmlErrorHandler implements ErrorHandler {
 
     /**
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
     public void error(SAXParseException exception) throws SAXException {
 
-        OpenCms.getLog(this).error("Error parsing xml resource", exception);
+        OpenCms.getLog(this).error("Error parsing XML resource", exception);
         throw exception;
     }
 
@@ -59,7 +61,7 @@ public class CmsXmlValidationErrorHandler implements ErrorHandler {
      */
     public void fatalError(SAXParseException exception) throws SAXException {
 
-        OpenCms.getLog(this).error("Fatel error parsing xml resource", exception);
+        OpenCms.getLog(this).error("Fatel error parsing XML resource", exception);
         throw exception;
     }
 
@@ -69,7 +71,7 @@ public class CmsXmlValidationErrorHandler implements ErrorHandler {
     public void warning(SAXParseException exception) {
         
         if (OpenCms.getLog(this).isWarnEnabled()) {
-            OpenCms.getLog(this).warn("Warning parsing xml resource", exception);
+            OpenCms.getLog(this).warn("Warning parsing XML resource", exception);
         }
     }  
 }
