@@ -3572,6 +3572,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/action/empty.html</source>
+            <destination>system/workplace/action/empty.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/action/explorer.html</source>
             <destination>system/workplace/action/explorer.html</destination>
             <type>XMLTemplate</type>
@@ -4332,6 +4341,15 @@
             </properties>
         </file>
         <file>
+            <source>system/workplace/administration/linkmanagement/empty.html</source>
+            <destination>system/workplace/administration/linkmanagement/empty.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>47</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/administration/linkmanagement/index</source>
             <destination>system/workplace/administration/linkmanagement/index</destination>
             <type>plain</type>
@@ -4567,6 +4585,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/administration/database/export/empty.html</source>
+            <destination>system/workplace/administration/database/export/empty.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>47</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/administration/database/export/index.html</source>
             <destination>system/workplace/administration/database/export/index.html</destination>
             <type>XMLTemplate</type>
@@ -4653,6 +4680,15 @@
             <user>Admin</user>
             <group>Users</group>
             <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/database/import/empty.html</source>
+            <destination>system/workplace/administration/database/import/empty.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>47</access>
             <properties/>
         </file>
         <file>
@@ -6101,6 +6137,15 @@
                     <value><![CDATA[-150]]></value>
                 </property>
             </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/staticexport/empty.html</source>
+            <destination>system/workplace/administration/staticexport/empty.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>47</access>
+            <properties/>
         </file>
         <file>
             <source>system/workplace/administration/staticexport/index</source>
