@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/04/01 10:23:11 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2004/04/02 08:46:11 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.82 $ $Date: 2004/04/01 10:23:11 $
+ * @version $Revision: 1.83 $ $Date: 2004/04/02 08:46:11 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -166,8 +166,11 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                 stmt1.addBatch();
                 // delete the properties
                 stmt2.setString(1, currentResource.getBackupId().toString());
-                stmt2.setString(2, currentResource.getResourceId().toString());
-                stmt2.setInt(3, currentResource.getTagId());
+                stmt2.setInt(2, currentResource.getTagId());
+                stmt2.setString(3, currentResource.getStructureId().toString());
+                stmt2.setInt(4, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
+                stmt2.setString(5, currentResource.getResourceId().toString());
+                stmt2.setInt(6, CmsProperty.C_RESOURCE_RECORD_MAPPING);
                 stmt2.addBatch();
             }
 
