@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/07/18 16:13:47 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2000/07/24 06:44:20 $
+ * Version: $Revision: 1.99 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.98 $ $Date: 2000/07/18 16:13:47 $ 
+ * @version $Revision: 1.99 $ $Date: 2000/07/24 06:44:20 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -2171,6 +2171,22 @@ public class CmsObject implements I_CmsConstants {
 		// import the resources
         clearcache();
 		c_rb.importResources(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
+        clearcache();
+	}
+	
+	/**
+	 * Imports a import-resource (folder or zipfile) to the cms.
+	 * 
+	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importFolder(String importFile, String importPath)
+		throws CmsException {
+		// import the resources
+        clearcache();
+		c_rb.importFolder(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
         clearcache();
 	}
 	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/18 16:13:48 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2000/07/24 06:44:20 $
+ * Version: $Revision: 1.94 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.93 $ $Date: 2000/07/18 16:13:48 $
+ * @version $Revision: 1.94 $ $Date: 2000/07/24 06:44:20 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -2921,6 +2921,23 @@ public interface I_CmsResourceBroker {
 	 * @exception Throws CmsException if something goes wrong.
 	 */
 	public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
+		throws CmsException;
+	
+    /**
+	 * Imports a import-resource (folder or zipfile) to the cms.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * @param cms the cms-object to use for the import.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importFolder(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
 		throws CmsException;
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/07/18 14:05:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/07/24 06:44:20 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/07/18 14:05:55 $
+ * @version $Revision: 1.11 $ $Date: 2000/07/24 06:44:20 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1471,6 +1471,21 @@ public class CmsShell implements I_CmsConstants {
 		// import the resources
 		try {
 			m_cms.importResources(importFile, importPath);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
+	/**
+	 * Imports a import-resource (folder or zipfile) to the cms.
+	 * 
+	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 */
+	public void importFolder(String importFile, String importPath) {
+		// import the resources
+		try {
+			m_cms.importFolder(importFile, importPath);
 		} catch( Exception exc ) {
 			printException(exc);
 		}

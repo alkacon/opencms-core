@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/20 15:27:06 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2000/07/24 06:44:21 $
+ * Version: $Revision: 1.94 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.93 $ $Date: 2000/07/20 15:27:06 $
+ * @version $Revision: 1.94 $ $Date: 2000/07/24 06:44:21 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6009,6 +6009,30 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
 			new CmsImport(importFile, importPath, cms);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] importResources",
+				 CmsException.C_NO_ACCESS);
+		}
+    }
+	
+    /**
+	 * Imports a import-resource (folder or zipfile) to the cms.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * @param cms the cms-object to use for the import.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importFolder(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
+        throws CmsException {
+		if(isAdmin(currentUser, currentProject)) {
+			new CmsImportFolder(importFile, importPath, cms);
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] importResources",
 				 CmsException.C_NO_ACCESS);

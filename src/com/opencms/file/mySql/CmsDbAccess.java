@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/19 15:30:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/07/24 06:44:21 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.11 $ $Date: 2000/07/19 15:30:42 $ * 
+ * @version $Revision: 1.12 $ $Date: 2000/07/24 06:44:21 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -1369,12 +1369,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		throws CmsException {
 		PreparedStatement statement = null;
 		
+		int result;
+		
 		try	{			
             statement = m_pool.getPreparedStatement(C_USERS_SETRECPW_KEY);
 			
 			statement.setString(1,digest(password));
 			statement.setString(2,user);
-			statement.executeUpdate();
+			result = statement.executeUpdate();
+			System.err.println("result of setRecPasswd: " + result);
 		}
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -1382,6 +1385,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_USERS_SETRECPW_KEY, statement);
 			}
+		}
+		if(result != 1) {
+			// the update wasn't succesfull -> throw exception
+            throw new CmsException("["+this.getClass().getName()+"] new password couldn't be set.");			
 		}
 	}
 	
