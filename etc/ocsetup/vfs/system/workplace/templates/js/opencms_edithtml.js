@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
- * Date   : $Date: 2000/04/05 08:45:55 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/05/02 15:57:50 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -295,6 +295,9 @@ function doEditHTML(para)
 	case 13:
 		MENU_FILE_EXPORT_onclick();
         break;
+	case 14:
+		MENU_FILE_SAVEAS_onclick();
+        break;		
 	case 15:
 		EDITOR.EDIT_HTML.PrintDocument(true);
         break;
@@ -457,7 +460,7 @@ function MENU_FILE_EXPORT_onclick()
       if (path.substring(0, 7) == "http://")
         EDITOR.EDIT_HTML.SaveDocument("", true);
       else
-        EDITOR.EDIT_HTML.SaveDocument(EDIT_HTML.CurrentDocumentPath, false);
+        EDITOR.EDIT_HTML.SaveDocument(EDITOR.EDIT_HTML.CurrentDocumentPath, false);
     } else {
       EDITOR.EDIT_HTML.SaveDocument("", true);
     }
