@@ -5,7 +5,7 @@
 							<tr> 
 								<td>&nbsp;</td>
 								<td class=formular>
-									<input type=checkbox name="nounchanged" value="nounchanged" checked>]]><LABEL value="database.label.nounchanged"/><![CDATA[
+									<input type=checkbox name="nounchanged" value="nounchanged">]]><LABEL value="database.label.nounchanged"/><![CDATA[
 								</td>
 							</tr>
 ]]></nounchangedbox>
