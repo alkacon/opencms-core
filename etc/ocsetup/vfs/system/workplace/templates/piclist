@@ -1,23 +1,54 @@
 <?xml version="1.0"?>
 <WORKPLACE>
-<picstartseq><![CDATA[<TR><TD valign=top class=piclistfiles>
-<P><IMG src="]]></picstartseq>
-<picendseq><![CDATA[">
-</TD></TR>]]>
-</picendseq>
+<picstartseq><![CDATA[<TR><TD colspan="5">
+<TABLE CELLPADDING=0 CELLSPACING=0 border=1>
+<tr><td background="]]><METHOD name="picsUrl">bg_grauekachel.gif</METHOD><![CDATA["><img src="]]></picstartseq>
+<picendseq><![CDATA["></td></tr></table></td></tr>]]></picendseq>
 <textstartseq><![CDATA[<TR><TD valign=top class=piclistfoot>
 <P>]]></textstartseq>
-<textendseq><![CDATA[</TD></TR>]]>
-</textendseq>
+<textendseq><![CDATA[</TD></TR>]]></textendseq>
+<titlestartseq><![CDATA[<tr><TD VALIGN="BOTTOM" nowrap class="wizardbold">]]></titlestartseq>
+<titleendseq><![CDATA[</TD>]]></titleendseq>
+<namestartseq><![CDATA[<TD VALIGN="BOTTOM" nowrap class="wizard">]]></namestartseq>
+<nameendseq><![CDATA[</TD>]]></nameendseq>
+<sizestartseq><![CDATA[<TD ALIGN="RIGHT" VALIGN="BOTTOM" nowrap class="wizard">]]></sizestartseq>
+<sizeendseq><![CDATA[</TD>]]></sizeendseq>
+<typestartseq><![CDATA[<TD VALIGN="BOTTOM" nowrap class="wizard">]]></typestartseq>
+<typeendseq><![CDATA[</TD><TD VALIGN="BOTTOM" nowrap class="wizard" width="100%">&nbsp;</TD></tr>]]></typeendseq>
+<part><![CDATA[<tr><td colspan="5"><table cellspacing=0 cellpadding=0 border=0 width="100%"><tr><td height="1" class="taskviewbackblack"><spacer type=block width=1 height=1></td></tr>
+</table></td></tr>]]></part>
 <TEMPLATE>
 <![CDATA[
 <html>
 <head>
-<link rel=stylesheet type="text/css" href="formate.css">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<!-- End Style -->
 
+<!-- Beginn JavaScript -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<!-- Beginn JavaScript -->
+
+<script language = javascript>
+//<!-- The variable EOL (End of list) flags if no image was displayed. The Picctrl document reads this variable -->
+//<!-- and uses this information to enable or disable the "next" button -->
+//<!-- With BOL (Begin of list) it is the other way round! -->
+// Both parameters have to be set on the server side !!!!
+EOL = false;
+BOL = true;
+</script>
 </head>
-<body>
-<TABLE CELLPADDING=3 CELLSPACING=2 WIDTH=100% HEIGTH=100% class="explorertable">
+<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="">
+<TABLE CELLPADDING=2 CELLSPACING=1 WIDTH=100% border=0>
+<tr>
+<td valign=bottom nowrap class="taskviewtxt"><p class=einzug>Titel</p></td>
+<td valign=bottom nowrap class="taskviewtxt"><p class=einzug>Name</p></td>
+<td valign=bottom nowrap class="taskviewtxt"><p class=einzug>Größe</p></td>
+<td valign=bottom nowrap class="taskviewtxt"><p class=einzug>Bildtyp</p></td>
+<td valign=bottom nowrap width="100%" class="taskviewtxt">&nbsp;</td>
+</tr>
 ]]><METHOD name="pictureList"/><![CDATA[
 </Table>
 </body>
