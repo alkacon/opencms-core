@@ -34,7 +34,7 @@
 				<rule element="Toast" regex="!.*warn.*" type="warning" message=" ${validation:path}: ${key:editor.xmlcontent.validation.warning.1}${validation:value}${key:editor.xmlcontent.validation.warning.2}${validation:regex}" />
 			</validationrules>
 			<defaults>					
-				<default element="Option" value="${key:label.author}: ${currentuser:fullname}, ${currentuser:address} - ${currentuser:email}" />
+				<default element="Option" value="${key:label.author}: ${currentuser:fullname}, ${currentuser:street} - ${currentuser:email}" />
 			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  
