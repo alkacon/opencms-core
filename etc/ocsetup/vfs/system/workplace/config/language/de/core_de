@@ -347,6 +347,7 @@
         
         <icon>
             <currentprojects>Aktuelle Projekte</currentprojects>
+			<channels>Channels</channels>
             <database>Datenbankverwaltung</database>
             <datatypes>Dateityp- verwaltung</datatypes>
             <downloadgallery>Downloadgalerien<![CDATA[<br>]]>verwalten</downloadgallery>
@@ -1061,5 +1062,41 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <type>Typ</type>
             <upload>Datei hochladen</upload>
             <uploadimage>Neue Bilddatei hochladen</uploadimage>
-        </title> 
+        </title>
+		<com_opencms_defaults_master_CmsChannelBackoffice>
+			<label>
+				<filter>Filter</filter>
+				<headline>Schlagzeile</headline>
+				<channelid>ChannelId</channelid>
+				<channelpath>Channel</channelpath>
+				<channelname>Channelname</channelname>
+				<parentname>Parentchannel</parentname>
+				<ownername>Channelbesitzer</ownername>
+				<group>Channelgruppe</group>
+				<accessflagsasstring>Channelrechte</accessflagsasstring>
+			</label>
+			<messagebox>
+				<title>
+					<editentry>Channel editieren</editentry>
+					<deletechannel>Channel löschen</deletechannel>
+					<newchannel>Neuen Channel erstellen </newchannel>
+				</title>
+				<dialog>
+					<delete>Channel wirklich löschen?</delete>
+				</dialog>
+				<button>
+					<edit>Channel editieren</edit>
+					<delete>Channel löschen</delete>
+				</button>
+				<radiobutton>
+					<active>aktiv</active>
+					<inactive>inaktiv</inactive>
+				</radiobutton>
+			</messagebox>
+			<error>
+				<message1>Der Channel konnte nicht gelöscht werden!</message1>
+				<message2>Sie müssen einen gültigen Channelnamen angeben!</message2>
+				<message3>Fehler beim Speichern des Channel:</message3>
+			</error>
+		</com_opencms_defaults_master_CmsChannelBackoffice>
 </LANGUAGE>
