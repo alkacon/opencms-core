@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/28 13:06:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/09/29 08:05:48 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.15 $ $Date: 2000/09/28 13:06:30 $
+ * @version $Revision: 1.16 $ $Date: 2000/09/29 08:05:48 $
  */
 public class CmsQueries
 {
@@ -307,6 +307,12 @@ public class CmsQueries
 	public String C_SITEURLS_UPDATESITEURLS = "UPDATE " + C_DATABASE_PREFIX + "SITE_URLS SET URL = ? WHERE SITE_ID = ?";
 	public Integer C_SITEURLS_SELECTSITEURLS_KEY = new Integer(466);
 	public String C_SITEURLS_SELECTSITEURLS = "SELECT URL_ID, URL, SITE_ID, PRIMARYURL FROM " + C_DATABASE_PREFIX + "SITE_URLS WHERE SITE_ID = ?";
+	public Integer C_CATEGORY_INSERTCATEGORY_KEY = new Integer(467);
+	public String C_CATEGORY_INSERTCATEGORY = "INSERT INTO " + C_DATABASE_PREFIX + "CATEGORY (CATEGORY_ID, NAME, DESCRIPTION, SHORTNAME, PRIORITY) VALUES (?, ?, ?, ?, ?)";
+	public Integer C_LANGUAGE_INSERTLANGUAGE_KEY = new Integer(468);
+	public String C_LANGUAGE_INSERTLANGUAGE = "INSERT INTO " + C_DATABASE_PREFIX + "LANGUAGE (LANGUAGE_ID, NAME, SHORTNAME, PRIORITY) VALUES (?, ?, ?, ?)";
+	public Integer C_COUNTRY_INSERTCOUNTRY_KEY = new Integer(469);
+	public String C_COUNTRY_INSERTCOUNTRY = "INSERT INTO " + C_DATABASE_PREFIX + "COUNTRY (COUNTRY_ID, NAME, SHORTNAME, PRIORITY) VALUES (?, ?, ?, ?)";
 	
 	//statements needen for newSite
 	public Integer C_SITES_MAXID_KEY = new Integer(452);
