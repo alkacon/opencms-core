@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/28 16:06:19 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2000/03/30 08:01:27 $
+ * Version: $Revision: 1.91 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.90 $ $Date: 2000/03/28 16:06:19 $
+ * @version $Revision: 1.91 $ $Date: 2000/03/30 08:01:27 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3271,7 +3271,8 @@ System.err.println(">>> readFile(2) error for\n" +
 		A_CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
 		
 		// has the user write-access?
-		if( accessWrite(currentUser, currentProject, resource) ) {
+		if( accessWrite(currentUser, currentProject, resource) || 
+			(resource.getOwnerId() == currentUser.getId()) ) {
 				
 			// write-acces  was granted - write the file.
 			m_fileRb.chmod(currentProject, onlineProject(currentUser, currentProject), 
@@ -3319,8 +3320,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		A_CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
 		
 		// has the user write-access? and is he owner or admin?
-		if( accessWrite(currentUser, currentProject, resource) &&
-			( (resource.getOwnerId() == currentUser.getId()) || 
+		if( ( (resource.getOwnerId() == currentUser.getId()) || 
 			  isAdmin(currentUser, currentProject))) {
 				
 			// write-acces  was granted - write the file.
