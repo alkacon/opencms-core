@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/11/19 09:28:11 $
-* Version: $Revision: 1.206 $
+* Date   : $Date: 2001/11/20 13:29:55 $
+* Version: $Revision: 1.207 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.206 $ $Date: 2001/11/19 09:28:11 $
+ * @version $Revision: 1.207 $ $Date: 2001/11/20 13:29:55 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1413,7 +1413,7 @@ public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportRes
 
     CmsObject cmsForStaticExport = new CmsObject();
     cmsForStaticExport.init(m_rb, dReq, dRes, C_USER_GUEST,
-                             C_GROUP_GUEST, C_PROJECT_ONLINE_ID, false, getOnlineElementCache(), null);
+                             C_GROUP_GUEST, C_PROJECT_ONLINE_ID, false, new CmsElementCache(), null);
     cmsForStaticExport.setLauncherManager(getLauncherManager());
     return cmsForStaticExport;
 }
