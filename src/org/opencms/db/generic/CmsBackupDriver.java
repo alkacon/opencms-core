@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/04/16 08:30:16 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2004/04/23 13:27:06 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.84 $ $Date: 2004/04/16 08:30:16 $
+ * @version $Revision: 1.85 $ $Date: 2004/04/23 13:27:06 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -768,7 +768,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setInt(3, resource.getType());
             stmt.setInt(4, resource.getTagId());
             res = stmt.executeQuery();
-			
+            
             while (res.next()) {
                 propertyKey = res.getString(1);
                 propertyValue = res.getString(2);
