@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2001/08/03 12:02:41 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -45,7 +45,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.50 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.51 $ $Date: 2001/08/03 12:02:41 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -182,11 +182,6 @@ private void createDigest() throws CmsException {
      * @return the new type of the resouce
      */
     private String fitFileType(String path, String name, byte[] content, String type, Hashtable properties){
-
-        // first if the type is javascript set it to plain
-        if("script".equals(type)){
-            type = C_TYPE_PLAIN_NAME;
-        }
 
         // only check the file if the version of the export is 0
         if(m_importVersion == 0){
@@ -518,6 +513,10 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
             group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
             access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
             launcherStartClass = getTextNodeValue(currentElement, C_EXPORT_TAG_LAUNCHER_START_CLASS);
+            // if the type is javascript set it to plain
+            if("script".equals(type)){
+                type = C_TYPE_PLAIN_NAME;
+            }
             if (!inExcludeList(excludeList, m_importPath + destination)) {
 
                 // get all properties for this file
