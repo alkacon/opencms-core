@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/24 13:25:22 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/02/25 14:12:43 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -194,8 +194,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                 System.err.println("Import: Translated resource name is immutable");
             }
             // this resource must not be modified by an import if it already exists
+            m_cms.getRequestContext().saveSiteRoot();
             try {
-                m_cms.readFileHeader("//" + translatedName);
+                m_cms.getRequestContext().setSiteRoot("/");
+                m_cms.readFileHeader(translatedName);
                 resourceNotImmutable = false;
                 if (DEBUG > 0) {
                     System.err.println("Import: Immutable flag set for resource");
@@ -205,6 +207,8 @@ public abstract class A_CmsImport implements I_CmsImport {
                 if (DEBUG > 0) {
                     System.err.println("Import: Immutable test caused exception " + e);
                 }
+            } finally {
+                m_cms.getRequestContext().restoreSiteRoot();
             }
         }
         return resourceNotImmutable;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2004/02/20 14:22:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/25 14:12:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of vfs data.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/20 14:22:17 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/25 14:12:43 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -120,7 +120,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 }
 
                 if (m_report != null) {
-                    m_report.print("( " + (m_threadManager.getCounter()+1) + " )", I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print("( " + (m_threadManager.getCounter()+1) + " ) ", I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(m_report.key("search.indexing_file_begin"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(res.getName(), I_CmsReport.C_FORMAT_DEFAULT);
                     m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);

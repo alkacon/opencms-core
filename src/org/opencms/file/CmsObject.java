@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/25 14:12:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsObject {
 
@@ -1353,24 +1353,6 @@ public class CmsObject {
           return m_driverManager.existsResourceId(m_context, resourceId);          
       }
 
-
-    /**
-     * Exports channels and moduledata to zip.
-     *
-     * <B>Security:</B>
-     * only Administrators can do this;
-     *
-     * @param exportFile the name (absolute Path) of the export resource (zip)
-     * @param exportChannels the names (absolute Path) of channels from which should be exported
-     * @param exportModules the names of modules from which should be exported
-     * @param report the report to write out progress information
-     *
-     * @throws CmsException if something goes wrong.
-     */
-    public void exportModuledata(String exportFile, String[] exportChannels, String[] exportModules, I_CmsReport report) throws CmsException {
-        m_driverManager.exportModuledata(this, m_context, exportFile, exportChannels, exportModules, report);
-    }
-
     /**
      * Exports a resource.
      * 
@@ -1380,68 +1362,6 @@ public class CmsObject {
      */
     public CmsFile exportResource(CmsFile file) throws CmsException {
         return getResourceType(file.getType()).exportResource(this, file);
-    }
-
-    /**
-     * Exports cms-resources to a zip-file.
-     *
-     * @param exportFile the name (absolute Path) of the export resource (zip-file).
-     * @param exportPaths the names (absolute Path) of files and folders which should be exported.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void exportResources(String exportFile, String[] exportPaths) throws CmsException {
-        // export the resources
-        m_driverManager.exportResources(this, m_context, exportFile, exportPaths);
-    }
-
-    /**
-     * Exports cms-resources to a zip-file.
-     *
-     * @param exportFile the name (absolute Path) of the export resource (zip-file).
-     * @param exportPaths the names (absolute Path) of files and folders which should be exported.
-     * @param includeSystem indicates if the system resources will be included in the export.
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged) throws CmsException {
-        // export the resources
-        m_driverManager.exportResources(this, m_context, exportFile, exportPaths, includeSystem, excludeUnchanged);
-    }
-
-    /**
-     * Exports cms-resources to a zip-file.
-     *
-     * @param exportFile the name (absolute Path) of the export resource (zip-file).
-     * @param exportPaths the names (absolute Path) of files and folders which should be exported.
-     * @param includeSystem indicates if the system resources will be included in the export.
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     * @param exportUserdata <code>true</code>, if user data should be exported
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata) throws CmsException {
-        // call the export with the standard report object.
-        exportResources(exportFile, exportPaths, includeSystem, excludeUnchanged, exportUserdata, 0, new CmsShellReport());
-    }
-
-    /**
-     * Exports cms-resources to a zip-file.
-     *
-     * @param exportFile the name (absolute Path) of the export resource (zip-file).
-     * @param exportPaths the name (absolute Path) of files and folders which should be exported.
-     * @param includeSystem indicates if the system resources will be included in the export.
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     * @param exportUserdata <code>true</code>, if user data should be exported
-     * @param contentAge max age of content to be exported (timestamp)
-     * @param report the cmsReport to handle the log messages.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata, long contentAge, I_CmsReport report) throws CmsException {
-        // export the resources
-        m_driverManager.exportResources(this, m_context, exportFile, exportPaths, includeSystem, excludeUnchanged, exportUserdata, contentAge, report);
     }
 
     /**
@@ -2182,38 +2102,6 @@ public class CmsObject {
     }
 
     /**
-     * Imports a import-resource (folder or zip-file) to the cms.
-     *
-     * @param importFile the name (absolute Path) of the import resource (zipfile or folder).
-     * @param importPath the name (absolute Path) of folder in which should be imported.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void importResources(String importFile, String importPath) throws CmsException {
-        importResources(importFile, importPath, new CmsShellReport());
-    }
-
-    /**
-     * Imports a import-resource (folder or zip-file) to the cms.
-     *
-     * @param importFile the name (absolute Path) of the import resource (zipfile or folder).
-     * @param importPath the name (absolute Path) of folder in which should be imported.
-     * @param report A report object to provide the loggin messages.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void importResources(String importFile, String importPath, I_CmsReport report) throws CmsException {
-
-        report.println(report.key("report.clearcache"), I_CmsReport.C_FORMAT_NOTE);
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
-
-        // import the resources
-        m_driverManager.importResources(this, m_context, importFile, importPath, report);
-
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
-    }
-
-    /**
      * Checks, if the users current group is the admin-group.
      *
      *
@@ -2471,9 +2359,9 @@ public class CmsObject {
      * Publishes the current project.<p>
      *
      * @param report an instance of I_CmsReport to print messages
-     * @throws Exception if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    public void publishProject(I_CmsReport report) throws Exception {
+    public void publishProject(I_CmsReport report) throws CmsException {
         publishProject(report, null, false);
     }
 
@@ -2483,11 +2371,11 @@ public class CmsObject {
      * @param report an instance of I_CmsReport to print messages
      * @param directPublishResource a CmsResource that gets directly published; or null if an entire project gets published
      * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get publish too, if this flag is true
-     * @throws Exception if something goes wrong
+     * @throws CmsException if something goes wrong
      * @see #publishResource(String)
      * @see #publishResource(String, boolean, I_CmsReport)
      */
-    public void publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings) throws Exception {
+    public void publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings) throws CmsException {
         CmsPublishList publishList = getPublishList(directPublishResource, directPublishSiblings, report);
         publishProject(report, publishList);
     }
@@ -4146,9 +4034,9 @@ public class CmsObject {
      * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
      * @param report an instance of I_CmsReport to print messages
      * @return a publish list
-     * @throws Exception if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+    public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
         return m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
     }
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/02/22 19:14:26 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2004/02/25 14:12:43 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/22 19:14:26 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/25 14:12:43 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -111,6 +111,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     public void importResources() throws CmsException {
         // initialize the import
         openImportFile();
+        m_report.println("Import Version "+m_importVersion, I_CmsReport.C_FORMAT_NOTE);
         try {
             // first import the channels
             m_report.println(m_report.key("report.import_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);

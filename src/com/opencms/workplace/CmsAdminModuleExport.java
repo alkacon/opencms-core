@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2004/02/25 14:12:43 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,16 +30,16 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
+import org.opencms.importexport.CmsModuleImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
-import org.opencms.threads.CmsModuleExportThread;
+import org.opencms.threads.CmsExportThread;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -205,8 +205,15 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
                 } 
             }                            
             
-            String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName));
-            A_CmsReportThread doExport = new CmsModuleExportThread(cms, reg, moduleName, resourcen, filename);
+            String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName));
+            
+            CmsModuleImportExportHandler moduleExportHandler = new CmsModuleImportExportHandler();
+            moduleExportHandler.setFileName(filename);
+            moduleExportHandler.setModuleName(moduleName.replace('\\', '/'));
+            moduleExportHandler.setAdditionalResources(resourcen);
+            moduleExportHandler.setDescription("Module export of " + moduleExportHandler.getModuleName());
+            
+            A_CmsReportThread doExport = new CmsExportThread(cms, moduleExportHandler);
             doExport.start();
             session.putValue(C_MODULE_THREAD, doExport);
             xmlTemplateDocument.setData("time", "5");

@@ -19,12 +19,17 @@
 			<class>org.opencms.loader.CmsJspLoader</class>
 			<class>org.opencms.loader.CmsXmlPageLoader</class>
 		</resourceloader>
-		<importclasses>
-			<class>com.opencms.legacy.CmsImportVersion1</class>
-			<class>org.opencms.importexport.CmsImportVersion2</class>
-			<class>org.opencms.importexport.CmsImportVersion3</class>
-			<class>org.opencms.importexport.CmsImportVersion4</class>
-		</importclasses>
+		<importexport>
+			<handler name="cosdata">com.opencms.legacy.CmsCosImportExportHandler</handler>
+			<handler name="vfsdata">org.opencms.importexport.CmsVfsImportExportHandler</handler>
+			<handler name="moddata">org.opencms.importexport.CmsModuleImportExportHandler</handler>
+			<vfsdataimport>
+				<class>com.opencms.legacy.CmsImportVersion1</class>
+				<class>org.opencms.importexport.CmsImportVersion2</class>
+				<class>org.opencms.importexport.CmsImportVersion3</class>
+				<class>org.opencms.importexport.CmsImportVersion4</class>
+			</vfsdataimport>
+		</importexport>
 		<dialoghandler>
 			<class>org.opencms.workplace.CmsDelete</class>
 			<class>org.opencms.workplace.CmsLock</class>

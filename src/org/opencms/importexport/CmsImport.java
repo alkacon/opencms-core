@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/02/22 19:14:26 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/02/25 14:12:43 $
+* Version: $Revision: 1.17 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.io.SAXReader;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.16 $ $Date: 2004/02/22 19:14:26 $
+ * @version $Revision: 1.17 $ $Date: 2004/02/25 14:12:43 $
  */
 public class CmsImport implements Serializable {
 
@@ -180,7 +180,8 @@ public class CmsImport implements Serializable {
     public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
         // initialize the import
         boolean run=false;
-        openImportFile();              
+        openImportFile();   
+        m_report.println("Import Version "+m_importVersion, I_CmsReport.C_FORMAT_NOTE);
         try {
             // now find the correct import implementation         
             Iterator i=m_ImportImplementations.iterator();
@@ -224,11 +225,10 @@ public class CmsImport implements Serializable {
 
         // try to read the export version number
         try {
-            m_importVersion = Integer.parseInt(((Element)m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_EXPORT + "/" + I_CmsConstants.C_EXPORT_TAG_INFO + "/" + I_CmsConstants.C_EXPORT_TAG_VERSION).get(0)).getTextTrim());
+            m_importVersion = Integer.parseInt(((Element)m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_VERSION).get(0)).getTextTrim());
         } catch (Exception e) {
             //ignore the exception, the export file has no version nummber (version 0).
         }
-        m_report.println("Import Version "+m_importVersion, I_CmsReport.C_FORMAT_NOTE);
     }
 
     /**
@@ -279,6 +279,10 @@ public class CmsImport implements Serializable {
         //String xpathExpr = null;
 
         try {
+            if (m_docXml == null) {
+                openImportFile();
+            }
+            
             // get all file-nodes
             fileNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_FILE);
 

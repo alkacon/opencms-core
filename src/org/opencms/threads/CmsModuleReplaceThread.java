@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/25 14:12:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,13 @@
 
 package org.opencms.threads;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.workplace.I_CmsWpConstants;
-
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
 
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -47,8 +46,8 @@ import java.util.Vector;
  * Replaces a module.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * 
- * @version $Revision: 1.5 $
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.6 $
  * @since 5.1.10
  */
 public class CmsModuleReplaceThread extends A_CmsReportThread {
@@ -90,7 +89,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
         m_projectFiles = CmsModuleReplaceThread.getModuleResources(cms, reg, moduleName);
 
         m_deleteThread = new CmsModuleDeleteThread(getCms(), m_registry, m_moduleName, m_conflictFiles, m_projectFiles, true);
-        m_importThread = new CmsModuleImportThread(getCms(), m_registry, m_moduleName, m_zipName, m_conflictFiles);
+        m_importThread = new CmsDatabaseImportThread(getCms(), m_zipName);
         if (DEBUG) {
             System.err.println("CmsAdminModuleReplaceThread() constructed");
         }

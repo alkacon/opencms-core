@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsDatabaseImportThread.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsExportThread.java,v $
  * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.11 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,32 +32,32 @@
 package org.opencms.threads;
 
 import org.opencms.file.CmsObject;
+import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 
 /**
- * Imports an OpenCms export file into the VFS.<p>
+ * Exports selected resources of the OpenCms VFS or COS into an OpenCms export file.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * 
+ * @version $Revision: 1.1 $
  * @since 5.1.10
  */
-public class CmsDatabaseImportThread extends A_CmsReportThread {
+public class CmsExportThread extends A_CmsReportThread {
 
-    private String m_importFile;
+    private I_CmsImportExportHandler m_handler;
 
     /**
-     * Imports an OpenCms export file into the VFS.<p>
+     * Creates a new export thread for VFS/COS data.<p>
      * 
      * @param cms the current OpenCms context object
-     * @param importFile the file to import
+     * @param handler export handler containing the export data
      */
-    public CmsDatabaseImportThread(CmsObject cms, String importFile) {
-        super(cms, "OpenCms: Import from " + importFile);
-        m_importFile = importFile;
+    public CmsExportThread(CmsObject cms, I_CmsImportExportHandler handler) {
+        super(cms, "OpenCms: " + handler.getDescription());
+        m_handler = handler;
         initOldHtmlReport(cms.getRequestContext().getLocale());
     }
 
@@ -73,11 +73,11 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
      */
     public void run() {
         try {
-            OpenCms.getImportExportManager().importData(getCms(), m_importFile, I_CmsConstants.C_ROOT, getReport());
+            OpenCms.getImportExportManager().exportData(getCms(), m_handler, getReport());
         } catch (CmsException e) {
             getReport().println(e);
             if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error importing the database", e);
+                OpenCms.getLog(this).error("Error exporting the database", e);
             }
         }
     }

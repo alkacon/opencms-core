@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2004/02/23 17:38:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/25 14:12:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,10 @@
 
 package org.opencms.importexport;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.report.I_CmsReport;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,10 +42,13 @@ import java.util.List;
  * Import/export handler implementation for VFS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/02/23 17:38:27 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/25 14:12:43 $
  * @since 5.3
  */
 public class CmsVfsImportExportHandler extends Object implements I_CmsImportExportHandler {
+    
+    /** The description of this import/export handler.<p> */
+    private String m_description;    
 
     /** The type of this import/export handler.<p> */
     private String m_type;
@@ -64,12 +71,19 @@ public class CmsVfsImportExportHandler extends Object implements I_CmsImportExpo
     /** Timestamp to limit the resources to be exported by date.<p> */
     private long m_contentAge;
 
+    /** VFS data import/export handler type.<p> */
+    public static final String C_TYPE_VFSDATA = "vfsdata";
+
     /**
      * Creates a new VFS import/export handler.<p>
      */
     public CmsVfsImportExportHandler() {
         super();
-        m_type = C_TYPE_VFSDATA;
+        m_type = CmsVfsImportExportHandler.C_TYPE_VFSDATA;
+        m_description = C_DEFAULT_DESCRIPTION;
+        m_excludeSystem = true;
+        m_excludeUnchanged = false;
+        m_exportUserdata = true;
     }
 
     /**
@@ -90,21 +104,28 @@ public class CmsVfsImportExportHandler extends Object implements I_CmsImportExpo
             m_exportPaths = null;
         } catch (Exception e) {
             // noop
+        } finally {
+            super.finalize();
         }
     }
 
     /**
-     * @see org.opencms.importexport.I_CmsImportExportHandler#exportData()
+     * @see org.opencms.importexport.I_CmsImportExportHandler#exportData(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport)
      */
-    public void exportData() {
-        // not yet implemented
+    public void exportData(CmsObject cms, I_CmsReport report) throws CmsException {
+        report.println(report.key("report.export_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);        
+        new CmsExport(cms, getFileName(), getExportPaths(), excludeSystem(), isExcludeUnchanged(), null, isExportUserdata(), getContentAge(), report);        
+        report.println(report.key("report.export_db_end"), I_CmsReport.C_FORMAT_HEADLINE);
     }
 
     /**
-     * @see org.opencms.importexport.I_CmsImportExportHandler#importData()
+     * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
      */
-    public void importData() {
-        // not yet implemented
+    public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
+        report.println(report.key("report.import_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        CmsImport vfsImport = new CmsImport(cms, importFile, importPath, report);
+        vfsImport.importResources();
+        report.println(report.key("report.import_db_end"), I_CmsReport.C_FORMAT_HEADLINE);
     }
 
     /**
@@ -226,6 +247,20 @@ public class CmsVfsImportExportHandler extends Object implements I_CmsImportExpo
      */
     public void setFileName(String fileName) {
         m_fileName = fileName;
+    }
+
+    /**
+     * @see org.opencms.importexport.I_CmsImportExportHandler#getDescription()
+     */
+    public String getDescription() {
+        return m_description;
+    }
+
+    /**
+     * @see org.opencms.importexport.I_CmsImportExportHandler#setDescription(java.lang.String)
+     */
+    public void setDescription(String description) {
+        m_description = description;
     }
 
 }

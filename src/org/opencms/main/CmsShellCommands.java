@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/02/25 14:12:43 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -65,7 +66,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -279,11 +280,18 @@ class CmsShellCommands implements I_CmsShellCommands {
      *
      * @param exportFile the name (absolute path) of the ZIP file to export to 
      * @throws Exception if something goes wrong
-     * @see CmsObject#exportResources(String, String[], boolean, boolean)
      */
     public void exportAllResources(String exportFile) throws Exception {
         String[] exportPaths = {I_CmsConstants.C_ROOT};
-        m_cms.exportResources(exportFile, exportPaths, false, false);
+        
+        CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+        vfsExportHandler.setFileName(exportFile);
+        vfsExportHandler.setExportPaths(exportPaths);
+        vfsExportHandler.setExcludeSystem(false);
+        vfsExportHandler.setExcludeUnchanged(false);
+        vfsExportHandler.setExportUserdata(false);
+        
+        OpenCms.getImportExportManager().exportData(m_cms, vfsExportHandler, new CmsShellReport());  
     }
 
     /**
@@ -294,7 +302,6 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @param exportFile the name (absolute path) of the ZIP file to export to 
      * @param pathList the list of resource to export, separated with a ";"
      * @throws Exception if something goes wrong
-     * @see CmsObject#exportResources(String, String[], boolean, boolean)
      */
     public void exportResources(String exportFile, String pathList) throws Exception {
         StringTokenizer tok = new StringTokenizer(pathList, ";");
@@ -310,7 +317,26 @@ class CmsShellCommands implements I_CmsShellCommands {
         if (pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM) || (pathList.indexOf(";" + I_CmsWpConstants.C_VFS_PATH_SYSTEM) > -1)) {
             excludeSystem = false;
         }
-        m_cms.exportResources(exportFile, exportPaths, excludeSystem, false);
+        
+        CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+        vfsExportHandler.setFileName(exportFile);
+        vfsExportHandler.setExportPaths(exportPaths);
+        vfsExportHandler.setExcludeSystem(excludeSystem);
+        vfsExportHandler.setExcludeUnchanged(false);
+        vfsExportHandler.setExportUserdata(false);
+        
+        OpenCms.getImportExportManager().exportData(m_cms, vfsExportHandler, new CmsShellReport());  
+    }
+    
+    /**
+     * Imports a resource into the Cms.<p>
+     * 
+     * @param importFile the name (absolute Path) of the import resource (zip or folder)
+     * @param importPath the name (absolute Path) of folder in which should be imported
+     * @throws Exception if something goes wrong
+     */
+    public void importResources(String importFile, String importPath) throws Exception {
+        OpenCms.getImportExportManager().importData(m_cms, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(importFile), importPath, new CmsShellReport());
     }
 
     /**
@@ -321,7 +347,6 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @param exportFile the name (absolute path) of the ZIP file to export to 
      * @param pathList the list of resource to export, separated with a ";"
      * @throws Exception if something goes wrong
-     * @see CmsObject#exportResources(String, String[], boolean, boolean, boolean)
      */
     public void exportResourcesAndUserdata(String exportFile, String pathList) throws Exception {
         StringTokenizer tok = new StringTokenizer(pathList, ";");
@@ -337,7 +362,15 @@ class CmsShellCommands implements I_CmsShellCommands {
         if (pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM) || (pathList.indexOf(";" + I_CmsWpConstants.C_VFS_PATH_SYSTEM) > -1)) {
             excludeSystem = false;
         }
-        m_cms.exportResources(exportFile, exportPaths, excludeSystem, false, true);
+        
+        CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+        vfsExportHandler.setFileName(exportFile);
+        vfsExportHandler.setExportPaths(exportPaths);
+        vfsExportHandler.setExcludeSystem(excludeSystem);
+        vfsExportHandler.setExcludeUnchanged(false);
+        vfsExportHandler.setExportUserdata(true);
+        
+        OpenCms.getImportExportManager().exportData(m_cms, vfsExportHandler, new CmsShellReport());          
     }
     
     /**
@@ -398,11 +431,10 @@ class CmsShellCommands implements I_CmsShellCommands {
      *
      * @param importFile the absolute path of the import module file
      * @throws Exception if something goes wrong
-     * @see CmsRegistry#importModule(String, Vector, org.opencms.report.I_CmsReport)
+     * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, String, String, org.opencms.report.I_CmsReport)
      */
-    public void importModule(String importFile) throws Exception {
-        CmsRegistry reg = m_cms.getRegistry();
-        reg.importModule(importFile, new Vector(), new CmsShellReport());
+    public void importModule(String importFile) throws Exception {       
+        OpenCms.getImportExportManager().importData(m_cms, importFile, null, new CmsShellReport());
     }
 
     /**
@@ -411,35 +443,12 @@ class CmsShellCommands implements I_CmsShellCommands {
      *
      * @param importFile the name of the import module located in the default module directory
      * @throws Exception if something goes wrong
-     * @see CmsRegistry#importModule(String, Vector, org.opencms.report.I_CmsReport)
+     * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, String, String, org.opencms.report.I_CmsReport)
      */
-    public void importModuleFromDefault(String importFile) throws Exception {
-        // build the complete filename
-        String exportPath = null;
-        exportPath = m_cms.readPackagePath();
-        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);
-        // import the module
-        System.out.println("Importing module: " + fileName);
-        // create a temporary project for the import
-        CmsProject project = m_cms.createProject(
-            "ModuleImport", 
-            "A temporary project to import the module " + importFile, 
-            OpenCms.getDefaultUsers().getGroupAdministrators(), 
-            OpenCms.getDefaultUsers().getGroupAdministrators(), 
-            I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
-        );
-        int id = project.getId();
-        m_cms.getRequestContext().setCurrentProject(project);
-        m_cms.getRequestContext().saveSiteRoot();
-        m_cms.getRequestContext().setSiteRoot("/");
-        m_cms.copyResourceToProject("/");
-        m_cms.getRequestContext().restoreSiteRoot();
-        // import the module
-        CmsRegistry reg = m_cms.getRegistry();
-        reg.importModule(fileName, new Vector(), new CmsShellReport());
-        // finally publish the project
-        m_cms.unlockProject(id);
-        m_cms.publishProject();
+    public void importModuleFromDefault(String importFile) throws Exception {              
+        String exportPath = m_cms.readPackagePath();
+        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);        
+        OpenCms.getImportExportManager().importData(m_cms, fileName, null, new CmsShellReport());
     }
 
     /**
@@ -459,8 +468,8 @@ class CmsShellCommands implements I_CmsShellCommands {
         );
         int id = project.getId();
         m_cms.getRequestContext().setCurrentProject(project);
-        m_cms.copyResourceToProject(I_CmsConstants.C_ROOT);
-        m_cms.importResources(importFile, I_CmsConstants.C_ROOT);
+        m_cms.copyResourceToProject(I_CmsConstants.C_ROOT);        
+        OpenCms.getImportExportManager().importData(m_cms, importFile, I_CmsConstants.C_ROOT, new CmsShellReport());
         m_cms.unlockProject(id);
         m_cms.publishProject();
     }

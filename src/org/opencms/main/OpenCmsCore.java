@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/25 10:28:33 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2004/02/25 14:12:43 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.94 $
+ * @version $Revision: 1.95 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1327,7 +1327,7 @@ public final class OpenCmsCore {
         // initialize the search manager
         m_searchManager = CmsSearchManager.initialize(configuration, adminCms);
         // initialize the import/export manager
-        m_importExportManager = CmsImportExportManager.initialize(configuration);
+        m_importExportManager = CmsImportExportManager.initialize(configuration, adminCms);
 
         // initializes the cron manager
         // TODO enable the cron manager

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.329 $
+ * Date   : $Date: 2004/02/25 14:12:43 $
+ * Version: $Revision: 1.330 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,6 @@
 package org.opencms.db;
 
 import org.opencms.file.*;
-import org.opencms.importexport.CmsExport;
-import org.opencms.importexport.CmsImport;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockManager;
@@ -57,27 +55,14 @@ import org.opencms.validation.CmsHtmlLinkValidator;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import com.opencms.legacy.CmsExportModuledata;
-import com.opencms.legacy.CmsImportModuledata;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.LRUMap;
-
-import org.dom4j.Document;
-import org.dom4j.io.SAXReader;
 
 /**
  * This is the driver manager.<p>
@@ -86,7 +71,7 @@ import org.dom4j.io.SAXReader;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.329 $ $Date: 2004/02/23 23:27:03 $
+ * @version $Revision: 1.330 $ $Date: 2004/02/25 14:12:43 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2813,92 +2798,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Exports channels and moduledata to zip.<p>
-     *
-     * Only Administrators can do this.
-     *
-     * @param cms the cms-object to use for the export
-     * @param context the current request context
-     * @param exportFile the name (absolute Path) of the export resource (zip)
-     * @param exportChannels the names (absolute Path) of channels from which should be exported
-     * @param exportModules the names of modules from which should be exported
-     * @param report the report for output logging
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public void exportModuledata(CmsObject cms, CmsRequestContext context, String exportFile, String[] exportChannels, String[] exportModules, I_CmsReport report) throws CmsException {
-        if (isAdmin(context)) {
-            new CmsExportModuledata(cms, exportFile, exportChannels, exportModules, report);
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportModuledata()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
-     * Exports cms-resources to zip.<p>
-     *
-     * Only Administrators can do this.
-     *
-     * @param cms the cms-object to use for the export
-     * @param context the current request context
-     * @param exportFile the name (absolute Path) of the export resource (zip)
-     * @param exportPaths the names (absolute Path) of folders and files which should be exported
-     * @throws CmsException if something goes wrong
-     */
-    public void exportResources(CmsObject cms, CmsRequestContext context, String exportFile, String[] exportPaths) throws CmsException {
-        if (isAdmin(context)) {
-            new CmsExport(cms, exportFile, exportPaths, false, false);
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
-     * Exports cms-resources to zip.<p>
-     *
-     * Only Administrators can do this.
-     *
-     * @param cms the cms-object to use for the export
-     * @param context the current request context
-     * @param exportFile the name (absolute Path) of the export resource (zip)
-     * @param exportPaths the name (absolute Path) of folder from which should be exported
-     * @param excludeSystem decides whether to exclude the system
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     * @throws CmsException if something goes wrong.
-     */
-    public void exportResources(CmsObject cms, CmsRequestContext context, String exportFile, String[] exportPaths, boolean excludeSystem, boolean excludeUnchanged) throws CmsException {
-        if (isAdmin(context)) {
-            new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged);
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
-     * Exports cms-resources to zip.<p>
-     *
-     * Only Administrators can do this.
-     *
-     * @param cms the cms-object to use for the export.
-     * @param context the current request context
-     * @param exportFile the name (absolute Path) of the export resource (zip)
-     * @param exportPaths the name (absolute Path) of folders from which should be exported
-     * @param excludeSystem desides if to include the system resources to the export
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded
-     * @param exportUserdata flag to export the user data
-     * @param contentAge Max age of content to be exported (timestamp)
-     * @param report the cmsReport to handle the log messages.
-     * @throws CmsException if something goes wrong.
-     */
-    public void exportResources(CmsObject cms, CmsRequestContext context, String exportFile, String[] exportPaths, boolean excludeSystem, boolean excludeUnchanged, boolean exportUserdata, long contentAge, I_CmsReport report) throws CmsException {
-        if (isAdmin(context)) {
-            new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged, null, exportUserdata, contentAge, report);
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
      * Extracts resources from a given resource list which are inside a given folder tree.<p>
      * 
      * @param context the current request context
@@ -3407,59 +3306,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public long getFileSystemFolderChanges() {
         return m_fileSystemFolderChanges;
-    }
-
-    /**
-     * Gets the first tag from the import manifest file.<p>
-     *
-     * @param importFile the import file
-     * @return name of the first tag in the manifest import file
-     * @throws CmsException if operation was not succesful
-     */
-    private String getFirstTagFromManifest(String importFile) throws CmsException {
-        String firstTag = null;
-        ZipFile importZip = null;
-        Document docXml = null;
-        BufferedReader xmlReader = null;
-        SAXReader sax = null;
-        File importResource = null;
-
-        try {
-            // read the import file resource
-            importResource = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(importFile));
-
-            if (importResource.isFile()) {
-                // a ZIP file
-                importZip = new ZipFile(importResource);
-                ZipEntry entry = importZip.getEntry(I_CmsConstants.C_EXPORT_XMLFILENAME);
-                InputStream stream = importZip.getInputStream(entry);
-                xmlReader = new BufferedReader(new InputStreamReader(stream));
-            } else {
-                // a directory
-                File xmlFile = new File(importResource, I_CmsConstants.C_EXPORT_XMLFILENAME);
-                xmlReader = new BufferedReader(new FileReader(xmlFile));
-            }
-
-            sax = new SAXReader();
-            docXml = sax.read(xmlReader);
-            firstTag = docXml.getRootElement().getName();
-        } catch (Exception e) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
-        } finally {
-            try {
-                if (xmlReader != null) {
-                    xmlReader.close();
-                }
-
-                if (importZip != null) {
-                    importZip.close();
-                }
-            } catch (IOException e) {
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
-            }
-        }
-
-        return firstTag;
     }
 
     /**
@@ -4463,34 +4309,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // return the folder
         return newResource;
-    }
-
-    /**
-     * Imports a import-resource (folder or zipfile) to the cms.<p>
-     *
-     * Only Administrators can do this.
-     * @param context the current request context
-     * @param importFile the name (absolute Path) of the import resource (zip or folder)
-     * @param importPath the name (absolute Path) of folder in which should be imported
-     * @param cms the cms-object to use for the import.
-     * @param report a report object to provide the loggin messages.
-     * @throws CmsException if something goes wrong.
-     */
-    public void importResources(CmsObject cms, CmsRequestContext context, String importFile, String importPath, I_CmsReport report) throws CmsException {
-        if (isAdmin(context)) {
-            // get the first node of the manifest to check if its an import of resources
-            // or moduledata
-            String firstTag = this.getFirstTagFromManifest(importFile);
-            if (I_CmsConstants.C_EXPORT_TAG_MODULEXPORT.equals(firstTag)) {
-                CmsImportModuledata imp = new CmsImportModuledata(cms, importFile, importPath, report);
-                imp.importResources();
-            } else {
-                CmsImport imp = new CmsImport(cms, importFile, importPath, report);
-                imp.importResources();
-            }
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] importResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
     }
 
     /**
@@ -8802,10 +8620,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published (in case 2)
      * @param report an instance of I_CmsReport to print messages
      * @return a publish list with all new/changed/deleted files from the current (offline) project that will be published actually
-     * @throws Exception if something goes wrong
+     * @throws CmsException if something goes wrong
      * @see org.opencms.db.CmsPublishList
      */    
-    public synchronized CmsPublishList getPublishList(CmsRequestContext context, CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+    public synchronized CmsPublishList getPublishList(CmsRequestContext context, CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
         CmsPublishList publishList = null;
         List offlineFiles = null;
         List siblings = null;
@@ -9126,7 +8944,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             System.gc();
             Runtime.getRuntime().gc();
 
-            throw o;
+            throw new CmsException("Out of memory error while publish list is built", o);
         }
 
         return publishList;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2004/02/25 14:12:43 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,15 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
+import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
-import org.opencms.threads.CmsDatabaseExportThread;
+import org.opencms.threads.CmsExportThread;
 import org.opencms.threads.CmsDatabaseImportThread;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsCosImportExportHandler;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.File;
@@ -51,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -239,11 +241,18 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 if (parameters.get("userdata") != null) {
                     exportUserdata = true;
                 }
+                
                 // start the thread for: export
-                A_CmsReportThread doExport = new CmsDatabaseExportThread(cms, 
-                    OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + fileName),                        
-                    exportPaths, excludeSystem, excludeUnchanged, exportUserdata, contentAge);
-                    
+                CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+                vfsExportHandler.setFileName(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + fileName));
+                vfsExportHandler.setExportPaths(exportPaths);
+                vfsExportHandler.setExcludeSystem(excludeSystem);
+                vfsExportHandler.setExcludeUnchanged(excludeUnchanged);
+                vfsExportHandler.setExportUserdata(exportUserdata);
+                vfsExportHandler.setContentAge(contentAge);
+                vfsExportHandler.setDescription("Database VFS export to " + vfsExportHandler.getFileName());
+                A_CmsReportThread doExport = new CmsExportThread(cms, vfsExportHandler);
+                                    
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
                 xmlTemplateDocument.setData("time", "10");
@@ -272,10 +281,13 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 }
                 
                 // start the thread for: exportmodules
-                A_CmsReportThread doExport = new CmsDatabaseExportThread(cms, 
-                    OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + fileName),
-                    exportChannels, exportModules);
-                            
+                CmsCosImportExportHandler cosExportHandler = new CmsCosImportExportHandler();
+                cosExportHandler.setFileName(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + fileName));
+                cosExportHandler.setExportChannels(exportChannels);
+                cosExportHandler.setExportModules(exportModules);
+                cosExportHandler.setDescription("Database COS export to " + cosExportHandler.getFileName());
+                A_CmsReportThread doExport = new CmsExportThread(cms, cosExportHandler);
+                                            
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
                 xmlTemplateDocument.setData("time", "10");
@@ -294,7 +306,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 if ("go".equals(step) ){
                     // start the thread for: import
                     A_CmsReportThread doImport = new CmsDatabaseImportThread(cms,
-                        OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + existingFile));                   
+                        OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + existingFile));                   
                     doImport.start();
                     session.putValue(C_DATABASE_THREAD, doImport);
                     xmlTemplateDocument.setData("time", "10");

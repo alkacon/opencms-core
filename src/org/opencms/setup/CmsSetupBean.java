@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/25 14:12:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 package org.opencms.setup;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.main.CmsShell;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsShellCommands;
@@ -44,20 +44,22 @@ import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.Serializable;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.collections.ExtendedProperties;
-
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
 /**
  * A java bean as a controller for the OpenCms setup wizard.<p>
@@ -74,7 +76,7 @@ import org.dom4j.io.SAXReader;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -255,7 +257,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                         childResource = childResources[i];
 
                         // try to get manifest.xml either from a ZIP file or a subfolder
-                        if (childResource.exists() && childResource.canRead() && (manifest = getManifest(childResource)) != null) {
+                        if (childResource.exists() && childResource.canRead() && (manifest = CmsImportExportManager.getManifest(childResource)) != null) {
                             // get the "export" node
                             rootElement = manifest.getRootElement();
                             // module package name
@@ -1207,96 +1209,17 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /**
-     * Returns the "manifest.xml" of an available module as a dom4j document.<p>
-     * 
-     * The manifest is either read as a ZIP entry, or from a subfolder of the specified
-     * file resource.<p>
-     * 
-     * @param resource a File resource
-     * @return the "manifest.xml" as a dom4j document
-     */
-    protected Document getManifest(File resource) {
-        Document manifest = null;
-        ZipFile zipFile = null;
-        ZipEntry zipFileEntry = null;
-        InputStream input = null;
-        Reader reader = null;
-        SAXReader saxReader = null;
-        File manifestFile = null;
-
-        try {
-            if (resource.isFile()) {
-                if (!resource.getName().toLowerCase().endsWith(".zip")) {
-                    // skip non-ZIP files
-                    return null;
-                }
-
-                // create a Reader either from a ZIP file's manifest.xml entry...
-                zipFile = new ZipFile(resource);
-                zipFileEntry = zipFile.getEntry("manifest.xml");
-                input = zipFile.getInputStream(zipFileEntry);
-                reader = new BufferedReader(new InputStreamReader(input));
-            } else if (resource.isDirectory()) {
-                // ...or from a subresource inside a folder
-                manifestFile = new File(resource, "manifest.xml");
-                reader = new BufferedReader(new FileReader(manifestFile));
-            }
-
-            // transform the manifest.xml file into a dom4j Document
-            saxReader = new SAXReader();
-            manifest = saxReader.read(reader);
-        } catch (Exception e) {
-            System.err.println("Error reading manifest.xml from resource: " + resource + ", " + e.toString());
-            e.printStackTrace(System.err);
-            manifest = null;
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                // noop
-            }
-        }
-
-        return manifest;
-    }
-    
-    /**
      * Imports a module (zipfile) from the default module directory, 
      * creating a temporary project for this.<p>
      * 
      * @param importFile the name of the import module located in the default module directory
      * @throws Exception if something goes wrong
-     * @see CmsRegistry#importModule(String, Vector, org.opencms.report.I_CmsReport)
+     * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, String, String, org.opencms.report.I_CmsReport)
      */
     protected void importModuleFromDefault(String importFile) throws Exception {
-        // build the complete filename
-        String exportPath = null;
-        exportPath = m_cms.readPackagePath();
-        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);
-        // import the module
-        System.out.println("Importing module: " + fileName);
-        // create a temporary project for the import
-        CmsProject project = m_cms.createProject(
-                "ModuleImport", 
-                "A temporary project to import the module " + importFile, 
-                OpenCms.getDefaultUsers().getGroupAdministrators(), 
-                OpenCms.getDefaultUsers().getGroupAdministrators(), 
-                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
-        );
-        int id = project.getId();
-        m_cms.getRequestContext().setCurrentProject(project);
-        m_cms.getRequestContext().saveSiteRoot();
-        m_cms.getRequestContext().setSiteRoot("/");
-        m_cms.copyResourceToProject("/");
-        m_cms.getRequestContext().restoreSiteRoot();
-        // import the module
-        CmsRegistry reg = m_cms.getRegistry();
-        reg.importModule(fileName, new Vector(), new CmsShellReport());
-        // finally publish the project
-        m_cms.unlockProject(id);
-        m_cms.publishProject();
+        String exportPath = m_cms.readPackagePath();
+        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);        
+        OpenCms.getImportExportManager().importData(m_cms, fileName, null, new CmsShellReport());        
     }
 
     /** 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/25 14:12:43 $
+ * Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -856,7 +856,7 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @return a list of all configured import classes
      */
     public List getImportClasses() {
-        return getSystemSubNodesClasses("importclasses");
+        return getSystemSubNodesClasses("vfsdataimport");
     }
 
     /**
@@ -981,19 +981,45 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @return the module element or null if it dosen't exist
      */
     private Element getModuleElementFromImport(String filename) {
+        File file = null;
+        Document manifest = null;
+        InputStream stream = null;
+        ZipFile importZip = null;
+
         try {
-            // get the zip-file
-            ZipFile importZip = new ZipFile(filename);
-            // read the minifest
-            ZipEntry entry = importZip.getEntry("manifest.xml");
-            InputStream stream = importZip.getInputStream(entry);
-            // parse the manifest
-            Document manifest = parse(stream);
-            importZip.close();
-            // get the module-element
+            file = new File(filename);
+
+            if (file.isFile()) {
+                // get the zip-file
+                importZip = new ZipFile(filename);
+                // read the minifest
+                ZipEntry entry = importZip.getEntry("manifest.xml");
+                stream = importZip.getInputStream(entry);
+                // parse the manifest
+                manifest = parse(stream);
+                // get the module-element
+                return (Element) (manifest.getElementsByTagName("module").item(0));
+            } else if (file.isDirectory()) {
+                file = new File(file, "manifest.xml");
+                stream = new FileInputStream(file);
+            }
+
+            manifest = parse(stream);
             return (Element) (manifest.getElementsByTagName("module").item(0));
         } catch (Exception exc) {
             return null;
+        } finally {
+            try {
+                if (importZip != null) {
+                    importZip.close();
+                }
+                
+                if (stream != null) {
+                    stream.close();
+                }
+            } catch (Exception e) {
+                // noop
+            }
         }
     }
 
