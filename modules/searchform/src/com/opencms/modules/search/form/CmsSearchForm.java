@@ -1,9 +1,32 @@
-package com.opencms.modules.search.form;
+/*
+* File   : $Source: /alkacon/cvs/opencms/modules/searchform/src/com/opencms/modules/search/form/Attic/CmsSearchForm.java,v $
+* Date   : $Date: 2002/02/19 13:21:44 $
+* Version: $Revision: 1.3 $
+*
+* Copyright (C) 2000  The OpenCms Group
+*
+* This File is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.com
+*
+* You should have received a copy of the GNU General Public License
+* long with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
 
-/**
- * Creation date: (25.10.00 17:45:54)
- * @author: Markus Fabritius
- **/
+package com.opencms.modules.search.form;
 
 import java.io.*;
 import com.opencms.template.*;
@@ -14,502 +37,771 @@ import java.net.*;
 import java.util.*;
 import java.lang.reflect.*;
 
-
-public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate {
-
 /**
- * Gets the content of a defined section in a given template file and its subtemplates
- * with the given parameters.
+ * This class is the generic frontend of the OpenCms search. It is possible to integrate
+ * different searchengine's during runtime. To call a searchengine class it used reflection.
+ * The Properties for the search are set in the Module Administration. Look at the Dokumentation
+ * of the Module.
  *
- * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
- * @param cms CmsObject Object for accessing system resources.
- * @param templateFile Filename of the template file.
- * @param elementName Element name of this template in our parent template.
- * @param parameters Hashtable with all template class parameters.
- * @param templateSelector template section that should be processed.
- * Creation date: (17.11.00 10:23:25)
+ * @author    Markus Fabritius
+ * @version $Revision: 1.3 $ $Date: 2002/02/19 13:21:44 $
  */
+public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate implements I_CmsSearchConstant {
 
-public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+	public final static byte LOGGING = 0;
+	public static boolean c_areaField = false;
+	public static int c_navigationRange = 10;
+	public static String c_contentDefinition = null;
+	public static String c_configFile = null;
+	public static String c_areaSection = null;
+	public static String c_match = null;
 
-	// Variable declaration and initialistion
-	int currentSite = 1, matchPerPage = 10;
-	int counter = 1, site = 0, pageset = 0;
-	int compare;
-	boolean noSingleRestrict = false, errorContentDef = false;
-	String contentDefName = "", areaRestrict = "", singleRestrict = "", localRestrict = "";
-	String configuration, noContentDef, noServer, noMatch, noWord, syntaxError, buildQuery;
-	String list = "", navigate = "", buildquery = "";
-	String server = cms.getRequestContext().getRequest().getServletUrl();
-	String uri = cms.getRequestContext().getUri();
-	Vector getResult = new Vector();
-	Object cd = null;
+	static {
+		try {
+			// read the moduleparameters from registry
+			moduleParameterWasUpdated(null);
+		} catch (CmsException e) {
+			System.out.println("CmsSearchFormNew::initializer: Error to call moduleParameterWasUpdated, print Stack Trace now ...");
+			e.printStackTrace();
+		}
+	}
 
-	// get exist session or create a new session if no session exist
-	I_CmsSession session = cms.getRequestContext().getSession(true);
-	// get template
-	CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-	// get session parameter
-	String sessionCheck = (String) parameters.get("newsearch");
-	// check if the site is use the first time and delete the session variable
-	if (sessionCheck == null) {
-		session.removeValue("searchengineSort");
-		session.removeValue("searchengineMethod");
-		session.removeValue("searchengineFormat");
-		session.removeValue("searchengineName");
-		session.removeValue("searchengineRestrict");
-		sessionCheck = "";
-	}
-	// Try to get data value from the template
-	try {
-		contentDefName = (String) templateDocument.getDataValue("contentDefinition");
-		parameters.put("searchengineContentDefinition", contentDefName);
-	} catch (CmsException e) {
-		contentDefName = "";
-	}
-	try {
-		configuration = (String) templateDocument.getDataValue("configurationFile");
-	} catch (CmsException e) {
-		configuration = "contentDefinitionSearchengineConfiguration";
-	}
-	try {
-		matchPerPage = Integer.parseInt(templateDocument.getDataValue("matchesperpage"));
-		if (matchPerPage<1)
-			matchPerPage=10;
-	} catch (CmsException e) {
-		matchPerPage = 10;
-	} catch (NumberFormatException e) {
-		matchPerPage = 10;
-	}
-	try {
-		singleRestrict = (String) templateDocument.getDataValue("singleRestriction");
-	} catch (CmsException e) {
-		noSingleRestrict = true;
-	}
-	try {
-		areaRestrict = (String) templateDocument.getDataValue("areaRestrict");
-		parameters.put("searchengineAreaRestrict", areaRestrict);
-	} catch (CmsException e) {
-		areaRestrict = "";
-	}
-	try {
-		noContentDef = (String) templateDocument.getDataValue("cdNotFound");
-	} catch (CmsException e) {
-		noContentDef = "Content Definition not Found!";
-	}
-	try {
-		noServer = (String) templateDocument.getDataValue("serverNotFound");
-	} catch (CmsException e) {
-		noServer = "Serverpath not found!";
-	}
-	try {
-		noMatch = (String) templateDocument.getDataValue("noMatch");
-	} catch (CmsException e) {
-		noMatch = "No match!";
-	}
-	try {
-		noWord = (String) templateDocument.getDataValue("noWord");
-	} catch (CmsException e) {
-		noWord = "Please insert a search word!";
-	}
-	try {
-		syntaxError = (String) templateDocument.getDataValue("syntax");
-	} catch (CmsException e) {
-		syntaxError = "Syntax error";
-	}
-	// Get button parameter for changing the templates
-	String page = (String) parameters.get("page");
-	String action = (String) parameters.get("action");
-	try {
-		// check if content definition and the serverpath in the registry exist
-		Class c = Class.forName(contentDefName);
-		String serverpath = cms.getRegistry().getModuleParameter(contentDefName.substring(0, contentDefName.lastIndexOf(".")), "Serverpath");
-		if (serverpath == null) {
-			templateDocument.setData("message", noServer);
+
+	/**
+	 * Gets the content of a defined section in a given template file and its subtemplates
+	 * with the given parameters.
+	 *
+	 * @param cms               CmsObject Object for accessing system resources
+	 * @param templateFile      Filename of the template file
+	 * @param elementName       Element name of this template in our parent template
+	 * @param parameters        Hashtable with all template class parameters
+	 * @param templateSelector  template section that should be processed
+     *
+	 * @return                  The content value
+	 * @exception CmsException  Throws Cms Exception
+	 * @see                     getContent(CmsObject cms, String templateFile, String
+	 *      elementName, Hashtable parameters)
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		// get template
+		CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		// check if first request
+		String page = (String) parameters.get(C_PARAM_SEARCHFORM_PAGE);
+		String action = (String) parameters.get("action");
+		// set selectboxes
+		setSeparateSelectbox(cms, templateDocument);
+
+		// first time to show the page
+		if ((action == null || action.equals("")) && (page == null || page.equals(""))) {
+			templateSelector = "default";
 		} else {
-			// Content definition and serverpath exist go on
-			// Check if button of the formular is press or nota
-			if ((action == null || action.equals("")) && (page == null || page.equals(""))) {
+			// send the request of search to the search module and get the result
+			Vector result = getResultFromSearchengine(cms, templateSelector, page, templateDocument, parameters);
+			if (result == null) {
 				templateSelector = "default";
-				templateDocument.setData("setaction", "default");
-				if (sessionCheck.equals("start")) {
-					templateDocument.setData("lastname", (String) session.getValue("searchengineName"));
-				}
-			} else {
-				// a button was pressed	go on
-				// get the parameter from the request
-				String word = (String) parameters.get("words");
-				String method = (String) parameters.get("method");
-				String format = (String) parameters.get("format");
-				String sort = (String) parameters.get("sort");
-				// if the parameter does not exit set default value
-				if (method == null)
-					method = "and";
-				if (format == null)
-					format = "long";
-				if (sort == null)
-					sort = "score";
-				// check which kind of restriction is set, the priority of singleRestrict is higher than areaRestrict
-				if (noSingleRestrict == true || singleRestrict == null || singleRestrict.equals("")) {
-					if (areaRestrict.equals("") || areaRestrict == null)
-						localRestrict = "restricttoall";
-					else {
-						localRestrict = (String) parameters.get("restrict");
-					}
-					if (localRestrict == null)
-						localRestrict = "restricttoall";
-				} else {
-					localRestrict = singleRestrict;
-				}
+				templateDocument.setData("lastword", (String) parameters.get(C_PARAM_SEARCHFORM_WORD));
+			} else if (validateResultFromSearchengine(cms, result, templateSelector, templateDocument, (String) parameters.get(C_PARAM_SEARCHFORM_WORD))) {
+				templateSelector = "result";
 				try {
-					// error request for search word
-					if (word == null || word.equals("")) {
-						templateDocument.setData("message", noWord);
-						templateDocument.setData("setaction", "default");
-						templateSelector = "default";
-					} else {
-						// write session
-						session.putValue("searchengineSort", sort);
-						session.putValue("searchengineMethod", method);
-						session.putValue("searchengineFormat", format);
-						session.putValue("searchengineName", word);
-						session.putValue("searchengineRestrict", localRestrict);
-						// required for refelction
-						Integer setMatch = new Integer(matchPerPage);
-						// start reflection with the classname from the template
-						Method m = c.getMethod("read", new Class[] {String.class, String.class, String.class, String.class, String.class, String.class, String.class, Integer.class, CmsObject.class});
-						getResult = (Vector) m.invoke(null, new Object[] {word, method, sort, page, configuration, localRestrict, serverpath, setMatch, cms});
-						// error request for a hit, nomatch or syntax error
-						if (getResult.size() <= 1) {
-							if (getResult.elementAt(0).equals("syntax")) {
-								templateDocument.setData("message", syntaxError);
-							} else {
-								templateDocument.setData("message", noMatch);
-							}
-							templateDocument.setData("lastname", (String) session.getValue("searchengineName"));
-							templateDocument.setData("setaction", "default");
-							templateSelector = "default";
-						} else {
-							// output of the result
-							templateSelector = "Result";
-							// get sequential numbering
-							cd = c.newInstance();
-							cd = (I_CmsSearchEngine) getResult.elementAt(0);
-							pageset = ((I_CmsSearchEngine) cd).getPages();
-							if (page != null) {
-								compare = Integer.parseInt(page);
-								for (int i = 1; i <= pageset; i++) {
-									if (compare == i)
-										counter = ((i * matchPerPage) - (matchPerPage - 1));
-								}
-							}
-							// fill template head
-							for (int i = 0; i < getResult.size(); i++) {
-								cd = c.newInstance();
-								cd = (I_CmsSearchEngine) getResult.elementAt(i);
-								if (i == 0) {
-									templateDocument.setData("searchword", ((I_CmsSearchEngine) cd).getSearchWord());
-									templateDocument.setData("first", String.valueOf(((I_CmsSearchEngine) cd).getFirstDisplay()));
-									templateDocument.setData("last", String.valueOf(((I_CmsSearchEngine) cd).getLastDisplay()));
-									templateDocument.setData("match", String.valueOf(((I_CmsSearchEngine) cd).getMatch()));
-									templateDocument.setData("pages", String.valueOf(((I_CmsSearchEngine) cd).getPages()));
-									site = ((I_CmsSearchEngine) cd).getPages();
-								} else {
-									// check for format ( long ) fill template body
-									if (format.equals("long") || (format == null)) {
-										templateDocument.setData("number", counter + "");
-										templateDocument.setData("url", ((I_CmsSearchEngine) cd).getUrl());
-										templateDocument.setData("title", ((I_CmsSearchEngine) cd).getTitle());
-										templateDocument.setData("percent", String.valueOf(((I_CmsSearchEngine) cd).getPercentMatch()));
-										templateDocument.setData("excerpt", ((I_CmsSearchEngine) cd).getExcerpt());
-										templateDocument.setData("size", String.valueOf(((I_CmsSearchEngine) cd).getSize()));
-										String longrow = templateDocument.getProcessedDataValue("longrow");
-										list += longrow;
-										// check for format ( short ) fill template body
-									} else {
-										templateDocument.setData("number", counter + "");
-										templateDocument.setData("url", ((I_CmsSearchEngine) cd).getUrl());
-										templateDocument.setData("title", ((I_CmsSearchEngine) cd).getTitle());
-										templateDocument.setData("percent", String.valueOf(((I_CmsSearchEngine) cd).getPercentMatch()));
-										String shortrow = templateDocument.getProcessedDataValue("shortrow");
-										list += shortrow;
-									}
-									counter++;
-								}
-							}
-						}
-						templateDocument.setData("resultlist", list);
-						// if the first site of result is reqiured for the navigation
-						if (page == null) {
-							page = "1";
-						}
-						for (int i = 1; i <= site; i++) {
-							if (Integer.parseInt(page) == i) {
-								templateDocument.setData("currentpage", String.valueOf(i));
-								String currentnav = templateDocument.getProcessedDataValue("currentnav");
-								navigate += currentnav;
-							} else {
-								buildquery = setQuery(localRestrict, word, method, format, sort, String.valueOf(i));
-								templateDocument.setData("server", server + uri);
-								templateDocument.setData("query", buildquery);
-								templateDocument.setData("numberurl", String.valueOf(i));
-								String nav = templateDocument.getProcessedDataValue("nav");
-								navigate += nav;
-							}
-						}
-					}
-					templateDocument.setData("navigation", navigate);
-				} catch (ClassCastException e) {
-					System.err.println(e.toString());
-				} catch (InstantiationException e) {
-					System.err.println(e.toString());
-				} catch (IllegalAccessException e) {
-					System.err.println(e.toString());
-				} catch (InvocationTargetException e) {
-					e.printStackTrace(System.err);
-					templateDocument.setData("message", noServer);
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-					System.err.println(e.toString());
+					Class search = Class.forName(c_contentDefinition);
+					Object contentDefinition = new Object();
+					setSearchResultHead(cms, contentDefinition, search, result, templateDocument);
+					setSearchResultBody(cms, contentDefinition, search, result, templateDocument, parameters, page);
+					setSearchResultNavigation(cms, page, contentDefinition, search, result, templateDocument, parameters);
 				} catch (Exception e) {
-					System.err.println(e.toString());
+					System.out.println("getContent:: Fatal Error to call Method for result, sorry print stack trace now...");
+					e.printStackTrace();
 				}
 			}
 		}
-	} catch (ClassNotFoundException e) {
-		System.err.println("Fehler liegt hier!");
-		templateDocument.setData("message", noContentDef);
+		return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
 	}
-	return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
-}
 
-/**
- * gets the caching information from the current template class.
- *
- * @param cms CmsObject Object for accessing system resources
- * @param templateFile Filename of the template file
- * @param elementName Element name of this template in our parent template.
- * @param parameters Hashtable with all template class parameters.
- * @param templateSelector template section that should be processed.
- * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
- */
-public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-     // First build our own cache directives.
-     return new CmsCacheDirectives(false);
-}
 
-/**
- * Used for dynamically generating the selectbox for selecting
- * the format method of the search engine (for example long, short).
- * This method use reflection to get dynamically the value for the selectbox
- * from the Content Definition which is used.
- *
- * Called while generating the template content from CmsXmlFormTemplateFile.
- * @param cms A_CmsObject for accessing system resources.
- * @param names Vector that will be filled with radio button descriptions.
- * @param values Vector that will be filled with radio buttom values.
- * @param parameters Hashtable with all user parameters.
- * @return Index of the currently checked radio button
- * @see CmsXmlFormTemplateFile
- * Creation date: (27.11.00 11:06:11)
- */
+	/**
+	 * This event-method is invoked if a user changes a parameter for a module in the
+	 * module-administration. It reads the current parameters.
+	 *
+	 * @param cms               CmsObject Object for accessing system resources
+	 * @exception CmsException  Throws Cms Exception
+	 */
+	public static void moduleParameterWasUpdated(CmsObject cms) throws CmsException {
+		// read the parameters from the module properties
+		c_contentDefinition = OpenCms.getRegistry().getModuleParameterString(
+			C_PARAM_MODULE_NAME, C_PARAM_SEARCH_MODUL);
+		c_configFile = OpenCms.getRegistry().getModuleParameterString(
+			C_PARAM_MODULE_NAME, C_PARAM_CONFIGURATION_FILE);
+		c_areaField = OpenCms.getRegistry().getModuleParameterBoolean(
+			C_PARAM_MODULE_NAME, C_PARAM_AREA_FIELD);
+		c_match = OpenCms.getRegistry().getModuleParameterString(
+			C_PARAM_MODULE_NAME, C_PARAM_MATCH_PER_PAGE);
+		c_navigationRange = OpenCms.getRegistry().getModuleParameterInteger(
+			C_PARAM_MODULE_NAME, C_PARAM_NAVIGATION_RANGE);
+		if (c_configFile.equals("")) {
+			c_configFile = "default";
+		}
+		if (c_match.equals("")) {
+			c_match = "10";
+		}
+		if (c_navigationRange == 0) {
+			c_navigationRange = 10;
+		}
+		if (c_areaField) {
+			c_areaSection = OpenCms.getRegistry().getModuleParameterString(
+				C_PARAM_MODULE_NAME, C_PARAM_AREA_SECTION);
+		}
+		/*
+		 *  System.out.println("Init Parameter:\n----------------\nc_contentDefinition: "+c_contentDefinition+
+		 *  "\nc_configFile: "+c_configFile+"\nc_areaField: "+c_areaField+"\nc_match: "+c_match+
+		 *  "\nc_navigationRange: "+String.valueOf(c_navigationRange)+"\nc_areaSection: "+c_areaSection);
+		 */
+	}
 
-public Integer selectFormat(CmsObject cms, Vector values, Vector names, Hashtable parameters) throws Exception {
-	// session for presetting
-	I_CmsSession session = cms.getRequestContext().getSession(true);
-	Vector result = new Vector();
-	String formatlist = (String) session.getValue("searchengineFormat");
-	if (formatlist == null) {
-		formatlist = "";
+
+	/**
+     * Set selectboxes for match per page and restrict if the variable set in the
+     * administration of the module. For processing the correspond datablock set in the
+     * template.
+     *
+	 * @param cms       CmsObject Object for accessing system resources
+	 * @param template  the current used template
+	 */
+	private void setSeparateSelectbox(CmsObject cms, CmsXmlTemplateFile template) {
+		try {
+			if (c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN) != -1) {
+				template.setData("setMatchPerPage", template.getData("selectMatch"));
+			}
+			if (c_areaField) {
+				template.setData("setSelectForRestrict", template.getData("selectRestrict"));
+			}
+		} catch (Exception e) {
+			System.out.println("setSeparateSelectbox::set tempalte data failed, print Stack Trace ...");
+			e.printStackTrace();
+		}
+
 	}
-	try {
-		Class c = Class.forName((String) parameters.get("searchengineContentDefinition"));
-		Method m = c.getMethod("setParameter", new Class[] {String.class, CmsObject.class});
-		result = (Vector) m.invoke(null, new Object[] {"format", cms});
-	} catch (ClassNotFoundException e) {
-		System.err.println(e.toString());
-	} catch (ClassCastException e) {
-		System.err.println(e.toString());
-	} catch (IllegalAccessException e) {
-		System.err.println(e.toString());
-	} catch (InvocationTargetException e) {
-		System.err.println(e.toString());
-	} catch (NoSuchMethodException e) {
-		System.err.println(e.toString());
-	} catch (Exception e) {
-		System.err.println(e.toString());
+
+	/**
+     * Set the head of the search result into the template.
+     *
+	 * @param cms          CmsObject Object for accessing system resources
+	 * @param cd           Content definition object
+	 * @param searchModul  class name of the searchengine class
+	 * @param getResult    vector of the result set
+	 * @param template     the current used template
+	 */
+	public void setSearchResultHead(CmsObject cms, Object cd, Class searchModul, Vector getResult, CmsXmlTemplateFile template) {
+		try {
+			cd = searchModul.newInstance();
+			cd = (I_CmsSearchEngine) getResult.elementAt(0);
+		} catch (Exception e) {
+			logView("setSearchResultBody:: Fatal Error to create new Instance, print stack trace now...");
+			e.printStackTrace();
+		}
+		template.setData("searchword", ((I_CmsSearchEngine) cd).getSearchWord());
+		template.setData("lastword", ((I_CmsSearchEngine) cd).getSearchWord());
+		template.setData("first", String.valueOf(((I_CmsSearchEngine) cd).getFirstDisplay()));
+		template.setData("last", String.valueOf(((I_CmsSearchEngine) cd).getLastDisplay()));
+		template.setData("match", String.valueOf(((I_CmsSearchEngine) cd).getMatch()));
+		template.setData("pages", String.valueOf(((I_CmsSearchEngine) cd).getPages()));
 	}
-	int index = 0;
-	for (int i = 0; i < result.size(); i += 2) {
-		values.addElement(String.valueOf(result.elementAt(i)));
-		names.addElement(String.valueOf(result.elementAt(i + 1)));
+
+	/**
+     * Set the body of the search result into the template.
+     *
+	 * @param cms          CmsObject Object for accessing system resources
+	 * @param cd           Content definition object
+	 * @param searchModul  class name of the searchengine class
+	 * @param getResult    vector of the result set
+	 * @param template     the current used template
+	 * @param parameters   Hashtable with all template class parameters
+	 * @param page         the current page of the search result
+	 */
+	public void setSearchResultBody(CmsObject cms, Object cd, Class searchModul, Vector getResult, CmsXmlTemplateFile template, Hashtable parameters, String page) {
+		String list = "";
+		String format = (String) parameters.get(C_PARAM_SEARCHFORM_FORMAT);
+		String match = (String) parameters.get(C_PARAM_SEARCHFORM_MATCH_PER_PAGE);
+		int matchPerPage = 0;
+		int counter = 1;
+		int compare = 0;
+		int pageset = 0;
+
+		if (match == null) {
+			matchPerPage = (c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN) == -1) ? Integer.parseInt(c_match) : Integer.parseInt(c_match.substring(0, c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN)));
+		} else {
+			matchPerPage = Integer.parseInt(match);
+		}
+
+		try {
+			cd = searchModul.newInstance();
+			cd = (I_CmsSearchEngine) getResult.elementAt(0);
+			pageset = ((I_CmsSearchEngine) cd).getPages();
+		} catch (Exception e) {
+			System.out.println("setSearchResultBody:: Fatal Error to create new Instance , print stack trace now...");
+			e.printStackTrace();
+		}
+		if (page != null) {
+			compare = Integer.parseInt(page);
+			for (int i = 1; i <= pageset; i++) {
+				if (compare == i) {
+					counter = ((i * matchPerPage) - (matchPerPage - 1));
+				}
+			}
+		}
+
+		try {
+			for (int i = 1; i < getResult.size(); i++) {
+				cd = searchModul.newInstance();
+				cd = (I_CmsSearchEngine) getResult.elementAt(i);
+				// check for format ( long ) fill template body
+				if ((format == null) || format.equals("long")) {
+					template.setData("number", counter + "");
+					template.setData("url", ((I_CmsSearchEngine) cd).getUrl());
+					template.setData("url_description", ((I_CmsSearchEngine) cd).getUrl());
+					template.setData("title", ((I_CmsSearchEngine) cd).getTitle());
+					template.setData("percent", String.valueOf(((I_CmsSearchEngine) cd).getPercentMatch()));
+					template.setData("excerpt", ((I_CmsSearchEngine) cd).getExcerpt());
+					template.setData("size", String.valueOf(((I_CmsSearchEngine) cd).getSize()));
+					template.setData("modified", ((I_CmsSearchEngine) cd).getModified());
+					String longrow = template.getProcessedDataValue("longrow");
+					list += longrow;
+					// check for format ( short ) fill template body
+				} else {
+					template.setData("number", counter + "");
+					template.setData("url", ((I_CmsSearchEngine) cd).getUrl());
+					template.setData("title", ((I_CmsSearchEngine) cd).getTitle());
+					template.setData("percent", String.valueOf(((I_CmsSearchEngine) cd).getPercentMatch()));
+					String shortrow = template.getProcessedDataValue("shortrow");
+					list += shortrow;
+				}
+				counter++;
+			}
+		} catch (Exception e) {
+			System.out.println("setSearchResultBody:: Fatal Error , for seting result. Print stack trace now...");
+			e.printStackTrace();
+		}
+		template.setData("resultlist", list);
 	}
-	for (int i = 1; i < result.size(); i += 2) {
-		if (formatlist.equals(String.valueOf(result.elementAt(i - 1)))) {
-			index = i / 2;
+
+
+	/**
+	 * Called while generating the template content from CmsXmlFormTemplateFile.
+	 *
+	 * @param cms          A_CmsObject for accessing system resources.
+	 * @param parameters   Hashtable with all user parameters.
+	 * @param page         the current page of the search result
+	 * @param cd           Content definition object
+	 * @param searchModul  class name of the searchengine class
+	 * @param getResult    vector of the result set
+	 * @param template     the current used template
+	 * @see                CmsXmlFormTemplateFile
+	 */
+	public void setSearchResultNavigation(CmsObject cms, String page, Object cd, Class searchModul, Vector getResult, CmsXmlTemplateFile template, Hashtable parameters) {
+		String navigation = "";
+		String buildquery = "";
+		String tempNaviagtion = "";
+		int result = 0;
+		int site = 1;
+		int constant = 0;
+		int factor = 0;
+		int loop = 0;
+		int startloop = 0;
+		int range = c_navigationRange;
+		String matchPerPage = (String) parameters.get(C_PARAM_SEARCHFORM_MATCH_PER_PAGE);
+		String serverpath = cms.getRequestContext().getRequest().getServletUrl() + "" +
+			cms.getRequestContext().getUri();
+		if (matchPerPage == null) {
+			matchPerPage = (c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN) == -1) ? c_match : c_match.substring(0, c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN));
+		}
+
+		try {
+			cd = searchModul.newInstance();
+			cd = (I_CmsSearchEngine) getResult.elementAt(0);
+			site = ((I_CmsSearchEngine) cd).getPages();
+		} catch (Exception e) {
+			System.out.println("setSearchResultNavigation:: Fatal Error to create new Instance, print stack trace now...");
+			e.printStackTrace();
+		}
+		page = (page == null) ? "1" : page;
+		result = (Integer.parseInt(page) - 1) / (range);
+		constant = site / range;
+		factor = (constant > 0) ? result : 0;
+		startloop = ((factor * range) + 1);
+		loop = (((factor * range) + range) > site) ? site : ((factor * range) + range);
+
+		if (result >= 1) {
+			buildquery = setQuery(cms, parameters, matchPerPage, String.valueOf(startloop - 1));
+			template.setData("query_back", buildquery);
+			try {
+				tempNaviagtion = template.getProcessedDataValue("back");
+			} catch (Exception e) {
+				System.out.println("setSearchResultNavigation:: Fatal Error to Process navigation forward, print stack trace now...");
+				e.printStackTrace();
+			}
+			navigation += tempNaviagtion;
+		}
+
+		for (int i = startloop; i <= loop; i++) {
+			if (Integer.parseInt(page) == i) {
+				template.setData("currentpage", String.valueOf(i));
+				try {
+					tempNaviagtion = template.getProcessedDataValue("currentnav");
+				} catch (Exception e) {
+					System.out.println("setSearchResultNavigation:: Fatal Error to Process current site, print stack trace now...");
+					e.printStackTrace();
+				}
+				navigation += tempNaviagtion;
+			} else {
+				buildquery = setQuery(cms, parameters, matchPerPage, String.valueOf(i));
+				template.setData("server", serverpath);
+				template.setData("query", buildquery);
+				template.setData("numberurl", String.valueOf(i));
+				try {
+					tempNaviagtion = template.getProcessedDataValue("nav");
+				} catch (Exception e) {
+					System.out.println("setSearchResultNavigation:: Fatal Error to Process navigation, print stack trace now...");
+					e.printStackTrace();
+				}
+				navigation += tempNaviagtion;
+			}
+		}
+
+		if ((constant >= 1) && (site != loop)) {
+			buildquery = setQuery(cms, parameters, matchPerPage, String.valueOf(loop + 1));
+			template.setData("query_next", buildquery);
+			try {
+				tempNaviagtion = template.getProcessedDataValue("next");
+			} catch (Exception e) {
+				System.out.println("setSearchResultNavigation:: Fatal Error to Process navigation back, print stack trace now...");
+				e.printStackTrace();
+			}
+
+			navigation += tempNaviagtion;
+		}
+		template.setData("navigation", navigation);
+	}
+
+
+	/**
+	 * This method build the query string to send this to the searchengine (class).
+	 *
+	 * @param getPage          current page of the result
+	 * @param cms              CmsObject Object for accessing system resources
+	 * @param parameters       Hashtable with all template class parameters
+	 * @param match            total hit of search result
+	 *
+     * @return                 return the current query string for the searchengine
+	 */
+	private String setQuery(CmsObject cms, Hashtable parameters, String match, String getPage) {
+		String word = (String) parameters.get(C_PARAM_SEARCHFORM_WORD);
+		String method = (String) parameters.get(C_PARAM_SEARCHFORM_METHOD);
+		String format = (String) parameters.get(C_PARAM_SEARCHFORM_FORMAT);
+		String sort = (String) parameters.get(C_PARAM_SEARCHFORM_SORT);
+		String restrict = (String) parameters.get(C_PARAM_SEARCHFORM_RESTRICT);
+
+		StringBuffer query = new StringBuffer();
+		if (restrict != null) {
+			query.append((C_PARAM_SEARCHFORM_RESTRICT + "=" + restrict + "&"));
+		}
+		if (method != null) {
+			query.append((C_PARAM_SEARCHFORM_METHOD + "=" + method + "&"));
+		}
+		if (format != null) {
+			query.append((C_PARAM_SEARCHFORM_FORMAT + "=" + format + "&"));
+		}
+		if (sort != null) {
+			query.append((C_PARAM_SEARCHFORM_SORT + "=" + sort + "&"));
+		}
+		query.append((C_PARAM_SEARCHFORM_MATCH_PER_PAGE + "=" + match + "&"));
+		query.append((C_PARAM_SEARCHFORM_WORD + "=" + word + "&"));
+		query.append((C_PARAM_SEARCHFORM_PAGE + "=" + getPage));
+		return String.valueOf(query);
+	}
+
+	/**
+     * Calling the respective searchengine class which is define in the administration
+     * property of the module. It used the reflection method for calling.
+     * The result is a vector with content definition elements.
+     *
+	 * @param cms               CmsObject Object for accessing system resources
+	 * @param templateSelector  template section that should be processed
+	 * @param page              the current page of the search result
+	 * @param template          the current used template
+	 * @param parameters        Hashtable with all template class parameters
+     *
+	 * @return                  the result from the calling Searchengine class
+	 */
+	private Vector getResultFromSearchengine(CmsObject cms, String templateSelector, String page, CmsXmlTemplateFile template, Hashtable parameters) {
+		String noWord = "";
+		Vector getResult = null;
+		String word = (String) parameters.get(C_PARAM_SEARCHFORM_WORD);
+		String method = (String) parameters.get(C_PARAM_SEARCHFORM_METHOD);
+		String sort = (String) parameters.get(C_PARAM_SEARCHFORM_SORT);
+		String restrict = (String) parameters.get(C_PARAM_SEARCHFORM_RESTRICT);
+		String matchPerPage = (String) parameters.get(C_PARAM_SEARCHFORM_MATCH_PER_PAGE);
+		if (matchPerPage == null) {
+			matchPerPage = (c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN) == -1) ? c_match : c_match.substring(0, c_match.indexOf(C_PARAM_SEARCHENGINE_TOKEN));
+		}
+		// if the parameter does not exit set default value this is e.g.
+		// quicksearch there is only a textfield for the searchword
+		//logView("\n\nParameter:\n------------\nwords: " + word + "\nmethod: " + method + "\nsort: " + sort + "\npage: " + page +
+		//	"\nConfig: " + c_configFile + "\nrestrict: " + restrict + "\nmatchperpage: " + matchPerPage + "\n\n");
+		// error request for search word
+		if (word == null || word.equals("")) {
+			try {
+				noWord = template.getDataValue(C_PARAM_ERROR_NOWORD);
+			} catch (Exception e) {
+			}
+			template.setData("message", noWord);
+			return null;
+		}
+		// start reflection with the classname from the template
+		try {
+			Class c = Class.forName(c_contentDefinition);
+			Method m = c.getMethod("read", new Class[]{String.class, String.class, String.class, String.class, String.class, String.class, String.class, CmsObject.class});
+			getResult = (Vector) m.invoke(null, new Object[]{word, method, sort, page, c_configFile, restrict, matchPerPage, cms});
+		} catch (InvocationTargetException e) {
+			String error = String.valueOf(e.getTargetException());
+			System.out.println("getResultFromSearchengine:: reflection:" + e.getTargetException());
+			e.printStackTrace();
+			getErrorMessage(cms, error, template);
+			return null;
+		} catch (Exception e) {
+			System.out.println("getResultFromSearchengine:: Fatal Error, printing stack now ...");
+			e.printStackTrace();
+		}
+		return getResult;
+	}
+
+	/**
+	 * Gets the errorMessage attribute of the CmsSearchFormNew object
+	 *
+	 * @param cms       CmsObject Object for accessing system resources
+	 * @param error     String of error type
+	 * @param template  the current used template
+	 */
+	public void getErrorMessage(CmsObject cms, String error, CmsXmlTemplateFile template) {
+		String noServer = "";
+		String fileTopicError = "";
+		String reflectionError = "";
+
+		int end = error.indexOf(":");
+		if (end != -1) {
+			error = error.substring(0, end);
+		}
+		if (error.equalsIgnoreCase("java.io.FileNotFoundException")) {
+			try {
+				noServer = template.getDataValue(C_PARAM_ERROR_SERVERPATH);
+			} catch (Exception e) {
+				System.out.println("getErrorMessage::No Datablocks found ...");
+			}
+			template.setData("message", noServer);
+		} else if ((error.equalsIgnoreCase("java.lang.NumberFormatException")) || (error.equalsIgnoreCase("java.lang.ArrayIndexOutOfBoundsException"))) {
+			try {
+				fileTopicError = template.getDataValue(C_PARAM_ERROR_FILE_TOPIC);
+			} catch (Exception e) {
+				System.out.println("getErrorMessage::No Datablocks found ...");
+			}
+			template.setData("message", fileTopicError);
+		} else {
+			try {
+				reflectionError = template.getDataValue(C_PARAM_ERROR_REFLECTION);
+			} catch (Exception e) {
+				System.out.println("getErrorMessage::No Datablocks found ...");
+			}
+			template.setData("message", reflectionError);
 		}
 	}
-	return new Integer(index);
-}
-/**
- * Used for dynamically generating the selectbox for selecting
- * the method of the search engine (for example and, or, boolean).
- * This method use reflection to get dynamically the value for the selectbox
- * from the Content Definition which is used.
- *
- * Called while generating the template content from CmsXmlFormTemplateFile.
- * @param cms A_CmsObject for accessing system resources.
- * @param names Vector that will be filled with radio button descriptions.
- * @param values Vector that will be filled with radio buttom values.
- * @param parameters Hashtable with all user parameters.
- * @return Index of the currently checked radio button
- * @see CmsXmlFormTemplateFile
- * Creation date: (27.11.00 11:06:11)
- */
 
-public Integer selectMethod(CmsObject cms, Vector values, Vector names, Hashtable parameters) throws Exception {
-	// start session
-	I_CmsSession session = cms.getRequestContext().getSession(true);
-	Vector result = new Vector();
-	String methodlist = (String) session.getValue("searchengineMethod");
-	if (methodlist == null) {
-		methodlist = "";
+
+	/**
+	 * @param cms               CmsObject Object for accessing system resources
+	 * @param result            vector with the result of the searchengine class
+	 * @param templateSelector  template section that should be processed
+	 * @param template          the current used template
+	 * @param words             value of the searchword
+     *
+	 * @return                  <EM>true</EM> if any result is given, <EM>false</EM> otherwise.
+	 */
+	public boolean validateResultFromSearchengine(CmsObject cms, Vector result, String templateSelector, CmsXmlTemplateFile template, String words) {
+		if (result.size() <= 1) {
+			try {
+				if (result.elementAt(0).equals("syntax")) {
+					template.setData("message", template.getDataValue("SyntaxError"));
+				} else {
+					template.setData("message", template.getDataValue("NoMatch"));
+				}
+			} catch (Exception e) {
+			}
+			template.setData("lastword", words);
+			templateSelector = "default";
+			return false;
+		}
+		return true;
 	}
-	try {
-		Class c = Class.forName((String) parameters.get("searchengineContentDefinition"));
-		Method m = c.getMethod("setParameter", new Class[] {String.class, CmsObject.class});
-		result = (Vector) m.invoke(null, new Object[] {"method", cms});
-	} catch (ClassNotFoundException e) {
-		System.err.println(e.toString());
-	} catch (ClassCastException e) {
-		System.err.println(e.toString());
-	} catch (IllegalAccessException e) {
-		System.err.println(e.toString());
-	} catch (InvocationTargetException e) {
-		System.err.println(e.toString());
-	} catch (NoSuchMethodException e) {
-		System.err.println(e.toString());
-	} catch (Exception e) {
-		System.err.println(e.toString());
+
+
+	/**
+	 * Used for dynamically generating the selectbox for selecting the format method
+	 * of the search engine (for example long, short). This method use reflection to
+	 * get dynamically the value for the selectbox from the Content Definition which
+	 * is used. Called while generating the template content from CmsXmlFormTemplateFile.
+	 *
+	 * @param cms            A_CmsObject for accessing system resources.
+	 * @param names          Vector that will be filled with radio button descriptions.
+	 * @param values         Vector that will be filled with radio buttom values.
+	 * @param parameters     Hashtable with all user parameters.
+	 * @return               Index of the currently checked radio button
+	 * @exception Exception  Description of the Exception
+	 * @see                  CmsXmlFormTemplateFile
+	 */
+	public Integer selectFormat(CmsObject cms, Vector values, Vector names, Hashtable parameters) throws Exception {
+		Vector result = new Vector();
+		String formatlist = (String) parameters.get(C_PARAM_SEARCHFORM_FORMAT);
+		if (formatlist == null) {
+			formatlist = "";
+		}
+		try {
+			Class c = Class.forName(c_contentDefinition);
+			Method m = c.getMethod("setParameter", new Class[]{String.class, CmsObject.class});
+			result = (Vector) m.invoke(null, new Object[]{C_PARAM_SEARCHFORM_FORMAT, cms});
+		} catch (ClassNotFoundException e) {
+			System.err.println(e.toString());
+		} catch (ClassCastException e) {
+			System.err.println(e.toString());
+		} catch (IllegalAccessException e) {
+			System.err.println(e.toString());
+		} catch (InvocationTargetException e) {
+			System.err.println(e.toString());
+		} catch (NoSuchMethodException e) {
+			System.err.println(e.toString());
+		} catch (Exception e) {
+			System.err.println(e.toString());
+		}
+		int index = 0;
+		for (int i = 0; i < result.size(); i += 2) {
+			values.addElement(String.valueOf(result.elementAt(i)));
+			names.addElement(String.valueOf(result.elementAt(i + 1)));
+		}
+		for (int i = 1; i < result.size(); i += 2) {
+			if (formatlist.equals(String.valueOf(result.elementAt(i - 1)))) {
+				index = i / 2;
+			}
+		}
+		return new Integer(index);
 	}
-	int index = 0;
-	for (int i = 0; i < result.size(); i += 2) {
-		values.addElement(String.valueOf(result.elementAt(i)));
-		names.addElement(String.valueOf(result.elementAt(i + 1)));
+
+
+	/**
+	 * Used for dynamically generating the selectbox for selecting the sort method of
+	 * the search engine (for example title, time, score). This method use reflection
+	 * to get dynamically the value for the selectbox from the Content Definition which
+	 * is used. Called while generating the template content from CmsXmlFormTemplateFile.
+	 *
+	 * @param cms            A_CmsObject for accessing system resources.
+	 * @param names          Vector that will be filled with radio button descriptions.
+	 * @param values         Vector that will be filled with radio buttom values.
+	 * @param parameters     Hashtable with all user parameters.
+	 * @return               Index of the currently checked radio button
+	 * @exception Exception  Description of the Exception
+	 * @see                  CmsXmlFormTemplateFile
+	 */
+	public Integer selectSort(CmsObject cms, Vector values, Vector names, Hashtable parameters) throws Exception {
+		Vector result = new Vector();
+		String sortlist = (String) parameters.get(C_PARAM_SEARCHFORM_SORT);
+		if (sortlist == null) {
+			sortlist = "";
+		}
+		try {
+			Class c = Class.forName(c_contentDefinition);
+			Method m = c.getMethod("setParameter", new Class[]{String.class, CmsObject.class});
+			result = (Vector) m.invoke(null, new Object[]{C_PARAM_SEARCHFORM_SORT, cms});
+		} catch (ClassNotFoundException e) {
+			System.err.println(e.toString());
+		} catch (ClassCastException e) {
+			System.err.println(e.toString());
+		} catch (IllegalAccessException e) {
+			System.err.println(e.toString());
+		} catch (InvocationTargetException e) {
+			System.err.println(e.toString());
+		} catch (NoSuchMethodException e) {
+			System.err.println(e.toString());
+		} catch (Exception e) {
+			System.err.println(e.toString());
+		}
+		int index = 0;
+		for (int i = 0; i < result.size(); i += 2) {
+			values.addElement(String.valueOf(result.elementAt(i)));
+			names.addElement(String.valueOf(result.elementAt(i + 1)));
+		}
+		for (int i = 1; i < result.size(); i += 2) {
+			if (sortlist.equals(String.valueOf(result.elementAt(i - 1)))) {
+				index = i / 2;
+			}
+		}
+		return new Integer(index);
 	}
-	for (int i = 1; i < result.size(); i += 2) {
-		if (methodlist.equals(String.valueOf(result.elementAt(i - 1)))) {
-			index = i / 2;
+
+
+	/**
+	 * Used for dynamically generating the selectbox for selecting the method of the
+	 * search engine (for example and, or, boolean). This method use reflection to get
+	 * dynamically the value for the selectbox from the Content Definition which is
+	 * used. Called while generating the template content from CmsXmlFormTemplateFile.
+	 *
+	 * @param cms            A_CmsObject for accessing system resources.
+	 * @param names          Vector that will be filled with radio button descriptions.
+	 * @param values         Vector that will be filled with radio buttom values.
+	 * @param parameters     Hashtable with all user parameters.
+	 * @return               Index of the currently checked radio button
+	 * @exception Exception  Description of the Exception
+	 * @see                  CmsXmlFormTemplateFile
+	 */
+	public Integer selectMethod(CmsObject cms, Vector values, Vector names, Hashtable parameters) throws Exception {
+		Vector result = new Vector();
+		String methodlist = (String) parameters.get(C_PARAM_SEARCHFORM_METHOD);
+		if (methodlist == null) {
+			methodlist = "";
+		}
+		try {
+			Class c = Class.forName(c_contentDefinition);
+			Method m = c.getMethod("setParameter", new Class[]{String.class, CmsObject.class});
+			result = (Vector) m.invoke(null, new Object[]{C_PARAM_SEARCHFORM_METHOD, cms});
+		} catch (ClassNotFoundException e) {
+			System.err.println(e.toString());
+		} catch (ClassCastException e) {
+			System.err.println(e.toString());
+		} catch (IllegalAccessException e) {
+			System.err.println(e.toString());
+		} catch (InvocationTargetException e) {
+			System.err.println(e.toString());
+		} catch (NoSuchMethodException e) {
+			System.err.println(e.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.toString());
+		}
+		int index = 0;
+		for (int i = 0; i < result.size(); i += 2) {
+			values.addElement(String.valueOf(result.elementAt(i)));
+			names.addElement(String.valueOf(result.elementAt(i + 1)));
+		}
+		for (int i = 1; i < result.size(); i += 2) {
+			if (methodlist.equals(String.valueOf(result.elementAt(i - 1)))) {
+				index = i / 2;
+			}
+		}
+		return new Integer(index);
+	}
+
+
+	/**
+	 * Used selectbox for restrict the search if requiered. The paramters are set in
+	 * the process Tag <area restrict> in the Template. Called while generating the
+	 * template content from CmsXmlFormTemplateFile.
+	 *
+	 * @param cms            A_CmsObject for accessing system resources.
+	 * @param names          Vector that will be filled with radio button descriptions.
+	 * @param values         Vector that will be filled with radio buttom values.
+	 * @param parameters     Hashtable with all user parameters.
+	 * @return               Index of the currently checked radio button
+	 * @exception Exception  Description of the Exception
+	 * @see                  CmsXmlFormTemplateFile
+	 */
+	public Integer selectRestrict(CmsObject cms, Vector values, Vector names, Hashtable parameters) throws Exception {
+		int counter = 1;
+		int index = -1;
+		// get the parameter for the selectbox
+		String restrictlist = (String) parameters.get(C_PARAM_SEARCHFORM_RESTRICT);
+		// get the parameter for the selectbox and parse it
+		StringTokenizer zone = new StringTokenizer(c_areaSection, C_PARAM_SEARCHENGINE_TOKEN);
+		if (restrictlist == null) {
+			restrictlist = "";
+		}
+		while (zone.hasMoreTokens()) {
+			if ((counter % 2) != 0) {
+				values.addElement(zone.nextToken().trim());
+			} else {
+				names.addElement(zone.nextToken().trim());
+			}
+			counter++;
+		}
+		for (int i = 0, u = 0; i < (counter - 1); i += 2, u++) {
+			if (restrictlist.equals(values.elementAt(u))) {
+				index = u;
+			}
+		}
+		return new Integer(index);
+	}
+
+
+	/**
+	 * Used selectbox for restrict the search if requiered. The paramters are set in
+	 * the process Tag <area restrict> in the Template. Called while generating the
+	 * template content from CmsXmlFormTemplateFile.
+	 *
+	 * @param cms            A_CmsObject for accessing system resources.
+	 * @param names          Vector that will be filled with radio button descriptions.
+	 * @param values         Vector that will be filled with radio buttom values.
+	 * @param parameters     Hashtable with all user parameters.
+	 * @return               Index of the currently checked radio button
+	 * @exception Exception  Description of the Exception
+	 * @see                  CmsXmlFormTemplateFile Creation date: (27.11.00 11:06:11)
+	 */
+	public Integer selectMatchperPage(CmsObject cms, Vector values, Vector names, Hashtable parameters) throws Exception {
+		String tempMatch = "";
+		int counter = 1;
+		int index = 0;
+		// get the parameter for the selectbox
+		String match = (String) parameters.get(C_PARAM_SEARCHFORM_MATCH_PER_PAGE);
+		// get the parameter for the selectbox and parse it
+		StringTokenizer matchesValue = new StringTokenizer(c_match, C_PARAM_SEARCHENGINE_TOKEN);
+		if (match == null) {
+			match = "";
+		}
+		while (matchesValue.hasMoreTokens()) {
+			tempMatch = matchesValue.nextToken().trim();
+			values.addElement(tempMatch);
+			names.addElement(tempMatch);
+			counter++;
+		}
+		for (int i = 0, u = 0; i < (counter - 1); i += 2, u++) {
+			String test = (String) values.elementAt(u);
+			if (test.equals(match)) {
+				index = u;
+			}
+		}
+		return new Integer(index);
+	}
+
+
+	/**
+	 * gets the caching information from the current template class.
+	 *
+	 * @param cms               CmsObject Object for accessing system resources
+	 * @param templateFile      Filename of the template file
+	 * @param elementName       Element name of this template in our parent template.
+	 * @param parameters        Hashtable with all template class parameters.
+	 * @param templateSelector  template section that should be processed.
+	 * @return                  <EM>true</EM> if this class may stream it's results,
+	 *      <EM>false</EM> otherwise.
+	 */
+	public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		// First build our own cache directives.
+		return new CmsCacheDirectives(false);
+	}
+
+	/**
+	 * display some debug hints dependent from configuration
+	 *
+	 * @param display  String which should shown
+	 */
+	public void logView(String display) {
+		if (LOGGING > 0) {
+			if (display != null) {
+				System.out.println(display);
+			}
 		}
 	}
-	return new Integer(index);
-}
-/**
- * Used selectbox for restrict the search if requiered. The paramters are set in the
- * process Tag <area restrict> in the Template.
- *
- * Called while generating the template content from CmsXmlFormTemplateFile.
- * @param cms A_CmsObject for accessing system resources.
- * @param names Vector that will be filled with radio button descriptions.
- * @param values Vector that will be filled with radio buttom values.
- * @param parameters Hashtable with all user parameters.
- * @return Index of the currently checked radio button
- * @see CmsXmlFormTemplateFile
- * Creation date: (27.11.00 11:06:11)
- */
 
-public Integer selectRestrict(CmsObject cms, Vector values, Vector names, Hashtable parameters) throws Exception {
-	int counter = 1, index = 0;
-	// session for presetting
-	I_CmsSession session = cms.getRequestContext().getSession(true);
-	// get the parameter for the selectbox
-	String restrictlist = (String) session.getValue("searchengineRestrict");
-	// get the parameter for the selectbox and parse it
-	if ((String) parameters.get("searchengineAreaRestrict")!=null){
-	StringTokenizer zone = new StringTokenizer((String) parameters.get("searchengineAreaRestrict"), ",");
-	if (restrictlist == null) {
-		restrictlist = "";
-	}
-	while (zone.hasMoreTokens()) {
-		if ((counter % 2) != 0)
-			values.addElement(zone.nextToken());
-		else
-			names.addElement(zone.nextToken());
-		counter++;
-	}
-	for (int i = 0, u = 0; i < (counter - 1); i += 2, u++) {
-		if (restrictlist.equals(values.elementAt(u))) {
-			index = u;
-		}
-	}
-	}
-	return new Integer(index);
-}
-/**
-* Used for dynamically generating the selectbox for selecting
-* the sort method of the search engine (for example title, time, score).
-* This method use reflection to get dynamically the value for the selectbox
-* from the Content Definition which is used.
-*
-* Called while generating the template content from CmsXmlFormTemplateFile.
-* @param cms A_CmsObject for accessing system resources.
-* @param names Vector that will be filled with radio button descriptions.
-* @param values Vector that will be filled with radio buttom values.
-* @param parameters Hashtable with all user parameters.
-* @return Index of the currently checked radio button
-* @see CmsXmlFormTemplateFile
-* Creation date: (27.11.00 11:06:11)
-*/
-
-public Integer selectSort(CmsObject cms, Vector values, Vector names, Hashtable parameters) throws Exception {
-	// start session
-	I_CmsSession session = cms.getRequestContext().getSession(true);
-	Vector result = new Vector();
-	String sortlist = (String) session.getValue("searchengineSort");
-	if (sortlist == null) {
-		sortlist = "";
-	}
-	try {
-		Class c = Class.forName((String) parameters.get("searchengineContentDefinition"));
-		Method m = c.getMethod("setParameter", new Class[] {String.class, CmsObject.class});
-		result = (Vector) m.invoke(null, new Object[] {"sort", cms});
-	} catch (ClassNotFoundException e) {
-		System.err.println(e.toString());
-	} catch (ClassCastException e) {
-		System.err.println(e.toString());
-	} catch (IllegalAccessException e) {
-		System.err.println(e.toString());
-	} catch (InvocationTargetException e) {
-		System.err.println(e.toString());
-	} catch (NoSuchMethodException e) {
-		System.err.println(e.toString());
-	} catch (Exception e) {
-		System.err.println(e.toString());
-	}
-	int index = 0;
-	for (int i = 0; i < result.size(); i += 2) {
-		values.addElement(String.valueOf(result.elementAt(i)));
-		names.addElement(String.valueOf(result.elementAt(i + 1)));
-	}
-	for (int i = 1; i < result.size(); i += 2) {
-		if (sortlist.equals(String.valueOf(result.elementAt(i - 1)))) {
-			index = i / 2;
-		}
-	}
-	return new Integer(index);
-}
-/**
- * This method build the query string
- * Creation date: (15.11.00 14:05:15)
- */
-private String setQuery(String getRestrict, String getWord, String getMethod, String getFormat, String getSort, String getPage) {
-	StringBuffer query = new StringBuffer();
-	query.append(("restrict=" + getRestrict));
-	query.append(("&method=" + getMethod));
-	query.append(("&format=" + getFormat));
-	query.append(("&sort=" + getSort));
-	query.append(("&words=" + getWord));
-	query.append(("&page=" + getPage));
-	return String.valueOf(query);
-}
 }
