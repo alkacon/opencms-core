@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/09/22 11:44:36 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/10/24 20:29:13 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2004/09/22 11:44:36 $
+ * @version $Revision: 1.12 $ $Date: 2004/10/24 20:29:13 $
  * @since 5.3
  */
 public class CmsSetupTests extends Object implements Serializable, Cloneable {
@@ -151,14 +151,26 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
         try {
             String requiredJDK = "1.4.0";
             String JDKVersion = System.getProperty("java.version");
-            boolean supportedJDK = compareJDKVersions(JDKVersion, requiredJDK);
 
             testResult.setName("JDK version");
             testResult.setResult(JDKVersion);
 
+            boolean supportedJDK = compareJDKVersions(JDKVersion, requiredJDK);
+            boolean tigerJDK = false;
+            if (supportedJDK) {
+                if (JDKVersion.startsWith("1.5") || JDKVersion.startsWith("5")) {
+                    tigerJDK = true;
+                    supportedJDK = false;
+                }
+            }
+            
             if (!supportedJDK) {
                 testResult.setRed();
-                testResult.setHelp("OpenCms requires at least JDK version " + requiredJDK + " to run. Please update your JDK");
+                if (tigerJDK) {
+                    testResult.setHelp("OpenCms does not yet run with Java version " + JDKVersion + ". Please use Java 1.4.x");
+                } else {
+                    testResult.setHelp("OpenCms requires at least Java version " + requiredJDK + " to run. Please update your JDK");
+                }
             } else {
                 testResult.setGreen();
             }
