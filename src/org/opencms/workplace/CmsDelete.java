@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2003/07/30 13:34:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/31 12:17:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,8 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.lock.CmsLockException;
-
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
@@ -42,6 +42,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockException;
+
 /**
  * Provides methods for the delete resources dialog.<p> 
  * 
@@ -51,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -175,6 +178,31 @@ public class CmsDelete extends CmsDialog {
      */
     public boolean hasVfsLinks() throws CmsException {
         return getCms().getAllVfsSoftLinks(getParamResource()).size() > 0;
+    }
+    
+    /**
+     * Checks if the current resource has lock state exclusive or inherited.<p>
+     * 
+     * This is used to determine whether the dialog shows the option to delete all
+     * siblings of the resource or not.
+     * 
+     * @return true if lock state is exclusive or inherited, otherwise false
+     */
+    public boolean hasCorrectLockstate() {
+        CmsLock lock = null;
+        try {
+            // get the lock state for the current resource
+            lock = getCms().getLock(getParamResource());
+        } catch (CmsException e) {
+            lock = CmsLock.getNullLock();
+    
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " error getting lock state for resource " + getParamResource() + " " + e.getMessage());
+            }  
+            return false;           
+        }
+        int type = lock.getType();
+        return (type == CmsLock.C_TYPE_EXCLUSIVE || type == CmsLock.C_TYPE_INHERITED);
     }
     
     /**
