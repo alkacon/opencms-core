@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/09 08:11:50 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/09/09 09:13:07 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.37 $ $Date: 2003/09/09 08:11:50 $
+ * @version $Revision: 1.38 $ $Date: 2003/09/09 09:13:07 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -684,19 +684,17 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         byte[] content = null;
         int versionId;
         
-        // TODO: ensure user name is also displayed even if user was deleted
-        //        String lastModifiedName = null;
-        //        String createdName = null;
-        //        try {
-        //            CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getUserLastModified());
-        //            lastModifiedName = lastModified.getName() + " " + lastModified.getFirstname() + " " + lastModified.getLastname();
-        //
-        //            CmsUser created = m_driverManager.readUser(null, resource.getUserCreated());
-        //            createdName = created.getName() + " " + created.getFirstname() + " " + created.getLastname();
-        //        } catch (CmsException e) {
-        //            lastModifiedName = "";
-        //            createdName = "";
-        //        }
+        String lastModifiedName = "";
+        String createdName = "";
+        try {
+            CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getUserLastModified());
+            lastModifiedName = "["+lastModified.getName() + "] " + lastModified.getFirstname() + " " + lastModified.getLastname();
+            CmsUser created = m_driverManager.getUserDriver().readUser(resource.getUserCreated());
+            createdName = created.getName() + " " + created.getFirstname() + " " + created.getLastname();
+        } catch (CmsException e) {
+            lastModifiedName = resource.getUserCreated().toString();
+            createdName = resource.getUserLastModified().toString();
+        }
 
         try {
             conn = m_sqlManager.getConnectionForBackup();
@@ -724,13 +722,11 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     stmt.setInt(11, resource.getLength());
                     stmt.setString(12, CmsUUID.getNullUUID().toString());
                     stmt.setInt(13, publishProject.getId());
-                    // TODO: link count is set to 1 for the moment
                     stmt.setInt(14, 1);
                     stmt.setInt(15, tagId);
                     stmt.setString(16, backupPkId.toString());
-                    // TODO: write the user names instead the user id !
-                    stmt.setString(17, resource.getUserCreated().toString());
-                    stmt.setString(18, resource.getUserLastModified().toString());
+                    stmt.setString(17, createdName);
+                    stmt.setString(18, lastModifiedName);
                     stmt.executeUpdate();
 
                     m_sqlManager.closeAll(null, stmt, null);

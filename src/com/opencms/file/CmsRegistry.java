@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/08 09:08:09 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2003/09/09 09:13:07 $
+ * Version: $Revision: 1.93 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.92 $
+ * @version $Revision: 1.93 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -764,6 +764,24 @@ public class CmsRegistry extends A_CmsXmlContent {
         return "Registry";
     }
 
+
+    /**
+      * This method gets the backup enalbe state.<p>
+      *
+      * @return true or false
+      * @throws CmsException if something goes wrong
+      */
+    public boolean getBackupEnabled() throws CmsException {    
+        boolean enable;
+        Hashtable histproperties = getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
+        String value = ((String)histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_ENABLE));
+        if (value.equals("true")) {
+            enable = true;
+        } else {
+            enable = false;
+        }          
+        return enable;
+    }
 
     /**
       * This method gets the maximum number of backup versions for each file.<p>
@@ -2017,6 +2035,24 @@ public class CmsRegistry extends A_CmsXmlContent {
         }
     }
 
+
+    /**
+     * This method enables/disables the backup.<p>
+     *
+     * @param versions maximum number of backup versions
+     * @throws CmsException if something goes wrong
+     */
+    public void setBackupEnabled(boolean enabled) throws CmsException {
+        String value;
+        if (enabled) {
+            value="true";
+        } else {
+            value="false";
+        }
+        Hashtable histproperties = getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
+        histproperties.put(I_CmsConstants.C_REGISTRY_HISTORY_ENABLE, value);
+        setSystemValues(I_CmsConstants.C_REGISTRY_HISTORY, histproperties);        
+    }
 
     /**
      * This method sets the maximum number of backup versions for each resource in the history.<p>
