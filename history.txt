@@ -8,6 +8,12 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.15 Ecaz - xx August 2002
+* general bugfixes
+- The Oracle PL/SQL code has been removed and is no longer supported. 
+  You can use the the oraclesql-resourcebroker that supports Oracle BLOBs instead. 
+  In opencms.properties this new resourcebroker is already used for the oracleOci-part.
+
 OpenCms 4.7.14 Ecaz - 06 August 2002
 * Now the manager of a project who is not member of the projectmanager-group can publish a resource directly
 * general bugfixes
