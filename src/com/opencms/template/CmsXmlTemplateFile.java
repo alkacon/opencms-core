@@ -11,7 +11,7 @@ import java.util.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/21 10:35:18 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -93,7 +93,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param elementName Name of the subelement.
      * @return Name of the template class.
      */
-    public String getSubtemplateClass(String name) {
+    public String getSubtemplateClass(String name) throws CmsException {
         String className = getDataValue("ELEMENTDEF." + name + ".CLASS");
         return className;
     }
@@ -103,7 +103,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param elementName Name of the subelement.
      * @return Filename of the template file.
      */
-    public String getSubtemplateFilename(String name) {
+    public String getSubtemplateFilename(String name) throws CmsException {
         String className = getDataValue("ELEMENTDEF." + name + ".TEMPLATE");
         return className;
     }    
@@ -133,6 +133,27 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     }
     
     /**
+     * Gets an enumeration of all parameter names of a given subelement definition.
+     * @param elementName Name of the subelement.
+     * @return Enumeration of all names.
+     * @exception CmsException
+     */
+    public Enumeration getParameterNames(String elementName) throws CmsException {
+        Element elementDefinition = getData("elementdef." + elementName);
+        NodeList parameterTags = elementDefinition.getElementsByTagName("PARAMETER");
+        return getNamesFromNodeList(parameterTags);            
+    }
+    
+    /**
+     * Gets the value of a single parameter of a given subelement definition.
+     * @param elementName Name of the subelement.
+     * @param parameterName Name of the requested parameter.
+     */
+    public String getParameter(String elementName, String parameterName) throws CmsException {
+        return getDataValue("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName);        
+    }
+    
+    /**
      * Utility method to get the correct datablock name for a given selector.<BR>
      * If no selector is given or the selected section is not found, the template section
      * with no name will be returned. If even this is not found the section named "default"
@@ -159,7 +180,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 templateDatablockName = "TEMPLATE.default";
             } else {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "template definition file " + getAbsoluteFilename() + " is corrupt. cannot find default section.");
-                throw new CmsException("Corrupt template file " + getAbsoluteFilename() + ". Cannot find default section.");
+                throw new CmsException("Corrupt template file " + getAbsoluteFilename() + ". Cannot find default section.", CmsException.C_XML_TAG_MISSING);
             }
         }
         return templateDatablockName;
@@ -185,7 +206,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 if(A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename() + ".");
                 }
-                throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename() + ".");
+                throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename() + ".", CmsException.C_XML_TAG_MISSING);
             }
             collectNames.addElement(name);
         }

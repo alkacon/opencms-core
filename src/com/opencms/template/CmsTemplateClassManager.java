@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * be cached and re-used. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/21 10:35:18 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels { 
     
@@ -30,15 +30,10 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * @param cms A_CmsObject Object for accessing system resources.
      * @param classname Name of the requested class.
      * @return Instance of the class with the given name.
-     * @exception ClassNotFoundException
-     * @exception InstantiationException
-     * @exception IllegalAccessException
-     * @exception NoSuchMethodException
-     * @exception InvocationTargetException
+     * @exception CmsException 
      */
     public static Object getClassInstance(A_CmsObject cms, String classname)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException,
-               InvocationTargetException {
+            throws CmsException {
         
         return getClassInstance(cms, classname, null);
     }
@@ -51,15 +46,10 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * @param classname Name of the requested class.
      * @param callParameters Array of arguments that should be passed to the Constructor.
      * @return Instance of the class with the given name.
-     * @exception ClassNotFoundException
-     * @exception InstantiationException
-     * @exception IllegalAccessException
-     * @exception NoSuchMethodException
-     * @exception InvocationTargetException
+     * @exception CmsException 
      */
     public static Object getClassInstance(A_CmsObject cms, String classname, Object[] callParameters)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException,
-               InvocationTargetException {
+            throws CmsException {
         
         int numParams = 0;
         if(callParameters != null) {
@@ -84,15 +74,10 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * @param callParameters Array of arguments that should be passed to the Constructor.
      * @param parameterTypes Array of the types of the arguments.
      * @return Instance of the class with the given name.
-     * @exception ClassNotFoundException
-     * @exception InstantiationException
-     * @exception IllegalAccessException
-     * @exception NoSuchMethodException
-     * @exception InvocationTargetException
+     * @exception CmsException 
      */
     public static Object getClassInstance(A_CmsObject cms, String classname, Object[] callParameters, Class[] parameterTypes)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException,
-               InvocationTargetException {
+            throws CmsException {
         
         Object o = null;
         if(callParameters == null) {
@@ -103,23 +88,44 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
             parameterTypes = new Class[0];
         }
         
-        if(!instanceCache.containsKey(classname)) {
+        if(instanceCache.containsKey(classname)) {
+            o = instanceCache.get(classname);
+        } else {
             Vector repositories = new Vector();
             //repositories.addElement("/system/servlets/");
             repositories.addElement("/");
 
-            CmsClassLoader loader = new CmsClassLoader(cms, repositories, null);
-            Class c = loader.loadClass(classname);        
+            try {
+                CmsClassLoader loader = new CmsClassLoader(cms, repositories, null);
+                Class c = loader.loadClass(classname);        
             
-            // Now we have to look for the constructor
-            Constructor con = c.getConstructor(parameterTypes); 
-            Object o2 = con.newInstance(callParameters);
-            instanceCache.put(classname, o2);
+                // Now we have to look for the constructor
+                Constructor con = c.getConstructor(parameterTypes); 
+                o = con.newInstance(callParameters);
+            } catch(Exception e) {
+                String errorMessage = null;
+                
+                // Construct error message for the different exceptions
+                if(e instanceof ClassNotFoundException) {                    
+                    errorMessage = "Could not load template class " + classname;
+                } else if(e instanceof InstantiationException) {
+                    errorMessage = "Could not instantiate template class " + classname;
+                } else if(e instanceof NoSuchMethodException) {
+                    errorMessage = "Could not find constructor of template class " + classname;
+                } else {
+                    errorMessage = "Unknown error while getting instance of template class " + classname;
+                }
+
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
+                }
+                throw new CmsException(errorMessage, CmsException.C_CLASSLOADER_ERROR);
+            }
+                                                
+            instanceCache.put(classname, o);
         }
         
-        o = instanceCache.get(classname);
-        return o;
-        
+        return o;        
     }
     
     /**

@@ -31,7 +31,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/14 16:17:11 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/21 10:35:27 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
@@ -150,6 +150,8 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      * @exception CmsException
      */
     public void handleException(A_CmsObject cms, Exception e, String errorText) throws CmsException {
+        
+        // Print out some error messages
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorText);
             if(!(e instanceof CmsException)) {
@@ -157,17 +159,17 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
             }
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Cannot create output. Must send error. Sorry.");
         }        
+
         // If the user is "Guest", we send an servlet error.
         // Otherwise we try to throw an exception.
-        A_CmsRequestContext reqContext = cms.getRequestContext();
-        
+        A_CmsRequestContext reqContext = cms.getRequestContext();        
         if(cms.anonymousUser().equals(reqContext.currentUser())) {
             throw new CmsException(CmsException.C_SERVICE_UNAVAILABLE);
         } else {                        
             if(e instanceof CmsException) {
                 throw (CmsException)e;
             } else {
-                throw new CmsException(errorText, e);
+                throw new CmsException(errorText, CmsException.C_LAUNCH_ERROR, e);
             }
         }
     }
@@ -187,17 +189,14 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
             out.flush();
             out.close();
         } catch(Exception e) {
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[A_CmsLauncher] cannot write output to HTTP response.");
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[A_CmsLauncher] " + e);
-                throw new CmsException("Cannot write output to HTTP response in A_CmsLauncher", e);
-            }
+            String errorMessage = "Cannot write output to HTTP response stream";
+            handleException(cms, e, errorMessage);
         }
     }
     
     /**
      * Calls the CmsClassManager to get an instance of the given template class.
-     * The returned Object is checked to be an implementing class of the interface
+     * The returned object is checked to be an implementing class of the interface
      * I_CmsTemplate.
      * If the template cache of the template class is not yet setted, this will
      * be done, too.
@@ -206,31 +205,27 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      * @return Instance of the template class.
      * @exception CmsException.
      */
-    protected Object getTemplateClass(A_CmsObject cms, String classname) throws CmsException {
-        Object loadedTemplateClass = null;
+    protected I_CmsTemplate getTemplateClass(A_CmsObject cms, String classname) throws CmsException {
    
-        try {
-            loadedTemplateClass = CmsTemplateClassManager.getClassInstance(cms, classname);
-        } catch(ClassNotFoundException e) {
-            System.err.println("Class " + classname + " could not be loaded!");
-            throw new CmsException("Could not load template class " + classname);
-        } catch(Exception e) {
-            System.err.println("Class " + classname + " could not be instantiated!");
-            throw new CmsException("Could not instantiate class " + classname + ". Original Exception: " + e);
+        Object o = CmsTemplateClassManager.getClassInstance(cms, classname);
+        
+        // Check, if the loaded class really is a OpenCms template class.
+        // This is done be checking the implemented interface.
+            
+        if(! (o instanceof I_CmsTemplate)) {
+            String errorMessage = "Class " + classname + " is no OpenCms template class.";
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
+            }
+            throw new CmsException(errorMessage, CmsException.C_XML_NO_TEMPLATE_CLASS);
         }
 
-        if(! (loadedTemplateClass instanceof I_CmsTemplate)) {
-            System.err.println("Class " + classname + " is no OpenCms template class.");
-            throw new CmsException("Cannot launch class " + classname + ". This is no OpenCms template class.");
-        }
-
-        I_CmsTemplate cmsTemplate = (I_CmsTemplate)loadedTemplateClass;
+        I_CmsTemplate cmsTemplate = (I_CmsTemplate)o;
         
         if(!cmsTemplate.isTemplateCacheSet()) {
             cmsTemplate.setTemplateCache(m_templateCache);
-        }
-        
-        return loadedTemplateClass;        
+        }        
+        return cmsTemplate;        
     }
 
     /**

@@ -9,7 +9,7 @@ import java.util.*;
  * Sample content definition for news articles.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/21 10:35:18 $
  */
  public class CmsXmlNewsContentDefinition extends A_CmsXmlContent {
 
@@ -64,7 +64,7 @@ import java.util.*;
      * Gets the content of the headline.
      * @return Headline
      */
-    public String getNewsHeadline() {
+    public String getNewsHeadline() throws CmsException {
         return getDataValue("HEADLINE");
     }
     
@@ -72,7 +72,7 @@ import java.util.*;
      * Gets the date of the article:
      * @return Date.
      */
-    public String getNewsDate() {
+    public String getNewsDate() throws CmsException {
         return getDataValue("DATE");
     }
     
@@ -80,7 +80,7 @@ import java.util.*;
      * Gets the article text.
      * @return Article text.
      */
-    public String getNewsText() {
+    public String getNewsText() throws CmsException {
         return getDataValue("TEXT");
     }
     

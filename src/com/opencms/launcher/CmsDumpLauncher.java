@@ -19,7 +19,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/14 16:17:11 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/21 10:35:27 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher { 	
         
@@ -44,18 +44,21 @@ public class CmsDumpLauncher extends A_CmsLauncher {
         Object tmpl = getTemplateClass(cms, templateClass);
                
         if(!(tmpl instanceof com.opencms.template.I_CmsDumpTemplate)) {
-            System.err.println(templateClass + " is not a Cms dump template class. Sorry.");
-            System.err.println("removing cache");
-            throw new CmsException("Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class. Sorry.");
+            String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a Cms dump template class.";
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+            }
+            throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
         }
-        
-        
+                
         Hashtable newParameters = new Hashtable();
             
         try {
             result = this.callCanonicalRoot(cms, (com.opencms.template.I_CmsTemplate)tmpl, file, newParameters);
         } catch (CmsException e) {
-            System.err.println("Error while creating document");
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Could not create document for template file \"" + file.getAbsolutePath() + "\" and template class + \"" + startTemplateClass + "\".");
+            }
             throw e;
         }
             

@@ -26,7 +26,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/14 16:17:11 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/21 10:35:27 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels { 	
         
@@ -74,12 +74,13 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
         
         CmsFile masterTemplate = loadMasterTemplateFile(cms, templateName, doc);
                 
-        Object tmpl = getTemplateClass(cms, templateClass);
+        I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);
         if(!(tmpl instanceof I_CmsXmlTemplate)) {
-            System.err.println(templateClass + " is not a XML template class. Sorry.");
-            System.err.println("removing cache");
-            doc.clearFileCache(doc);
-            throw new CmsException("Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class. Sorry.");
+            String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class.";
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+            }
+            throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
         }
         
         // Now look for parameters in the body file 
@@ -146,7 +147,9 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
      * @return CmsFile object of the requested template file.
      * @exception CmsException
      */
-    private CmsFile loadMasterTemplateFile(A_CmsObject cms, String templateName, CmsXmlControlFile doc) throws CmsException {
+    private CmsFile loadMasterTemplateFile(A_CmsObject cms, String templateName, com.opencms.template.CmsXmlControlFile doc) 
+        throws CmsException {
+        	
         CmsFile masterTemplate = null;
         try {
             masterTemplate = cms.readFile(templateName);

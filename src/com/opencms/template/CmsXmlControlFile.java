@@ -5,14 +5,13 @@ import com.opencms.core.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
-import java.lang.reflect.*;
 import java.util.*;
 
 /**
  * Content definition for "clickable" and user requestable XML body files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/14 16:17:11 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/21 10:35:18 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -87,7 +86,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
             A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] <MASTERTEMPLATE> tag not found in file " + getAbsoluteFilename() + ".");
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlControlFile] Document has errors. Removing from cache.");
             clearFileCache(this);
-            throw new CmsException("\"MASTERTEMPLATE\" definition tag not found in file " + getAbsoluteFilename() + ".");
+            throw new CmsException("\"MASTERTEMPLATE\" definition tag not found in file " + getAbsoluteFilename() + ".", CmsException.C_XML_TAG_MISSING);
         }
         return result;
     }
@@ -117,7 +116,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @param elementName Name of the subelement.
      * @return Name of the template class.
      */
-    public String getElementClass(String elementName) {
+    public String getElementClass(String elementName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".CLASS"); 
     }
 
@@ -126,7 +125,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @param elementName Name of the subelement.
      * @return Filename of the template file.
      */
-    public String getElementTemplate(String elementName) {
+    public String getElementTemplate(String elementName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".TEMPLATE"); 
     }
         
@@ -159,7 +158,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @param elementName Name of the subelement.
      * @param parameterName Name of the requested parameter.
      */
-    public String getParameter(String elementName, String parameterName) {
+    public String getParameter(String elementName, String parameterName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName);        
     }
     
@@ -183,7 +182,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
                 if(A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename() + ".");
                 }
-                throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename() + ".");
+                throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename() + ".", CmsException.C_XML_TAG_MISSING);
             }
             collectNames.addElement(name);
         }

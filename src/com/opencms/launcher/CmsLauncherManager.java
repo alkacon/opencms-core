@@ -9,7 +9,7 @@ import java.util.*;
  * given launcher id.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/21 10:35:27 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
        
@@ -73,13 +73,13 @@ public class CmsLauncherManager implements I_CmsLogChannels {
                     if(A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, "[CmsLauncherManager] " + errorMessage);
                     }
-                    throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+                    throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
                 } else {
                     String errorMessage = "Unknown error while initializing launcher \"" + C_KNOWN_LAUNCHERS[i] + "\". " + e.toString();
                     if(A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, "[CmsLauncherManager] " + errorMessage);
                     }
-                    throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+                    throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
                 }                
             }
             
@@ -92,7 +92,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
                 if(A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, "[CmsLauncherManager] " + errorMessage);
                 }
-                throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+                throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
             }
             
             // Now everything is fine.

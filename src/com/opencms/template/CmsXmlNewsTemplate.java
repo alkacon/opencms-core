@@ -12,7 +12,7 @@ import org.xml.sax.*;
  * <CODE>CmsXmlNewsContentDefinition</CODE>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/21 10:35:18 $
  * @see com.opencms.template.CmsXmlNewsContentDefinition
  */
 public class CmsXmlNewsTemplate extends CmsXmlTemplate implements I_CmsLogChannels {
@@ -73,7 +73,7 @@ public class CmsXmlNewsTemplate extends CmsXmlTemplate implements I_CmsLogChanne
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlNewsTemplate] " + errorMessage);
             }            
-            throw new CmsException(errorMessage);
+            throw new CmsException(errorMessage, CmsException.C_XML_TAG_MISSING);
         }
         
         Enumeration en = CmsXmlNewsContentDefinition.getAllArticles(cms, newsFolder);
@@ -109,12 +109,9 @@ public class CmsXmlNewsTemplate extends CmsXmlTemplate implements I_CmsLogChanne
         String folder = (String)parameters.get("elem1.newsfolder");
         if((read != null) && (folder != null) && (! "".equals(read)) && (! "".equals(folder))) {
             CmsXmlNewsContentDefinition doc2 = new CmsXmlNewsContentDefinition(cms, folder + read);
-            result = doc2.getNewsHeadline() + "<P>" 
-                     + doc2.getNewsText() + "<P>"
-                     + doc2.getNewsDate() + "<P>";
-            return result;
+            return getArticleAsHtml(doc2);
         } else {
-            throw new CmsException("Cannot Read Article");
+            throw new CmsException("Cannot read article");
         }
     }        
     
@@ -125,4 +122,16 @@ public class CmsXmlNewsTemplate extends CmsXmlTemplate implements I_CmsLogChanne
     public boolean shouldReload() {
         return false;
     }
+
+    /**
+     * Gets the news article as HTML text.
+     * @param doc CmsXmlNewsContentDefinition object of the news artice file
+     * @return HTML text of the article.
+     * @exception CmsException
+     */
+    protected String getArticleAsHtml(CmsXmlNewsContentDefinition doc) throws CmsException {
+        return doc.getNewsHeadline() + "<P>" 
+            + doc.getNewsText() + "<P>"
+            + doc.getNewsDate() + "<P>";
+    }    
 }
