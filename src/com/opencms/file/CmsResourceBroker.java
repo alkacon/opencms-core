@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2000/01/31 18:59:50 $
+ * @version $Revision: 1.40 $ $Date: 2000/02/01 18:17:22 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -1670,6 +1670,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											 A_CmsProject currentProject,
 											 int resourceType) 
 		throws CmsException {
+		// TODO: this is not very efficient.
 		// try to get the resource-type
 		Hashtable types = getAllResourceTypes(currentUser, currentProject);
 		Enumeration keys = types.keys();

@@ -17,7 +17,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/28 11:40:33 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/01 18:17:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -27,6 +27,11 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      */
     protected static CmsXmlWpButtonsDefFile m_buttondef = null;
     
+    /**
+     * Reference to icons definition file
+     */
+    protected static CmsXmlWpTemplateFile m_icondef = null;
+	
     /**
      * Reference to the label defintion file
      */
@@ -65,6 +70,23 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
         return m_buttondef;
     }
     
+    /**
+     * Reads the icons definition file.
+     * @param cms The actual cms object
+     * @return Reference to the icons defintion file.
+     * @exception CmsException
+     */
+    public CmsXmlWpTemplateFile getIconDefinitions(A_CmsObject cms) throws CmsException {
+        if(m_icondef == null) {
+            if(m_workplaceElementPath == null) {
+                CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+                m_workplaceElementPath = configFile.getWorkplaceElementPath();
+            }
+            m_icondef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_ICON_TEMPLATEFILE);
+        }
+        return m_icondef;
+    }
+	
     /**
      * Reads the label definition file.
      * @param cms The actual cms object

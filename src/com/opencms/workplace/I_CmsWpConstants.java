@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/02/01 08:19:58 $
+ * @version $Revision: 1.16 $ $Date: 2000/02/01 18:17:22 $
  */
 public interface I_CmsWpConstants {
 
@@ -23,7 +23,10 @@ public interface I_CmsWpConstants {
     
     // Filenames of workplace files
     
-    /**
+	/** The filename to the icontemplate */
+	public static final String C_ICON_TEMPLATEFILE = "icontemplate";
+	
+	/**
      * The explorer tree.
      */
     public static final String C_WP_EXPLORER_TREE="explorer_tree.html";
@@ -134,8 +137,24 @@ public interface I_CmsWpConstants {
     /** width of the button */
     public static final String C_BUTTON_WIDTH = "width";
     
+    // Parameters for icons
     
-    // Parameters for labels
+    /** Name of the icon */
+    public static final String C_ICON_NAME = "name";
+    
+    /** Action for the icon */
+    public static final String C_ICON_ACTION = "action";
+    
+    /** Label of the icon */
+    public static final String C_ICON_LABEL = "label";
+    
+    /** href text of the icon */
+    public static final String C_ICON_HREF = "href";
+
+    /** href target of the icon */
+    public static final String C_ICON_TARGET = "target";
+
+	// Parameters for labels
     
     /** Name of the value */
     public static final String C_LABEL_VALUE = "value";
@@ -213,6 +232,9 @@ public interface I_CmsWpConstants {
     /** Prefix for button texts in the language file */
     public static final String C_LANG_BUTTON = "button";
     
+    /** Prefix for button texts in the language file */
+    public static final String C_LANG_ICON = "icon";
+	
     // Constants for user default preferences
     
     /** Name of the filelist preferences */
