@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.16 $Selector
+* Date   : $Date: 2001/07/23 08:39:02 $
+* Version: $Revision: 1.17 $Selector
 
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.16 $ $Date: 2001/05/17 14:10:32 $
+ * @version $Revision: 1.17 $ $Date: 2001/07/23 08:39:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -85,10 +85,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                 if(!newGroups.contains(groupname)) {
                     try {
                         cms.removeUserFromGroup(username, groupname);
-                    }
-                    catch(CmsException e) {
-
-
+                    }catch(CmsException e) {
                     // can happen when this group has been deleted _indirectly_ before
                     }
                 }
@@ -146,14 +143,12 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                 // change data of selected user
                 perspective = "changeuser";
                 userYetChanged = false;
-            }
-            else {
+            }else {
                 if(reqCont.getRequest().getParameter("DELETE") != null) {
 
                     // delete the selected user
                     perspective = "deleteuser";
-                }
-                else {
+                }else {
                     if(reqCont.getRequest().getParameter("NEW") != null) {
 
                         // establish a new user
@@ -171,7 +166,6 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
         if(perspective.equals("newuser") || perspective.equals("changeuser")) {
 
             // first the common part of the two actions:
-
             // read the common parameters like first name, description, ...
             String firstname, desc, street, pwd, pwd2, user, userLastname, town, zipcode,
                     email, defaultGroup;
@@ -187,8 +181,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                 zipcode = (String)parameters.get("ZIP");
                 email = (String)parameters.get("USEREMAIL");
                 defaultGroup = (String)parameters.get("DEFAULTGROUP");
-            }
-            else {
+            }else {
 
                 // an error has occurred before, retrieve the form data from the session
                 firstname = (String)session.getValue("USERFIRSTNAME");
@@ -272,8 +265,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                     }
                     session.putValue("selectedGroups", selectedGroups);
                     session.putValue("notSelectedGroups", notSelectedGroups);
-                }
-                else {
+                }else {
                     if(reqCont.getRequest().getParameter("REMOVE") != null) {
 
                         // delete a new group from selectedGroups
@@ -288,8 +280,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                         }
                         session.putValue("selectedGroups", selectedGroups);
                         session.putValue("notSelectedGroups", notSelectedGroups);
-                    }
-                    else {
+                    }else {
                         if(reqCont.getRequest().getParameter("OK") != null) {
 
                             // form submitted, try to establish new user
@@ -330,8 +321,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                 session.removeValue("notSelectedGroups");
                                 session.removeValue("ERROR");
                                 templateSelector = ""; //successful
-                            }
-                            catch(CmsException e) {
+                            }catch(CmsException e) {
 
                                 // save the form data in the session, so it can be displayed again later
                                 session.putValue("ERROR", new String("yes")); // remeber that an error has occurred
@@ -349,26 +339,21 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                 if(e.getType() == CmsException.C_SHORT_PASSWORD) {
                                     if(e.getMessage().equals("unequal passwords")) {
                                         templateSelector = "passworderror1";
-                                    }
-                                    else {
+                                    }else {
                                         if(e.getMessage().equals("password too short")) {
                                             templateSelector = "passworderror2";
-                                        }
-                                        else {
+                                        }else {
                                             throw e;
                                         }
                                     }
-                                }
-                                else {
+                                }else {
                                     if(e.getType() == CmsException.C_NO_GROUP) {
                                         templateSelector = "errornogroup1";
-                                    }
-                                    else {
+                                    }else {
                                         if(e.getType() == CmsException.C_NO_USER
                                                 && e.getMessage().equals("user data missing")) {
                                             templateSelector = "errordatamissing1";
-                                        }
-                                        else {
+                                        }else {
                                             throw e; // hand the exception down
                                         }
                                     }
@@ -377,8 +362,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                         } // OK
                     }
                 }
-            }
-            else {
+            }else {
 
                 // input is the form for changing the user data
                 templateSelector = "changeuser";
@@ -406,8 +390,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                         for(int z = 0;z < groups.size();z++) {
                             selectedGroups.addElement(((CmsGroup)groups.elementAt(z)).getName());
                         }
-                    }
-                    else {
+                    }else {
                         throw new CmsException(CmsException.C_NO_GROUP);
                     }
                     groups = cms.getGroups();
@@ -420,8 +403,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                             }
                         }
                     }
-                }
-                else {
+                }else {
 
                     // fetch data from the form
                     if((String)parameters.get("LOCK") != null) {
@@ -437,8 +419,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                             }
                             notSelectedGroups.removeElement(groupname);
                         }
-                    }
-                    else {
+                    }else {
                         if(reqCont.getRequest().getParameter("REMOVE") != null) {
 
                             // delete a group from selectedGroups
@@ -453,8 +434,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                 }
                                 selectedGroups.removeElement(groupname);
                             }
-                        }
-                        else {
+                        }else {
                             if(reqCont.getRequest().getParameter("OK") != null) {
 
                                 // form submitted, try to change the user data
@@ -477,6 +457,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                     } // if nothing is entered don't change the password
                                     CmsUser theUser = (CmsUser)cms.readUser(user);
                                     theUser.setEmail(email);
+                                    theUser.setDescription(desc);
                                     theUser.setFirstname(firstname);
                                     theUser.setLastname(userLastname);
                                     theUser.setAddress(street);
@@ -493,8 +474,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                     }
                                     if(disabled == true) {
                                         theUser.setDisabled();
-                                    }
-                                    else {
+                                    }else {
                                         theUser.setEnabled();
                                     }
                                     changeGroups(cms, theUser, defaultGroup, selectedGroups);
@@ -503,8 +483,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                     session.removeValue("DEFAULTGROUP");
                                     session.removeValue("ERROR");
                                     templateSelector = ""; //successful
-                                }
-                                catch(CmsException e) {
+                                }catch(CmsException e) {
                                     session.putValue("ERROR", new String("yes")); // remeber that an error has occurred
                                     session.putValue("USERFIRSTNAME", firstname);
                                     session.putValue("USERDESC", desc);
@@ -520,32 +499,26 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                     if(e.getType() == CmsException.C_SHORT_PASSWORD) {
                                         if(e.getMessage().equals("unequal passwords")) {
                                             templateSelector = "passworderror3";
-                                        }
-                                        else {
+                                        }else {
                                             if(e.getMessage().equals("password too short")) {
                                                 templateSelector = "passworderror4";
-                                            }
-                                            else {
+                                            }else {
                                                 session.putValue("ERROR", new String("yes"));
                                                 throw e;
                                             }
                                         }
-                                    }
-                                    else {
+                                    }else {
                                         if(e.getType() == CmsException.C_NO_GROUP) {
                                             templateSelector = "errornogroup2";
-                                        }
-                                        else {
+                                        }else {
                                             if(e.getType() == CmsException.C_NO_USER
                                                     && e.getMessage().equals("user data missing")) {
                                                 templateSelector = "errordatamissing2";
-                                            }
-                                            else {
+                                            }else {
                                                 if(e.getType() == CmsException.C_NOT_ADMIN
                                                         && e.getMessage().equals("disabled admin")) {
                                                     templateSelector = "errordisabledadmin";
-                                                }
-                                                else {
+                                                }else {
                                                     session.putValue("ERROR", new String("yes"));
                                                     throw e; // hand the exception down
                                                 }
@@ -611,8 +584,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                 String user = (String)parameters.get("USER");
                 xmlTemplateDocument.setData("USER", user);
                 templateSelector = "RUsureDelete";
-            }
-            else {
+            }else {
                 if(perspective.equals("reallydeleteuser")) {
 
                     // deleting a user
@@ -620,8 +592,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                     try {
                         cms.deleteUser(user);
                         templateSelector = "";
-                    }
-                    catch(Exception e) {
+                    }catch(Exception e) {
 
                         // user == null or delete failed
                         xmlTemplateDocument.setData("DELETEDETAILS", Utils.getStackTrace(e));
@@ -820,8 +791,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                 names.addElement(name);
                 values.addElement(name);
             }
-        }
-        else {
+        }else {
             selectedGroups = new Vector();
         }
         return new Integer(retValue);
