@@ -11,7 +11,7 @@
     addMenuEntry(resource_id, "language_key(explorer.context.publish)",         "publish_resource.html?initial=true",   "''",   "rules_key(d d iaaa iiii dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(a a aaaa aaaa dddd dddd dddd)");
 
-    addMenuEntry(resource_id, "language_key(explorer.context.editlink)",        "explorer_files_new_link.html?newlink=false",   "'_top'","rules_key(d d iiii aaai dddd dddd dddd)");
+    addMenuEntry(resource_id, "language_key(explorer.context.editlink)",        "explorer_files_new_link.html?newlink=false",   "''","rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa dddd dddd dddd)");
 
     addMenuEntry(resource_id, "language_key(explorer.context.copy)",            "copy.html?initial=true",               "''",   "rules_key(d d aaai aaai dddd dddd dddd)");
