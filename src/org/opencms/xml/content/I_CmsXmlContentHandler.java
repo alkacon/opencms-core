@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/01 13:39:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/01 17:36:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,12 @@ import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.dom4j.Element;
 
@@ -49,7 +51,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -85,6 +87,20 @@ public interface I_CmsXmlContentHandler {
     void freeze();
 
     /**
+     * Returns the default String value for the given XML content schema type object.<p> 
+     * 
+     * If a schema type does not have a default value, this method must return <code>null</code>.
+     * 
+     * @param type the value to get the default for
+     * @param locale the currently selected locale for the value
+     * 
+     * @return the default String value for the given XML content value object
+     * 
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#getDefault(Locale)
+     */
+    String getDefaultValue(I_CmsXmlSchemaType type, Locale locale);
+
+    /**
      * Returns the editor widget that should be used for the given XML content value.<p>
      * 
      * The handler implementations should use the "appinfo" node of the XML content definition
@@ -99,6 +115,18 @@ public interface I_CmsXmlContentHandler {
     I_CmsXmlWidget getEditorWidget(I_CmsXmlContentValue value) throws CmsXmlException;
 
     /**
+     * Returns the preview URI for the given XML content value object to be displayed in the editor.<p> 
+     * 
+     * If <code>null</code> is returned, no preview is possible.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param content the XML content to display the preview URI for
+     * 
+     * @return the preview URI for the given XML content value object to be displayed in the editor
+     */
+    String getPreviewUri(CmsObject cms, CmsXmlContent content);
+
+    /**
      * Resolves the "appinfo" schema node of the XML content definition according 
      * to the rules of this XML content handler.<p>
      * 
@@ -109,7 +137,21 @@ public interface I_CmsXmlContentHandler {
      */
     void resolveAppInfo(CmsObject cms, CmsXmlContent content) throws CmsException;
 
-    // TODO: Method for content validation
-    // TODO: Method for default values
-    // TODO: Method for preview URL
+    /**
+     * Perfroms a validation of the given XML content value, and saves all errors or warnings found in 
+     * the provided XML content error handler.<p> 
+     * 
+     * The handler parameter is optional, if <code>null</code> is given a new error handler 
+     * instance must be created.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param value the value to get the default for
+     * @param errorHandler (optional) an error handler instance that contains previous error or warnings
+     * 
+     * @return an error handler that contains all errors and warnings currently found
+     */
+    CmsXmlContentErrorHandler validateValue(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        CmsXmlContentErrorHandler errorHandler);
 }

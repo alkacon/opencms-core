@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/01 13:39:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/01 17:36:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -171,6 +171,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultValue(org.opencms.xml.types.I_CmsXmlSchemaType, java.util.Locale)
+     */
+    public String getDefaultValue(I_CmsXmlSchemaType type, Locale locale) {
+
+        // default implementation currently just uses the "getDefault" mehod of the given value
+        return type.getDefault(locale);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getEditorWidget(org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public I_CmsXmlWidget getEditorWidget(I_CmsXmlContentValue value) {
@@ -197,10 +206,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreviewUri(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent)
+     */
+    public String getPreviewUri(CmsObject cms, CmsXmlContent content) {
+
+        // the default implementation currently does not support a preview URI
+        // TODO: read some node from schema appinfo and create a link based on that information
+        return null;
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveAppInfo(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent)
      */
-    public void resolveAppInfo(CmsObject cms, CmsXmlContent content)
-    throws CmsException {
+    public void resolveAppInfo(CmsObject cms, CmsXmlContent content) throws CmsException {
 
         // get the original VFS file from the content
         CmsFile file = content.getFile();
@@ -267,5 +285,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 }
             }
         }
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#validateValue(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)
+     */
+    public CmsXmlContentErrorHandler validateValue(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        CmsXmlContentErrorHandler errorHandler) {
+
+        // the default implementation currently just returns an empty error handler (i.e. indicated no errors)
+        // TODO: read some node from schema appinfo and create validation rules for this (regex - based)
+        // TODO: use same regex logic for XML schema and editor validation if possible        
+        if (errorHandler == null) {
+            return new CmsXmlContentErrorHandler();
+        }
+        return errorHandler;
     }
 }

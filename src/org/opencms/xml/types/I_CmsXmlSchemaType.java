@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/01 17:36:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -113,6 +113,8 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * @param locale the locale to generate the default value for
      * 
      * @return the default value for a node of this type in the current schema
+     * 
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultValue(I_CmsXmlSchemaType, Locale)
      */
     String getDefault(Locale locale);
 

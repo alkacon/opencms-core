@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/12/01 14:39:46 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/12/01 17:36:03 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -90,6 +90,8 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      */
     public CmsXmlContent(CmsXmlContentDefinition contentDefinition, Locale locale, String encoding) {
 
+        // must set content definition here to be able to create a document
+        m_contentDefinition = contentDefinition;
         initDocument(contentDefinition.createDocument(this, locale), encoding, contentDefinition);
     }
 
@@ -412,12 +414,13 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         parentContent.add(insertIndex, element);
 
         I_CmsXmlContentValue value = type.createValue(this, element, locale);
-        if (type.getDefault(locale) != null) {
+        String defaultValue = contentDefinition.getContentHandler().getDefaultValue(type, locale);
+        if (defaultValue != null) {
             try {
-                value.setStringValue(type.getDefault(locale));
+                value.setStringValue(defaultValue);
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct
-                OpenCms.getLog(this).error("Invalid default value '" + type.getDefault(locale) + "' for XML content", e);
+                OpenCms.getLog(this).error("Invalid default value '" + defaultValue + "' for XML content", e);
                 element.clearContent();
             }
         }
