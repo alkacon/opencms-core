@@ -71,3 +71,17 @@ A:hover
 	FONT-SIZE: 8pt;
 	TEXT-DECORATION: none
 }
+A.Level2
+{
+	COLOR: #222266;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+	FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
+A.Level1
+{
+	COLOR: #004444;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	TEXT-DECORATION: none
+}
