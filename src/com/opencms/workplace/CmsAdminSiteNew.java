@@ -58,32 +58,39 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
 		A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
 	}
-	
 	I_CmsSession session = cms.getRequestContext().getSession(true);
-	
+	// clear session values on first load 
+	String initial = (String) parameters.get(C_PARA_INITIAL);
+	if (initial != null)
+	{
+		// remove all session values
+		session.removeValue("SITE_NAME");
+		session.removeValue("SITE_DOMAINNAME");
+		session.removeValue("SITE_DESCRIPTION");
+	}
 	String action = (String) parameters.get("action");
-
 	String name = (String) parameters.get("NAME");
-	if (name == null) name = (String) session.getValue("SITE_NAME");
-	if (name == null) name = "";
-	
+	if (name == null)
+		name = (String) session.getValue("SITE_NAME");
+	if (name == null)
+		name = "";
 	String domainname = (String) parameters.get("DOMAINNAME");
-	if (domainname  == null) domainname = (String) session.getValue("SITE_DOMAINNAME");
-	if (domainname  == null) domainname = "";
-	
+	if (domainname == null)
+		domainname = (String) session.getValue("SITE_DOMAINNAME");
+	if (domainname == null)
+		domainname = "";
 	String description = (String) parameters.get("DESCRIPTION");
-	if (description  == null) description = (String) session.getValue("SITE_DESCRIPTION");
-	if (description  == null) description = "";
-	
+	if (description == null)
+		description = (String) session.getValue("SITE_DESCRIPTION");
+	if (description == null)
+		description = "";
 	CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-	
 	if (parameters.get("submitform") != null)
 	{
-		session.putValue("SITE_NAME", name); 
-		session.putValue("SITE_DOMAINNAME", domainname); 
-		session.putValue("SITE_DESCRIPTION", description);  
-
-		if (name.equals("") || domainname.equals(""))
+		session.putValue("SITE_NAME", name);
+		session.putValue("SITE_DOMAINNAME", domainname);
+		session.putValue("SITE_DESCRIPTION", description);
+		if (name.equals("") || domainname.equals("") || description.equals(""))
 		{
 			templateSelector = "datamissing";
 		}
@@ -97,33 +104,30 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 			templateSelector = "wait";
 		}
 	}
-
-	if( "start".equals(action)) 
+	if ("start".equals(action))
 	{
-		try 
-		{			
+		try
+		{
 			cms.newSite(name, description, Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN")), domainname, (String) session.getValue("SITE_MANAGERGROUP"), (String) session.getValue("SITE_GROUP"));
-			templateSelector = "done"; 
+			templateSelector = "done";
 			session.removeValue("SITE_NAME");
 			session.removeValue("SITE_DOMAINNAME");
 			session.removeValue("SITE_DESCRIPTION");
 			session.removeValue("SITE_CATEGORY");
-			session.removeValue("SITE_LANGUAGE"); 
-			session.removeValue("SITE_DOMAIN"); 
-			session.removeValue("SITE_MANAGERGROUP"); 
-			session.removeValue("SITE_GROUP"); 
-		} 
-		catch(CmsException exc) 
-		{ 
-				xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
-	   			templateSelector = "errornewsite";
+			session.removeValue("SITE_LANGUAGE");
+			session.removeValue("SITE_DOMAIN");
+			session.removeValue("SITE_MANAGERGROUP");
+			session.removeValue("SITE_GROUP");
+		}
+		catch (CmsException exc)
+		{
+			xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
+			templateSelector = "errornewsite";
 		}
 	}
-
 	xmlTemplateDocument.setData("new_site_name", name);
 	xmlTemplateDocument.setData("new_site_domainname", domainname);
 	xmlTemplateDocument.setData("new_site_description", description);
-			
 	return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 }
 /**

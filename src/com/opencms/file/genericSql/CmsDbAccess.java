@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/28 10:30:14 $
- * Version: $Revision: 1.145 $
+ * Date   : $Date: 2000/09/29 08:56:28 $
+ * Version: $Revision: 1.146 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.145 $ $Date: 2000/09/28 10:30:14 $ * 
+ * @version $Revision: 1.146 $ $Date: 2000/09/29 08:56:28 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -714,6 +714,46 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		return returnValue;		
 	}
 /**
+ * Creates a new category
+ * Creation date: (29-09-2000 10:17:28)
+ * @return com.opencms.file.CmsCategory
+ * @param name java.lang.String
+ * @param description java.lang.String
+ * @param shortName java.lang.String
+ * @param priority int
+ */
+public CmsCategory createCategory(String name, String description, String shortName, int priority) throws CmsException
+{
+	CmsCategory category = null;
+	PreparedStatement statement = null;
+	try
+	{
+		statement = m_pool.getPreparedStatement(m_cq.C_CATEGORY_INSERTCATEGORY_KEY);
+
+		int id = nextId(C_TABLE_CATEGORY);
+		statement.setInt(1, id);
+		statement.setString(2, name);
+		statement.setString(3, checkNull(description));
+		statement.setString(4, shortName);
+		statement.setInt(5, priority);
+		statement.executeUpdate();
+
+		category = new CmsCategory(id, name, description, shortName, priority);
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(m_cq.C_CATEGORY_INSERTCATEGORY_KEY, statement);
+		}
+	}
+	return category;
+}
+/**
  * Create a new Connection guard.
  * This method should be overloaded if another connectionguard should be used.
  * Creation date: (06-09-2000 14:33:30)
@@ -737,6 +777,45 @@ public CmsConnectionGuard createCmsConnectionGuard(I_CmsDbPool m_pool, long slee
  */
 public I_CmsDbPool createCmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws com.opencms.core.CmsException {
 	return new com.opencms.file.genericSql.CmsDbPool(driver,url,user,passwd,maxConn);
+}
+/**
+ * creates a new country
+ * Creation date: (29-09-2000 10:30:57)
+ * @return com.opencms.file.CmsCountry
+ * @param name java.lang.String
+ * @param shortName java.lang.String
+ * @param priority int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsCountry createCountry(String name, String shortName, int priority) throws com.opencms.core.CmsException
+{
+	CmsCountry country = null;
+	PreparedStatement statement = null;
+	try
+	{
+		statement = m_pool.getPreparedStatement(m_cq.C_COUNTRY_INSERTCOUNTRY_KEY);
+
+		int id = nextId(C_TABLE_COUNTRY);
+		statement.setInt(1, id);
+		statement.setString(2, name);
+		statement.setString(3, shortName);
+		statement.setInt(4, priority);
+		statement.executeUpdate();
+
+		country = new CmsCountry(id, name, shortName, priority);
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(m_cq.C_COUNTRY_INSERTCOUNTRY_KEY, statement);
+		}
+	}
+	return country;
 }
 	/**
 	 * Creates a new file from an given CmsFile object and a new filename.
@@ -1128,6 +1207,45 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 		 }
 		 return group;
 	 }
+/**
+ * Creates a new language
+ * Creation date: (29-09-2000 10:26:42)
+ * @return com.opencms.file.CmsLanguage
+ * @param name java.lang.String
+ * @param shortName java.lang.String
+ * @param priority int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsLanguage createLanguage(String name, String shortName, int priority) throws com.opencms.core.CmsException
+{
+	CmsLanguage language = null;
+	PreparedStatement statement = null;
+	try
+	{
+		statement = m_pool.getPreparedStatement(m_cq.C_LANGUAGE_INSERTLANGUAGE_KEY);
+
+		int id = nextId(C_TABLE_LANGUAGE);
+		statement.setInt(1, id);
+		statement.setString(2, name);
+		statement.setString(3, shortName);
+		statement.setInt(4, priority);
+		statement.executeUpdate();
+
+		language = new CmsLanguage(id, name, shortName, priority);
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(m_cq.C_LANGUAGE_INSERTLANGUAGE_KEY, statement);
+		}
+	}
+	return language;
+}
 	// methods working with projects
 	
 	/**
@@ -2919,6 +3037,44 @@ public Vector getSiteMatrixInfo() throws CmsException
 	}
 	return siteinfo;
 }
+/**
+ * Returns all site urls to a specifik site
+ * Creation date: (22-09-2000 13:11:32)
+ * @return java.util.Vector all site urls
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public Vector getSiteUrls(int siteId) throws com.opencms.core.CmsException
+{
+	Vector siteUrls = new Vector();
+	PreparedStatement statement = null;
+	try
+	{
+		statement = m_pool.getPreparedStatement(m_cq.C_SITEURLS_SELECTSITEURLS_KEY);
+		statement.setInt(1, siteId);
+		ResultSet res = statement.executeQuery();
+		while (res.next())
+		{
+			siteUrls.addElement(new CmsSiteUrls(res.getInt("URL_ID"), res.getString("URL"), res.getInt("SITE_ID"), res.getInt("PRIMARYURL")));
+		}
+		res.close();
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	catch (Exception e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(m_cq.C_SITEURLS_SELECTSITEURLS_KEY, statement);
+		}
+	}
+	return siteUrls;
+}
    	/**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 
@@ -3546,6 +3702,10 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 		m_pool.initPreparedStatement(m_cq.C_SITE_DELETESITE_KEY, m_cq.C_SITE_DELETESITE);
 		m_pool.initPreparedStatement(m_cq.C_SITE_UPDATESITE_KEY, m_cq.C_SITE_UPDATESITE);
 		m_pool.initPreparedStatement(m_cq.C_SITEURLS_UPDATESITEURLS_KEY, m_cq.C_SITEURLS_UPDATESITEURLS);
+		m_pool.initPreparedStatement(m_cq.C_SITEURLS_SELECTSITEURLS_KEY, m_cq.C_SITEURLS_SELECTSITEURLS);
+		m_pool.initPreparedStatement(m_cq.C_CATEGORY_INSERTCATEGORY_KEY, m_cq.C_CATEGORY_INSERTCATEGORY);
+		m_pool.initPreparedStatement(m_cq.C_LANGUAGE_INSERTLANGUAGE_KEY, m_cq.C_LANGUAGE_INSERTLANGUAGE);
+		m_pool.initPreparedStatement(m_cq.C_COUNTRY_INSERTCOUNTRY_KEY, m_cq.C_COUNTRY_INSERTCOUNTRY);
 		
 		// init statements for systemproperties
 		m_pool.initPreparedStatement(m_cq.C_SYSTEMPROPERTIES_MAXID_KEY, m_cq.C_SYSTEMPROPERTIES_MAXID);

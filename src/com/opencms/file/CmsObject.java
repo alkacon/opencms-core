@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/09/28 10:30:13 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2000/09/29 08:56:28 $
+ * Version: $Revision: 1.124 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.123 $ $Date: 2000/09/28 10:30:13 $ 
+ * @version $Revision: 1.124 $ $Date: 2000/09/29 08:56:28 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -460,6 +460,39 @@ public int countLockedResources(int id) throws CmsException {
 	return m_rb.countLockedResources(m_context.currentUser(), m_context.currentProject(), id);
 }
 /**
+ * Creates a new category
+ *
+ * Only a adminstrator can do this.<P/>
+ * 
+ * <B>Security:</B>
+ * @return com.opencms.file.CmsCategory
+ * @param name java.lang.String
+ * @param description java.lang.String
+ * @param shortName java.lang.String
+ * @param priority int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsCategory createCategory(String name, String description, String shortName, int priority) throws com.opencms.core.CmsException
+{
+	return m_rb.createCategory(m_context.currentUser(), m_context.currentProject(), name, description, shortName, priority);
+}
+/**
+ * Creates a new country
+ *
+ * Only a adminstrator can do this.<P/>
+ * 
+ * <B>Security:</B>
+ * @return com.opencms.file.CmsCountry
+ * @param name java.lang.String
+ * @param shortName java.lang.String
+ * @param priority int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsCountry createCountry(String name, String shortName, int priority) throws com.opencms.core.CmsException
+{
+	return m_rb.createCountry(m_context.currentUser(), m_context.currentProject(), name, shortName, priority);
+}
+/**
  * Creates a new file with the given content and resourcetype.<br>
  * 
  * @param folder the complete path to the folder in which the file will be created.
@@ -531,6 +564,22 @@ public CmsFolder createFolder(String folder, String newFolderName) throws CmsExc
  */
 public CmsFolder createFolder(String folder, String newFolderName, Hashtable properties) throws CmsException {
 	return (m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, properties));
+}
+/**
+ * Creates a new language
+ *
+ * Only a adminstrator can do this.<P/>
+ * 
+ * <B>Security:</B>
+ * @return com.opencms.file.CmsLanguage
+ * @param name java.lang.String
+ * @param shortName java.lang.String
+ * @param priority int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsLanguage createLanguage(String name, String shortName, int priority) throws com.opencms.core.CmsException
+{
+	return m_rb.createLanguage(m_context.currentUser(), m_context.currentProject(), name, shortName, priority);
 }
 /**
   * Creates a new project for task handling.
@@ -1137,6 +1186,17 @@ public CmsSite getSiteFromUrl(StringBuffer url) throws com.opencms.core.CmsExcep
  */
 public Vector getSiteMatrixInfo() throws CmsException {
 	return m_rb.getSiteMatrixInfo(m_context.currentUser(), m_context.currentProject());
+}
+/**
+ * Returns all site urls for a specifik site
+ * Creation date: (28-09-2000 15:23:38)
+ * @return java.util.Vector
+ * @param siteId int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public Vector getSiteUrls(int siteId) throws com.opencms.core.CmsException
+{
+	return m_rb.getSiteUrls(m_context.currentUser(), m_context.currentProject(), siteId);
 }
 /**
  * Returns a Vector with all subfolders of a given folder.
