@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSite.java,v $
- * Date   : $Date: 2000/10/04 14:17:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/10/04 14:48:39 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.sql.*;
  *   
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.6 $ $Date: 2000/10/04 14:17:09 $  
+ * @version $Revision: 1.7 $ $Date: 2000/10/04 14:48:39 $  
  * 
  */
 
@@ -71,6 +71,28 @@ public class CmsSite
 	 */
 
 	private String guestGroup = com.opencms.core.CmsConstants.C_GROUP_GUEST;
+/**
+ * Insert the method's description here.
+ * Creation date: (09/14/00 13:47:52)
+ */
+public CmsSite(int site_id, String name, String description, int category_id, int lang_id, int country_id, int onlineProjectId)
+{
+	this.id = site_id;
+	this.name = name;
+	this.description = description;
+	this.categoryId = category_id;
+	this.languageId = lang_id;
+	this.countryId = country_id;
+	this.onlineProjectId = onlineProjectId;
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (09/14/00 13:47:52)
+ */
+public CmsSite(ResultSet res) throws SQLException
+{
+	this(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"), res.getInt("ONLINEPROJECT_ID"));
+}
 /**
  * Insert the method's description here.
  * Creation date: (08/31/00 %r)
@@ -142,28 +164,6 @@ public java.lang.String getName() {
  */
 public int getOnlineProjectId() {
 	return onlineProjectId;
-}
-/**
- * Insert the method's description here.
- * Creation date: (09/14/00 13:47:52)
- */
-public CmsSite(int site_id, String name, String description, int category_id, int lang_id, int country_id, int onlineProjectId)
-{
-	this.id = site_id;
-	this.name = name;
-	this.description = description;
-	this.categoryId = category_id;
-	this.languageId = lang_id;
-	this.countryId = country_id;
-	this.onlineProjectId = onlineProjectId;
-}
-/**
- * Insert the method's description here.
- * Creation date: (09/14/00 13:47:52)
- */
-public CmsSite(ResultSet res) throws SQLException
-{
-	this(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"), res.getInt("ONLINEPROJECT_ID"));
 }
 /**
  * Insert the method's description here.

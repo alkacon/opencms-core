@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/10/04 13:47:17 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/10/04 14:48:41 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.21 $ $Date: 2000/10/04 13:47:17 $
+ * @version $Revision: 1.22 $ $Date: 2000/10/04 14:48:41 $
  */
 public class CmsQueries
 {
@@ -320,9 +320,9 @@ public class CmsQueries
 	public Integer C_SITES_GETSITEFROMSITEID_KEY = new Integer(472);
 	public String C_SITES_GETSITEFROMSITEID = "SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID FROM " + C_DATABASE_PREFIX + "SITES WHERE SITE_ID = ? ";
 	public Integer C_SITES_CHECKSITE_KEY = new Integer(473);
-	public String C_SITES_CHECKSITE = "SELECT NAME FROM " + C_DATABASE_PREFIX + "SITES WHERE SITE_ID <> ? AND CATEGORY_ID = ? LANGUAGE_ID = ? AND COUNTRY_ID = ?";
+	public String C_SITES_CHECKSITE = "SELECT NAME FROM " + C_DATABASE_PREFIX + "SITES WHERE SITE_ID <> ? AND CATEGORY_ID = ? AND LANGUAGE_ID = ? AND COUNTRY_ID = ? AND DELETED = 0";
 	public Integer C_SITESSITEURLS_CHECKSITE_KEY = new Integer(474);
-	public String C_SITESSITEURLS_CHECKSITE = "SELECT NAME FROM " + C_DATABASE_PREFIX + "SITE_URLS, " + C_DATABASE_PREFIX + "SITES WHERE SITE_ID <> ? AND (LOWER(NAME) = ? or LOWER(URL) = ?)";
+	public String C_SITESSITEURLS_CHECKSITE = "SELECT NAME FROM " + C_DATABASE_PREFIX + "SITE_URLS, " + C_DATABASE_PREFIX + "SITES S WHERE S.SITE_ID <> ? AND (LOWER(NAME) = ? OR LOWER(URL) = ?) AND DELETED = 0";
 	
 		
 	//statements needen for newSite

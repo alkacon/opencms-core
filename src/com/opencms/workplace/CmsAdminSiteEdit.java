@@ -144,19 +144,21 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	{
 		try
 		{
-			//(int siteId, String name, String description, int categoryId, int languageId, int countryId, String url)
+			if (cms.isSiteLegal(Integer.parseInt((String) session.getValue("SITE_ID")), (String) session.getValue("SITE_NAME"), (String) session.getValue("SITE_DOMAINNAME"), Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN"))))
+			{
+				cms.updateSite(Integer.parseInt((String) session.getValue("SITE_ID")), (String) session.getValue("SITE_NAME"), (String) session.getValue("SITE_DESCRIPTION"), Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN")), (String) session.getValue("SITE_DOMAINNAME"));
 			
-			cms.updateSite(Integer.parseInt((String) session.getValue("SITE_ID")), (String) session.getValue("SITE_NAME"), (String) session.getValue("SITE_DESCRIPTION"), Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN")), (String) session.getValue("SITE_DOMAINNAME"));
+				templateSelector = "done";
 			
-			templateSelector = "done";
-			
-			session.removeValue("SITE_NAME");
-			session.removeValue("SITE_DOMAINNAME");
-			session.removeValue("SITE_DESCRIPTION");
-			session.removeValue("SITE_CATEGORY");
-			session.removeValue("SITE_LANGUAGE");
-			session.removeValue("SITE_DOMAIN");
-			session.removeValue("SITE_ID");
+				session.removeValue("SITE_NAME");
+				session.removeValue("SITE_DOMAINNAME");
+				session.removeValue("SITE_DESCRIPTION");
+				session.removeValue("SITE_CATEGORY");
+				session.removeValue("SITE_LANGUAGE");
+				session.removeValue("SITE_DOMAIN");
+				session.removeValue("SITE_ID");
+			}
+			else templateSelector = "erroreditsite";
 		}
 		catch (CmsException exc)
 		{

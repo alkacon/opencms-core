@@ -108,16 +108,20 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	{
 		try
 		{
-			cms.newSite(name, description, Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN")), domainname, (String) session.getValue("SITE_MANAGERGROUP"), (String) session.getValue("SITE_GROUP"));
-			templateSelector = "done";
-			session.removeValue("SITE_NAME");
-			session.removeValue("SITE_DOMAINNAME");
-			session.removeValue("SITE_DESCRIPTION");
-			session.removeValue("SITE_CATEGORY");
-			session.removeValue("SITE_LANGUAGE");
-			session.removeValue("SITE_DOMAIN");
-			session.removeValue("SITE_MANAGERGROUP");
-			session.removeValue("SITE_GROUP");
+			if (cms.isSiteLegal(-1, name, domainname, Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN"))))
+			{
+				cms.newSite(name, description, Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN")), domainname, (String) session.getValue("SITE_MANAGERGROUP"), (String) session.getValue("SITE_GROUP"));
+				templateSelector = "done";
+				session.removeValue("SITE_NAME");
+				session.removeValue("SITE_DOMAINNAME");
+				session.removeValue("SITE_DESCRIPTION");
+				session.removeValue("SITE_CATEGORY");
+				session.removeValue("SITE_LANGUAGE");
+				session.removeValue("SITE_DOMAIN");
+				session.removeValue("SITE_MANAGERGROUP");
+				session.removeValue("SITE_GROUP");
+			}
+			else templateSelector = "errornewsite";
 		}
 		catch (CmsException exc)
 		{
