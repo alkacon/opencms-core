@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/04/30 10:04:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/05/03 07:20:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
@@ -685,8 +685,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see org.opencms.file.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
-    public void writeFile(CmsObject cms, CmsFile file) {
-        // nothing has to do there as it is not a file
+    public CmsFile writeFile(CmsObject cms, CmsFile file) {
+        // folders can never be written like a file
+        throw new RuntimeException("Attempt to write a folder like as if it where a file");
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/04/30 13:27:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/05/03 07:20:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -196,12 +196,16 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
     /**
      * @see org.opencms.file.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
-    public void writeFile(CmsObject cms, CmsFile file) throws CmsException {     
-        // validate the xml structure before writing the file           
-        CmsXmlPage xmlPage = CmsXmlPage.read(cms, file).validateXmlStructure();
-        // validate the HTML structure
-        xmlPage.validateHTMLStructure(cms);
+    public CmsFile writeFile(CmsObject cms, CmsFile file) throws CmsException {     
+        // validate xmlpage before writing the file           
+        CmsXmlPage xmlPage = CmsXmlPage.read(cms, file);
+        // validate the xml structure before writing the file         
+        // an exception will be thrown if the structure is invalid
+        xmlPage.validateXmlStructure();
+        // correct the HTML structure 
+        CmsFile correctedFile = xmlPage.correctHtmlStructure(cms);
         // xml is valid if no exception occured
-        cms.doWriteFile(file);
+        cms.doWriteFile(correctedFile);
+        return correctedFile;
     }        
 }

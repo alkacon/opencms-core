@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/04/29 09:41:19 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/05/03 07:20:32 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsObject {
 
@@ -3673,16 +3673,14 @@ public class CmsObject {
     }
 
     /**
-     * Writes a file to the Cms.
+     * Writes a file to the OpenCms VFS.<p>
      *
-     * @param file the file to write.
-     *
-     * @throws CmsException if resourcetype is set to folder. The CmsException will also be thrown,
-     * if the user has not the rights write the file.
+     * @param file the file to write
+     * @return the written file
+     * @throws CmsException if something goes wrong
      */
-    public void writeFile(CmsFile file) throws CmsException {
-        getResourceType(file.getType()).writeFile(this, file);
-        //m_driverManager.writeFile(m_context, file);
+    public CmsFile writeFile(CmsFile file) throws CmsException {
+        return getResourceType(file.getType()).writeFile(this, file);
     }
 
     /**

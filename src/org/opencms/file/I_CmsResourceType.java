@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/04/29 09:41:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/05/03 07:20:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -295,13 +295,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     /**
      * Writes a file to the VFS.<p>
      *
-     *
-     * @param cms the current cms object.
-     * @param file the file to write.
-     *
+     * @param cms the current cms object
+     * @param file the file to write
+     * @return the written file
+    *
      * @throws CmsException if something goes wrong
      */
-    void writeFile(CmsObject cms, CmsFile file) throws CmsException;
-    
-    
+    CmsFile writeFile(CmsObject cms, CmsFile file) throws CmsException;      
 }
