@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2002/08/21 11:29:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/08/30 14:07:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * Description of the class CmsJspBeanNav here.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -119,6 +119,30 @@ public class CmsJspNavElement implements Comparable {
         return m_resource;
     }
     
+    public String getFileName() {
+        String name = null;
+        if (!m_resource.endsWith("/")) {
+            name = m_resource.substring(
+                    m_resource.lastIndexOf("/") + 1,
+                    m_resource.length());
+        } else {
+            name = m_resource.substring(
+                    m_resource.substring(0,m_resource.length()-1).lastIndexOf("/") + 1,
+                    m_resource.length());
+        }   
+        return name; 
+    }
+    
+    public String getParentFolderName() {
+        if (isFolderLink()) {
+            // This is a folder
+            return getFolderName(m_resource, -1);
+        } else {
+            // This is a file
+            return m_resource.substring(0, m_resource.lastIndexOf("/") + 1);
+        }
+    }
+        
     public String getNavText() {
         return m_text;
     }
