@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/07/02 12:44:11 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.15 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.16 $ $Date: 2003/07/02 12:44:11 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -108,7 +108,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.15 $ $Date: 2003/07/02 11:03:12 $
+	 * @version $Revision: 1.16 $ $Date: 2003/07/02 12:44:11 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -206,7 +206,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.15 $ $Date: 2003/07/02 11:03:12 $
+	 * @version $Revision: 1.16 $ $Date: 2003/07/02 12:44:11 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -1374,6 +1374,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 
         clearAccessControlListCache();
         m_accessCache.clear();
+        clearResourceCache();
         
         // inform about the file-system-change
         fileSystemChanged(false);
@@ -8834,7 +8835,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
             }
             
             // update/save the lock state
-            if (visitedLockedFolder || currentResource.isLocked()) {
+            if (visitedLockedFolder && !currentResource.isLocked()) {
                 currentResource.setLocked(lockedByUserId);
                 currentResource.setLockedInProject(lockedInProject);
                 currentResource.setProjectId(lockedInProject);
