@@ -77,7 +77,7 @@
 						<input class="localstyle" type="text" size="30" name="parentName" id="parentName" value="]]><PROCESS>parentName</PROCESS><![CDATA[">
 					</td>
 					<td class="dialogtxt" >
-						<a href="javascript:treewin=opensmallwin('../../../../workplace/action/channel_tree.html?foldertree=/&formname=Editor&variable=parentName&onlineselect=yes&viewfile=no', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a>
+						<a href="javascript:treewin=opensmallwin('../../action/channel_tree.html?foldertree=/&formname=Editor&variable=parentName&onlineselect=yes&viewfile=no', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a>
         			</td>
         		</tr>
         	</table>
