@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/02/19 18:38:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/20 16:08:27 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/02/19 18:38:51 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/20 16:08:27 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -354,13 +354,17 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
     
     public String getEditableTemplateContent(Object callingObject, Hashtable parameters, String templateSelector, 
-                                             boolean html) throws CmsException {
+                                             boolean html, String style) throws CmsException {
 
         Vector cdatas = new Vector();
                 
         String datablockName = this.getTemplateDatablockName(templateSelector);
         Element data = getData(datablockName);
         StringBuffer result = new StringBuffer();
+        
+        if(style == null) {
+            style = "";
+        }
         
         Document tempDoc = (Document)getXmlDocument().cloneNode(true);
         Element rootElem = tempDoc.getDocumentElement();
@@ -406,7 +410,9 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             int currentPos = 0;
             int loop = 0;
         
-            result.append("<HTML>\n<HEAD></HEAD>\n");
+            result.append("<HTML>\n<HEAD>\n");
+            result.append("<link rel=stylesheet type=\"text/css\" href=\"" + style + "\">\n");
+            result.append("</HEAD>\n");
             result.append("<BODY " + getProcessedDataValue("bodytag", callingObject, parameters) + ">\n");
                 
             while(cdataStart != -1) {
@@ -496,7 +502,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 if(name == null || "".equals(name)) {
                     // unnamed element found.
                     if(unnamedAllowed) {                        
-                        name = "-- unnamed --";
+                        name = "(default)";
                     } else {
                         if(A_OpenCms.isLogging()) {
                             A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename() + ".");

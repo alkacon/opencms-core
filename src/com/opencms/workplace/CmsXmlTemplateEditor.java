@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/02/19 10:16:08 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/20 16:08:57 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/02/19 10:16:08 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/20 16:08:57 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -84,7 +84,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         }
 
         A_CmsRequestContext reqCont = cms.getRequestContext();
-        HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(true);
+        HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
+        HttpSession session = orgReq.getSession(true);
         CmsFile editFile = null;
         Encoder encoder = new Encoder();
         
@@ -107,6 +108,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String layoutTemplateClassName = (String)session.getValue("te_templateclass");
         String tempPageFilename = (String)session.getValue("te_temppagefile");
         String tempBodyFilename = (String)session.getValue("te_tempbodyfile");
+        String style = (String)session.getValue("te_stylesheet");
                 
         boolean existsContentParam = (content!=null && (!"".equals(content)));
         boolean existsFileParam = (file!=null && (!"".equals(file)));
@@ -141,7 +143,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 // for the "body" element could not be determined.
                 // BUG: Send error here
             }
-            
+                        
             // Check, if the selected page file is locked
             A_CmsResource pageFileResource = cms.readFileHeader(file);
             if(!pageFileResource.isLocked()) {
@@ -177,14 +179,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             session.putValue("te_temppagefile", tempPageFilename);
             session.putValue("te_tempbodyfile", tempBodyFilename);                        
         } 
-        
-        if(templatechangeRequested) {
-            // The user requested a change of the layout template
-            CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
-            temporaryControlFile.setMasterTemplate(layoutTemplateFilename);
-            temporaryControlFile.write();
-        }
-        
+                
         if(titlechangeRequested) {
             // The user entered a new document title
             try {
@@ -218,6 +213,32 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         bodyTemplateFile.setBodyTag(bodyTag);
         
         
+        if(templatechangeRequested) {
+            // The user requested a change of the layout template
+            CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
+            temporaryControlFile.setMasterTemplate(layoutTemplateFilename);
+            temporaryControlFile.write();
+            // Get the user's browser
+            String browser = orgReq.getHeader("user-agent");                
+            String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST") + orgReq.getServletPath() + "/";
+            String styleName = null;
+            if(browser.indexOf("MSIE") >-1) {
+		    	styleName = "stylesheet-ie";
+		    } else {
+		    	styleName = "stylesheet-ns";
+	    	}
+            try {
+                style = hostName + temporaryControlFile.getParameter("root", styleName);
+            } catch(Exception e) {
+                try {
+                    style = hostName + layoutTemplateFile.getParameter("root", styleName);
+                } catch(Exception e2) {
+                    style = "";
+                }
+            }
+            session.putValue("te_stylesheet", style);
+        }
+
         if(!existsContentParam) {
             Vector allBodys = bodyTemplateFile.getAllSections();
             if(allBodys == null || allBodys.size() == 0) {
@@ -232,6 +253,26 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             temporaryControlFile.setElementTemplSelector("body", body);
             temporaryControlFile.setElementTemplate("body", tempBodyFilename);
             temporaryControlFile.write();
+
+            // Get the user's browser
+            String browser = orgReq.getHeader("user-agent");                
+            String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST") + orgReq.getServletPath() + "/";
+            String styleName = null;
+            if(browser.indexOf("MSIE") >-1) {
+		    	styleName = "stylesheet-ie";
+		    } else {
+		    	styleName = "stylesheet-ns";
+	    	}
+            try {
+                style = hostName + temporaryControlFile.getParameter("root", styleName);
+            } catch(Exception e) {
+                try {
+                    style = hostName + layoutTemplateFile.getParameter("root", styleName);
+                } catch(Exception e2) {
+                    style = "";
+                }
+            }
+            session.putValue("te_stylesheet", style);
         }
         
         if(bodytitlechangeRequested) {
@@ -324,7 +365,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         }
 
         // Load the body!                                        
-        content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]));        
+        content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);        
 
         content = encoder.escape(content);
         parameters.put("CONTENT", content);

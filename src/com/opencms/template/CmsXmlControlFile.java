@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
- * Date   : $Date: 2000/02/19 10:14:52 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/20 16:08:38 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/02/19 10:14:52 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/20 16:08:38 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -267,7 +267,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
                 if(name == null || "".equals(name)) {
                     // unnamed element found.
                     if(unnamedAllowed) {                        
-                        name = "-- unnamed --";
+                        name = "(default)";
                     } else {
                         if(A_OpenCms.isLogging()) {
                             A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename() + ".");
