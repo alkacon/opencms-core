@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/31 17:41:18 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2003/08/01 07:39:23 $
+ * Version: $Revision: 1.115 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.114 $ $Date: 2003/07/31 17:41:18 $
+ * @version $Revision: 1.115 $ $Date: 2003/08/01 07:39:23 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4419,19 +4419,18 @@ public class CmsDriverManager extends Object {
      * and force was set to false.
      */
     public void lockResource(CmsRequestContext context, String resourcename, boolean forceLock) throws CmsException {
-        CmsResource resource = null;         
-        
-        resource = readFileHeader(context, resourcename);
-        
-        // check a few abort conditions first               
+        CmsResource resource = readFileHeader(context, resourcename);
         
         if (forceLock) {
-            //m_lockDispatcher.removeResource(this, context, resource.getFullResourceName(), true);
             unlockResource(context, resourcename, true);
         }    
  
         // check if the user has write access to the resource
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);                
+        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);   
+        
+        if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED && resource.getProjectId() != context.currentProject().getId()) {
+            m_vfsDriver.updateProjectId(context.currentProject(), resource);
+        }            
         
         m_lockDispatcher.addResource(this, context, resource.getFullResourceName(), context.currentUser().getId(), context.currentProject().getId());
 
