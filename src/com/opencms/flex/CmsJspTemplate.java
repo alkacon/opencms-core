@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2002/12/06 15:59:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2002/12/16 13:21:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.0 beta 1
  * 
  */
@@ -85,14 +85,14 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
             com.opencms.flex.CmsJspLoader loader = (com.opencms.flex.CmsJspLoader)cms.getLauncherManager().getLauncher(type);
             s = loader.loadTemplate(cms, file);
         } catch (java.lang.ClassCastException e) {
-            throw new CmsException("JspTemplate: " + jspFile + " is not a JSP");
+            throw new CmsException("[CmsJspTemplate] " + jspFile + " is not a JSP");
         } catch (com.opencms.core.CmsException e) {
             // File might not exist or no read permissions
-            throw new CmsException("JspTemplate: Error while reading JSP " + jspFile + "\n" + e, e);
+            throw new CmsException("[CmsJspTemplate] Error while reading JSP " + jspFile + "\n" + e, e);
         }        
 
         catch(Exception e) {
-            String errorMessage = "Error while loading jsp file " + jspFile + ": " + e;
+            String errorMessage = "[CmsJspTemplate] Error while loading jsp file " + jspFile + ": " + e;
             if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL) ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsJspTemplate] " + errorMessage);
             }

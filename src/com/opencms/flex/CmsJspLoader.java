@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/12/15 18:11:40 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/12/16 13:21:01 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -107,13 +107,16 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
 
     // Static export related stuff
     /** Parameter constant to indicate that the export is requested */
-    private static final String C_EXPORT_PARAM = "_flexexport"; 
+    private static final String C_EXPORT_PARAM = "_flex_export"; 
     
     /** Parameter constant to indicate a body previously discovered in an XMLTemplate */
-    private static final String C_EXPORT_BODY = "_flexbody";        
+    private static final String C_EXPORT_BODY = "_flex_export_body";       
+    
+    /** Parameter constant to indicate encoding used in calling template */
+    private static final String C_EXPORT_ENCODING = "_flex_export_encoding";     
     
     /** Header constant to indicate the found links in the response return headers */
-    private static final String C_EXPORT_HEADER = "_flexexportlinks";
+    private static final String C_EXPORT_HEADER = "_flex_export_links";
 
     /** Separator constant to separate return headers */
     private static final String C_EXPORT_HEADER_SEP = "/";
@@ -251,9 +254,15 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             }
             cms.setMode(CmsObject.C_MODUS_EXPORT);
         }   
+        // check body
         String body = req.getParameter(C_EXPORT_BODY);
         if (body != null) {
             cms.getRequestContext().setAttribute(I_CmsConstants.C_XML_BODY_ELEMENT, body);
+        }
+        // check encoding
+        String encoding = req.getParameter(C_EXPORT_ENCODING);
+        if (encoding != null) {
+            cms.getRequestContext().setEncoding(encoding);
         }
         return oldMode;     
     }
@@ -349,6 +358,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         exportUrl.append(C_EXPORT_PARAM);
         exportUrl.append("=");
         exportUrl.append(cms.getRequestContext().getUri());
+        // add the original requested body file to the request
         String body = (String)cms.getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);
         if (body != null) {
             exportUrl.append("&");
@@ -356,6 +366,12 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             exportUrl.append("=");
             exportUrl.append(Encoder.encode(body, "UTF-8", true));            
         }
+        // add the encoding used for the output page to the request
+        String encoding = cms.getRequestContext().getEncoding();
+        exportUrl.append("&");
+        exportUrl.append(C_EXPORT_ENCODING);
+        exportUrl.append("=");
+        exportUrl.append(Encoder.encode(encoding, "UTF-8", true));        
         
         if (DEBUG > 2) System.err.println("CmsJspLoader.exportJsp(): JSP export URL is " + exportUrl);
 
