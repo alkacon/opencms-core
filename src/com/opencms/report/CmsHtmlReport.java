@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsHtmlReport.java,v $
- * Date   : $Date: 2002/12/16 13:16:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/12/17 19:43:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.report;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.util.CmsMessages;
 import com.opencms.linkmanagement.CmsPageLinks;
+import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0 rc 1
  */
@@ -181,7 +182,7 @@ public class CmsHtmlReport implements I_CmsReport {
         if (m_showExceptionStackTracke) {
             buf.append("<span style='color: #990000;'>");
             buf.append(m_messages.key("report.exception"));
-            String exception = Utils.getStackTrace(throwable);
+            String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
             StringTokenizer tok = new StringTokenizer(exception, "\r\n");
             while (tok.hasMoreTokens()) {
                 buf.append(tok.nextToken());
