@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/12/13 18:03:11 $
- * Version: $Revision: 1.176 $
+ * Date   : $Date: 2000/12/14 09:11:42 $
+ * Version: $Revision: 1.177 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.176 $ $Date: 2000/12/13 18:03:11 $ * 
+ * @version $Revision: 1.177 $ $Date: 2000/12/14 09:11:42 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -2244,7 +2244,6 @@ public Vector getFilesWithProperty(int projectId, String propertyDefinition, Str
 public Vector getFolderTree(int projectId) throws CmsException {
 	Vector folders = new Vector();
 	CmsFolder folder;
-	String lastfile = null;
 	ResultSet res = null;
 	PreparedStatement statement = null;
 	try {
@@ -2258,28 +2257,23 @@ public Vector getFolderTree(int projectId) throws CmsException {
 			int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
 			int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
 			String resName = res.getString(m_cq.C_RESOURCES_RESOURCE_NAME);
-
-			// only add this folder, if it was not in the last offline-project already
-//			if (!resName.equals(lastfile)) {
-				int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
-				int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
-				int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
-				int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
-				int projectID = res.getInt(m_cq.C_RESOURCES_PROJECT_ID);
-				int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
-				int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
-				int state = res.getInt(m_cq.C_RESOURCES_STATE);
-				int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
-				int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
-				String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
-				long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
-				long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
-				int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
-				int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
-				folder = new CmsFolder(resId, parentId, fileId, resName, resType, resFlags, userId, groupId, projectID, accessFlags, state, lockedBy, created, modified, modifiedBy);
-				folders.addElement(folder);
-//			}
-			lastfile = resName;
+			int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
+			int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
+			int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
+			int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
+			int projectID = res.getInt(m_cq.C_RESOURCES_PROJECT_ID);
+			int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
+			int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
+			int state = res.getInt(m_cq.C_RESOURCES_STATE);
+			int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
+			/* not needed */ res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
+			/* not needed */ res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
+			long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
+			long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
+			/* not needed */ res.getInt(m_cq.C_RESOURCES_SIZE);
+			int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
+			folder = new CmsFolder(resId, parentId, fileId, resName, resType, resFlags, userId, groupId, projectID, accessFlags, state, lockedBy, created, modified, modifiedBy);
+			folders.addElement(folder);
 		}
 	} catch (SQLException e) {
 		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
- * Date   : $Date: 2000/12/08 10:22:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/12/14 09:11:43 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/12/08 10:22:41 $
+ * @version $Revision: 1.9 $ $Date: 2000/12/14 09:11:43 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate, I_CmsLogChannels, I_CmsConstants, I_CmsWpConstants {
 	
@@ -257,6 +257,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 			// offline Project
 			Hashtable idMixer = new Hashtable();
 			CmsFolder rootFolder = (CmsFolder) tree.elementAt(0);
+			String folderToIgnore = null;
 			if (rootFolder.getProjectId() != onlineProjectId) {
 				startAt = 2;
 				grey = false;
@@ -270,27 +271,37 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 			content.append(rootFolder.getParentId() + ", " + grey + ");\n");
 			for (int i = startAt; i < tree.size(); i++) {
 				CmsFolder folder = (CmsFolder) tree.elementAt(i);
-				if (folder.getProjectId() != onlineProjectId) {
-					grey = false;
-					parentId = folder.getParentId();
-					if(!(folder.getState() == 2)){
-						i++;
-						idMixer.put(new Integer(((CmsFolder)tree.elementAt(i)).getResourceId()), new Integer(folder.getResourceId()));
-					}
+				if((folder.getState() == C_STATE_DELETED) || (folder.getAbsolutePath().equals(folderToIgnore))) {
+					// if the folder is deleted - ignore it and the following online res
+					folderToIgnore = folder.getAbsolutePath();
 				} else {
-					grey = true;
-					parentId = folder.getParentId();
-					if (idMixer.containsKey(new Integer(parentId))) {
-						parentId = ((Integer) idMixer.get(new Integer(parentId))).intValue();
+					if (folder.getProjectId() != onlineProjectId) {
+						grey = false;
+						parentId = folder.getParentId();
+						try {
+							// the next res is the same res in the online-project: ignore it!
+							if(folder.getAbsolutePath().equals(((CmsFolder)tree.elementAt(i+1)).getAbsolutePath())) {
+								i++;
+								idMixer.put(new Integer(((CmsFolder)tree.elementAt(i)).getResourceId()), new Integer(folder.getResourceId()));
+							}
+						} catch(IndexOutOfBoundsException exc) {
+							// ignore the exception, this was the last resource
+						}
+					} else {
+						grey = true;
+						parentId = folder.getParentId();
+						if (idMixer.containsKey(new Integer(parentId))) {
+							parentId = ((Integer) idMixer.get(new Integer(parentId))).intValue();
+						}
 					}
+					content.append("top.aC(");
+					// id
+					content.append(folder.getResourceId() + ", ");
+					// name
+					content.append("\"" + folder.getName() + "\", ");
+					// parentId
+					content.append(parentId + ", " + grey + ");\n");
 				}
-				content.append("top.aC(");
-				// id
-				content.append(folder.getResourceId() + ", ");
-				// name
-				content.append("\"" + folder.getName() + "\", ");
-				// parentId
-				content.append(parentId + ", " + grey + ");\n");
 			}
 		}
 	}
