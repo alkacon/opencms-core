@@ -1,223 +1,142 @@
 \chapter{Installation of OpenCms 5.0}
+\label{installation}
 
 This chapter provides information on how to install OpenCms using
 \rqhttp{http://jakarta.apache.org/tomcat/index.html}{Tomcat} and
 \rqhttp{http://www.mysql.com/}{MySql}. All installation parts are
-described as single steps. After completing a step you are
+described as single steps. After completing each step you are
 strongly advised to verify the success.
 
-\section{Installing Java JDK}
-Install Java JDK 1.3.x or later (from SUN
-\rqhttp{http://java.sun.com/products/j2se/}{http://java.sun.com/products/j2se/}
-or IBM
-\rqhttp{http://www3.software.ibm.com}{http://www3.software.ibm.com}).
+\section{Install the Java JDK}
+Install Java JDK 1.4 or later (from SUN
+\rqhttp{http://java.sun.com/products/j2se/}{http://java.sun.com/products/j2se/}).
 For details on how to install these components on your operating
 system, see the documentation that comes with them.
 
-\section{Installing Tomcat}
+\textbf{Important:} This version of OpenCms was tested with Java 1.4 only. 
+Some features regarding file encoding where used that are not available with Java releases before 1.4.
 
-Install JakartaTomcat
+\section{Install Tomcat}
+OpenCms 5.0 requires a Servlet 2.3 / JSP 1.2 standards compliant container. 
+Tomcat 4 is the reference implementation of this Standard. 
+This release was tested with Tomcat 4.0.x and Tomcat 4.1.x. 
+Older versions of Tomcat (3.x and earlier) do not support this newer standard and are thus not usable for OpenCms 5.0.
+
+Install Tomcat from
 \rqhttp{http://jakarta.apache.org/tomcat/index.html}{http://jakarta.apache.org/tomcat/index.html}
 into a folder of your choice. This is the CATALINA\_HOME folder.
 Don't forget to set the environment variables CATALINA\_HOME and
 JAVA\_HOME.
 
-Test the installation by running tomcat in standalone mode and
+Test the installation by running Tomcat in standalone mode and
 check the examples. Note: Tomcat uses port 8080 in standalone
 mode.
-
-If you wish you can combine the servlet-engine with a webserver
+ 
+If you wish, you can combine the servlet-engine with a webserver
 like the Apache Web Server
-\rqhttp{http://www.apache.org/httpd.html}{http://www.apache.org/httpd.html}.
+(\rqhttp{http://www.apache.org/httpd.html}{http://www.apache.org/httpd.html}).
+Please see the documentation available with the webserver on how to combine it with your servlet environment.
 
-To make sure Tomcat works with the correct charset to read and
+\textbf{Important:} To make sure Tomcat works with the correct charset to read and
 write files you should add the following parameter to the
 commandline that is used to start Tomcat:
 
-\texttt{-Dfile.encoding=ISO8859\_1}
+\texttt{-Dfile.encoding=ISO-8859-1}\\
 
-You can also set the environment varibale CATALINA\_OPTS to do so.\\
-(\texttt{CATALINA\_OPTS=-Dfile.encoding=ISO8859\_1})
+You can also set the environment varibale CATALINA\_OPTS to do so:
 
-\section{Installing MySQL}
+(\texttt{CATALINA\_OPTS=-Dfile.encoding=ISO-8859-1})
+
+The default encoding of OpenCms is \texttt{ISO-8859-1}, 
+but you can also set another encoding supported by your Java VM, e.g. \texttt{UTF-8}. 
+In case you do not care about the encoding, the default is most likely what you need.
+
+\section{Install MySQL}
 Install MySQL from
 \rqhttp{http://www.mysql.com/downloads/index.html}{http://www.mysql.com/downloads/index.html}
 (see the MySQL documentation on
 \rqhttp{http://www.mysql.com/documentation/index.html}{http://www.mysql.com/documentation/index.html}).
+This release was tested with MySQL 3.23.x.
 
 Note: On Windows-based systems MySQL has to be installed on the
-\texttt{C:\\} drive and should be registered as service using
+\texttt{C:} drive and should be registered as service using
 \texttt{(your MySQL path)/mysql/bin/mysqld -install}.
 
 Start the MySQL server by running the service (WIN32) or executing
 \texttt{(your MySQL path)/mysql/bin/mysqld} (UNIX).
 
 Check that MySQL is running before you continue by starting the
-MySQL monitor (command \texttt{mysql} in your MySQL bin folder).
+MySQL monitor (execute \texttt{mysql} in your MySQL bin folder).
 The database works correctly if a MySQL prompt appears after
 calling the monitor. Quit the MySQL monitor by typing
 \texttt{exit} and go to the next step.
 
 \section{Deploy the opencms.war file}
-Copy the \texttt{opencms.war} file to
-\texttt{CATALINA\_HOME/web-apps/}. Note: replace
+Copy the \texttt{opencms.war} file from the binary distribution ZIP file to
+\texttt{CATALINA\_HOME/web-apps/}. Replace
 \texttt{CATALINA\_HOME} with the real path to your Tomcat
 installation.
 
-(Re-)Start Tomcat. Tomcat will now deploy the web application
+Start (or restart) Tomcat. Tomcat will now deploy the web application
 OpenCms.
+
+\textbf{Important:} OpenCms requires that it's \texttt{*.war} file is unpacked. 
+OpenCms can not be deployed as war file only. 
+Make sure Tomcat does unpack the war file and creates the \texttt{CATALINA\_HOME/webapps/opencms/} directory, 
+placing the OpenCms files in this directory. 
+The default configuration for your Servlet containers / environment could be to not unpack the deployed \texttt{*.war} file. 
+If this is the case you must unpack the \texttt{opencms.war} file manually. 
+Use an unzip tool for this, \texttt{*.war} files are just \texttt{*.zip} files with a different extension. 
+The OpenCms setup wizard will display a warning and not allow you to continue 
+if you did not unpack the  \texttt{*.war} file.
 
 \section{Install OpenCms using the Setup-Wizard}
 Start the Setup-Wizard by pointing your webbrowser to\\
 \rqhttp{http://localhost:8080/opencms/ocsetup}
     {http://localhost:8080/opencms/ocsetup}.
+Depending on your configuration, you have to replace \texttt{localhost} with your servername. 
+The port 8080 is only used if you start Tomcat in standalone mode.
 
-Note: Maybe you have to replace \texttt{localhost} with your
-servername. The port 8080 is only used if you start Tomcat in
-standalone mode.
-
-Follow the instructions of the OpenCms Setup-Wizard. It will set
-up the opencms database and import all workplace ressources into
+Follow the instructions of the OpenCms Setup-Wizard, using the "Standard" setup. It will set
+up the OpenCms database and import all workplace resources into
 the system. For normal installations with MySql and Tomcat running
 on the same server all default settings will fit your needs.
 
-\section{Now your system is ready}
-Now your system is ready to use. You can login with user:
-\texttt{Admin} password: \texttt{admin}. Please change the
-password as soon as possible. The login URL of OpenCms is:\\
-\rqhttp{http://localhost:8080/opencms/opencms/system/workplace/action/login.html}
-{http://localhost:8080/opencms/opencms/system/workplace/action/login.html}
+\textbf{Important:} In case you want to import content from older OpenCms versions (5.0 beta 1 or 4.x), 
+you must turn on the "directory translation" feature to make sure your pages still work. 
+You can later change this setting (and all other settings selected during setup) 
+by editing the file \texttt{CATALINA\_HOME/webapps/opencms/WEB-INF/config/opencms.properties}.
 
-\section{Security}
-After you have installed OpenCms you should look at the security.
-Change the Admin password of OpenCms by calling the user
-preferences ("hammer" icon on the main screen of the workplace).
+\section{Now your system is ready}
+Now your system is ready to use. You can login with username:
+\texttt{Admin} and password: \texttt{admin}. Please change this
+password as soon as possible. The login URL of OpenCms in a default configuration is:\\
+\rqhttp{http://localhost:8080/opencms/opencms/system/login/}
+{http://localhost:8080/opencms/opencms/system/login/}
+
+\section{Security issues}
+After you have installed OpenCms you should have a look at the security settings.
+
+First change the \texttt{Admin} password of OpenCms by calling the user
+preferences (the "hammer" icon on the main screen of the workplace).
 Then you should add a password to the MySQL database. Enter the following
-commands
-at the MySQL command line.\\
+commands at the MySQL command line.\\
 
 \begin{quote}
 \begin{verbatim}
 use mysql;
-insert into user values ('localhost', 'ocmsuser',password('XXXXX'),
+insert into user values ('localhost', 'opencmsuser',password('XXXXX'),
   'N','N','N','N','N','N','N','N','N','N','N','N','N','N');
-insert into db values ('localhost', 'opencms42', 'ocmsuser', 'Y','Y',
+insert into db values ('localhost', 'opencms', 'opencmsuser', 'Y','Y',
   'Y','Y','Y','Y','Y','Y','Y','Y');
 flush privileges;
 \end{verbatim}
 \end{quote}
 
+Make sure you replace \texttt{opencmsuser} and \texttt{opencms} with the name of your user and database 
+in case you have changed them on the setup wizard.
+
 Don't forget to add the new user and password to all connect
-strings of the database to your \texttt{opencms.properties}. The
-new user can now only connect to the OpenCms tables. For more
+strings of the database in your \texttt{opencms.properties} file. 
+Only the new user can now connect to the OpenCms tables. For more
 information see the MySQL documentation.
-
-\section{Installation of the example news module}
-
-The setup of the basic system is now complete, but you may want to
-add some more functionality to it. A good way to get used to the
-system is to practice with the module mechanism and to install a
-first module.
-
-A simple newsfeed module came with the basic system or can be
-downloaded from the opencms homepage. The installation of the
-module is quite easy.
-
-\begin{itemize}
-\item Unzip the file \texttt{NewsModule.zip}.
-The zip-file contains two files: another zip containinig the real
-module (\texttt{com.opencms.modules.homepage.news.zip}) and a
-script to set up the MySQL database
-(\texttt{NewsModuleSetup.sql}).
-
-\item
-First prepare the database.
-Change to the folder in which the file \\
-\texttt{NewsModuleSetup.sql} resides and type in the following
-shell command:
-
-\begin{quote}
-\texttt{(your MySQL path)/bin/mysql opencms < NewsModuleSetup.sql}
-\end{quote}
-
-This creates all necessary tables and inserts some test data.
-
-\item Then upload the module.
-Move the file \\
-\texttt{com.opencms.modules.homepage.news.zip} to the
-\texttt{modules} subdirectory in your export path.
-
-Open the OpenCms workplace and change to the module management
-under the administration view. Make sure that you are within the
-online project. Choose the icon to upload a new module. Choose
-upload new module from server and continue.
-
-The module should appear in the selectbox. Select
-\texttt{continue} to start uploading the module.
-\end{itemize}
-
-If all went well, the module is now installed. The module provides
-two new administration points. A further documentation can be
-found in the virtual filesystem.
-
-Start exploring under
-\texttt{/moduledemos/com.opencms.modules.homepage.news/}.
-
-
-\section{Setting up a local copy of the OpenCms homepage}
-You can complete your test system by setting up a local copy of
-the OpenCms homepage. The OpenCms homepage uses the news module,
-so it is necessary to install the module if you want to make your
-first steps with the OpenCms homepage.
-
-To get the templates of the OpenCms homepage you have to make a
-simple import. The required import file
-(\textit{website\_import.zip}) can be downloaded from the module
-page together with another sql-script (\textit{website.sql}). This
-script inserts the content which is handled by the News Module
-into the database. Both files are bundled to the zip file
-\textit{website.zip}.
-
-\begin{itemize}
-\item
-Extract this file first and then move the file
-\textit{website\_import.zip} to your export path.
-
-\item
-Then insert the content into the database by using the sql-script.
-Change to the folder in which the file \texttt{website.sql}
-resides and type in the following shell command:
-
-\begin{quote}
-\texttt{(your MySQL path)/bin/mysql opencms < website.sql}
-\end{quote}
-
-\item
-Then you have to import the templates. To be able to do this, you
-have to be within a project (not the online project), so create a
-new
-project first. \\
-Change to the administration view and choose
-\texttt{Projectmanagement}
--> \texttt{New Project}.\\
-Specify a project name, for example \texttt{OpenCmsHomepage} and
-the folders that
-should be included. \\
-In this case include everything, type in \texttt{/} and press the
-button with the blue arrow to adopt this directory to the list of
-folders that have to be included.
-
-After creating the new project, make sure that you are actually
-inside it and change again to the administration view.
-
-\item
-Now start the import of the OpenCms homepage.
-Make sure that the import file \\
-\texttt{website\_import.zip} can be found within your export
-directory. Choose the point \texttt{Databasemanagement} and then
-\texttt{import}. Choose the file \texttt{website\_import.zip} from
-the selectbox and start the process.
-
-\end{itemize}
-That's all. Note: The pictures are missing right now, but they
-will be available after publishing the project.
