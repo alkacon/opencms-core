@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 alpha 3 Caladan</opencms_version>
+		<createdate>2/15/05 11:44 AM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.workplace.tools.history</name>
+		<nicename><![CDATA[OpenCms 6.0 File history administration tools]]></nicename>
+		<class/>
+		<description><![CDATA[This module contains the OpenCms administration tools for managing the file history feature, this includes the history cleaning tool and the history settings tool.
+(c) 2004 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<version>1.0</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Mon, 14 Feb 2005 23:00:00 GMT</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/workplace/admin/history/"/>
+			<resource uri="/system/workplace/administration/history/"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_history_settings.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_history_clear.gif"/>
+			<resource uri="/system/workplace/resources/admin/ic_admin_history.gif"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Feb 2005 09:27:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 13:02:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>15</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/admin</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 25 Jan 2005 16:09:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 18 Jan 2005 09:18:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/history</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 11 Feb 2005 15:03:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 27 Jan 2005 11:37:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[32.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.admin.view.groups.history}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.admin.history.description}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/system/workplace/resources/admin/ic_admin_history.gif]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.label.admin.history}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[File History]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/history/clearhistory</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 11 Feb 2005 15:03:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 27 Jan 2005 11:37:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.html]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.admin.history.groups.clearhistory}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.admin.clearhistory.description}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/system/workplace/resources/admin/ic_admin_history_clear.gif]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.label.admin.history.clear}]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[onlyadmin:true]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/history/clearhistory/index.html</source>
+			<destination>system/workplace/admin/history/clearhistory/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>ed725bbc-7105-11d9-830b-2f77a917d9ae</uuidresource>
+			<datelastmodified>Wed, 09 Feb 2005 12:44:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 28 Jan 2005 08:23:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/history/settings</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 11 Feb 2005 15:03:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 27 Jan 2005 11:37:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.5]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.html]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.admin.history.groups.historysettings}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.admin.historysettings.description}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/system/workplace/resources/admin/ic_admin_history_settings.gif]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.label.admin.history.settings}]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/history/settings/index.html</source>
+			<destination>system/workplace/admin/history/settings/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>6e33bb87-707c-11d9-88d5-2f77a917d9ae</uuidresource>
+			<datelastmodified>Wed, 02 Feb 2005 10:38:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 27 Jan 2005 15:59:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/history</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Sep 2003 08:43:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[32.0]]></value>
+				</property>
+				<property>
+					<name>visiblemethod</name>
+					<value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[label.admin.history]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[admin/ic_admin_history]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/history/clearhistory</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Sep 2003 08:45:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[label.admin.history.clear]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[admin/ic_admin_history_clear]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/history/clearhistory/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>ed725bbc-7105-11d9-830b-2f77a917d9ae</uuidresource>
+			<datelastmodified>Wed, 09 Feb 2005 12:44:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 28 Jan 2005 08:23:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/history/settings</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Sep 2003 08:44:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[label.admin.history.settings]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[admin/ic_admin_history_settings]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/history/settings/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>6e33bb87-707c-11d9-88d5-2f77a917d9ae</uuidresource>
+			<datelastmodified>Wed, 02 Feb 2005 10:38:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 27 Jan 2005 15:59:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/admin</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_history.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_history.gif</destination>
+			<type>image</type>
+			<uuidresource>cf4fa5a8-e1e6-11d7-a7da-80d3313d8d30</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Sep 2003 12:25:46 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_history_clear.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_history_clear.gif</destination>
+			<type>image</type>
+			<uuidresource>cf922ceb-e1e6-11d7-a7da-80d3313d8d30</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Sep 2003 12:25:47 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/ic_admin_history_settings.gif</source>
+			<destination>system/workplace/resources/admin/ic_admin_history_settings.gif</destination>
+			<type>image</type>
+			<uuidresource>cf96e7de-e1e6-11d7-a7da-80d3313d8d30</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Sep 2003 12:25:47 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/12/17 12:09:28 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2005/02/16 11:43:02 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -82,7 +83,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.100 $
+ * @version $Revision: 1.101 $
  * 
  * @since 5.1
  */
@@ -140,6 +141,9 @@ public abstract class CmsWorkplace {
     /** The URI to the skin resources (cached for performance reasons). */
     private static String m_skinUri;
 
+    /** The URI to the stylesheet resources (cached for performance reasons). */
+    private static String m_styleUri;
+
     /** The current users OpenCms context. */
     private CmsObject m_cms;
 
@@ -174,6 +178,76 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Generates a html select box out of the provided values.<p>
+     * 
+     * @param parameters a string that will be inserted into the initial select tag,
+     *      if null no parameters will be inserted
+     * @param options the options 
+     * @param values the option values, if null the select will have no value attributes
+     * @param selected the index of the pre-selected option, if -1 no option is pre-selected
+     * @param useLineFeed if true, adds some formatting "\n" to the output String
+     * @return a String representing a html select box
+     */
+    public static String buildSelect(String parameters, List options, List values, int selected, boolean useLineFeed) {
+
+        StringBuffer result = new StringBuffer(1024);
+        result.append("<select ");
+        if (parameters != null) {
+            result.append(parameters);
+        }
+        result.append(">");
+        if (useLineFeed) {
+            result.append("\n");
+        }
+        int length = options.size();
+        String value = null;
+        for (int i = 0; i < length; i++) {
+            if (values != null) {
+                try {
+                    value = (String)values.get(i);
+                } catch (Exception e) {
+                    // can usually be ignored
+                    if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
+                        OpenCms.getLog(CmsWorkplace.class).info(e);
+                    }
+                    // lists are not properly initialized, just don't use the value                    
+                    value = null;
+                }
+            }
+            if (value == null) {
+                result.append("<option");
+                if (i == selected) {
+                    result.append(" selected=\"selected\"");
+                }
+                result.append(">");
+                result.append(options.get(i));
+                result.append("</option>");
+                if (useLineFeed) {
+                    result.append("\n");
+                }
+            } else {
+                result.append("<option value=\"");
+                result.append(value);
+                result.append("\"");
+                if (i == selected) {
+                    result.append(" selected=\"selected\"");
+                }
+                result.append(">");
+                result.append(options.get(i));
+                result.append("</option>");
+                if (useLineFeed) {
+                    result.append("\n");
+                }
+            }
+        }
+        result.append("</select>");
+        if (useLineFeed) {
+            result.append("\n");
+        }
+        return result.toString();
+    }
+
+    /**
      * Parses the JS calendar date format to the java patterns of SimpleDateFormat.<p>
      * 
      * @param dateFormat the dateformat String of the JS calendar
@@ -205,6 +279,57 @@ public abstract class CmsWorkplace {
             m_skinUri = OpenCms.getSystemInfo().getContextPath() + "/resources/";
         }
         return m_skinUri;
+    }
+
+    /**
+     * Returns the path to the cascading stylesheets.<p>
+     * 
+     * @param jsp the JSP context
+     * @return the path to the cascading stylesheets
+     */
+    public static String getStyleUri(CmsJspActionElement jsp) {
+
+        if (m_styleUri == null) {
+
+            CmsProject project = jsp.getCmsObject().getRequestContext().currentProject();
+            try {
+                jsp.getCmsObject().getRequestContext().setCurrentProject(
+                    jsp.getCmsObject().readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+                m_styleUri = jsp.link("/system/workplace/commons/style/");
+            } catch (CmsException e) {
+                if (OpenCms.getLog(CmsWorkplace.class).isErrorEnabled()) {
+                    OpenCms.getLog(CmsWorkplace.class).error(e);
+                }
+            } finally {
+                jsp.getCmsObject().getRequestContext().setCurrentProject(project);
+            }
+        }
+        return m_styleUri;
+    }
+
+    /**
+     * Returns the path to the cascading stylesheets.<p>
+     * 
+     * @param jsp the JSP context
+     * @param filename the name of the stylesheet
+     * @return the path to the cascading stylesheets
+     */
+    public static String getStyleUri(CmsJspActionElement jsp, String filename) {
+
+        if (m_styleUri == null) {
+
+            CmsProject project = jsp.getCmsObject().getRequestContext().currentProject();
+            try {
+                jsp.getCmsObject().getRequestContext().setCurrentProject(
+                    jsp.getCmsObject().readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+                m_styleUri = jsp.link("/system/workplace/commons/style/");
+            } catch (CmsException e) {
+                // ins log schreiben
+            } finally {
+                jsp.getCmsObject().getRequestContext().setCurrentProject(project);
+            }
+        }
+        return m_styleUri + filename;
     }
 
     /**
@@ -417,76 +542,6 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Generates a html select box out of the provided values.<p>
-     * 
-     * @param parameters a string that will be inserted into the initial select tag,
-     *      if null no parameters will be inserted
-     * @param options the options 
-     * @param values the option values, if null the select will have no value attributes
-     * @param selected the index of the pre-selected option, if -1 no option is pre-selected
-     * @param useLineFeed if true, adds some formatting "\n" to the output String
-     * @return a String representing a html select box
-     */
-    public static String buildSelect(String parameters, List options, List values, int selected, boolean useLineFeed) {
-
-        StringBuffer result = new StringBuffer(1024);
-        result.append("<select ");
-        if (parameters != null) {
-            result.append(parameters);
-        }
-        result.append(">");
-        if (useLineFeed) {
-            result.append("\n");
-        }
-        int length = options.size();
-        String value = null;
-        for (int i = 0; i < length; i++) {
-            if (values != null) {
-                try {
-                    value = (String)values.get(i);
-                } catch (Exception e) {
-                    // can usually be ignored
-                    if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
-                        OpenCms.getLog(CmsWorkplace.class).info(e);
-                    }
-                    // lists are not properly initialized, just don't use the value                    
-                    value = null;
-                }
-            }
-            if (value == null) {
-                result.append("<option");
-                if (i == selected) {
-                    result.append(" selected=\"selected\"");
-                }
-                result.append(">");
-                result.append(options.get(i));
-                result.append("</option>");
-                if (useLineFeed) {
-                    result.append("\n");
-                }
-            } else {
-                result.append("<option value=\"");
-                result.append(value);
-                result.append("\"");
-                if (i == selected) {
-                    result.append(" selected=\"selected\"");
-                }
-                result.append(">");
-                result.append(options.get(i));
-                result.append("</option>");
-                if (useLineFeed) {
-                    result.append("\n");
-                }
-            }
-        }
-        result.append("</select>");
-        if (useLineFeed) {
-            result.append("\n");
-        }
-        return result.toString();
-    }
-
-    /**
      * Generates a button for the OpenCms workplace.<p>
      * 
      * @param href the href link for the button, if none is given the button will be disabled
@@ -540,7 +595,8 @@ public abstract class CmsWorkplace {
                 }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result
+                        .append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
                 } else {
                     result.append("class=\"disabled\"");
                 }
@@ -572,7 +628,8 @@ public abstract class CmsWorkplace {
                 }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result
+                        .append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
                 } else {
                     result.append("class=\"disabled\"");
                 }
@@ -601,7 +658,8 @@ public abstract class CmsWorkplace {
                 }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result
+                        .append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
                 } else {
                     result.append("class=\"disabled\"");
                 }
@@ -1161,6 +1219,30 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Returns all present request parameters as String.<p>
+     * 
+     * The String is formatted as a parameter String ("param1=val1&param2=val2") with UTF-8 encoded values.<p>
+     * 
+     * @return all present request parameters as String
+     */
+    public String getParamsAsRequest() {
+
+        StringBuffer retValue = new StringBuffer(512);
+        HttpServletRequest request = getJsp().getRequest();
+        Iterator paramNames = request.getParameterMap().keySet().iterator();
+        while (paramNames.hasNext()) {
+            String paramName = (String)paramNames.next();
+            String paramValue = request.getParameter(paramName);
+            retValue
+                .append(paramName + "=" + CmsEncoder.encode(paramValue, getCms().getRequestContext().getEncoding()));
+            if (paramNames.hasNext()) {
+                retValue.append("&");
+            }
+        }
+        return retValue.toString();
+    }
+
+    /**
      * Returns the path to the workplace static resources.<p>
      * 
      * Workplaces static resources are images, css files etc.
@@ -1279,7 +1361,8 @@ public abstract class CmsWorkplace {
                 }
                 if (parameters == null) {
                     result.append(" onLoad=\"window.top.body.admin_head.location.href='");
-                    result.append(getJsp().link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_head.html"));
+                    result.append(getJsp().link(
+                        I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_head.html"));
                     result.append("';\"");
                 }
             }
@@ -1318,7 +1401,7 @@ public abstract class CmsWorkplace {
      * 
      * @param segment the HTML segment (START / END)
      * @param title the title of the page, if null no title tag is inserted
-     * @param stylesheet the used style sheet, usually "commons/css_workplace.css"
+     * @param stylesheet the used style sheet, if null the default stylesheet 'workplace.css' is inserted
      * @return the default html for a workplace page
      */
     public String pageHtmlStyle(int segment, String title, String stylesheet) {
@@ -1336,12 +1419,8 @@ public abstract class CmsWorkplace {
             result.append(getEncoding());
             result.append("\">\n");
             result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-            result.append(getSkinUri());
-            if (stylesheet != null) {
-                result.append(stylesheet);
-            } else {
-                result.append("commons/css_workplace.css");
-            }
+
+            result.append(getStyleUri(getJsp(), stylesheet == null ? "workplace.css" : stylesheet));
             result.append("\">\n");
             return result.toString();
         } else {
@@ -1418,7 +1497,7 @@ public abstract class CmsWorkplace {
         }
         return result.toString();
     }
-    
+
     /**
      * Resolves the macros in the given String and replaces them by their localized keys.<p>
      * 
@@ -1551,7 +1630,7 @@ public abstract class CmsWorkplace {
             initWorkplaceCmsContext(m_settings, m_cms);
         }
     }
-    
+
     /**
      * Analyzes the request for workplace parameters and adjusts the workplace
      * settings accordingly.<p> 
@@ -1712,5 +1791,5 @@ public abstract class CmsWorkplace {
     private void setMultiPartFileItems(List fileItems) {
 
         m_multiPartFileItems = fileItems;
-    }    
+    }
 }

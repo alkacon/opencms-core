@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorFrameset.java,v $
- * Date   : $Date: 2004/10/19 18:05:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/02/16 11:43:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,11 @@
 package org.opencms.workplace.editors;
 
 
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
-
-import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -76,28 +73,6 @@ public class CmsEditorFrameset extends CmsEditor {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
     }    
-    
-    /**
-     * Returns all present request parameters as String.<p>
-     * 
-     * The String is formatted as a parameter String ("param1=val1&param2=val2") with UTF-8 encoded values.<p>
-     * 
-     * @return all present request parameters as String
-     */
-    public String getParamsAsRequest() {
-        StringBuffer retValue = new StringBuffer(512);
-        HttpServletRequest request = getJsp().getRequest();
-        Enumeration paramNames = request.getParameterNames();
-        while (paramNames.hasMoreElements()) {
-            String paramName = (String)paramNames.nextElement();
-            String paramValue = request.getParameter(paramName);
-            retValue.append(paramName + "=" + CmsEncoder.encode(paramValue, getCms().getRequestContext().getEncoding()));
-            if (paramNames.hasMoreElements()) {
-                retValue.append("&");
-            }
-        }
-        return retValue.toString();
-    }
     
     /**
      * Deletes the temporary file and unlocks the edited resource when in direct edit mode.<p>

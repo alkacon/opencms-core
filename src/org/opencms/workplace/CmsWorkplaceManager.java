@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/12/08 14:30:29 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/02/16 11:43:02 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,7 @@ import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.workplace.editors.I_CmsEditorHandler;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -73,7 +74,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 5.3.1
  */
@@ -88,6 +89,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
     /** The name of the temp file project. */
     public static final String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
+
+    /** The tool manager. */
+    private CmsToolManager m_toolManager;
 
     /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
@@ -298,6 +302,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
+     * Returns the tool manager.<p>
+     * 
+     * @return the tool manager
+     */
+    public CmsToolManager getToolManager() {
+
+        return m_toolManager;
+    }
+
+    /**
      * Gets the access object of the type settings.<p>
      * 
      * @return access object of the type settings
@@ -482,8 +496,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             // read workplace settings
             HttpSession session = req.getSession(false);
             if (session != null) {
-                CmsWorkplaceSettings settings = 
-                    (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+                CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session
+                    .getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
                 if (settings != null) {
                     locale = settings.getUserSettings().getLocale();
                 }
@@ -499,8 +513,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
             }
             if (req != null) {
-                List acceptedLocales = 
-                    (new CmsAcceptLanguageHeaderParser(req, getDefaultLocale())).getAcceptedLocales();
+                List acceptedLocales = (new CmsAcceptLanguageHeaderParser(req, getDefaultLocale()))
+                    .getAcceptedLocales();
                 if ((locale != null) && (!acceptedLocales.contains(locale))) {
                     acceptedLocales.add(0, locale);
                 }
@@ -661,6 +675,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 m_galleries.put(galleryType.getTypeName(), galleryType.getGalleryClassName());
             }
         }
+        m_toolManager = new CmsToolManager(cms);
     }
 
     /**
@@ -980,6 +995,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 if (key == null) {
                     // no language key found, use default String to avoid NullPointerException
                     key = "View " + i;
+                    // if no navtext is given do not display the view
+                    continue;
                 }
                 // create new view object
                 CmsWorkplaceView view = new CmsWorkplaceView(key, viewUri, orderValue);

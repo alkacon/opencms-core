@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2004/08/19 11:26:32 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/02/16 11:43:02 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.12
  */
@@ -343,8 +343,8 @@ public abstract class CmsTabDialog extends CmsDialog {
      */
     public String htmlStart(String helpUrl) { 
         String stylesheet = null;
-        if ("true".equals(getParamIsPopup())) {
-            stylesheet = "commons/css_popup.css";
+        if (isPopup()) {
+            stylesheet = "popup.css";
         }
         StringBuffer result = new StringBuffer(super.pageHtmlStyle(HTML_START, null, stylesheet));
         if (getSettings().isViewExplorer()) {

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+
+<TEMPLATE>
+<![CDATA[
+<HTML>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<script language=JavaScript>
+<!--
+ function update(){
+    var value="]]><process>data</process><![CDATA[";
+    var headline="]]><process>text</process><![CDATA[";
+    parent.refreshResult(value);
+    parent.fillHead(headline);
+}
+
+function finish(){
+    parent.finish();
+}
+//-->
+</script>
+<SCRIPT LANGUAGE="Javascript">
+function reload()
+{
+location.href="]]><process>updateUri</process><![CDATA[";
+}
+</SCRIPT>
+<title>OpenCms</title>
+
+</HEAD>
+<BODY bgcolor="#c0c0c0" marginwidth="0" marginheight="0" topmargin="0" leftmargin="0" onLoad="]]><process>autoUpdate</process><![CDATA[update();]]><process>endMethod</process><![CDATA[">
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<endMethod><![CDATA[finish();]]></endMethod>
+<autoUpdate><![CDATA[setTimeout('reload()', 2000);]]></autoUpdate>
+<updateUri><![CDATA[result.html?action=working]]></updateUri>
+<finishUri><![CDATA[parent.frames[1].location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/linkmanagement/';]]></finishUri>
+<headLabel><LABEL value="linkmanagement.label.title" /></headLabel>
+
+</WORKPLACE>

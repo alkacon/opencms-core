@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="OpenCms Common Modules" default="war-all" basedir=".">
+ 	<property name="opencms.input" 						location="${basedir}/.." />
+    <property name="opencms.output"						location="${opencms.input}/.." />
+ 	<property name="opencms.setup.input" 				location="${opencms.input}/webapp/setup" />
+ 	<property name="opencms.config.input" 				location="${opencms.input}/webapp/WEB-INF/config" />
+    <property name="opencms.input.libs" 				location="${opencms.input}/webapp/WEB-INF/lib" />
+	<property name="additional.modules" 				location="${opencms.output}/zip" />
+    <property name="excludes"                  			value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
+
+ 	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	  <classpath>
+	    <pathelement location="${opencms.input.libs}/ant-contrib-1.0b1.jar"/>
+	  </classpath>
+	</taskdef>
+	
+	<taskdef resource="org/opencms/util/ant/taskdefs.properties" > 
+	  <classpath>
+	    <pathelement location="${opencms.input.libs}/ant-opencms-1.0.jar"/>
+	  </classpath>
+	</taskdef>
+	
+    <target name="init-all" 
+    	description="initializes properties">
+    	
+    	<property file="${basedir}/all-modules.properties" />
+    	<if>
+    		<not><isset property="modules.common.all" /></not>
+    	  <then>
+    		<fail>
+    			property modules.common.all undefined.
+    		</fail>
+    	  </then>
+    	  <else>
+    	  	<echo message="all: ${modules.common.all}"/>
+    	  </else>
+    	</if>
+        <sortlist property="modules.common.all" value="${modules.common.all}" override="true" />
+    	
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    	  <sequential>
+        	<property name="@{module}.dir" value="${basedir}/@{module}" />
+    	  </sequential>
+    	</for>
+
+		<!-- Copy the build-single.xml file to each module root folder -->
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    	  <sequential>
+    	  	<copy file="${basedir}/build-single.xml" tofile="${@{module}.dir}/build.xml" />
+    	  </sequential>
+    	</for>
+    </target>
+    	
+    <target name="init-sel" 
+    	depends="init-all" description="initializes properties">
+    	
+    	<property file="${basedir}/selection.properties" />
+    	<echo message="sel: ${modules.common.selection}" />
+	</target>
+    	
+    <target name="init-int" 
+    	depends="init-sel" description="initializes properties">
+    	
+  	  <moduleprompt 
+  	  	propertyname="modules.common.interactive"
+  	    defaultvalue="${modules.common.selection}"
+  	  	allmodules="${modules.common.all}"
+  	  />
+    	<if>
+    	  <equals arg1="${modules.common.interactive}" arg2="__ABORT__" />
+    	  <then>
+    		<fail>aborted by User</fail>
+    	  </then>
+    	</if>
+    	<!--echo message="val: ${modules.common.interactive}" /-->
+	</target>
+    	
+    <target name="clean-all" 
+    	depends="init-all" description="Cleans all module generation directories">
+    	
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="clean" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>        
+	
+    <target name="clean-sel" 
+    	depends="init-sel" description="Cleans the selected module generation directories">
+    	    	
+    	<for list="${modules.common.selection}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="clean" inheritAll="false" >
+		  		<property name="module.name" value="@{module}" />
+		  	</ant>
+    	  </sequential>
+    	</for>
+    </target>        
+	
+    <target name="clean-int" 
+    	depends="init-int" description="Cleans the given module generation directories">
+    	
+    	<for list="${modules.common.interactive}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="clean" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>        
+	
+    <target name="jar-all" 
+    	depends="init-all" description="Generates all .jar files">
+	
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="jar" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="jar-sel" 
+    	depends="init-sel" description="Generates the selected .jar files">
+	
+    	<for list="${modules.common.selection}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="jar" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="jar-int" 
+    	depends="init-int" description="Generates the given .jar files">
+	
+    	<for list="${modules.common.interactive}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="jar" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="dist-all" 
+    	depends="init-all" description="Generates all independent distros">
+	
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="dist" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="dist-sel" 
+    	depends="init-sel" description="Generates the selected independent distros">
+	
+    	<for list="${modules.common.selection}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="dist" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="dist-int" 
+    	depends="init-int" description="Generates the given independent distros">
+	
+    	<for list="${modules.common.interactive}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="dist" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="tomcat.copy-all" 
+    	depends="init-all" description="Copies all updated modules to Tomcat directory">
+	
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="tomcat.copy" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="tomcat.copy-sel" 
+    	depends="init-sel" description="Copies the selected updated modules to Tomcat directory">
+	
+    	<for list="${modules.common.selection}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="tomcat.copy" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="tomcat.copy-int" 
+    	depends="init-int" description="Copies the given updated modules to Tomcat directory">
+	
+    	<for list="${modules.common.interactive}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="tomcat.copy" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="tomcat.update-all" 
+    	depends="init-all" description="Recompile changes and installs them in Tomcat webapps directory">
+	
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="tomcat.update" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="tomcat.update-sel" 
+    	depends="init-sel" description="Recompile changes and installs them in Tomcat webapps directory">
+	
+    	<for list="${modules.common.selection}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="tomcat.update" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="tomcat.update-int" 
+    	depends="init-int" description="Recompile changes and installs them in Tomcat webapps directory">
+	
+    	<for list="${modules.common.interactive}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="tomcat.update" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="tomcat.all-all" 
+    	depends="init-all" description="Does a complete recompile of the module and installs it in Tomcat webapps directory">
+	
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="tomcat.all" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="tomcat.all-sel" 
+    	depends="init-sel" description="Does a complete recompile of the module and installs it in Tomcat webapps directory">
+	
+    	<for list="${modules.common.selection}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="tomcat.all" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
+    <target name="tomcat.all-int" 
+    	depends="init-int" description="Does a complete recompile of the module and installs it in Tomcat webapps directory">
+	
+    	<for list="${modules.common.interactive}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${@{module}.dir}/build.xml" target="tomcat.all" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+
+    <target name="war-all" depends="dist-all, war-common" 
+    	description="Creates a .war distribution with all common modules">
+    	
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    	  <sequential>
+    		<if>
+    			<available file="${opencms.output}/build/jars-@{module}" />
+    			<then>
+    	           <copy todir="${opencms.output}/build/jars-modules" >   
+    			    <fileset dir="${opencms.output}/build/jars-@{module}">
+    			      <include name="*.jar"/>
+    			    </fileset>
+    	           </copy>
+    			</then>		
+     		</if>
+           <copy todir="${opencms.output}/build/zips-modules" >   
+		    <fileset dir="${additional.modules}">
+		      <include name="@{module}*.zip"/>
+		    </fileset>
+           </copy>
+    	  </sequential>
+    	</for>
+    	<war destfile="${opencms.output}/build/${app.name}.war" update="true" >            	     		
+            <zipfileset dir="${opencms.output}/build/zips-modules" prefix="WEB-INF/packages/modules" includes="*.zip" />   
+            <zipfileset dir="${opencms.output}/build/jars-modules" prefix="WEB-INF/lib" includes="*.jar" />   
+        </war>                 	       
+    </target>    
+	
+    <target name="war-sel" depends="dist-sel, war-common" 
+    	description="Creates a .war distribution with the selected common modules">
+    	        	
+    	<for list="${modules.common.selection}" param="module" trim="yes">
+    	  <sequential>
+    		<if>
+    			<available file="${opencms.output}/build/jars-@{module}" />
+    			<then>
+    	           <copy todir="${opencms.output}/build/jars-modules" >   
+    			    <fileset dir="${opencms.output}/build/jars-@{module}">
+    			      <include name="*.jar"/>
+    			    </fileset>
+    	           </copy>
+    			</then>		
+     		</if>
+           <copy todir="${opencms.output}/build/zips-modules" >   
+		    <fileset dir="${additional.modules}">
+		      <include name="@{module}*.zip"/>
+		    </fileset>
+           </copy>
+    	  </sequential>
+    	</for>
+    	<war destfile="${opencms.output}/build/${app.name}.war" update="true" >            	     		
+            <zipfileset dir="${opencms.output}/build/zips-modules" prefix="WEB-INF/packages/modules" includes="*.zip" />   
+            <zipfileset dir="${opencms.output}/build/jars-modules" prefix="WEB-INF/lib" includes="*.jar" />   
+        </war>                 	       
+    </target>    
+ 	
+    <target name="war-int" depends="dist-int, war-common" 
+    	description="Creates a .war distribution with the interactively selected common modules">
+    	        	
+    	<for list="${modules.common.interactive}" param="module" trim="yes">
+    	  <sequential>
+    		<if>
+    			<available file="${opencms.output}/build/jars-@{module}" />
+    			<then>
+    	           <copy todir="${opencms.output}/build/jars-modules" >   
+    			    <fileset dir="${opencms.output}/build/jars-@{module}">
+    			      <include name="*.jar"/>
+    			    </fileset>
+    	           </copy>
+    			</then>		
+     		</if>
+           <copy todir="${opencms.output}/build/zips-modules" >   
+		    <fileset dir="${additional.modules}">
+		      <include name="@{module}*.zip"/>
+		    </fileset>
+           </copy>
+    	  </sequential>
+    	</for>
+    	<war destfile="${opencms.output}/build/${app.name}.war" update="true" >            	     		
+            <zipfileset dir="${opencms.output}/build/zips-modules" prefix="WEB-INF/packages/modules" includes="*.zip" />   
+            <zipfileset dir="${opencms.output}/build/jars-modules" prefix="WEB-INF/lib" includes="*.jar" />   
+        </war>                 	       
+    </target>    
+
+	<target name="war-common" description="internal target with common tasks for building the war file">
+
+		<ant antfile="${opencms.input}/build.xml" target="war"/>
+
+		<!-- dir for WEB-INF/lib -->
+		<mkdir dir="${opencms.output}/build/jars-modules" />
+
+    	<!-- dir for WEB-INF/packages/modules -->
+		<mkdir dir="${opencms.output}/build/zips-modules" />
+
+	</target> 	
+</project>

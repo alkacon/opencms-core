@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jardesc>
+    <jar path="C:/eclipse/workspace/OpenCms/webapp/WEB-INF/lib/ant-opencms-1.0.jar"/>
+    <options overwrite="true" compress="true" exportErrors="false" exportWarnings="false" saveDescription="true" descriptionLocation="/OpenCms/src-components/ant-opencms.jardesc" useSourceFolders="false" buildIfNeeded="true"/>
+    <manifest manifestVersion="1.0" usesManifest="true" reuseManifest="false" saveManifest="false" generateManifest="true" manifestLocation="">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportOutputFolder="false" exportJavaFiles="false">
+        <javaElement handleIdentifier="=OpenCms/src-components&lt;org.opencms.util.ant"/>
+    </selectedElements>
+</jardesc>

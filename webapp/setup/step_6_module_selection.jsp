@@ -199,7 +199,7 @@ function sortAvailableModules() {
 			}
 		}
 	
-		installModules.sort(compareModules);
+		sort(installModules, compareModules);
 
 		var moduleList = "";
 		for (var j=0;j<installModules.length;j++) {
@@ -210,13 +210,30 @@ function sortAvailableModules() {
 			}
 		}
 	
-		//alert(moduleList);
 		form.installModules.value = moduleList;
 	} else {
 		if (form.availableModules != null) {
 			form.installModules.value = form.availableModules.value;
 		}
 	}
+	//alert(form.installModules.value);
+	return false;
+}
+
+// insert sort
+function sort(list, comparator) {
+    for (var i=0; i<list.length; i++) {
+   		for (var j=i; j>0 && comparator(list[j-1], list[j])>0; j--) {
+    	    swap(list, j, j-1);
+		}
+	}
+    return;
+}
+
+function swap(list, a, b) {
+	var t = list[a];
+	list[a] = list[b];
+	list[b] = t;
 }
 
 //-->
@@ -279,7 +296,7 @@ OpenCms Setup Wizard - Module selection
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
 <input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
-<input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
+<input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton" >
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>

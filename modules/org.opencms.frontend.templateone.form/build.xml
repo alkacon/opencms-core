@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="OpenCms Common Module" default="dist" basedir="..">    
+ 	<property name="opencms.input" 						location="${basedir}/.." />
+    <property name="opencms.output"						location="${opencms.input}/.." />
+	<property name="opencms.input.warfiles"            	location="${opencms.input}/webapp" />
+    <property name="opencms.input.libs" 				location="${opencms.input.warfiles}/WEB-INF/lib" />
+    <property name="opencms.core.lib"	 				location="${opencms.output}/build/jars-core" />	
+	
+    <property name="module.input" 						location="${basedir}/${module.name}" />
+    <property name="module.input.res" 					location="${module.input}/resources" />
+    <property name="src.root"                           location="${opencms.input}/src-modules" />
+	
+	<property file="${module.input}/module.properties" />
+	<property name="module.output.classes"				location="${opencms.output}/build/classes-${module.name}" />
+    <property name="module.output.jar"              	location="${opencms.output}/build/jars-${module.name}" />
+	<property name="module.output.zip"					location="${opencms.output}/zip" /> 
+
+    <property name="app.name"			 				location="opencms" />	
+	
+    <property name="jar.excludes"                  		value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
+    <property name="zip.excludes"                  		value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
+    <property name="jar.includes"                  		value="*.properties,*.txt,*.dtd,*.xml" />
+	
+    <property environment="env" />
+	
+	<property file="${basedir}/opencms.properties" />
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	  <classpath>
+	    <pathelement location="${opencms.input.libs}/ant-contrib-1.0b1.jar"/>
+	  </classpath>
+	</taskdef>
+	
+    <target name="clean" description="Deletes outputs">
+        <delete dir="${module.output.classes}" />
+        <delete dir="${module.output.jar}" />
+        <delete file="${module.output.zip}/${module.name}_${module.version}.zip" />
+    </target>        
+	
+    <target name="init" 
+    	description="Checks if all required libraries are available">
+    	
+    	<for list="${module.dependencies}" param="dependency">
+    	  <sequential>
+        	<property name="@{dependency}.input" value="${basedir}/@{dependency}" />
+    		<property name="@{dependency}.output.classes" location="${opencms.output}/build/classes-@{dependency}" />
+    	    <property name="@{dependency}.output.jar" location="${opencms.output}/build/jars-@{dependency}" />
+    	  	
+        	<condition property="@{dependency}.available">
+        		<and>		
+        			<available file="${@{dependency}.output.jar}/@{dependency}.jar" />
+           		</and>
+        	</condition>
+    	  </sequential>
+    	</for>
+    	
+    	<for list="${module.libs}" param="library">
+    		<sequential>
+		    	<condition property="@{library}.available">
+		    		<and>		
+        				<available file="${opencms.input.libs}/@{library}"/>
+		       		</and>
+		    	</condition>
+      	    </sequential>
+      	</for>
+
+        <var name="module.input.src" value="${src.root}" />
+        <var name="module.package" value="" />
+    	<for list="${module.name}" param="package" delimiter="." >
+    		<sequential>
+                <var name="module.input.src" value="${module.input.src}/@{package}" />
+                <var name="module.package" value="${module.package}@{package}/" />
+      	    </sequential>
+        </for>
+        
+        <condition property="opencms.available">
+        	<and>
+	            <available file="${opencms.core.lib}/opencms.jar"/>
+    	        <available file="${opencms.core.lib}/opencms-legacy.jar"/>
+    		</and>
+        </condition>
+        
+        <condition property="tomcat.home" value="${env.TOMCAT_HOME}">
+            <available file="${env.TOMCAT_HOME}" type="dir"/>
+        </condition>
+
+        <condition property="tomcat.home" value="${env.CATALINA_HOME}">
+            <available file="${env.CATALINA_HOME}" type="dir"/>
+        </condition>
+
+        <condition property="resources.available">
+        	<and>
+	            <available file="${module.input.res}" type="dir" />
+    		</and>
+        </condition>
+    	
+    	<if>
+    		<not><isset property="resources.available"/></not>
+    		<then>
+    			<mkdir dir="${module.input.res}" />
+    		</then>
+    	</if>
+    	
+    	<echo message="Building OpenCms Common Module ${module.name} ${module.version} for OpenCms ${version.number} (${version.name})" />
+        <echo message=" " />
+        <echo message="OpenCms core lib directory is: ${opencms.core.lib}" />
+        <echo message="OpenCms lib directory is: ${opencms.input.libs}" />
+        <echo message="OpenCms output directory is: ${opencms.output}" />
+        <echo message="Module input directory is: ${module.input}"/>
+        <echo message="Module source directory is: ${module.input.src}"/>
+        <echo message="Detected Java version: ${ant.java.version}"/>
+        <echo message="Tomcat home is: ${tomcat.home}" />        
+        <echo message="Excluded files in Jar: ${jar.excludes}" />
+        <echo message="Included files in Jar: ${jar.includes}" />
+        <echo message=" " />
+        <echo message="Module dependencies: ${module.dependencies}" />
+        <echo message="Module libraries: ${module.libs}" />
+    </target>	     
+	
+    <target name="buildcore" 
+    	unless="opencms.available" description="Generates the opencms.jar if it is missing">
+    	
+    	<echo message="Core opencms.jar missing, building it using ${opencms.input}/build.xml" />    	 
+		<ant antfile="${opencms.input}/build.xml" target="jar"/>
+		<antcall target="clean" />
+    </target>
+        
+    <target name="builddeps" description="Generates all the modules dependencies">
+    	<for list="${module.dependencies}" param="dependency">
+    		<sequential>
+	    		<if>
+		    		 <not>
+		    		 	<istrue value="${@{dependency}.available}"/>
+		    		 </not>
+		    		 <then>
+		            	<echo message="Module dependency @{dependency} is missing, building it" />
+		        		<ant antfile="${@{dependency}.input}/build.xml" target="jar" inheritAll="false" >
+		            		<property name="module.name" value="@{dependency}" />
+		            	</ant>
+		    		 </then>
+	    		</if>
+    		</sequential>
+   		</for>
+	</target>
+	
+    <target name="checklibs" 
+    	depends="init, buildcore, builddeps" description="Stop target if libraries required for compilation are missing">
+    	
+    	<var name="module.libs.missing" value="" />
+    	<for list="${module.libs}" param="library">
+    		<sequential>
+    			<if>
+    				<not>
+    					<isset property="@{library}.available" />
+		    		</not>		
+    				<then>
+    			    	<var name="module.libs.missing" value="${module.libs.missing}," />
+    				</then>
+		    	</if>
+      	    </sequential>
+      	</for>
+
+    	<if>
+			<not>
+	    		<equals arg1="${module.libs.missing}" arg2="" />
+			</not>
+			<then>
+		    	<echo message="Error: Some of the required libraries are not available." />
+		    	<echo message="To compile this module, you need the following libaries:" />
+		    	<echo message="${module.libs}" />
+		    	<echo message="which should be located in ${opencms.input.libs}" />
+		
+		        <fail>Required libraries missing</fail>
+			</then>
+    	</if>
+    </target>    
+
+    <target name="compile" 
+    	depends="checklibs" description="Compiles ${module.name} module classes">
+		
+		<if>
+			<available file="${module.input.src}" />
+			<then>
+                <mkdir dir="${module.output.classes}" /> 
+        
+                <var name="module.dependencies.path" value="." />
+                <for list="${module.dependencies}" param="dependency">
+                    <sequential>
+                        <var name="module.dependencies.path" value="${module.dependencies.path}:${@{dependency}.output.jar}/@{dependency}.jar" />
+                    </sequential>
+                </for>    		
+                <!--echo message="${module.dependencies.path}" /-->
+        
+                <var name="module.libs.path" value="." />
+                <for list="${module.libs}" param="library">
+                    <sequential>
+                        <var name="module.libs.path" value="${module.libs.path}:${opencms.input.libs}/@{library}" />
+                    </sequential>
+                </for>
+                <!--echo message="${module.libs.path}" /-->
+                
+                <javac 
+                    srcdir="${src.root}"
+                    destdir="${module.output.classes}"
+                    debug="on" 
+                    optimize="on" 
+                    deprecation="on" >                       
+                    <include name="${module.package}*" />
+                    <exclude name="**/test/**/*.java" />
+                    <classpath>
+                        <fileset dir="${opencms.input.libs}">
+                            <include name="**/*.jar"/>
+                        </fileset>
+                        <fileset dir="${opencms.core.lib}">
+                            <include name="**/*.jar"/>
+                        </fileset>
+                        <pathelement path="${module.dependencies.path}"/>
+                        <pathelement path="${module.libs.path}"/>
+                    </classpath>
+                </javac>
+               
+                <copy todir="${module.output.classes}/${module.package}">
+                    <fileset dir="${module.input.src}" includes="${jar.includes}" excludes="${jar.excludes}" >
+                        <exclude name="**/test/**" />
+                    </fileset>
+                </copy>       
+			</then>		
+		</if>
+    </target>
+    
+    <target name="jar" 
+   		depends="compile" description="Generates the .jar file for module ${module.name}">
+
+		<if>
+			<available file="${module.input.src}" />
+			<then>
+                <mkdir dir="${module.output.jar}" /> 
+               <jar
+                    jarfile="${module.output.jar}/${module.name}.jar"
+                    basedir="${module.output.classes}" />
+                
+                <for list="${module.dependencies}" param="dependency">
+                    <sequential>
+                        <copy todir="${module.output.jar}">
+                            <fileset dir="${@{dependency}.output.jar}" includes="*.jar" />
+                        </copy>
+                    </sequential>
+                </for>
+			</then>		
+		</if>
+    </target>
+
+    <target name="dist" 
+    	depends="jar" description="Builds the distribution .zip file">
+        
+    	<mkdir dir="${module.output.zip}" />
+		<if>
+			<available file="${module.output.jar}" />
+			<then>
+                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
+                    <zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="*.jar" />    		
+                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+                </zip>        
+			</then>		
+            <else>
+                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
+                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+                </zip>        
+            </else>
+		</if>
+                
+    </target>
+
+    <target name="tomcat.copy" 
+    	depends="dist" description="Copies module resources to Tomcat directory">       
+        
+		<if>
+			<available file="${module.output.jar}" />
+			<then>
+		        <copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib" >    	
+		        	<fileset dir="${module.output.jar}" includes="*.jar"/>
+		    	</copy>
+			</then>		
+		</if>
+    	<copy file="${module.output.zip}/${module.name}_${module.version}.zip" todir="${tomcat.home}/webapps/${app.name}/WEB-INF/packages/modules" />
+    </target>
+
+    <target name="tomcat.update" 
+    	depends="tomcat.copy" description="Recompile changes and installs them in Tomcat webapps directory"/>
+
+    <target name="tomcat.all" 
+    	depends="clean, tomcat.update" description="Does a complete recompile of the module and installs it in Tomcat webapps directory"/>              
+
+</project>
