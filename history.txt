@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.51 Arakis - 19 January 2001
+
+* Bugfixing move and delete dialoge.
+* Bugfixing module-cycle.
+
 OpenCms 4.1.50 Arakis - 11 January 2001
 
 * Bugfixing Editor. Empty-titles causes not a nullpointer-exception any more.
