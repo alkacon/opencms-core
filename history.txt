@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.541 $
+ * Date   : $Date: 2004/05/08 03:25:29 $
+ * Version: $Revision: 1.542 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,14 +20,24 @@ Legend:
 - General comment
 
 OpenCms 5.3.5 Ix - xx, 2004
-! Content of xmlPage is now verified with the DTD when saving from any editor
+! The content of a xmlPage is now verified with the DTD when saving from any editor
 ! Improved error handling when an error occurs during save in the editors,
   it's now possible to go back and correct the errors
 ! All editors now ensure that the selected encoding/charset is used for
   the content, if chars are not available these are escaped with HTML entities
-! Resource locales are cached
+! If the encoding property of a file is changed, all HTML entities that are
+  avalable in the new encoding are converted to characters and vice versa  
+! Elements available in the control file but not declared using the template-elements
+  property are now also displayed in the editor element selection 
+! If a template property points to a template that is not located in a 'regular'
+  template folder, this template is now added to the template selection as well  
+! Added 'update workplace' event to re-initilaize the Workplace after changes are made  
+! Resource locales are now cached
 * Fixed issue with galleries not working when in root site  
-
+* Fixed issue with NPE in CmsXmlPage.initBookmarks() method
+* If a xmlPage is read from a CmsFile, the byte array is now directly used for the
+  generation of the xml document (fixing an encoding issue)
+  
 OpenCms 5.3.4 Ix - April 14, 2004
 - Updated all jars, also added version numbers to all jars
 - Added new XML configuration as replacement for "registry.xml",
