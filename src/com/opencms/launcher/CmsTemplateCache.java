@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsTemplateCache.java,v $
- * Date   : $Date: 2000/02/23 19:43:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/04 09:59:54 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,23 +34,20 @@ import java.util.*;
 
 class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
 
-    /** Boolean for additional debug output control */
-    private static final boolean C_DEBUG = false;
-
     /** Hashtable to store the cached data */
     private Hashtable templateCache = new Hashtable();
     
     /** Default constructor to create a template cache */
     public CmsTemplateCache() {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsTemplateCache] Initialized successfully.");
+        if(A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] Initialized successfully.");
         }
     }
 
     /** Deletes all documents from the template cache. */
     public void clearCache() {
         if(A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsTemplateCache] clearing template cache.");
+            A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] clearing template cache.");
         }
         templateCache.clear();
 	}
@@ -71,7 +68,7 @@ class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
      */    
 	public byte[] get(Object key) {
         if(A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsTemplateCache] Getting " + key + " from cache.");            
+            A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] Getting " + key + " from cache.");            
         }
         return (byte[])templateCache.get(key);
     }
