@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2003/07/08 10:54:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/09 11:38:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,27 +46,30 @@ import javax.servlet.jsp.PageContext;
  * 
  * The following files use this class:
  * <ul>
- * <li>/jsp/chaccbrowseusergroup.html
+ * <li>/jsp/chaccbrowser.html
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
 public class CmsChaccBrowser extends CmsDialog {
     
-    // always start individual action id's with 100 to leave enough room for more default actions
-    public static final int ACTION_GROUPS = 100;
-    public static final int ACTION_USERS = 200;
+    public static final int FRAME_DEFAULT = 1;
+    public static final int FRAME_GROUPS = 100;
+    public static final int FRAME_USERS = 200;
     
     public static final String DIALOG_TYPE = "chaccbrowser";
     
     public static final String DIALOG_FRAME_GROUPS = "groups";
     public static final String DIALOG_FRAME_USERS = "users";
     
+    public static final String PARAM_FRAME = "frame";
+    
     
     private String m_paramFrame;
+    private int m_frame;
 
     /**
      * Public constructor.<p>
@@ -86,6 +89,45 @@ public class CmsChaccBrowser extends CmsDialog {
      */
     public CmsChaccBrowser(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
+    }
+    
+    /**
+     * Returns the value of the frame parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The frame parameter selects the frame which should be displayed.<p>
+     * 
+     * @return the value of the target parameter
+     */    
+    public String getParamFrame() {
+        return m_paramFrame;
+    }
+
+    /**
+     * Sets the value of the frame parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamFrame(String value) {
+        m_paramFrame = value;
+    }    
+
+    /**
+     * Returns the int representation of the frame parameter value.<p>
+     * 
+     * @return int representing the frame parameter value
+     */
+    public int getFrame() {
+        return m_frame;    
+    }
+    
+    /**
+     * Sets the int representation of the frame parameter value.<p>
+     * 
+     * @param value the int value of the parameter
+     */
+    public void setFrame(int value) {
+        m_frame = value;
     }        
 
     /**
@@ -97,9 +139,11 @@ public class CmsChaccBrowser extends CmsDialog {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);    
         if (DIALOG_FRAME_GROUPS.equals(getParamFrame())) {
-            setAction(ACTION_GROUPS);
+            setFrame(FRAME_GROUPS);
         } else if (DIALOG_FRAME_USERS.equals(getParamFrame())) {
-            setAction(ACTION_USERS);
+            setFrame(FRAME_USERS);
+        } else {
+            setFrame(FRAME_DEFAULT);
         }
     }
     
@@ -149,7 +193,7 @@ public class CmsChaccBrowser extends CmsDialog {
      */
     private StringBuffer buildEntryGroup(CmsGroup group) {
         StringBuffer retValue = new StringBuffer(256);
-        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth'\""             + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"javascript:top.selectForm('0','"
+        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\""             + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('0','"
             + group.getName() + "');\">");
         retValue.append("<img src=\""+getSkinUri()+"buttons/group_sm.gif\">&nbsp;");
         retValue.append(group.getName());
@@ -165,8 +209,8 @@ public class CmsChaccBrowser extends CmsDialog {
      */
     private StringBuffer buildEntryUser(CmsUser user) {
         StringBuffer retValue = new StringBuffer(384);
-        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth'\"" 
-            + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"javascript:top.selectForm('1','"
+        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\"" 
+            + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('1','"
             + user.getName() + "');\">");
         retValue.append("<img src=\""+getSkinUri()+"buttons/user_sm.gif\">&nbsp;");
         retValue.append(user.getName());
@@ -177,28 +221,4 @@ public class CmsChaccBrowser extends CmsDialog {
         return retValue;
     }
     
-    /**
-     * Returns the value of the frame parameter, 
-     * or null if this parameter was not provided.<p>
-     * 
-     * The frame parameter selects the frame which should be displayed.<p>
-     * 
-     * @return the value of the target parameter
-     */    
-    public String getParamFrame() {
-        return m_paramFrame;
-    }
-
-    /**
-     * Sets the value of the frame parameter.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamFrame(String value) {
-        m_paramFrame = value;
-    }    
-
-        
-      
-
 }

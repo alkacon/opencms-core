@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/08 10:54:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/09 11:38:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -308,7 +308,7 @@ public class CmsDialog extends CmsWorkplace {
      * @return the default action for a "cancel" button
      */
     public String buttonActionCancel() {
-        return "onClick=\"location.href='" + CmsWorkplaceAction.C_JSP_WORKPLACE_FILELIST + "';\"";
+        return "onClick=\"location.href='" + getExplorerFileListFullUri() + "';\"";
     }
 
     /**

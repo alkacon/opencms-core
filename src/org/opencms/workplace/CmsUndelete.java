@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndelete.java,v $
- * Date   : $Date: 2003/07/08 14:08:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/09 11:38:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -112,10 +112,10 @@ public class CmsUndelete extends CmsDialog {
         try {
             if (performUndeleteOperation())  {
                 // if no exception is caused and "true" is returned delete operation was successful
-                getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_FILELIST);
+                getJsp().include(C_FILE_EXPLORER_FILELIST);
             } else  {
                 // "false" returned, display "please wait" screen
-                getJsp().include(CmsWorkplaceAction.C_PATH_JSP_WORKPLACE_COMMONS + "wait.jsp");
+                getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
             }    
         } catch (CmsException e) {
             // prepare common message part
@@ -124,7 +124,7 @@ public class CmsUndelete extends CmsDialog {
             // error during deletion, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
             setParamMessage(message + key("error.message." + getParamDialogtype()));
-            getJsp().include(CmsWorkplaceAction.C_PATH_JSP_WORKPLACE_COMMONS + "error.html");
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
     }
     

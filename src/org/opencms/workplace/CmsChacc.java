@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/09 08:48:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/09 11:38:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,8 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -58,18 +60,28 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
 public class CmsChacc extends CmsDialog {
     
-    public static final String DIALOG_TYPE = "move";
+    public static final String DIALOG_TYPE = "chacc";
+    
+    public static final String DIALOG_SET = "set";
+    public static final String DIALOG_DELETE = "delete";
+    public static final String DIALOG_ADDACE = "addace";
     
     // always start individual action id's with 100 to leave enough room for more default actions
     public static final int ACTION_SET = 100;
     public static final int ACTION_DELETE = 200;
     public static final int ACTION_ADDACE = 300;
+    
+    private String m_paramType;
+    private String m_paramName;
+    
+    public static final String PERMISSION_ALLOW = "allow";
+    public static final String PERMISSION_DENY = "deny";    
     
     /** Stores eventual error message Strings */
     private ArrayList m_errorMessages = new ArrayList(); 
@@ -107,35 +119,97 @@ public class CmsChacc extends CmsDialog {
     }
     
     /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsChacc(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+        this(new CmsJspActionElement(context, req, res));
+    }  
+    
+    /**
+     * Returns the value of the name parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The name parameter stores the name of the group or user.<p>
+     * 
+     * @return the value of the name parameter
+     */    
+    public String getParamName() {
+        return m_paramName;
+    }
+
+    /**
+     * Sets the value of the name parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamName(String value) {
+        m_paramName = value;
+    }
+    
+    /**
+     * Returns the value of the type parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The type parameter stores the type of an ace (group or user).<p>
+     * 
+     * @return the value of the type parameter
+     */    
+    public String getParamType() {
+        return m_paramType;
+    }
+
+    /**
+     * Sets the value of the type parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamType(String value) {
+        m_paramType = value;
+    }
+    
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
-    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // the file which is viewed/modified
-        String fileUri = (String)request.getParameter("file");
-        if (fileUri != null) {
-            settings.setFileUri(fileUri);
-        }
-        // the detail mode of the "inherited" list
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {        
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        
+        // set the detail mode of the "inherited" list view
         String detail = (String)request.getParameter("view");
         if (detail != null) {
-            settings.setDetailView(detail);
-        }                      
+            settings.setPermissionDetailView(detail);
+        }
+        
+        // determine which action has to be performed
+        if (DIALOG_TYPE.equals(getParamAction())) {
+            setAction(ACTION_DEFAULT);                            
+        } else if (DIALOG_SET.equals(getParamAction())) {
+            setAction(ACTION_SET);
+        } else if (DIALOG_DELETE.equals(getParamAction())) {
+            setAction(ACTION_DELETE);
+        } else if (DIALOG_ADDACE.equals(getParamAction())) {
+            setAction(ACTION_ADDACE);
+        } else {                        
+            setAction(ACTION_DEFAULT);
+        }
+        
+        // build the title for chacc dialog     
+        setParamTitle(key("title.chmod") + ": " + CmsResource.getName(getParamFile()));              
     }
     
     /**
      * Initializes some member variables to display the form with the right options for the current user.<p>
      * 
      * This method must be called after initWorkplaceRequestValues().<p>
-     *  
-     * @param request the Http Servlet request
      */
-    public void init(HttpServletRequest request) {
-        
-        // the currently viewed file
-        String file = getSettings().getFileUri();
+    public void init() {
 
         // the current user name
-        String userName = getCms().getRequestContext().currentUser().getName();
+        String userName = getSettings().getUser().getName();
         
         if (m_typesLocalized[0] == null) {
             m_typesLocalized[0] = key("label.group");
@@ -148,10 +222,10 @@ public class CmsChacc extends CmsDialog {
                  
         try {      
             // get the current users' permissions
-            setCurPermissions(getCms().getPermissions(file, userName));
+            setCurPermissions(getCms().getPermissions(getParamFile(), userName));
     
             // check if the current resource is a folder
-            CmsResource resource = getCms().readFileHeader(file);
+            CmsResource resource = getCms().readFileHeader(getParamFile());
             if (resource.isFolder()) {
                 setShowInherit(true);
             }
@@ -167,15 +241,14 @@ public class CmsChacc extends CmsDialog {
     }
     
     /**
-     * Removes a present access control entry from a resource.<p>
+     * Removes a present access control entry from the resource.<p>
      * 
-     * @param request the http request
      * @return true if the ace was successfully removed, otherwise false
      */
-    private boolean actionRemoveAce(HttpServletRequest request) {
-        String file = getSettings().getFileUri();
-        String name = (String)request.getParameter("name");
-        String type = (String)request.getParameter("type");
+    public boolean actionRemoveAce() {
+        String file = getParamFile();
+        String name = getParamName();
+        String type = getParamType();
         try {
             getCms().rmacc(file, type, name);
             return true;
@@ -186,15 +259,14 @@ public class CmsChacc extends CmsDialog {
     }
     
     /**
-     * Adds a new access control entry to a resource.<p>
+     * Adds a new access control entry to the resource.<p>
      * 
-     * @param request the http request
      * @return true if a new ace was created, otherwise false
      */
-    private boolean actionAddAce(HttpServletRequest request) {
-        String file = getSettings().getFileUri();
-        String name = (String)request.getParameter("name");
-        String type = (String)request.getParameter("type");
+    public boolean actionAddAce() {
+        String file = getParamFile();
+        String name = getParamName();
+        String type = getParamType();
         int arrayPosition = -1;
         try {
             arrayPosition = Integer.parseInt(type);
@@ -242,12 +314,12 @@ public class CmsChacc extends CmsDialog {
      * @param request the Http servlet request
      * @return true if the modification worked, otherwise false 
      */
-    private boolean actionModifyAce(HttpServletRequest request) {      
-        String file = getSettings().getFileUri();  
+    public boolean actionModifyAce(HttpServletRequest request) {      
+        String file = getParamFile();  
         
         // get request parameters
-        String name = (String)request.getParameter("name");
-        String type = (String)request.getParameter("type");
+        String name = getParamName();
+        String type = getParamType();
         String inherit = (String)request.getParameter("inherit");   
         String overWriteInherited = (String)request.getParameter("overwriteinherited");   
         
@@ -265,12 +337,12 @@ public class CmsChacc extends CmsDialog {
             value = CmsPermissionSet.getPermissionValue(key);
             // set the right allowed and denied permissions from request parameters
             try {
-                param = (String)request.getParameter(value+"allow");
+                param = (String)request.getParameter(value+PERMISSION_ALLOW);
                 paramInt = Integer.parseInt(param);
                 allowValue |= paramInt;
             } catch (Exception e) {}
             try {           
-                param = (String)request.getParameter(value+"deny");
+                param = (String)request.getParameter(value+PERMISSION_DENY);
                 paramInt = Integer.parseInt(param);
                 denyValue |= paramInt;
             } catch (Exception e) {}
@@ -321,24 +393,11 @@ public class CmsChacc extends CmsDialog {
      * @param curSet the current permission set 
      * @param editable boolean to determine if the form is editable
      * @param showinherit boolean to determine if the "inherit" checkbox should be displayed
-     * @return String with HTML code of the form
-     */
-    public StringBuffer buildPermissionEntryForm(CmsUUID id, CmsPermissionSet curSet, boolean editable, boolean showinherit) {
-        return buildPermissionEntryForm(id, curSet, editable, showinherit, false);
-    }
-    
-    /**
-     * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String).<p>
-     *
-     * @param id the UUID of the principal of the permission set
-     * @param curSet the current permission set 
-     * @param editable boolean to determine if the form is editable
-     * @param showinherit boolean to determine if the "inherit" checkbox should be displayed
      * @param extendedView boolean to determine if the view is selectable with DHTML
      * @return String with HTML code of the form
      */
     private StringBuffer buildPermissionEntryForm(CmsUUID id, CmsPermissionSet curSet, boolean editable, boolean showinherit, boolean extendedView) {
-        String fileName = getSettings().getFileUri();
+        String fileName = getParamFile();
         int flags = 0;
         try {
             // TODO: a more elegant way to determine user/group of current id
@@ -360,19 +419,6 @@ public class CmsChacc extends CmsDialog {
     }
     
     /**
-     * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String).<p>
-     * 
-     * @param entry the current access control entry
-     * @param editable boolean to determine if the form is editable
-     * @param showinherit boolean to determine if the "inherit" checkbox should be displayed
-     * @return StringBuffer with HTML code of the form
-     */
-    private StringBuffer buildPermissionEntryForm(CmsAccessControlEntry entry, boolean editable, boolean showinherit) {
-        return buildPermissionEntryForm(entry, editable, showinherit, false, null);
-    }
-
-    
-    /**
      * Creates an HTML input form for the current access control entry.<p>
      * 
      * @param entry the current access control entry
@@ -392,6 +438,10 @@ public class CmsChacc extends CmsDialog {
         } catch (CmsException e) {}
         String type = getEntryType(entry.getFlags());
         
+        // set the parameters for the hidden fields
+        setParamType(type);
+        setParamName(name);
+        
         // get the localized type label
         String typeLocalized = getTypesLocalized()[getEntryTypeInt(entry.getFlags())];
         
@@ -410,6 +460,7 @@ public class CmsChacc extends CmsDialog {
         // build the heading
         retValue.append(dialogRow(HTML_START));
         if (extendedView) {
+            // for extended view, add toggle symbol and link to output
             retValue.append("<a href=\"javascript:toggleDetail('"+type+name+entry.getResource()+"');\">");
             retValue.append("<img src=\""+getSkinUri()+"buttons/plus.gif\" class=\"noborder\" id=\"ic-"+type+name+entry.getResource()+"\"></a>");
         }
@@ -424,6 +475,7 @@ public class CmsChacc extends CmsDialog {
         retValue.append("</span>");
         
         if (extendedView) {
+            // for extended view, add short permissions and hidden div
             retValue.append("&nbsp;("+entry.getPermissions().getPermissionString()+")");
             retValue.append(dialogRow(HTML_END));
             retValue.append("<div id =\""+type+name+entry.getResource()+"\" class=\"hide\">");
@@ -431,7 +483,7 @@ public class CmsChacc extends CmsDialog {
             retValue.append(dialogRow(HTML_END));
         }
         
-        // show the resource from which the ace is inherited, if present
+        // show the resource from which the ace is inherited if present
         if (inheritRes != null && !"".equals(inheritRes)) {
             retValue.append("<div class=\"dialogpermissioninherit\">"+key("dialog.permission.list.inherited")+"  ");
             retValue.append(inheritRes);
@@ -443,9 +495,9 @@ public class CmsChacc extends CmsDialog {
         // build the form depending on the editable flag
         if (editable) {
             retValue.append("<form action=\""+getDialogUri()+"\" method=\"post\" class=\"nomargin\" name=\"set"+type+name+entry.getResource()+"\">\n");
-            retValue.append("<input type=\"hidden\" name=\"name\" value=\""+name+"\">\n");    
-            retValue.append("<input type=\"hidden\" name=\"type\" value=\""+type+"\">\n");
-            retValue.append("<input type=\"hidden\" name=\"action\" value=\"set\">\n");
+            // set parameters to show correct hidden input fields
+            setParamAction(DIALOG_SET);
+            retValue.append(paramsAsHidden());
             if (showinherit) {
                 retValue.append("<input type=\"hidden\" name=\"inherit\" value=\"true\"\n");
             }
@@ -453,6 +505,7 @@ public class CmsChacc extends CmsDialog {
             retValue.append("<form class=\"nomargin\">\n");
         }
         
+        // build headings for permission descriptions
         retValue.append("<tr>\n");
         retValue.append("\t<td class=\"dialogpermissioncell\"><span class=\"textbold\" unselectable=\"on\">"+key("dialog.permission.list.permission")+"</span></td>\n");
         retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">"+key("dialog.permission.list.allowed")+"</span></td>\n");
@@ -468,12 +521,12 @@ public class CmsChacc extends CmsDialog {
             String keyMessage = getSettings().getMessages().key(key);
             retValue.append("<tr>\n");
             retValue.append("\t<td class=\"dialogpermissioncell\">"+keyMessage+"</td>\n");
-            retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\""+value+"allow\" value=\""+value+"\""+disabled);
+            retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\""+value+PERMISSION_ALLOW+"\" value=\""+value+"\""+disabled);
             if (isAllowed(permissions, value)) {
                 retValue.append(" checked=\"checked\"");
             }
             retValue.append("></td>\n");
-            retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\""+value+"deny\" value=\""+value+"\""+disabled);
+            retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\""+value+PERMISSION_DENY+"\" value=\""+value+"\""+disabled);
             if (isDenied(permissions, value)) {
                 retValue.append(" checked=\"checked\"");
             }
@@ -481,7 +534,7 @@ public class CmsChacc extends CmsDialog {
             retValue.append("</tr>\n");
         }  
         
-        // show inheritance checkbox only on folders
+        // show overwrite inherited checkbox only on folders
         if (showinherit) {
             retValue.append("<tr>\n");
             retValue.append("\t<td class=\"dialogpermissioncell\">"+key("dialog.permission.list.overwrite")+"</td>\n");
@@ -499,11 +552,12 @@ public class CmsChacc extends CmsDialog {
             retValue.append("<tr>\n");
             retValue.append("\t<td>&nbsp;</td>\n");
             retValue.append("\t<td class=\"textcenter\"><input class=\"dialogbutton\" type=\"submit\" value=\""+key("button.submit")+"\"></form></td>\n");           
-            retValue.append("\t<td class=\"textcenter\">\n");            
+            retValue.append("\t<td class=\"textcenter\">\n");
+            // build the form for the "delete" button            
             retValue.append("\t\t<form class=\"nomargin\" action=\""+getDialogUri()+"\" method=\"post\" name=\"delete"+type+name+entry.getResource()+"\">\n");
-            retValue.append("\t\t<input type=\"hidden\" name=\"name\" value=\""+name+"\">\n");    
-            retValue.append("\t\t<input type=\"hidden\" name=\"type\" value=\""+type+"\">\n");
-            retValue.append("\t\t<input type=\"hidden\" name=\"action\" value=\"delete\">\n");
+            // set parameters to show correct hidden input fields
+            setParamAction(DIALOG_DELETE);
+            retValue.append(paramsAsHidden());
             retValue.append("\t\t<input class=\"dialogbutton\" type=\"submit\" value=\""+key("button.delete")+"\">\n");
             retValue.append("\t\t</form>\n");            
             retValue.append("\t</td>\n");
@@ -515,6 +569,7 @@ public class CmsChacc extends CmsDialog {
    
         retValue.append("</table>\n");
         if (extendedView) {
+            // close the hidden div for extended view
             retValue.append("</div>");
         }
           
@@ -529,7 +584,7 @@ public class CmsChacc extends CmsDialog {
      */
     private StringBuffer buildInheritedList(ArrayList entries) {       
         StringBuffer retValue = new StringBuffer("");
-        String view = getSettings().getDetailView();       
+        String view = getSettings().getPermissionDetailView();       
         Iterator i;
 
         // display the long view
@@ -544,7 +599,7 @@ public class CmsChacc extends CmsDialog {
             // show the short view, use an ACL to build the list
             try {
                 // get the inherited ACL of the parent folder 
-                String parentUri = com.opencms.file.CmsResource.getParent(getSettings().getFileUri());
+                String parentUri = com.opencms.file.CmsResource.getParent(getParamFile());
                 CmsAccessControlList acList = getCms().getAccessControlList(parentUri, true);
                 Set principalSet = acList.getPrincipals();
                 i = principalSet.iterator();
@@ -582,7 +637,7 @@ public class CmsChacc extends CmsDialog {
         // list all entries
         while (i.hasNext()) {
             CmsAccessControlEntry curEntry = (CmsAccessControlEntry)i.next();
-            retValue.append(buildPermissionEntryForm(curEntry, m_editable, m_showinherit));
+            retValue.append(buildPermissionEntryForm(curEntry, m_editable, m_showinherit, false, null));
             if (i.hasNext()) {
                 retValue.append(dialogSeparator()); 
             }
@@ -609,10 +664,13 @@ public class CmsChacc extends CmsDialog {
         // create detail view selector 
         retValue.append("<table border=\"0\">\n<tr>\n");
         retValue.append("\t<td>"+key("dialog.permission.viewselect")+"</td>\n");
-        String selectedView = getSettings().getDetailView();   
+        String selectedView = getSettings().getPermissionDetailView();   
         retValue.append("\t<form action=\""+getDialogUri()+"\" method=\"post\" name=\"selectshortview\">\n");            
         retValue.append("\t<td>\n");
         retValue.append("\t<input type=\"hidden\" name=\"view\" value=\"short\">\n");
+        // set parameters to show correct hidden input fields
+        setParamAction(null);
+        retValue.append(paramsAsHidden());
         retValue.append("\t<input  type=\"submit\" class=\"dialogbutton\" value=\""+key("button.short")+"\"");
         if (!"long".equals(selectedView)) {
             retValue.append(" disabled=\"disabled\"");
@@ -622,6 +680,7 @@ public class CmsChacc extends CmsDialog {
         retValue.append("\t</form>\n\t<form action=\""+getDialogUri()+"\" method=\"post\" name=\"selectlongview\">\n");
         retValue.append("\t<td>\n");
         retValue.append("\t<input type=\"hidden\" name=\"view\" value=\"long\">\n");
+        retValue.append(paramsAsHidden());
         retValue.append("\t<input type=\"submit\" class=\"dialogbutton\" value=\""+key("button.long")+"\"");
         if ("long".equals(selectedView)) {
             retValue.append(" disabled=\"disabled\"");
@@ -633,7 +692,7 @@ public class CmsChacc extends CmsDialog {
         // get all access control entries of the current file
         Vector allEntries = new Vector();
         try {
-            allEntries = getCms().getAccessControlEntries(getSettings().getFileUri(), true);
+            allEntries = getCms().getAccessControlEntries(getParamFile(), true);
         } catch (CmsException e) {}
 
         // create new ArrayLists in which inherited and non inherited entries are stored
@@ -645,7 +704,7 @@ public class CmsChacc extends CmsDialog {
     
             if (curEntry.isInherited()) {
                 // add the entry to the inherited rights list for the "long" view
-                if ("long".equals(getSettings().getDetailView())) {       
+                if ("long".equals(getSettings().getPermissionDetailView())) {       
                     inheritedEntries.add((CmsAccessControlEntry)curEntry);
                 }
             } else {
@@ -673,8 +732,8 @@ public class CmsChacc extends CmsDialog {
     public String buildAddForm() {
         StringBuffer retValue = new StringBuffer("");
         
-        // only display form if current user has the "control" right
-        if (m_editable) { 
+        // only display form if the current user has the "control" right
+        if (getEditable()) { 
             retValue.append(dialogBlockStart(key("dialog.permission.headline.add")));
 
             // get all possible entry types
@@ -685,9 +744,13 @@ public class CmsChacc extends CmsDialog {
                 optionValues.add(Integer.toString(i));
             }            
 
-            // create the input form
+            // create the input form for adding an ace
             retValue.append("<form action=\""+getDialogUri()+"\" method=\"post\" name=\"add\" class=\"nomargin\">\n");
-            retValue.append("<input type=\"hidden\" name=\"action\" value=\"addACE\">\n");            
+            // set parameters to show correct hidden input fields
+            setParamAction(DIALOG_ADDACE);
+            setParamType(null);
+            setParamName(null);
+            retValue.append(paramsAsHidden());
             retValue.append("<table border=\"0\" width=\"100%\">\n");
             retValue.append("<tr>\n");
             retValue.append("\t<td>"+buildSelect("name=\"type\"", options, optionValues, -1)+"</td>\n");
@@ -701,6 +764,15 @@ public class CmsChacc extends CmsDialog {
             retValue.append(dialogBlockEnd());      
         }
         return retValue.toString();
+    }
+    
+    /**
+     * Builds a String with HTML code to display the users access rights for the current resource.<p>
+     * 
+     * @return HTML String with the access rights of the current user
+     */
+    public String buildCurrentPermissions() {
+        return buildPermissionEntryForm(getSettings().getUser().getId(), getCurPermissions(), false, false, false).toString();
     }
     
     /**
@@ -718,30 +790,7 @@ public class CmsChacc extends CmsDialog {
         }
         return retValue.toString();
     }
-    
-    /**
-     * Performs a an action if the "action" parameter is found in the request.<p>
-     * 
-     * @param request the HTTP servlet request
-     * @return true if the action was performed correct, otherwise false
-     */
-    public boolean performAction(HttpServletRequest request) {
-        String action = (String)request.getParameter("action");
-        if (action == null && "".equals(action)) {
-            return true;
-        }
-        if ("set".equals(action)) {
-            return actionModifyAce(request);
-        }
-        if ("delete".equals(action)) {
-            return actionRemoveAce(request);
-        }
-        if ("addACE".equals(action)) {
-            return actionAddAce(request);
-        }
-        return true;
-    }
-    
+     
     /**
      * Checks if a certain permission of a permission set is allowed.<p>
      * 
@@ -765,19 +814,6 @@ public class CmsChacc extends CmsDialog {
      */
     protected boolean isDenied(CmsPermissionSet p, int value) {
         if ((p.getDeniedPermissions() & value) > 0) {
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Check if the current permissions are inherited.<p>
-     * 
-     * @param flags value of all flags of the current entry
-     * @return true if permissions are inherited, otherwise false 
-     */
-    protected boolean isInheriting(int flags) {
-        if ((flags & I_CmsConstants.C_ACCESSFLAGS_INHERIT) > 0) {
             return true;
         }
         return false;
@@ -832,8 +868,8 @@ public class CmsChacc extends CmsDialog {
         // TODO: make this work and return the absolute path!
         CmsUUID resId = entry.getResource();
         try {
-            CmsFolder folder = getCms().readFolder(resId, false);
-            return getCms().readAbsolutePath(folder);
+            CmsFolder folder = getCms().readFolder(resId, false);           
+            return folder.getPath();
         } catch (CmsException e) {
             // return null;
             return resId.toString();

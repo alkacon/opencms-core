@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2003/07/08 12:29:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/09 11:38:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -132,7 +132,7 @@ public class CmsRename extends CmsDialog {
         try {
             performRenameOperation();
             // if no exception is caused rename operation was successful
-            getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_FILELIST);          
+            getJsp().include(C_FILE_EXPLORER_FILELIST);          
         } catch (CmsException e) {
             // prepare common message part
             String message = "<p>\n" 
@@ -143,7 +143,7 @@ public class CmsRename extends CmsDialog {
             // error during copy, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
             setParamMessage(message + key("error.message." + getParamDialogtype()));
-            getJsp().include(CmsWorkplaceAction.C_PATH_JSP_WORKPLACE_COMMONS + "error.html");
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
     }
     

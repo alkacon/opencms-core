@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/07/06 13:47:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/09 11:38:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -68,6 +68,18 @@ public abstract class CmsWorkplace {
     
     protected static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
     protected static final String C_SESSION_WORKPLACE_CLASS    = "__CmsWorkplace.WORKPLACE_CLASS";
+    
+    /** Path definitions for workplace */
+    protected static final String C_PATH_WORKPLACE = "/system/workplace/jsp/";
+    protected static final String C_PATH_DIALOGS = C_PATH_WORKPLACE;
+    protected static final String C_PATH_DIALOG_COMMON = C_PATH_DIALOGS + "dialogs/common/";
+    
+    protected static final String C_FILE_EXPLORER_FILELIST = C_PATH_WORKPLACE + "explorer_files.html";
+    protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_PATH_DIALOG_COMMON + "wait.html";
+    protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_PATH_DIALOG_COMMON + "error.html";
+    protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_PATH_DIALOG_COMMON + "confirmation.html";
+   
+    private static String m_file_explorer_filelist; 
     
     private CmsJspActionElement m_jsp;
     private CmsObject m_cms;
@@ -648,4 +660,17 @@ public abstract class CmsWorkplace {
     public boolean isSubElement() {
         return !getJsp().getRequestContext().getUri().equals(getJsp().info("opencms.request.element.uri"));
     }    
+
+    /**
+     * Returns the uri (including context path) to the explorer file list.<p>
+     * 
+     * @return the uri (including context path) to the explorer file list
+     */    
+    public String getExplorerFileListFullUri() {
+        if (m_file_explorer_filelist != null) return m_file_explorer_filelist;
+        synchronized (this) {
+            m_file_explorer_filelist = LinkSubstitution.getLinkSubstitution(getCms(), C_FILE_EXPLORER_FILELIST);            
+        }
+        return m_file_explorer_filelist;
+    }
 }

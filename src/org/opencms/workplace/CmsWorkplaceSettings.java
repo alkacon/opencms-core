@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/07/06 13:47:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/09 11:38:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -56,8 +56,7 @@ public class CmsWorkplaceSettings {
     private boolean m_explorerContext = true;
     private int m_explorerChecksum = -1;
     private String m_explorerFlaturl;
-    private String m_fileUri;
-    private String m_detailView;
+    private String m_permissionDetailView;
         
     /**
      * Constructor, only package visible.<p>
@@ -282,30 +281,12 @@ public class CmsWorkplaceSettings {
     }
     
     /**
-     * Returns the current file name which is selected.<p>
-     * 
-     * @return the file URI
-     */
-    public String getFileUri() {
-        return m_fileUri;
-    }
-    
-    /**
-     * Sets the current file name which is selected.<p>
-     * 
-     * @param value the current file name in the vfs
-     */
-    public void setFileUri(String value) {
-        m_fileUri = value;
-    }
-    
-    /**
      * Returns the current detail grade of the view.<p>
      *  
      * @return value of the details.
      */
-    public String getDetailView() {
-        return m_detailView;
+    public String getPermissionDetailView() {
+        return m_permissionDetailView;
     }
     
     /**
@@ -313,8 +294,8 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the current details.
      */
-    public void setDetailView(String value) {
-        m_detailView = value;
+    public void setPermissionDetailView(String value) {
+        m_permissionDetailView = value;
     }
         
 }
