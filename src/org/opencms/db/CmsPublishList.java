@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/01/28 09:32:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/28 11:53:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,33 +33,41 @@ package org.opencms.db;
 
 import org.opencms.util.CmsUUID;
 
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeFolder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * A list of Cms file resources of a project or a direct published file resource (and optionally 
- * it's siblings) that actually get published.<p>
+ * A container for all new/changed/deteled Cms resources of a project or a direct published 
+ * resource (and optionally it's siblings) that actually get published.<p>
  * 
  * Only classes inside the org.opencms.db package can add or remove elements to or from this list. 
  * This allows the Cms app to pass the list around between classes, but with restricted access to 
  * create this list.<p>
  * 
- * This list contains only file resources, no folders. Folders to be published are still identified 
- * in the project driver's publishProject method.<p>
- * 
  * {@link org.opencms.db.CmsDriverManager#getPublishList(CmsRequestContext, CmsResource, boolean, I_CmsReport)}
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/01/28 09:32:23 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/28 11:53:52 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(com.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)
  */
-public class CmsPublishList {
+public class CmsPublishList extends Object {
+
+    /** The list of deleted Cms folder resources to be published.<p> */
+    private List m_deletedFolderList;
+
+    /** The list of new/changed/deleted Cms file resources to be published.<p> */
+    private List m_fileList;
+
+    /** The list of new/changed Cms folder resources to be published.<p> */
+    private List m_folderList;
 
     /** Flag indicating if this is a publish list for a direct published file *OR* folder.<p> */
     private boolean m_isDirectPublish;
@@ -72,9 +80,6 @@ public class CmsPublishList {
 
     /** The publish history ID.<p> */
     private CmsUUID m_publishHistoryId;
-
-    /** The publish list.<p> */
-    private List m_resourceList;
 
     /** The resource name of a direct published resource.<p> */
     private String m_resourceName;
@@ -93,7 +98,11 @@ public class CmsPublishList {
      * @param isDirectPublishFile true if a Cms file gets published directly and the type of the current project is switched to {@link com.opencms.core.I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH}
      */
     public CmsPublishList(CmsResource directPublishResource, boolean isDirectPublishFile) {
-        m_resourceList = (List) new ArrayList();
+        m_fileList = (List) new ArrayList();
+        m_folderList = (List) new ArrayList();
+        m_deletedFolderList = (List) new ArrayList();
+
+        m_publishHistoryId = new CmsUUID();
         m_isDirectPublish = directPublishResource != null;
 
         if (m_isDirectPublish) {
@@ -107,31 +116,114 @@ public class CmsPublishList {
             m_isDirectPublishFile = false;
             m_isDirectPublish = false;
         }
-
-        m_publishHistoryId = new CmsUUID();
     }
 
     /**
-     * Adds a Cms resource to the publish list.<p>
+     * Adds a deleted Cms folder resource to the publish list.<p>
      * 
-     * @param resource a Cms resource
-     * @see List#add(java.lang.Object)
+     * @param resource a deleted Cms folder resource
+     * @throws IllegalArgumentException if the specified resource is not a folder or not deleted
      */
-    protected void add(CmsResource resource) {
+    protected void addDeletedFolder(CmsResource resource) {
         // it is essential that this method is only visible within the db package!
-        m_resourceList.add(resource);
+
+        if (resource.getType() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+            throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is not a Cms folder resource!");
+        }
+
+        if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
+            throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is not a deleted resource!");
+        }
+
+        m_deletedFolderList.add(resource);
     }
 
     /**
-     * Appends all of the elements in the specified collection to the end of this publish list.<p>
+     * Appends all of the deleted Cms folder resources in the specified list to the end 
+     * of this publish list.<p>
      * 
-     * @param collection a collection whose elements are to be added to this list
-     * @return true if this publish list changed as a result of the call
-     * @see List#addAll(java.util.Collection)
+     * @param list a list with deleted Cms folder resources to be added to this publish list
+     * @throws IllegalArgumentException if one of the resources is not a folder or not deleted
      */
-    protected boolean addAll(Collection collection) {
+    protected void addDeletedFolders(List list) {
         // it is essential that this method is only visible within the db package!
-        return m_resourceList.addAll(collection);
+
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+            addDeletedFolder((CmsResource) i.next());
+        }
+    }
+
+    /**
+     * Adds a new/changed/deleted Cms file resource to the publish list.<p>
+     * 
+     * @param resource a new/changed/deleted Cms file resource
+     * @throws IllegalArgumentException if the specified resource is not a file or unchanged
+     */
+    protected void addFile(CmsResource resource) {
+        // it is essential that this method is only visible within the db package!
+
+        if (resource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+            throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is not a Cms file resource!");
+        }
+
+        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+            throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is a unchanged resource!");
+        }
+
+        m_fileList.add(resource);
+    }
+
+    /**
+     * Appends all of the new/changed/deleted Cms file resources in the specified list to the end 
+     * of this publish list.<p>
+     * 
+     * @param list a list with new/changed/deleted Cms file resources to be added to this publish list
+     * @throws IllegalArgumentException if one of the resources is not a file or unchanged
+     */
+    protected void addFiles(List list) {
+        // it is essential that this method is only visible within the db package!
+
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+            addFile((CmsResource) i.next());
+        }
+    }
+
+    /**
+     * Adds a new/changed Cms folder resource to the publish list.<p>
+     * 
+     * @param resource a new/changed Cms folder resource
+     * @throws IllegalArgumentException if the specified resource is not a folder or unchanged
+     */
+    protected void addFolder(CmsResource resource) {
+        // it is essential that this method is only visible within the db package!
+
+        if (resource.getType() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+            throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is not a Cms folder resource!");
+        }
+
+        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+            throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is a unchanged resource!");
+        }
+
+        m_folderList.add(resource);
+    }
+
+    /**
+     * Appends all of the new/changed Cms folder resources in the specified list to the end 
+     * of this publish list.<p>
+     * 
+     * @param list a list with new/changed Cms folder resources to be added to this publish list
+     * @throws IllegalArgumentException if one of the resources is not a folder or unchanged
+     */
+    protected void addFolders(List list) {
+        // it is essential that this method is only visible within the db package!
+
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+            addFolder((CmsResource) i.next());
+        }
     }
 
     /**
@@ -139,15 +231,44 @@ public class CmsPublishList {
      */
     protected void finalize() throws Throwable {
         try {
-            if (m_resourceList != null) {
-                m_resourceList.clear();
+            if (m_fileList != null) {
+                m_fileList.clear();
             }
-            m_resourceList = null;
+            m_fileList = null;
+
+            if (m_folderList != null) {
+                m_folderList.clear();
+            }
+            m_folderList = null;
+
+            if (m_deletedFolderList != null) {
+                m_deletedFolderList.clear();
+            }
+            m_deletedFolderList = null;
         } catch (Throwable t) {
             // ignore
         }
 
         super.finalize();
+    }
+
+    /**
+     * Returns an unmodifiable list of the deleted Cms folder resources in this publish list.<p>
+     * 
+     * @return the list with the deleted Cms file resources in this publish list
+     */
+    public List getDeletedFolderList() {
+        return Collections.unmodifiableList(m_deletedFolderList);
+    }
+
+    /**
+     * Returns the list with the deleted Cms folder resources.<p>
+     * 
+     * @return the list with the deleted Cms folder resources
+     */
+    protected List getDeletedFolderListInstance() {
+        // it is essential that this method is only visible within the db package!
+        return m_deletedFolderList;
     }
 
     /**
@@ -175,31 +296,50 @@ public class CmsPublishList {
     }
 
     /**
+     * Returns an unmodifiable list of the Cms file resources in this publish list.<p>
+     * 
+     * @return the list with the Cms file resources in this publish list
+     */
+    public List getFileList() {
+        return Collections.unmodifiableList(m_fileList);
+    }
+
+    /**
+     * Returns the list with the Cms file resources.<p>
+     * 
+     * @return the list with the Cms file resources
+     */
+    protected List getFileListInstance() {
+        // it is essential that this method is only visible within the db package!
+        return m_fileList;
+    }
+
+    /**
+     * Returns an unmodifiable list of the new/changed Cms folder resources in this publish list.<p>
+     * 
+     * @return the list with the new/changed Cms file resources in this publish list
+     */
+    public List getFolderList() {
+        return Collections.unmodifiableList(m_folderList);
+    }
+
+    /**
+     * Returns the list with the new/changed Cms folder resources.<p>
+     * 
+     * @return the list with the new/changed Cms folder resources
+     */
+    protected List getFolderListInstance() {
+        // it is essential that this method is only visible within the db package!
+        return m_folderList;
+    }
+
+    /**
      * Returns the publish history Id for this publish list.<p>
      * 
      * @return the publish history Id
      */
     public CmsUUID getPublishHistoryId() {
         return m_publishHistoryId;
-    }
-
-    /**
-     * Returns an unmodifiable list of this this publish list.<p>
-     * 
-     * @return the list with the Cms resources in this publish list
-     */
-    public List getResourceList() {
-        return Collections.unmodifiableList(m_resourceList);
-    }
-
-    /**
-     * Returns the list with the Cms resources.<p>
-     * 
-     * @return the list with the Cms resources
-     */
-    protected List getResourceListInstance() {
-        // it is essential that this method is only visible within the db package!
-        return m_resourceList;
     }
 
     /**
@@ -231,14 +371,7 @@ public class CmsPublishList {
      */
     protected boolean remove(CmsResource resource) {
         // it is essential that this method is only visible within the db package!
-        return m_resourceList.remove(resource);
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return m_resourceList.toString();
+        return m_fileList.remove(resource);
     }
 
 }

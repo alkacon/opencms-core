@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/01/28 09:32:23 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2004/01/28 11:53:52 $
+ * Version: $Revision: 1.147 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
-import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
@@ -69,14 +68,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.146 $ $Date: 2004/01/28 09:32:23 $
+ * @version $Revision: 1.147 $ $Date: 2004/01/28 11:53:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1191,109 +1198,40 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     public synchronized void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsPublishList publishList, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception {
         CmsFolder currentFolder = null;
         CmsResource currentFileHeader = null;
-        CmsLock currentLock = null;
-        List offlineFolders = null;
-        List deletedFolders = (List) new ArrayList();
-        String currentResourceName = null;
         long publishDate = System.currentTimeMillis();
         Iterator i = null;
-        boolean publishCurrentResource = false;
-        List projectResources = null;
-        Map sortedFolderMap = null;
-        List sortedFolderList = null;
         int n;
         int publishedFolderCount = 0;
         int deletedFolderCount = 0;
         int publishedFileCount = 0;
         Set publishedContentIds = (Set) new HashSet();
-        //boolean directPublishFile = context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && publishList.isDirectPublishFile();
-        List siblings = null;
-        //CmsPublishList offlineFiles = null;
 
         try {
+            ////////////////////////////////////////////////////////////////////////////////////////
+            
+            // write the backup
+            
             if (backupEnabled) {
                 // write an entry in the publish project log
                 m_driverManager.backupProject(context, context.currentProject(), backupTagId, publishDate);
             }
 
-            // read the project resources of the project that gets published
-            report.print(report.key("report.publish_read_projectresources") + report.key("report.dots"));
-            projectResources = m_driverManager.readProjectResources(context.currentProject());
-            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-
-            // don't select and sort unpublished folders if a file gets published directly
-            if (!publishList.isDirectPublishFile()) {
-                report.println(report.key("report.publish_prepare_folders"), I_CmsReport.C_FORMAT_HEADLINE);
-
-                // read all changed/new/deleted folders
-                report.print(report.key("report.publish_read_projectfolders") + report.key("report.dots"));
-                offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject().getId());
-                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-
-                // ensure that the folders appear in the correct (DFS) tree order.
-                // second, sort out folders that will not be published
-                report.print(report.key("report.publish_filter_folders") + report.key("report.dots"));
-                sortedFolderMap = (Map) new HashMap();
-                i = offlineFolders.iterator();
-                while (i.hasNext()) {
-                    publishCurrentResource = false;
-
-                    currentFolder = (CmsFolder) i.next();
-                    currentResourceName = m_driverManager.readPath(context, currentFolder, true);
-                    currentFolder.setFullResourceName(currentResourceName);
-                    currentLock = m_driverManager.getLock(context, currentResourceName);
-
-                    // the resource must have either a new/deleted state in the link or a new/delete state in the resource record
-                    publishCurrentResource = currentFolder.getState() > I_CmsConstants.C_STATE_UNCHANGED;
-
-                    if (publishList.isDirectPublish()) {
-                        // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
-                        publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(publishList.getDirectPublishResourceName());
-                    } else {
-                        // the resource must have a changed state and must be changed in the project that is currently published
-                        publishCurrentResource = publishCurrentResource && currentFolder.getProjectLastModified() == context.currentProject().getId();
-
-                        // the resource must be in one of the paths defined for the project            
-                        publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFolder);
-                    }
-
-                    // the resource must be unlocked
-                    publishCurrentResource = publishCurrentResource && currentLock.isNullLock();
-
-                    if (publishCurrentResource) {
-                        sortedFolderMap.put(currentResourceName, currentFolder);
-                    }
-                }
-
-                sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
-                Collections.sort(sortedFolderList);
-
-                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                report.println(report.key("report.publish_prepare_folders_finished"), I_CmsReport.C_FORMAT_HEADLINE);
-
-                offlineFolders.clear();
-                offlineFolders = null;
-            } else {
-                // a file gets published directly- the list of sorted/unpublished folders remains empty
-                sortedFolderList = Collections.EMPTY_LIST;
-            }
+            ///////////////////////////////////////////////////////////////////////////////////////
+            
+            // publish new/changed folders
 
             publishedFolderCount = 0;
-            n = sortedFolderList.size();
-            i = sortedFolderList.iterator();
+            n = publishList.getFolderList().size();
+            i = publishList.getFolderList().iterator();
 
             if (n > 0) {
                 report.println(report.key("report.publish_folders_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             }
 
             while (i.hasNext()) {
-                currentResourceName = (String) i.next();
-                currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
+                currentFolder = (CmsFolder) i.next();
 
-                if (currentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
-                    // C_STATE_DELETE
-                    deletedFolders.add(currentFolder);
-                } else if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
+                if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
                     // bounce the current publish task through all project drivers
                     m_driverManager.getProjectDriver().publishFolder(context, report, ++publishedFolderCount, n, onlineProject, currentFolder, backupEnabled, publishDate, publishList.getPublishHistoryId(), backupTagId, maxVersions);
                     // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
@@ -1310,25 +1248,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 report.println(report.key("report.publish_folders_end"), I_CmsReport.C_FORMAT_HEADLINE);
             }
 
-            if (sortedFolderList != null) {
-                sortedFolderList.clear();
-                sortedFolderList = null;
-            }
-
-            if (sortedFolderMap != null) {
-                sortedFolderMap.clear();
-                sortedFolderMap = null;
-            }
-
             ///////////////////////////////////////////////////////////////////////////////////////
 
-            // now read all changed/new/deleted files
-            
-            //offlineFiles = m_driverManager.getPublishList(context, directPublishResource, directPublishSiblings, report);
+            // publish changed/new/deleted files
 
             publishedFileCount = 0;
-            n = publishList.getResourceList().size();
-            i = publishList.getResourceList().iterator();
+            n = publishList.getFileList().size();
+            i = publishList.getFileList().iterator();
 
             if (n > 0) {
                 report.println(report.key("report.publish_files_begin"), I_CmsReport.C_FORMAT_HEADLINE);
@@ -1336,9 +1262,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             while (i.hasNext()) {
                 currentFileHeader = (CmsResource) i.next();
-                currentResourceName = currentFileHeader.getRootPath();
-                currentFileHeader.setFullResourceName(currentResourceName);
-
                 // bounce the current publish task through all project drivers
                 m_driverManager.getProjectDriver().publishFile(context, report, ++publishedFileCount, n, onlineProject, currentFileHeader, publishedContentIds, backupEnabled, publishDate, publishList.getPublishHistoryId(), backupTagId, maxVersions);
 
@@ -1349,7 +1272,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 // set back all vars. inside the while loop!
                 currentFileHeader = null;
-                currentResourceName = null;
             }
 
             if (n > 0) {
@@ -1358,58 +1280,28 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             ////////////////////////////////////////////////////////////////////////////////////////
 
-            // now delete the "deleted" folders       
-            if (deletedFolders.isEmpty()) {
+            // publish deleted folders
+            
+            if (publishList.getDeletedFolderList().isEmpty()) {
                 return;
             }
 
-            // ensure that the folders appear in the correct (DFS) tree order
-            sortedFolderMap = (Map) new HashMap();
-            i = deletedFolders.iterator();
-            while (i.hasNext()) {
-                currentFolder = (CmsFolder) i.next();
-                currentResourceName = currentFolder.getRootPath();
-                sortedFolderMap.put(currentResourceName, currentFolder);
-            }
-            sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
-            Collections.sort(sortedFolderList);
-
-            // reverse the order of the folder to delete them in a bottom-up order
-            Collections.reverse(sortedFolderList);
-
-            if (deletedFolders != null) {
-                deletedFolders.clear();
-                deletedFolders = null;
-            }
-
             deletedFolderCount = 0;
-            n = sortedFolderList.size();
-            i = sortedFolderList.iterator();
+            n = publishList.getDeletedFolderList().size();
+            i = publishList.getDeletedFolderList().iterator();
 
             if (n > 0) {
                 report.println(report.key("report.publish_delete_folders_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             }
 
             while (i.hasNext()) {
-                currentResourceName = (String) i.next();
-                currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
-
+                currentFolder = (CmsFolder) i.next();               
                 // bounce the current publish task through all project drivers
                 m_driverManager.getProjectDriver().publishDeletedFolder(context, report, ++deletedFolderCount, n, onlineProject, currentFolder, backupEnabled, publishDate, publishList.getPublishHistoryId(), backupTagId, maxVersions);
             }
 
             if (n > 0) {
                 report.println(report.key("report.publish_delete_folders_end"), I_CmsReport.C_FORMAT_HEADLINE);
-            }
-
-            if (sortedFolderList != null) {
-                sortedFolderList.clear();
-                sortedFolderList = null;
-            }
-
-            if (sortedFolderMap != null) {
-                sortedFolderMap.clear();
-                sortedFolderMap = null;
             }
         } catch (Exception e) {
             // these are dummy catch blocks to have a finally block for clearing 
@@ -1438,26 +1330,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             throw o;
         } finally {
-            if (sortedFolderList != null) {
-                sortedFolderList.clear();
-                sortedFolderList = null;
-            }
-
-            if (sortedFolderMap != null) {
-                sortedFolderMap.clear();
-                sortedFolderMap = null;
-            }
-
-            if (deletedFolders != null) {
-                deletedFolders.clear();
-                deletedFolders = null;
-            }
-
-            if (siblings != null) {
-                siblings.clear();
-                siblings = null;
-            }
-
             currentFileHeader = null;
             currentFolder = null;
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/10/31 17:07:48 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2004/01/28 11:53:52 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.32 $ $Date: 2003/10/31 17:07:48 $
+ * @version $Revision: 1.33 $ $Date: 2004/01/28 11:53:52 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault {
@@ -220,7 +220,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
             
             if("ok".equals(action)) {
                 file = readResource(cms, filename);                                     
-                A_CmsReportThread doPublish = new CmsPublishThread(cms, cms.readAbsolutePath(file), false);
+                A_CmsReportThread doPublish = new CmsPublishThread(cms, cms.readAbsolutePath(file), false, null);
                 doPublish.start();
                 session.putValue(C_PUBLISH_THREAD, doPublish);
                 // indicate that changes in the user project etc. must be ignored here

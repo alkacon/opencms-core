@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2004/01/28 09:32:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/01/28 11:53:52 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
+import org.opencms.workplace.CmsWorkplaceSettings;
 
 import com.opencms.file.CmsObject;
 
@@ -43,7 +44,7 @@ import com.opencms.file.CmsObject;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
@@ -51,6 +52,9 @@ public class CmsPublishThread extends A_CmsReportThread {
     private String m_resourceName;
     private boolean m_directPublishSiblings;
     private CmsPublishList m_publishList;
+    
+    /** The current user's workplace settings.<p> */
+    private CmsWorkplaceSettings m_settings;    
 
     /**
      * Creates a Thread that publishes the current users project.<p>
@@ -63,6 +67,7 @@ public class CmsPublishThread extends A_CmsReportThread {
         m_resourceName = null;
         m_directPublishSiblings = false;
         m_publishList = null;
+        m_settings = null;
         
         initHtmlReport();
     } 
@@ -73,13 +78,15 @@ public class CmsPublishThread extends A_CmsReportThread {
      * @param cms the current OpenCms context object
      * @param resourceName the name of the resource to publish directly
      * @param directPublishSiblings if true also publish all siblings directly
+     * @param settings the current user's workplace settings
      */
-    public CmsPublishThread(CmsObject cms, String resourceName, boolean directPublishSiblings) {
+    public CmsPublishThread(CmsObject cms, String resourceName, boolean directPublishSiblings, CmsWorkplaceSettings settings) {
         super(cms, "OpenCms: Publishing of resource " + resourceName);
         
         m_resourceName = resourceName;
         m_directPublishSiblings = directPublishSiblings;
         m_publishList = null;
+        m_settings = settings;
         
         initHtmlReport();
     }  
@@ -139,6 +146,11 @@ public class CmsPublishThread extends A_CmsReportThread {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error publishing project", e);
             }
+        } finally {
+            if (m_settings != null) {
+                // overwrite the publish list in any case with null
+                m_settings.setPublishList(null);
+            }           
         }
     }
 }
