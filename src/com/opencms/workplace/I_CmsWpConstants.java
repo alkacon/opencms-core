@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.123 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.124 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.123 $ $Date: 2003/02/15 11:14:53 $
+ * @version $Revision: 1.124 $ $Date: 2003/04/01 15:20:18 $
  */
 
 public interface I_CmsWpConstants {
@@ -1049,7 +1049,7 @@ public interface I_CmsWpConstants {
     public final static String C_FILELIST_LINK_VALUE = "LINK_VALUE";
 
 
-    /** The suffic for file list values */
+    /** The suffix for file list values */
     public final static String C_FILELIST_SUFFIX_VALUE = "_VALUE";
 
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
-* Date   : $Date: 2003/03/03 10:43:33 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,14 +36,14 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
- * This class describes a project. A project is used to handle versions of
+ * Describes a project. A project is used to handle versions of
  * one resource.
  *
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.35 $ $Date: 2003/03/03 10:43:33 $
+ * @version $Revision: 1.36 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsProject implements I_CmsConstants, Cloneable{
 

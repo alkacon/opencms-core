@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsStatement.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,9 +35,10 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 
 /**
- * This class is used to create an connection-pool for opencms.
+ * The object used for executing a static SQL statement and returning the results it produces.
  *
- * @author a.schouten
+ * @author Andreas Schouten
+ * @see java.sql.Statement
  */
 public class CmsStatement implements Statement {
 

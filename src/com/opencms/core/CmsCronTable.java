@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronTable.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * This class describes a complete crontable with cronentries.
+ * Describes a complete crontable with cronentries.
  */
 class CmsCronTable {
 

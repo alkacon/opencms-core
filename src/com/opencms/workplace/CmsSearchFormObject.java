@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSearchFormObject.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@ package com.opencms.workplace;
 import java.io.Serializable;
 
 /**
- * This class describes a file in the Cms.
+ * Describes a file in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.3 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsSearchFormObject implements Cloneable,Serializable {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsMountPoint.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@ package com.opencms.file;
 import com.opencms.core.*;
 
 /**
- * This class describes a mountpoint. A mountpoint defines the type of a filesystem
+ * Describes a mountpoint. A mountpoint defines the type of a filesystem
  * or database containing data used my the Cms and where it is mounted in to the logical
  * filesystem of  the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.7 $ $Date: 2003/04/01 15:20:18 $
  */
 
 public class CmsMountPoint implements I_CmsConstants {

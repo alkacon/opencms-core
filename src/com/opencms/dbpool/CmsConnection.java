@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsConnection.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,9 +40,10 @@ import java.util.Hashtable;
 import java.util.Map;
 
 /**
- * This class is used to create an connection-pool for opencms.
+ * A connection (session) with a specific database.
  *
- * @author a.schouten
+ * @author Andreas Schouten
+ * @see java.sql.Connection
  */
 public class CmsConnection implements Connection {
 

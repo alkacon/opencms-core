@@ -5,10 +5,8 @@ import com.opencms.file.*;
 import com.opencms.workplace.CmsXmlLanguageFile;
 
 /**
- * Title:        OpenCms
- * Description:
- * Copyright:    Copyright (c) 2001
- * Company:
+ * Validates OpenCms passwords.
+ * 
  * @author Hanjo Riege
  * @version 1.0
  */

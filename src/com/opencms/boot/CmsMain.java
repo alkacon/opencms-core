@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
- * Date   : $Date: 2003/02/26 10:30:37 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/04/01 15:20:18 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Command line interface to access resourcen in OpenCms.<p>
+ * Command line interface to access resources in OpenCms.<p>
  * 
  * This can be used to test the OpenCms VFS, 
- * and it is also used for the initial setup.<p>
+ * it is also used for the initial setup.<p>
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.11 $ $Date: 2003/02/26 10:30:37 $
+ * @version $Revision: 1.12 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsMain {
 

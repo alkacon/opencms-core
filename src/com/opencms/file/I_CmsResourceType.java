@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
-* Date   : $Date: 2003/03/02 18:43:53 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,8 +32,12 @@ import com.opencms.core.CmsException;
 
 import java.util.Map;
 
-public interface I_CmsResourceType
-{
+/**
+ * Defines of all methods that a specific resource type has to implement.
+ * 
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ */
+public interface I_CmsResourceType {
     /**
      * init a new CmsResourceType object.
      *
@@ -135,7 +139,7 @@ public interface I_CmsResourceType
     * The user may change this, if he is admin of the resource.
     * <p>
     * <B>Security:</B>
-    * Access is cranted, if:
+    * Access is granted, if:
     * <ul>
     * <li>the user has access to the project</li>
     * <li>the user is owner of the resource or the user is admin</li>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
-* Date   : $Date: 2003/01/20 23:59:22 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Stack;
 /**
  * This class is used to create an connection-pool for opencms.
  *
- * @author a.schouten
+ * @author Andreas Schouten
  */
 public class CmsPool extends Thread {
 

@@ -3,6 +3,9 @@ package com.opencms.util;
 import com.opencms.core.*;
 import com.opencms.file.*;
 
+/**
+ * Defines methods for password validating objects. 
+ */
 public interface I_PasswordValidation {
 
     /**

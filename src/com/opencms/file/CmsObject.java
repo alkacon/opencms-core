@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/03/22 07:24:54 $
-* Version: $Revision: 1.267 $
+* Date   : $Date: 2003/04/01 15:20:17 $
+* Version: $Revision: 1.268 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.267 $
+ * @version $Revision: 1.268 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -527,7 +527,7 @@ protected void doChmod(String filename, int flags) throws CmsException {
  * The user may change this, if he is admin of the resource.
  * <p>
  * <B>Security:</B>
- * Access is cranted, if:
+ * Access is granted, if:
  * <ul>
  * <li>the user has access to the project</li>
  * <li>the user is owner of the resource or the user is admin</li>
@@ -555,7 +555,7 @@ public void chown(String filename, String newOwner) throws CmsException {
  * The user may change this, if he is admin of the resource.
  * <p>
  * <B>Security:</B>
- * Access is cranted, if:
+ * Access is granted, if:
  * <ul>
  * <li>the user has access to the project</li>
  * <li>the user is owner of the resource or the user is admin</li>
@@ -584,7 +584,7 @@ public void chown(String filename, String newOwner, boolean chRekursive) throws 
  * The user may change this, if he is admin of the resource.
  * <p>
  * <B>Security:</B>
- * Access is cranted, if:
+ * Access is granted, if:
  * <ul>
  * <li>the user has access to the project</li>
  * <li>the user is owner of the resource or the user is admin</li>

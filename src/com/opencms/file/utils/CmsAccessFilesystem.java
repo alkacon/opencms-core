@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsAccessFilesystem.java,v $
-* Date   : $Date: 2003/01/20 23:59:32 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
 
-
+/**
+ * Provides methods to read/write files and folders in the physical file system.
+ */
 public class CmsAccessFilesystem implements I_CmsConstants {
 
     /**

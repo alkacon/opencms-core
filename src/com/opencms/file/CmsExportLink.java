@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportLink.java,v $
-* Date   : $Date: 2002/01/18 08:29:01 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.file;
 import java.util.*;
 
 /**
- * This class describes a link for the static export.
+ * Describes a link for the static export.
  *
  * @author Hanjo Riege
  * @version 1.0

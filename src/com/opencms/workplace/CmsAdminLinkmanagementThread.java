@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagementThread.java,v $
- * Date   : $Date: 2003/02/21 15:18:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/04/01 15:20:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,11 +28,6 @@
 
 package com.opencms.workplace;
 
-/**
- * @author Hanjo Riege
- * @version $Revision: 1.12 $
- */
-
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -42,6 +37,12 @@ import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
 
+/**
+ * A thread to check anchors in pages.
+ * 
+ * @author Hanjo Riege
+ * @version $Revision: 1.13 $ 
+ */
 public class CmsAdminLinkmanagementThread extends A_CmsReportThread{
 
     private CmsObject m_cms;

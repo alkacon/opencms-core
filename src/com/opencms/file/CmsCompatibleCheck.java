@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCompatibleCheck.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.w3c.dom.*;
 
 
 /**
- * checks if the resource sticks to the rules for templates and bodys if it is in
+ * Checks if the resource sticks to the rules for templates and bodys if it is in
  * the correlative path.
  *
  * @author Hanjo Riege

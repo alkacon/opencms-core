@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2002/12/12 18:44:20 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,14 +34,13 @@ import com.opencms.template.*;
 import com.opencms.report.*;
 
 /**
- * Title:       OpenCms
- * Description: This Class is used for the linkmanagement.
+ * Extracts all links (anchors) out of a OpenCms page.
  *
  * @author Hanjo Riege
  * @version 1.0
  */
 
-public class LinkChecker{
+public class LinkChecker {
 
     public LinkChecker() {
     }

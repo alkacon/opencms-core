@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceType.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,11 +33,11 @@ import com.opencms.core.I_CmsConstants;
 import java.io.Serializable;
 
 /**
- * This class describes a resource-type. To determine the special launcher
+ * Describes a resource-type. To determine the special launcher
  * for a resource this resource-type is needed.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.15 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsResourceType implements I_CmsConstants, Serializable {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsShowBackofficeMedia.java,v $
-* Date   : $Date: 2003/01/20 23:59:27 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,9 @@ import com.opencms.template.CmsXmlTemplate;
 import java.util.Hashtable;
 
 
+/**
+ * Displays binary files attached to module data.
+ */
 public class CmsShowBackofficeMedia extends CmsXmlTemplate {
 
     static final String C_EMPTY_PICTURE = "empty.gif";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/22 07:24:53 $
-* Version: $Revision: 1.200 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.201 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.200 $ $Date: 2003/03/22 07:24:53 $
+ * @version $Revision: 1.201 $ $Date: 2003/04/01 15:20:18 $
  *
  */
 
@@ -373,7 +373,7 @@ public interface I_CmsResourceBroker {
      * The user may change this, if he is admin of the resource. <br>
      *
      * <B>Security:</B>
-     * Access is cranted, if:
+     * Access is granted, if:
      * <ul>
      * <li>the user has access to the project</li>
      * <li>the user is owner of the resource or the user is admin</li>
@@ -458,12 +458,12 @@ public interface I_CmsResourceBroker {
      * Copies a file in the Cms. <br>
      *
      * <B>Security:</B>
-     * Access is cranted, if:
+     * Access is granted, if:
      * <ul>
      * <li>the user has access to the project</li>
      * <li>the user can read the sourceresource</li>
      * <li>the user can create the destinationresource</li>
-     * <li>the destinationresource dosn't exists</li>
+     * <li>the destinationresource doesn't exist</li>
      * </ul>
      *
      * @param currentUser The user who requested this method.
@@ -485,7 +485,7 @@ public interface I_CmsResourceBroker {
      * <li>the user has access to the project</li>
      * <li>the user can read the sourceresource</li>
      * <li>the user can create the destinationresource</li>
-     * <li>the destinationresource dosn't exists</li>
+     * <li>the destinationresource doesn't exist</li>
      * </ul>
      *
      * @param currentUser The user who requested this method.
@@ -545,7 +545,7 @@ public interface I_CmsResourceBroker {
      * <li>the user has access to the project</li>
      * <li>the user can write the resource</li>
      * <li>the folder-resource is not locked by another user</li>
-     * <li>the file dosn't exists</li>
+     * <li>the file doesn't exist</li>
      * </ul>
      *
      * @param currentUser The user who owns this file.

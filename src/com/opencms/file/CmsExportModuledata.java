@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/03/25 00:14:35 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,13 +53,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * This class holds the functionaility to export channels and modulemasters from the cms
+ * Holds the functionaility to export channels and modulemasters from the cms
  * to the filesystem.
  *
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $ $Date: 2003/03/25 00:14:35 $
+ * @version $Revision: 1.17 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsExportModuledata extends CmsExport implements I_CmsConstants, Serializable{
 

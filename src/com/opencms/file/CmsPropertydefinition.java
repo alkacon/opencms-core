@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsPropertydefinition.java,v $
-* Date   : $Date: 2002/06/30 21:56:05 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
 package com.opencms.file;
 
 /**
- * This class describes a Propertydefinition in the Cms.
+ * Describes a Propertydefinition in the Cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2002/06/30 21:56:05 $
+ * @version $Revision: 1.9 $ $Date: 2003/04/01 15:20:18 $
  */
 // TESTFIX (a.kandzior@alkacon.com) Old code: public class CmsPropertydefinition implements Cloneable {
 public class CmsPropertydefinition implements Cloneable, Comparable {

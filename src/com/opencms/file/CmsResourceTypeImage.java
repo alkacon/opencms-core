@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeImage.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ import com.opencms.core.CmsException;
 import java.util.Map;
 
 /**
- * This class describes the resource type "image".
+ * Describes the resource type "image".
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsResourceTypeImage extends CmsResourceTypePlain{
 

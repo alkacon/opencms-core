@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2003/02/26 10:30:37 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/04/01 15:20:17 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
 
 /**
- * Title:        OpenCms
- * Description:
+ * 
+ * 
  * @author Hanjo Riege
  * @version 1.0
  */

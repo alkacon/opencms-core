@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsQueries.java,v $
-* Date   : $Date: 2003/01/20 17:57:53 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,9 @@ import com.opencms.core.A_OpenCms;
 
 import java.util.Properties;
 
+/**
+ * Reads SQL queries from query.properties of this resource broker package. 
+ */
 public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
 {
     private static Properties m_queries = null;

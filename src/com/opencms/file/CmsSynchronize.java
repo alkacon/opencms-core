@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,11 +42,11 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 /**
- * This class holds the functionality to synchronize resources from the filesystem
+ * Holds the functionality to synchronize resources from the filesystem
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.15 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.16 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 

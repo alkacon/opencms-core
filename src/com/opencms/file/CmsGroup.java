@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsGroup.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,10 +32,10 @@ package com.opencms.file;
 import com.opencms.core.*;
 
 /**
- * This class describes a Cms user group and the methods to access it.
+ * Describes a Cms user group and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.17 $ $Date: 2003/04/01 15:20:18 $
  */
  public class CmsGroup implements I_CmsConstants { 
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupProject.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,11 +32,11 @@ import java.sql.Timestamp;
 import java.util.Vector;
 
 /**
- * This class describes a backup project. A project is used to handle versions of
+ * Describes a backup project. A project is used to handle versions of
  * one resource.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.4 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsBackupProject extends CmsProject implements Cloneable{
 

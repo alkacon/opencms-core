@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCachedObject.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,11 @@
 package com.opencms.file;
 
 /**
- * This class defines one individual object stored in the DBCacheFile and method to access it
+ * Defines one individual object stored in the DBCacheFile and method to access it
  * 
  * @author Michael Emmerich
  * @author Andreas Schoutem
- * @version $Revision: 1.11 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.12 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsCachedObject implements Cloneable
 {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsLifeCycle.java,v $
-* Date   : $Date: 2002/07/01 11:57:58 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,8 +30,8 @@ package com.opencms.defaults;
 import com.opencms.file.CmsObject;
 
 /**
- * Title:        OpenCms
- * Description:
+ * Defines methods to start-up and shut-down module classes that are registerd in the OpenCms registry.
+ * 
  * @author Hanjo Riege
  * @version 1.0
  */

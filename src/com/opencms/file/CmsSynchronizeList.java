@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronizeList.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,11 +34,11 @@ import com.opencms.core.*;
 import com.opencms.util.*;
 
 /**
- * This class describes the synchronize list for synchronizing the resources
+ * Describes the synchronize list for synchronizing the resources
  * in the virtual filesystem (VFS) and the server filesystem (SFS)
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.10 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsSynchronizeList implements I_CmsConstants, Serializable {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsPublishedResources.java,v $
-* Date   : $Date: 2001/10/22 14:28:43 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@ import java.io.*;
 import java.util.*;
 
 /**
- * This class describes the results of publishing in the Cms.
+ * Describes the results of publishing in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2001/10/22 14:28:43 $
+ * @version $Revision: 1.2 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsPublishedResources implements Cloneable, Serializable{
 

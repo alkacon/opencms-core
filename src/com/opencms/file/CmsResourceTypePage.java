@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/03/06 17:17:15 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,10 +44,10 @@ import java.util.Vector;
 //import com.opencms.file.genericSql.linkmanagement.*;
 
 /**
- * Access class for resources of the type "Page".
+ * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2003/03/06 17:17:15 $
+ * @version $Revision: 1.50 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -267,7 +267,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * The user may change this, if he is admin of the resource.
     * <p>
     * <B>Security:</B>
-    * Access is cranted, if:
+    * Access is granted, if:
     * <ul>
     * <li>the user has access to the project</li>
     * <li>the user is owner of the resource or the user is admin</li>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/03/05 18:46:13 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -325,7 +325,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * The user may change this, if he is admin of the resource.
     * <p>
     * <B>Security:</B>
-    * Access is cranted, if:
+    * Access is granted, if:
     * <ul>
     * <li>the user has access to the project</li>
     * <li>the user is owner of the resource or the user is admin</li>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/25 08:52:21 $
-* Version: $Revision: 1.372 $
+* Date   : $Date: 2003/04/01 15:20:19 $
+* Version: $Revision: 1.373 $
 
 *
 * This library is part of OpenCms -
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.372 $ $Date: 2003/03/25 08:52:21 $
+ * @version $Revision: 1.373 $ $Date: 2003/04/01 15:20:19 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1278,7 +1278,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
  * The user may change this, if he is admin of the resource. <br>
  *
  * <B>Security:</B>
- * Access is cranted, if:
+ * Access is granted, if:
  * <ul>
  * <li>the user has access to the project</li>
  * <li>the user is owner of the resource or the user is admin</li>
@@ -1502,12 +1502,12 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
      * Copies a file in the Cms. <br>
      *
      * <B>Security:</B>
-     * Access is cranted, if:
+     * Access is granted, if:
      * <ul>
      * <li>the user has access to the project</li>
      * <li>the user can read the sourceresource</li>
      * <li>the user can create the destinationresource</li>
-     * <li>the destinationresource dosn't exists</li>
+     * <li>the destinationresource doesn't exist</li>
      * </ul>
      *
      * @param currentUser The user who requested this method.
@@ -1577,7 +1577,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
      * <li>the user has access to the project</li>
      * <li>the user can read the sourceresource</li>
      * <li>the user can create the destinationresource</li>
-     * <li>the destinationresource dosn't exists</li>
+     * <li>the destinationresource doesn't exist</li>
      * </ul>
      *
      * @param currentUser The user who requested this method.
@@ -1751,7 +1751,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      * <li>the user has access to the project</li>
      * <li>the user can write the resource</li>
      * <li>the folder-resource is not locked by another user</li>
-     * <li>the file dosn't exists</li>
+     * <li>the file doesn't exist</li>
      * </ul>
      *
      * @param currentUser The user who owns this file.
@@ -7053,7 +7053,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         // update the session
         int rowCount = m_dbAccess.updateSession(sessionId, sessionData);
         if(rowCount != 1) {
-            // the entry dosn't exists - create it
+            // the entry doesn't exist - create it
             m_dbAccess.createSession(sessionId, sessionData);
         }
     }

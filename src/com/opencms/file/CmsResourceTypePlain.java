@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,11 @@ import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map;
 
+/**
+ * Implementation of a "basic and plain" resource type for any kind of resource.
+ * 
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ */
 public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, Serializable {
 
      /**
@@ -199,7 +204,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
     * The user may change this, if he is admin of the resource.
     * <p>
     * <B>Security:</B>
-    * Access is cranted, if:
+    * Access is granted, if:
     * <ul>
     * <li>the user has access to the project</li>
     * <li>the user is owner of the resource or the user is admin</li>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
-* Date   : $Date: 2003/03/04 17:19:29 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,10 +34,10 @@ import com.opencms.core.A_OpenCms;
 import java.util.Properties;
 
 /**
- * This interface is defines all queries used in the DB-Access class.
+ * Reads SQL queries from query.properties of this resource broker package.
+ * 
  * @author Michael Emmerich
- *
- * @version $Revision: 1.44 $ $Date: 2003/03/04 17:19:29 $
+ * @version $Revision: 1.45 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsQueries
 {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExportThread.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,8 +37,8 @@ import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
 
 /**
- * Title:
- * Description: Thread to export resources static.
+ * A thread to export resources into the physical file system.
+ * 
  * @author Hanjo Riege
  * @version 1.0
  */

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/04/01 15:20:18 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,10 +32,10 @@ package com.opencms.file;
 import java.io.*;
 
 /**
- * This class describes a backup resource in the Cms.
+ * Describes a backup resource in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.4 $ $Date: 2003/04/01 15:20:18 $
  */
 public class CmsBackupResource extends CmsResource implements Cloneable,Serializable {
 
