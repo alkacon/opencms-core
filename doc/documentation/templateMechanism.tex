@@ -1753,7 +1753,10 @@ Returns the relative path of the directory in
 which the servlets reside on the server. This method is used to write
 templates that are independent of the servlet path. The servlet path
 can be changed without affecting the template files when this method
-is used to refer to the path.\\ \hline
+is used to refer to the path.
+In times of static export you should not use this method any longer. 
+Instead you can use the link tag mentiond in the section about the 
+static export.\\ \hline
 {\bf {\meth getPathUri()}}&
 Returns the path of the requested file.\\ \hline
 {\bf {\meth getFileUri()}}&
@@ -1889,7 +1892,7 @@ the administration view (see figure~\ref{clear elementcache icon}).
                    {pics/templateMech/clearcache}
 \caption[clear elementcache icon]
            {Clear elementcache icon}
-		   
+           
 \label{clear elementcache icon}
 \end{center}
 \end{figure}
