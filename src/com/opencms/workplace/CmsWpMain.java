@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/10/10 12:47:15 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/10/13 08:32:48 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2000/10/10 12:47:15 $
+ * @version $Revision: 1.28 $ $Date: 2000/10/13 08:32:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -78,6 +78,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		String newProject = (String)parameters.get("project");
 		String newView = (String)parameters.get(C_PARA_VIEW);
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		int currentSite = cms.getSite(cms.onlineProject().getId()).getId();
 		
 		// Check if the user requested a group change
 		if(newGroup != null && !("".equals(newGroup))) {
@@ -86,20 +87,19 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 			}
 		}                            
 
+		// Check if the user requested a site change
+		if(newSite != null && !(newSite.trim().equals("")) && !newSite.trim().equals(""+currentSite)) 
+		{
+			reqCont.setCurrentProject(cms.getSiteBySiteId(Integer.parseInt(newSite)).getOnlineProjectId());
+		}
 		// Check if the user requested a project change
-		if(newProject != null && !("".equals(newProject))) {
+		else if(newProject != null && !("".equals(newProject))) {
 			if(!(newProject.equals(reqCont.currentProject().getName()))) 
 			{
 				reqCont.setCurrentProject(Integer.parseInt(newProject));
 			}
 		}
 		
-		// Check if the user requested a site change
-		int currentSite = cms.getSite(cms.onlineProject().getId()).getId();
-		if(newSite != null && !(newSite.trim().equals("")) && !newSite.trim().equals(""+currentSite)) 
-		{
-			reqCont.setCurrentProject(cms.getSiteBySiteId(Integer.parseInt(newSite)).getOnlineProjectId());
-		}
 		
 		// Check if the user requested a new view
 		if(newView != null && !("".equals(newView))) {
