@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/08/03 10:29:40 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2001/08/06 08:31:24 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.72 $ $Date: 2001/08/03 10:29:40 $
+ * @version $Revision: 1.73 $ $Date: 2001/08/06 08:31:24 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -546,16 +546,23 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         String result = null;
         if(parameters.containsKey(elementName + "._CLASS_")) {
             result = (String)parameters.get(elementName + "._CLASS_");
-        }
-        else {
+        }else {
             if(doc.hasSubtemplateClass(elementName)) {
                 result = doc.getSubtemplateClass(elementName);
-            }
-            else {
+            }else {
 
                 // Fallback to "body" element
                 if(parameters.containsKey("body._CLASS_")) {
                     result = (String)parameters.get("body._CLASS_");
+                }
+            }
+        }
+        if(result == null){
+            CmsElementDefinitionCollection elDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
+            if(elDefs != null){
+                CmsElementDefinition elDef = elDefs.get(elementName);
+                if(elDef != null){
+                    result = elDef.getClassName();
                 }
             }
         }
@@ -589,7 +596,15 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 }
             }
         }
-
+        if(result == null){
+            CmsElementDefinitionCollection elDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
+            if(elDefs != null){
+                CmsElementDefinition elDef = elDefs.get(elementName);
+                if(elDef != null){
+                    result = elDef.getTemplateName();
+                }
+            }
+        }
         return result;
     }
 
@@ -612,6 +627,13 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 return doc.getSubtemplateSelector(elementName);
             }
             else {
+                CmsElementDefinitionCollection elDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
+                if(elDefs != null){
+                    CmsElementDefinition elDef = elDefs.get(elementName);
+                    if(elDef != null){
+                        return elDef.getTemplateSelector();
+                    }
+                }
                 return null;
             }
         }
@@ -991,7 +1013,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 return C_ERRORTEXT;
             }
             else {
-
                 // The current user is a system user, so we throw the exception again.
                 throw e;
             }
