@@ -9,6 +9,9 @@ Legend:
 - General comment
 
 OpenCms 4.3.25 Bela Tegeuse - 16 July 2001
+! changed the structure in the content folder. Added a new resourcetype compatibleplain
+  for imported templates that dosent stick to the new rules for templates. The new restype 
+  is the same as plain but cant be changed.
 - Update of OpenCms setup-wizard.
 - Reorganisation for tomcat-support.
 
