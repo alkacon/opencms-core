@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/08 07:29:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/03/08 12:32:02 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,6 +65,9 @@ public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfi
     /** The "order" attribute */
     String A_ORDER = "order";
 
+    /** The "count" attribute */
+    String A_COUNT = "count";
+    
     /** The "to" attribute */
     String A_TO = "to";    
     

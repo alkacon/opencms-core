@@ -34,6 +34,7 @@
         	</filetranslations>
         	<foldertranslations enabled="false"/>
         </translations>            
+        <versionhistory enabled="true" count="10"/>        
     </vfs>         
     <workplace>
     	<defaultlocale>en</defaultlocale>

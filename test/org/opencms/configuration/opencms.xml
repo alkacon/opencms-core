@@ -25,6 +25,7 @@
             <loader class="org.opencms.loader.CmsJspLoader">
             	<param name="jsp.repository">C:\TEMP</param>
             	<param name="jsp.folder">/WEB-INF/jsp/</param>
+            	<param name="jsp.errorpage.committed">true</param>
             </loader>
             <loader class="org.opencms.loader.CmsXmlPageLoader" />
         </resourceloaders>    
@@ -61,7 +62,8 @@
         		<translation>s#/default/vfs/system/workplace/css/(.*)#/system/workplace/resources/$1#</translation>
         		<translation>s#/default/vfs/system/workplace/templates/js/(.*)#/system/workplace/scripts/$1#</translation>
         	</foldertranslations>
-        </translations>           
+        </translations>
+        <versionhistory enabled="true" count="10"/>
     </vfs>   
     <workplace>
     	<defaultlocale>en</defaultlocale>

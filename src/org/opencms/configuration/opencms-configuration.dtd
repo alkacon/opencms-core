@@ -33,7 +33,8 @@
 <!ELEMENT vfs (
 	resourceloaders, 
 	resourcetypes,
-	translations? )>
+	translations?,
+	versionhistory )>
 
 <!ELEMENT resourceloaders (loader+)>
 <!ELEMENT loader (param*)>
@@ -81,6 +82,21 @@
 
 <!ELEMENT foldertranslations (translation*)>
 <!ATTLIST foldertranslations enabled (TRUE|true|FALSE|false) #REQUIRED>
+
+<!--
+# Version history settings.
+# The OpenCms VFS keeps a version history for old versions of files.
+# This is done as a binary 1:1 copy of the original file (i.e. no "diff").
+# Because of this the database would grow very large if unlimited versions
+# would be stored. The version history is enabled by default. You can
+# enable / disable it with the "enabled" attribute. The "count" attribute
+# controls the number of binary copies that are kept in the database per individual file. 
+# If a file has more versions, the oldest binary content is deleted (you can not re-create this 
+# version anymore). However, the basic information about the old version (i.e. who 
+# did the publish etc.) is still kept in the database.
+-->
+<!ELEMENT versionhistory EMPTY>
+<!ATTLIST versionhistory enabled (TRUE|true|FALSE|false) #REQUIRED count CDATA #REQUIRED>
 
 <!--
 # <workplace node options.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/02/21 13:33:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/03/08 12:32:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -89,6 +89,12 @@ public class CmsSystemInfo {
     
     /** The startup time of this OpenCms instance */
     private long m_startupTime;
+    
+    /** Indicates if the version history is enabled */
+    private boolean m_versionHistoryEnabled;
+    
+    /** The maximum number of entries in the version history (per resource) */
+    private int m_versionHistoryMaxCount;
     
     /** The version name (including version number) of this OpenCms installation */
     private String m_versionName;
@@ -282,6 +288,18 @@ public class CmsSystemInfo {
     }
     
     /**
+     * Returns the maximum number of versions that are kept per file in the VFS version history.<p>
+     * 
+     * If the versin history is disabled, this setting has no effect.<p>
+     * 
+     * @return the maximum number of versions that are kept per file
+     * @see #isVersionHistoryEnabled()
+     */
+    public int getVersionHistoryMaxCount() {
+        return m_versionHistoryMaxCount;
+    }
+    
+    /**
      * Returns a String containing the version information (version name and version number) 
      * of this OpenCms system.<p>
      *
@@ -336,45 +354,13 @@ public class CmsSystemInfo {
     }    
     
     /**
-     * Sets the default encoding, called after the properties have been read.<p>
-     *  
-     * @param encoding the default encoding to set
-     */
-    protected void setDefaultEncoding(String encoding) {
-        m_defaultEncoding = encoding;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Encoding set to      : " + m_defaultEncoding);
-        }        
-    }
-    
-    /**
-     * Sets the absolute path to the OpenCms logfile (in the "real" file system).<p>
-     *  
-     * @param logFileRfsPath the absolute path to the OpenCms logfile
-     */
-    protected void setLogFileRfsPath(String logFileRfsPath) {
-        m_logFileRfsPath = logFileRfsPath;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Log file is          : " + m_logFileRfsPath);
-        }        
-    }
-    
-    /**
-     * Sets the server name.<p>
+     * Returns if the VFS version history is enabled.<p> 
      * 
-     * The server name is set in <code>opencms.properties</code>.
-     * It is not related to any DNS name the server might also have.
-     * The server name is usefull e.g. in a cluster to distinguish different servers,
-     * or if you compare logfiles from multiple servers.<p>
-     *  
-     * @param serverName the server name to set
+     * @return if the VFS version history is enabled
      */
-    protected void setServerName(String serverName) {
-        m_serverName = serverName;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Server name is       : " + m_serverName);
-        }        
-    }    
+    public boolean isVersionHistoryEnabled() {
+        return m_versionHistoryEnabled;
+    }
     
     /** 
      * Sets the OpenCms web application "WEB-INF" directory path (in the "real" file system).<p>
@@ -429,6 +415,58 @@ public class CmsSystemInfo {
         if (! m_webApplicationRfsPath.endsWith(File.separator)) {
             m_webApplicationRfsPath += File.separator;
         }      
+    }
+    
+    /**
+     * Sets the default encoding, called after the properties have been read.<p>
+     *  
+     * @param encoding the default encoding to set
+     */
+    protected void setDefaultEncoding(String encoding) {
+        m_defaultEncoding = encoding;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Encoding set to      : " + m_defaultEncoding);
+        }        
+    }
+    
+    /**
+     * Sets the absolute path to the OpenCms logfile (in the "real" file system).<p>
+     *  
+     * @param logFileRfsPath the absolute path to the OpenCms logfile
+     */
+    protected void setLogFileRfsPath(String logFileRfsPath) {
+        m_logFileRfsPath = logFileRfsPath;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Log file is          : " + m_logFileRfsPath);
+        }        
+    }
+    
+    /**
+     * Sets the server name.<p>
+     * 
+     * The server name is set in <code>opencms.properties</code>.
+     * It is not related to any DNS name the server might also have.
+     * The server name is usefull e.g. in a cluster to distinguish different servers,
+     * or if you compare logfiles from multiple servers.<p>
+     *  
+     * @param serverName the server name to set
+     */
+    protected void setServerName(String serverName) {
+        m_serverName = serverName;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Server name is       : " + m_serverName);
+        }        
+    }    
+    
+    /**
+     * VFS version history settings are set here.<p>
+     * 
+     * @param historyEnabled if true the history is enabled
+     * @param historyMaxCount the maximum number of versions that are kept per VFS resource
+     */
+    protected void setVersionHistorySettings(boolean historyEnabled, int historyMaxCount) {
+        m_versionHistoryEnabled = historyEnabled;
+        m_versionHistoryMaxCount = historyMaxCount;
     }
     
     /**

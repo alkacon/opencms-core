@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/08 07:29:38 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2004/03/08 12:32:32 $
+ * Version: $Revision: 1.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,6 @@ import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsImportExportManager;
-import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.lock.CmsLockManager;
@@ -105,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.101 $
+ * @version $Revision: 1.102 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1137,6 +1136,8 @@ public final class OpenCmsCore {
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)configurationManager.getConfiguration(CmsVfsConfiguration.class);
         m_loaderManager = vfsConfiguation.getLoaderManager();        
         List resourceTypes = vfsConfiguation.getResourceTypes();
+        // set version history information        
+        getSystemInfo().setVersionHistorySettings(vfsConfiguation.isVersionHistoryEnabled(), vfsConfiguation.getVersionHistoryMaxCount());
         
         // get the import/export configuration
         CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)configurationManager.getConfiguration(CmsImportExportConfiguration.class);
@@ -1146,7 +1147,7 @@ public final class OpenCmsCore {
         CmsWorkplaceConfiguration workplaceConfiguration = (CmsWorkplaceConfiguration)configurationManager.getConfiguration(CmsWorkplaceConfiguration.class);
         m_workplaceManager = workplaceConfiguration.getWorkplaceManager();
         // add the export points from the workplace
-        addExportPoints(m_workplaceManager.getExportPoints());                       
+        addExportPoints(m_workplaceManager.getExportPoints());               
         
         try {
             // init the rb via the manager with the configuration
@@ -1194,13 +1195,6 @@ public final class OpenCmsCore {
 
         // initialize the link manager
         m_linkManager = new CmsLinkManager();
-
-        // read flex jsp error page commit property and save in runtime configuration
-        Boolean flexErrorPageCommit = configuration.getBoolean(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, new Boolean(true));
-        setRuntimeProperty(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, flexErrorPageCommit);
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". JSP errorPage commit : " + (flexErrorPageCommit.booleanValue() ? "enabled" : "disabled"));
-        }
 
         // initialize translation engines
         m_directoryTranslator = vfsConfiguation.getFolderTranslator();

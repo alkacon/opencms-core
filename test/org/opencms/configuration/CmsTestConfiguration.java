@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2004/03/06 18:48:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/08 12:31:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -136,7 +136,7 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
         format.setIndentSize(4);
         format.setTrimText(false);
         format.setEncoding("UTF-8");
-        writer = new XMLWriter( System.out, format );
-        writer.write( doc );        
+        writer = new XMLWriter(System.out, format);
+        writer.write(doc);        
     }       
 }

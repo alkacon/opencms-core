@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/03/08 07:29:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/03/08 12:32:02 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     /** The node name of an individual resource type */
     protected static final String N_TYPE = "type";       
     
-    /** The man configuration node name */
+    /** The node name for the version history */
+    protected static final String N_VERSIONHISTORY = "versionhistory";
+    
+    /** The main vfs configuration node name */
     protected static final String N_VFS = "vfs";
     
     /** Controls if file translation is enabled */
@@ -99,6 +102,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     
     /** The configured resource types */
     private List m_resourceTypes; 
+    
+    /** Indicates if the version history is enabled */
+    private boolean m_versionHistoryEnabled;
+    
+    /** The maximum number of entries in the version history (per resource) */
+    private int m_versionHistoryMaxCount;
     
     /**
      * Public constructor, will be called by configuration manager.<p> 
@@ -175,6 +184,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS + "/" + N_TRANSLATION, "addFolderTranslation", 0);
         digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS, "setFolderTranslationEnabled", 1);
         digester.addCallParam("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS, 0, A_ENABLED);        
+
+        digester.addCallMethod("*/" + N_VFS + "/" + N_VERSIONHISTORY, "setVersionHistorySettings", 2);
+        digester.addCallParam("*/" + N_VFS + "/" + N_VERSIONHISTORY, 0, A_ENABLED);    
+        digester.addCallParam("*/" + N_VFS + "/" + N_VERSIONHISTORY, 1, A_COUNT);    
     }
     
     /**
@@ -238,6 +251,11 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             folderTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
         }               
         
+        // version history
+        vfs.addElement(N_VERSIONHISTORY)
+            .addAttribute(A_ENABLED, new Boolean(m_versionHistoryEnabled).toString())
+            .addAttribute(A_COUNT, new Integer(m_versionHistoryMaxCount).toString());
+        
         // return the vfs node
         return vfs;
     }
@@ -289,12 +307,26 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     }
     
     /**
+     * Returns the maximum number of versions that are kept per file in the VFS version history.<p>
+     * 
+     * If the versin history is disabled, this setting has no effect.<p>
+     * 
+     * @return the maximum number of versions that are kept per file
+     * @see #isVersionHistoryEnabled()
+     */
+    public int getVersionHistoryMaxCount() {
+        return m_versionHistoryMaxCount;
+    }
+    
+    /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#initialize()
      */
     public void initialize() {
         m_resourceTypes = new ArrayList();
         m_fileTranslations = new ArrayList();
         m_folderTranslations = new ArrayList();
+        m_versionHistoryEnabled = true;
+        m_versionHistoryMaxCount = 10;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". VFS configuration    : starting");
         }           
@@ -308,6 +340,15 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". VFS configuration    : finished");
         }            
     }   
+    
+    /**
+     * Returns if the VFS version history is enabled.<p> 
+     * 
+     * @return if the VFS version history is enabled
+     */
+    public boolean isVersionHistoryEnabled() {
+        return m_versionHistoryEnabled;
+    }    
     
     /**
      * Enables or disables the file translation rules.<p>
@@ -343,5 +384,16 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
         }
+    }
+        
+    /**
+     * VFS version history settings are set here.<p>
+     * 
+     * @param historyEnabled if true the history is enabled
+     * @param historyMaxCount the maximum number of versions that are kept per VFS resource
+     */
+    public void setVersionHistorySettings(String historyEnabled, String historyMaxCount) {
+        m_versionHistoryEnabled = Boolean.valueOf(historyEnabled).booleanValue();
+        m_versionHistoryMaxCount = Integer.valueOf(historyMaxCount).intValue();
     }
 }

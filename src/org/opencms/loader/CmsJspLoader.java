@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/03/08 07:30:10 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/03/08 12:32:20 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,11 +84,19 @@ import org.apache.commons.collections.ExtendedProperties;
  * <i>Please note:</i> Some servlet environments (e.g. BEA Weblogic) do not permit 
  * JSPs to be stored under <code>/WEB-INF</code>. For environments like these,
  * set the path to some place where JSPs can be accessed, e.g. <code>/jsp/</code> only.
- * </dd></dl> 
+ * </dd>
+ * 
+ * <dt>jsp.errorpage.committed</dt><dd>
+ * (Optional) This parameter controls behaviour of JSP error pages
+ * i.e. <code>&lt;% page errorPage="..." %&gt;</code>. If you find that these don't work
+ * in your servlet environment, you should try to change the value here. 
+ * The default <code>true</code> has been tested with Tomcat 4.1 and 5.0. 
+ * Older versions of Tomcat like 4.0 require a setting of <code>false</code>.</dd>
+ * </dl> 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -105,10 +113,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     public static final String C_DIRECTIVE_START = "<%@";
     
     /** Extension for JSP managed by OpenCms (<code>.jsp</code>) */
-    public static final String C_JSP_EXTENSION = ".jsp";      
-    
-    /** Name of "error pages are commited or not" runtime property*/ 
-    public static final String C_LOADER_ERRORPAGECOMMIT = "flex.jsp.errorpagecommit";
+    public static final String C_JSP_EXTENSION = ".jsp";
 
     /** The id of this loader */
     public static final int C_RESOURCE_LOADER_ID = 6;
@@ -340,18 +345,16 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         if (DEBUG > 0) {
             System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
         }
-        // Get the cache from the runtime properties
+        // get the "error pages are commited or not" flag from the configuration
+        m_errorPagesAreNotCommited = m_configuration.getBoolean("jsp.errorpage.committed", true);
+        // get the cache from the runtime properties
         m_cache = (CmsFlexCache)OpenCms.getRuntimeProperty(CmsFlexCache.C_LOADER_CACHENAME);
-        // Get the export URL from the runtime properties
+        // output setup information
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : JSP repository (absolute path): " + m_jspRepository);        
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : JSP repository (web application path): " + m_jspWebAppRepository);              
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : JSP repository (error page committed): " + m_errorPagesAreNotCommited);              
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized");   
-        }
-        // Get the "error pages are commited or not" flag from the runtime properties
-        Boolean errorPagesAreNotCommited = (Boolean)OpenCms.getRuntimeProperty(C_LOADER_ERRORPAGECOMMIT);
-        if (errorPagesAreNotCommited != null) {
-            m_errorPagesAreNotCommited = errorPagesAreNotCommited.booleanValue();
         }
     }
     
