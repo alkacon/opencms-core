@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/06/25 16:12:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/01 16:05:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,11 +58,11 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
-public class CmsChacc extends CmsWorkplace {
+public class CmsChacc extends CmsDialog {
     
     /** Stores the URL to the JSP which uses this class */
     private String m_chaccUrl;
@@ -71,7 +71,10 @@ public class CmsChacc extends CmsWorkplace {
     private ArrayList m_errorMessages = new ArrayList(); 
     
     /** The possible types of new access control entries */
-    private String[] m_types = {"Group", "User"};
+    private String[] m_types = {"group", "user"};
+    
+    /** The possible localized types of new access control entries */
+    private String[] m_typesLocalized = new String[2];
     
     /** The possible type values of access control entries */
     private int[] m_typesInt = {I_CmsConstants.C_ACCESSFLAGS_GROUP, I_CmsConstants.C_ACCESSFLAGS_USER};
@@ -132,6 +135,11 @@ public class CmsChacc extends CmsWorkplace {
         // the current user name
         String userName = getCms().getRequestContext().currentUser().getName();
         
+        if (m_typesLocalized[0] == null) {
+            m_typesLocalized[0] = key("label.group");
+            m_typesLocalized[1] = key("label.user");
+        }
+        
         // set flags to show editable or non editable entries
         setEditable(false);
         setShowInherit(false);
@@ -168,6 +176,7 @@ public class CmsChacc extends CmsWorkplace {
             getCms().rmacc(file, type, name);
             return true;
         } catch (CmsException e) {
+            m_errorMessages.add(key("dialog.permission.error.remove"));
             return false;
         }
     }
@@ -182,13 +191,17 @@ public class CmsChacc extends CmsWorkplace {
         String file = getSettings().getFileUri();
         String name = (String)request.getParameter("name");
         String type = (String)request.getParameter("type");
-        if (checkNewEntry(name, type)) {
+        int arrayPosition = -1;
+        try {
+            arrayPosition = Integer.parseInt(type);
+        } catch (Exception e) {}
+               
+        if (checkNewEntry(name, arrayPosition)) {
             try {
-                getCms().chacc(file, type, name, "");
+                getCms().chacc(file, getTypes()[arrayPosition], name, "");
                 return true;
-            }
-            catch (CmsException e) {
-                m_errorMessages.add("Failed to create a new access control entry.");
+            } catch (CmsException e) {
+                m_errorMessages.add(key("dialog.permission.error.add"));
             }
         }
         return false;
@@ -198,24 +211,20 @@ public class CmsChacc extends CmsWorkplace {
      * Check method to validate the user input when creating a new access control entry.<p>
      * 
      * @param name the name of the new user/group
-     * @param type the type of the new entry
+     * @param arrayPosition the position in the types array
      * @return true if everything is ok, otherwise false
      */
-    protected boolean checkNewEntry(String name, String type) {
+    protected boolean checkNewEntry(String name, int arrayPosition) {
         m_errorMessages.clear();
         boolean inArray = false;
-        String[] allTypes = getTypes();
-        for (int i=0; i<allTypes.length; i++) {
-            if (allTypes[i].equals(type)) {
-                inArray = true;
-                break;
-            }
+        if (getTypes()[arrayPosition] != null) {
+            inArray = true;
         }
         if (!inArray) {
-            m_errorMessages.add("Please select the type of the new entry: \"Group\" or \"User\".");
+            m_errorMessages.add(key("dialog.permission.error.type"));
         }
         if (name == null || "".equals(name.trim())) {
-            m_errorMessages.add("Please enter a group or user name.");
+            m_errorMessages.add(key("dialog.permission.error.name"));
         }
         if (m_errorMessages.size() > 0) {
             return false;
@@ -281,30 +290,28 @@ public class CmsChacc extends CmsWorkplace {
             // modify the ace flags to determine inheritance of the current ace
             if ("true".equals(inherit)) {
                 flags |= I_CmsConstants.C_ACCESSFLAGS_INHERIT;
-            }
-            else {
+            } else {
                 flags &= ~I_CmsConstants.C_ACCESSFLAGS_INHERIT;
             }
             
             // modify the ace flags to determine overwriting of inherited ace
             if ("true".equals(overWriteInherited)) {
                 flags |= I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
-            }
-            else {
+            } else {
                 flags &= ~I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
             }
             
             // try to change the access entry           
             getCms().chacc(file, type, name, allowValue, denyValue, flags);
             return true;
-        }
-        catch (CmsException e) {
+        } catch (CmsException e) {
+            m_errorMessages.add(key("dialog.permission.error.modify"));
             return false;
         }       
     }
     
     /**
-     * @see #buildPermissionEntryForm(CmsObject, CmsPermissionSet, boolean, boolean).<p>
+     * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String).<p>
      *
      * @param id the UUID of the principal of the permission set
      * @param curSet the current permission set 
@@ -313,6 +320,20 @@ public class CmsChacc extends CmsWorkplace {
      * @return String with HTML code of the form
      */
     public StringBuffer buildPermissionEntryForm(CmsUUID id, CmsPermissionSet curSet, boolean editable, boolean showinherit) {
+        return buildPermissionEntryForm(id, curSet, editable, showinherit, false);
+    }
+    
+    /**
+     * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String).<p>
+     *
+     * @param id the UUID of the principal of the permission set
+     * @param curSet the current permission set 
+     * @param editable boolean to determine if the form is editable
+     * @param showinherit boolean to determine if the "inherit" checkbox should be displayed
+     * @param extendedView boolean to determine if the view is selectable with DHTML
+     * @return String with HTML code of the form
+     */
+    private StringBuffer buildPermissionEntryForm(CmsUUID id, CmsPermissionSet curSet, boolean editable, boolean showinherit, boolean extendedView) {
         String fileName = getSettings().getFileUri();
         int flags = 0;
         try {
@@ -328,11 +349,24 @@ public class CmsChacc extends CmsWorkplace {
             CmsResource res = getCms().readFileHeader(fileName);
             CmsUUID fileId = res.getFileId();
             CmsAccessControlEntry entry = new CmsAccessControlEntry(fileId, id, curSet, flags);
-            return buildPermissionEntryForm(entry, editable, showinherit);
+            return buildPermissionEntryForm(entry, editable, showinherit, extendedView, null);
         } catch (CmsException e) {
             return new StringBuffer("");
         }
     }
+    
+    /**
+     * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String).<p>
+     * 
+     * @param entry the current access control entry
+     * @param editable boolean to determine if the form is editable
+     * @param showinherit boolean to determine if the "inherit" checkbox should be displayed
+     * @return StringBuffer with HTML code of the form
+     */
+    private StringBuffer buildPermissionEntryForm(CmsAccessControlEntry entry, boolean editable, boolean showinherit) {
+        return buildPermissionEntryForm(entry, editable, showinherit, false, null);
+    }
+
     
     /**
      * Creates an HTML input form for the current access control entry.<p>
@@ -340,9 +374,11 @@ public class CmsChacc extends CmsWorkplace {
      * @param entry the current access control entry
      * @param editable boolean to determine if the form is editable
      * @param showinherit boolean to determine if the "inherit" checkbox should be displayed
-     * @return String with HTML code of the form
+     * @param extendedView boolean to determine if the view is selectable with DHTML
+     * @param inheritRes the resource name from which the ace is inherited
+     * @return StringBuffer with HTML code of the form
      */
-    private StringBuffer buildPermissionEntryForm(CmsAccessControlEntry entry, boolean editable, boolean showinherit) {
+    private StringBuffer buildPermissionEntryForm(CmsAccessControlEntry entry, boolean editable, boolean showinherit, boolean extendedView, String inheritRes) {
         StringBuffer retValue = new StringBuffer("");
         
         // get name and type of current entry
@@ -351,6 +387,12 @@ public class CmsChacc extends CmsWorkplace {
             name = getCms().lookupPrincipal(entry.getPrincipal()).getName();
         } catch (CmsException e) {}
         String type = getEntryType(entry.getFlags());
+        
+        // get the localized type label
+        String typeLocalized = getTypesLocalized()[getEntryTypeInt(entry.getFlags())];
+        
+        // determine the right image to display
+        String typeImg = getEntryType(entry.getFlags()).toLowerCase();
         
         // get all permissions of the current entry
         CmsPermissionSet permissions = entry.getPermissions();
@@ -361,38 +403,58 @@ public class CmsChacc extends CmsWorkplace {
             disabled = " disabled=\"disabled\"";
         }
         
-        // build the headings
-        retValue.append("<tr>\n");
-        retValue.append("\t<td colspan=\"2\"><b>"+type+": "+name+"</b></td>\n");
-        
-        // show "delete" button if entry is editable
-        if (editable) {
-            retValue.append("\t<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"delete"+type+name+entry.getResource()+"\">\n");
-            retValue.append("\t<input type=\"hidden\" name=\"name\" value=\""+name+"\">\n");    
-            retValue.append("\t<input type=\"hidden\" name=\"type\" value=\""+type+"\">\n");
-            retValue.append("\t<input type=\"hidden\" name=\"action\" value=\"delete\">\n");
-            retValue.append("\t<td align=\"right\"><input class=\"button\" width=\"100\" type=\"submit\" value=\"Delete\"></td>\n");
-            retValue.append("\t</form>\n");
+        // build the heading
+        retValue.append(dialogRow(HTML_START));
+        if (extendedView) {
+            retValue.append("<a href=\"javascript:toggleDetail('"+type+name+entry.getResource()+"');\">");
+            retValue.append("<img src=\""+getSkinUri()+"buttons/plus.gif\" class=\"noborder\" id=\"ic-"+type+name+entry.getResource()+"\"></a>");
         }
-        else {
-            retValue.append("\t<td>&nbsp;</td>\n");
-        }
-        retValue.append("</tr>\n<tr>\n");
-        retValue.append("\t<td>Permission</td>\n\t<td>Allowed</td>\n\t<td>Denied</td>\n</tr>\n");
+        retValue.append("<img src=\""+getSkinUri()+"buttons/");
+        retValue.append(typeImg);
+        retValue.append("_sm.gif\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");       
+        retValue.append(typeLocalized);
+        retValue.append("\" title=\"");      
+        retValue.append(typeLocalized);
+        retValue.append("\">&nbsp;<span class=\"textbold\">");
+        retValue.append(name);
+        retValue.append("</span>");
         
-        // build the form depending on editable flag
+        if (extendedView) {
+            retValue.append("&nbsp;("+entry.getPermissions().getPermissionString()+")");
+            retValue.append(dialogRow(HTML_END));
+            retValue.append("<div id =\""+type+name+entry.getResource()+"\" class=\"hide\">");
+        } else {
+            retValue.append(dialogRow(HTML_END));
+        }
+        
+        // show the resource from which the ace is inherited, if present
+        if (inheritRes != null && !"".equals(inheritRes)) {
+            retValue.append("<div class=\"dialogpermissioninherit\">"+key("dialog.permission.list.inherited")+"  ");
+            retValue.append(inheritRes);
+            retValue.append("</div>\n");
+        }
+        
+        retValue.append("<table class=\"dialogpermissiondetails\">\n");
+        
+        // build the form depending on the editable flag
         if (editable) {
-            retValue.append("\t<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"set"+type+name+entry.getResource()+"\">\n");
-            retValue.append("\t<input type=\"hidden\" name=\"name\" value=\""+name+"\">\n");    
-            retValue.append("\t<input type=\"hidden\" name=\"type\" value=\""+type+"\">\n");
-            retValue.append("\t<input type=\"hidden\" name=\"action\" value=\"set\">\n");
+            retValue.append("<form action=\""+getChaccUrl()+"\" method=\"post\" class=\"nomargin\" name=\"set"+type+name+entry.getResource()+"\">\n");
+            retValue.append("<input type=\"hidden\" name=\"name\" value=\""+name+"\">\n");    
+            retValue.append("<input type=\"hidden\" name=\"type\" value=\""+type+"\">\n");
+            retValue.append("<input type=\"hidden\" name=\"action\" value=\"set\">\n");
             if (showinherit) {
-                retValue.append("\t<input type=\"hidden\" name=\"inherit\" value=\"true\"\n");
+                retValue.append("<input type=\"hidden\" name=\"inherit\" value=\"true\"\n");
             }
+        } else {
+            retValue.append("<form class=\"nomargin\">\n");
         }
-        else {
-            retValue.append("\t<form>\n");
-        }
+        
+        retValue.append("<tr>\n");
+        retValue.append("\t<td class=\"dialogpermissioncell\"><span class=\"textbold\" unselectable=\"on\">"+key("dialog.permission.list.permission")+"</span></td>\n");
+        retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">"+key("dialog.permission.list.allowed")+"</span></td>\n");
+        retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">"+key("dialog.permission.list.denied")+"</span></td>\n");
+        retValue.append("</tr>");
+        
         Iterator i = m_permissionKeys.iterator();
         
         // show all possible permissions in the form
@@ -401,13 +463,13 @@ public class CmsChacc extends CmsWorkplace {
             int value = CmsPermissionSet.getPermissionValue(key);
             String keyMessage = getSettings().getMessages().key(key);
             retValue.append("<tr>\n");
-            retValue.append("\t<td><b>"+keyMessage+"</b></td>\n");
-            retValue.append("\t<td><input type=\"checkbox\" name=\""+value+"allow\" value=\""+value+"\""+disabled);
+            retValue.append("\t<td class=\"dialogpermissioncell\">"+keyMessage+"</td>\n");
+            retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\""+value+"allow\" value=\""+value+"\""+disabled);
             if (isAllowed(permissions, value)) {
                 retValue.append(" checked=\"checked\"");
             }
             retValue.append("></td>\n");
-            retValue.append("\t<td><input type=\"checkbox\" name=\""+value+"deny\" value=\""+value+"\""+disabled);
+            retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\""+value+"deny\" value=\""+value+"\""+disabled);
             if (isDenied(permissions, value)) {
                 retValue.append(" checked=\"checked\"");
             }
@@ -418,25 +480,40 @@ public class CmsChacc extends CmsWorkplace {
         // show inheritance checkbox only on folders
         if (showinherit) {
             retValue.append("<tr>\n");
-            retValue.append("\t<td>&nbsp;</td>\n");
-            retValue.append("\t<td><input type=\"checkbox\" name=\"overwriteinherited\" value=\"true\""+disabled);
+            retValue.append("\t<td class=\"dialogpermissioncell\">"+key("dialog.permission.list.overwrite")+"</td>\n");
+            retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\"overwriteinherited\" value=\"true\""+disabled);
             if (isOverWritingInherited(entry.getFlags())) {
                 retValue.append(" checked=\"checked\"");           
             }
-            retValue.append(">&nbsp;overwrite inherited</td>\n"); 
-            retValue.append("\t<td>&nbsp;</td>\n");
+            retValue.append("></td>\n"); 
+            retValue.append("\t<td class=\"dialogpermissioncell\">&nbsp;</td>\n");
             retValue.append("</tr>\n");    
         }                 
             
-        // show "set" button depending on editable value 
+        // show "set" and "delete" buttons depending on editable value 
         if (editable) {
             retValue.append("<tr>\n");
-            retValue.append("\t<td colspan=\"3\" align=\"center\"><input class=\"button\" width=\"100\" type=\"submit\" value=\"Set\"></td>\n");
+            retValue.append("\t<td>&nbsp;</td>\n");
+            retValue.append("\t<td class=\"textcenter\"><input class=\"dialogbutton\" type=\"submit\" value=\""+key("button.submit")+"\"></form></td>\n");           
+            retValue.append("\t<td class=\"textcenter\">\n");            
+            retValue.append("\t\t<form class=\"nomargin\" action=\""+getChaccUrl()+"\" method=\"post\" name=\"delete"+type+name+entry.getResource()+"\">\n");
+            retValue.append("\t\t<input type=\"hidden\" name=\"name\" value=\""+name+"\">\n");    
+            retValue.append("\t\t<input type=\"hidden\" name=\"type\" value=\""+type+"\">\n");
+            retValue.append("\t\t<input type=\"hidden\" name=\"action\" value=\"delete\">\n");
+            retValue.append("\t\t<input class=\"dialogbutton\" type=\"submit\" value=\""+key("button.delete")+"\">\n");
+            retValue.append("\t\t</form>\n");            
+            retValue.append("\t</td>\n");
             retValue.append("</tr>\n");         
+        } else {
+            // close the form
+            retValue.append("</form>\n");
         }
-     
-        // close the form
-        retValue.append("</form>\n");
+   
+        retValue.append("</table>\n");
+        if (extendedView) {
+            retValue.append("</div>");
+        }
+          
         return retValue;
     }
     
@@ -456,18 +533,11 @@ public class CmsChacc extends CmsWorkplace {
             i = entries.iterator();
             while (i.hasNext()) {
                 CmsAccessControlEntry curEntry = (CmsAccessControlEntry)i.next();
-                retValue.append(buildPermissionEntryForm(curEntry, false, false));
-                String connectedResource = getConnectedResource(curEntry);
-                if (connectedResource != null) {                    
-                    retValue.append("<tr><td colspan=\"3\">inherited from  ");
-                    retValue.append(connectedResource);
-                    retValue.append("</td></tr>\n");
-                }
+                // build the list with enabled extended view and resource name
+                retValue.append(buildPermissionEntryForm(curEntry, false, false, true, getConnectedResource(curEntry)));
             }
-        }
-        
-        // show the short view
-        else {
+        } else {
+            // show the short view
             try {
                 CmsAccessControlList acList = getCms().getAccessControlList(getSettings().getFileUri(), true);
                 Set principalSet = acList.getPrincipals();
@@ -476,7 +546,8 @@ public class CmsChacc extends CmsWorkplace {
                     CmsUUID principalId = (CmsUUID)i.next();                   
                     I_CmsPrincipal principal = getCms().lookupPrincipal(principalId);
                     CmsPermissionSet permissions = acList.getPermissions(principal);
-                    retValue.append(buildPermissionEntryForm(principalId, permissions, false, false));
+                    // build the list with enabled extended view only
+                    retValue.append(buildPermissionEntryForm(principalId, permissions, false, false, true));
                 }
             } catch (CmsException e) {}
         }
@@ -487,17 +558,33 @@ public class CmsChacc extends CmsWorkplace {
      * Builds a StringBuffer with HTML code for the own access control entries of a resource.<p>
      * 
      * @param entries all access control entries for the resource
-     * @param editable boolean to determine if the entries are editable for the current user
-     * @param showinherit boolean to determine if the inheritance flag should be set and the overwrite inherited checkbox should be shown
      * @return StringBuffer with HTML code for all entries
      */
     private StringBuffer buildOwnList(ArrayList entries) {
-        StringBuffer retValue = new StringBuffer("");
+        StringBuffer retValue = new StringBuffer(1024);
         Iterator i = entries.iterator();
-
+        boolean entriesPresent = false;
+        
+        // only add white box if there are entries!
+        if (i.hasNext()) {
+            entriesPresent = true;
+            // create headline for resource entries
+            retValue.append(dialogSubheadline(key("dialog.permission.headline.resource")));
+            retValue.append(dialogWhiteBox(HTML_START));
+        }
+        
+        // list all entries
         while (i.hasNext()) {
             CmsAccessControlEntry curEntry = (CmsAccessControlEntry)i.next();
-            retValue.append(buildPermissionEntryForm(curEntry, m_editable, m_showinherit)); 
+            retValue.append(buildPermissionEntryForm(curEntry, m_editable, m_showinherit));
+            if (i.hasNext()) {
+                retValue.append(dialogSeparator()); 
+            }
+        }
+        
+        // only close white box if there are entries!
+        if (entriesPresent) {
+            retValue.append(dialogWhiteBox(HTML_END));
         }
         return retValue;
     }
@@ -505,41 +592,37 @@ public class CmsChacc extends CmsWorkplace {
     /**
      * Builds a String with HTML code to display the inherited and own access control entries of a resource.<p>
      * 
-     * @param editable boolean to determine if the entries are editable for the current user
-     * @param showinherit boolean to determine if the inheritance flag should be set and the overwrite inherited checkbox should be shown
-     * @return String with HTML code for inherited and own entries of the current resource
+     * @return HTML code for inherited and own entries of the current resource
      */
     public String buildRightsList() {
         StringBuffer retValue = new StringBuffer("");
         
-        // create header and detail selector for inherited entries
-        retValue.append("<tr>\n");
-        retValue.append("\t<td colspan=\"3\"><h2>Inherited permissions</h2></td>\n");
-        retValue.append("</tr>\n");
-        retValue.append("<tr>\n");
-        retValue.append("\t<td><b>Select view:</b></td>\n");
+        // create headline for inherited entries
+        retValue.append(dialogSubheadline(key("dialog.permission.headline.inherited")));
         
-        String selectedView = getSettings().getDetailView();
-                
-        retValue.append("<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"selectshortview\">\n");
+        // create detail view selector 
+        retValue.append("<table border=\"0\">\n<tr>\n");
+        retValue.append("\t<td>"+key("dialog.permission.viewselect")+"</td>\n");
+        String selectedView = getSettings().getDetailView();   
+        retValue.append("\t<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"selectshortview\">\n");            
+        retValue.append("\t<td>\n");
         retValue.append("\t<input type=\"hidden\" name=\"view\" value=\"short\">\n");
-        retValue.append("\t<td><input type=\"submit\" class=\"button\" width=\"80\" type=\"button\" value=\"Short\"");
+        retValue.append("\t<input  type=\"submit\" class=\"dialogbutton\" value=\""+key("button.short")+"\"");
         if (!"long".equals(selectedView)) {
             retValue.append(" disabled=\"disabled\"");
         }
-        retValue.append("></td>\n");
-        retValue.append("</form>\n");
-
-        retValue.append("<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"selectlongview\">\n");
+        retValue.append(">\n");
+        retValue.append("\t</td>\n");
+        retValue.append("\t</form>\n\t<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"selectlongview\">\n");
+        retValue.append("\t<td>\n");
         retValue.append("\t<input type=\"hidden\" name=\"view\" value=\"long\">\n");
-        retValue.append("\t<td><input type=\"submit\" class=\"button\" width=\"80\" type=\"button\" value=\"Long\"");
+        retValue.append("\t<input type=\"submit\" class=\"dialogbutton\" value=\""+key("button.long")+"\"");
         if ("long".equals(selectedView)) {
             retValue.append(" disabled=\"disabled\"");
         }
-        retValue.append("></td>\n");
-        retValue.append("</form>\n");
-
-        retValue.append("</tr>\n");
+        retValue.append(">\n");
+        retValue.append("\t</td>\n\t</form>\n");
+        retValue.append("</tr>\n</table>\n");
 
         // get all access control entries of the current file
         Vector allEntries = new Vector();
@@ -559,29 +642,26 @@ public class CmsChacc extends CmsWorkplace {
                 if ("long".equals(getSettings().getDetailView())) {       
                     inheritedEntries.add((CmsAccessControlEntry)curEntry);
                 }
-            }
-    
-            else {
+            } else {
                 // add the entry to the own rights list
                 ownEntries.add((CmsAccessControlEntry)curEntry);
             }
         }
+        
+        // now create the inherited entries box
+        retValue.append(dialogWhiteBox(HTML_START));
+        retValue.append(buildInheritedList(inheritedEntries));       
+        retValue.append(dialogWhiteBox(HTML_END));
 
-
-        retValue.append(buildInheritedList(inheritedEntries));
-
-        retValue.append("<tr>\n");
-        retValue.append("\t<td colspan=\"3\"><h2>Resource permissions</h2></td>\n");
-        retValue.append("</tr>");
-
-        retValue.append(buildOwnList(ownEntries)); 
+        // create the resource entries box
+        retValue.append(buildOwnList(ownEntries));
+        
         return retValue.toString();
     }
     
     /**
      * Builds a String with HTML code to display the form to add a new access control entry for the current resource.<p>
      * 
-     * @param editable boolean to determine if the form is shown for the current user
      * @return HTML String with the form
      */
     public String buildAddForm() {
@@ -589,39 +669,59 @@ public class CmsChacc extends CmsWorkplace {
         
         // only display form if current user has the "control" right
         if (m_editable) { 
-            retValue.append("<tr>\n");
-            retValue.append("\t<td colspan=\"3\"><h2>Add a user/group access control entry</h2></td>\n");
-            retValue.append("</tr>\n");
+            retValue.append(dialogBlock(HTML_START, key("dialog.permission.headline.add")));
 
             // get all possible entry types
             ArrayList options = new ArrayList();
+            ArrayList optionValues = new ArrayList();
             for (int i=0; i<getTypes().length; i++) {
-                options.add(getTypes()[i]);
+                options.add(getTypesLocalized()[i]);
+                optionValues.add(Integer.toString(i));
             }            
 
             // create the input form
-            retValue.append("<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"add\">\n");
+            retValue.append("<form action=\""+getChaccUrl()+"\" method=\"post\" name=\"add\" class=\"nomargin\">\n");
             retValue.append("<input type=\"hidden\" name=\"action\" value=\"addACE\">\n");
+            
+            retValue.append("<table border=\"0\" width=\"100%\">\n");
+           
             retValue.append("<tr>\n");
-            retValue.append("\t<td>"+buildSelect("name=\"type\"", options, options, -1)+"</td>\n");
-            retValue.append("\t<td colspan=\"2\"><input type=\"text\" size=\"20\" name=\"name\" value=\"\">&nbsp;<input type=\"submit\" value=\"Add\"></td>\n");
+            retValue.append("\t<td>"+buildSelect("name=\"type\"", options, optionValues, -1)+"</td>\n");
+            retValue.append("\t<td class=\"maxwidth\"><input type=\"text\" class=\"maxwidth\" name=\"name\" value=\"\"></td>\n");
+            retValue.append("\t<td><input class=\"dialogbutton\" type=\"submit\" value=\""+key("input.add")+"\"></td>\n");
             retValue.append("</tr>\n");
-            retValue.append("</form>\n");        
+            retValue.append("</form>\n");
+            retValue.append("</table>\n"); 
+            
+            
+            retValue.append(dialogBlock(HTML_END));
+       
         }
         return retValue.toString();
     }
     
+    /**
+     * Returns the error messages if something went wrong.<p>
+     *  
+     * @return all error messages
+     */
     public String buildErrorMessages() {
         StringBuffer retValue = new StringBuffer("");
         String errorMessages = getErrorMessagesString();
         if (!"".equals(errorMessages)) {
-            retValue.append("<tr><td colspan=\"3\">");
+            retValue.append(dialogBlock(HTML_START, key("dialog.permission.error.headline"), true));
             retValue.append(errorMessages);
-            retValue.append("</td></tr>\n");
+            retValue.append(dialogBlock(HTML_END));
         }
         return retValue.toString();
     }
     
+    /**
+     * Performs a an action if the "action" parameter is found in the request.<p>
+     * 
+     * @param request the HTTP servlet request
+     * @return true if the action was performed correct, otherwise false
+     */
     public boolean performAction(HttpServletRequest request) {
         String action = (String)request.getParameter("action");
         if (action == null && "".equals(action)) {
@@ -747,6 +847,15 @@ public class CmsChacc extends CmsWorkplace {
     }
     
     /**
+     * Returns a String array with the possible localized entry types.<p>
+     * 
+     * @return the possible localized types
+     */
+    protected String[] getTypesLocalized() {
+        return m_typesLocalized;
+    }
+    
+    /**
      * Returns an int array with possible entry types.<p>
      * 
      * @return the possible types as int array
@@ -766,6 +875,19 @@ public class CmsChacc extends CmsWorkplace {
             if ((flags & getTypesInt()[i]) > 0) return getTypes()[i];
         }
         return "Unknown";
+    }
+    
+    /**
+     * Determines the int type of the current access control entry.<p>
+     * 
+     * @param flags the value of the current flags
+     * @return int representation of the ace type as int
+     */
+    protected int getEntryTypeInt(int flags) {
+        for (int i=0; i<getTypes().length; i++) {
+            if ((flags & getTypesInt()[i]) > 0) return i;
+        }
+        return -1;
     }
     
     /**
