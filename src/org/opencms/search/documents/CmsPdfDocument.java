@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsPdfDocument.java,v $
- * Date   : $Date: 2004/10/23 03:35:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/01/31 14:14:12 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,14 +30,13 @@
  */
 package org.opencms.search.documents;
 
-import org.opencms.main.CmsException;
-import org.opencms.search.CmsIndexException;
-import org.opencms.search.A_CmsIndexResource;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsException;
+import org.opencms.search.A_CmsIndexResource;
+import org.opencms.search.CmsIndexException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -45,7 +44,8 @@ import java.io.StringWriter;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.pdfbox.encryption.DecryptDocument;
+
+import org.pdfbox.encryption.DocumentEncryption;
 import org.pdfbox.exceptions.CryptographyException;
 import org.pdfbox.exceptions.InvalidPasswordException;
 import org.pdfbox.pdfparser.PDFParser;
@@ -56,7 +56,7 @@ import org.pdfbox.util.PDFTextStripper;
  * Lucene document factory class to extract index data from a cms resource 
  * containing Adobe pdf data.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2004/10/23 03:35:36 $
+ * @version $Revision: 1.8 $ $Date: 2005/01/31 14:14:12 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPdfDocument extends CmsVfsDocument {
@@ -90,15 +90,14 @@ public class CmsPdfDocument extends CmsVfsDocument {
                 
             PDFParser parser = new PDFParser(new ByteArrayInputStream(file.getContents()));
             parser.parse();
-
             pdfDocument = parser.getPDDocument();
-
-
+      
             if (pdfDocument.isEncrypted()) {
-                DecryptDocument decryptor = new DecryptDocument(pdfDocument);
+                DocumentEncryption decryptor = new DocumentEncryption(pdfDocument);
                 // try using the default password
                 decryptor.decryptDocument("");
             }
+      
 
             // write content of PDF to String writer
             StringWriter writer = new StringWriter();
@@ -106,15 +105,16 @@ public class CmsPdfDocument extends CmsVfsDocument {
             stripper.writeText(pdfDocument, writer);
 
             rawContent = writer.toString();
-            writer.close(); 
+            writer.close();
+      
                        
         } catch (CryptographyException exc) {
-            throw new CmsIndexException("Decrypting resource " + resource.getRootPath() + " failed.", exc);
+           throw new CmsIndexException("Decrypting resource " + resource.getRootPath() + " failed.", exc);
         } catch (InvalidPasswordException exc) {
             //they didn't suppply a password and the default of "" was wrong.
-            throw new CmsIndexException("Resource " + resource.getRootPath() + " is password protected.", exc);
-        } catch (IOException exc) {
-            throw new CmsIndexException("Reading resource " + resource.getRootPath() + " failed.", exc);
+           throw new CmsIndexException("Resource " + resource.getRootPath() + " is password protected.", exc);
+        } catch (IOException exc)  {          
+            throw new CmsIndexException("Reading resource " + resource.getRootPath() + " failed: "+exc.getMessage(), exc);
         } finally {
             try {
                 pdfDocument.close();

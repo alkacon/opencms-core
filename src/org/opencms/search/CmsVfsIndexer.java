@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/01/31 14:14:12 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implementation for an indexer indexing VFS Cms resources.<p>
  * 
- * @version $Revision: 1.14 $ $Date: 2004/08/23 15:37:02 $
+ * @version $Revision: 1.15 $ $Date: 2005/01/31 14:14:12 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -95,6 +95,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         List resources = null;
         CmsResource res = null;
 
+        
         try {
             if (CmsResource.isFolder(path)) {
                 resources = cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
@@ -105,26 +106,30 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             for (int i = 0; i < resources.size(); i++) {
 
                 res = (CmsResource)resources.get(i);
-                if (res instanceof CmsFolder) {
-                    updateIndex(cms, cms.getRequestContext().removeSiteRoot(res.getRootPath()));
-                    continue;
-                }
-
-                if (m_report != null && !folderReported) {
-                    m_report.print(m_report.key("search.indexing_folder"), I_CmsReport.C_FORMAT_NOTE);
-                    m_report.println(path, I_CmsReport.C_FORMAT_DEFAULT);
-                    folderReported = true;
-                }
-
-                if (m_report != null) {
-                    m_report.print("( " + (m_threadManager.getCounter() + 1) + " ) ", I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(m_report.key("search.indexing_file_begin"), I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(res.getName(), I_CmsReport.C_FORMAT_DEFAULT);
-                    m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
-                }
-
-                A_CmsIndexResource ires = new CmsVfsIndexResource(res);
-                m_threadManager.createIndexingThread(m_writer, ires, m_index);
+                
+                // we only have to index those resources that are not marked as internal
+                if (!res.isInternal()) {                
+                    if (res instanceof CmsFolder) {
+                        updateIndex(cms, cms.getRequestContext().removeSiteRoot(res.getRootPath()));
+                        continue;
+                    }
+    
+                    if (m_report != null && !folderReported) {
+                        m_report.print(m_report.key("search.indexing_folder"), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(path, I_CmsReport.C_FORMAT_DEFAULT);
+                        folderReported = true;
+                    }
+    
+                    if (m_report != null) {
+                        m_report.print("( " + (m_threadManager.getCounter() + 1) + " ) ", I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(m_report.key("search.indexing_file_begin"), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(res.getName(), I_CmsReport.C_FORMAT_DEFAULT);
+                        m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
+                    }
+    
+                    A_CmsIndexResource ires = new CmsVfsIndexResource(res);
+                    m_threadManager.createIndexingThread(m_writer, ires, m_index);
+                } 
             }
 
         } catch (CmsIndexException exc) {

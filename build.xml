@@ -52,7 +52,7 @@
     <property name="opencms.inputlib.lucene"			location="${opencms.input.libs}/lucene-1.4.3.jar" />
     <property name="opencms.inputlib.poi"				location="${opencms.input.libs}/poi-2.5.1-final-20040804.jar" />
     <property name="opencms.inputlib.snowball"			location="${opencms.input.libs}/snowball-1.0.jar" />
-    <property name="opencms.inputlib.pdfbox"			location="${opencms.input.libs}/PDFBox-0.6.6.jar" />
+    <property name="opencms.inputlib.pdfbox"			location="${opencms.input.libs}/PDFBox-0.7.0.jar" />
     <property name="opencms.inputlib.junit"      		location="${opencms.input.libs}/junit-3-8-1.jar" /> 
     <property name="opencms.inputlib.oracle"      		location="${opencms.input.externlibs}/ojdbc14.jar" /> 
  

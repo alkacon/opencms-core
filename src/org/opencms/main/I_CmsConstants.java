@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/01/31 14:14:12 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public interface I_CmsConstants {
 
@@ -1166,7 +1166,7 @@ public interface I_CmsConstants {
     String C_VFS_LOST_AND_FOUND = "/system/lost-found";
 
     /** The resource is marked as internal. */
-    int C_RESOURCEFLAG_INTERNAL = 1;
+    int C_RESOURCEFLAG_INTERNAL = 512;
 
     /** The resource is linked inside a site folder specified in the OpenCms configuration. */
     int C_RESOURCEFLAG_LABELLINK = 2;
