@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_choosebrowser.js,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/12/14 15:42:27 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -152,11 +152,13 @@ function saveLayerData2(from,to,srcLayer,destLayer) {
         data3 = document.forms[from].TEMPLATE.selectedIndex;
         data4 = document.forms[from].NEUKEYWORDS.value;
         data5 = document.forms[from].NEUDESCRIPTION.value;
+        data6 = document.forms[from].DEFAULT_BODY.selectedIndex;
         document.forms[to].NEUNAME.value = data1;
         document.forms[to].NEUTITEL.value = data2;
         document.forms[to].TEMPLATE.selectedIndex = data3;
         document.forms[to].NEUKEYWORDS.value = data4;
         document.forms[to].NEUDESCRIPTION.value = data5;
+        document.forms[to].DEFAULT_BODY.selectedIndex = data6;
     }
     else if (ns) {
         data1 = document[srcLayer].document.forms[from].NEUNAME.value;
@@ -164,11 +166,13 @@ function saveLayerData2(from,to,srcLayer,destLayer) {
         data3 = document[srcLayer].document.forms[from].TEMPLATE.selectedIndex;
         data4 = document[srcLayer].document.forms[from].NEUKEYWORDS.value;
         data5 = document[srcLayer].document.forms[from].NEUDESCRIPTION.value;
+        data6 = document[srcLayer].document.forms[from].DEFAULT_BODY.selectedIndex;
         document[destLayer].document.forms[to].NEUNAME.value = data1;
         document[destLayer].document.forms[to].NEUTITEL.value = data2;
         document[destLayer].document.forms[to].TEMPLATE.selectedIndex = data3;
         document[destLayer].document.forms[to].NEUKEYWORDS.value = data4;
         document[destLayer].document.forms[to].NEUDESCRIPTION.value = data5;    
+        document[destLayer].document.forms[to].DEFAULT_BODY.selectedIndex = data6;    
     }
 }
 
