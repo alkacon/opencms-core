@@ -1,3 +1,5 @@
+package source.org.apache.java.util;
+
 /*
  * Copyright (c) 1997-1999 The Java Apache Project.  All rights reserved.
  *
@@ -53,8 +55,6 @@
  *
  */
 
-package source.org.apache.java.util;
-
 import java.io.*;
 import java.util.*;
 
@@ -69,48 +69,45 @@ import java.util.*;
  * a sequence of strings.
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
- * @version $Revision: 1.1 $ $Date: 2000/01/05 17:27:18 $
+ * @version $Revision: 1.2 $ $Date: 2000/08/08 14:01:44 $
  */
 public abstract class ConfigurationsRepository extends Hashtable {
 
-    /**
-     * The file connected to this repository (holding comments and such)
-     * @serial 
-     */
-    protected String file;
-    
-    /**
-     * The file that contains the model of this repository
-     * @serial
-     */
-    protected String model;
+	/**
+	 * The file connected to this repository (holding comments and such)
+	 * @serial 
+	 */
+	protected String file;
+	
+	/**
+	 * The file that contains the model of this repository
+	 * @serial
+	 */
+	protected String model;
 
-    /**
-     * Creates an empty configuration repository.
-     */
-    public ConfigurationsRepository() {
-        super();
-    }
-
-    /**
-     * Creates a configuration repository parsing given file.
-     */
-    public ConfigurationsRepository(String file) throws IOException {
-        this(file, null);
-    }
-
-    /**
-     * Creates a configuration repository parsing given file and
-     * using given model.
-     */
-    public ConfigurationsRepository(String file, String model)
-            throws IOException {
-        super();
-        this.file = file;
-        this.model = model;
-        this.load(new FileInputStream(file));
-    }
-
-    public abstract void load(InputStream input) throws IOException;
-    public abstract void save(OutputStream output, String Header) throws IOException;
+	/**
+	 * Creates an empty configuration repository.
+	 */
+	public ConfigurationsRepository() {
+		super();
+	}
+	/**
+	 * Creates a configuration repository parsing given file.
+	 */
+	public ConfigurationsRepository(String file) throws IOException {
+		this(file, null);
+	}
+	/**
+	 * Creates a configuration repository parsing given file and
+	 * using given model.
+	 */
+	public ConfigurationsRepository(String file, String model)
+			throws IOException {
+		super();
+		this.file = file;
+		this.model = model;
+		this.load(new FileInputStream(file));
+	}
+	public abstract void load(InputStream input) throws IOException;
+	public abstract void save(OutputStream output, String Header) throws IOException;
 }

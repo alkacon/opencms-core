@@ -1,3 +1,5 @@
+package source.org.apache.java.io;
+
 /*
  * Copyright (c) 1997-1999 The Java Apache Project.  All rights reserved.
  *
@@ -53,8 +55,6 @@
  *
  */
 
-package source.org.apache.java.io;
-
 /**
  * Class to store the logging information until it gets processed by the
  * logger thread.
@@ -64,57 +64,57 @@ package source.org.apache.java.io;
  * <li>Name of the thread which issued the log message.
  * <li>Name of the object on whose behalf the message was issued.
  * </ul>
- * @version $Revision: 1.1 $ $Date: 2000/01/05 17:27:18 $
+ * @version $Revision: 1.2 $ $Date: 2000/08/08 14:01:43 $
  * @author <a href="mailto:vt@freehold.crocodile.org">Vadim Tkachenko</a>
  */
 
 public class LogRecord {
 
-    /**
-     * Creation time.
-     */
-    public long date;
+	/**
+	 * Creation time.
+	 */
+	public long date;
 
-    /**
-     * Log channel.
-     * To be used in the log filters.
-     */
-    public String channel;
+	/**
+	 * Log channel.
+	 * To be used in the log filters.
+	 */
+	public String channel;
 
-    /**
-     * Message to log, if any.
-     */
-     public String message;
+	/**
+	 * Message to log, if any.
+	 */
+	 public String message;
 
-    /**
-     * Exception to log, if any.
-     */
-    public Throwable t;
+	/**
+	 * Exception to log, if any.
+	 */
+	public Throwable t;
 
-    /**
-     * Constructor.
-     * Performs inexpensive operations:
-     * <ul>
-     * <li>Records the system time;
-     * <li>Stores the message channel;
-     * <li>Stores the message itself, if any;
-     * <li>Stores the exception, if any.
-     * </ul>
-     * @param t Owner thread
-     * @param target Owner object
-     * @param ll Log Level
-     * @param message Message to log
-     * @see org.apache.java.io.LogWriter
-     */
-    public LogRecord(String channel, String message, Throwable t) {
+	/**
+	 * Constructor.
+	 * Performs inexpensive operations:
+	 * <ul>
+	 * <li>Records the system time;
+	 * <li>Stores the message channel;
+	 * <li>Stores the message itself, if any;
+	 * <li>Stores the exception, if any.
+	 * </ul>
+	 * @param t Owner thread
+	 * @param target Owner object
+	 * @param ll Log Level
+	 * @param message Message to log
+	 * @see org.apache.java.io.LogWriter
+	 */
+	public LogRecord(String channel, String message, Throwable t) {
 
-        //  Note, no new Date() here - it's EXPENSIVE!
-        //  You can do whatever you want with it later, in the logging
-        //  thread.
+		//  Note, no new Date() here - it's EXPENSIVE!
+		//  You can do whatever you want with it later, in the logging
+		//  thread.
 
-        date = System.currentTimeMillis();
-        this.channel = channel;
-        this.message = message;
-        this.t = t;
-    }
+		date = System.currentTimeMillis();
+		this.channel = channel;
+		this.message = message;
+		this.t = t;
+	}
 }

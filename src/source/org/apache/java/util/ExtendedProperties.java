@@ -1,3 +1,5 @@
+package source.org.apache.java.util;
+
 /*
  * Copyright (c) 1997-1999 The Java Apache Project.  All rights reserved.
  *
@@ -53,8 +55,6 @@
  *
  */
 
-package source.org.apache.java.util;
-
 import java.io.*;
 import java.util.*;
 
@@ -107,135 +107,132 @@ import java.util.*;
  *
  * @see org.apache.java.util.Configurations
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
- * @version $Revision: 1.1 $ $Date: 2000/01/05 17:27:18 $
+ * @version $Revision: 1.2 $ $Date: 2000/08/08 14:01:44 $
  */
 public class ExtendedProperties extends ConfigurationsRepository {
 
-    /**
-     * This class is used to read properties lines. These lines do not
-     * terminate with new-line chars but rather when there is no backslash
-     * sign a the end of the line.
-     * This is used to concatenate multiple lines for readability.
-     */
-    class PropertiesReader extends LineNumberReader {
+	/**
+	 * This class is used to read properties lines. These lines do not
+	 * terminate with new-line chars but rather when there is no backslash
+	 * sign a the end of the line.
+	 * This is used to concatenate multiple lines for readability.
+	 */
+	class PropertiesReader extends LineNumberReader {
 
-        public PropertiesReader(Reader reader) {
-            super(reader);
-        }
+		public PropertiesReader(Reader reader) {
+			super(reader);
+		}
 
-        public String readProperty() throws IOException {
-            StringBuffer buffer = new StringBuffer();
+		public String readProperty() throws IOException {
+			StringBuffer buffer = new StringBuffer();
 
-            try {
-                while (true) {
-                    String line = readLine().trim();
-                    if ((line.length() != 0) && (line.charAt(0) != '#')) {
-                        if (line.endsWith("\\")) {
-                            line = line.substring(0, line.length() - 1);
-                            buffer.append(line);
-                        } else {
-                            buffer.append(line);
-                            break;
-                        }
-                    }
-                }
-            } catch (NullPointerException e) {
-                return null;
-            }
+			try {
+				while (true) {
+					String line = readLine().trim();
+					if ((line.length() != 0) && (line.charAt(0) != '#')) {
+						if (line.endsWith("\\")) {
+							line = line.substring(0, line.length() - 1);
+							buffer.append(line);
+						} else {
+							buffer.append(line);
+							break;
+						}
+					}
+				}
+			} catch (NullPointerException e) {
+				return null;
+			}
 
-            return buffer.toString();
-        }
-    }
+			return buffer.toString();
+		}
+	}
 
-    /**
-     * This class divides into tokens a property value.
-     * Token separator is "," but commas into the property value
-     * are escaped using the backslash in front.
-     */
-    class PropertiesTokenizer extends StringTokenizer {
+	/**
+	 * This class divides into tokens a property value.
+	 * Token separator is "," but commas into the property value
+	 * are escaped using the backslash in front.
+	 */
+	class PropertiesTokenizer extends StringTokenizer {
 
-        public PropertiesTokenizer(String string) {
-            super(string, ",");
-        }
+		public PropertiesTokenizer(String string) {
+			super(string, ",");
+		}
 
-        public boolean hasMoreTokens() {
-            return super.hasMoreTokens();
-        }
+		public boolean hasMoreTokens() {
+			return super.hasMoreTokens();
+		}
 
-        public String nextToken() {
-            StringBuffer buffer = new StringBuffer();
+		public String nextToken() {
+			StringBuffer buffer = new StringBuffer();
 
-            while (hasMoreTokens()) {
-                String token = super.nextToken();
-                if (token.endsWith("\\")) {
-                    buffer.append(token.substring(0, token.length() - 1));
-                    buffer.append(",");
-                } else {
-                    buffer.append(token);
-                    break;
-                }
-            }
+			while (hasMoreTokens()) {
+				String token = super.nextToken();
+				if (token.endsWith("\\")) {
+					buffer.append(token.substring(0, token.length() - 1));
+					buffer.append(",");
+				} else {
+					buffer.append(token);
+					break;
+				}
+			}
 
-            return buffer.toString().trim();
-        }
-    }
+			return buffer.toString().trim();
+		}
+	}
 
-    /**
-     * Creates an empty extended properties object.
-     */
-    public ExtendedProperties () {}
+	/**
+	 * Creates an empty extended properties object.
+	 */
+	public ExtendedProperties () {}
+	/**
+	 * Creates and loads the extended properties from the specified file.
+	 */
+	public ExtendedProperties (String file) throws IOException {
+		this.load(new FileInputStream(file));
+	}
+	/**
+	 * Load the properties from the given input stream.
+	 */
+	public synchronized void load(InputStream input) throws IOException {
+		PropertiesReader reader = new PropertiesReader(new InputStreamReader(input));
 
-    /**
-     * Creates and loads the extended properties from the specified file.
-     */
-    public ExtendedProperties (String file) throws IOException {
-        this.load(new FileInputStream(file));
-    }
+		try {
+			while (true) {
+				String line = reader.readProperty();
+				int equalSign = line.indexOf('=');
 
-    /**
-     * Load the properties from the given input stream.
-     */
-    public synchronized void load(InputStream input) throws IOException {
-        PropertiesReader reader = new PropertiesReader(new InputStreamReader(input));
-
-        try {
-            while (true) {
-                String line = reader.readProperty();
-                int equalSign = line.indexOf('=');
-
-                if (equalSign > 0) {
-                    String key = line.substring(0, equalSign).trim();
-                    String value = line.substring(equalSign + 1).trim();
+				if (equalSign > 0) {
+					String key = line.substring(0, equalSign).trim();
+					String value = line.substring(equalSign + 1).trim();
 					if ("".equals(value)) /* configure produces lines */
 						continue;         /* like this ... just ignore it. */
-                    PropertiesTokenizer tokenizer = new PropertiesTokenizer(value);
-                    while (tokenizer.hasMoreTokens()) {
-                        String token = tokenizer.nextToken();
-                        Object o = this.get(key);
-                        if (o instanceof String) {
-                            Vector v = new Vector(2);
-                            v.addElement(o);
-                            v.addElement(token);
-                            this.put(key, v);
-                        } else if (o instanceof Vector) {
-                            ((Vector) o).addElement(token);
-                        } else {
-                            this.put(key, token);
-                        }
-                    }
-                }
-            }
-        } catch (NullPointerException e) {
-            // Should happen only when EOF is reached.
-            return;
-        }
-    }
-
-    /**
-     * Save the properties to the given outputstream.
-     */
-    public synchronized void save(OutputStream output, String Header)
-            throws IOException {
-        throw new NoSuchMethodError("This method is not yet implemented");
-    }
+					PropertiesTokenizer tokenizer = new PropertiesTokenizer(value);
+					while (tokenizer.hasMoreTokens()) {
+						String token = tokenizer.nextToken();
+						Object o = this.get(key);
+						if (o instanceof String) {
+							Vector v = new Vector(2);
+							v.addElement(o);
+							v.addElement(token);
+							this.put(key, v);
+						} else if (o instanceof Vector) {
+							((Vector) o).addElement(token);
+						} else {
+							this.put(key, token);
+						}
+					}
+				}
+			}
+		} catch (NullPointerException e) {
+			// Should happen only when EOF is reached.
+			return;
+		}
+	}
+	/**
+	 * Save the properties to the given outputstream.
+	 */
+	public synchronized void save(OutputStream output, String Header)
+			throws IOException {
+		throw new NoSuchMethodError("This method is not yet implemented");
+	}
 }

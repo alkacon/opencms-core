@@ -1,3 +1,5 @@
+package source.org.apache.java.io;
+
 /*
  * Copyright (c) 1997-1999 The Java Apache Project.  All rights reserved.
  *
@@ -53,53 +55,47 @@
  *
  */
 
-package source.org.apache.java.io;
-
 /**
  * This interface represents a simple logger
  * (LogWriter is an implementation).
  *
- * @version $Revision: 1.1 $ $Date: 2000/01/05 17:27:18 $
+ * @version $Revision: 1.2 $ $Date: 2000/08/08 14:01:44 $
  * @see org.apache.java.io.LogWriter
  */
 public interface Logger {
-    /**
-     * Tells if it is active.
-     */
-    public boolean isActive();
-
-    /**
-     * Tells if the given channel is active.
-     *
-     * @param  channel  the channel to test.
-     */
-    public boolean isActive(String channel);
-
-    /**
-     * Prints the log message on the right channel.
-     * <p>
-     * A "channel" is a virtual log that may be enabled or disabled by
-     * setting the property "identifier".channel.???=true where ??? is the
-     * channel identifier that must be passed with the message.
-     * If a channel is not recognized or its property is set to false
-     * the message is not written.
-     *
-     * @param   channel       the channel to put the message on.
-     * @param   name          the message to log.
-     */
-    public void log(String channel, String message);
-
-    /**
-     * Prints the error message and stack trace if channel enabled.
-     *
-     * @param t the error thrown.
-     */
-    public void log(String channel, Throwable t);
-
-    /**
-     * Flush the log.
-     *
-     * Write any pending messages into the log media.
-     */
-    public void flush();
+	/**
+	 * Flush the log.
+	 *
+	 * Write any pending messages into the log media.
+	 */
+	public void flush();
+	/**
+	 * Tells if it is active.
+	 */
+	public boolean isActive();
+	/**
+	 * Tells if the given channel is active.
+	 *
+	 * @param  channel  the channel to test.
+	 */
+	public boolean isActive(String channel);
+	/**
+	 * Prints the log message on the right channel.
+	 * <p>
+	 * A "channel" is a virtual log that may be enabled or disabled by
+	 * setting the property "identifier".channel.???=true where ??? is the
+	 * channel identifier that must be passed with the message.
+	 * If a channel is not recognized or its property is set to false
+	 * the message is not written.
+	 *
+	 * @param   channel       the channel to put the message on.
+	 * @param   name          the message to log.
+	 */
+	public void log(String channel, String message);
+	/**
+	 * Prints the error message and stack trace if channel enabled.
+	 *
+	 * @param t the error thrown.
+	 */
+	public void log(String channel, Throwable t);
 }
