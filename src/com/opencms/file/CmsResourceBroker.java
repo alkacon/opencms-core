@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.51 $ $Date: 2000/02/11 09:38:29 $
+ * @version $Revision: 1.52 $ $Date: 2000/02/11 14:27:18 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -561,6 +561,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
 		}
 		
+		// was the resource deleted?
+		if(res.getState() == C_STATE_DELETED) {
+			// yes: return null
+			return(null);
+		}
+		
 		// check the security
 		if( ! accessRead(currentUser, currentProject, res) ) {
 			throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
@@ -667,6 +673,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				res = m_fileRb.readFileHeader(onlineProject(currentUser, currentProject),
 											  resource);
 			}
+		}
+		
+		// was the resource deleted?
+		if(res.getState() == C_STATE_DELETED) {
+			// yes: return null
+			return(new Hashtable());
 		}
 		
 		// check the security
@@ -2701,6 +2713,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			m_fileRb.renameFile(currentProject, 
 								onlineProject(currentUser, currentProject), 
 								oldname, file.getPath() + newname );
+			// copy the metainfos
+			m_metadefRb.writeMetainformations(m_metadefRb.readAllMetainformations(file),
+											  currentProject.getId(), 
+											  file.getPath() + newname, 
+											  file.getType());			
 			// inform about the file-system-change
 			fileSystemChanged(currentProject.getName(), oldname);
 		} else {
