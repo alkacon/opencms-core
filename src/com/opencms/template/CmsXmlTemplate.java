@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/05/30 12:05:33 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/05/31 09:21:43 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.37 $ $Date: 2000/05/30 12:05:33 $
+ * @version $Revision: 1.38 $ $Date: 2000/05/31 09:21:43 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -587,6 +587,19 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
     public Object getFrameQueryString(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
         String query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
+		String frame="", param="";
+		if (!tagcontent.equals("")) {
+			if (!tagcontent.startsWith("&")) {
+				if (tagcontent.indexOf(",")!=-1) {
+					frame=tagcontent.substring(0,tagcontent.indexOf(","));
+					param=tagcontent.substring(tagcontent.indexOf(",")+1);
+				} else {
+					frame=tagcontent;
+				}
+			} else {
+				param=tagcontent;
+			}		
+		}
 		
         StringBuffer encQuery = new StringBuffer();
         boolean notfirst = false;
@@ -631,6 +644,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         }
         
 		query=(query==null?"":query);
+		
 		                
         if(!query.equals("")) {
 			if (query.indexOf("cmsframe=")!=-1) {
@@ -643,11 +657,11 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 					cmsframe=query.substring(start+9);
 				}
 				if (!cmsframe.equals("plain")) {
-					if (!tagcontent.equals("")){
+					if (!frame.equals("")){
 						if (end!=-1) {
-							query=query.substring(0,start+9)+tagcontent+query.substring(end);
+							query=query.substring(0,start+9)+frame+query.substring(end);
 						} else {
-							query=query.substring(0,start+9)+tagcontent;
+							query=query.substring(0,start+9)+frame;
 						}
 					} else {
 						if (end!=-1) {
@@ -659,17 +673,24 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 				}
 			} else {				
 				if (!tagcontent.equals("")){
-					query=query+"&cmsframe="+tagcontent;
+					query=query+"&cmsframe="+frame;
 				}
 			}
 			if (!query.equals("")) {
 				query = "?" + query;
 			}
 		} else {
-			if (!tagcontent.equals("")){
-				query = "?cmsframe="+tagcontent;
+			if (!frame.equals("")){
+				query = "?cmsframe="+frame;
 			}
 		}
+		
+		if(!query.equals("")) {
+			query=query+param;
+		} else {
+			query="?"+param.substring(param.indexOf("&")+1);
+		}
+		
         return query;
     }  
 
