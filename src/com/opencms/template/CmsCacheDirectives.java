@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/06/15 12:34:04 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/06/19 10:23:51 $
+* Version: $Revision: 1.14 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Alexander Lucas
  * @author Hanjo Riege
- * @version $Revision: 1.13 $ $Date: 2001/06/15 12:34:04 $
+ * @version $Revision: 1.14 $ $Date: 2001/06/19 10:23:51 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
@@ -291,6 +291,10 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     public void setTimeout(CmsTimeout timeout) {
         m_timecheck = true;
         m_timeout = timeout;
+        if ( !m_timeout.isProxyCacheable()){
+            setProxyPrivateCacheable(false);
+            setProxyPublicCacheable(false);
+        }
     }
 
     /**

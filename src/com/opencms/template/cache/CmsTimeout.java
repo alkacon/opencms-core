@@ -58,6 +58,21 @@ public class CmsTimeout {
     }
 
     /**
+     * The proxy cache is set for 300 seconds. If this Timeout shows problems with
+     * this interval the method returns false. In modus 0 <=> timeintervals < 300.
+     * @return false if the element is not proxycacheable.
+     */
+    public boolean isProxyCacheable(){
+
+        // MODUS 0
+        if(m_timeinterval < 5*60*1000){
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Returns the last time when the element had to be new generated.
      *
      * @return last change time.
