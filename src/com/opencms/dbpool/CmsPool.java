@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
- * Date   : $Date: 2001/02/20 15:09:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2001/05/03 17:42:28 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -54,6 +54,7 @@ public class CmsPool extends Thread {
 	private long m_timeout;
 	private long m_maxage;
 	private String m_poolname;
+    private Driver m_originalDriver;
 
 	/**
 	 * The current amount of connections in this pool.
@@ -101,6 +102,7 @@ public class CmsPool extends Thread {
 		} catch(ClassNotFoundException exc) {
 			throw new SQLException("Driver not found: " + exc.getMessage());
 		}
+        m_originalDriver = DriverManager.getDriver(m_url);
 
 		// create the initial amount of connections
 		createConnections(m_minConn);
@@ -275,7 +277,13 @@ public class CmsPool extends Thread {
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": creating new connection. Current Amount is:" + m_connectionAmount);
 		}
-		return new CmsConnection(DriverManager.getConnection(m_url, m_user, m_password), this);
+        Connection con = null;
+        Properties props = new Properties();
+        props.setProperty("user", m_user);
+        props.setProperty("password", m_password);
+        con = m_originalDriver.connect(m_url, props);
+        CmsConnection retValue = new CmsConnection(con, this);
+        return retValue;
 	}
 
 	/**
