@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2001/01/11 17:56:38 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2001/01/12 07:16:33 $
+ * Version: $Revision: 1.70 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.69 $ $Date: 2001/01/11 17:56:38 $  
+* @version $Revision: 1.70 $ $Date: 2001/01/12 07:16:33 $  
 * 
 * */
 
@@ -474,7 +474,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		long delta = System.currentTimeMillis() - reqStartTime;
 		long total=Runtime.getRuntime().totalMemory()/1024;
 		long free=Runtime.getRuntime().freeMemory()/1024;
-		System.err.print("doGet()  reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
+		System.err.print(new Date() + " doGet()  reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
 		System.err.print( (" ["+total+"/"+free+"/"+(total-free)+"] "));
 		System.err.print("threads:" + Thread.activeCount() + " ");
 		System.err.println(cmsReq.getRequestedResource());
@@ -528,7 +528,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		long delta = System.currentTimeMillis() - reqStartTime;
 		long total=Runtime.getRuntime().totalMemory()/1024;
 		long free=Runtime.getRuntime().freeMemory()/1024;
-		System.err.print("doPost() reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
+		System.err.print(new Date() + " doPost() reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
 		System.err.print( (" ["+total+"/"+free+"/"+(total-free)+"] "));
 		System.err.print("threads:" + Thread.activeCount() + " ");
 		System.err.println(cmsReq.getRequestedResource());
