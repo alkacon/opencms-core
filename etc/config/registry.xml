@@ -67,6 +67,10 @@
             <name>select.tasks</name>
             <url>/system/workplace/action/tasks.html</url>
         </view>
+		<exportpoint>
+			<source>/pics/system/</source>
+			<destination>pics/system/</destination>
+		</exportpoint>
         <smtpserver>my.smtp.server</smtpserver>
         <smtpserver2>alternative.smtp.server</smtpserver2>
         <defaultmailsender>nobody@nowhere.com</defaultmailsender>
