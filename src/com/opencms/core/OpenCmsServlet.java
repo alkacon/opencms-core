@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/03/23 17:03:49 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/03/24 15:27:46 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.27 $ $Date: 2000/03/23 17:03:49 $  
+* @version $Revision: 1.28 $ $Date: 2000/03/24 15:27:46 $  
 * 
 */
 
@@ -538,7 +538,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
          output.append("<tr><td colspan=2 class=\"leerzeile\">&nbsp;</td></tr>\n");
          output.append("<tr><td class=dialogtxt colspan=2>\n");
          output.append("<table cellspacing=0 cellpadding=5 width=100%>\n");         
-         output.append("<tr><td colspan=2 align=middle><input type=\"submit\" class=\"button\" width=100 value=\"Ok\" name=\"ok\" id=\"ok\" onClick=\"javascript:history.back()\"></td></tr>");
+         output.append("<tr><td colspan=2 align=middle><form><input type=\"submit\" class=\"button\" width=100 value=\"Ok\" name=\"ok\" id=\"ok\" onClick=\"javascript:history.back()\"></form></td></tr>");
          output.append("</table>\n");
          output.append("</td></tr>\n");   
          output.append("</table>\n");
