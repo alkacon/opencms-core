@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/02/24 17:24:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/03/22 16:34:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,13 +30,12 @@
  */
 package org.opencms.workplace.editor;
 
-import org.opencms.page.CmsXmlPage;
-
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
 
 import java.io.IOException;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 
 /**
@@ -47,7 +46,7 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.0
  */
@@ -128,11 +127,12 @@ public interface I_CmsEditorActionHandler {
      * 
      * @param cmsObject the cms object
      * @param filename name of the resource
-     * @param page the <code>CmsXmlPage</code> instance of the file or <code>null</code>
      * @param element of the desired element or <code>null</code>
+     * @param req the current request
+     * 
      * @return the current edit mode ( null | inactive | disabled | enabled )
      */
-    String getEditMode(CmsObject cmsObject, String filename, CmsXmlPage page, String element);
+    String getEditMode(CmsObject cmsObject, String filename, String element, ServletRequest req);
     
     /**
      * Returns true if the customized button should be active, otherwise false.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/03/22 16:34:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,12 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeXmlPage;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.util.CmsStringSubstitution;
@@ -46,29 +51,25 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
-    // Attribute member variables
-    
     /** Name of element */
-    private String m_element = null;
+    private String m_element;
     
     /** List of elements for element check */
-    private String m_elementlist = null;
+    private String m_elementlist;
     
     /** Condition for element check */
-    private boolean m_checkall = false;
+    private boolean m_checkall;
     
     /** Condition for negative element check */
-    private boolean m_checknone = false;
-
-    /** Template part identifier */
-    public static final String C_TEMPLATE_ELEMENT = "__element";
+    private boolean m_checknone;
     
     /**
-     * Sets the include page/file target.
+     * Sets the element target.<p>
+     * 
      * @param element the target to set
      */
     public void setElement(String element) {
@@ -78,8 +79,9 @@ public class CmsJspTagTemplate extends BodyTagSupport {
     }
     
     /**
-     * Returns the include page/file target.
-     * @return String
+     * Returns the selected element.<p>
+     * 
+     * @return the selected element
      */
     public String getElement() {
         return m_element!=null?m_element:"";
@@ -205,43 +207,60 @@ public class CmsJspTagTemplate extends BodyTagSupport {
      */    
     public static boolean templateTagAction(String element, String elementlist, boolean checkall, boolean checknone, ServletRequest req) {
 
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        CmsXmlPage page = (CmsXmlPage)req.getAttribute(org.opencms.page.CmsXmlPage.C_ATTRIBUTE_XMLPAGE_OBJECT);
-        
-        if (page != null && elementlist != null) {
-            String absolutePath = controller.getCmsObject().readAbsolutePath(page.getFile());
-            Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(controller.getCmsObject().getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(controller.getCmsObject(), absolutePath), page.getLocales());
+        if (elementlist != null) {
             
-            // check the elements in the elementlist, if the check fails don't render the body
-            String elements[] = CmsStringSubstitution.split(elementlist, ",");
-            boolean found = false;
-            for (int i = 0; i < elements.length; i++) {
-                String el = elements[i].trim();
-                if (page.hasElement(el, locale) && page.isEnabled(el, locale)) {
-                    found = true;
-                    if (!checkall) {
-                        // found at least an element that is available
-                        break;
+            CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+            String filename = controller.getCmsObject().getRequestContext().getUri();
+            
+            CmsXmlPage page = (CmsXmlPage)req.getAttribute(filename);                    
+            if (page == null) {
+                CmsResource resource = controller.getCmsResource();
+                if (resource.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+                    try {
+                        // make sure a page is only read once (not every time for each element)
+                        page = CmsXmlPage.read(controller.getCmsObject(), CmsFile.upgrade(resource, controller.getCmsObject()));
+                        req.setAttribute(filename, page);                
+                    } catch (CmsException e) {
+                        OpenCms.getLog(CmsJspTagTemplate.class).error("Error checking for XML page", e);
                     }
-                } else {
-                    if (checkall) {
-                        // found at least an element that is not available
-                        return false;
+                }    
+            }    
+            
+            if (page != null) {
+                String absolutePath = controller.getCmsObject().readAbsolutePath(page.getFile());
+                Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(controller.getCmsObject().getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(controller.getCmsObject(), absolutePath), page.getLocales());
+                
+                // check the elements in the elementlist, if the check fails don't render the body
+                String elements[] = CmsStringSubstitution.split(elementlist, ",");
+                boolean found = false;
+                for (int i = 0; i < elements.length; i++) {
+                    String el = elements[i].trim();
+                    if (page.hasElement(el, locale) && page.isEnabled(el, locale)) {
+                        found = true;
+                        if (!checkall) {
+                            // found at least an element that is available
+                            break;
+                        }
+                    } else {
+                        if (checkall) {
+                            // found at least an element that is not available
+                            return false;
+                        }
                     }
                 }
-            }
-            
-            if (!found && !checknone) {
-                // no element found while checking for existing elements
-                return false;
-            } else if (found && checknone) {
-                // element found while checking for nonexisting elements
-                return false;
-            }
-        } 
+                
+                if (!found && !checknone) {
+                    // no element found while checking for existing elements
+                    return false;
+                } else if (found && checknone) {
+                    // element found while checking for nonexisting elements
+                    return false;
+                }
+            } 
+        }
         
         // otherwise, check if an element was defined and if its equal to the desired element
-        String param =  req.getParameter(C_TEMPLATE_ELEMENT);        
+        String param = req.getParameter(I_CmsResourceLoader.C_TEMPLATE_ELEMENT);        
         return ((element ==  null) || (param == null) || (param.equals(element)));
     }
  }

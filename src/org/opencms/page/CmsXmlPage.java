@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/02/19 13:01:50 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/03/22 16:34:48 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class CmsXmlPage {
     
@@ -144,9 +144,6 @@ public class CmsXmlPage {
     /** The file that contains the page data (note: is not set when creating an empty or document based CmsXmlPage) */
     private CmsFile m_file;
 
-    /** Attribute name for a the requested instance of the xml page */
-    public static final String C_ATTRIBUTE_XMLPAGE_OBJECT = "org.opencms.loader.CmsXmlPageLoader_page";
-    
     /**
      * Creates a new empty CmsXmlPage.<p>
      * 

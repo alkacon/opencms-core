@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/03/22 16:34:06 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -369,16 +369,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @return the CmsFlexCacheKey data structure found for the resource
      */
     public CmsFlexCacheKey getCachedKey(String key, CmsObject cms) {
-        if (! isEnabled()) {
-            return null;
-        }
-        if (! isAdmin(cms)) {
+        if (! isEnabled() || ! isAdmin(cms)) {
             return null;
         }
         Object o = m_keyCache.get(key);
         if (o != null) {
-            CmsFlexCacheVariation v = (CmsFlexCacheVariation)o;
-            return v.m_key;
+            return ((CmsFlexCacheVariation)o).m_key;
         }
         return null;
     }
@@ -395,10 +391,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @return a Set of cached resource names (which are of type String)
      */
     public java.util.Set getCachedResources(CmsObject cms) {
-        if (! isEnabled()) {
-            return null;
-        }
-        if (! isAdmin(cms)) {
+        if (! isEnabled() || ! isAdmin(cms)) {
             return null;
         }
         return m_keyCache.keySet();
@@ -419,16 +412,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @return a Set of cached variations (which are of type String)
      */
     public java.util.Set getCachedVariations(String key, CmsObject cms) {
-        if (! isEnabled()) {
-            return null;
-        }
-        if (! isAdmin(cms)) {
+        if (! isEnabled() || ! isAdmin(cms)) {
             return null;
         }
         Object o = m_keyCache.get(key);
         if (o != null) {
-            CmsFlexCacheVariation v = (CmsFlexCacheVariation)o;
-            return v.m_map.keySet();
+            return ((CmsFlexCacheVariation)o).m_map.keySet();
         }
         return null;
     }

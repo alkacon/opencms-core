@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/22 16:33:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,92 +44,26 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#getResourceTypeName()
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
-    public abstract String getResourceTypeName();
+    public void addConfigurationParameter(String paramName, String paramValue) {
+        // this configuration does not support parameters 
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
+        }            
+    }        
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#getResourceType()
+     * @see org.opencms.file.I_CmsResourceType#changeLockedInProject(org.opencms.file.CmsObject, int, java.lang.String)
      */
-    public abstract int getResourceType();
-    
-    /**
-     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
-     */
-    public abstract int getLoaderId();
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
-     */
-    public abstract CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException;
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, java.lang.String, boolean, int)
-     */
-    public void lockResource(CmsObject cms, String resourcename, boolean force, int mode) throws CmsException {
-        cms.doLockResource(resourcename, mode);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#unlockResource(org.opencms.file.CmsObject, java.lang.String, boolean)
-     */
-    public void unlockResource(CmsObject cms, String resourcename, boolean recursive) throws CmsException {
-        cms.doUnlockResource(resourcename);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean, boolean, int)
-     */
-    public void copyResource(CmsObject cms, String resourcename, String destination, boolean keeppermissions, boolean lockCopy, int copyMode) throws CmsException {
-        cms.doCopyFile(resourcename, destination, lockCopy, copyMode);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public void moveResource(CmsObject cms, String resourcename, String destination) throws CmsException {
-        cms.doMoveResource(resourcename, destination);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#copyToLostAndFound(org.opencms.file.CmsObject, java.lang.String, boolean)
-     */
-    public String copyToLostAndFound(CmsObject cms, String resourcename, boolean copyResource) throws CmsException {
-        return cms.doCopyToLostAndFound(resourcename, copyResource);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#renameResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public void renameResource(CmsObject cms, String resourcename, String destination) throws CmsException {
-        cms.doRenameResource(resourcename, destination);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, java.lang.String, int)
-     */
-    public void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException {
-        cms.doDeleteFile(resourcename, deleteOption);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#undeleteResource(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public void undeleteResource(CmsObject cms, String resourcename) throws CmsException {
-        cms.doUndeleteFile(resourcename);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#touch(CmsObject, String, long, boolean, CmsUUID)
-     */
-    public void touch(CmsObject cms, String resourcename, long timestamp, boolean recursive, CmsUUID user) throws CmsException {
-        cms.doTouch(resourcename, timestamp, user);
+    public void changeLockedInProject(CmsObject cms, int project, String resourcename) throws CmsException {
+        cms.doChangeLockedInProject(resourcename);
     }
 
     /**
@@ -140,24 +74,10 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], int)
+     * @see org.opencms.file.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean, boolean, int)
      */
-    public void replaceResource(CmsObject cms, String resourcename, Map properties, byte[] content, int type) throws CmsException {
-        cms.doReplaceResource(resourcename, content, type, properties);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public void undoChanges(CmsObject cms, String resourcename) throws CmsException {
-        cms.doUndoChanges(resourcename);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#restoreResource(org.opencms.file.CmsObject, int, java.lang.String)
-     */
-    public void restoreResource(CmsObject cms, int tag, String resourcename) throws CmsException {
-        cms.doRestoreResource(tag, resourcename);
+    public void copyResource(CmsObject cms, String resourcename, String destination, boolean keeppermissions, boolean lockCopy, int copyMode) throws CmsException {
+        cms.doCopyFile(resourcename, destination, lockCopy, copyMode);
     }
 
     /**
@@ -168,10 +88,22 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#changeLockedInProject(org.opencms.file.CmsObject, int, java.lang.String)
+     * @see org.opencms.file.I_CmsResourceType#copyToLostAndFound(org.opencms.file.CmsObject, java.lang.String, boolean)
      */
-    public void changeLockedInProject(CmsObject cms, int project, String resourcename) throws CmsException {
-        cms.doChangeLockedInProject(resourcename);
+    public String copyToLostAndFound(CmsObject cms, String resourcename, boolean copyResource) throws CmsException {
+        return cms.doCopyToLostAndFound(resourcename, copyResource);
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     */
+    public abstract CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException;
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, java.lang.String, int)
+     */
+    public void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException {
+        cms.doDeleteFile(resourcename, deleteOption);
     }
 
     /**
@@ -181,13 +113,39 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // there are no link tags inside a simple resource
         return file;
     }
+    
+    /**
+     * @see org.opencms.file.I_CmsResourceType#getCachePropertyDefault()
+     */
+    public String getCachePropertyDefault() {
+        return null;
+    }
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public ExtendedProperties getConfiguration() {
+        // this configuration does not support parameters
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
+        }          
+        return null;
+    }
+    
+    /**
+     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
+     */
+    public abstract int getLoaderId();
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#isDirectEditable()
+     * @see org.opencms.file.I_CmsResourceType#getResourceType()
      */
-    public boolean isDirectEditable() {
-        return false;
-    }
+    public abstract int getResourceType();
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#getResourceTypeName()
+     */
+    public abstract String getResourceTypeName();
     
     /**
      * @see org.opencms.file.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource, byte[], java.util.Map, java.lang.String)
@@ -226,6 +184,48 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
+     * @see org.opencms.file.I_CmsResourceType#isDirectEditable()
+     */
+    public boolean isDirectEditable() {
+        return false;
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, java.lang.String, boolean, int)
+     */
+    public void lockResource(CmsObject cms, String resourcename, boolean force, int mode) throws CmsException {
+        cms.doLockResource(resourcename, mode);
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public void moveResource(CmsObject cms, String resourcename, String destination) throws CmsException {
+        cms.doMoveResource(resourcename, destination);
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#renameResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public void renameResource(CmsObject cms, String resourcename, String destination) throws CmsException {
+        cms.doRenameResource(resourcename, destination);
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], int)
+     */
+    public void replaceResource(CmsObject cms, String resourcename, Map properties, byte[] content, int type) throws CmsException {
+        cms.doReplaceResource(resourcename, content, type, properties);
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#restoreResource(org.opencms.file.CmsObject, int, java.lang.String)
+     */
+    public void restoreResource(CmsObject cms, int tag, String resourcename) throws CmsException {
+        cms.doRestoreResource(tag, resourcename);
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -238,25 +238,32 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         output.append(getLoaderId());
         return output.toString();
     }
-    
+
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     * @see org.opencms.file.I_CmsResourceType#touch(CmsObject, String, long, boolean, CmsUUID)
      */
-    public ExtendedProperties getConfiguration() {
-        // this configuration does not support parameters
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
-        }          
-        return null;
+    public void touch(CmsObject cms, String resourcename, long timestamp, boolean recursive, CmsUUID user) throws CmsException {
+        cms.doTouch(resourcename, timestamp, user);
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     * @see org.opencms.file.I_CmsResourceType#undeleteResource(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void addConfigurationParameter(String paramName, String paramValue) {
-        // this configuration does not support parameters 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
-        }            
-    }        
+    public void undeleteResource(CmsObject cms, String resourcename) throws CmsException {
+        cms.doUndeleteFile(resourcename);
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public void undoChanges(CmsObject cms, String resourcename) throws CmsException {
+        cms.doUndoChanges(resourcename);
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#unlockResource(org.opencms.file.CmsObject, java.lang.String, boolean)
+     */
+    public void unlockResource(CmsObject cms, String resourcename, boolean recursive) throws CmsException {
+        cms.doUnlockResource(resourcename);
+    }
 }

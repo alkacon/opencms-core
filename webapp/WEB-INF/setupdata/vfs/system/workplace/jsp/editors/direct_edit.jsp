@@ -11,13 +11,15 @@ org.opencms.jsp.CmsJspActionElement cms = new CmsJspActionElement(pageContext, r
 String uri = cms.getRequestContext().getUri();
 CmsDialog wp = new CmsDialog(cms);
 
+String editTarget = request.getParameter(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET);
+String editElement = request.getParameter(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT);
+String editLocale = request.getParameter(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE);
+String editButtonStyleParam = request.getParameter(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE);
+
 int editButtonStyle = 1;
 try {
-	editButtonStyle = Integer.parseInt((String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE));
+	editButtonStyle = Integer.parseInt(editButtonStyleParam);
 } catch (Exception e) {}
-String editTarget = (String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET);
-String editElement = (String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT);
-String editLocale = (String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE);
 String editLink = cms.link("/system/workplace/jsp/editors/editor.html");
 
 String editId = "directedit";

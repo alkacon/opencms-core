@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/03/22 16:34:54 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,9 @@
  */
 package org.opencms.workplace.editor;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -43,19 +46,17 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-
 import java.io.IOException;
 import java.util.Locale;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 
 /**
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.3.0
  */
@@ -144,13 +145,13 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     }
     
     /**
-     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getEditMode(org.opencms.file.CmsObject, java.lang.String, org.opencms.page.CmsXmlPage, java.lang.String)
+     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getEditMode(org.opencms.file.CmsObject, java.lang.String, java.lang.String, javax.servlet.ServletRequest)
      */
-    public String getEditMode(CmsObject cmsObject, String filename, CmsXmlPage page, String element) {
+    public String getEditMode(CmsObject cmsObject, String filename, String element, ServletRequest req) {
     
         try {
             
-            CmsResource res = cmsObject.readFileHeader(filename);
+            CmsResource resource = cmsObject.readFileHeader(filename);
             int currentProject = cmsObject.getRequestContext().currentProject().getId();
             CmsUUID userId = cmsObject.getRequestContext().currentUser().getId();
             CmsLock lock = cmsObject.getLock(filename);
@@ -159,16 +160,16 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             if (currentProject == I_CmsConstants.C_PROJECT_ONLINE_ID) {
                 // don't render direct edit button in online project
                 return null;
-            } else if (!cmsObject.getResourceType(res.getType()).isDirectEditable()) {
+            } else if (!cmsObject.getResourceType(resource.getType()).isDirectEditable()) {
                 // don't render direct edit button for non-editable resources 
                 return null;
             } else if (CmsResource.getName(filename).startsWith(org.opencms.main.I_CmsConstants.C_TEMP_PREFIX)) {
                 // don't show direct edit button on temporary file
                 return C_DIRECT_EDIT_MODE_INACTIVE;
-            } else if (!cmsObject.isInsideCurrentProject(res)) {
+            } else if (!cmsObject.isInsideCurrentProject(resource)) {
                 // don't show direct edit button on files not belonging to the current project
                 return C_DIRECT_EDIT_MODE_INACTIVE;
-            } else if (!cmsObject.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_WRITE))) {
+            } else if (!cmsObject.hasPermissions(resource, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_WRITE))) {
                 // don't show direct edit button on files without write permissions
                 if (locked) {
                     return C_DIRECT_EDIT_MODE_DISABLED;
@@ -178,20 +179,28 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             } else if (locked) {
                 return C_DIRECT_EDIT_MODE_DISABLED;
             }
-  
-            // check if the desired element is available (in case of xml page)
-            if (page != null && element != null) {
+              
+            if ((element != null) && (resource.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
+                // check if the desired element is available (in case of xml page)
+                CmsXmlPage page = (CmsXmlPage)req.getAttribute(filename);                    
+                if (page == null) {
+                    // make sure a page is only read once (not every time for each element)
+                    page = CmsXmlPage.read(cmsObject, cmsObject.readFile(filename));
+                    req.setAttribute(filename, page);
+                }    
                 Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(null, OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename), page.getLocales());
                 if (!page.hasElement(element, locale) || !page.isEnabled(element, locale)) {
                     return C_DIRECT_EDIT_MODE_INACTIVE;
-                }
+                }                
             }
 
             // otherwise the resource is editable
             return C_DIRECT_EDIT_MODE_ENABLED;
             
-        }  catch (CmsException exc) {
-            
+        }  catch (CmsException e) {
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Error while calculation edit mode for " + filename, e);
+            }
             // something went wrong - so the resource seems not to be editable
             return C_DIRECT_EDIT_MODE_INACTIVE;
         }

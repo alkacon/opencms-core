@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/03/22 16:33:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,9 +54,12 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
+    
+    /** Flag for support of old duplicate "/system/bodies/" folder */
+    public static final boolean C_BODY_MIRROR = false;
 
     /** The type id of this resource */
     public static final int C_RESOURCE_TYPE_ID = 0;
@@ -66,9 +69,234 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
     /** Internal debug flag */
     private static final int DEBUG = 0;
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+        // this configuration does not support parameters 
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
+        }            
+    }    
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#changeLockedInProject(org.opencms.file.CmsObject, int, java.lang.String)
+     */
+    public void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename) throws CmsException {
+        // we have to change the folder and all resources in the folder
+        Vector allSubFolders = new Vector();
+        Vector allSubFiles = new Vector();
+        getAllResources(cms, resourcename, allSubFiles, allSubFolders);
+        // first change all the files
+        for (int i = 0; i < allSubFiles.size(); i++) {
+            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
+            if (curFile.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
+                // must include files already deleted for publishing deleted resources
+                cms.changeLockedInProject(newProjectId, cms.readAbsolutePath(curFile, true));
+            }
+        }
+        // now all the subfolders
+        for (int i = 0; i < allSubFolders.size(); i++) {
+            CmsFolder curFolder = (CmsFolder)allSubFolders.elementAt(i);
+            if (curFolder.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
+                changeLockedInProject(cms, newProjectId, cms.readAbsolutePath(curFolder));
+            }
+        }
+        // finally the folder
+        cms.doChangeLockedInProject(resourcename);
+        if (C_BODY_MIRROR) {
+            // change the corresponding folder in C_VFS_PATH_BODIES
+            String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourcename;
+            try {
+                cms.readFolder(bodyFolder, true);
+                changeLockedInProject(cms, newProjectId, bodyFolder);
+            } catch (CmsException ex) {
+                // no folder is there, so do nothing
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#chtype(org.opencms.file.CmsObject, java.lang.String, int)
+     */
+    public void chtype(CmsObject cms, String filename, int newType) throws CmsException {
+        // it is not possible to change the type of a folder
+        throw new CmsNotImplementedException("[" + this.getClass().getName() + "] " + filename);
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean, boolean, int)
+     */
+    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
+
+        // we have to copy the folder and all resources in the folder
+        Vector allSubFolders = new Vector();
+        Vector allSubFiles = new Vector();
+        // first valid the destination name
+        validResourcename(destination);
+
+        getAllResources(cms, source, allSubFiles, allSubFolders);
+        
+        if (!destination.endsWith("/")) {
+            destination = destination + "/";
+        }
+        
+        if (!destination.startsWith("/")) {
+            destination = "/" + destination;
+        }
+        
+        // first the folder
+        cms.doCopyFolder(source, destination, lockCopy, keepFlags);
+        
+        // now the subfolders
+        for (int i = 0; i < allSubFolders.size(); i++) {
+            CmsFolder curFolder = (CmsFolder)allSubFolders.elementAt(i);
+            if (curFolder.getState() != I_CmsConstants.C_STATE_DELETED) {
+                String curDestination = destination + cms.readAbsolutePath(curFolder).substring(source.length() + 1);
+                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination, false, keepFlags);
+            }
+        }
+        
+        // now all the little files
+        for (int i = 0; i < allSubFiles.size(); i++) {
+            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
+            if (curFile.getState() != I_CmsConstants.C_STATE_DELETED) {
+                // both destination and readAbsolutePath have a trailing/leading slash !
+                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length() + 1);
+                cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags, false, copyMode);
+            }
+        }
+        
+        if (C_BODY_MIRROR) {
+            // copy the content bodys
+            try {
+                copyResource(cms, I_CmsWpConstants.C_VFS_PATH_BODIES + source.substring(1), I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1), keepFlags, true, copyMode);
+                // finaly lock the copy in content bodys if it exists.
+                cms.lockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1));
+            } catch (CmsException e) {
+                // ignore
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#copyResourceToProject(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
+        // copy the folder to the current project
+        cms.doCopyResourceToProject(resourceName);
+        if (C_BODY_MIRROR) {
+            // try to copy the corresponding folder in C_VFS_PATH_BODIES to the project
+            try {
+                CmsResource contentFolder = cms.readFolder(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourceName, true);
+                if (contentFolder != null) {
+                    cms.doCopyResourceToProject(cms.readAbsolutePath(contentFolder));
+                }
+            } catch (CmsException e) {
+                // cannot read the folder in C_VFS_PATH_BODIES so do nothing
+            }
+        }
+    }
     
-    /** Flag for support of old duplicate "/system/bodies/" folder */
-    public static final boolean C_BODY_MIRROR = false;
+    /**
+     * @see org.opencms.file.I_CmsResourceType#copyToLostAndFound(org.opencms.file.CmsObject, java.lang.String, boolean)
+     */
+    public String copyToLostAndFound(CmsObject cms, String resourcename, boolean copyResource) {
+        // nothing to do here,
+        return null;
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     */
+    public CmsResource createResource(CmsObject cms, String newFolderName, Map properties, byte[] contents, Object parameter) throws CmsException {
+        contents = null;
+        if (!newFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            newFolderName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        }
+        CmsFolder res = cms.doCreateFolder(newFolderName, properties);
+        cms.lockResource(newFolderName);
+        //res.setLocked(cms.getRequestContext().currentUser().getId());
+        return res;
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, java.lang.String, int)
+     */
+    public void deleteResource(CmsObject cms, String folder, int deleteOption) throws CmsException {
+
+        Vector allSubFolders = new Vector();
+        Vector allSubFiles = new Vector();
+        getAllResources(cms, folder, allSubFiles, allSubFolders);
+        // first delete all the files
+        for (int i = 0; i < allSubFiles.size(); i++) {
+            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
+            if (curFile.getState() != I_CmsConstants.C_STATE_DELETED) {
+                try {
+                    cms.deleteResource(cms.readAbsolutePath(curFile), I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+                } catch (CmsException e) {
+                    if (e.getType() != CmsException.C_RESOURCE_DELETED) {
+                        throw e;
+                    }
+                }
+            }
+        }
+        // now all the empty subfolders
+        for (int i = allSubFolders.size() - 1; i > -1; i--) {
+            CmsFolder curFolder = (CmsFolder)allSubFolders.elementAt(i);
+            if (curFolder.getState() != I_CmsConstants.C_STATE_DELETED) {
+                cms.doDeleteFolder(cms.readAbsolutePath(curFolder));
+            }
+        }
+
+        // finally the folder
+        cms.doDeleteFolder(folder);
+        
+        if (C_BODY_MIRROR) {
+            // delete the corresponding folder in C_VFS_PATH_BODIES
+            String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
+            try {
+                cms.readFolder(bodyFolder);
+                cms.deleteResource(bodyFolder, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+            } catch (CmsException ex) {
+                // no folder is there, so do nothing
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#exportResource(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
+     */
+    public CmsFile exportResource(CmsObject cms, CmsFile file) {
+        // nothing to do here, because there couldn´t be any Linkmanagement-Tags inside a folder-resource
+        return file;
+    }
+    
+    /**
+     * @see org.opencms.file.I_CmsResourceType#getCachePropertyDefault()
+     */
+    public String getCachePropertyDefault() {
+        return null;
+    }    
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public ExtendedProperties getConfiguration() {
+        // this configuration does not support parameters
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
+        }          
+        return null;
+    }
+    
+    /**
+     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
+     */
+    public int getLoaderId() {
+        return -1;
+    }     
 
     /**
      * @see org.opencms.file.I_CmsResourceType#getResourceType()
@@ -83,13 +311,136 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     public String getResourceTypeName() {
         return C_RESOURCE_TYPE_NAME;
     }
-    
+
+
     /**
-     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
+     * @see org.opencms.file.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource, byte[], java.util.Map, java.lang.String)
      */
-    public int getLoaderId() {
-        return -1;
-    }     
+    public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
+        CmsResource importedResource = null;
+        if (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            destination += I_CmsConstants.C_FOLDER_SEPARATOR;
+        }
+        boolean changed = true;
+        //try to create the resource
+        try {
+            importedResource = cms.doImportResource(resource, content, properties, destination);
+            content = null;
+            if (importedResource != null) {
+                changed = false;
+            }
+        } catch (CmsException e) {
+            // an exception is thrown if the folder already exists
+        }
+        if (changed) {
+            changed = false;
+            //the resource exists, check if properties has to be updated
+            importedResource = cms.readFolder(destination);
+            Map oldProperties = cms.readProperties(cms.readAbsolutePath(importedResource));
+            if (oldProperties == null) {
+                oldProperties = new HashMap();
+            }
+            if (properties == null) {
+                properties = new Hashtable();
+            }
+            if (properties.size() > 0) {
+                // if no properties are to be imported we do not need to check the old properties
+                if (oldProperties.size() != properties.size()) {
+                    changed = true;
+                } else {
+                    // check each of the properties
+                    Iterator i = properties.keySet().iterator();
+                    while (i.hasNext()) {
+                        String curKey = (String)i.next();
+                        String value = (String)properties.get(curKey);
+                        String oldValue = (String)oldProperties.get(curKey);
+                        if ((oldValue == null) || !(value.trim().equals(oldValue.trim()))) {
+                            changed = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            // check changes of the resourcetype
+            if (importedResource.getType() != getResourceType()) {
+                changed = true;
+            }
+            // update the folder if something has changed
+            if (changed) {
+                lockResource(cms, cms.readAbsolutePath(importedResource), true, CmsLock.C_MODE_COMMON);
+                cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, null/* new byte[0] */);
+            } 
+        }
+        // get the updated folder
+        return importedResource;
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#isDirectEditable()
+     */
+    public boolean isDirectEditable() {
+        return false;
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, java.lang.String, boolean, int)
+     */
+    public void lockResource(CmsObject cms, String resource, boolean force, int mode) throws CmsException {        
+        if (C_BODY_MIRROR) {
+            // first lock the folder in the C_VFS_PATH_BODIES path if it exists.
+            try {
+                cms.doLockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1), mode);
+            } catch (CmsException e) {
+                // ignore the error. this folder doesent exist.
+            }
+        }
+        // now lock the folder
+        cms.doLockResource(resource, mode);
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
+        this.copyResource(cms, source, destination, true, true, I_CmsConstants.C_COPY_AS_SIBLING);
+        this.deleteResource(cms, source, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);        
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#renameResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException {
+        validResourcename(newname.replace('/', '\n'));
+
+        // rename the folder itself
+        // cms.doRenameResource(oldname, newname);
+        this.copyResource(cms, oldname, newname, true, true, I_CmsConstants.C_COPY_AS_SIBLING);
+        this.deleteResource(cms, oldname, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+
+        if (C_BODY_MIRROR) {
+            oldname = oldname.substring(1);
+            String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + oldname;
+
+            // rename the corresponding body folder
+            // cms.doRenameResource(bodyPath, newname);
+            this.copyResource(cms, bodyPath, newname, true, true, I_CmsConstants.C_COPY_AS_SIBLING);
+            this.deleteResource(cms, bodyPath, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+        }
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], int)
+     */
+    public void replaceResource(CmsObject cms, String resourceName, Map resourceProperties, byte[] resourceContent, int newResType) {
+        // folders cannot be replaced yet...
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#restoreResource(org.opencms.file.CmsObject, int, java.lang.String)
+     */
+    public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException {
+        throw new CmsNotImplementedException("[" + this.getClass().getName() + "] Cannot restore folders.");
+    }
 
     /**
      * @see java.lang.Object#toString()
@@ -186,146 +537,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#chtype(org.opencms.file.CmsObject, java.lang.String, int)
-     */
-    public void chtype(CmsObject cms, String filename, int newType) throws CmsException {
-        // it is not possible to change the type of a folder
-        throw new CmsNotImplementedException("[" + this.getClass().getName() + "] " + filename);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean, boolean, int)
-     */
-    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
-
-        // we have to copy the folder and all resources in the folder
-        Vector allSubFolders = new Vector();
-        Vector allSubFiles = new Vector();
-        // first valid the destination name
-        validResourcename(destination);
-
-        getAllResources(cms, source, allSubFiles, allSubFolders);
-        
-        if (!destination.endsWith("/")) {
-            destination = destination + "/";
-        }
-        
-        if (!destination.startsWith("/")) {
-            destination = "/" + destination;
-        }
-        
-        // first the folder
-        cms.doCopyFolder(source, destination, lockCopy, keepFlags);
-        
-        // now the subfolders
-        for (int i = 0; i < allSubFolders.size(); i++) {
-            CmsFolder curFolder = (CmsFolder)allSubFolders.elementAt(i);
-            if (curFolder.getState() != I_CmsConstants.C_STATE_DELETED) {
-                String curDestination = destination + cms.readAbsolutePath(curFolder).substring(source.length() + 1);
-                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination, false, keepFlags);
-            }
-        }
-        
-        // now all the little files
-        for (int i = 0; i < allSubFiles.size(); i++) {
-            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
-            if (curFile.getState() != I_CmsConstants.C_STATE_DELETED) {
-                // both destination and readAbsolutePath have a trailing/leading slash !
-                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length() + 1);
-                cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags, false, copyMode);
-            }
-        }
-        
-        if (C_BODY_MIRROR) {
-            // copy the content bodys
-            try {
-                copyResource(cms, I_CmsWpConstants.C_VFS_PATH_BODIES + source.substring(1), I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1), keepFlags, true, copyMode);
-                // finaly lock the copy in content bodys if it exists.
-                cms.lockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1));
-            } catch (CmsException e) {
-                // ignore
-            }
-        }
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#copyResourceToProject(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
-        // copy the folder to the current project
-        cms.doCopyResourceToProject(resourceName);
-        if (C_BODY_MIRROR) {
-            // try to copy the corresponding folder in C_VFS_PATH_BODIES to the project
-            try {
-                CmsResource contentFolder = cms.readFolder(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourceName, true);
-                if (contentFolder != null) {
-                    cms.doCopyResourceToProject(cms.readAbsolutePath(contentFolder));
-                }
-            } catch (CmsException e) {
-                // cannot read the folder in C_VFS_PATH_BODIES so do nothing
-            }
-        }
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
-     */
-    public CmsResource createResource(CmsObject cms, String newFolderName, Map properties, byte[] contents, Object parameter) throws CmsException {
-        contents = null;
-        if (!newFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            newFolderName += I_CmsConstants.C_FOLDER_SEPARATOR;
-        }
-        CmsFolder res = cms.doCreateFolder(newFolderName, properties);
-        cms.lockResource(newFolderName);
-        //res.setLocked(cms.getRequestContext().currentUser().getId());
-        return res;
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, java.lang.String, int)
-     */
-    public void deleteResource(CmsObject cms, String folder, int deleteOption) throws CmsException {
-
-        Vector allSubFolders = new Vector();
-        Vector allSubFiles = new Vector();
-        getAllResources(cms, folder, allSubFiles, allSubFolders);
-        // first delete all the files
-        for (int i = 0; i < allSubFiles.size(); i++) {
-            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
-            if (curFile.getState() != I_CmsConstants.C_STATE_DELETED) {
-                try {
-                    cms.deleteResource(cms.readAbsolutePath(curFile), I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
-                } catch (CmsException e) {
-                    if (e.getType() != CmsException.C_RESOURCE_DELETED) {
-                        throw e;
-                    }
-                }
-            }
-        }
-        // now all the empty subfolders
-        for (int i = allSubFolders.size() - 1; i > -1; i--) {
-            CmsFolder curFolder = (CmsFolder)allSubFolders.elementAt(i);
-            if (curFolder.getState() != I_CmsConstants.C_STATE_DELETED) {
-                cms.doDeleteFolder(cms.readAbsolutePath(curFolder));
-            }
-        }
-
-        // finally the folder
-        cms.doDeleteFolder(folder);
-        
-        if (C_BODY_MIRROR) {
-            // delete the corresponding folder in C_VFS_PATH_BODIES
-            String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
-            try {
-                cms.readFolder(bodyFolder);
-                cms.deleteResource(bodyFolder, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
-            } catch (CmsException ex) {
-                // no folder is there, so do nothing
-            }
-        }
-    }
-
-    /**
      * @see org.opencms.file.I_CmsResourceType#undeleteResource(org.opencms.file.CmsObject, java.lang.String)
      */
     public void undeleteResource(CmsObject cms, String folder) throws CmsException {
@@ -365,145 +576,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
                 // no folder is there, so do nothing
             }
         }
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#exportResource(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
-     */
-    public CmsFile exportResource(CmsObject cms, CmsFile file) {
-        // nothing to do here, because there couldn´t be any Linkmanagement-Tags inside a folder-resource
-        return file;
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#isDirectEditable()
-     */
-    public boolean isDirectEditable() {
-        return false;
-    }
-    
-    /**
-     * @see org.opencms.file.I_CmsResourceType#copyToLostAndFound(org.opencms.file.CmsObject, java.lang.String, boolean)
-     */
-    public String copyToLostAndFound(CmsObject cms, String resourcename, boolean copyResource) {
-        // nothing to do here,
-        return null;
-    }
-
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource, byte[], java.util.Map, java.lang.String)
-     */
-    public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
-        CmsResource importedResource = null;
-        if (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            destination += I_CmsConstants.C_FOLDER_SEPARATOR;
-        }
-        boolean changed = true;
-        //try to create the resource
-        try {
-            importedResource = cms.doImportResource(resource, content, properties, destination);
-            content = null;
-            if (importedResource != null) {
-                changed = false;
-            }
-        } catch (CmsException e) {
-            // an exception is thrown if the folder already exists
-        }
-        if (changed) {
-            changed = false;
-            //the resource exists, check if properties has to be updated
-            importedResource = cms.readFolder(destination);
-            Map oldProperties = cms.readProperties(cms.readAbsolutePath(importedResource));
-            if (oldProperties == null) {
-                oldProperties = new HashMap();
-            }
-            if (properties == null) {
-                properties = new Hashtable();
-            }
-            if (properties.size() > 0) {
-                // if no properties are to be imported we do not need to check the old properties
-                if (oldProperties.size() != properties.size()) {
-                    changed = true;
-                } else {
-                    // check each of the properties
-                    Iterator i = properties.keySet().iterator();
-                    while (i.hasNext()) {
-                        String curKey = (String)i.next();
-                        String value = (String)properties.get(curKey);
-                        String oldValue = (String)oldProperties.get(curKey);
-                        if ((oldValue == null) || !(value.trim().equals(oldValue.trim()))) {
-                            changed = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            // check changes of the resourcetype
-            if (importedResource.getType() != getResourceType()) {
-                changed = true;
-            }
-            // update the folder if something has changed
-            if (changed) {
-                lockResource(cms, cms.readAbsolutePath(importedResource), true, CmsLock.C_MODE_COMMON);
-                cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, null/* new byte[0] */);
-            } 
-        }
-        // get the updated folder
-        return importedResource;
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, java.lang.String, boolean, int)
-     */
-    public void lockResource(CmsObject cms, String resource, boolean force, int mode) throws CmsException {        
-        if (C_BODY_MIRROR) {
-            // first lock the folder in the C_VFS_PATH_BODIES path if it exists.
-            try {
-                cms.doLockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1), mode);
-            } catch (CmsException e) {
-                // ignore the error. this folder doesent exist.
-            }
-        }
-        // now lock the folder
-        cms.doLockResource(resource, mode);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
-        this.copyResource(cms, source, destination, true, true, I_CmsConstants.C_COPY_AS_SIBLING);
-        this.deleteResource(cms, source, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);        
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#renameResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException {
-        validResourcename(newname.replace('/', '\n'));
-
-        // rename the folder itself
-        // cms.doRenameResource(oldname, newname);
-        this.copyResource(cms, oldname, newname, true, true, I_CmsConstants.C_COPY_AS_SIBLING);
-        this.deleteResource(cms, oldname, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
-
-        if (C_BODY_MIRROR) {
-            oldname = oldname.substring(1);
-            String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + oldname;
-
-            // rename the corresponding body folder
-            // cms.doRenameResource(bodyPath, newname);
-            this.copyResource(cms, bodyPath, newname, true, true, I_CmsConstants.C_COPY_AS_SIBLING);
-            this.deleteResource(cms, bodyPath, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
-        }
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#restoreResource(org.opencms.file.CmsObject, int, java.lang.String)
-     */
-    public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException {
-        throw new CmsNotImplementedException("[" + this.getClass().getName() + "] Cannot restore folders.");
     }
 
     /**
@@ -610,47 +682,15 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#changeLockedInProject(org.opencms.file.CmsObject, int, java.lang.String)
+     * Checks if there are at least one character in the resourcename.<p>
+     *
+     * @param resourcename String to check
+     * @throws CmsException if something goes wrong
      */
-    public void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename) throws CmsException {
-        // we have to change the folder and all resources in the folder
-        Vector allSubFolders = new Vector();
-        Vector allSubFiles = new Vector();
-        getAllResources(cms, resourcename, allSubFiles, allSubFolders);
-        // first change all the files
-        for (int i = 0; i < allSubFiles.size(); i++) {
-            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
-            if (curFile.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
-                // must include files already deleted for publishing deleted resources
-                cms.changeLockedInProject(newProjectId, cms.readAbsolutePath(curFile, true));
-            }
+    protected void validResourcename(String resourcename) throws CmsException {
+        if ((resourcename == null) || (resourcename.trim().length() == 0)) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, CmsException.C_BAD_NAME);
         }
-        // now all the subfolders
-        for (int i = 0; i < allSubFolders.size(); i++) {
-            CmsFolder curFolder = (CmsFolder)allSubFolders.elementAt(i);
-            if (curFolder.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
-                changeLockedInProject(cms, newProjectId, cms.readAbsolutePath(curFolder));
-            }
-        }
-        // finally the folder
-        cms.doChangeLockedInProject(resourcename);
-        if (C_BODY_MIRROR) {
-            // change the corresponding folder in C_VFS_PATH_BODIES
-            String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourcename;
-            try {
-                cms.readFolder(bodyFolder, true);
-                changeLockedInProject(cms, newProjectId, bodyFolder);
-            } catch (CmsException ex) {
-                // no folder is there, so do nothing
-            }
-        }
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], int)
-     */
-    public void replaceResource(CmsObject cms, String resourceName, Map resourceProperties, byte[] resourceContent, int newResType) {
-        // folders cannot be replaced yet...
     }
 
     /**
@@ -679,37 +719,4 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             allFiles.add(files.get(i));
         }
     }
-
-    /**
-     * Checks if there are at least one character in the resourcename.<p>
-     *
-     * @param resourcename String to check
-     * @throws CmsException if something goes wrong
-     */
-    protected void validResourcename(String resourcename) throws CmsException {
-        if ((resourcename == null) || (resourcename.trim().length() == 0)) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, CmsException.C_BAD_NAME);
-        }
-    }
-    
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
-     */
-    public ExtendedProperties getConfiguration() {
-        // this configuration does not support parameters
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
-        }          
-        return null;
-    }
-
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
-     */
-    public void addConfigurationParameter(String paramName, String paramValue) {
-        // this configuration does not support parameters 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
-        }            
-    }        
 }

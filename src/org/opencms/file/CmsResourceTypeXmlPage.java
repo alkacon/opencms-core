@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/22 16:33:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,11 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPageException;
 import org.opencms.page.CmsXmlPage;
+import org.opencms.page.CmsXmlPageException;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.validation.I_CmsHtmlLinkValidatable;
-
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +55,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -66,27 +65,6 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
     
     /** The name of this resource */
     public static final String C_RESOURCE_TYPE_NAME = "xmlpage";
-    
-    /**
-     * @see org.opencms.file.I_CmsResourceType#getResourceType()
-     */
-    public int getResourceType() {
-        return C_RESOURCE_TYPE_ID;
-    }
-
-    /**
-     * @see org.opencms.file.A_CmsResourceType#getResourceTypeName()
-     */
-    public String getResourceTypeName() {
-        return C_RESOURCE_TYPE_NAME;
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
-     */
-    public int getLoaderId() {
-        return CmsXmlPageLoader.C_RESOURCE_LOADER_ID;
-    }    
              
     /**
      * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
@@ -114,13 +92,6 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         properties.put(I_CmsConstants.C_PROPERTY_TEMPLATE, masterTemplate);
         CmsFile resource = (CmsFile)createResource(cms, resourcename, properties, contents, null);                
         return resource;
-    }
-    
-    /**
-     * @see org.opencms.file.I_CmsResourceType#isDirectEditable()
-     */
-    public boolean isDirectEditable() {
-        return true;
     }
     
     /**
@@ -187,4 +158,38 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         return links;
     }
     
+    /**
+     * @see org.opencms.file.I_CmsResourceType#getCachePropertyDefault()
+     */
+    public String getCachePropertyDefault() {
+        return "element;locale;";
+    }        
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
+     */
+    public int getLoaderId() {
+        return CmsXmlPageLoader.C_RESOURCE_LOADER_ID;
+    }    
+    
+    /**
+     * @see org.opencms.file.I_CmsResourceType#getResourceType()
+     */
+    public int getResourceType() {
+        return C_RESOURCE_TYPE_ID;
+    }
+
+    /**
+     * @see org.opencms.file.A_CmsResourceType#getResourceTypeName()
+     */
+    public String getResourceTypeName() {
+        return C_RESOURCE_TYPE_NAME;
+    }
+    
+    /**
+     * @see org.opencms.file.I_CmsResourceType#isDirectEditable()
+     */
+    public boolean isDirectEditable() {
+        return true;
+    }
 }

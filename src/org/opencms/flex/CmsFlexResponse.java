@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/03/22 16:34:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,13 @@ package org.opencms.flex;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,63 +55,118 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
-    /** The wrapped ServletResponse */
-    private HttpServletResponse m_res = null;    
-    
-    /** The cached entry that is constructed from this response */
-    private CmsFlexCacheEntry m_cachedEntry = null;
-    
-    /** A special wrapper class for a ServletOutputStream */
-    private CmsFlexResponse.CmsServletOutputStream m_out;
-    
-    /** The CmsFlexController for this response */
-    private CmsFlexController m_controller = null;
+    /**
+     * Wrapped implementation of the ServletOutputStream.<p>
+     * 
+     * This implementation writes to an internal buffer and optionally to another 
+     * output stream at the same time.
+     * It should be fully transparent to the standard ServletOutputStream.<p>
+     */    
+    private class CmsServletOutputStream extends ServletOutputStream {
         
-    /** A printwriter that writes in the m_out stream */
-    private java.io.PrintWriter m_writer = null;
-    
-    /** Indicates that the OutputStream m_out should write ONLY in the buffer */
-    private boolean m_writeOnlyToBuffer;
-    
-    /** Indicates that parent stream is writing only in the buffer */
-    private boolean m_parentWritesOnlyToBuffer;
-    
-    /** A list of include calls that origin from this page, i.e. these are sub elements of this element */
-    private List m_includeList = null;
-    
-    /** A list of parameters that belong to the include calls */
-    private List m_includeListParameters = null;
-    
-    /** A list of results from the inclusions, needed because of JSP buffering */
-    private List m_includeResults = null;
-    
-    /** Byte array used for "cached leafs" optimization */
-    private byte[] m_cacheBytes = null;
-    
-    /** The CmsFlexCacheKey for this response */
-    private CmsFlexCacheKey m_key = null;
+        /** The optional output stream to write to */
+        private ServletOutputStream m_servletStream = null;
 
-    /** Map to save all response headers (including sub-elements) in */
-    private Map m_headers;
+        /** The internal steam buffer */
+        private ByteArrayOutputStream m_stream = null;
+
+        /**
+         * Constructor that must be used if the stream should write 
+         * only to a buffer.<p>
+         */
+        public CmsServletOutputStream() {
+            this.m_servletStream = null;
+            clear();
+        }   
+
+        /**
+         * Constructor that must be used if the stream should write 
+         * to a buffer and to another stream at the same time.<p>
+         *
+         * @param servletStream The stream to write to
+         */        
+        public CmsServletOutputStream(ServletOutputStream servletStream) {
+            this.m_servletStream = servletStream;
+            clear();                  
+        }   
+        
+        /**
+         * Clears the buffer by initializing the buffer with a new stream.<p>
+         */
+        public void clear() {
+            m_stream = new java.io.ByteArrayOutputStream(1024);
+        }
+        
+        /**
+         * @see java.io.OutputStream#close()
+         */
+        public void close() throws IOException {
+            m_stream = null;
+            m_servletStream = null;
+            super.close();
+        }
+        
+        /**
+         * @see java.io.OutputStream#flush()
+         */
+        public void flush() throws IOException {
+            if (DEBUG) {
+                System.err.println("CmsServletOutputStream: flush() called! servletStream=" + m_servletStream);
+            }
+            if (m_servletStream != null) {
+                m_servletStream.flush();
+            }
+        }
+                
+        /**
+         * Provides access to the bytes cached in the buffer.<p>
+         *
+         * @return the cached bytes from the buffer
+         */
+        public byte[] getBytes() {
+            return m_stream.toByteArray();
+        }
+        
+        /**
+         * @see java.io.OutputStream#write(byte[], int, int)
+         */
+        public void write(byte[] b, int off, int len) throws IOException {
+            m_stream.write(b, off, len);
+            if (m_servletStream != null) {
+                m_servletStream.write(b, off, len);
+            }
+        }
+                
+        /**
+         * @see java.io.OutputStream#write(int)
+         */
+        public void write(int b) throws IOException {
+            m_stream.write(b);
+            if (m_servletStream != null) {
+                m_servletStream.write(b);
+            }            
+        }
+        
+        /**
+         * Writes an array of bytes only to the included servlet stream,
+         * not to the buffer.<p>
+         *
+         * @param b The bytes to write to the stream
+         * @throws IOException In case the write() operation on the included servlet stream raises one
+         */
+        public void writeToServletStream(byte[] b) throws IOException {
+            if (m_servletStream != null) {
+                m_servletStream.write(b);
+            }
+        }
+    }    
     
-    /** Map to save response headers belonging to a single include call in */
-    private Map m_bufferHeaders;
-
-    /** Indicates if this response is suspended (probably because of a redirect) */
-    private boolean m_suspended = false;
-
-    /** String to hold a buffered redirect target */
-    private String m_bufferRedirect = null;        
-
-    /** Indicates if caching is required, will always be true if m_writeOnlyToBuffer is true */
-    private boolean m_cachingRequired = false;       
-    
-    /** Indicates if this element is currently in include mode, i.e. processing a sub-element */
-    private boolean m_includeMode = false;
+    /** The cache delimiter char */
+    public static final char C_FLEX_CACHE_DELIMITER = (char)0;
     
     /** Static string to indicate a header is "set" in the header maps */
     public static final String C_SETHEADER = "[setHeader]";
@@ -119,14 +174,87 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /** Flag for debugging output */
     private static final boolean DEBUG = false;
     
-    /** The cache delimiter char */
-    public static final char C_FLEX_CACHE_DELIMITER = (char)0;
+    /** Map to save response headers belonging to a single include call in */
+    private Map m_bufferHeaders;
+
+    /** String to hold a buffered redirect target */
+    private String m_bufferRedirect;        
+    
+    /** Byte array used for "cached leafs" optimization */
+    private byte[] m_cacheBytes;
+    
+    /** The cached entry that is constructed from this response */
+    private CmsFlexCacheEntry m_cachedEntry;
+
+    /** Indicates if caching is required, will always be true if m_writeOnlyToBuffer is true */
+    private boolean m_cachingRequired;       
+    
+    /** The CmsFlexController for this response */
+    private CmsFlexController m_controller;
+    
+    /** The "last modified" date for this Flex response */
+    private long m_dateLastModified;
     
     /** The encoding to use for the response */
     private String m_encoding;
+
+    /** Map to save all response headers (including sub-elements) in */
+    private Map m_headers;
+    
+    /** A list of include calls that origin from this page, i.e. these are sub elements of this element */
+    private List m_includeList;
+    
+    /** A list of parameters that belong to the include calls */
+    private List m_includeListParameters;
+    
+    /** Indicates if this element is currently in include mode, i.e. processing a sub-element */
+    private boolean m_includeMode;
+    
+    /** A list of results from the inclusions, needed because of JSP buffering */
+    private List m_includeResults;
     
     /** Flag to indicate if this is the top level element or an included sub - element */ 
     private boolean m_isTopElement;     
+    
+    /** The CmsFlexCacheKey for this response */
+    private CmsFlexCacheKey m_key;
+    
+    /** A special wrapper class for a ServletOutputStream */
+    private CmsFlexResponse.CmsServletOutputStream m_out;
+    
+    /** Indicates that parent stream is writing only in the buffer */
+    private boolean m_parentWritesOnlyToBuffer;
+    
+    /** The wrapped ServletResponse */
+    private HttpServletResponse m_res;    
+
+    /** Indicates if this response is suspended (probably because of a redirect) */
+    private boolean m_suspended;
+    
+    /** Indicates that the OutputStream m_out should write ONLY in the buffer */
+    private boolean m_writeOnlyToBuffer;
+        
+    /** A printwriter that writes in the m_out stream */
+    private java.io.PrintWriter m_writer;
+    
+    /**
+     * Constructor for the CmsFlexResponse,
+     * this variation one is usually used to wrap responses for further include calls in OpenCms.<p>
+     *
+     * @param res the CmsFlexResponse to wrap     
+     * @param controller the controller to use
+     */
+    public CmsFlexResponse(HttpServletResponse res, CmsFlexController controller) {
+        super(res);
+        m_res = res;
+        m_controller = controller;
+        m_encoding = controller.getCurrentResponse().getEncoding();
+        m_isTopElement = controller.getCurrentResponse().isTopElement();        
+        m_parentWritesOnlyToBuffer = controller.getCurrentResponse().hasIncludeList();
+        setOnlyBuffering(m_parentWritesOnlyToBuffer);
+        m_headers = new HashMap(16);
+        m_bufferHeaders = new HashMap(8);
+    }    
     
     /** 
      * Constructor for the CmsFlexResponse,
@@ -141,34 +269,119 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         super(res);
         m_res = res;
         m_controller = controller;
-        m_out = null;
         m_encoding = controller.getCmsObject().getRequestContext().getEncoding();
         m_isTopElement = isTopElement;
         m_parentWritesOnlyToBuffer = ! streaming;
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
-        m_headers = new java.util.HashMap(32);
-        m_bufferHeaders = new java.util.HashMap(16);        
+        m_headers = new HashMap(16);
+        m_bufferHeaders = new HashMap(8);        
     }  
     
     /**
-     * Constructor for the CmsFlexResponse,
-     * this variation one is usually used to wrap responses for further include calls in OpenCms.<p>
-     *
-     * @param res the CmsFlexResponse to wrap     
-     * @param controller the controller to use
+     * Process the headers stored in the provided map and add them to the response.<p>
+     * 
+     * @param headers the headers to add
+     * @param res the resonse to add the headers to
      */
-    public CmsFlexResponse(HttpServletResponse res, CmsFlexController controller) {
-        super(res);
-        m_res = res;
-        m_controller = controller;
-        m_out = null;
-        m_encoding = controller.getCurrentResponse().getEncoding();
-        m_isTopElement = controller.getCurrentResponse().isTopElement();        
-        m_parentWritesOnlyToBuffer = controller.getCurrentResponse().hasIncludeList();
-        setOnlyBuffering(m_parentWritesOnlyToBuffer);
-        m_headers = new java.util.HashMap(32);
-        m_bufferHeaders = new java.util.HashMap(16);
+    public static void processHeaders(Map headers, HttpServletResponse res) {
+        if (headers != null) {
+            java.util.Iterator i = headers.keySet().iterator();
+            while (i.hasNext()) {
+                String key = (String)i.next();
+                ArrayList l = (ArrayList)headers.get(key);  
+                java.util.ListIterator j = l.listIterator(); 
+                while (j.hasNext()) {
+                    if ((j.nextIndex() == 0) && (((String)l.get(0)).startsWith(C_SETHEADER)))  {
+                        String s = (String)j.next();
+                        res.setHeader(key, s.substring(C_SETHEADER.length()));
+                    } else {
+                        res.addHeader(key, (String)j.next());
+                    }
+                }
+            }        
+        }          
+    }
+
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     */
+    public void addDateHeader(String name, long date) {
+        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", java.util.Locale.US);
+        addHeader(name, format.format(new java.util.Date(date)));
+    }
+
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+     */   
+    public void addHeader(String name, String value) {
+        if (isSuspended()) {
+            return;
+        }
+
+        if (m_cachingRequired && ! m_includeMode) {
+            addHeaderList(m_bufferHeaders, name, value);
+            if (DEBUG) {
+                System.err.println("FlexResponse: addHeader(" + name + ", " + value + ") to element buffer");
+            }
+        }
+        
+        if (m_writeOnlyToBuffer) {
+            addHeaderList(m_headers, name, value);
+            if (DEBUG) {
+                System.err.println("FlexResponse: addHeader(" + name + ", " + value + ") to main header buffer");
+            }
+        } else {
+            if (DEBUG) {
+                System.err.println("FlexResponse: addHeader(" + name + ", " + value + ") passing to parent");
+            }
+            m_res.addHeader(name, value);
+        }
+    }
+
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+     */    
+    public void addIntHeader(String name, int value) {
+        addHeader(name, "" + value);
     }    
+        
+    
+    /** 
+     * Adds an inclusion target to the list of include results.<p>
+     * 
+     * Should be used only in inclusion-scenarios
+     * like the JSP cms:include tag processing.<p>
+     *
+     * @param target the include target name to add
+     * @param parameterMap the map of parameters given with the include command
+     */
+    public void addToIncludeList(String target, Map parameterMap) {
+        if (m_includeList == null) {
+            m_includeList = new ArrayList(10);
+            m_includeListParameters = new ArrayList(10);
+        }        
+        m_includeListParameters.add(parameterMap);
+        m_includeList.add(target);
+    }
+    
+    /**
+     * Returns the "last modified" date for this Flex response.<p>
+     * 
+     * @return the "last modified" date for this Flex response
+     */
+    public long getDateLastModified() {
+        if (m_dateLastModified < 0) {
+            return -1;
+        } else {
+            return m_dateLastModified;
+        }
+    }     
     
     /**
      * Returns the value of the encoding used for this response.<p>
@@ -177,6 +390,78 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      */
     public String getEncoding() {
         return m_encoding;
+    }
+        
+    /**
+     * Provides access to the header cache of the top wrapper.<p>
+     *
+     * @return the Map of cached headers
+     */
+    public Map getHeaders() {
+        return m_headers;
+    }    
+    
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * @see javax.servlet.ServletResponse#getOutputStream()
+     */
+    public javax.servlet.ServletOutputStream getOutputStream() throws IOException {
+        if (m_out == null) {
+            initStream();
+        }
+        return m_out;
+    }
+    
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * @see javax.servlet.ServletResponse#getWriter()
+     */
+    public java.io.PrintWriter getWriter() throws IOException {
+        if (m_writer == null) {
+            initStream();
+        }
+        return m_writer;
+    }
+    
+    /**
+     * Returns the bytes that have been written on the current writers output stream.<p>
+     *
+     * @return the bytes that have been written on the current writers output stream
+     */    
+    public byte[] getWriterBytes() {
+        if (isSuspended()) {
+            // No output whatsoever if the response is suspended
+            return new byte[0];
+        }
+        if (m_cacheBytes != null) {
+            // Optimization for cached "leaf" nodes, here I re-use the array from the cache
+            return m_cacheBytes;
+        }
+        if (m_out == null) { 
+            // No output was written so far, just return an empty array
+            return new byte[0];
+        }
+        if (m_writer != null) { 
+            // Flush the writer in case something was written on it
+            m_writer.flush();
+        }
+        return m_out.getBytes();
+    }
+    
+    /** 
+     * This flag indicates if the response is suspended or not.<p>
+     * 
+     * A suspended response mut not write further output to any stream or
+     * process a cache entry for itself.<p>
+     *
+     * Currently, a response is only suspended if it is redirected.<p>
+     *
+     * @return true if the response is suspended, false otherwise
+     */
+    public boolean isSuspended() {
+        return m_suspended;
     }
     
     /**
@@ -190,6 +475,119 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      */
     public boolean isTopElement() {
         return m_isTopElement;        
+    }
+
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
+     */
+    public void sendRedirect(String location) throws IOException {
+        // Ignore any redirects after the first one
+        if (isSuspended() && (! location.equals(m_bufferRedirect))) {
+            return;
+        }
+        if (DEBUG) {
+            System.err.println("FlexResponse: sendRedirect to target " + location);
+        }
+                
+        if (m_cachingRequired && ! m_includeMode) {
+            m_bufferRedirect = location;
+        }
+        
+        if (! m_cachingRequired) {
+            // If caching is required a cached entry will be constructed first and redirect will
+            // be called after this is completed and stored in the cache
+            if (DEBUG) {
+                System.err.println("FlexResponse: getTopResponse.sendRedirect() to target " + location);
+            }
+            
+            m_controller.getTopResponse().sendRedirect(location);        
+        }
+        
+        m_controller.suspendFlexResponse();
+    }
+
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
+     */
+    public void setContentType(String type) {
+        if (DEBUG) {
+            System.err.println("FlexResponse: setContentType(" +type + ") called");
+        }
+        // TODO: Check setContentType() implementation
+        // If this is not the "Top-Level" element ignore all settings of content type    
+        // If this is not done an included JSP could reset the type with some unwanted defaults    
+        if (! m_isTopElement) {
+            return;
+        }
+        /*       
+        if (type != null) {
+            // ensure that the encoding set by OpenCms is not overwritten by the default form the JSP            
+            type = type.toLowerCase();
+            int i = type.indexOf("charset");
+            if (type.startsWith("text") && (i > 0)) {
+                StringBuffer buf = new StringBuffer();
+                buf.append(type.substring(0, i));
+                buf.append("charset=");
+                buf.append(m_encoding);
+                type = new String(buf);
+                if (DEBUG) System.err.println("FlexResponse: setContentType() changed type to " +type);
+            }            
+        }
+        m_res.setContentType(type);
+        */        
+    }
+    
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     */
+    public void setDateHeader(String name, long date) {
+        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", java.util.Locale.US);
+        setHeader(name, format.format(new java.util.Date(date)));
+    }
+    
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
+     */
+    public void setHeader(String name, String value) {
+        if (isSuspended()) {
+            return;
+        }
+
+        if (m_cachingRequired && ! m_includeMode) {
+            setHeaderList(m_bufferHeaders, name, value);
+            if (DEBUG) {
+                System.err.println("FlexResponse: setHeader(" + name + ", " + value + ") in element buffer");
+            }
+        }
+        
+        if (m_writeOnlyToBuffer) {
+            setHeaderList(m_headers, name, value);
+            if (DEBUG) {
+                System.err.println("FlexResponse: setHeader(" + name + ", " + value + ") in main header buffer");
+            }
+        } else {
+            if (DEBUG) {
+                System.err.println("FlexResponse: setHeader(" + name + ", " + value + ") passing to parent");
+            }
+            m_res.setHeader(name, value);
+        }
+    }
+
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     */   
+    public void setIntHeader(String name, int value) {
+        setHeader(name, "" + value);       
     }
     
     /** 
@@ -211,6 +609,162 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (m_writeOnlyToBuffer) {
             setCmsCachingRequired(true);
         }      
+    }
+    
+    /**
+     * Updates "last modified" date for this Flex response with the given value.<p>
+     * 
+     * The currently stored value is only updated with the new value if
+     * the new value is either larger (i.e. newer) then the stored value,
+     * or if the new value is less then zero, which indicates that the "last modified"
+     * optimization can not be used because the element is dynamic.<p>
+     * 
+     * @param dateLastModified the value to update the "last modified" date with
+     */
+    public void updateDateLastModified(long dateLastModified) {
+        if ((m_dateLastModified > -1) && ((dateLastModified > m_dateLastModified) || (dateLastModified < 0))) {
+            m_dateLastModified = dateLastModified;
+        }         
+    }
+        
+    /**
+     * Adds some bytes to the list of include results.<p>
+     * 
+     * Should be used only in inclusion-scenarios 
+     * like the JSP cms:include tag processing.<p>
+     * 
+     * @param result the byte array to add
+     */
+    void addToIncludeResults(byte[] result) {
+        if (m_includeResults == null) {
+            m_includeResults = new ArrayList(10);
+        }
+        m_includeResults.add(result);
+    }
+
+    /**
+     * Returns the cache key for to this response.<p>
+     *
+     * @return the cache key for to this response
+     */
+    CmsFlexCacheKey getCmsCacheKey() {
+        return m_key;
+    }
+    
+    /**
+     * Is used to check if the response has an include list, 
+     * which indicates a) it is probalbly processing a JSP element 
+     * and b) it can never be streamed and alwys must be buffered.<p>
+     *
+     * @return true if this response has an include list, false otherwise
+     */
+    boolean hasIncludeList() {
+        return m_includeList != null;
+    }    
+    
+    /**
+     * Generates a CmsFlexCacheEntry from the current response using the 
+     * stored include results.<p>
+     * 
+     * In case the results were written only to the buffer until now, 
+     * they are now re-written on the output stream, with all included 
+     * elements.<p>
+     *
+     * @throws IOException tn case something goes wrong while writing to the output stream
+     * @return  the generated cache entry
+     */    
+    CmsFlexCacheEntry processCacheEntry() throws IOException {    
+        if (isSuspended() && (m_bufferRedirect == null)) {
+            // An included element redirected this response, no cache entry must be produced
+            return null;
+        }
+        if (m_cachingRequired) {
+            // Cache entry must only be calculated if it's actually needed (always true if we write only to buffer)
+            m_cachedEntry = new CmsFlexCacheEntry();    
+            if (m_bufferRedirect != null) {
+                // Only set et cached redirect target
+                m_cachedEntry.setRedirect(m_bufferRedirect);
+            } else {
+                // Add cached headers
+                m_cachedEntry.addHeaders(m_bufferHeaders);
+                // Add cached output 
+                if (m_includeList != null) {
+                    // Probably JSP: We must analyze out stream for includes calls
+                    // Also, m_writeOnlyToBuffer must be "true" or m_includeList can not be != null
+                    processIncludeList();   
+                } else {
+                    // Output is delivered directly, no include call parsing required
+                    m_cachedEntry.add(getWriterBytes());
+                }
+            }
+            // update the "last modified" date for the cache entry
+            m_cachedEntry.complete();
+        }        
+        // In case the output was only bufferd we have to re-write it to the "right" stream       
+        if (m_writeOnlyToBuffer) {
+            
+            // Since we are processing a cache entry caching is not required
+            m_cachingRequired = false;    
+                        
+            if (m_bufferRedirect != null) {
+                // Send buffered redirect, will trigger redirect of top response
+                sendRedirect(m_bufferRedirect);
+            } else {  
+                // Process the output               
+                if (m_parentWritesOnlyToBuffer) {                                               
+                    // Write results back to own stream, headers are already in buffer
+                    if (m_out != null) {
+                        try {
+                            m_out.clear(); 
+                        } catch (Exception e) {
+                            if (DEBUG) {
+                                System.err.println("FlexResponse: caught exception while calling m_out.clear() in processCacheEntry()\nException: " + e);
+                            }
+                        }
+                    } else {
+                        if (DEBUG) {
+                            System.err.println("FlexResponse: m_out == null in processCacheEntry()");
+                        }
+                    }
+                    writeCachedResultToStream(this);                 
+                } else {
+                    // We can use the parent stream
+                    processHeaders(m_headers, m_res);
+                    writeCachedResultToStream(m_res);  
+                }
+            }
+        }        
+        return m_cachedEntry;
+    }
+    
+    /**
+     * Sets the cache key for this response from 
+     * a pre-calculated cache key.<p>
+     *
+     * @param value the cache key to set
+     */
+    void setCmsCacheKey(CmsFlexCacheKey value) {
+        m_key = value;
+    }
+    
+    /** 
+     * Sets the cache key for this response, which is calculated
+     * from the provided parameters.<p>
+     *
+     * @param resourcename the target resouce for which to create the cache key
+     * @param value the value of the cache property of the resource
+     * @param online indicates if this resource is online or offline
+     * @param workplace indicates if this resource is a workplace resource
+     * @return the generated cache key
+     * @throws CmsException in case the value String had a parse error
+     */
+    CmsFlexCacheKey setCmsCacheKey(String resourcename, String value, boolean online, boolean workplace) throws CmsException {
+        m_key = new CmsFlexCacheKey(resourcename, value, online, workplace);
+        if (m_key.hadParseError()) {
+            // We throw the exception here to make sure this response has a valid key (cache=never)
+            throw new org.opencms.main.CmsException(org.opencms.main.CmsException.C_FLEX_CACHE);            
+        }
+        return m_key;
     }
 
     /**
@@ -239,20 +793,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_includeMode = value;
     }
     
-    /** 
-     * This flag indicates if the response is suspended or not.<p>
-     * 
-     * A suspended response mut not write further output to any stream or
-     * process a cache entry for itself.<p>
-     *
-     * Currently, a response is only suspended if it is redirected.<p>
-     *
-     * @return true if the response is suspended, false otherwise
-     */
-    public boolean isSuspended() {
-        return m_suspended;
-    }
-    
     /**
      * Sets the suspended status of the response, and also sets
      * the suspend status of all responses wrapping this response.<p>
@@ -265,60 +805,84 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     void setSuspended(boolean value) {
         m_suspended = value;
     }
-        
-    /**
-     * Provides access to the header cache of the top wrapper.<p>
-     *
-     * @return the Map of cached headers
-     */
-    public Map getHeaders() {
-        return m_headers;
-    }    
-        
-    /**
-     * Adds some bytes to the list of include results.<p>
-     * 
-     * Should be used only in inclusion-scenarios 
-     * like the JSP cms:include tag processing.<p>
-     * 
-     * @param result the byte array to add
-     */
-    void addToIncludeResults(byte[] result) {
-        if (m_includeResults == null) {
-            m_includeResults = new ArrayList(10);
-        }
-        m_includeResults.add(result);
-    }
-        
     
     /** 
-     * Adds an inclusion target to the list of include results.<p>
-     * 
-     * Should be used only in inclusion-scenarios
-     * like the JSP cms:include tag processing.<p>
+     * Writes some bytes to the current output stream,
+     * this method should be called from CmsFlexCacheEntry.service() only.<p>
      *
-     * @param target the include target name to add
-     * @param parameterMap the map of parameters given with the include command
+     * @param bytes an array of bytes
+     * @param useArray indicates that the byte array should be used directly
+     * @throws IOException in case something goes wrong while writing to the stream
      */
-    public void addToIncludeList(String target, Map parameterMap) {
-        if (m_includeList == null) {
-            m_includeList = new ArrayList(10);
-            m_includeListParameters = new ArrayList(10);
-        }        
-        m_includeListParameters.add(parameterMap);
-        m_includeList.add(target);
+    void writeToOutputStream(byte[] bytes, boolean useArray) throws IOException {
+        if (isSuspended()) {
+            return;
+        }
+        if (m_writeOnlyToBuffer) {
+            if (useArray) {
+                // This cached entry has no sub-elements (it a "leaf") and so we can just use it's bytes
+                m_cacheBytes = bytes;                                  
+            } else {
+                if (m_out == null) {
+                    initStream();
+                }
+                // In this case the buffer will not write to the servlet stream, but to it's internal buffer only
+                m_out.write(bytes);
+            }
+        } else {
+            if (DEBUG) {
+                System.err.println("FlexResponse.writeToOutputStream(): Writing directly to wrapped output stream!");
+            }
+            // The request is not buffered, so we can write directly to it's parents output stream 
+            m_res.getOutputStream().write(bytes);
+            m_res.getOutputStream().flush();
+        }    
     }
     
     /**
-     * Is used to check if the response has an include list, 
-     * which indicates a) it is probalbly processing a JSP element 
-     * and b) it can never be streamed and alwys must be buffered.<p>
+     * Helper method to add a value in the internal header list.<p>
      *
-     * @return true if this response has an include list, false otherwise
+     * @param headers the headers to look up the value in
+     * @param name the name to look up
+     * @param value the value to set
      */
-    boolean hasIncludeList() {
-        return m_includeList != null;
-    }    
+    private void addHeaderList(Map headers, String name, String value) {
+        ArrayList values = (ArrayList) headers.get(name);
+        if (values == null) {
+            values = new ArrayList();
+            headers.put(name, values);            
+        } 
+        values.add(value);        
+    }
+    
+    /**
+     * Initializes the current responses output stream 
+     * and the corrosponding print writer.<p>
+     *
+     * @throws IOException in case something goes wrong while initializing
+     */    
+    private void initStream() throws IOException {        
+        if (m_out == null) {
+            if (! m_writeOnlyToBuffer) {
+                // We can use the parents output stream
+                if (m_cachingRequired || (m_controller.getResponseStackSize() > 1)) {
+                    // We are allowed to cache our results (probably to contruct a new cache entry)
+                    m_out = new CmsFlexResponse.CmsServletOutputStream(m_res.getOutputStream());        
+                } else {
+                    // We are not allowed to cache so we just use the parents output stream
+                    m_out = (CmsFlexResponse.CmsServletOutputStream)m_res.getOutputStream();
+                }
+            } else {
+                // Construct a "buffer only" output stream
+                m_out = new CmsFlexResponse.CmsServletOutputStream();
+            }
+        }
+        if (m_writer == null) {
+            // Encoding project:
+            // Create a PrintWriter that uses the OpenCms default encoding
+            m_writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(m_out, OpenCms.getSystemInfo().getDefaultEncoding())), false);
+        }
+    }
 
     /**
      * This method is needed to process pages that can NOT be analyzed
@@ -401,6 +965,19 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             }
         }
     }
+   
+    /**
+     * Helper method to set a value in the internal header list.
+     *
+     * @param headers the headers to set the value in
+     * @param name the name to set
+     * @param value the value to set
+     */
+    private void setHeaderList(Map headers, String name, String value) {
+        ArrayList values = new ArrayList();
+        values.add(C_SETHEADER + value);
+        headers.put(name, values);        
+    }
     
     /** 
      * This delivers cached sub-elements back to the stream.
@@ -430,551 +1007,5 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             }
         }
     }
-    
-    /**
-     * Generates a CmsFlexCacheEntry from the current response using the 
-     * stored include results.<p>
-     * 
-     * In case the results were written only to the buffer until now, 
-     * they are now re-written on the output stream, with all included 
-     * elements.<p>
-     *
-     * @throws IOException tn case something goes wrong while writing to the output stream
-     * @return  the generated cache entry
-     */    
-    CmsFlexCacheEntry processCacheEntry() throws IOException {    
-        if (isSuspended() && (m_bufferRedirect == null)) {
-            // An included element redirected this response, no cache entry must be produced
-            return null;
-        }
-        if (m_cachingRequired) {
-            // Cache entry must only be calculated if it's actually needed (always true if we write only to buffer)
-            m_cachedEntry = new CmsFlexCacheEntry();    
-            if (m_bufferRedirect != null) {
-                // Only set et cached redirect target
-                m_cachedEntry.setRedirect(m_bufferRedirect);
-            } else {
-                // Add cached headers
-                m_cachedEntry.addHeaders(m_bufferHeaders);
-                // Add cached output 
-                if (m_includeList != null) {
-                    // Probably JSP: We must analyze out stream for includes calls
-                    // Also, m_writeOnlyToBuffer must be "true" or m_includeList can not be != null
-                    processIncludeList();   
-                } else {
-                    // Output is delivered directly, no include call parsing required
-                    m_cachedEntry.add(getWriterBytes());
-                }
-            }
-            m_cachedEntry.complete();
-        }        
-        // In case the output was only bufferd we have to re-write it to the "right" stream       
-        if (m_writeOnlyToBuffer) {
-            
-            // Since we are processing a cache entry caching is not required
-            m_cachingRequired = false;    
-                        
-            if (m_bufferRedirect != null) {
-                // Send buffered redirect, will trigger redirect of top response
-                sendRedirect(m_bufferRedirect);
-            } else {  
-                // Process the output               
-                if (m_parentWritesOnlyToBuffer) {                                               
-                    // Write results back to own stream, headers are already in buffer
-                    if (m_out != null) {
-                        try {
-                            m_out.clear(); 
-                        } catch (Exception e) {
-                            if (DEBUG) {
-                                System.err.println("FlexResponse: caught exception while calling m_out.clear() in processCacheEntry()\nException: " + e);
-                            }
-                        }
-                    } else {
-                        if (DEBUG) {
-                            System.err.println("FlexResponse: m_out == null in processCacheEntry()");
-                        }
-                    }
-                    writeCachedResultToStream(this);                 
-                } else {
-                    // We can use the parent stream
-                    processHeaders(m_headers, m_res);
-                    writeCachedResultToStream(m_res);  
-                }
-            }
-        }        
-        return m_cachedEntry;
-    }
-    
-    /**
-     * Returns the bytes that have been written on the current writers output stream.<p>
-     *
-     * @return the bytes that have been written on the current writers output stream
-     */    
-    public byte[] getWriterBytes() {
-        if (isSuspended()) {
-            // No output whatsoever if the response is suspended
-            return new byte[0];
-        }
-        if (m_cacheBytes != null) {
-            // Optimization for cached "leaf" nodes, here I re-use the array from the cache
-            return m_cacheBytes;
-        }
-        if (m_out == null) { 
-            // No output was written so far, just return an empty array
-            return new byte[0];
-        }
-        if (m_writer != null) { 
-            // Flush the writer in case something was written on it
-            m_writer.flush();
-        }
-        return m_out.getBytes();
-    }
-    
-    /**
-     * Initializes the current responses output stream 
-     * and the corrosponding print writer.<p>
-     *
-     * @throws IOException in case something goes wrong while initializing
-     */    
-    private void initStream() throws IOException {        
-        if (m_out == null) {
-            if (! m_writeOnlyToBuffer) {
-                // We can use the parents output stream
-                if (m_cachingRequired || (m_controller.getResponseStackSize() > 1)) {
-                    // We are allowed to cache our results (probably to contruct a new cache entry)
-                    m_out = new CmsFlexResponse.CmsServletOutputStream(m_res.getOutputStream());        
-                } else {
-                    // We are not allowed to cache so we just use the parents output stream
-                    m_out = (CmsFlexResponse.CmsServletOutputStream)m_res.getOutputStream();
-                }
-            } else {
-                // Construct a "buffer only" output stream
-                m_out = new CmsFlexResponse.CmsServletOutputStream();
-            }
-        }
-        if (m_writer == null) {
-            // Encoding project:
-            // Create a PrintWriter that uses the OpenCms default encoding
-            m_writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(m_out, OpenCms.getSystemInfo().getDefaultEncoding())), false);
-        }
-    }
-    
-    /** 
-     * Writes some bytes to the current output stream,
-     * this method should be called from CmsFlexCacheEntry.service() only.<p>
-     *
-     * @param bytes an array of bytes
-     * @param useArray indicates that the byte array should be used directly
-     * @throws IOException in case something goes wrong while writing to the stream
-     */
-    void writeToOutputStream(byte[] bytes, boolean useArray) throws IOException {
-        if (isSuspended()) {
-            return;
-        }
-        if (m_writeOnlyToBuffer) {
-            if (useArray) {
-                // This cached entry has no sub-elements (it a "leaf") and so we can just use it's bytes
-                m_cacheBytes = bytes;                                  
-            } else {
-                if (m_out == null) {
-                    initStream();
-                }
-                // In this case the buffer will not write to the servlet stream, but to it's internal buffer only
-                m_out.write(bytes);
-            }
-        } else {
-            if (DEBUG) {
-                System.err.println("FlexResponse.writeToOutputStream(): Writing directly to wrapped output stream!");
-            }
-            // The request is not buffered, so we can write directly to it's parents output stream 
-            m_res.getOutputStream().write(bytes);
-            m_res.getOutputStream().flush();
-        }    
-    }
-
-    /**
-     * Returns the cache key for to this response.<p>
-     *
-     * @return the cache key for to this response
-     */
-    CmsFlexCacheKey getCmsCacheKey() {
-        return m_key;
-    }
-    
-    /** 
-     * Sets the cache key for this response, which is calculated
-     * from the provided parameters.<p>
-     *
-     * @param resourcename the target resouce for which to create the cache key
-     * @param value the value of the cache property of the resource
-     * @param online indicates if this resource is online or offline
-     * @param workplace indicates if this resource is a workplace resource
-     * @return the generated cache key
-     * @throws CmsException in case the value String had a parse error
-     */
-    CmsFlexCacheKey setCmsCacheKey(String resourcename, String value, boolean online, boolean workplace) throws CmsException {
-        m_key = new CmsFlexCacheKey(resourcename, value, online, workplace);
-        if (m_key.hadParseError()) {
-            // We throw the exception here to make sure this response has a valid key (cache=never)
-            throw new org.opencms.main.CmsException(org.opencms.main.CmsException.C_FLEX_CACHE);            
-        }
-        return m_key;
-    }
-    
-    /**
-     * Sets the cache key for this response from 
-     * a pre-calculated cache key.<p>
-     *
-     * @param value the cache key to set
-     */
-    void setCmsCacheKey(CmsFlexCacheKey value) {
-        m_key = value;
-    }
-    
-    /**
-     * Helper method to add a value in the internal header list.<p>
-     *
-     * @param headers the headers to look up the value in
-     * @param name the name to look up
-     * @param value the value to set
-     */
-    private void addHeaderList(Map headers, String name, String value) {
-        ArrayList values = (ArrayList) headers.get(name);
-        if (values == null) {
-            values = new ArrayList();
-            headers.put(name, values);            
-        } 
-        values.add(value);        
-    }
-   
-    /**
-     * Helper method to set a value in the internal header list.
-     *
-     * @param headers the headers to set the value in
-     * @param name the name to set
-     * @param value the value to set
-     */
-    private void setHeaderList(Map headers, String name, String value) {
-        ArrayList values = new ArrayList();
-        values.add(C_SETHEADER + value);
-        headers.put(name, values);        
-    }
-    
-    /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
-     *
-     * @see javax.servlet.ServletResponse#getWriter()
-     */
-    public java.io.PrintWriter getWriter() throws IOException {
-        if (m_writer == null) {
-            initStream();
-        }
-        return m_writer;
-    }
-    
-    /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
-     *
-     * @see javax.servlet.ServletResponse#getOutputStream()
-     */
-    public javax.servlet.ServletOutputStream getOutputStream() throws IOException {
-        if (m_out == null) {
-            initStream();
-        }
-        return m_out;
-    }
-
-    /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
-     *
-     * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
-     */
-    public void sendRedirect(String location) throws IOException {
-        // Ignore any redirects after the first one
-        if (isSuspended() && (! location.equals(m_bufferRedirect))) {
-            return;
-        }
-        if (DEBUG) {
-            System.err.println("FlexResponse: sendRedirect to target " + location);
-        }
-                
-        if (m_cachingRequired && ! m_includeMode) {
-            m_bufferRedirect = location;
-        }
-        
-        if (! m_cachingRequired) {
-            // If caching is required a cached entry will be constructed first and redirect will
-            // be called after this is completed and stored in the cache
-            if (DEBUG) {
-                System.err.println("FlexResponse: getTopResponse.sendRedirect() to target " + location);
-            }
-            
-            m_controller.getTopResponse().sendRedirect(location);        
-        }
-        
-        m_controller.suspendFlexResponse();
-    }
-    
-    /**
-     * Process the headers stored in the provided map and add them to the response.<p>
-     * 
-     * @param headers the headers to add
-     * @param res the resonse to add the headers to
-     */
-    public static void processHeaders(Map headers, HttpServletResponse res) {
-        if (headers != null) {
-            java.util.Iterator i = headers.keySet().iterator();
-            while (i.hasNext()) {
-                String key = (String)i.next();
-                ArrayList l = (ArrayList)headers.get(key);  
-                java.util.ListIterator j = l.listIterator(); 
-                while (j.hasNext()) {
-                    if ((j.nextIndex() == 0) && (((String)l.get(0)).startsWith(C_SETHEADER)))  {
-                        String s = (String)j.next();
-                        res.setHeader(key, s.substring(C_SETHEADER.length()));
-                    } else {
-                        res.addHeader(key, (String)j.next());
-                    }
-                }
-            }        
-        }          
-    }
-    
-    /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
-     *
-     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
-     */
-    public void setHeader(String name, String value) {
-        if (isSuspended()) {
-            return;
-        }
-
-        if (m_cachingRequired && ! m_includeMode) {
-            setHeaderList(m_bufferHeaders, name, value);
-            if (DEBUG) {
-                System.err.println("FlexResponse: setHeader(" + name + ", " + value + ") in element buffer");
-            }
-        }
-        
-        if (m_writeOnlyToBuffer) {
-            setHeaderList(m_headers, name, value);
-            if (DEBUG) {
-                System.err.println("FlexResponse: setHeader(" + name + ", " + value + ") in main header buffer");
-            }
-        } else {
-            if (DEBUG) {
-                System.err.println("FlexResponse: setHeader(" + name + ", " + value + ") passing to parent");
-            }
-            m_res.setHeader(name, value);
-        }
-    }
-
-    /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
-     *
-     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
-     */   
-    public void addHeader(String name, String value) {
-        if (isSuspended()) {
-            return;
-        }
-
-        if (m_cachingRequired && ! m_includeMode) {
-            addHeaderList(m_bufferHeaders, name, value);
-            if (DEBUG) {
-                System.err.println("FlexResponse: addHeader(" + name + ", " + value + ") to element buffer");
-            }
-        }
-        
-        if (m_writeOnlyToBuffer) {
-            addHeaderList(m_headers, name, value);
-            if (DEBUG) {
-                System.err.println("FlexResponse: addHeader(" + name + ", " + value + ") to main header buffer");
-            }
-        } else {
-            if (DEBUG) {
-                System.err.println("FlexResponse: addHeader(" + name + ", " + value + ") passing to parent");
-            }
-            m_res.addHeader(name, value);
-        }
-    }
-    
-    /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
-     *
-     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
-     */
-    public void setDateHeader(String name, long date) {
-        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", java.util.Locale.US);
-        setHeader(name, format.format(new java.util.Date(date)));
-    }
-
-    /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
-     *
-     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
-     */
-    public void addDateHeader(String name, long date) {
-        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", java.util.Locale.US);
-        addHeader(name, format.format(new java.util.Date(date)));
-    }
-
-    /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
-     *
-     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
-     */   
-    public void setIntHeader(String name, int value) {
-        setHeader(name, "" + value);       
-    }
-
-    /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
-     *
-     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
-     */    
-    public void addIntHeader(String name, int value) {
-        addHeader(name, "" + value);
-    }    
-
-    /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
-     *
-     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
-     */
-    public void setContentType(String type) {
-        if (DEBUG) {
-            System.err.println("FlexResponse: setContentType(" +type + ") called");
-        }
-        // TODO: Check setContentType() implementation
-        // If this is not the "Top-Level" element ignore all settings of content type    
-        // If this is not done an included JSP could reset the type with some unwanted defaults    
-        if (! m_isTopElement) {
-            return;
-        }
-        /*       
-        if (type != null) {
-            // ensure that the encoding set by OpenCms is not overwritten by the default form the JSP            
-            type = type.toLowerCase();
-            int i = type.indexOf("charset");
-            if (type.startsWith("text") && (i > 0)) {
-                StringBuffer buf = new StringBuffer();
-                buf.append(type.substring(0, i));
-                buf.append("charset=");
-                buf.append(m_encoding);
-                type = new String(buf);
-                if (DEBUG) System.err.println("FlexResponse: setContentType() changed type to " +type);
-            }            
-        }
-        m_res.setContentType(type);
-        */        
-    }
-    
-    /**
-     * Wrapped implementation of the ServletOutputStream.<p>
-     * 
-     * This implementation writes to an internal buffer and optionally to another 
-     * output stream at the same time.
-     * It should be fully transparent to the standard ServletOutputStream.<p>
-     */    
-    private class CmsServletOutputStream extends ServletOutputStream {
-
-        /** The internal steam buffer */
-        private ByteArrayOutputStream m_stream = null;
-        
-        /** The optional output stream to write to */
-        private ServletOutputStream m_servletStream = null;
-
-        /**
-         * Constructor that must be used if the stream should write 
-         * only to a buffer.<p>
-         */
-        public CmsServletOutputStream() {
-            this.m_servletStream = null;
-            clear();
-        }   
-
-        /**
-         * Constructor that must be used if the stream should write 
-         * to a buffer and to another stream at the same time.<p>
-         *
-         * @param servletStream The stream to write to
-         */        
-        public CmsServletOutputStream(ServletOutputStream servletStream) {
-            this.m_servletStream = servletStream;
-            clear();                  
-        }   
-                
-        /**
-         * @see java.io.OutputStream#write(int)
-         */
-        public void write(int b) throws IOException {
-            m_stream.write(b);
-            if (m_servletStream != null) {
-                m_servletStream.write(b);
-            }            
-        }
-        
-        /**
-         * @see java.io.OutputStream#write(byte[], int, int)
-         */
-        public void write(byte[] b, int off, int len) throws IOException {
-            m_stream.write(b, off, len);
-            if (m_servletStream != null) {
-                m_servletStream.write(b, off, len);
-            }
-        }
-        
-        /**
-         * Writes an array of bytes only to the included servlet stream,
-         * not to the buffer.<p>
-         *
-         * @param b The bytes to write to the stream
-         * @throws IOException In case the write() operation on the included servlet stream raises one
-         */
-        public void writeToServletStream(byte[] b) throws IOException {
-            if (m_servletStream != null) {
-                m_servletStream.write(b);
-            }
-        }
-        
-        /**
-         * @see java.io.OutputStream#flush()
-         */
-        public void flush() throws IOException {
-            if (DEBUG) {
-                System.err.println("CmsServletOutputStream: flush() called! servletStream=" + m_servletStream);
-            }
-            if (m_servletStream != null) {
-                m_servletStream.flush();
-            }
-        }
-                
-        /**
-         * Provides access to the bytes cached in the buffer.<p>
-         *
-         * @return the cached bytes from the buffer
-         */
-        public byte[] getBytes() {
-            return m_stream.toByteArray();
-        }
-        
-        /**
-         * Clears the buffer by initializing the buffer with a new stream.<p>
-         */
-        public void clear() {
-            m_stream = new java.io.ByteArrayOutputStream(1024);
-        }
-        
-        /**
-         * @see java.io.OutputStream#close()
-         */
-        public void close() throws IOException {
-            m_stream = null;
-            m_servletStream = null;
-            super.close();
-        }
-    }    
     
 }

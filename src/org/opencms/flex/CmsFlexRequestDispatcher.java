@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/02/27 10:27:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/03/22 16:34:06 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.flex;
 
+import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
@@ -58,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -201,8 +202,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         }
         
         // indicate to response that all further output or headers are result of include calls
-        f_res.setCmsIncludeMode(true);
-                
+        f_res.setCmsIncludeMode(true);                
+        
         // create wrapper for request & response
         CmsFlexRequest w_req = new CmsFlexRequest((HttpServletRequest)req, controller, m_vfsTarget);
         CmsFlexResponse w_res = new CmsFlexResponse((HttpServletResponse)res, controller); 
@@ -224,6 +225,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         if (DEBUG > 0) {
                             System.err.println("FlexDispatcher: Loading file from cache for " + m_vfsTarget);
                         }
+                        controller.updateDateLastModified(entry.getDateLastModified());
                         entry.service(w_req, w_res);
                     } catch (CmsException e) {
                         Throwable t;
@@ -246,7 +248,11 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         String cacheProperty = null;
                         try {
                             // read caching property from requested VFS resource                                     
-                            cacheProperty = cms.readProperty(m_vfsTarget, org.opencms.loader.I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);                    
+                            cacheProperty = cms.readProperty(m_vfsTarget, I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);
+                            if (cacheProperty == null) {
+                                // caching property not set, use default for resource type
+                                cacheProperty = cms.getResourceType(resource.getType()).getCachePropertyDefault();
+                            }
                             cache.putKey(w_res.setCmsCacheKey(cms.getRequestContext().addSiteRoot(m_vfsTarget), cacheProperty, f_req.isOnline(), f_req.isWorkplace()));                                            
                         } catch (CmsException e) {
                             if (e.getType() == CmsException.C_FLEX_CACHE) {
@@ -271,7 +277,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
     
             if (entry == null) {
                 // the target is not cached (or caching off), so load it with the internal resource loader
-                org.opencms.loader.I_CmsResourceLoader loader = null;
+                I_CmsResourceLoader loader = null;
     
                 String variation = null;
                 // check cache keys to see if the result can be cached 
@@ -311,9 +317,14 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 }
     
                 entry = w_res.processCacheEntry(); 
-                if ((entry != null) && (variation != null) && w_req.isCacheable()) {                                      
+                if ((entry != null) && (variation != null) && w_req.isCacheable()) {   
+                    // the result can be cached
+                    entry.updateDateLastModified(w_res.getDateLastModified());
                     cache.put(w_res.getCmsCacheKey(), entry, variation);                        
-                }                
+                } else {
+                    // result can not be cached, do not use "last modified" optimization
+                    controller.updateDateLastModified(-1);
+                }
             }          
             
             if (f_res.hasIncludeList()) {

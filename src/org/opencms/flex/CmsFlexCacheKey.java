@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2004/02/19 19:14:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/03/22 16:34:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,19 @@
  
 package org.opencms.flex;
 
+import org.opencms.file.CmsObject;
+import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsObject;
-
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletRequest;
 
@@ -50,7 +56,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsFlexCacheKey {
     
@@ -73,10 +79,10 @@ public class CmsFlexCacheKey {
     public String m_user;
 
     /** Cache key variable: List of parameters */
-    public java.util.Map m_params;
+    public Map m_params;
     
     /** Cache key variable: List of "blocking" parameters */
-    public java.util.Set m_noparams;
+    public Set m_noparams;
     
     /** Cache key variable: Timeout of the resource */
     public long m_timeout;
@@ -88,10 +94,16 @@ public class CmsFlexCacheKey {
     public String m_ip; 
         
     /** Cache key variable: Distinguishes request schemes (http, https etc.) */
-    public java.util.Set m_schemes;
+    public Set m_schemes;
     
     /** Cache key variable: The request TCP/IP port */
-    public java.util.Set m_ports;
+    public Set m_ports;
+    
+    /** Cache key variable: The requested element */
+    public String m_element;
+    
+    /** Cache key variable: The requested locale */
+    public String m_locale;
 
     /** The list of keywords of the Flex cache language */
     private static final List m_cacheCmds = Arrays.asList(new String[] {
@@ -125,29 +137,33 @@ public class CmsFlexCacheKey {
         m_resource = getKeyName(cms.getRequestContext().addSiteRoot(target), online, workplace);     
         m_variation = "never";
         
-        // Get the top-level file name / uri
+        // get the top-level file name / uri
         m_uri = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
-        // Fetch user from the current cms
+        // fetch user from the current cms
         m_user = cms.getRequestContext().currentUser().getName();        
-        // Get the params
+        // get the params
         m_params = request.getParameterMap();
         if (m_params.size() == 0) {
             m_params = null;
         }
-        // No-params are null for a request key
+        // no-params are null for a request key
         m_noparams = null;
-        // Save the request time 
+        // save the request time 
         m_timeout = System.currentTimeMillis();
         // publish-clear is not related to the request
         m_publish = false;
         // alwalys is not related to the request 
         m_always = 0;
-        // Save the request scheme
-        m_schemes = java.util.Collections.singleton(request.getScheme().toLowerCase());
-        // Save the request port
-        m_ports = java.util.Collections.singleton(new Integer(request.getServerPort()));
-        // Save the request ip
+        // save the request scheme
+        m_schemes = Collections.singleton(request.getScheme().toLowerCase());
+        // save the request port
+        m_ports = Collections.singleton(new Integer(request.getServerPort()));
+        // save the request ip        
         m_ip = cms.getRequestContext().getRemoteAddress();
+        // save the request Locale
+        m_locale = cms.getRequestContext().getLocale().toString();
+        // save the requested element
+        m_element = request.getParameter(I_CmsResourceLoader.C_TEMPLATE_ELEMENT);
         if (OpenCms.getLog(this).isDebugEnabled()) {        
             OpenCms.getLog(this).debug("Creating CmsFlexCacheKey for Request: " + this.toString());
         }        
@@ -272,6 +288,18 @@ public class CmsFlexCacheKey {
             str.append(");");
         }
         
+        if (m_element != null) {
+            str.append("element=(");
+            str.append(key.m_element);
+            str.append(");");
+        }
+        
+        if (m_locale != null) {
+            str.append("locale=(");
+            str.append(key.m_locale);
+            str.append(");");
+        }        
+        
         if (m_ip != null) {
             str.append("ip=(");
             str.append(key.m_ip);
@@ -288,7 +316,7 @@ public class CmsFlexCacheKey {
             str.append("params=(");
             if (key.m_params != null) {
                 if (m_params.size() > 0) {
-                    // Match only params listed in cache directives
+                    // match only params listed in cache directives
                     Iterator i = m_params.keySet().iterator();            
                     while (i.hasNext()) {
                         Object o = i.next();
@@ -304,10 +332,10 @@ public class CmsFlexCacheKey {
                         }
                     }
                 } else {
-                    // Match all request params
+                    // match all request params
                     Iterator i = key.m_params.keySet().iterator();            
                     while (i.hasNext()) {
-                        Object o = i.next();
+                        Object o = i.next();                     
                         str.append(o);
                         str.append("=");
                         // TODO: handle multiple occurences of the same parameter value
@@ -367,7 +395,7 @@ public class CmsFlexCacheKey {
             return str.toString();
         }
         if (m_noparams != null) {
-            // Add "no-cachable" parameters
+            // add "no-cachable" parameters
             if (m_noparams.size() == 0) {
                 str.append("no-params;");
             } else {
@@ -399,7 +427,28 @@ public class CmsFlexCacheKey {
                 str.append(");");
             }
         }
+        if (m_element != null) {
+            // add element
+            if (m_element == IS_USED) {
+                str.append("element;");
+            } else {
+                str.append("element=(");
+                str.append(m_element);
+                str.append(");");
+            }
+        }   
+        if (m_locale != null) {
+            // add locale
+            if (m_locale == IS_USED) {
+                str.append("locale;");
+            } else {
+                str.append("locale=(");
+                str.append(m_locale);
+                str.append(");");
+            }
+        }        
         if (m_ip != null) {
+            // add ip
             if (m_ip == IS_USED) {
                 str.append("ip;");
             } else {
@@ -409,7 +458,7 @@ public class CmsFlexCacheKey {
             }
         }        
         if (m_user != null) {
-            // Add user data
+            // add user data
             if (m_user == IS_USED) {
                 str.append("user;");
             } else {
@@ -419,7 +468,7 @@ public class CmsFlexCacheKey {
             }
         }               
         if (m_params != null) {
-            // Add parameters
+            // add parameters
             if (m_params.size() == 0) {
                 str.append("params;");
             } else {
@@ -427,7 +476,10 @@ public class CmsFlexCacheKey {
                 Iterator i = m_params.keySet().iterator();
                 while (i.hasNext()) {
                     Object o = i.next();
-                    str.append(o);
+                    if (I_CmsResourceLoader.C_TEMPLATE_ELEMENT.equals(o)) {
+                        continue;
+                    }
+                    str.append(o);                    
                     try {
                         // TODO: handle multiple occurences of the same parameter value
                         String[] param = (String[])m_params.get(o);
@@ -448,17 +500,17 @@ public class CmsFlexCacheKey {
             }
         }
         if (m_timeout >= 0) {
-            // Add timeout 
+            // add timeout 
             str.append("timeout=(");
             str.append(m_timeout);
             str.append(");");
         }
         if (m_publish) {
-            // Add publish parameters
+            // add publish parameters
             str.append("publish-clear;");
         }
         if (m_schemes != null) {
-            // Add schemes
+            // add schemes
             if (m_schemes.size() == 0) {
                 str.append("schemes;");
             } else {
@@ -474,7 +526,7 @@ public class CmsFlexCacheKey {
             }
         }
         if (m_ports != null) {
-            // Add ports
+            // add ports
             if (m_ports.size() == 0) {
                 str.append("ports;");
             } else {
@@ -503,7 +555,7 @@ public class CmsFlexCacheKey {
      * @param key the String to parse (usually read from the file property "cache")
      */    
     private void parseFlexKey(String key) {
-        java.util.StringTokenizer toker = new java.util.StringTokenizer(key, ";");
+        StringTokenizer toker = new StringTokenizer(key, ";");
         try {
             while (toker.hasMoreElements()) {
                 String t = toker.nextToken();
@@ -541,6 +593,14 @@ public class CmsFlexCacheKey {
                         break;
                     case 4: // params
                         m_params = parseValueMap(v);
+                        if (m_params.containsKey(I_CmsResourceLoader.C_TEMPLATE_ELEMENT)) {
+                            // workaround for element setting by parameter in OpenCms < 6.0
+                            m_element = IS_USED;
+                            m_params.remove(I_CmsResourceLoader.C_TEMPLATE_ELEMENT);
+                            if (m_params.size() == 0) {
+                                m_params = null;
+                            }
+                        }
                         break;
                     case 5: // no-params
                         if (v != null) {
@@ -548,7 +608,7 @@ public class CmsFlexCacheKey {
                             m_noparams = parseValueMap(v).keySet();
                         } else {
                             // Never cache with parameters
-                            m_noparams = new java.util.HashSet(0);
+                            m_noparams = new HashSet(0);
                         }
                         break;
                     case 6: // timeout
@@ -567,6 +627,12 @@ public class CmsFlexCacheKey {
                         break;
                     case 13: // ip
                         m_ip = IS_USED; // marks ip as being used
+                        break;
+                    case 14: // element
+                        m_element = IS_USED;
+                        break;
+                    case 15: // locale
+                        m_locale = IS_USED;
                         break;
                     default: // unknown directive, throw error
                         m_parseError = true;
@@ -592,7 +658,7 @@ public class CmsFlexCacheKey {
      * @param value the String to parse 
      * @return a Map that contains of the parsed values, only the keyset of the Map is needed later
      */    
-    private java.util.Map parseValueMap(String value) {
+    private Map parseValueMap(String value) {
         if (value.charAt(0) == '(') {
             value = value.substring(1);
         }
@@ -606,8 +672,8 @@ public class CmsFlexCacheKey {
         if (DEBUG) {
             System.err.println("Parsing map: " + value);
         }
-        java.util.StringTokenizer toker = new java.util.StringTokenizer(value, ",");
-        java.util.Map result = new java.util.HashMap();
+        StringTokenizer toker = new StringTokenizer(value, ",");
+        Map result = new HashMap();
         while (toker.hasMoreTokens()) {
             result.put(toker.nextToken().trim(), new String[] {"&?&"});
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2004/02/24 13:26:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/03/22 16:34:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsFlexController {
     
@@ -61,6 +61,9 @@ public class CmsFlexController {
 
     /** The wrapped CmsObject provides JSP with access to the core system */
     private CmsObject m_cmsObject;
+    
+    /** The combined "last modified" date for all resources read during this request */
+    private long m_dateLastModified;
         
     /** List of wrapped CmsFlexRequests */
     private List m_flexRequestList;
@@ -253,6 +256,20 @@ public class CmsFlexController {
     }
     
     /**
+     * Returns the combined "last modified" date for all resources read during this request.<p>
+     * 
+     * @return the combined "last modified" date for all resources read during this request
+     */
+    public long getDateLastModified() {
+        if (m_dateLastModified < 0) {
+            return -1;
+        } else {
+            // precision in date headers is only second, not millisecond
+            return (m_dateLastModified / 1000) * 1000;
+        }
+    }
+    
+    /**
      * Returns the size of the response stack.<p>
      * 
      * @return the size of the response stack
@@ -376,5 +393,22 @@ public class CmsFlexController {
             CmsFlexResponse res = (CmsFlexResponse)i.next();
             res.setSuspended(true);
         }
+    }
+    
+    /**
+     * Updates the "last modified" date for all resources read during this request with the given value.<p>
+     * 
+     * The currently stored value is only updated with the new value if
+     * the new value is either larger (i.e. newer) then the stored value,
+     * or if the new value is less then zero, which indicates that the "last modified"
+     * optimization can not be used because the element is dynamic.<p>
+     * 
+     * @param dateLastModified the value to update the "last modified" date with
+     */
+    public void updateDateLastModified(long dateLastModified) {
+        getCurrentResponse().updateDateLastModified(dateLastModified);
+        if ((m_dateLastModified > -1) && ((dateLastModified > m_dateLastModified) || (dateLastModified < 0))) {
+            m_dateLastModified = dateLastModified;
+        }            
     }
 }
