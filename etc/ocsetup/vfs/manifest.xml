@@ -2254,6 +2254,53 @@
 			<access>15</access>
 			<properties/>
 		</file>
+        <file>
+            <destination>system/workplace/administration/syncfolder</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>visiblemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[icon.syncfolder]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_syncfolder_properties]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[13]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>administration/syncfolder/index.html</source>
+            <destination>system/workplace/administration/syncfolder/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/syncfolder/syncfolder_properties</source>
+            <destination>system/workplace/administration/syncfolder/syncfolder_properties</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
 		<file>
 			<destination>system/workplace/administration/user</destination>
 			<type>folder</type>
@@ -8607,6 +8654,24 @@
 					<value><![CDATA[ic_server]]></value>
 				</property>
 			</properties>
+		</file>
+		<file>
+			<source>pics/system/ic_syncfolder_properties.gif</source>
+			<destination>system/workplace/pics/ic_syncfolder_properties.gif</destination>
+			<type>image</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>15</access>
+			<properties/>
+		</file>
+		<file>
+			<source>pics/system/ic_syncfolder_properties_in.gif</source>
+			<destination>system/workplace/pics/ic_syncfolder_properties_in.gif</destination>
+			<type>image</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>15</access>
+			<properties/>
 		</file>
 		<file>
 			<source>pics/system/ic_task_activ.gif</source>
