@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/14 15:37:26 $
-* Version: $Revision: 1.376 $
+* Date   : $Date: 2003/08/15 12:44:25 $
+* Version: $Revision: 1.377 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.376 $
+ * @version $Revision: 1.377 $
  */
 public class CmsObject {
 
@@ -2559,17 +2559,31 @@ public class CmsObject {
     }
 
     /**
-     * Logs a user into the Cms, if the password is correct.
+     * Logs a user into the Cms, if the password is correct.<p>
      *
-     * @param username the name of the user.
-     * @param password the password of the user.
-     * @return the name of the logged in user.
+     * @param username the name of the user
+     * @param password the password of the user
+     * @return the name of the logged in user
      *
      * @throws CmsException if operation was not successful
      */
     public String loginUser(String username, String password) throws CmsException {
+        return loginUser(username, password, m_context.getRemoteAddress());
+    }
+    
+    /**
+     * Logs a user with a given ip address into the Cms, if the password is correct.<p>
+     *
+     * @param username the name of the user
+     * @param password the password of the user
+     * @param remoteAddress the ip address
+     * @return the name of the logged in user
+     *
+     * @throws CmsException if operation was not successful
+     */    
+    public String loginUser(String username, String password, String remoteAddress) throws CmsException {
         // login the user
-        CmsUser newUser = m_driverManager.loginUser(m_context, username, password, m_context.getRemoteAddress());
+        CmsUser newUser = m_driverManager.loginUser(m_context, username, password, remoteAddress);
         // init the new user
         init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
 
