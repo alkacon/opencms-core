@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2004/09/20 05:40:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/20 13:36:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,16 +47,22 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.0
  */
 public final class CmsStringUtil {
+    
+    /** Regular expression that matches the HTML body end tag. */
+    public static final String C_BODY_END_REGEX = "<\\s*/\\s*body[^>]*>";
 
-    /** Regex that matches an end body tag. */
-    private static final Pattern C_BODY_END_REGEX = Pattern.compile("<\\s*/\\s*body[^>]*>", Pattern.CASE_INSENSITIVE);
+    /** Regular expression that matches the HTML body start tag. */
+    public static final String C_BODY_START_REGEX = "<\\s*body[^>]*>";
+    
+    /** Regex pattern that matches an end body tag. */
+    private static final Pattern C_BODY_END_PATTERN = Pattern.compile(C_BODY_END_REGEX, Pattern.CASE_INSENSITIVE);
 
-    /** Regex that matches a start body tag. */
-    private static final Pattern C_BODY_START_REGEX = Pattern.compile("<\\s*body[^>]*>", Pattern.CASE_INSENSITIVE);
+    /** Regex pattern that matches a start body tag. */
+    private static final Pattern C_BODY_START_PATTERN = Pattern.compile(C_BODY_START_REGEX, Pattern.CASE_INSENSITIVE);
 
     /** Day constant. */
     private static final long C_DAYS = 1000 * 60 * 60 * 24;
@@ -201,8 +207,8 @@ public final class CmsStringUtil {
      */
     public static String extractHtmlBody(String content) {
 
-        Matcher startMatcher = C_BODY_START_REGEX.matcher(content);
-        Matcher endMatcher = C_BODY_END_REGEX.matcher(content);
+        Matcher startMatcher = C_BODY_START_PATTERN.matcher(content);
+        Matcher endMatcher = C_BODY_END_PATTERN.matcher(content);
 
         int start = 0;
         int end = content.length();
