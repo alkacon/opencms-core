@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/03/11 16:37:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/31 10:40:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the dynamic CSS style sheet of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsTemplateStyleSheet extends CmsJspActionElement {
     
@@ -291,13 +291,17 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
                 // sizes are not configured, determine default values
                 try {
                     CmsXmlContent conf = m_configuration;
-                    // create optional configuration node
-                    conf.addValue(getCmsObject(), C_NODE_OPTIONALCONFIG, getRequestContext().getLocale(), 0);
-                    I_CmsXmlContentValue value = conf.getValue(C_NODE_OPTIONALCONFIG + "/headlines.set", getRequestContext().getLocale());
-                    // get default value String from XSD
-                    selectedValues = value.getContentDefinition().getContentHandler().getDefault(getCmsObject(), value, getRequestContext().getLocale());
-                    // get default size sequence from beginning of String
-                    selectedValues = selectedValues.substring(0, selectedValues.indexOf('*'));
+                    if (conf != null) {
+                        // create optional configuration node
+                        conf.addValue(getCmsObject(), C_NODE_OPTIONALCONFIG, getRequestContext().getLocale(), 0);
+                        I_CmsXmlContentValue value = conf.getValue(C_NODE_OPTIONALCONFIG + "/headlines.set", getRequestContext().getLocale());
+                        // get default value String from XSD
+                        selectedValues = value.getContentDefinition().getContentHandler().getDefault(getCmsObject(), value, getRequestContext().getLocale());
+                        // get default size sequence from beginning of String
+                        selectedValues = selectedValues.substring(0, selectedValues.indexOf('*'));
+                    } else {
+                        selectedValues = "13-12-11-10-9-9";    
+                    }
                 } catch (Exception e) {
                     // error parsing the default String
                     if (OpenCms.getLog(this).isErrorEnabled()) {
