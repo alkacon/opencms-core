@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/10/20 15:59:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/10/21 14:55:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -120,12 +120,12 @@ public interface I_CmsEventListener {
     int EVENT_CLEAR_CACHES = 5;
 
     /** 
-     * Event used by the Flex Cluster Module.<p>
+     * Event used to identify servers in the cluster.<p>
      */ 
     int EVENT_FLEX_CLUSTER_CHECK_SOURCE = 6;
 
     /** 
-     * Event used by the Flex Cluster Module.<p>
+     * Event "an event has been forwarded to all servers in the cluster".<p>
      */      
     int EVENT_FLEX_CLUSTER_HOOK = 7;
 
@@ -232,14 +232,15 @@ public interface I_CmsEventListener {
     int EVENT_PROJECT_MODIFIED = 18;
     
     /**
-     * Event "write the export points".<p>
+     * Event "update exported resources".<p>
      * 
-     * Event data:
-     * <ul>
-     * <li>key "publishHistoryId" (mandatory): the ID of the publish task in the publish history</li>
-     * </ul>
+     * This event updates all export points, deletes the content
+     * of the "export" folder, purges the JSP repository, and clears
+     * all caches.<p>
+     * 
+     * This event is for internal use.<p>
      */     
-    int EVENT_WRITE_EXPORT_POINTS = 19;
+    int EVENT_UPDATE_EXPORTS = 19;
     
     /**
      * Event "a project was published".<p>
@@ -254,9 +255,24 @@ public interface I_CmsEventListener {
     int EVENT_CLUSTER_PUBLISH_PROJECT = 20;    
     
     /** 
-     * Event used by the Flex Cluster Module.<p>
+     * Event "validate the registry.xml".<p>
+     * 
+     * This event is forwarded to all servers in the cluster so that they
+     * validate their registry.xml and sending in the response whether the
+     * validation failed or not.<p>
      */ 
-    int EVENT_FLEX_CLUSTER_CHECK_REGISTRY = 21;    
+    int EVENT_FLEX_CLUSTER_CHECK_REGISTRY = 21;  
+    
+    /**
+     * Event "update exported resources".<p>
+     * 
+     * This event updates all export points, deletes the content
+     * of the "export" folder, purges the JSP repository, and clears
+     * all caches.<p>
+     * 
+     * This event is forwarded to all servers in the cluster.<p>
+     */    
+    int EVENT_FLEX_CLUSTER_UPDATE_EXPORTS = 22;
    
     /**
      * Acknowledge the occurrence of the specified event, implement this 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/20 12:54:30 $
- * Version: $Revision: 1.128 $
+ * Date   : $Date: 2003/10/21 14:55:14 $
+ * Version: $Revision: 1.129 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.128 $ $Date: 2003/10/20 12:54:30 $
+ * @version $Revision: 1.129 $ $Date: 2003/10/21 14:55:14 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -147,19 +147,25 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @see com.opencms.flex.I_CmsEventListener#cmsEvent(com.opencms.flex.CmsEvent)
      */
     public void cmsEvent(CmsEvent event) {
+        I_CmsReport report = null;
+
         switch (event.getType()) {
-            case I_CmsEventListener.EVENT_WRITE_EXPORT_POINTS :
+            case I_CmsEventListener.EVENT_UPDATE_EXPORTS :
+                report = (I_CmsReport) event.getData().get("report");
+                m_driverManager.updateExportPoints(event.getCmsObject().getRequestContext(), report);
+                break;
+
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT :
                 CmsUUID publishHistoryId = new CmsUUID((String) event.getData().get("publishHistoryId"));
-                I_CmsReport report = (I_CmsReport) event.getData().get("report");
+                report = (I_CmsReport) event.getData().get("report");
                 m_driverManager.writeExportPoints(event.getCmsObject().getRequestContext(), report, publishHistoryId);
                 break;
 
             default :
                 // TODO: define default behauvior
                 break;
-            }
         }
+    }
 
     /**
      * creates a link entry for each of the link targets in the linktable.<p>
@@ -623,7 +629,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         // add this class as an event handler to the Cms event listener
         OpenCms.addCmsEventListener(this, new int[] { 
-            I_CmsEventListener.EVENT_WRITE_EXPORT_POINTS,
+            I_CmsEventListener.EVENT_UPDATE_EXPORTS,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT 
         });        
 

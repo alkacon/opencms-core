@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/20 12:54:30 $
- * Version: $Revision: 1.277 $
+ * Date   : $Date: 2003/10/21 14:55:14 $
+ * Version: $Revision: 1.278 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -85,7 +86,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.277 $ $Date: 2003/10/20 12:54:30 $
+ * @version $Revision: 1.278 $ $Date: 2003/10/21 14:55:14 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8235,13 +8236,102 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public List readPublishedResources(CmsRequestContext context, CmsUUID publishHistoryId) throws CmsException {
         return getProjectDriver().readPublishedResources(context.currentProject().getId(), publishHistoryId);
     }
+    
+    /**
+     * Update the export points.<p>
+     * 
+     * All files+folders "inside" an export point are written.
+     * 
+     * @param context the current request context
+     * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
+     */
+    public void updateExportPoints(CmsRequestContext context, I_CmsReport report) {
+        Hashtable exportPoints = null;
+        String currentExportPoint = null;
+        List resources = (List) new ArrayList();
+        Iterator i = null;
+        CmsResource currentResource = null;
+        CmsExportPointDriver discAccess = null;
+        CmsProject oldProject = null;
+
+        try {
+            // save the current project before we switch to the online project
+            oldProject = context.currentProject();
+            context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+
+            // read the export points and return immediately if there are no export points at all         
+            exportPoints = m_registry.getExportpoints();
+            if (exportPoints.size() == 0) {
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("No export points configured at all.");
+                }
+                return;
+            }
+
+            // the report may be null if the export points indicated by an event on a remote server
+            if (report == null) {
+                report = (I_CmsReport) new CmsLogReport();
+            }
+
+            // create a disc driver to write exports
+            discAccess = new CmsExportPointDriver(exportPoints);
+
+            // the export point hash table contains RFS export paths keyed by their internal VFS paths
+            i = exportPoints.keySet().iterator();
+            while (i.hasNext()) {
+                currentExportPoint = (String) i.next();
+
+                try {
+                    resources = readAllSubResourcesInDfs(context, currentExportPoint, -1);
+                    setFullResourceNames(context, resources);
+
+                    Iterator j = resources.iterator();
+                    while (j.hasNext()) {
+                        currentResource = (CmsResource) j.next();
+
+                        if (currentResource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                            // export the folder                        
+                            discAccess.createFolder(currentResource.getRootPath(), currentExportPoint);
+                        } else {
+                            // export the file content online          
+                            CmsFile file = getVfsDriver().readFile(I_CmsConstants.C_PROJECT_ONLINE_ID, false, currentResource.getStructureId());
+                            file.setFullResourceName(currentResource.getRootPath());
+                            writeExportPoint(context, discAccess, currentExportPoint, file);
+                        }
+                    }
+                } catch (CmsException e) {
+                    // there might exist export points without corresponding resources in the VFS
+                    // -> ingore exceptions which are not "resource not found" exception quiet here
+                    if (e.getType() != CmsException.C_NOT_FOUND) {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error("Error updating export points", e);
+                        }
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error updating export points", e);
+            }
+        } finally {
+            try {
+                context.setCurrentProject(oldProject.getId());
+            } catch (CmsException e) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error setting back current project in request context", e);
+                }
+            }
+
+            report.println(report.key("report.export_points_write_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        }
+    }
 
     /**
      * Writes all export points into the file system for a publish task 
      * specified by its publish history ID.<p>
      * 
      * @param context the current request context
-     * @param report an I_CmsReport instance to print output message, or null to write the export points quiet
+     * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
      * @param publishHistoryId unique int ID to identify each publish task in the publish history
      */    
     public void writeExportPoints(CmsRequestContext context, I_CmsReport report, CmsUUID publishHistoryId) {
@@ -8250,30 +8340,44 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         List publishedResources = null;
         CmsPublishedResource currentPublishedResource = null;
         String currentExportKey = null;
-        boolean printReportHeader = false;
+        boolean printReportHeaders = false;
 
         try {
-            publishedResources = getProjectDriver().readPublishedResources(context.currentProject().getId(), publishHistoryId);
-            exportPoints = m_registry.getExportpoints();
-            discAccess = new CmsExportPointDriver(exportPoints);
-            
+            // read the export points and return immediately if there are no export points at all         
+            exportPoints = m_registry.getExportpoints();            
             if (exportPoints.size() == 0) {
                 if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("No export points configured at all. Pls. check registry.xml for configured 'module' XML-nodes if this is correct.");
+                    OpenCms.getLog(this).warn("No export points configured at all.");
                 }
                 return;
-            }         
+            }
+            
+            // the report may be null if the export points indicated by an event on a remote server
+            if (report == null) {
+                report = (I_CmsReport) new CmsLogReport();
+            }
+            
+            // read the "published resources" for the specified publish history ID
+            publishedResources = getProjectDriver().readPublishedResources(context.currentProject().getId(), publishHistoryId);
+            if (publishedResources.size() == 0) {
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("No published resources in the publish history for the specified ID " + publishHistoryId + " found.");
+                }
+                return;
+            }            
+            
+            // create a disc driver to write exports
+            discAccess = new CmsExportPointDriver(exportPoints);
 
+            // iterate over all published resources to export them eventually
             Iterator i = publishedResources.iterator();
             while (i.hasNext()) {
                 currentPublishedResource = (CmsPublishedResource) i.next();
                 currentExportKey = checkExportPoint(currentPublishedResource.getRootPath(), exportPoints);
 
                 if (currentExportKey != null) {
-                    if (!printReportHeader && report != null) {
-                        printReportHeader = true;
-                        report.println(report.key("report.export_points_write_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-                    }
+                    report.println(report.key("report.export_points_write_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                    printReportHeaders = true;
                                         
                     if (currentPublishedResource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
                         // export the folder                        
@@ -8287,30 +8391,25 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                         if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
                             discAccess.removeResource(currentPublishedResource.getRootPath(), currentExportKey);
                         } else {
-                            writeExportPoint(context, discAccess, currentExportKey, currentPublishedResource);
+                            // read the file content online
+                            CmsFile file = getVfsDriver().readFile(I_CmsConstants.C_PROJECT_ONLINE_ID, false, currentPublishedResource.getStructureId());
+                            file.setFullResourceName(currentPublishedResource.getRootPath());
+
+                            writeExportPoint(context, discAccess, currentExportKey, file);
                         }
                     }
 
-                    if (report != null) {
-                        // print some report messages
-                        if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                            report.print(report.key("report.export_points_delete"), I_CmsReport.C_FORMAT_NOTE);
-                            report.print(currentPublishedResource.getRootPath());
-                            report.print(report.key("report.dots"));
-                            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                        } else {
-                            report.print(report.key("report.export_points_write"), I_CmsReport.C_FORMAT_NOTE);
-                            report.print(currentPublishedResource.getRootPath());
-                            report.print(report.key("report.dots"));
-                            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                        }
-                    } else if (OpenCms.getLog(this).isDebugEnabled()) {
-                        // print some log messages
-                        if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                            OpenCms.getLog(this).debug("deleting export point " + currentPublishedResource.getRootPath());
-                        } else {
-                            OpenCms.getLog(this).debug("writing export point " + currentPublishedResource.getRootPath());
-                        }
+                    // print some report messages
+                    if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
+                        report.print(report.key("report.export_points_delete"), I_CmsReport.C_FORMAT_NOTE);
+                        report.print(currentPublishedResource.getRootPath());
+                        report.print(report.key("report.dots"));
+                        report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    } else {
+                        report.print(report.key("report.export_points_write"), I_CmsReport.C_FORMAT_NOTE);
+                        report.print(currentPublishedResource.getRootPath());
+                        report.print(report.key("report.dots"));
+                        report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                     }
                 }
             }
@@ -8319,7 +8418,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 OpenCms.getLog(this).error("Error writing export points", e);
             }
         } finally {
-            if (printReportHeader && report != null) {
+            if (printReportHeaders) {
                 report.println(report.key("report.export_points_write_end"), I_CmsReport.C_FORMAT_HEADLINE);
             }
         }
@@ -8352,21 +8451,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param context the current request context
      * @param discAccess the export point driver
      * @param exportKey the export key of the export point
-     * @param publishedResource the CmsPublishedResource that gets exported
+     * @param file the file that gets exported
      * @throws CmsException if something goes wrong
      */
-    private void writeExportPoint(CmsRequestContext context, CmsExportPointDriver discAccess, String exportKey, CmsPublishedResource publishedResource) throws CmsException {
-        CmsFile file = null;
+    private void writeExportPoint(CmsRequestContext context, CmsExportPointDriver discAccess, String exportKey, CmsFile file) throws CmsException {
         byte[] contents = null;
         String encoding = null;
         
-        try {
-            if (file == null) {
-                // read the file content offline
-                file = getVfsDriver().readFile(context.currentProject().getId(), false, publishedResource.getStructureId());
-                file.setFullResourceName(publishedResource.getRootPath());                                
-            }
-                            
+        try {                            
             // make sure files are written using the correct character encoding 
             contents = file.getContents();
             encoding = getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, context.currentProject().getId(), file, file.getType());
@@ -8378,20 +8470,20 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     contents = (new String(contents, encoding)).getBytes();
                 } catch (UnsupportedEncodingException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Unsupported encoding of " + publishedResource.toString(), e);
+                        OpenCms.getLog(this).error("Unsupported encoding of " + file.toString(), e);
                     }
                     
-                    throw new CmsException("Unsupported encoding of " + publishedResource.toString(), e);
+                    throw new CmsException("Unsupported encoding of " + file.toString(), e);
                 }
             }
 
-            discAccess.writeFile(publishedResource.getRootPath(), exportKey, contents);
+            discAccess.writeFile(file.getRootPath(), exportKey, contents);
         } catch (Exception e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error writing export point of " + publishedResource.toString(), e);
+                OpenCms.getLog(this).error("Error writing export point of " + file.toString(), e);
             }
             
-            throw new CmsException("Error writing export point of " + publishedResource.toString(), e);
+            throw new CmsException("Error writing export point of " + file.toString(), e);
         }        
     }
 

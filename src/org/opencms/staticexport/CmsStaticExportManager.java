@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/10/08 17:35:45 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/10/21 14:55:14 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -138,7 +138,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_cacheExportUris = new CmsLruHashMap(1024);      
         
         // register this object as event listener
-        OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT, I_CmsEventListener.EVENT_CLEAR_CACHES});  
+        OpenCms.addCmsEventListener(this, new int[] {
+            I_CmsEventListener.EVENT_PUBLISH_PROJECT, 
+            I_CmsEventListener.EVENT_CLEAR_CACHES,
+            I_CmsEventListener.EVENT_UPDATE_EXPORTS
+        });  
     }
     
     /**
@@ -190,6 +194,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public synchronized void cmsEvent(CmsEvent event) {
         switch (event.getType()) {
+            case I_CmsEventListener.EVENT_UPDATE_EXPORTS:
+                scrubExportFolder();
+                clearCaches(event);               
+                break;
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
                 // event data contains a list of the published resources
                 CmsUUID publishHistoryId = new CmsUUID((String) event.getData().get("publishHistoryId"));
@@ -197,24 +205,57 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     OpenCms.getLog(this).debug("Static export manager catched event EVENT_PUBLISH_PROJECT for project ID " + publishHistoryId);
                 }
                 scrubExportFolders(publishHistoryId);
-                // caches must also be flushed after publish, so no break here
+                clearCaches(event);
+                break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                // flush all caches   
-                m_cacheOnlineLinks.clear();
-                m_cacheExportUris.clear();        
-                setExportnames();                
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    String eventType = "EVENT_CLEAR_CACHES";
-                    if (event.getType() != I_CmsEventListener.EVENT_CLEAR_CACHES) {
-                        eventType = "EVENT_PUBLISH_PROJECT";
-                    }
-                    OpenCms.getLog(this).debug("Static export manager flushed caches after recieving event " + eventType);
-                }
+                clearCaches(event);
                 break;
             default:
                 // no operation
         }
     }    
+    
+    /**
+     * Clears the caches in the export manager.<p>
+     * 
+     * @param event the event that requested to clear the caches
+     */
+    private void clearCaches(CmsEvent event) {
+        // flush all caches   
+        m_cacheOnlineLinks.clear();
+        m_cacheExportUris.clear();        
+        setExportnames();                
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            String eventType = "EVENT_CLEAR_CACHES";
+            if (event.getType() != I_CmsEventListener.EVENT_CLEAR_CACHES) {
+                eventType = "EVENT_PUBLISH_PROJECT";
+            }
+            OpenCms.getLog(this).debug("Static export manager flushed caches after recieving event " + eventType);
+        }        
+    }
+    
+    /**
+     * Scrubs the "export" folder.<p>
+     */
+    private void scrubExportFolder() {
+        String exportFolderName = CmsLinkManager.normalizeRfsPath(getExportPath());
+        try {
+            File exportFolder = new File(exportFolderName);
+            // check if export file exists, if so delete it
+            if (exportFolder.exists() && exportFolder.canWrite()) {
+                purgeDirectory(exportFolder);
+                // write log message
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info("Static export deleted main export folder '" + exportFolderName + "'");
+                }
+            }
+        } catch (Throwable t) {
+            // ignore, nothing to do about this
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Error deleting static export folder rfsName='" + exportFolderName + "'", t);
+            }
+        }       
+    }
     
     /**
      * Scrubs all files from the export folder that might have been changed,
@@ -280,7 +321,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                                     exportFolder.delete();
                                     // write log message
                                     if (OpenCms.getLog(this).isInfoEnabled()) {
-                                        OpenCms.getLog(this).info("Static export deleted export folder'" + exportFolderName + "'");
+                                        OpenCms.getLog(this).info("Static export deleted export folder '" + exportFolderName + "'");
                                     }
                                     scrubedFolders.add(vfsName);
                                     continue;
