@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/12/04 16:22:25 $
- * Version: $Revision: 1.174 $
+ * Date   : $Date: 2000/12/07 15:38:33 $
+ * Version: $Revision: 1.175 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.174 $ $Date: 2000/12/04 16:22:25 $ * 
+ * @version $Revision: 1.175 $ $Date: 2000/12/07 15:38:33 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -540,38 +540,24 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		}		
 		return ret;
 	}
-	/**
-	 * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
-	 * 
-	 *
-	 */
-	protected void clearFilesTable()	
-	  throws CmsException{
-		PreparedStatement statementSearch = null;
-		PreparedStatement statementDestroy = null;
-		ResultSet res = null;
-		try{
-	  		statementSearch = m_pool.getPreparedStatement(m_cq.C_RESOURCES_GET_LOST_ID_KEY);
-	        res = statementSearch.executeQuery();
-			// delete the lost fileId's
-			statementDestroy = m_pool.getPreparedStatement(m_cq.C_FILE_DELETE_KEY);
-			while (res.next() ){
-	   			statementDestroy.setInt(1,res.getInt(m_cq.C_FILE_ID));
-				statementDestroy.executeUpdate();
-				statementDestroy.clearParameters();
-			}
-	 			res.close();
-		} catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-		  }finally {
-				if( statementSearch != null) {
-					m_pool.putPreparedStatement(m_cq.C_RESOURCES_GET_LOST_ID_KEY, statementSearch);
-				}
-				if( statementDestroy != null) {
-					m_pool.putPreparedStatement(m_cq.C_FILE_DELETE_KEY, statementDestroy);
-				}
-			 }	
+/**
+ * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
+ * 
+ *
+ */
+protected void clearFilesTable() throws CmsException {
+	PreparedStatement statementDelete = null;
+	try {
+		statementDelete = m_pool.getPreparedStatement(m_cq.C_RESOURCES_DELETE_LOST_ID_KEY);
+		statementDelete.executeUpdate();
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} finally {
+		if (statementDelete != null) {
+			m_pool.putPreparedStatement(m_cq.C_RESOURCES_DELETE_LOST_ID_KEY, statementDelete);
+		}
 	}
+}
 	/**
 	 * Copies the file.
 	 * 
@@ -1501,7 +1487,10 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlin
 	 
 		 // delete the files and resources
 		 deleteProjectResources(project);
-		 
+
+		 // delete all lost files
+		 clearFilesTable();
+  
 		 // finally delete the project
 		 PreparedStatement statement = null;
 
@@ -1531,14 +1520,32 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlin
 	public void deleteProjectProperties(CmsProject project)
 		throws CmsException {
 		
-		// get all resources of the project
+/*
+			// get all resources of the project
 		Vector resources = readResources(project);
 		
 		for( int i = 0; i < resources.size(); i++) {
 			// delete the properties for each resource in project
 			deleteAllProperties( ((CmsResource) resources.elementAt(i)).getResourceId());
 		}
-	}
+*/
+		// delete properies with one statement	
+		PreparedStatement statement = null;
+		try {
+			// create statement
+			statement = m_pool.getPreparedStatement(m_cq.C_PROPERTIES_DELETEALLPROP_KEY);
+			statement.setInt(1, project.getId());
+			statement.executeQuery();
+		} catch( SQLException exc ) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_PROPERTIES_DELETEALLPROP_KEY, statement);
+			}
+		  }
+		
+		}
 	/**
 	 * Deletes a specified project
 	 *
@@ -3043,6 +3050,7 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 		m_pool.initPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY,m_cq.C_RESOURCES_UPDATE);
 		m_pool.initPreparedStatement(m_cq.C_RESOURCES_UPDATE_FILE_KEY,m_cq.C_RESOURCES_UPDATE_FILE);
 		m_pool.initPreparedStatement(m_cq.C_RESOURCES_GET_LOST_ID_KEY,m_cq.C_RESOURCES_GET_LOST_ID);
+		m_pool.initPreparedStatement(m_cq.C_RESOURCES_DELETE_LOST_ID_KEY,m_cq.C_RESOURCES_DELETE_LOST_ID);
 		m_pool.initPreparedStatement(m_cq.C_FILE_DELETE_KEY,m_cq.C_FILE_DELETE);
 		m_pool.initPreparedStatement(m_cq.C_RESOURCES_DELETE_PROJECT_KEY,m_cq.C_RESOURCES_DELETE_PROJECT);
 		m_pool.initPreparedStatement(m_cq.C_FILE_READ_ONLINE_KEY,m_cq.C_FILE_READ_ONLINE);
@@ -3130,6 +3138,7 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 		m_pool.initPreparedStatement(m_cq.C_PROPERTIES_READALL_KEY,m_cq.C_PROPERTIES_READALL);
 		m_pool.initPreparedStatement(m_cq.C_PROPERTIES_DELETEALL_KEY,m_cq.C_PROPERTIES_DELETEALL);
 		m_pool.initPreparedStatement(m_cq.C_PROPERTIES_DELETE_KEY,m_cq.C_PROPERTIES_DELETE);
+		m_pool.initPreparedStatement(m_cq.C_PROPERTIES_DELETEALLPROP_KEY,m_cq.C_PROPERTIES_DELETEALLPROP);		
 		
 		// init statements for tasks
 		m_pool.initPreparedStatement(m_cq.C_TASK_TYPE_COPY_KEY,m_cq.C_TASK_TYPE_COPY);

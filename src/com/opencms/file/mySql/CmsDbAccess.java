@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/11/30 15:12:36 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/12/07 15:38:34 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,6 @@ import java.security.*;
 import java.io.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
-
 import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.file.utils.*;
@@ -52,7 +51,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.42 $ $Date: 2000/11/30 15:12:36 $ * 
+ * @version $Revision: 1.43 $ $Date: 2000/12/07 15:38:34 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -136,6 +135,38 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			}
 		}
 		return readUser(id);
+	}
+	/**
+	 * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
+	 * 
+	 *
+	 */
+	protected void clearFilesTable()	
+	  throws CmsException{
+		PreparedStatement statementSearch = null;
+		PreparedStatement statementDestroy = null;
+		ResultSet res = null;
+		try{
+	  		statementSearch = m_pool.getPreparedStatement(m_cq.C_RESOURCES_GET_LOST_ID_KEY);
+	        res = statementSearch.executeQuery();
+			// delete the lost fileId's
+			statementDestroy = m_pool.getPreparedStatement(m_cq.C_FILE_DELETE_KEY);
+			while (res.next() ){
+	   			statementDestroy.setInt(1,res.getInt(m_cq.C_FILE_ID));
+				statementDestroy.executeUpdate();
+				statementDestroy.clearParameters();
+			}
+	 			res.close();
+		} catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		  }finally {
+				if( statementSearch != null) {
+					m_pool.putPreparedStatement(m_cq.C_RESOURCES_GET_LOST_ID_KEY, statementSearch);
+				}
+				if( statementDestroy != null) {
+					m_pool.putPreparedStatement(m_cq.C_FILE_DELETE_KEY, statementDestroy);
+				}
+			 }	
 	}
 	/**
  * Create a new Connection guard.
@@ -314,6 +345,23 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 	}
 	return group;
   }  
+/**
+ * Deletes all properties for a project.
+ * 
+ * @param project The project to delete.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public void deleteProjectProperties(CmsProject project) throws CmsException {
+
+
+	// get all resources of the project
+	Vector resources = readResources(project);
+	for (int i = 0; i < resources.size(); i++) {
+		// delete the properties for each resource in project
+		deleteAllProperties(((CmsResource) resources.elementAt(i)).getResourceId());
+	}
+}
 	/**
 	 * Destroys this access-module
 	 * @exception throws CmsException if something goes wrong.

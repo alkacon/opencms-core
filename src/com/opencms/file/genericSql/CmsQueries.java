@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/11/27 15:50:10 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/12/07 15:38:34 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.35 $ $Date: 2000/11/27 15:50:10 $
+ * @version $Revision: 1.36 $ $Date: 2000/12/07 15:38:34 $
  */
 public class CmsQueries
 {
@@ -73,10 +73,13 @@ public class CmsQueries
 	public String C_RESOURCES_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
 	public Integer C_RESOURCES_WRITE_KEY = new Integer(103);
 	public String C_RESOURCES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	public Integer C_RESOURCES_GET_LOST_ID_KEY = new Integer(104);
 
-	// generic SQL
+	// generic SQL	
+	public Integer C_RESOURCES_GET_LOST_ID_KEY = new Integer(104);
 	public String C_RESOURCES_GET_LOST_ID = "SELECT FILE_ID FROM " + C_DATABASE_PREFIX + "FILES WHERE FILE_ID NOT IN ( SELECT FILE_ID FROM " + C_DATABASE_PREFIX + "RESOURCES)";
+	public Integer C_RESOURCES_DELETE_LOST_ID_KEY = new Integer(113);
+	public String C_RESOURCES_DELETE_LOST_ID = "DELETE FROM " + C_DATABASE_PREFIX + "FILES WHERE FILE_ID NOT IN ( SELECT FILE_ID FROM " + C_DATABASE_PREFIX + "RESOURCES)";
+
 	public Integer C_RESOURCES_DELETE_PROJECT_KEY = new Integer(105);
 	public String C_RESOURCES_DELETE_PROJECT = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES " + "WHERE PROJECT_ID = ?";
 	public Integer C_RESOURCES_DELETE_KEY = new Integer(106);
@@ -243,7 +246,9 @@ public class CmsQueries
 	public String C_PROPERTIES_DELETEALL = "DELETE FROM " + C_DATABASE_PREFIX + "PROPERTIES " + "WHERE RESOURCE_ID = ?";
 	public Integer C_PROPERTIES_DELETE_KEY = new Integer(357);
 	public String C_PROPERTIES_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "PROPERTIES " + "WHERE " + C_PROPERTYDEF_ID + " = ? and " + C_PROPERTY_RESOURCE_ID + " = ? ";
-
+	public Integer C_PROPERTIES_DELETEALLPROP_KEY = new Integer(358);
+	public String C_PROPERTIES_DELETEALLPROP = "DELETE FROM " + C_DATABASE_PREFIX + "PROPERTIES " + "WHERE RESOURCE_ID IN (SELECT RESOURCE_ID FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE PROJECT_ID = ?)";
+	
 
 	// Constants for Projects table
 	public String C_PROJECTS_PROJECT_ID = "PROJECT_ID";
