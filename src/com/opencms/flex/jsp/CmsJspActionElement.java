@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/04/04 08:40:29 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/04/04 16:37:45 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.0 beta 2
  */
@@ -644,24 +644,28 @@ public class CmsJspActionElement {
      * @return <code>true</code> if the current page is called form the workplace, 
      * <code>false</code> otherwise
      */
-    public boolean isInWorkplaceMode() {    
-        if (m_isWorkplaceUser != null) return m_isWorkplaceUser.booleanValue();    
+    public boolean isInWorkplaceMode() {
+        if (m_isWorkplaceUser != null)
+            return m_isWorkplaceUser.booleanValue();
         boolean result = false;
         I_CmsSession session = getRequestContext().getSession(false);
         if (session != null) {
             // a workplace user will always have a session
             String username = getRequestContext().currentUser().getName();
             try {
-                // use the same logic as if logging in to the workplace
-                if ((getCmsObject().userInGroup(username, CmsObject.C_GROUP_USERS)) || 
-                    (getCmsObject().userInGroup(username, CmsObject.C_GROUP_PROJECTLEADER)) || 
-                    (getCmsObject().userInGroup(username, CmsObject.C_GROUP_ADMIN)) ) {
-                    result = true;
-                }    
+                if (getRequestContext().getUri().startsWith("/system/modules/") || 
+                    getRequestContext().getUri().startsWith("/system/workplace/")) {
+                    // use the same logic as if logging in to the workplace
+                    if ((getCmsObject().userInGroup(username, CmsObject.C_GROUP_USERS)) || 
+                        (getCmsObject().userInGroup(username, CmsObject.C_GROUP_PROJECTLEADER)) || 
+                        (getCmsObject().userInGroup(username, CmsObject.C_GROUP_ADMIN))) {
+                        result = true;
+                    }
+                }
             } catch (CmsException e) {
                 // result will be "false"
-            }         
-        }        
+            }
+        }
         m_isWorkplaceUser = new Boolean(result);
         return result;
     }
