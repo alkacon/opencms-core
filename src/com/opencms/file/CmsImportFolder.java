@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2003/07/21 12:45:17 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/21 16:08:42 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@ package com.opencms.file;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.report.CmsShellReport;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -48,7 +47,7 @@ import java.util.zip.ZipInputStream;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.25 $ $Date: 2003/07/21 12:45:17 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/21 16:08:42 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/21 14:52:12 $
-* Version: $Revision: 1.341 $
+* Date   : $Date: 2003/07/21 16:08:42 $
+* Version: $Revision: 1.342 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.341 $
+ * @version $Revision: 1.342 $
  */
 public class CmsObject extends Object {
 
@@ -1358,9 +1358,10 @@ public class CmsObject extends Object {
      * @throws CmsException if the user has not the rights to move this resource,
      * or if the file couldn't be moved.
      */
+    /*
     protected void doMoveResource(String source, String destination) throws CmsException {
         m_driverManager.moveResource(m_context, addSiteRoot(source), addSiteRoot(destination));
-    }
+    }*/
 
     /**
      * Renames the resource to the new name.

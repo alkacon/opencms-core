@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/21 14:52:12 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2003/07/21 16:08:42 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -452,14 +452,18 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         validResourcename(newname.replace('/', '\n'));
 
         // rename the folder itself
-        cms.doRenameResource(oldname, newname);
+        // cms.doRenameResource(oldname, newname);
+        this.copyResource(cms, oldname, newname, true, true);
+        this.deleteResource(cms, oldname);
 
         if (C_BODY_MIRROR) {
             oldname = oldname.substring(1);
             String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + oldname;
 
             // rename the corresponding body folder
-            cms.doRenameResource(bodyPath, newname);
+            // cms.doRenameResource(bodyPath, newname);
+            this.copyResource(cms, bodyPath, newname, true, true);
+            this.deleteResource(cms, bodyPath);
         }
     }
 

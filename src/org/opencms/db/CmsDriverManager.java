@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/21 14:52:12 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2003/07/21 16:08:42 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
-import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -73,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.75 $ $Date: 2003/07/21 14:52:12 $
+ * @version $Revision: 1.76 $ $Date: 2003/07/21 16:08:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7441,12 +7440,16 @@ public class CmsDriverManager extends Object {
      */
     public void undoChanges(CmsRequestContext context, String resourceName) throws CmsException {
         CmsProject onlineProject = readProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID);
+        CmsResource resource = readFileHeader(context, resourceName);
+        
+        
         // change folder or file?
-        if (resourceName.endsWith("/")) {
-            // read the resource from the online project
-            CmsFolder onlineFolder = readFolder(context, resourceName);
+        if (resource.isFolder()) {
             // read the resource from the offline project and change the data
             CmsFolder offlineFolder = readFolder(context, resourceName);
+            // read the resource from the online project
+            CmsFolder onlineFolder = readFolderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, resourceName);
+
             CmsFolder restoredFolder =
                 new CmsFolder(
                     offlineFolder.getId(),
@@ -7481,10 +7484,12 @@ public class CmsDriverManager extends Object {
             Map propertyInfos = m_vfsDriver.readProperties(onlineProject.getId(), onlineFolder, onlineFolder.getType());
             m_vfsDriver.writeProperties(propertyInfos, context.currentProject().getId(), restoredFolder, restoredFolder.getType());
         } else {
-            // read the file from the online project
-            CmsFile onlineFile = readFile(context, resourceName);
             // read the file from the offline project and change the data
             CmsFile offlineFile = readFile(context, resourceName);
+            // read the file from the online project
+            CmsFile onlineFile = readFileInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, offlineFile.getId(), false);
+            //(context, resourceName);
+
             CmsFile restoredFile =
                 new CmsFile(
                     offlineFile.getId(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/21 14:52:12 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2003/07/21 16:08:42 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.83 $
+ * @version $Revision: 1.84 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -373,11 +373,15 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         String defaultBodyPath = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, lastSlashIndex)) + resourcename;
 
         // rename the file itself
-        cms.doRenameResource(resourcename, newname);
+        // cms.doRenameResource(resourcename, newname);
+        this.copyResource(cms, resourcename, newname, true, true);
+        this.deleteResource(cms, resourcename);
 
         // unless somebody edited the body path by hand, rename the file in the body path additionally
         if (defaultBodyPath.equals(currentBodyPath)) {
-            cms.doRenameResource(currentBodyPath, newname);
+            // cms.doRenameResource(currentBodyPath, newname);
+            this.copyResource(cms, currentBodyPath, newname, true, true);
+            this.deleteResource(cms, currentBodyPath);
             lastSlashIndex = currentBodyPath.lastIndexOf("/") + 1;
             defaultBodyPath = currentBodyPath.substring(0, lastSlashIndex) + newname;
 
