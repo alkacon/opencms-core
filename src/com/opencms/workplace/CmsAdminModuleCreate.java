@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/08 11:51:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/11/10 09:17:55 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -133,6 +133,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 					}
 				}else{
 					// create the module (first test if we are in a project including /system/
+					tryToCreateFolder(cms, "/system/", "modules");
 					try{
 						cms.createFolder("/system/modules/", packetname);
 					}catch(Exception e){
@@ -153,7 +154,6 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 												getStringValue(author), createDateLong, v);
 					reg.setModuleAuthorEmail(packetname, getStringValue(email));
 					reg.setModuleMaintenanceEventClass(packetname, getStringValue(maintenance));
-					tryToCreateFolder(cms, "/system/", "modules");
 					tryToCreateFolder(cms, "/system/", "classes");
 					tryToCreateFolder(cms, "/", "moduledemos");
 					tryToCreateFolder(cms, "/moduledemos/", packetname );
