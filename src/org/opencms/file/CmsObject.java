@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/03/15 18:05:55 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2005/03/15 18:13:11 $
+ * Version: $Revision: 1.111 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.110 $
+ * @version $Revision: 1.111 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1754,7 +1754,7 @@ public class CmsObject {
         // init this CmsObject with the new user
         init(m_securityManager, m_context);
         // fire a login event
-        this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
+        this.fireEvent(I_CmsEventListener.EVENT_LOGIN_USER, newUser);
         // return the users login name
         return newUser.getName();
     }
