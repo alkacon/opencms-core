@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/11/20 14:59:06 $
- * Version: $Revision: 1.143 $
+ * Date   : $Date: 2000/11/28 16:28:09 $
+ * Version: $Revision: 1.144 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.143 $ $Date: 2000/11/20 14:59:06 $ 
+ * @version $Revision: 1.144 $ $Date: 2000/11/28 16:28:09 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -354,31 +354,6 @@ public void chmod(String filename, int flags) throws CmsException {
  */
 public void chown(String filename, String newOwner) throws CmsException {
 	m_rb.chown(m_context.currentUser(), m_context.currentProject(), filename, newOwner);
-}
-/**
- * Changes the state of a resource.
- * <br>
- * Only the state of a resource in an offline project can be changed. The state
- * of the resource is set to CHANGED (1).
- * If the content of this resource is not existing in the offline project already,
- * it is read from the online project and written into the offline project.
- * The user may change this, if he is admin of the resource.
- * <p>
- * <B>Security:</B>
- * Access is cranted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user is owner of the resource or the user is admin</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- * 
- * @param filename the complete path to the resource.
- * @param state the new state of this resource.
- * 
- * @exception CmsException if operation was not successful.
- */
-public void chstate(String filename, int state) throws CmsException {
-	m_rb.chstate(m_context.currentUser(), m_context.currentProject(), filename, state);
 }
 /**
  * Changes the resourcetype of a resource.

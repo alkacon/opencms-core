@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/11/02 16:04:58 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/11/28 16:28:09 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2000/11/02 16:04:58 $
+ * @version $Revision: 1.32 $ $Date: 2000/11/28 16:28:09 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -409,17 +409,11 @@ private void importFile(String source, String destination, String type, String u
 			m_cms.chmod(fullname, Integer.parseInt(access));
 			m_cms.chgrp(fullname, group);
 			m_cms.chown(fullname, user);
-            if(launcherStartClass != null) {
-                CmsFile f = m_cms.readFile(fullname);
-                f.setLauncherClassname(launcherStartClass);                
-                m_cms.writeFile(f);
-            }
-			// for debugging: check whether the kernel and this method determine the same status
-			int kernelstate = m_cms.readFileHeader(fullname).getState();
-			if ((state != kernelstate)) {
-				System.out.println( "CmsImport: different statuses, kernel sais " + kernelstate + " import sais " + state);
+			if(launcherStartClass != null) {
+				CmsFile f = m_cms.readFile(fullname);
+				f.setLauncherClassname(launcherStartClass);                
+				m_cms.writeFile(f);
 			}
-			// m_cms.chstate(fullname,state);
 		}
 		System.out.println("OK");
 	} catch (Exception exc) {
@@ -481,7 +475,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 			user = getTextNodeValue(currentElement, C_EXPORT_TAG_USER);
 			group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
 			access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
-            launcherStartClass = getTextNodeValue(currentElement, C_EXPORT_TAG_LAUNCHER_START_CLASS);
+			launcherStartClass = getTextNodeValue(currentElement, C_EXPORT_TAG_LAUNCHER_START_CLASS);
 			if (!inExcludeList(excludeList, m_importPath + destination)) {
 
 				// get all properties for this file
