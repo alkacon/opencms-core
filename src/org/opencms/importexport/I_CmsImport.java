@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/12 14:54:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.Document;
  * This interface describes a import class which is used to import resources into the VFS.<p>
  * 
  * OpenCms supports different import versions, for each version a own import class must be implemented.
- * A group of common used methods can be found in  @see com.opencms.importexport.A_CmsImport
+ * A group of common used methods can be found in {@link com.opencms.importexport.A_CmsImport}.<p>
  * 
  * Implementations of this interface must be registered in the registry in the <code>importclasses</code> node,
  * e.g.:<br>
@@ -59,10 +59,8 @@ import org.w3c.dom.Document;
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
-
 public interface I_CmsImport {
 
-    
     /**
      * Imports the resources.<p>
      * 
@@ -73,24 +71,27 @@ public interface I_CmsImport {
      * @param importResource  the import-resource (folder) to load resources from
      * @param importZip the import-resource (zip) to load resources from
      * @param docXml the xml manifest-file
-     * @param excludeList filenames of files and folders which should not 
-     *      be (over)written in the virtual file system (not used when null)
-     * @param writtenFilenames filenames of the files and folder which have actually been 
-     *      successfully written (not used when null)
-     * @param fileCodes code of the written files (for the registry)
-     *      (not used when null)
+     * @param excludeList filenames of files and folders which should not be (over)written in the virtual file system (not used when null)
+     * @param writtenFilenames filenames of the files and folder which have actually been successfully written (not used when null)
+     * @param fileCodes code of the written files (for the registry) (not used when null)
      * @param propertyName name of a property to be added to all resources
      * @param propertyValue value of that property
      * @throws CmsException if something goes wrong
      */
-     void importResources(CmsObject cms,  String importPath, I_CmsReport report, 
-                          MessageDigest digest, File importResource, ZipFile importZip, Document docXml, 
-                          Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException;
+    void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException;
 
-     /**
-      * Returns the import version of the import implementation.<p>
-      * 
-      * @return import version
-      */
-     int getVersion();
+    /**
+     * Returns the version of the import implementation.<p>
+     *  
+     * <ul>
+     * <li>0 indicates an export file without a version number, that is before version 4.3.23 of OpenCms</li>
+     * <li>1 indicates an export file of OpenCms with a version before 5.0.0</li>
+     * <li>2 indicates an export file of OpenCms with a version before 5.1.2</li>
+     * <li>3 indicates an export file of OpenCms with a version before 5.1.6</li>
+     * <li>4 indicates an export file of OpenCms with a version after 5.1.6</li>
+     * </ul>
+     * 
+     * @return the version of the import implementation
+     */
+    int getVersion();
 }

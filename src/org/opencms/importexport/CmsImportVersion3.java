@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/02/12 11:14:41 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/12 14:54:52 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Implementation of the OpenCms Import Interface (@see org.opencms.importexport.I_CmsImport) for 
+ * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
  * the import version 3. <p>
  * 
  * This import format was used in OpenCms 5.1.2 - 5.1.6.
@@ -73,22 +73,23 @@ import org.w3c.dom.NodeList;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
 public class CmsImportVersion3 extends A_CmsImport {
+    
+    /** The version number of this import implementation.<p> */
+    private static final int C_IMPORT_VERSION = 3;    
 
     /**
      * Creates a new CmsImportVerion3 object.<p>
      */
-    public CmsImportVersion3() {
-        m_importVersion = 3;
+    public CmsImportVersion3() {        
         m_convertToXmlPage = true;
     }
 
     /**
-     * Returns the import version of the import implementation.<p>
-     * 
-     * @return import version
+     * @see org.opencms.importexport.I_CmsImport#getVersion()
+     * @return the version number of this import implementation
      */
     public int getVersion() {
-        return 3;
+        return CmsImportVersion3.C_IMPORT_VERSION;
     }
     
 

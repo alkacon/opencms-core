@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/12 11:14:41 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/02/12 14:54:52 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,12 +78,15 @@ import org.w3c.dom.NodeList;
  * @see org.opencms.importexport.A_CmsImport
  */
 public class CmsImportVersion2 extends A_CmsImport {
+    
+    /** The version number of this import implementation.<p> */
+    private static final int C_IMPORT_VERSION = 2;
 
     /** Web application names for conversion support */
-    protected List m_webAppNames = new ArrayList();
+    protected List m_webAppNames;
 
     /** Old webapp URL for import conversion */
-    protected String m_webappUrl = null;
+    protected String m_webappUrl;
     
     /** folder storage for page file and body coversion */
     private List m_folderStorage;
@@ -92,21 +95,20 @@ public class CmsImportVersion2 extends A_CmsImport {
     private List m_pageStorage;
     
     /**
-     * Returns the import version of the import implementation.<p>
-     * 
-     * @return import version
+     * @see org.opencms.importexport.I_CmsImport#getVersion()
+     * @return the version number of this import implementation
      */
     public int getVersion() {
-        return 2;
+        return CmsImportVersion2.C_IMPORT_VERSION;
     }
-
 
     /**
      * Creates a new CmsImportVerion2 object.<p>
      */
     public CmsImportVersion2() {
-        m_importVersion = 2;
         m_convertToXmlPage = true;
+        m_webAppNames = (List) new ArrayList();
+        m_webappUrl = null;
     }
 
 
@@ -307,7 +309,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         m_webAppNames = (List)OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
         if (m_webAppNames == null) {
-            m_webAppNames = new ArrayList();
+            m_webAppNames = Collections.EMPTY_LIST;
         }
 
         // get the old webapp url from the OpenCms properties
@@ -323,21 +325,16 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         // get list of unwanted properties
         List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
-        if (deleteProperties == null) {
-            deleteProperties = new ArrayList();
-        }
 
         // get list of immutable resources
         List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
-        if (immutableResources == null) {
-            immutableResources = new ArrayList();
-        }
         if (DEBUG > 0) {
             System.err.println("Import: Immutable resources size is " + immutableResources.size());
         }
         
         // save the value of the boolean flag whether colliding resources should be overwritten
         old_overwriteCollidingResources = OpenCms.getImportExportManager().overwriteCollidingResources();
+        
         // force v1 and v2 imports to overwrite colliding resources, because they dont have resource 
         // UUIDSs in their manifest anyway
         OpenCms.getImportExportManager().setOverwriteCollidingResources(true);
@@ -434,24 +431,10 @@ public class CmsImportVersion2 extends A_CmsImport {
 
             // now merge the body and page control files. this only has to be done if the import
             // version is below version 3
-            if (m_importVersion < 3) {
-                // only do the conversions if the new resourcetype (CmsResourceTypeNewPage.) is available 
-                CmsResource newpage = null;
-                
-                try {
-                    newpage = m_cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + CmsResourceTypeXmlPage.C_RESOURCE_TYPE_NAME);
-                } catch (CmsException e1) {
-                    // do nothing, 
-                }
-                
-                boolean convertToNewPage=((newpage!=null) || !CmsResourceTypeFolder.C_BODY_MIRROR);
-                
-                if (convertToNewPage) {
-                    mergePageFiles();
-                    removeFolders();
-                }
+            if (getVersion() < 3 && m_convertToXmlPage) {
+                mergePageFiles();
+                removeFolders();
             }
-
         } catch (Exception exc) {
             exc.printStackTrace(System.err);
             m_report.println(exc);
@@ -619,7 +602,7 @@ public class CmsImportVersion2 extends A_CmsImport {
       */
      protected byte[] convertContent(String source, String destination, byte[] content, String resType) {
         // if the import is older than version 3, some additional conversions must be made
-        if (m_importVersion < 3) {
+        if (getVersion() < 3) {
             if ("page".equals(resType)) {
                 if (DEBUG > 0) {
                     System.err.println("#########################");
@@ -854,7 +837,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         int counter = 1;
         while (i.hasPrevious()) {
             String resname = (String)i.previous();
-            resname = "/" + resname + "/";
+            resname = (resname.startsWith("/") ? "" : "/") + resname + (resname.endsWith("/") ? "" : "/");
             // now check if the folder is really empty. Only delete empty folders
             List files = m_cms.getFilesInFolder(resname, false);
 

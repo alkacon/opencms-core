@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/02/12 11:28:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/12 14:54:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/12 11:28:20 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/12 14:54:52 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -75,8 +75,8 @@ public class CmsImportExportManager extends Object {
      * @param ignoredProperties a list of property keys that should be removed from imported resources
      */
     public CmsImportExportManager(List immutableResources, boolean convertToXmlPage, boolean overwriteCollidingResources, String webAppUrl, List ignoredProperties) {
-        m_immutableResources = (immutableResources.size() > 0) ? immutableResources : Collections.EMPTY_LIST;
-        m_ignoredProperties = (ignoredProperties.size() > 0) ? ignoredProperties : Collections.EMPTY_LIST;
+        m_immutableResources = (immutableResources != null && immutableResources.size() > 0) ? immutableResources : Collections.EMPTY_LIST;
+        m_ignoredProperties = (ignoredProperties != null && ignoredProperties.size() > 0) ? ignoredProperties : Collections.EMPTY_LIST;
 
         m_convertToXmlPage = convertToXmlPage;
         m_overwriteCollidingResources = overwriteCollidingResources;
@@ -114,8 +114,7 @@ public class CmsImportExportManager extends Object {
 
         // read the conversion setting
         String convertToXmlPageValue = configuration.getString("import.convert.xmlpage");
-        convertToXmlPageValue = (convertToXmlPageValue != null) ? convertToXmlPageValue.trim() : null;
-        boolean convertToXmlPage = "true".equalsIgnoreCase(convertToXmlPageValue);
+        boolean convertToXmlPage = (convertToXmlPageValue != null) ? "true".equalsIgnoreCase(convertToXmlPageValue.trim()) : false;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Convert to XML page  : " + (convertToXmlPage ? "enabled" : "disabled"));
         }
@@ -150,8 +149,7 @@ public class CmsImportExportManager extends Object {
 
         // should colliding resources be overwritten or moved to lost+found?
         String overwriteCollidingResourcesValue = configuration.getString("import.overwrite.colliding.resources");
-        overwriteCollidingResourcesValue = (overwriteCollidingResourcesValue != null) ? overwriteCollidingResourcesValue.trim() : null;
-        boolean overwriteCollidingResources = "true".equalsIgnoreCase(overwriteCollidingResourcesValue);
+        boolean overwriteCollidingResources = (overwriteCollidingResourcesValue != null) ? "true".equalsIgnoreCase(overwriteCollidingResourcesValue.trim()) : false;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Overwrite collisions : " + (overwriteCollidingResources ? "enabled" : "disabled"));
         }
@@ -257,7 +255,7 @@ public class CmsImportExportManager extends Object {
      * @param ignoredProperties a list of property keys that should be removed from imported resources
      */
     void setIgnoredProperties(List ignoredProperties) {
-        m_ignoredProperties = (ignoredProperties.size() > 0) ? ignoredProperties : Collections.EMPTY_LIST;
+        m_ignoredProperties = (ignoredProperties != null && ignoredProperties.size() > 0) ? ignoredProperties : Collections.EMPTY_LIST;
     }
 
     /**
@@ -267,7 +265,7 @@ public class CmsImportExportManager extends Object {
      * @param immutableResources a list of immutable resources
      */
     void setImmutableResources(List immutableResources) {
-        m_immutableResources = (immutableResources.size() > 0) ? immutableResources : Collections.EMPTY_LIST;
+        m_immutableResources = (immutableResources != null && immutableResources.size() > 0) ? immutableResources : Collections.EMPTY_LIST;
     }
 
     /**

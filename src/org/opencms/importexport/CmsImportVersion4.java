@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/02/12 11:14:41 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/12 14:54:52 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,8 +64,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Implementation of the OpenCms Import Interface (@see org.opencms.importexport.I_CmsImport) for 
- * the import version 4. <p>
+ * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
+ * the import version 4.<p>
  * 
  * This import format is used in OpenCms since 5.1.6.
  * @see org.opencms.importexport.A_CmsImport
@@ -74,22 +74,23 @@ import org.w3c.dom.NodeList;
  */
 public class CmsImportVersion4 extends A_CmsImport {
     
+    /** The version number of this import implementation.<p> */
+    private static final int C_IMPORT_VERSION = 4;
+    
     /**
      * Creates a new CmsImportVerion4 object.<p>
      */
-    public CmsImportVersion4() {
-        m_importVersion = 4;
+    public CmsImportVersion4() {        
         m_convertToXmlPage = true;
     }
-
+    
     /**
-     * Returns the import version of the import implementation.<p>
-     * 
-     * @return import version
+     * @see org.opencms.importexport.I_CmsImport#getVersion()
+     * @return the version number of this import implementation
      */
     public int getVersion() {
-        return 4;
-    }
+        return CmsImportVersion4.C_IMPORT_VERSION;
+    }    
 
     /**
      * Imports the resources for a module.<p>
@@ -122,6 +123,15 @@ public class CmsImportVersion4 extends A_CmsImport {
         m_importingChannelData = false;
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
+        
+        // these lines make Eclipse happy...
+        if (writtenFilenames != null) {
+            writtenFilenames.size();
+        }
+        if (fileCodes != null) {
+            fileCodes.size();
+        }
+        
         try {
             // first import the user information
             if (m_cms.isAdmin()) {

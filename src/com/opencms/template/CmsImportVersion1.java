@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2004/02/11 16:12:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/12 14:54:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,10 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -71,6 +73,9 @@ import org.w3c.dom.NodeList;
  * @see org.opencms.importexport.A_CmsImport
  */
 public class CmsImportVersion1 extends CmsImportVersion2 {
+    
+    /** The version number of this import implementation.<p> */
+    private static final int C_IMPORT_VERSION = 1;
 
     /** The path to the bodies in OpenCms 4.x */
     private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
@@ -79,16 +84,16 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
      * Creates a new CmsImportVerion1 object.<p>
      */
     public CmsImportVersion1() {
-        m_importVersion = 1;
+        m_convertToXmlPage = true;
+        m_webAppNames = (List) new ArrayList();
+        m_webappUrl = null;        
     }
 
     /**
-     * Returns the import version of the import implementation.<p>
-     * 
-     * @return import version
+     * @see org.opencms.importexport.I_CmsImport#getVersion()
      */
     public int getVersion() {
-        return 1;
+        return CmsImportVersion1.C_IMPORT_VERSION;
     }
 
     /**
@@ -300,7 +305,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
      */
     protected byte[] convertContent(String source, String destination, byte[] content, String resType) {        
         // check and convert old import files    
-        if (m_importVersion < 2) {
+        if (getVersion() < 2) {
             // convert content from pre 5.x must be activated
             if ("page".equals(resType) || ("plain".equals(resType)) || ("XMLTemplate".equals(resType))) {
                 if (DEBUG > 0) {
@@ -311,7 +316,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                 content = convertFile(source, content);
             }
             // only check the file type if the version of the export is 0
-            if (m_importVersion == 0) {
+            if (getVersion() == 0) {
                 // ok, a (very) old system exported this, check if the file is ok
                 if (!(new CmsCompatibleCheck()).isTemplateCompatible(m_importPath + destination, content, resType)) {
                     resType = CmsResourceTypeCompatiblePlain.C_RESOURCE_TYPE_NAME;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/09 10:27:12 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/02/12 14:54:52 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -123,17 +123,6 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** flag for conversion to xml pages */
     protected boolean m_convertToXmlPage;
-    
-    /**
-     * The version of this import, noted in the info tag of the manifest.xml.<p>
-     * 
-     * 0 indicates an export file without a version number, that is before version 4.3.23 of OpenCms.<br>
-     * 1 indicates an export file of OpenCms with a version before 5.0.0
-     * 2 indicates an export file of OpenCms with a version before 5.1.2
-     * 3 indicates an export file of OpenCms with a version before 5.1.6
-     * 4 indicates an export file of OpenCms with a version after 5.1.6
-     */
-    protected int m_importVersion = 0;
 
     /**  The import-resource (zip) to load resources from */
     protected ZipFile m_importZip = null;
@@ -437,15 +426,6 @@ public abstract class A_CmsImport implements I_CmsImport {
             // ignore the exception and return null
             return null;
         }
-    }
-
-    /**
-     * Returns the import version of the import implementation.<p>
-     * 
-     * @return import version
-     */
-    public int getVersion() {
-        return 0;
     }
 
     /**
