@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungContentDefinition.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/20 20:43:11 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/21 09:13:14 $
+ * Version: $Revision: 1.8 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -36,7 +36,7 @@ import java.io.*;
  * This class is used to access the application form's XML-datablocks.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.7 $ $Date: 2000/02/20 20:43:11 $
+ * @version $Name:  $ $Revision: 1.8 $ $Date: 2000/02/21 09:13:14 $
  * @see com.opencms.template.CmsXmlTemplateFile
  */
 public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
@@ -266,8 +266,10 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
      * This method gets the value of subject datablock.
      * @return It returns the value of subject datablock.
      */
-    public String getSubject() throws CmsException {
-        return getDataValue(C_SUBJECT);
+    public String getSubject(String firstname,String surname) throws CmsException {
+		setData(C_FIRSTNAME,firstname);
+		setData(C_SURNAME,surname);
+        return getProcessedDataValue(C_SUBJECT);
 	}
 	
 	

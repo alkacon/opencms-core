@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/20 21:24:32 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/02/21 09:13:14 $
+ * Version: $Revision: 1.14 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,7 +42,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.13 $ $Date: 2000/02/20 21:24:32 $
+ * @version $Name:  $ $Revision: 1.14 $ $Date: 2000/02/21 09:13:14 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -347,9 +347,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				// write in database
 				String link=startWorkflow(cms,mailInfo);
 				mailInfo.put(C_HASH_LINK,link);
-				writeInDatabase(mailInfo);				
-				
-				
+				writeInDatabase(mailInfo);
 				// this is nessesary because of "nicht angegeben" must be send
 				// or displayed if the user has nothing entered.
 				datablock.setText((String)mailInfo.get(C_HASH_TEXT));
@@ -385,13 +383,15 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				String cc=(String)datablock.getCc();
 				String bcc=(String)datablock.getBcc();
 				String host=(String)datablock.getMailserver();
-				String subject=(String)datablock.getSubject();
+				String subject=(String)datablock.getSubject(firstname,surname);
 				String content=(String)datablock.getBewerbungsText(mailInfo);
-									
+				if (!cc.equals("")) {
+					cc=email+","+cc;
+				}
 				mailTable.put(C_HASH_CERTIFICATES,certificates);
 				mailTable.put(C_HASH_FROM,from);
 				mailTable.put(C_HASH_AN,an);
-				mailTable.put(C_HASH_CC,email);
+				mailTable.put(C_HASH_CC,cc);
 				mailTable.put(C_HASH_BCC,bcc);
 				mailTable.put(C_HASH_HOST,host);
 				mailTable.put(C_HASH_SUBJECT,subject);
