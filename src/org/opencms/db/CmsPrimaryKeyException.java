@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsPrimaryKeyException.java,v $
- * Date   : $Date: 2003/07/11 07:46:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/16 13:45:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,8 @@ import com.opencms.core.CmsException;
  * invalid or empty.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/07/11 07:46:17 $
+ * @version $Revision: 1.2 $ $Date: 2003/07/16 13:45:49 $
+ * @since 5.1.4
  */
 public class CmsPrimaryKeyException extends CmsException {
     

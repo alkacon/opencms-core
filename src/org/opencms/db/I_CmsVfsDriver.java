@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/15 12:17:05 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/16 13:45:49 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/07/15 12:17:05 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/16 13:45:49 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -414,5 +414,14 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if operation was not succesful 
      */
     List getResourcesInTimeRange(int currentProject, long starttime, long endtime) throws CmsException;
+    
+    /**
+     * Reads the file headers of all locked resources.<p>
+     * 
+     * @param currentProject the current project
+     * @return
+     * @throws CmsException if something goes wrong
+     */
+    List readLockedFileHeaders(CmsProject currentProject) throws CmsException;
         
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/15 13:53:47 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/07/16 13:45:49 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.23 $ $Date: 2003/07/15 13:53:47 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/16 13:45:49 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -2169,7 +2169,6 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         try {
             conn = m_sqlManager.getConnection(project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UNLOCK");
-            // create the statement
             stmt.setString(1, CmsUUID.getNullUUID().toString());
             stmt.setInt(2, project.getId());
             stmt.executeUpdate();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/08 16:30:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/16 13:45:49 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/07/08 16:30:29 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/16 13:45:49 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -69,7 +69,7 @@ public interface I_CmsBackupDriver {
      * @return CmsBackupResource the new resource/file instance
      * @throws SQLException if a requested attribute was not found in the result set
      */
-    CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res, boolean hasContent) throws SQLException;
+    CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res, boolean hasContent) throws SQLException, CmsException;
 
     /**
      * Deletes all backups that are older then the given date.<p>

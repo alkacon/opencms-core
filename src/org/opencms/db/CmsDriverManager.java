@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/16 10:13:33 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2003/07/16 13:45:49 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.54 $ $Date: 2003/07/16 10:13:33 $
+ * @version $Revision: 1.55 $ $Date: 2003/07/16 13:45:49 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -257,7 +257,6 @@ public class CmsDriverManager extends Object {
 
         String driverName = null;
         String driverPoolUrl = null;
-        //Class driverClass = null;
 
         I_CmsVfsDriver vfsDriver = null;
         I_CmsUserDriver userDriver = null;
@@ -340,7 +339,7 @@ public class CmsDriverManager extends Object {
         driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".cos.pool");
         A_OpenCms.setRuntimeProperty("cosPoolUrl", driverPoolUrl);
         CmsIdGenerator.setDefaultPool(driverPoolUrl);
-
+        
         // return the configured driver manager
         return driverManager;
     }
@@ -996,7 +995,7 @@ public class CmsDriverManager extends Object {
      */
     public void chtype(CmsRequestContext context, String filename, int newType) throws CmsException {
 
-        I_CmsResourceType type = getResourceType(context, newType);
+        I_CmsResourceType type = getResourceType(newType);
 
         // read the resource to check the access
         CmsResource resource = readFileHeader(context, filename);
@@ -1159,7 +1158,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // create a copy of the source file in the destination parent folder      
-        m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(context, sourceFile.getType()));
+        m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
 
         // remove any possibly cached resources of the destination
         //clearResourceCache(destination, context.currentProject(), context.currentUser());
@@ -1412,7 +1411,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, cmsFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // create and return the file.
-        CmsFile file = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), resourceName, 0, cmsFolder.getId(), contents, getResourceType(context, type));
+        CmsFile file = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), resourceName, 0, cmsFolder.getId(), contents, getResourceType(type));
         //file.setState(I_CmsConstants.C_STATE_NEW);
         //m_vfsDriver.writeFileHeader(context.currentProject(), file, false);
 
@@ -2240,7 +2239,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
 
         // read the metadefinition
-        I_CmsResourceType resType = getResourceType(context, res.getType());
+        I_CmsResourceType resType = getResourceType(res.getType());
         CmsPropertydefinition metadef = readPropertydefinition(context, property, resType.getResourceType());
 
         if ((metadef != null)) {
@@ -2286,7 +2285,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             // first read and then delete the metadefinition.
             m_propertyDefVectorCache.clear();
-            m_propertyDefCache.remove(name + (getResourceType(context, resourcetype)).getResourceType());
+            m_propertyDefCache.remove(name + (getResourceType(resourcetype)).getResourceType());
             m_vfsDriver.deletePropertydefinition(readPropertydefinition(context, name, resourcetype));
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
@@ -2879,7 +2878,7 @@ public class CmsDriverManager extends Object {
      * @return array with all initialized resource types
      * @throws CmsException if something goes wrong
      */
-    public I_CmsResourceType[] getAllResourceTypes(CmsRequestContext context) throws CmsException {
+    public I_CmsResourceType[] getAllResourceTypes() throws CmsException {
         // check, if the resourceTypes were read bevore
         if (m_resourceTypes == null) {
             synchronized (this) {
@@ -3677,9 +3676,9 @@ public class CmsDriverManager extends Object {
      * @return the initialized resource type instance for the given id
      * @throws CmsException if something goes wrong
      */
-    public I_CmsResourceType getResourceType(CmsRequestContext context, int resourceType) throws CmsException {
+    public I_CmsResourceType getResourceType(int resourceType) throws CmsException {
         try {
-            return getAllResourceTypes(context)[resourceType];
+            return getAllResourceTypes()[resourceType];
         } catch (Exception e) {
             throw new CmsException("[" + this.getClass().getName() + "] Unknown resource type id requested: " + resourceType, CmsException.C_NOT_FOUND);
         }
@@ -3692,9 +3691,9 @@ public class CmsDriverManager extends Object {
      * @return the initialized resource type instance for the given id
      * @throws CmsException if something goes wrong
      */
-    public I_CmsResourceType getResourceType(CmsRequestContext context, String resourceType) throws CmsException {
+    public I_CmsResourceType getResourceType(String resourceType) throws CmsException {
         try {
-            I_CmsResourceType[] types =  getAllResourceTypes(context);
+            I_CmsResourceType[] types =  getAllResourceTypes();
             for (int i=0; i<types.length; i++) {
                 I_CmsResourceType t = types[i];
                 if ((t != null) && (t.getResourceTypeName().equals(resourceType))) {
@@ -5234,7 +5233,7 @@ public class CmsDriverManager extends Object {
      */
     public Vector readAllPropertydefinitions(CmsRequestContext context, String resourcetype) throws CmsException {
         Vector returnValue = null;
-        I_CmsResourceType resType = getResourceType(context, resourcetype);
+        I_CmsResourceType resType = getResourceType(resourcetype);
 
         returnValue = (Vector) m_propertyDefVectorCache.get(resType.getResourceTypeName());
         if (returnValue == null) {
@@ -6287,12 +6286,16 @@ public class CmsDriverManager extends Object {
         String cacheKey = null;
         // the parent resource of the current resource
         CmsResource lastParent = null;
+        
+        /*
         // true if a upper folder in the path was locked
         boolean visitedLockedFolder = false;
         // the project ID of an upper locked folder
         int lockedInProject = projectId;
         // the user ID of an upper locked folder
         CmsUUID lockedByUserId = CmsUUID.getNullUUID();
+        */
+
 
         tokens = new StringTokenizer(path, I_CmsConstants.C_FOLDER_SEPARATOR);
 
@@ -6323,12 +6326,14 @@ public class CmsDriverManager extends Object {
             return pathList;
         }
 
+        /*
         // save the current lock state
         if (currentResource.isLocked()) {
             visitedLockedFolder = true;
             lockedInProject = currentResource.getLockedInProject();
             lockedByUserId = currentResource.isLockedBy();
         }
+        */
 
         currentResourceName = tokens.nextToken();
 
@@ -6344,6 +6349,7 @@ public class CmsDriverManager extends Object {
                 m_resourceCache.put(cacheKey, currentResource);
             }
 
+            /*
             // update/save the lock state
             if (visitedLockedFolder) {
                 currentResource.setLocked(lockedByUserId);
@@ -6355,6 +6361,7 @@ public class CmsDriverManager extends Object {
                 lockedInProject = currentResource.getLockedInProject();
                 lockedByUserId = currentResource.isLockedBy();
             }
+            */
 
             pathList.add(i, currentResource);
             lastParent = currentResource;
@@ -6377,6 +6384,7 @@ public class CmsDriverManager extends Object {
                 m_resourceCache.put(cacheKey, currentResource);
             }
 
+            /*
             // update/save the lock state
             if (visitedLockedFolder && !currentResource.isLocked()) {
                 currentResource.setLocked(lockedByUserId);
@@ -6384,6 +6392,7 @@ public class CmsDriverManager extends Object {
                 currentResource.setProjectId(lockedInProject);
                 m_resourceCache.put(cacheKey, currentResource);
             }
+            */
 
             pathList.add(i, currentResource);
         }
