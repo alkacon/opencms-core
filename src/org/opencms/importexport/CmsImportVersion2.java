@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/11/09 14:27:19 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2004/11/10 15:21:55 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,15 @@ import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.File;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
 import java.util.zip.ZipFile;
 
 import org.dom4j.Document;
@@ -157,11 +165,22 @@ public class CmsImportVersion2 extends A_CmsImport {
         m_importZip = importZip;
         m_docXml = docXml;
         m_importingChannelData = false;
-        m_folderStorage = new LinkedList();
+        
+        m_folderStorage = new ArrayList();
         m_pageStorage = new ArrayList();
-        m_importedPages = new Vector();   
+        m_importedPages = new ArrayList();   
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
+        
+        if (OpenCms.getRunLevel() > 1) {
+            if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_folderStorage", m_folderStorage);
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_pageStorage", m_pageStorage);
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_importedPages", m_importedPages);
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_linkStorage", m_linkStorage);
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_linkPropertyStorage", m_linkPropertyStorage);
+            }            
+        }        
         
         try {
             // first import the user information
@@ -486,8 +505,10 @@ public class CmsImportVersion2 extends A_CmsImport {
                 m_linkPropertyStorage.put(m_importPath + destination, properties);
                 res = resource;
             } else {                                                                                                       
-                //  import this resource in the VFS                         
-                res = m_cms.importResource(m_importPath+destination, resource, content, properties);
+                //  import this resource in the VFS   
+                String resName = m_importPath+destination;
+                res = m_cms.importResource(resName, resource, content, properties);
+                m_cms.unlockResource(resName);
             }   
             
             if (res != null) {
@@ -812,10 +833,9 @@ public class CmsImportVersion2 extends A_CmsImport {
         m_report.println(m_report.key("report.delfolder_start"), I_CmsReport.C_FORMAT_HEADLINE);
         // iterate though all collected folders. Iteration must start at the end of the list,
         // as folders habe to be deleted in the reverse order.
-        ListIterator i = m_folderStorage.listIterator(size);
         int counter = 1;
-        while (i.hasPrevious()) {
-            String resname = (String)i.previous();
+        for (int j=(size-1); j>=0; j--) {
+            String resname = (String)m_folderStorage.get(j);
             resname = (resname.startsWith("/") ? "" : "/") + resname + (resname.endsWith("/") ? "" : "/");
             // now check if the folder is really empty. Only delete empty folders
             List files = m_cms.getFilesInFolder(resname, CmsResourceFilter.IGNORE_EXPIRATION);
