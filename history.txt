@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.5 Bela Tegeuse - 09 April 2001
+* General bugfixing.
+
 OpenCms 4.3.4 Bela Tegeuse - 06 April 2001
 
 ! Workplace-Language is now based on the webbrowser language.
