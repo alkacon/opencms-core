@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsElementRename.java,v $
- * Date   : $Date: 2004/12/17 12:39:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/17 18:34:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.3
  */
@@ -686,7 +686,7 @@ public class CmsElementRename extends CmsReport {
         
         boolean isRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
         // filterdefinition to read only the required resources 
-        CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION
             .addRequireType(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
         // trying to read the resources
         List xmlPages = null;
@@ -791,6 +791,8 @@ public class CmsElementRename extends CmsReport {
     private void performRenameOperation(List xmlPages, Locale locale) {
 
         boolean removeEmptyElements = Boolean.valueOf(getParamRemoveEmptyElements()).booleanValue();
+        boolean validateNewElement = Boolean.valueOf(getParamValidateNewElement()).booleanValue();
+
         // the list including at least one resource
         if (xmlPages != null && xmlPages.size() > 0) {
             m_report.println("processing rename element for language ("+locale.getLanguage()+")", I_CmsReport.C_FORMAT_HEADLINE);            
@@ -812,64 +814,67 @@ public class CmsElementRename extends CmsReport {
                     m_report.print("( " + m + " / " + n + " ) " + "processing page " + getCms().getSitePath(res), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(m_report.key("report.dots"));
                     try {
-                        file = getCms().readFile(getCms().getSitePath(res));
+                        file = getCms().readFile(getCms().getSitePath(res), CmsResourceFilter.IGNORE_EXPIRATION);
                     } catch (CmsException e2) {
                         if (OpenCms.getLog(this).isErrorEnabled()) {
                             OpenCms.getLog(this).error(e2);
                         }
-                        m_report.println(" " + m_report.key("report.error") + e2.getMessage(), I_CmsReport.C_FORMAT_ERROR);
+                        m_report.println(e2);
                         continue;
                     }
                     // try unmarshaling to xml page
                     try {
                         page = CmsXmlPageFactory.unmarshal(getCms(), file);
                     } catch (CmsXmlException e) {
-                        m_report.println(" " + m_report.key("report.error") + e.getMessage(), I_CmsReport.C_FORMAT_ERROR);
+                        m_report.println(e);
                         continue;
                     }
+                    
+                    // check if the source element exists in the page
                     if (!page.hasValue(getParamOldElement(), locale)) {
-                        m_report.println(m_report.key("report.dots") + "element "+getParamOldElement()+" does not exist.", I_CmsReport.C_FORMAT_WARNING);
+                        m_report.println(m_report.key("report.dots")
+                            + "element "
+                            + getParamOldElement()
+                            + " does not exist.", I_CmsReport.C_FORMAT_NOTE);
                         continue;
                     }
-                    boolean validateNewElement = Boolean.valueOf(getParamValidateNewElement()).booleanValue();
+                    
+                    // check if the target element already exists in the page
+                    if (page.hasValue(getParamNewElement(), locale)) {
+                        // the page contains already the new element with speicific content. 
+                        // renaming the old will invalid the xml page
+                        m_report.println(
+                            m_report.key("report.dots")
+                                + "the page contains already the new element that includes content",
+                            I_CmsReport.C_FORMAT_NOTE);
+                        continue;
+                    }
                     
                     if (validateNewElement) {
+                        // check if the target element is valid for the template
                         if (!isValidElement(page, getParamNewElement())) {
-                            m_report.println(m_report.key("report.dots") + "the new element " + getParamNewElement() + " is not valid", I_CmsReport.C_FORMAT_WARNING);
-                            continue; 
+                            m_report.println(m_report.key("report.dots")
+                                + "the new element "
+                                + getParamNewElement()
+                                + " is not valid", I_CmsReport.C_FORMAT_NOTE);
+                            continue;
                         }
-                    }                        
-                    
-                    // do rename the element only if this includes content                    
-                    if (isEmptyElement(page, getParamOldElement(), locale)) {
-                        m_report.println(m_report.key("report.dots") + "element "+getParamOldElement()+" has no content.", I_CmsReport.C_FORMAT_WARNING);
-                        continue;
-                    }
+                    }                  
                     
                     try {
-                        // check if the new element name already exists in page
-                        if (page.hasValue(getParamNewElement(), locale)) {
-                            // check if the new element has an content
-                            if (!isEmptyElement(page, getParamNewElement(), locale)) {
-                                // the page contains already the new element with speicific content. 
-                                // renaming the old will invalid the xml page
-                                m_report.println(m_report.key("report.dots") + "the page contains already the new element that includes content", I_CmsReport.C_FORMAT_WARNING);
-                                continue;
-                            }
-                        }
                         // rename the element from the old value to the new
                         page.renameValue(getParamOldElement(), getParamNewElement(), locale);
                         // write the page with the new content
                         writePageAndReport(page, true);
-
-                    } catch (CmsException e) {
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error(e);
-                        }
-                        m_report.println(" " + m_report.key("report.error") + e.getMessage(), I_CmsReport.C_FORMAT_ERROR);
+                    } catch (Throwable t) {
+                        OpenCms.getLog(this).error(t);
+                        m_report.println(t);
                         continue;
                     }
                     
+                } catch (Throwable t) {
+                    OpenCms.getLog(this).error(t);
+                    m_report.println(t);
                 } finally {
                     // finally do remove empty elements of the page
                     // the remove operation is executed if the user has checked the specified checkbox and selected a template (NOT ALL)
@@ -908,7 +913,7 @@ public class CmsElementRename extends CmsReport {
                     page.removeValue(currElement, locale);
                     try {
                         writePageAndReport(page, false);
-                        m_report.println(" " + m_report.key("report.dots") + "invalid empty element "+currElement+" removed", I_CmsReport.C_FORMAT_WARNING);
+                        m_report.println(" " + m_report.key("report.dots") + "invalid empty element "+currElement+" removed", I_CmsReport.C_FORMAT_NOTE);
                     } catch (CmsException e) {
                         // ignore
                     }

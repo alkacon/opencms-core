@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2004/12/17 12:09:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/17 18:34:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.workplace.administration.CmsElementRename;
 import org.opencms.xml.CmsXmlEntityResolver;
 
@@ -56,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.5.0
  */
@@ -79,6 +80,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlPageInSystem("testLinkReplacement"));
         suite.addTest(new TestCmsXmlPageInSystem("testCommentInSource"));
         suite.addTest(new TestCmsXmlPageInSystem("testXmlPageRenameElement"));        
+        suite.addTest(new TestCmsXmlPageInSystem("testMalformedPage"));        
         
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -102,6 +104,29 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      */    
     public TestCmsXmlPageInSystem(String arg0) {
         super(arg0);
+    }
+    
+    /**
+     * Test malformed page structures.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testMalformedPage() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing malformed page element structures");
+        
+        // overwrite an existing page with a bad content
+        String resourcename = "/folder1/page2.html";
+        cms.lockResource(resourcename);
+        
+        CmsFile file = cms.readFile(resourcename);
+        
+        // read malformed XML page
+        String pageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-5.xml", "ISO-8859-1");
+        file.setContents(pageStr.getBytes("ISO-8859-1"));
+        
+        cms.writeFile(file);        
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/11/15 09:46:23 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/12/17 18:34:39 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -73,6 +73,12 @@ public class CmsLinkProcessor {
     /** Processing mode "replace links". */
     private static final int C_REPLACE_LINKS = 0;
 
+    /** Start of a macro. */
+    private static final String C_MACRO_START = "${";
+    
+    /** End of a macro. */
+    private static final String C_MACRO_END = "}";
+    
     /** The current cms instance. */
     private CmsObject m_cms;
 
@@ -268,7 +274,13 @@ public class CmsLinkProcessor {
      */
     private String getLinkName(String macro) {
 
-        return macro.substring(2, macro.length() - 1);
+        if (CmsStringUtil.isNotEmpty(macro)) {
+            if (macro.startsWith(C_MACRO_START) && macro.endsWith(C_MACRO_END)) {
+                // make sure the macro really is a macro
+                return macro.substring(C_MACRO_START.length(), macro.length() - C_MACRO_END.length());
+            }            
+        } 
+        return "";
     }
 
     /**
@@ -281,9 +293,9 @@ public class CmsLinkProcessor {
     private String newMacro(String name) {
 
         StringBuffer result = new StringBuffer(name.length() + 4);
-        result.append("${");
+        result.append(C_MACRO_START);
         result.append(name);
-        result.append("}");
+        result.append(C_MACRO_END);
         return result.toString();
     }
 
