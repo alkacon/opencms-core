@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2004/03/18 15:04:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/04/05 05:42:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,19 +33,9 @@ package org.opencms.configuration;
 
 import org.opencms.main.OpenCms;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.digester.Digester;
 
-import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
-import org.xml.sax.SAXException;
 
 /**
  * Dummy class for configuration testing.<p>
@@ -114,50 +104,6 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
             testElement.addElement("test").addAttribute(A_NAME, "test2").addText(m_content2);
         }
         return testElement;
-    }
-    
-    /**
-     * Main executable for testing purposes.<p>
-     * 
-     * @param args the arguments
-     * @throws SAXException in case of XML parsing issues
-     * @throws IOException in case of file IO issues
-     */
-    public static void main(String[] args) throws SAXException, IOException {
-
-        // set "OpenCms" system property to "test" for allowing the logger to be used
-        System.setProperty("OpenCmsLog", "opencms_test.log");
-        
-        // get URL of test input resource
-        URL inputUrl = ClassLoader.getSystemResource("org/opencms/configuration/");
-        // generate the configuration manager
-        CmsConfigurationManager manager = new CmsConfigurationManager(inputUrl.getFile());
-        // now digest the XML
-        manager.loadXmlConfiguration();
-       
-        
-        List allConfigurations = new ArrayList();
-        allConfigurations.add(manager);
-        allConfigurations.addAll(manager.getConfigurations());
-        
-        Iterator i = allConfigurations.iterator();
-        while (i.hasNext()) {
-            I_CmsXmlConfiguration config = (I_CmsXmlConfiguration)i.next();
-            System.out.println("\n\nConfiguration instance: " + config + ":\n");
-            
-            // gernerate XML document for the configuration
-            Document doc = manager.generateXml(config);
-                                   
-            // output the document
-            XMLWriter writer;        
-            OutputFormat format = OutputFormat.createPrettyPrint();
-            format.setIndentSize(4);
-            format.setTrimText(false);
-            format.setEncoding("UTF-8");
-            writer = new XMLWriter(System.out, format);
-            writer.write(doc);                 
-            
-        }   
     }
 
     /**

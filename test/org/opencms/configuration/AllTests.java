@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/Attic/CmsTestMenuRules.java,v $
- * Date   : $Date: 2004/03/10 11:22:43 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/AllTests.java,v $
+ * Date   : $Date: 2004/04/05 05:42:01 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,29 +31,32 @@
 
 package org.opencms.configuration;
 
-import java.util.HashSet;
-import java.util.Set;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
- * Test class for counting the different rule for the context menus.<p>
- * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @version $Revision: 1.1 $
- * 
- * @since 5.3.3
  */
-public class CmsTestMenuRules {
+public final class AllTests {
 
-    /** Stores all unique rule Strings */
-    public Set m_rules = new HashSet();
+    /**
+     * Hide constructor to prevent generation of class instances.<p>
+     */
+    private AllTests() {
+        // empty
+    }
     
     /**
-     * Adds a rule String to the set.<p>
+     * Returns the JUnit test suite for this package.<p>
      * 
-     * @param rule the rule to add
-     */
-    public void addRule(String rule) {
-        m_rules.add(rule);
+     * @return the JUnit test suite for this package
+     */        
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Tests for package org.opencms.configuration");
+        //$JUnit-BEGIN$
+        suite.addTest(new TestSuite(CmsConfigurationTest.class));
+        //$JUnit-END$
+        return suite;
     }
-
 }
