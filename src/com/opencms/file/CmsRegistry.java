@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/10/02 12:21:43 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.36 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.37 $ $Date: 2001/10/02 12:21:43 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -126,18 +126,22 @@ public CmsRegistry(String regFileName) throws CmsException {
         // get a buffered reader
         BufferedReader reader = new BufferedReader(new FileReader(xmlFile));
 
-        String content = "";
+        StringBuffer content = new StringBuffer();
         String buffer = "";
+        System.out.println("IR lod file to buffer");
         do {
-            content += buffer;
+            content.append(buffer);
             buffer = reader.readLine();
         } while (buffer != null);
 
         reader.close();
+        System.out.println("IR parse content");
 
         // parse the registry-xmlfile and store it.
-        m_xmlReg = parse(content);
+        m_xmlReg = parse(content.toString());
+        System.out.println("IR init");
         init();
+        System.out.println("IR done");
     } catch (Exception exc) {
         throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
     }
