@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheKey.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/06 08:52:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,14 +30,16 @@
  */
 package org.opencms.db;
 
-import org.opencms.security.CmsPermissionSet;
 
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.security.CmsPermissionSet;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2004/02/13 13:41:44 $
+ * Generates the cache keys for the user and permission caches.<p>
+ * 
+ * @version $Revision: 1.7 $ $Date: 2004/06/06 08:52:42 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCacheKey implements I_CmsCacheKey {
@@ -52,15 +54,15 @@ public class CmsCacheKey implements I_CmsCacheKey {
     /**
      * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserPermissions(java.lang.String, org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet)
      */
-    public String getCacheKeyForUserPermissions (String prefix, CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions) {
+    public String getCacheKeyForUserPermissions(String prefix, CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions) {
         
         StringBuffer cacheBuffer = new StringBuffer(64);
         cacheBuffer.append(prefix);
-        cacheBuffer.append("_");
+        cacheBuffer.append('_');        
         cacheBuffer.append(context.currentUser().getName());
         cacheBuffer.append(context.currentProject().isOnlineProject()?"_0_":"_1_");
         cacheBuffer.append(requiredPermissions.getPermissionString());
-        cacheBuffer.append("_");
+        cacheBuffer.append('_');
         cacheBuffer.append(resource.getStructureId().toString());
         return cacheBuffer.toString();
     }
@@ -72,7 +74,7 @@ public class CmsCacheKey implements I_CmsCacheKey {
         
         StringBuffer cacheBuffer = new StringBuffer(64);
         cacheBuffer.append(prefix);
-        cacheBuffer.append("_");
+        cacheBuffer.append('_');
         cacheBuffer.append(user.getName());
         return cacheBuffer.toString();       
     }
