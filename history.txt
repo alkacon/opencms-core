@@ -8,6 +8,29 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.0a26 Giedi Prime: Rabban - 20 April 2000
+! Filesystem mountpoints now have complete workplace and project functionality.
+! Projects can now be deleted physically.
+! Added filelist for active projects.
+! Workplace functions "Copy Folder", "Delte Folder", "Move Folder", "Rename Folder" now work
+  recursive with subresources.
+! Workplace functions "Chown" "Chgrp" "Chmod" can work recursive with its subresources.
+! Flags of groups are now used in tasks and projects.
+! Files marked as deleted can now be overwritten.
+! File extensions: management on the workplace and use in the upload dialog
+! Property definitions: management on the workplace
+* Error handling and messages for 'new Projects'
+* Files in the Online Project are always shown as "unchanged".
+* Filesize is not set to 0 when a file is locked or unlocked.
+* Errorbox now uses the language file.
+* Corrected some errors in calendar.
+* Projectmanagergroup is now able to access a project.
+* HTTP-Authentication is now working.
+* Fixed error in method copyResourceToProject.
+* Bugfix in import,existing files can now be overwritten.
+- Removed several depricated methods.
+
+
 OpenCms 4.0a25 Giedi Prime: Rabban - 07 April 2000
 
 ! Modified Projectmanagement. The project name is not unique anymore. To access a project, now

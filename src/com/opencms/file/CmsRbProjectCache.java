@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProjectCache.java,v $
- * Date   : $Date: 2000/04/04 10:28:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/20 10:52:16 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/04/04 10:28:47 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/20 10:52:16 $
  */
 class CmsRbProjectCache extends CmsRbProject {
 	
@@ -89,6 +89,19 @@ class CmsRbProjectCache extends CmsRbProject {
 		 throws CmsException {
          m_projectcache.put(new Integer(project.getId()),project);
 		 return( m_accessProject.writeProject(project) );
+	 }
+     
+     /**
+	 * Deletes a project.
+	 * 
+	 * @param project The project that will be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public void deleteProject(A_CmsProject project)
+		 throws CmsException {
+         m_projectcache.remove(new Integer(project.getId()));
+         m_accessProject.deleteProject(project);
 	 }
     
 }
