@@ -14,7 +14,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/14 16:01:01 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/15 11:14:35 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -52,6 +52,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
         if (delete != null) {
             // delete the file
             cms.deleteFile(filename);
+            session.removeValue(C_PARA_FILE);
             
             // TODO: Error handling
             try {
