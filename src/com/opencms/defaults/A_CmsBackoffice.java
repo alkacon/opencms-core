@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/04/01 13:29:17 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2003/04/09 14:12:43 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,12 +74,12 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_CmsConstants{
 
-  private static int C_NOT_LOCKED = -1;
-  private static int C_NO_ACCESS = -2;
+  public static int C_NOT_LOCKED = -1;
+  public static int C_NO_ACCESS = -2;
 
   private static String C_DEFAULT_SELECTOR="(default)";
   private static String C_DONE_SELECTOR="done";
