@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/10/21 15:26:23 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2002/10/22 12:39:03 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2002/10/21 15:26:23 $
+ * @version $Revision: 1.33 $ $Date: 2002/10/22 12:39:03 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -91,7 +91,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     /**
      * The reference to the OpenCms system.
      */
-    private A_OpenCms m_opencms;
+    private OpenCms m_opencms;
 
     /**
      * Storage for redirects.
@@ -221,7 +221,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {         
         CmsObject cms = null;
-        CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req);
+        CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, m_opencms.getFileTranslator());
         CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res, m_clusterurl);
         try {
             m_opencms.initStartupClasses();

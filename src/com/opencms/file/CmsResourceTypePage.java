@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/10/21 15:28:30 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2002/10/22 12:40:53 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2002/10/21 15:28:30 $
+ * @version $Revision: 1.33 $ $Date: 2002/10/22 12:40:53 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -329,7 +329,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // Check the path of the body file.
         // Don't use the checkBodyPath method here to avaoid overhead.
         String bodyPath=(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+(source);
-        String bodyXml=cms.getRequestContext().getResourceTranslator().translateResource(C_DEFAULT_SITE + C_ROOTNAME_VFS + hXml.getElementTemplate("body"));        
+        String bodyXml=cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFAULT_SITE + C_ROOTNAME_VFS + hXml.getElementTemplate("body"));        
 
         if ((C_DEFAULT_SITE + C_ROOTNAME_VFS + bodyPath).equals(bodyXml)){
 

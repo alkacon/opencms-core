@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/10/18 17:05:02 $
- * Version: $Revision: 1.411 $
+ * Date   : $Date: 2002/10/22 12:45:04 $
+ * Version: $Revision: 1.412 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,8 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! New "file name translation" feature automatically replaces illegal chars (e.g. space, ? or &) in 
+  uploaded file names (also in extracted ZIP files). Replacement rules can be set in opencms.properties.
 ! The default file name for a directroy can now be defined in opencms.properties and in the folder property "default-file"
 ! 5.0 VFS file structure in place (see todo.txt)
 ! New "directory translation" feature allows setting resource name translation rules in opencms.properties

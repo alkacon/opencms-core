@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2002/10/18 16:56:31 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/10/22 12:39:48 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.core;
 
+import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.util.*;
 import java.util.*;
 import java.io.*;
@@ -54,7 +55,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2002/10/18 16:56:31 $
+ * @version $Revision: 1.32 $ $Date: 2002/10/22 12:39:48 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -130,13 +131,19 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
     private int m_serverPort;
 
     /**
+     * Resource translator (for uploaded file names)
+     */
+    private CmsResourceTranslator m_translator;
+
+    /**
      * Constructor, creates a new CmsRequestHttpServlet object.
      *
      * @param req The original HttpServletRequest used to create this CmsRequest.
      */
-    CmsRequestHttpServlet(HttpServletRequest req) throws IOException {
+    CmsRequestHttpServlet(HttpServletRequest req, CmsResourceTranslator translator) throws IOException {
         m_req = req;
-
+        m_translator = translator;
+        
         // get the webAppUrl and the servletUrl
         try {
             m_webAppUrl = m_req.getContextPath();
@@ -291,6 +298,9 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
                 filename = "unknown"; // sanity check
             }
         }
+
+        // Translate the filename using the resource translator        
+        filename = m_translator.translateResource(filename);
 
         // Return a String array: disposition, name, filename
         retval[0] = disposition;

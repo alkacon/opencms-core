@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/10/18 16:54:59 $
-* Version: $Revision: 1.243 $
+* Date   : $Date: 2002/10/22 12:40:33 $
+* Version: $Revision: 1.244 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.243 $ $Date: 2002/10/18 16:54:59 $
+ * @version $Revision: 1.244 $ $Date: 2002/10/22 12:40:33 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1540,7 +1540,7 @@ public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportRes
 
     CmsObject cmsForStaticExport = new CmsObject();
     cmsForStaticExport.init(m_rb, dReq, dRes, C_USER_GUEST,
-                             C_GROUP_GUEST, C_PROJECT_ONLINE_ID, false, new CmsElementCache(), null, m_context.getResourceTranslator());
+                             C_GROUP_GUEST, C_PROJECT_ONLINE_ID, false, new CmsElementCache(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
     cmsForStaticExport.setLauncherManager(getLauncherManager());
     return cmsForStaticExport;
 }
@@ -2182,14 +2182,15 @@ public void init(I_CmsResourceBroker broker) throws CmsException {
  * @param currentProjectId the current projectId for this request.
  * @param streaming <code>true</code> if streaming should be enabled while creating the request context, <code>false</code> otherwise.
  * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled.
- *
+ * @param directoryTranslator Translator for directories (file with full path)
+ * @param fileTranslator Translator for new file names (without path)
  * @exception CmsException if operation was not successful.
  */
-public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage, CmsResourceTranslator translator) throws CmsException {
+public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator) throws CmsException {
     m_sessionStorage = sessionStorage;
     m_rb = broker;
     m_context = new CmsRequestContext();
-    m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming, elementCache, translator);
+    m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming, elementCache, directoryTranslator, fileTranslator);
     try {
         m_linkChecker = new LinkChecker();
         m_linkSubstitution = new LinkSubstitution();
@@ -2312,7 +2313,7 @@ public String loginUser(String username, String password) throws CmsException {
     // login the user
     CmsUser newUser = m_rb.loginUser(m_context.currentUser(), m_context.currentProject(), username, password);
     // init the new user
-    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getResourceTranslator());
+    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
 
     this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
 
@@ -2333,7 +2334,7 @@ public String loginWebUser(String username, String password) throws CmsException
     // login the user
     CmsUser newUser = m_rb.loginWebUser(m_context.currentUser(), m_context.currentProject(), username, password);
     // init the new user
-    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getResourceTranslator());
+    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
     // return the user-name
     return (newUser.getName());
 }

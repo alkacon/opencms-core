@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2002/09/02 07:43:50 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/10/22 12:40:05 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2002/09/02 07:43:50 $
+ * @version $Revision: 1.11 $ $Date: 2002/10/22 12:40:05 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -277,12 +277,13 @@ public class CmsImportFolder implements I_CmsConstants {
             }
             entries++; // count number of entries in zip
             String actImportPath = importPath;
+            String filename = m_cms.getRequestContext().getFileTranslator().translateResource(entry.getName());
             // separete path in direcotries an file name ...
-            StringTokenizer st = new StringTokenizer(entry.getName(), "/\\");
+            StringTokenizer st = new StringTokenizer(filename, "/\\");
             int count = st.countTokens();
-            String[] path = new String[count];
+            String[] path = new String[count];            
 
-            if(entry.getName().endsWith("\\") || entry.getName().endsWith("/")){
+            if(filename.endsWith("\\") || filename.endsWith("/")){
                 isFolder = true;  // last entry is a folder
             } else {
                 isFolder = false; // last entry is a file

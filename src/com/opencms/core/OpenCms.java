@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/10/21 15:26:59 $
-* Version: $Revision: 1.96 $
+* Date   : $Date: 2002/10/22 12:39:26 $
+* Version: $Revision: 1.97 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.96 $ $Date: 2002/10/21 15:26:59 $
+ * @version $Revision: 1.97 $ $Date: 2002/10/22 12:39:26 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -132,9 +132,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     private static Hashtable c_variantDeps = null;
     
     /**
-     * Directory translator class.
+     * Directory translator, used to translate all access to resources.
      */
-    private static CmsResourceTranslator m_translator = null;
+    private static CmsResourceTranslator m_directoryTranslator = null;
+
+    /**
+     * Filename translator, used only for the creation of new files.
+     */
+    private static CmsResourceTranslator m_fileTranslator = null;
     
     /**
      * List of fefault file names (for directories, e.g, "index.html";
@@ -230,16 +235,37 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             boolean translationEnabled = conf.getBoolean("directory.translation.enabled", false);
             if (translationEnabled) {
                 String[] translations = conf.getStringArray("directory.translation.rules");
-                m_translator = new CmsResourceTranslator(translations);        
+                // Directory translation stops after fist match, hence the "false" parameter
+                m_directoryTranslator = new CmsResourceTranslator(translations, false);        
             } else {
-                m_translator = new CmsResourceTranslator(new String[0]);
+                m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
             }
         } catch(Exception e) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
             }
-            m_translator = new CmsResourceTranslator(new String[0]);
+            m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
         }   
+        
+        // try to initialize filename translations
+        try {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing filename translations...");
+            }
+            boolean translationEnabled = conf.getBoolean("filename.translation.enabled", false);
+            if (translationEnabled) {
+                String[] translations = conf.getStringArray("filename.translation.rules");
+                // Filename translations applies all rules, hence the true patameters
+                m_fileTranslator = new CmsResourceTranslator(translations, true);        
+            } else {
+                m_fileTranslator = new CmsResourceTranslator(new String[0], false);
+            }
+        } catch(Exception e) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
+            }
+            m_fileTranslator = new CmsResourceTranslator(new String[0], false);
+        }           
         
         // try to initialize default file names
         try {
@@ -532,7 +558,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     public static Hashtable getVariantDependencies(){
         return c_variantDeps;
     }
-
+    
+    /**
+     * @return The file name translator this OpenCms has read from the opencms.properties
+     */
+    public CmsResourceTranslator getFileTranslator() {
+        return m_fileTranslator;
+    } 
+    
     /**
      * This method read the requested document from the OpenCms request context
      * and returns it to the calling module.
@@ -646,9 +679,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             String group, int project, CmsCoreSession sessionStorage) throws CmsException {
 
         if((!m_enableElementCache) || (project == C_PROJECT_ONLINE_ID)){
-            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage, m_translator);
+            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage, m_directoryTranslator, m_fileTranslator);
         }else{
-            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage, m_translator);
+            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage, m_directoryTranslator, m_fileTranslator);
         }
     }
 
@@ -671,7 +704,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 this.log(C_OPENCMS_INFO, copy[i]);
             }
         }
-    }
+    }   
 
     /**
      * This method loads old sessiondata from the database. It is used

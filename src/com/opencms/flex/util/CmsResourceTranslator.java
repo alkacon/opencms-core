@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsResourceTranslator.java,v $
- * Date   : $Date: 2002/10/18 16:54:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2002/10/22 12:41:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,11 @@ package com.opencms.flex.util;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 
+import org.apache.oro.text.PatternCache;
+import org.apache.oro.text.PatternCacheFIFO;
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
+import org.apache.oro.text.regex.MalformedPatternException;
 
 /**
  * This class provides a resource name translation facility.<p>
@@ -44,13 +47,35 @@ import org.apache.oro.text.perl.Perl5Util;
  * It can also be used to translate special characters or 
  * names automatically.<p>
  * 
+ * It is also used for translating new resource names that contain
+ * illegal chars to legal names. This feature is most useful (and currently
+ * only used) for uploaded files. It is also applied to uploded ZIP directories
+ * that are extracted after upload.<p> 
+ * 
  * The translations can be configured in the opencms.properties.<p>
  * 
- * TODO: In case performance becomes an issue, a LRU cache could be
- * implemented for translation results.
+ * The default directory translation setting is:<br>
+ * <pre>
+ * directory.translation.rules=s#/default/vfs/content/bodys/(.*)#/default/vfs/system/bodies/$1#, \ 
+ * s#/default/vfs/pics/system/(.*)#/default/vfs/system/pics/$1#, \ 
+ * s#/default/vfs/pics/(.*)#/default/vfs/system/galleries/pics/$1#, \ 
+ * s#/default/vfs/download/(.*)#/default/vfs/system/galleries/download/$1#, \ 
+ * s#/default/vfs/externallinks/(.*)#/default/vfs/system/galleries/externallinks/$1#, \ 
+ * s#/default/vfs/htmlgalleries/(.*)#/default/vfs/system/galleries/htmlgalleries/$1#, \ 
+ * s#/default/vfs/content/(.*)#/default/vfs/system/modules/default/$1#, \ 
+ * s#/default/vfs/moduledemos/(.*)#/default/vfs/system/moduledemos/$1#
+ * </pre><p>
+ * 
+ * The default file name translation setting is:<br>
+ * <pre>
+ * filename.translation.rules=s#[\s]+#_#g, \
+ * s#\\#/#g, \
+ * s#[^0-9a-zA-Z_\.\-\/]#!#g, \
+ * s#!+#x#g
+ * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator {
@@ -61,6 +86,12 @@ public class CmsResourceTranslator {
     /** Perl5 utility class */
     private Perl5Util m_perlUtil = null;
     
+    /** Perl5 patter cache to avoid unecessary re-parsing of properties */
+    private PatternCache m_perlPatternCache = null;   
+    
+    /** Flag to indicate if one or more matchings should be tried */
+    private boolean m_continueMatching = false;
+    
     /** DEBUG flag */
     private static final int DEBUG = 0;
     
@@ -70,13 +101,26 @@ public class CmsResourceTranslator {
      * @param translations The array of translations read from the 
      *    opencms,properties
      */
-    public CmsResourceTranslator(String[] translations) {
+    public CmsResourceTranslator(String[] translations, boolean continueMatching) {
         super();
         m_translations = translations;
-        m_perlUtil = new Perl5Util();
-        if (DEBUG > 0) System.out.println("["+this.getClass().getName()+"] Directory translation: Iinitialized " + translations.length + " rules.");        
+        m_continueMatching = continueMatching;
+        // Pre-cache the patterns 
+        m_perlPatternCache = new PatternCacheFIFO(m_translations.length+1);
+        for(int i=0; i<m_translations.length; i++) {
+            try {
+                m_perlPatternCache.addPattern(m_translations[i]);
+            } catch(MalformedPatternException e){
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] Malformed resource translation rule:\""+m_translations[i]+"\"");
+                }
+            }
+        }        
+        // Initialize the Perl5Util
+        m_perlUtil = new Perl5Util(m_perlPatternCache);
+        if (DEBUG > 0) System.out.println("["+this.getClass().getName()+"] Resource translation: Iinitialized " + translations.length + " rules.");        
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "["+this.getClass().getName()+"] Directory translation: Iinitialized " + translations.length + " rules.");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "["+this.getClass().getName()+"] Resource translation: Iinitialized " + translations.length + " rules.");
         }          
     }    
     
@@ -88,26 +132,36 @@ public class CmsResourceTranslator {
      * @param resourceName The resource name to translate
      * @return The translated name of the resource
      */
-    public String translateResource(String resourceName) {        
+    public String translateResource(String resourceName) {  
+        if (resourceName == null) return null;      
         // Check all translations in the list
-        if (DEBUG > 1) System.out.println("["+this.getClass().getName()+"] Directory Translation: Checking: " + resourceName);
+        if (DEBUG > 1) System.out.println("["+this.getClass().getName()+"] Resource Translation: Checking: " + resourceName);
+        StringBuffer result;
         for(int i=0; i<m_translations.length; i++) {
+            result = new StringBuffer();
             try {
-                StringBuffer result = new StringBuffer();
                 if(m_perlUtil.substitute(result, m_translations[i], resourceName) != 0) {
+                    // The pattern matched, return the result
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "["+this.getClass().getName()+"] Directory translation: " + resourceName + " --> " + result);
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "["+this.getClass().getName()+"] Resource translation: " + resourceName + " --> " + result);
                     }                    
-                    if (DEBUG > 0) System.out.println(this.getClass().getName()+"] Directory translation: " + resourceName + " --> " + result);
-                    return result.toString();
+                    if (DEBUG > 0) System.out.println(this.getClass().getName()+"] Resource translation: " + resourceName + " --> " + result);
+                    if (m_continueMatching) {
+                        // Continue matching
+                        resourceName = result.toString();
+                    } else {
+                        // Return first match result
+                        return result.toString();
+                    }
+                    
                 }
             } catch(MalformedPerl5PatternException e){
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] Malformed directory translation rule:\""+m_translations[i]+"\"");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] Malformed resource translation rule:\""+m_translations[i]+"\"");
                 }
             }
         }
-        // No translation found, return original
+        // Return last translation (or original if no matching translation found)
         return resourceName;
     }
 }
