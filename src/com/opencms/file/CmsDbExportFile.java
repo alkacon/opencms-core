@@ -12,44 +12,55 @@ import com.opencms.template.*;
  * Exports Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.1 $ $Date: 2000/02/11 18:59:59 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/14 14:05:05 $
  */
 
 class CmsDbExportFile implements I_CmsConstants {
 
-	/**
-	 * ResourceBroker, user und project
-	 *  to access all methods and objects
-	 */
+	/** ResourceBroker to access all methods and objects */
 	private I_CmsResourceBroker RB = null;
+	/** User to access all resourcbroker methods and objects */
 	private A_CmsUser user = null;
+	/** Project to access all resourcbroker methods and objects */
 	private A_CmsProject project = null;
 
-	//to convert into XML format
+	/** need to convert into XML format */
 	private I_CmsXmlParser parser = null;
+	/** need to initiate an XML object */
 	private Document docXml = null;
+	/** first element of an XML object(document node) need to insert other elements*/
 	private Element firstElement = null;
+	/** new XML element which is inserted in the XML first element */
 	private Element newElement = null;
+	/** need to navigate in the XML tree */
 	private Element grandparentElement = null;
+	/** need to navigate in the XML tree */
 	private Element sectionElement = null;
+	/** need to navigate in the XML tree */
 	private Element parentElement = null;
+	/** need to at values in the XML elements */
 	private Node newNode = null;
 	
+	/** which folder to export absolute path*/
 	private String resourcepath = null;
+	/** which name to write in the XML file only relativ path */
 	private String startFolder;
-	private String date;
+	// private String date;
 	
 	
-/**
- * Constructor, creates a new CmsDBExportFile object.
- * 
- * @param eRB current ResourceBroker
- * @param luser current user logged in
- * @param lproject current project
- * @param docXML XML object
- * @param lpath, which resource (folder, files and subfolder) are to export,
- *                   String with full path eg "/workplace/system/pic/"
- */
+	/**
+	 * Constructor, creates a new CmsDBExportFile object.
+	 * 
+	 * @param eRB current ResourceBroker
+	 * @param luser current user logged in
+	 * @param lproject current project
+	 * @param docXML XML object
+	 * @param lpath, which resource (folder, files and subfolder) are to export,
+	 *                   String with full path eg "/workplace/system/pic/"
+	 * 
+	 * @exception throws Exception
+	 * 
+	 */
 	
 	CmsDbExportFile(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, Document docXml, String lpath)
 		throws Exception {
@@ -69,16 +80,19 @@ class CmsDbExportFile implements I_CmsConstants {
 	}
 	
 
-/**
- * initiate the file export
- * 
- * @return the filled XML object
- * 
- */	
+	/**
+	 * initiate the file export
+	 * 
+	 * @return the filled XML object
+	 * 
+	 * @exception throws CmsException
+	 * @exception throws Exception
+	 * 
+	 */	
 	public Document export()
 		throws CmsException, Exception {
 			
-		//get the documents node, first element in the XML object
+		// get the documents node, first element in the XML object
 		firstElement = docXml.getDocumentElement();
 		newElement= docXml.createElement(C_TFILES);
 		firstElement.appendChild(newElement);
@@ -89,15 +103,19 @@ class CmsDbExportFile implements I_CmsConstants {
 					
 		return docXml;
 	}
+	// end export()
 	
 		
-/**
- * exports all files
- * 
- * @param resourcepath which folder is to export absolute path
- * @param parentName which folder is to export the relative name
- * 
- */
+	/**
+	 * exports all files
+	 * 
+	 * @param resourcepath which folder is to export absolute path
+	 * @param parentName which folder is to export the relative name
+	 * 
+	 * @exception throws CmsException
+	 * @exception throws Exception
+	 * 
+	 */
 	private void fileExport(String resourcepath, String parentName)
 		throws CmsException, Exception {
 	
@@ -128,18 +146,21 @@ class CmsDbExportFile implements I_CmsConstants {
 			fileExport(sf.getAbsolutePath(), parentName+sf.getName());
 		}
 		
-	}// end fileExport()
+	}
+	// end fileExport()
 	
 
 	
 	/**
-	* generates the folder entry for the XML object
-	* 
-	* @param path which folder is to export absolute path
-	* @param parent an element of the XML object
-	* @param parentName which folder is to export the relative name
-	* 
-	*/
+	 * generates the folder entry for the XML object
+	 * 
+	 * @param path which folder is to export absolute path
+	 * @param parent an element of the XML object
+	 * @param parentName which folder is to export the relative name
+	 * 
+	 * @exception throws CmsException
+	 * 
+	 */
 	private void generateFolderEntry(String path, Element parent, String parentName)
 		throws CmsException {
 		
@@ -161,82 +182,26 @@ class CmsDbExportFile implements I_CmsConstants {
 			newNode = docXml.createTextNode(typeHelp.getResourceName());
 			newElement.appendChild(newNode);
 		
-			//this entries will autometically be generated, if a new file or folder is created
-			/*newElement= docXml.createElement(C_TFFLAG);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(folder.getFlags()));
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFGROUP);
-			parent.appendChild(newElement);
-			String gname = getGroupName(folder.getGroupId());
-			newNode = docXml.createTextNode(gname);
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFUSER);
-			parent.appendChild(newElement);
-			String uname = getUserName(folder.getOwnerId());
-			newNode = docXml.createTextNode(uname);
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFACCESSFLAG);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(folder.getAccessFlags()));
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFSTATE);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(folder.getState()));
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFLOCKED);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode("-1");
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFLAUNCHER);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(folder.getLauncherType()));
-			newElement.appendChild(newNode);
-		
-			newElement= docXml.createElement(C_TFLAUNCHERCLASS);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(folder.getLauncherClassname());
-			newElement.appendChild(newNode);
-
-			newElement= docXml.createElement(C_TFCREATED);
-			parent.appendChild(newElement);
-			date=LongToDateString(folder.getDateCreated());
-			newNode = docXml.createTextNode(date);
-			newElement.appendChild(newNode);
-			
-			newElement=docXml.createElement(C_TFMODIFIED);
-			parent.appendChild(newElement);
-			date=LongToDateString(folder.getDateLastModified());
-			newNode = docXml.createTextNode(date);
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFSIZE);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(folder.m_size));
-			newElement.appendChild(newNode);*/
-			
-			// read and write metainfo
+			/** read and write metainfo */
 			newElement=docXml.createElement(C_TFMETAINFO);
 			parent.appendChild(newElement);
 			generateMetaInfo(folder.getAbsolutePath(), newElement, typeHelp.getResourceName());
 			
-	}// end generateFolderEntry
+	}
+	// end generateFolderEntry()
 	
 	
 	/**
-	* generates the file entry for the XML object
-	* 
-	* @param fif which file is to export absolute path
-	* @param parent an element of the XML object
-	* @param parentName which folder is to export the relative name
-	* 
-	*/
+	 * generates the file entry for the XML object
+	 * 
+	 * @param fif which file is to export absolute path
+	 * @param parent an element of the XML object
+	 * @param parentName which folder is to export the relative name
+	 * 
+	 * @exception throws CmsException
+	 * @exception throws Exception
+	 * 
+	 */
 	private void generateFileEntry(CmsFile fif, Element parent, String parentName)
 		throws CmsException, NumberFormatException {
 		
@@ -256,76 +221,14 @@ class CmsDbExportFile implements I_CmsConstants {
 			newNode = docXml.createTextNode(typeHelp.getResourceName());
 			newElement.appendChild(newNode);
 			
-			//this entries will autometically be generated, if a new file or folder is created
-			/*wElement= docXml.createElement(C_TFFLAG);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(fif.getFlags()));
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFGROUP);
-			parent.appendChild(newElement);
-			String gname = getGroupName(fif.getGroupId());
-			newNode = docXml.createTextNode(gname);
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFUSER);
-			parent.appendChild(newElement);
-			String uname = getUserName(fif.getOwnerId());
-			newNode = docXml.createTextNode(uname);
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFACCESSFLAG);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(fif.getAccessFlags()));
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFSTATE);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(fif.getState()));
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFLOCKED);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode("-1");
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFLAUNCHER);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(fif.getLauncherType()));
-			newElement.appendChild(newNode);
-		
-			newElement= docXml.createElement(C_TFLAUNCHERCLASS);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(fif.getLauncherClassname());
-			newElement.appendChild(newNode);
-
-			newElement= docXml.createElement(C_TFCREATED);
-			parent.appendChild(newElement);
-			date=LongToDateString(fif.getDateCreated());
-			newNode = docXml.createTextNode(date);
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFMODIFIED);
-			parent.appendChild(newElement);
-			date=LongToDateString(fif.getDateLastModified());
-			newNode = docXml.createTextNode(date);
-			newElement.appendChild(newNode);
-			
-			newElement= docXml.createElement(C_TFSIZE);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(fif.m_size));
-			newElement.appendChild(newNode);*/
-			
 			// read and write metainfo
 			newElement=docXml.createElement(C_TFMETAINFO);
 			parent.appendChild(newElement);
 			generateMetaInfo(fif.getAbsolutePath(), newElement, typeHelp.getResourceName());
 			
-			//reads and writes the file content
+			// reads and writes the file content
 			CmsFile file= RB.readFile(user, project, fif.getAbsolutePath());
-			//System.out.println(fif.getName());
 			byte[] fcontent = file.getContents();
-			
 			int value;
 			int i=0;
 			int l=fcontent.length;
@@ -340,7 +243,6 @@ class CmsDbExportFile implements I_CmsConstants {
 				}
 				
 				content.append(shelp);
-				//System.out.println(fcontent[i]+" "+value+" "+shelp);
 			}
 			
 			newElement=docXml.createElement(C_FCONTENT);
@@ -348,15 +250,16 @@ class CmsDbExportFile implements I_CmsConstants {
 			newNode=docXml.createTextNode(new String(content));
 			newElement.appendChild(newNode);
 			
-	}// end generateFileEntry
+	}
+	// end generateFileEntry
 	
 	
-/*
-* method to get group name for folder or file
-* 
-* @param group id DB id for the group
-* @returns string with group name
- */
+	/**
+	 * method to get group name for folder or file
+	 * 
+	 * @param group id DB id for the group
+	 * @returns string with group name
+	 */
 	private String getGroupName(int groupId)
 		throws CmsException {
 		
@@ -373,12 +276,16 @@ class CmsDbExportFile implements I_CmsConstants {
 				return "none";
 	}
 
-/*
-* method to get user name for folder or file
-* 
-* @param user id DB id for the group
-* @returns string with user name
- */
+	/**
+	 * method to get user name for folder or file
+	 * 
+	 * @param user id DB id for the group
+	 * 
+	 * @returns string with user name
+	 * 
+	 * @exception throws CmsException
+	 * 
+	 */
 	private String getUserName(int userId)
 		throws CmsException {
 		
@@ -395,12 +302,13 @@ class CmsDbExportFile implements I_CmsConstants {
 				return "none";
 	}
 
-/*
-* method to format long in to String with datevalue
-* 
-* @param user id DB id for the group
-* @returns string with formated date "fullyear-month-day hour:minutes:seconds"
- */
+	/**
+	 * method to format long in to String with datevalue
+	 * 
+	 * @param user id DB id for the group
+	 * 
+	 * @returns string with formated date "fullyear-month-day hour:minutes:seconds"
+	 */
 	private String LongToDateString(long ld) {
 
 		Date dd = new Date(ld);
@@ -449,14 +357,17 @@ class CmsDbExportFile implements I_CmsConstants {
 		
 		sdate=sy+'-'+sm+'-'+sd+' '+sh+':'+smin+':'+ssec;
 		return sdate;
-	}// end LongtoDateString
+	}
+	// end LongtoDateString
 
-/*
-* method to read and write metainfo to XML object
-* 
-* @param user id DB id for the group
-* @returns string with formated date "fullyear-month-day hour:minutes:seconds"
- */
+	/**
+	 * method to read and write metainfo to XML object
+	 * 
+	 * @param user id DB id for the group
+	 *
+	 * @returns string with formated date "fullyear-month-day hour:minutes:seconds"
+	 * 
+	 */
 	private void generateMetaInfo(String path, Element metaparent, String rtype)
 		throws CmsException {
 		

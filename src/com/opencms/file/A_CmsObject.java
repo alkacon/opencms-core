@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2000/02/11 09:38:29 $ 
+ * @version $Revision: 1.39 $ $Date: 2000/02/14 14:05:05 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1218,4 +1218,40 @@ public abstract class A_CmsObject {
 	 * @return the number of file-system-changes.
 	 */
 	abstract public long getFileSystemChanges();
+	
+	
+	// database import, export stuff
+	/**
+	 * exports database (files, groups, users) into a specified file
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param exportFile the name (absolute Path) for the XML file
+	 * @param exportPath the name (absolute Path) for the folder to export
+	 * @param exportType what to export:
+	 *			C_EXPORTUSERSFILES exports all
+	 *			C_EXPORTONLYUSERS  exports only users and groups
+	 *			C_EXPORTONLYFILES  exports only files
+	 * 
+	 * @return wether the user has access, to do this or not
+	 *         if he has access, the export will be executed.
+	 */
+	abstract public boolean exportDb(String exportFile, String exportPath, int exportType) 
+		throws Exception;
+	
+	/**
+	 * imports a (files, groups, users) XML file into database
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * @param importFile the name (absolute Path) of the XML import file
+	 * 
+	 * @return wether the user has access, to do this or not
+	 *         if he has access, the export will be executed.
+	 */
+	abstract public boolean importDb(String importPath, String importFile)
+		throws Exception;
 }

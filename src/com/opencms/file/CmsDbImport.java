@@ -13,64 +13,86 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.1 $ $Date: 2000/02/11 18:59:59 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/14 14:05:05 $
  */
 class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 	
-	/**
-	 * ResourceBroker, user und project
-	 *  to access all methods and objects
-	 */
+	/** ResourceBroker to access all methods and objects */
 	private I_CmsResourceBroker RB = null;
+	/** User to access all resourcbroker methods and objects */
 	private A_CmsUser user = null;
+	/** Project to access all resourcbroker methods and objects */
 	private A_CmsProject project = null;
 	
-	//to get XML objects
+	/** to get the the XML object from the inputfile */
 	private I_CmsXmlParser parser = null;
+	/** to create the XML object */
 	private Document docXml = null;
+	/** to get the entries in the XML object */
 	private Element firstElement = null;
+	/** to get navigate in the XML object */
 	private NodeList sectionElements = null;
 	
 	//to update db
+	/** the path to import the resources */
 	private String importpath=null;
+	/** to get the group name and store in the db*/
 	private String s_gName= null;
+	/** to get the group description and store in the db*/
 	private String s_gDesc= null;
+	/** to get the group flag and store in the db*/
 	private String s_gFlag= null;
+	/** to get the parent group name and store in the db*/
 	private String s_gParent= null;
 	
+	/** to get the user큦 login and store in the db*/
 	private String s_uLogin = null;
+	/** to store the user큦 password in the db default "Kennwort" */
 	private String s_uPasswd = null;
+	/** to get the user큦 lastname and store in the db*/
 	private String s_uName = new String();
+	/** to get the user큦 firstname and store in the db*/
 	private String s_uFirstname = new String();
+	/** to get the user큦 email and store in the db*/
 	private String s_uEmail = new String();
+	/** to get the user큦 description and store in the db*/
 	private String s_uDesc = null;
+	/** to get the user큦 default gorup and store in the db*/
 	private String s_uDGroup = null;
+	/** is the user disabled or not and store the info in the db*/
 	private String s_uDis = null;
+	/** to get the user큦 flag and store in the db*/
 	private String s_uFlag = null;
+	/** to get the user큦 group(s) and store in the db*/
 	private String s_uGroup = null;
 
-	//for exception msg
+	/** to store the exception msg  */
 	private Vector errMsg=new Vector();
 	
-	//For the input XML file
+	/** for the input XML file */
 	private File fXml = null;
+	/** for the input file reader */
 	private FileReader fXmlReader = null;
+	/** for the input stream */
 	private BufferedReader fXmlStream = null;
 	
 	
-/**
- * Constructor, creates a new CmsDbImport object.
- *
- * @param eRB current ResourceBroker
- * @param luser current user logged in
- * @param lproject current project
- * @param path in which folder (absolute path) to import
- * @param filename which XML file should be imported
- * 
- */
+	/**
+	 * Constructor, creates a new CmsDbImport object.
+	 *
+	 * @param eRB current ResourceBroker
+	 * @param luser current user logged in
+	 * @param lproject current project
+	 * @param path in which folder (absolute path) to import
+	 * @param filename which XML file should be imported
+	 * 
+	 * @exception throws IOException
+	 * @exception throws Exception
+	 * 
+	 */
 	CmsDbImport(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, String path, String filename)
-		throws IOException, Exception
-	{
+		throws IOException, Exception {
+		
 		RB=eRB;
 		user=luser;
 		project=lproject;
@@ -79,13 +101,16 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 		init(filename);
 	}
 
-/**
- * Inittialisation
- * 
- * open the XML file
- * reads the XML file into a XML object
- * 
- */
+	/**
+	 * Inittialisation
+	 * 
+	 * open the XML file
+	 * reads the XML file into a XML object
+	 * 
+	 * @exception throws IOException
+	 * @exception throws Exception
+	 * 
+	 */
 	private void init(String filename)
 		throws IOException, Exception {											  
 		
@@ -99,13 +124,16 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 		docXml = parser.parse(fXmlStream);
 	}
 
-	 /**
-	* xmlImport
-	* initialize the database import
-	* 
-	* @return a vector with error messages
-	* 
-	*/	
+	/**
+	 * xmlImport
+	 * initialize the database import
+	 * 
+	 * @return a vector with error messages
+	 * 
+	 * @exception throws IOException
+	 * @exception throws Exception
+	 * 
+	 */	
 	public Vector xmlImport()
 			throws CmsException, Exception {
 			
@@ -136,12 +164,15 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 		}
 	
 		
-/**
- * imports groups 
- * 
- * @param parentNode the first Node, which contains all groups
- * 
- */
+	/**
+	 * imports groups 
+	 * 
+	 * @param parentNode the first Node, which contains all groups
+	 * 
+	 * @exception throws IOException
+	 * @exception throws Exception
+	 * 
+	 */
 	private void groupImport(Node parentNode)
 		throws CmsException, Exception {
 	
@@ -157,12 +188,15 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 		}
 	}
 	
-/**
- * imports users
- * 
- * @param parentNode the first Node, which contains all groups
- * 
- */
+	/**
+	 * imports users
+	 * 
+	 * @param parentNode the first Node, which contains all groups
+	 * 
+	 * @exception throws IOException
+	 * @exception throws Exception
+	 * 
+	 */
 	private void userImport(Node parentNode)
 		throws CmsException, Exception {
 	
@@ -184,6 +218,8 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 	* 
 	* @param parentNode contains one group
 	* 
+	* @exception throws Exception
+	* 
 	*/
 		private void updateDbGroups(Node parentNode)
 			throws Exception {
@@ -192,6 +228,7 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 			
 			int nll=parentElements.getLength();
 			int i, htype;
+			
 			for(i=0; i<nll; i++) {
 				if((parentElements.item(i).getNodeName()).equals(C_TGNAME) && (parentElements.item(i).hasChildNodes())) {
 					s_gName=parentElements.item(i).getFirstChild().getNodeValue();
@@ -205,22 +242,26 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 				if((parentElements.item(i).getNodeName()).equals(C_TGFLAG) && (parentElements.item(i).hasChildNodes())) {
 					s_gFlag=parentElements.item(i).getFirstChild().getNodeValue();
 				}
-			}// end for
+			}
+			// end for
 			try {
 				A_CmsGroup group = RB.addGroup(user, project, s_gName, s_gDesc, Integer.parseInt(s_gFlag), s_gParent);
 			}catch (CmsException e){
 					errMsg.addElement(e.getMessage());			
 			}
-		}// end updateDbGroups
+		}
+		// end updateDbGroups
 		
 		
 		/**
-		* updateDbUsers
-		* writes the user into the db
-		* 
-		* @param parentNode contains one user
-		* 
-		*/
+		 * updateDbUsers
+		 * writes the user into the db
+		 * 
+		 * @param parentNode contains one user
+		 * 
+		 * @exception throws Exception
+		 * 
+		 */
 		private void updateDbUsers(Node parentNode)
 			throws Exception {
 	
@@ -282,7 +323,8 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 						}
 					}
 				}
-			}// end for
+			}
+			// end for
 			try {
 				A_CmsUser newUser = RB.addUser(user, project, s_uLogin, s_uPasswd, s_uDGroup, s_uDesc, h_addInfo, Integer.parseInt(s_uFlag));
 				newUser.setEmail(s_uEmail);
@@ -313,7 +355,9 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 				}
 			
 			
-		}//end add user to group
-	}// end updateDbUsers
+		}
+		//end add user to group
+	}
+	// end updateDbUsers
 		
 }
