@@ -68,7 +68,16 @@ legend {
   white-space: nowrap;
 }
 
-
+.tip {
+    background: #FFFF99;
+    position: absolute;
+    z-index:3;
+    border: 1px inset #000000;
+    padding: 2px;
+    display: none;
+    text-align: left;
+    width: 300px;
+}
 
 /* --- loader ---*/
 
@@ -329,30 +338,8 @@ div.tree {
   border-top: 1px solid #A7B8EB;
 }
 
-.tip {
-    background: #FFFF99;
-    position: absolute;
-    z-index:3;
-    border: 1px inset #000000;
-    padding: 2px;
-    display: none;
-    text-align: left;
-    width: 300px;
-}
-
 /* style definitions valid only for NEW_ADMIN style */
 <% } else if(style == NEW_ADMIN) { %>
-
-.tip {
-    background: #FFFF99;
-    position: absolute;
-    z-index:3;
-    border: 1px inset #000000;
-    padding: 2px;
-    display: none;
-    text-align: left;
-    width: 300px;
-}
 
 body, form {
   margin: 0;
@@ -380,6 +367,8 @@ th {
 .pathbar {
 	padding-top: 10px;
 	padding-left: 4px;
+   background: #ffffff;
+   color: #444444;
 }
 
 .screenBody {
@@ -393,16 +382,20 @@ th {
 .screenTitle {
   margin: 0;
   vertical-align: middle;
+  background: #ffffff;
+  border-bottom: 1px solid #cccccc;
 }
 
 .screenTitle td {
   padding: 3px 12px 5px 11px;
   vertical-align: middle;
+  font-size: 18px;
+  font-family: "Franklin Gothic Medium", Verdana, Geneva, Arial, Helvetica, sans-serif;
+  color: #000000;
 }
 
 
 .screenTitle img,
-.screenTitle td,
 .screenTitle input,
 .screenTitle select {
   vertical-align: middle;
@@ -467,25 +460,9 @@ hr {
   display: inline;
 }
 
-.pathbar {
-  background: #ffffff;
-  color: #444444;
-}
-
 .pathbar a:link,
 .pathbar a:visited {
   color: #444444;
-}
-
-.screenTitle {
-  background: #ffffff;
-  border-bottom: 1px solid #cccccc;
-}
-
-.screenTitle td {
-  font-size: 18px;
-  font-family: "Franklin Gothic Medium", Verdana, Geneva, Arial, Helvetica, sans-serif;
-  color: #000000;
 }
 
 .screenTitle .name,
