@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/08/03 15:12:00 $
-* Version: $Revision: 1.83 $
+* Date   : $Date: 2003/08/04 09:46:30 $
+* Version: $Revision: 1.84 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.file;
 
+import org.opencms.db.CmsNotImplementedException;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
@@ -45,7 +47,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.83 $
+ * @version $Revision: 1.84 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -179,7 +181,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      */
     public void chtype(CmsObject cms, String filename, int newType) throws CmsException {
         // it is not possible to change the type of a folder
-        throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_FILESYSTEM_ERROR);
+        throw new CmsNotImplementedException("[" + this.getClass().getName() + "] " + filename);
     }
 
     /**
@@ -472,7 +474,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#restoreResource(com.opencms.file.CmsObject, int, java.lang.String)
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException {
-        throw new CmsException("[" + this.getClass().getName() + "] Cannot restore folders.", CmsException.C_FILESYSTEM_ERROR);
+        throw new CmsNotImplementedException("[" + this.getClass().getName() + "] Cannot restore folders.");
     }
 
     /**

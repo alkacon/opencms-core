@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/01 19:29:22 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/08/04 09:46:30 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.47 $ $Date: 2003/08/01 19:29:22 $
+ * @version $Revision: 1.48 $ $Date: 2003/08/04 09:46:30 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -708,7 +708,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
         // create the online project
         CmsTask task = m_driverManager.getWorkflowDriver().createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(), I_CmsConstants.C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-        CmsProject online = createProject(admin, guests, projectmanager, task, I_CmsConstants.C_PROJECT_ONLINE, "the online-project", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
+        CmsProject online = createProject(admin, users /* guests */, projectmanager, task, I_CmsConstants.C_PROJECT_ONLINE, "the online-project", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
 
         // create the root-folder for the online project
         CmsFolder onlineRootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "/", 0);
