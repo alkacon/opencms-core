@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/02/14 00:22:01 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,19 +31,19 @@
 
 package org.opencms.loader;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -61,15 +61,12 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
     /** The id of this loader */
-    public static final int C_RESOURCE_LOADER_ID = 1;    
-    
-    /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
-    private static final int DEBUG = 0;
+    public static final int C_RESOURCE_LOADER_ID = 1;
     
     /**
      * The constructor of the class is empty and does nothing.<p>
@@ -86,14 +83,17 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(CmsObject, CmsFile, OutputStream, HttpServletRequest, HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.io.OutputStream, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException {
+        CmsFile file = CmsFile.upgrade(resource, cms);
+        
         if (exportStream != null) {
             exportStream.write(file.getContents());
         }
         
-        // Overwrite headers if set as default
+        // overwrite headers if set as default
         for (Iterator i = OpenCms.getStaticExportManager().getExportHeaders().listIterator(); i.hasNext();) {
             String header = (String)i.next();
             
@@ -136,11 +136,13 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     }
     
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException {
+    public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException {
 
+        CmsFile file = CmsFile.upgrade(resource, cms);
+        
         // check if we can send a 304 "Not Modified" header
         if (file.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             // never use 304 when the file has somehow changed (can only be true in an offline project)      
@@ -177,19 +179,26 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
-    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
-    throws ServletException, IOException {
-        byte[] content = null;
-        String filename = cms.readAbsolutePath(file);
-        try {
-            content = cms.readFile(filename).getContents();
-        } catch (CmsException e) {
-            if (DEBUG > 0) {
-                e.printStackTrace(System.err);
-            }
-            throw new ServletException("Error in CmsDumpLoader while processing " + filename, e);
-        }
-        res.getOutputStream().write(content);
-        content = null;
+    public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res)
+    throws CmsException, IOException {
+        
+        res.getOutputStream().write(CmsFile.upgrade(resource, cms).getContents());
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public byte[] dump(CmsObject cms, CmsResource resource, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
+    throws CmsException {
+        
+        return CmsFile.upgrade(resource, cms).getContents();
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#supportsStaticExport()
+     */
+    public boolean supportsStaticExport() {
+        
+        return true;
     }
  }

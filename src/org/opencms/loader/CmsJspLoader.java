@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@
 
 package org.opencms.loader;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
@@ -42,16 +45,13 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -176,10 +176,57 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(CmsObject, CmsFile, OutputStream, HttpServletRequest, HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public byte[] dump(CmsObject cms, CmsResource file, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsLoaderException {
 
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+
+        CmsFlexRequest f_req;
+        CmsFlexResponse f_res;
+            
+        if (controller != null) {
+            // re-use currently wrapped request / response
+            f_req = controller.getCurrentRequest();
+            f_res = controller.getCurrentResponse();
+        } else {
+            // create new request / response wrappers
+            controller = new CmsFlexController(cms, file, m_cache, req, res);
+            req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
+            f_req = new CmsFlexRequest(req, controller);
+            f_res = new CmsFlexResponse(res, controller, false, false);
+            controller.pushRequest(f_req);
+            controller.pushResponse(f_res);
+        }
+
+        byte[] result = null;
+
+        try {
+            f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
+        } catch (java.net.SocketException e) {
+            // uncritical, might happen if client (browser) did not wait until end of page delivery
+        }
+
+        if (!f_res.isSuspended()) {
+            if (!res.isCommitted() || m_errorPagesAreNotCommited) {
+                // if a JSP errorpage was triggered the response will be already committed here
+                result = f_res.getWriterBytes();
+                result = CmsEncoder.changeEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding(), cms.getRequestContext().getEncoding());
+            }
+        }
+        
+        return result;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.io.OutputStream, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException {
+        
+        CmsFile file = CmsFile.upgrade(resource, cms);
+        
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
 
         CmsFlexRequest f_req;
@@ -206,12 +253,13 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         } catch (java.net.SocketException e) {
             // uncritical, might happen if client (browser) did not wait until end of page delivery
         }
+        
         if (!f_res.isSuspended()) {
             if (!res.isCommitted() || m_errorPagesAreNotCommited) {
-                // If a JSP errorpage was triggered the response will be already committed here
+                // if a JSP errorpage was triggered the response will be already committed here
                 result = f_res.getWriterBytes();
                 result = CmsEncoder.changeEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding(), cms.getRequestContext().getEncoding());                
-                // Process headers and write output                                          
+                // process headers and write output                                          
                 res.setContentLength(result.length);
                 CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                 res.getOutputStream().write(result);
@@ -265,7 +313,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
         }
         // Get the cache from the runtime properties
-        m_cache = (CmsFlexCache)OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);
+        m_cache = (CmsFlexCache)OpenCms.getRuntimeProperty(CmsFlexCache.C_LOADER_CACHENAME);
         // Get the export URL from the runtime properties
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP repository (absolute path): " + m_jspRepository);        
@@ -280,15 +328,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     }
     
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public void load(CmsObject cms, CmsResource file, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException {
 
-        // check if this is an export request
-        // int oldMode = exportCheckMode(cms, req);
-
-        // load and process the JSP 
-
+        // load and process the JSP         
         long timer1;
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();
@@ -298,25 +343,22 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
         boolean streaming = false;
         boolean bypass = false;
-
-        // check if export mode is active, if so "streaming" must be deactivated
-        // TODO: Implement new JSP static export mode (if required)
-        boolean exportmode = false;
-
+        String stream;
+        
         try {
-            // Read caching property from requested VFS resource                                     
-            String stream = cms.readProperty(cms.readAbsolutePath(file), I_CmsResourceLoader.C_LOADER_STREAMPROPERTY);
-            if (stream != null) {
-                if ("yes".equalsIgnoreCase(stream) || "true".equalsIgnoreCase(stream)) {
-                    // streaming not allowed in export mode
-                    streaming = !exportmode;
-                } else if ("bypass".equalsIgnoreCase(stream) || "bypasscache".equalsIgnoreCase(stream)) {
-                    // bypass not allowed in export mode
-                    bypass = !exportmode;
-                }
-            }
+            // read caching property from requested VFS resource                                     
+            stream = cms.readProperty(cms.readAbsolutePath(file), I_CmsResourceLoader.C_LOADER_STREAMPROPERTY);
         } catch (CmsException e) {
-            throw new ServletException("FlexJspLoader: Error while loading stream properties for " + cms.readAbsolutePath(file) + "\n" + e, e);
+            throw new CmsLoaderException("Error while loading stream properties for " + cms.readAbsolutePath(file), e);
+        }            
+        if (stream != null) {
+            if ("yes".equalsIgnoreCase(stream) || "true".equalsIgnoreCase(stream)) {
+                // streaming not allowed in export mode
+                streaming = true;
+            } else if ("bypass".equalsIgnoreCase(stream) || "bypasscache".equalsIgnoreCase(stream)) {
+                // bypass not allowed in export mode
+                bypass = true;
+            }
         }
 
         if (DEBUG > 1) {
@@ -359,10 +401,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             try {
                 f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
             } catch (java.net.SocketException e) {
-                // Uncritical, might happen if client (browser) does not wait until end of page delivery
-                if (DEBUG > 1) {
-                    System.err.println("JspLoader.load() ignoring SocketException " + e);
-                }
+                // uncritical, might happen if client (browser) does not wait until end of page delivery
+                OpenCms.getLog(this).debug("Ignoring SocketException" + e);
             }
             if (!streaming && !f_res.isSuspended()) {
                 try {
@@ -384,19 +424,13 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         res.getOutputStream().flush();
                         
                         result = null;
-                    } else if (DEBUG > 1) {
-                        System.err.println("JspLoader.load() resource is already commited!");
                     }
                 } catch (IllegalStateException e) {
-                    // Uncritical, might happen if JSP error page was used
-                    if (DEBUG > 1) {
-                        System.err.println("JspLoader.load() ignoring IllegalStateException " + e);
-                    }
+                    // uncritical, might happen if JSP error page was used
+                    OpenCms.getLog(this).debug("Ignoring IllegalStateException" + e);
                 } catch (java.net.SocketException e) {
-                    // Uncritical, might happen if client (browser) does not wait until end of page delivery
-                    if (DEBUG > 1) {
-                        System.err.println("JspLoader.load() ignoring SocketException " + e);
-                    }
+                    // uncritical, might happen if client (browser) does not wait until end of page delivery
+                    OpenCms.getLog(this).debug("Ignoring SocketException", e);
                 }
             }
         }
@@ -407,131 +441,27 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         }
 
         CmsFlexController.removeController(req);
-        // exportResetMode(cms, oldMode);
-    }
-        
-    /**
-     * Method to enable JSPs to be used as sub-elements in XMLTemplates.
-     *
-     * @param cms The initialized CmsObject which provides user permissions
-     * @param file The requested OpenCms VFS resource
-     * @return the contents of the loaded template
-     * 
-     * @throws CmsException In case the Loader can not process the requested resource
-     */
-    public byte[] loadTemplate(CmsObject cms, CmsFile file) 
-    throws CmsException {
-
-        byte[] result = null;
-        
-        long timer1 = 0;
-        if (DEBUG > 0) {
-            timer1 = System.currentTimeMillis();        
-            System.err.println("========== JspLoader (Template) loading: " + cms.readAbsolutePath(file));
-        }       
-
-        HttpServletRequest req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-        HttpServletResponse res = (HttpServletResponse)cms.getRequestContext().getResponse().getOriginalResponse();             
-                    
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-                
-        CmsFlexRequest f_req; 
-        CmsFlexResponse f_res;
-    
-        if (controller != null) {
-            // re-use currently wrapped request / response
-            f_req = controller.getCurrentRequest();
-            f_res = controller.getCurrentResponse();
-        } else {
-            // create new request / response wrappers
-            controller = new CmsFlexController(cms, file, m_cache, req, res);
-            req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
-            f_req = new CmsFlexRequest(req, controller);
-            f_res = new CmsFlexResponse(res, controller, false, false);
-            controller.pushRequest(f_req);
-            controller.pushResponse(f_res);
-        }
-        
-        try {
-            f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
-        } catch (java.net.SocketException e) {        
-            // Uncritical, might happen if client (browser) does not wait until end of page delivery
-            if (DEBUG > 1) {
-                System.err.println("JspLoader.loadTemplate() ignoring SocketException " + e);
-            }
-        } catch (Exception e) {            
-            System.err.println("Error in CmsJspLoader.loadTemplate() while loading: " + e.toString());
-            if (DEBUG > 0) {
-                e.printStackTrace(System.err);
-            }
-            throw new CmsException("Error in CmsJspLoader.loadTemplate() while loading " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LOADER_ERROR, e);
-        } 
-
-        if (! f_res.isSuspended()) {
-            try {      
-                if ((res == null) || (! res.isCommitted())) {
-                    // If a JSP errorpage was triggered the response will be already committed here
-                    result = f_res.getWriterBytes();                                                
-                    // Encoding project:
-                    // The byte array will internally be encoded in the OpenCms
-                    // default encoding. In case another encoding is set
-                    // in the 'content-encoding' property of the file,
-                    // we need to re-encode the output here
-                    result = CmsEncoder.changeEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding(), cms.getRequestContext().getEncoding());                                              
-                }
-            } catch (IllegalStateException e) {
-                // Uncritical, might happen if JSP error page was used
-                if (DEBUG > 1) {
-                    System.err.println("JspLoader.loadTemplate() ignoring IllegalStateException " + e);
-                }
-            } catch (Exception e) {
-                System.err.println("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream: " + e.toString());
-                if (DEBUG > 0) {
-                    e.printStackTrace(System.err);
-                }
-                throw new CmsException("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream for " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LOADER_ERROR, e);
-            }        
-        }
-        
-        if (DEBUG > 0) {
-            long timer2 = System.currentTimeMillis() - timer1;
-            System.err.println("========== JspLoader (Template) time delivering JSP for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");
-        }        
-        
-        return result;
     }
     
     /**
-     * Does the job of including the JSP, 
-     * this method should usually be called from a <code>CmsFlexRequestDispatcher</code> only.<p>
-     * 
-     * This method is called directly if the element is 
-     * called as a sub-element from another I_CmsResourceLoader.<p>
-     *
-     * One of the tricky issues is the correct cascading of the Exceptions, 
-     * so that you are able to identify the true origin of the problem.
-     * This ia achived by imprinting a String C_EXCEPTION_PREFIX to the 
-     * exception message.
-     * 
-     * @param cms used to access the OpenCms VFS
-     * @param file the reqested JSP file resource in the VFS
-     * @param req the current request
-     * @param res the current response
-     * 
-     * @throws ServletException might be thrown in the process of including the JSP 
-     * @throws IOException might be thrown in the process of including the JSP 
-     * 
-     * @see org.opencms.flex.CmsFlexRequestDispatcher
+     * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
-    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) throws ServletException, IOException {
+    public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) throws ServletException, IOException {
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         // Get JSP target name on "real" file system
-        String target = updateJsp(cms, file, req, controller, new HashSet(11));
+        String target = updateJsp(cms, resource, req, controller, new HashSet(11));
         // Important: Indicate that all output must be buffered
         controller.getCurrentResponse().setOnlyBuffering(true);
         // Dispatch to external file
-        controller.getCurrentRequest().getRequestDispatcherToExternal(cms.readAbsolutePath(file), target).include(req, res);
+        controller.getCurrentRequest().getRequestDispatcherToExternal(cms.readAbsolutePath(resource), target).include(req, res);
     }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#supportsStaticExport()
+     */
+    public boolean supportsStaticExport() {
+        return true;
+    }    
     
     /**
      * Updates a JSP page in the "real" file system in case the VFS resource has changed.<p>
@@ -745,5 +675,5 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             }
         }                      
         return jspfilename;
-    }    
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -130,7 +130,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     
     /** 
      * Constructor for the CmsFlexResponse,
-     * this variation is usually used for the "Top" response.<p>
+     * this variation is usually used for the "top" response.<p>
      *
      * @param res the HttpServletResponse to wrap
      * @param controller the controller to use
@@ -146,8 +146,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_isTopElement = isTopElement;
         m_parentWritesOnlyToBuffer = ! streaming;
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
-        m_headers = new java.util.HashMap(37);
-        m_bufferHeaders = new java.util.HashMap(17);        
+        m_headers = new java.util.HashMap(32);
+        m_bufferHeaders = new java.util.HashMap(16);        
     }  
     
     /**
@@ -166,8 +166,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_isTopElement = controller.getCurrentResponse().isTopElement();        
         m_parentWritesOnlyToBuffer = controller.getCurrentResponse().hasIncludeList();
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
-        m_headers = new java.util.HashMap(37);
-        m_bufferHeaders = new java.util.HashMap(17);
+        m_headers = new java.util.HashMap(32);
+        m_bufferHeaders = new java.util.HashMap(16);
     }    
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,9 @@
  */
 package org.opencms.flex;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFlexController {
     
@@ -61,8 +62,8 @@ public class CmsFlexController {
     /** The wrapped CmsObject provides JSP with access to the core system */
     private CmsObject m_cmsObject;
 
-    /** The CmsFile that was initialized by the original request, required for URI actions */    
-    private CmsFile m_file;   
+    /** The CmsResource that was initialized by the original request, required for URI actions */    
+    private CmsResource m_resource;   
         
     /** List of wrapped CmsFlexRequests */
     private List m_flexRequestList;
@@ -73,9 +74,41 @@ public class CmsFlexController {
     /** Wrapped top request */
     private HttpServletRequest m_req;
     
-    /** Wrapped to response */     
+    /** Wrapped top response */     
     private HttpServletResponse m_res;    
+    
+    /** Exception that was caught during inclusion of sub elements */
+    private Throwable m_throwable;
         
+    /**
+     * Returns an exception (Throwable) that was caught during inclusion of sub elements.<p>
+     * 
+     * @return an exception (Throwable) that was caught during inclusion of sub elements
+     */
+    public Throwable getThrowable() {
+        return m_throwable;
+    }
+    
+    /**
+     * Sets an exception (Throwable) that was caught during inclusion of sub elements.<p>
+     * 
+     * If another exception is already set in this controller, then the additional exception
+     * is ignored.
+     * 
+     * @param throwable the exception (Throwable) to set
+     * @return the exception stored in the contoller
+     */
+    public Throwable setThrowable(Throwable throwable) {
+        if (m_throwable == null) {
+            m_throwable = throwable;
+        } else {
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Ignored additional exception", throwable);
+            }
+        }
+        return m_throwable;
+    }
+    
     /**
      * Default constructor.<p>
      * 
@@ -87,13 +120,13 @@ public class CmsFlexController {
      */
     public CmsFlexController(
         CmsObject cms, 
-        CmsFile file, 
+        CmsResource file, 
         CmsFlexCache cache, 
         HttpServletRequest req, 
         HttpServletResponse res
     ) {
         m_cmsObject = cms;
-        m_file = file;
+        m_resource = file;
         m_cache = cache;
         m_req = req;
         m_res = res;
@@ -140,6 +173,21 @@ public class CmsFlexController {
     }
     
     /**
+     * Provides access to a root cause Exception that might have occured in a complex inlucde scenario.<p>
+     * 
+     * @param req the current request
+     * @return the root cause exception or null if no root cause exception is available
+     */
+    public static Throwable getThrowable(ServletRequest req) {
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
+        if (controller != null) {
+            return controller.getThrowable();
+        } else {
+            return null;
+        }
+    }
+    
+    /**
      * Clears all data of this controller.<p>
      */
     public void clear() {
@@ -157,8 +205,9 @@ public class CmsFlexController {
         m_req = null;
         m_res = null;
         m_cmsObject = null;
-        m_file = null;
-        m_cache = null;        
+        m_resource = null;
+        m_cache = null;
+        m_throwable = null;
     }
     
     /**
@@ -174,21 +223,15 @@ public class CmsFlexController {
     }
     
     /** 
-     * This method provides access to the top-level CmsFile of the request
+     * This method provides access to the top-level CmsResource of the request
      * which is of a type that supports the FlexCache,
      * i.e. usually the CmsFile that is identical to the file uri requested by the user,
      * not he current included element.<p>
-     *
-     * In case a JSP is used as a sub-element in a XMLTemplate,
-     * this method will not return the top-level uri but
-     * the "topmost" file of a type that is supported by the FlexCache.
-     * In case you need the top uri, use
-     * getCmsObject().getRequestContext().getUri().
-     *
+     * 
      * @return the requested top-level CmsFile
      */    
-    public CmsFile getCmsFile() {
-        return m_file;
+    public CmsResource getCmsResource() {
+        return m_resource;
     }     
     
     /**

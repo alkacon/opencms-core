@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,19 @@
  
 package org.opencms.jsp;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsDumpTemplate;
 
 import java.util.Hashtable;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * A simple dump class for JSPs which enables
@@ -49,7 +52,7 @@ import java.util.Hashtable;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.0 beta 1
  */
 public class CmsJspTemplate extends CmsDumpTemplate {
@@ -83,7 +86,11 @@ public class CmsJspTemplate extends CmsDumpTemplate {
         try {
             CmsFile file = cms.readFile(jspFile);
             CmsJspLoader loader = (CmsJspLoader)OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID);
-            s = loader.loadTemplate(cms, file);
+
+            HttpServletRequest req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+            HttpServletResponse res = (HttpServletResponse)cms.getRequestContext().getResponse().getOriginalResponse();             
+
+            s = loader.dump(cms, file, null, null, req, res);            
         } catch (java.lang.ClassCastException e) {
             s = null;
             throw new CmsException("[CmsJspTemplate] " + jspFile + " is not a JSP");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.loader;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -79,9 +79,6 @@ public interface I_CmsResourceLoader {
     /** The name of the VFS property that steers the streaming */
     String C_LOADER_STREAMPROPERTY = "stream";
     
-    /** Name of FlexCache runtime property */
-    String C_LOADER_CACHENAME = "flex.cache";       
-               
     /** 
      * Initialize the ResourceLoader.<p>
      *
@@ -113,31 +110,36 @@ public interface I_CmsResourceLoader {
      *
      * @param cms the initialized CmsObject which provides user permissions
      * @param file the requested OpenCms VFS resource
-     * @param req the original servlet request
-     * @param res the original servlet response
+     * @param req the servlet request
+     * @param res the servlet response
      * 
-     * @throws ServletException might be thrown in the process of including the JSP 
-     * @throws IOException might be thrown in the process of including the JSP 
+     * @throws ServletException might be thrown by the servlet environment
+     * @throws IOException might be thrown by the servlet environment
+     * @throws CmsException in case of errors acessing OpenCms functions
      * 
      * @see #service(CmsObject, CmsResource, ServletRequest, ServletResponse)
      */
-    void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException;
+    void load(CmsObject cms, CmsResource file, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException;
     
     /**
-     * Exports the contents of the requested file and it's sub-elements.<p>
+     * Static exports the contents of the requested file and it's sub-elements.<p>
+     *
+     * During static export, the resource content is written to 2 streams: 
+     * The export stream, and the http response output stream.
+     * This is required for "on demand" exporting of resources.<p> 
      *
      * @param cms the initialized CmsObject which provides user permissions
      * @param file the requested OpenCms VFS resource
      * @param exportStream the stream to write the exported content to
-     * @param req the original servlet request
-     * @param res the original servlet response
+     * @param req the servlet request
+     * @param res the servlet response
      * 
-     * @throws ServletException might be thrown in the process of including the JSP 
-     * @throws IOException might be thrown in the process of including the JSP 
-     * @throws CmsException might be thrown if errors during the static export occur 
+     * @throws ServletException might be thrown in the process of including the sub element
+     * @throws IOException might be thrown in the process of including the sub element
+     * @throws CmsException in case something goes wrong
      */    
-    void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    void export(CmsObject cms, CmsResource file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException, CmsException;
         
     /**
@@ -146,15 +148,47 @@ public interface I_CmsResourceLoader {
      * called as a sub-element from another I_CmsResourceLoader.<p>
      * 
      * @param cms used to access the OpenCms VFS
-     * @param file the reqested JSP file resource in the VFS
-     * @param req the current request
-     * @param res the current response
+     * @param file the reqested resource in the VFS
+     * @param req the servlet request
+     * @param res the servlet response
      * 
-     * @throws ServletException might be thrown in the process of including the JSP 
-     * @throws IOException might be thrown in the process of including the JSP 
+     * @throws ServletException might be thrown by the servlet environment
+     * @throws IOException might be thrown by the servlet environment
+     * @throws CmsException in case of errors acessing OpenCms functions
      * 
      * @see org.opencms.flex.CmsFlexRequestDispatcher
      */   
     void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) 
-    throws ServletException, IOException;
+    throws ServletException, IOException, CmsException;
+     
+    /**
+     * Dumps the processed content of the the requested file (and it's sub-elements) to a String.<p>
+     * 
+     * Dumping the content is like calling "load" where the result is 
+     * not written to the response stream, but to the returned byte array.
+     * Dumping is different from an export because the export might actually require 
+     * that the content is handled or modified in a special way, or set special http headers.  
+     * 
+     * @param cms used to access the OpenCms VFS
+     * @param file the reqested resource in the VFS
+     * @param element the element in the file to display
+     * @param locale the locale to display
+     * @param req the servlet request
+     * @param res the servlet response
+     * 
+     * @return the content of the processed file
+     * 
+     * @throws ServletException might be thrown by the servlet environment
+     * @throws IOException might be thrown by the servlet environment
+     * @throws CmsException in case of errors acessing OpenCms functions
+     */
+    byte[] dump(CmsObject cms, CmsResource file, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
+    throws  ServletException, IOException, CmsException;
+    
+    /**
+     * Signals if the loader implementation supports static export of resources.<p>
+     * 
+     * @return true if static export is supported, false otherwise
+     */
+    boolean supportsStaticExport();
 }

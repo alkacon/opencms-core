@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -80,16 +80,19 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(CmsObject, CmsFile, OutputStream, HttpServletRequest, HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.io.OutputStream, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {        
+    public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException {        
 
+        CmsFile file = CmsFile.upgrade(resource, cms);        
+        
         // init the page object and attach it as attribute of the request
         CmsXmlPage page = CmsXmlPage.read(cms, file);
         req.setAttribute(C_XMLPAGE_OBJECT, page);
         
         CmsResourceLoaderFacade loaderFacade = OpenCms.getLoaderManager().getLoaderFacade(cms, file);        
-        loaderFacade.getLoader().export(cms, loaderFacade.getFile(), exportStream, req, res);
+        loaderFacade.getLoader().export(cms, loaderFacade.getResource(), exportStream, req, res);
     }    
                
     /**
@@ -119,19 +122,19 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     }
     
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {        
-        try {
-            // init the page object and attach it as attribute of the request
-            CmsXmlPage page = CmsXmlPage.read(cms, file);
-            req.setAttribute(C_XMLPAGE_OBJECT, page);
-            
-            CmsResourceLoaderFacade loaderFacade = OpenCms.getLoaderManager().getLoaderFacade(cms, file);        
-            loaderFacade.getLoader().load(cms, loaderFacade.getFile(), req, res);
-        } catch (CmsException e) {
-            throw new ServletException(e.getMessage(), e);            
-        }
+    public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException {        
+        
+        CmsFile file = CmsFile.upgrade(resource, cms);               
+        
+        // init the page object and attach it as attribute of the request
+        CmsXmlPage page = CmsXmlPage.read(cms, file);
+        req.setAttribute(C_XMLPAGE_OBJECT, page);
+        
+        CmsResourceLoaderFacade loaderFacade = OpenCms.getLoaderManager().getLoaderFacade(cms, file);        
+        loaderFacade.getLoader().load(cms, loaderFacade.getResource(), req, res);
     }
 
     /**
@@ -143,24 +146,20 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
      * @return the content of the element in the appropriate langue or ""
      * @throws CmsException if something goes wrong
      */
-    public byte[] load(CmsObject cms, CmsFile file, String elementName) throws CmsException {
+    public byte[] load(CmsObject cms, CmsFile file, String elementName) 
+    throws CmsException {
         
         byte[] result = null;
         
-        try {
-            // get the requested page
-            CmsXmlPage page = CmsXmlPage.read(cms, file);
-            
-            // check the current locales
-            String absolutePath = cms.readAbsolutePath(file);
-            Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), page.getLocales());
-            
-            // get the appropriate content and convert it to bytes
-            result = page.getContent(cms, elementName, locale).getBytes(); 
-            
-        } catch (Exception exc) {
-            throw new CmsException("Error in CmsXmlPageLoader", exc);
-        }
+        // get the requested page
+        CmsXmlPage page = CmsXmlPage.read(cms, file);
+        
+        // check the current locales
+        String absolutePath = cms.readAbsolutePath(file);
+        Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), page.getLocales());
+        
+        // get the appropriate content and convert it to bytes
+        result = page.getContent(cms, elementName, locale).getBytes(); 
         
         return result;
     }
@@ -168,37 +167,52 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
-    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) throws ServletException, IOException {
+    public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) 
+    throws ServletException, IOException, CmsException {
         
-        String absolutePath = cms.readAbsolutePath(file);
+
+        // get the requested page
+        CmsXmlPage page = (CmsXmlPage)req.getAttribute(C_XMLPAGE_OBJECT); 
+            
+        if (page == null) {      
+            page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
+        }        
+        String absolutePath = cms.readAbsolutePath(resource);
         
-        try {
-            // get the requested page
-            CmsXmlPage page = (CmsXmlPage)req.getAttribute(C_XMLPAGE_OBJECT); 
-                
-            if (page == null) {      
-                page = CmsXmlPage.read(cms, cms.readFile(absolutePath));
-            }
-            
-            // get the element selector
-            // TODO: Check this, maybe use a request attribute instead of a parameter
-            String elementName = req.getParameter(C_TEMPLATE_ELEMENT);
-            
-            // check the current locales
-            Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), page.getLocales());
-            
-            // get the appropriate content and convert it to bytes
-            byte[] result = page.getContent(cms, elementName, locale).getBytes(); 
-            
-            // append the result to the output stream
-            if (result != null) {
-                res.getOutputStream().write(result);
-            }        
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error in CmsXmlPageLoader while processing " + absolutePath, e);
-            }
-            throw new ServletException("Error in CmsXmlPageLoader while processing " + absolutePath, e);       
+        // get the element selector
+        String elementName = req.getParameter(C_TEMPLATE_ELEMENT);
+        
+        // check the current locales
+        Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), page.getLocales());
+        
+        // get the appropriate content and convert it to bytes
+        byte[] result = page.getContent(cms, elementName, locale).getBytes(); 
+        
+        // append the result to the output stream
+        if (result != null) {
+            res.getOutputStream().write(result);
+        }        
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public byte[] dump(CmsObject cms, CmsResource resource, String element, Locale locale, HttpServletRequest req, HttpServletResponse res)
+    throws CmsException {
+        
+        // get the requested page
+        CmsXmlPage page = (CmsXmlPage)req.getAttribute(C_XMLPAGE_OBJECT);
+        if (page == null) {
+            page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
         }
-    }  
+        // get the appropriate content and convert it to bytes
+        return page.getContent(cms, element, locale).getBytes();
+    }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#supportsStaticExport()
+     */
+    public boolean supportsStaticExport() {
+        return true;
+    }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,22 +31,22 @@
 
 package com.opencms.template;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsResourceTranslator;
 
 import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.template.cache.CmsElementDefinition;
 import com.opencms.template.cache.CmsElementDefinitionCollection;
@@ -59,8 +59,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Locale;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -189,11 +189,14 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(CmsObject, CmsFile, OutputStream, HttpServletRequest, HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.io.OutputStream, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
-        // TODO: get real file translator
-        CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, new CmsResourceTranslator(new String[0], true));
+    public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    throws IOException, CmsException {
+        
+        CmsFile file = CmsFile.upgrade(resource, cms);
+        
+        CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, cms.getRequestContext().getFileTranslator());
         byte[] result = generateOutput(cms, file, cmsReq);
         if ((result != null) && (exportStream != null)) {
             exportStream.write(file.getContents());
@@ -544,7 +547,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             if (e instanceof CmsException) {
                 throw (CmsException)e;
             } else {
-                throw new CmsException(errorText, CmsException.C_LOADER_ERROR, e);
+                throw new CmsException(errorText, CmsLoaderException.C_LOADER_GENERIC_ERROR, e);
             }
         }
     }
@@ -580,15 +583,12 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     }
     
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException {   
-        try { 
-            processXmlTemplate(cms, file);
-        } catch (CmsException e) {
-            throw new ServletException(e.getMessage(), e);
-        }
+    public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
+    throws CmsException {   
+    
+        processXmlTemplate(cms, CmsFile.upgrade(resource, cms));
     }
     
     /**
@@ -638,7 +638,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(errorMessage);
             } 
-            throw new CmsException(errorMessage, CmsException.C_LOADER_ERROR);
+            throw new CmsException(errorMessage, CmsLoaderException.C_LOADER_GENERIC_ERROR);
         }
 
         // Check the clearcache parameter
@@ -657,20 +657,11 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     }    
         
     /**
-     * Does the job of including an XMLTemplate 
-     * as a sub-element of a JSP or other resource loaders.<p>
-     * 
-     * @param cms used to access the OpenCms VFS
-     * @param file the reqested JSP file resource in the VFS
-     * @param req the current request
-     * @param res the current response
-     * 
-     * @throws ServletException might be thrown in the process of including the JSP 
-     * 
-     * @see org.opencms.flex.CmsFlexRequestDispatcher
-     */    
+     * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     */
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
-    throws ServletException {
+    throws CmsException, IOException {
+        
         long timer1;
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
@@ -682,6 +673,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         // String oldUri = cms.getRequestContext().getUri();
         I_CmsRequest cms_req = cms.getRequestContext().getRequest();        
         HttpServletRequest originalreq = (HttpServletRequest)cms_req.getOriginalRequest();
+        
         try {                        
             // get the CmsRequest
             byte[] result = null;
@@ -711,11 +703,6 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                 }
                 res.getOutputStream().write(result);
             }        
-        }  catch (Throwable t) {
-            if (DEBUG > 0) {
-                t.printStackTrace(System.err);
-            }
-            throw new ServletException("Error in CmsXmlTemplateLoader while processing " + cms.readAbsolutePath(file), t);       
         } finally {
             // restore the context settings
             cms_req.setOriginalRequest(originalreq);
@@ -726,6 +713,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                 System.err.println("CmsXmlTemplateLoader.service(): Uri reset to " + cms.getRequestContext().getUri());
             }
         }
+        
         if (DEBUG > 0) {
             long timer2 = System.currentTimeMillis() - timer1;        
             System.err.println("============ CmsXmlTemplateLoader time delivering XmlTemplate for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");            
@@ -760,5 +748,25 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             String errorMessage = "Cannot write output to HTTP response stream";
             handleException(cms, e, errorMessage);
         }
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public byte[] dump(CmsObject cms, CmsResource file, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
+    throws CmsException {
+        
+        String absolutePath = cms.readAbsolutePath(file);
+        // this will work for the "default" template class com.opencms.template.CmsXmlTemplate only
+        CmsXmlTemplate template = new CmsXmlTemplate();
+        // get the appropriate content and convert it to bytes
+        return template.getContent(cms, absolutePath, element, null);
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#supportsStaticExport()
+     */
+    public boolean supportsStaticExport() {
+        return true;
     }
 }

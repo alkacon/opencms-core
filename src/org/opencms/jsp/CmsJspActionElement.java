@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/02/14 21:25:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,25 +31,16 @@
 
 package org.opencms.jsp;
 
-import org.opencms.flex.CmsFlexController;
-import org.opencms.i18n.CmsMessages;
-import org.opencms.loader.CmsDumpLoader;
-import org.opencms.loader.CmsJspLoader;
-import org.opencms.loader.CmsPointerLoader;
-import org.opencms.loader.CmsXmlPageLoader;
-import org.opencms.loader.I_CmsResourceLoader;
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
-import org.opencms.security.CmsSecurityException;
-import org.opencms.staticexport.CmsLinkManager;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
-import com.opencms.template.CmsXmlTemplate;
-import com.opencms.template.CmsXmlTemplateLoader;
+import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
+import org.opencms.staticexport.CmsLinkManager;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -82,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0 beta 2
  */
@@ -892,63 +883,37 @@ public class CmsJspActionElement {
      * @return the processed output
      */
     public String getContent(String target, String element, Locale locale) {
+
+        I_CmsResourceLoader loader;
+        CmsFile file;
+        target = toAbsolute(target);
+        
         try {
-            I_CmsResourceLoader loader = null;
-            target = toAbsolute(target);
-            try {
-                CmsResource resource = getCmsObject().readFileHeader(target);
-                loader = OpenCms.getLoaderManager().getLoader(resource.getLoaderId());
-            } catch (java.lang.ClassCastException e) {
-                // no loader omplementation found
-                return "??? " + e.getMessage() + " ???";
-            } catch (org.opencms.main.CmsException e) {
-                // file might not exist or no read permissions
-                return "??? " + e.getMessage() + " ???";
-            }
-            try {
-                if (loader instanceof CmsJspLoader) {
-                    // jsp page
-                    CmsJspTemplate template = new CmsJspTemplate();
-                    byte[] res = template.getContent(getCmsObject(), target, null, null);
-                    return new String(res, getRequestContext().getEncoding());
-                } else if (loader instanceof CmsXmlPageLoader) {
-                    // xml page
-                    CmsFile file = getCmsObject().readFile(target);
-                    CmsXmlPage page = CmsXmlPage.read(getCmsObject(), file);
-                    
-                    if (element == null) {
-                        element = "body";
-                    }
-                    
-                    if (page.hasElement(element, locale)) {
-                        return page.getContent(getCmsObject(), element, locale);
-                    } else {
-                        return null;
-                    }
-                } else if (loader instanceof CmsXmlTemplateLoader) {
-                    // XmlTemplate page (will not work if file does not use the standard XmlTemplate class)
-                    CmsXmlTemplate template = new CmsXmlTemplate();
-                    byte[] res = template.getContent(getCmsObject(), target, element, null);
-                    return new String(res, getRequestContext().getEncoding());
-                } else if (loader instanceof CmsDumpLoader) {
-                    // static page
-                    CmsFile file = getCmsObject().readFile(target);
-                    return new String(file.getContents(), getRequestContext().getEncoding());
-                } else if (loader instanceof CmsPointerLoader) {
-                    // link
-                    CmsFile file = getCmsObject().readFile(target);
-                    return new String(file.getContents());
-                }
-            } catch (CmsException ce) {
-                return "??? " + ce.getMessage() + " ???";
-            } catch (UnsupportedEncodingException uee) {
-                return "??? " + uee.getMessage() + " ???";
-            }
-        } catch (Throwable t) {
-            handleException(t);
-            return "??? " + t.getMessage() + " ???";
+            file = getCmsObject().readFile(target);
+            loader = OpenCms.getLoaderManager().getLoader(file.getLoaderId());
+        } catch (ClassCastException e) {
+            // no loader implementation found
+            return CmsMessages.formatUnknownKey(e.getMessage());
+        } catch (CmsException e) {
+            // file might not exist or no read permissions
+            return CmsMessages.formatUnknownKey(e.getMessage());
         }
-        return "";
+        
+        try {
+            byte[] result = loader.dump(getCmsObject(), file, element, locale, getRequest(), getResponse());
+            return new String(result, getRequestContext().getEncoding());                                                                   
+        } catch (UnsupportedEncodingException uee) {
+            // encoding unsupported
+            return CmsMessages.formatUnknownKey(uee.getMessage());
+        } catch (Throwable t) {
+            // any other exception, check for hidden root cause first
+            Throwable cause = CmsFlexController.getThrowable(getRequest());
+            if (cause == null) {
+                cause = t;
+            }
+            handleException(cause);
+            return CmsMessages.formatUnknownKey(cause.getMessage());
+        }
     }
     
     /**

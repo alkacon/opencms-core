@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package org.opencms.jsp;
 
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypePage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
 import org.opencms.loader.CmsXmlPageLoader;
@@ -42,11 +44,10 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypePage;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateLoader;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +62,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -473,18 +474,26 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 includeElement(context, editArea, I_CmsEditorActionHandler.C_EDIT_ENDAREA + "_" + editMode, req, res);
             }
             
-        } catch (javax.servlet.ServletException e) {
+        } catch (ServletException e) {
+            Throwable t;
+            if (e.getRootCause() != null) {
+                t = e.getRootCause();
+            } else {
+                t = e;
+            }
+            t = controller.setThrowable(t);
             if (DEBUG) {
-                System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
+                System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + t);
                 e.printStackTrace(System.err);
             }
-            throw new JspException(imprintExceptionMessage(e, target), e);    
-        } catch (java.io.IOException e) {
+            throw new JspException(imprintExceptionMessage(t, target), t);    
+        } catch (IOException e) {
+            Throwable t = controller.setThrowable(e);
             if (DEBUG) {
-                System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
+                System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + t);
                 e.printStackTrace(System.err);
             }
-            throw new JspException(imprintExceptionMessage(e, target), e);
+            throw new JspException(imprintExceptionMessage(t, target), t);
         } finally {
             if (oldParameterMap != null) {
                 controller.getCurrentRequest().setParameterMap(oldParameterMap);
@@ -521,18 +530,26 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             controller.getCurrentResponse().addToIncludeList(target, parameterMap);
             controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);
             
-        } catch (javax.servlet.ServletException e) {
+        } catch (ServletException e) {
+            Throwable t;
+            if (e.getRootCause() != null) {
+                t = e.getRootCause();
+            } else {
+                t = e;
+            }
+            t = controller.setThrowable(t);
             if (DEBUG) {
-                System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
+                System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + t);
                 e.printStackTrace(System.err);
             }
-            throw new JspException(imprintExceptionMessage(e, target), e); 
-        } catch (java.io.IOException e) {
+            throw new JspException(imprintExceptionMessage(t, target), t); 
+        } catch (IOException e) {
+            Throwable t = controller.setThrowable(e);
             if (DEBUG) {
-                System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
+                System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + t);
                 e.printStackTrace(System.err);
             }
-            throw new JspException(imprintExceptionMessage(e, target), e);
+            throw new JspException(imprintExceptionMessage(t, target), t);
         }
     }
     

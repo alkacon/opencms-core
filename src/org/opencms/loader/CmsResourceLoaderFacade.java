@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsResourceLoaderFacade.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
 
 package org.opencms.loader;
 
-import org.opencms.file.CmsFile;
+import org.opencms.file.CmsResource;
 
 /**
- * Facade object that contains a resource loader and a file of the cms.<p>
+ * Facade object that contains a resource loader and a resource file of the cms.<p>
  * 
  * This object is used by resource loaders that are not "top-level" enabled.
  * For such resource loaders, the top level loader to trigger is selected by 
@@ -50,7 +50,7 @@ import org.opencms.file.CmsFile;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsResourceLoaderFacade {
@@ -59,26 +59,26 @@ public class CmsResourceLoaderFacade {
     private I_CmsResourceLoader m_loader;
     
     /** The file to load in the OpenCms VFS */
-    private CmsFile m_file;
+    private CmsResource m_resource;
         
     /**
      * Creates a new resource loader facade.<p>
      * 
      * @param loader the loader to use
-     * @param file the file to use
+     * @param resource the file to use
      */
-    public CmsResourceLoaderFacade(I_CmsResourceLoader loader, CmsFile file) {
+    public CmsResourceLoaderFacade(I_CmsResourceLoader loader, CmsResource resource) {
         m_loader = loader;
-        m_file = file;
+        m_resource = resource;
     }
         
     /**
-     * Returns the file.<p>
+     * Returns the resource.<p>
      * 
-     * @return the file
+     * @return the resource
      */
-    public CmsFile getFile() {
-        return m_file;
+    public CmsResource getResource() {
+        return m_resource;
     }
 
     /**

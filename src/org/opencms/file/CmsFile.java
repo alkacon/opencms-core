@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/18 15:26:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -45,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
     
@@ -80,6 +81,13 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         );
         if (resource.hasFullResourceName()) {
             setFullResourceName(resource.getRootPath());
+        }
+        if (resource instanceof CmsFile) {
+            // the resource already was a file, keep contents that might have been read already
+            m_fileContent = ((CmsFile)resource).getContents();
+            if (m_fileContent == null) {
+                m_fileContent = new byte[0];
+            }
         }
     }
     
@@ -200,4 +208,32 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             m_length = 0;
         }
     } 
+    
+    /**
+     * Utility method to upgrade a CmsResource to a CmsFile.<p>
+     * 
+     * Sometimes a CmsResource might already ba a (casted) CmsFile that
+     * also has the contents read. This methods tries to optimize 
+     * read access to the VFS by "upgrading" the CmsResource to a CmsFile 
+     * first. If this fails, the CmsFile is read from the VFS.<p> 
+     * 
+     * @param resource the resource to upgrade
+     * @param cms permission context for accessing the VFS
+     * @return the upgraded (or read) file
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
+        if (resource instanceof CmsFile) {
+            // resource is already a file
+            CmsFile file = (CmsFile)resource;
+            if ((file.getContents() != null) && (file.getContents().length > 0)) {
+                // file has the contents already available
+                return file;
+            }
+        }
+        // resource is no file, or contents are not available
+        String filename = cms.readAbsolutePath(resource);
+        // read and return the file
+        return cms.readFile(filename);
+    }
 }
