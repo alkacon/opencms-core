@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.42 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.41 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.42 $ $Date: 2001/07/03 11:53:57 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -536,6 +536,24 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                     // Create new CmsElementLink
                     CmsElementLink link = new CmsElementLink(elName);
                     result.add(link);
+                }
+            } else if (n.getNodeType() == n.ELEMENT_NODE && "method".equalsIgnoreCase(n.getNodeName())) {
+                // this is a left over <METHOD> tag.
+                String methodName = ((Element)n).getAttribute("name");
+                String tagcontent = getTagValue((Element)n);
+                if(methodName != null && !"".equals(methodName)){
+                    //if there is something in the buffer store it now
+                    if(buf.length() > 0) {
+                        result.add(buf.toString().getBytes());
+                        buf = new StringBuffer();
+                    }
+                    // create the new methode link
+                    CmsMethodLink methodLink = new CmsMethodLink(methodName, tagcontent);
+                    result.add(methodLink);
+                    // remove the tagcontent if necessary
+                    if(tagcontent != null && !"".equals(tagcontent)){
+                        n = treeWalker(domEl, n);
+                    }
                 }
             } else if (n.getNodeType() == n.TEXT_NODE || n.getNodeType() == n.CDATA_SECTION_NODE) {
                 buf.append(n.getNodeValue());

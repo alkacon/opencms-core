@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/06/22 12:15:56 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.66 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.65 $ $Date: 2001/06/22 12:15:56 $
+ * @version $Revision: 1.66 $ $Date: 2001/07/03 11:53:57 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -193,7 +193,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         if(query != null) {
 
             // Fine. A lasturl parameter was found in session or parameter hashtable.
-
             // Check, if the URL parameters of the last url have to be encoded.
             int asteriskIdx = query.indexOf("?");
             if(asteriskIdx > -1 && (asteriskIdx < (query.length() - 1))) {
@@ -217,9 +216,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                             notfirst = true;
                         }
                         if(idx > -1) {
-
                             // A parameter name/value pair was found.
-
                             // Encode the parameter value and write back!
                             String key = currToken.substring(0, idx);
                             String value = (idx < (currToken.length() - 1)) ? currToken.substring(idx + 1) : "";
@@ -228,11 +225,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                             encQuery.append(Encoder.escape(value));
                         }
                         else {
-
                             // Something strange happened.
-
                             // Maybe a parameter without "=" ?
-
                             // Write back without encoding!
                             encQuery.append(currToken);
                         }
@@ -349,15 +343,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         CmsRequestContext reqContext = cms.getRequestContext();
 
         //v.addElement(reqContext.currentProject().getName());
-
         //v.addElement(reqContext.getUri());
-
         //v.addElement(templateFile);
-
         //v.addElement(parameters);
-
         //v.addElement(templateSelector);
-
         //return v;
         String result = "" + reqContext.currentProject().getId() + ":" + reqContext.currentUser().getName() + reqContext.getUri() + templateFile;
         Enumeration keys = parameters.keys();
@@ -780,11 +769,33 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         // First build our own cache directives.
         CmsCacheDirectives result = new CmsCacheDirectives(true);
-        result.setCacheUri(true);
         Vector para = new Vector();
         para.add("cmsframe");
         result.setCacheParameters(para);
         return result;
+    }
+
+    /**
+     *  gets the caching information for a specific methode.
+     *  @param cms the cms object.
+     *  @param methodName the name of the method for witch the MethodCacheDirectives are wanted.
+     */
+    public CmsMethodCacheDirectives getMethodCacheDirectives(CmsObject cms, String methodName){
+        if("getTitle".equals(methodName) || "getUri".equals(methodName)
+                                        ||"getFileUri".equals(methodName)
+                                        ||"getPathUri".equals(methodName)){
+            CmsMethodCacheDirectives mcd = new CmsMethodCacheDirectives(true);
+            mcd.setCacheUri(true);
+            return mcd;
+        }
+        if ("getFrameQueryString".equals(methodName)
+                                || "getQueryString".equals(methodName)
+                                || "getRequestIp".equals(methodName)
+                                || "getSessionId".equals(methodName)
+                                || "getStylesheet".equals(methodName)){
+            return new CmsMethodCacheDirectives(false);
+        }
+        return null;
     }
 
     /**

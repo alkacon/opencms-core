@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/06/29 13:44:56 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.44 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -77,7 +77,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.43 $ $Date: 2001/06/29 13:44:56 $
+ * @version $Revision: 1.44 $ $Date: 2001/07/03 11:53:57 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -183,35 +183,55 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
             throwException("You are trying to call the user method \"" + methodName + "\" without giving an object containing this method. " + "Please select a callingObject in your getProcessedData or getProcessedDataValue call.", CmsException.C_XML_NO_USER_METHOD);
         }
 
+        // check if the method has cachedirectives, if so we just return null
+        // this way the methode tag stays in the Element and can be handled like
+        // an normal element. We do this only if elementCache is active.
+         if(m_cms.getRequestContext().isElementCacheEnabled()){
+            try{
+                if(callingObject.getClass().getMethod("getMethodCacheDirectives", new Class[] {
+                                        CmsObject.class, String.class}).invoke(callingObject,
+                                         new Object[] {m_cms, methodName}) != null){
+                    return null;
+                }
+            }catch(NoSuchMethodException e){
+                throwException("Method getMethodeCacheDirectives was not found in class " + callingObject.getClass().getName() + ".", CmsException.C_XML_NO_USER_METHOD);
+            }catch(InvocationTargetException targetEx) {
+
+                // the method could be invoked, but throwed a exception
+                // itself. Get this exception and throw it again.
+                Throwable e = targetEx.getTargetException();
+                if(!(e instanceof CmsException)) {
+                    // Only print an error if this is NO CmsException
+                    throwException("Method getMethodeCacheDirectives throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                }else {
+                    // This is a CmsException Error printing should be done previously.
+                    throw (CmsException)e;
+                }
+            }catch(Exception exc2) {
+                throwException("Method getMethodeCacheDirectives was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+            }
+        }
+
         // OK. We have a calling object. Now try to invoke the method
         try {
-
             // try to invoke the method 'methodName'
             result = getUserMethod(methodName, callingObject).invoke(callingObject, params);
-        }
-        catch(NoSuchMethodException exc) {
+        }catch(NoSuchMethodException exc) {
             throwException("User method " + methodName + " was not found in class " + callingObject.getClass().getName() + ".", CmsException.C_XML_NO_USER_METHOD);
-        }
-        catch(InvocationTargetException targetEx) {
+        }catch(InvocationTargetException targetEx) {
 
             // the method could be invoked, but throwed a exception
-
             // itself. Get this exception and throw it again.
             Throwable e = targetEx.getTargetException();
             if(!(e instanceof CmsException)) {
-
                 // Only print an error if this is NO CmsException
                 throwException("User method " + methodName + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
-            }
-            else {
-
+            }else {
                 // This is a CmsException
-
                 // Error printing should be done previously.
                 throw (CmsException)e;
             }
-        }
-        catch(Exception exc2) {
+        }catch(Exception exc2) {
             throwException("User method " + methodName + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
         if((result != null) && (!(result instanceof String || result instanceof CmsProcessedString || result instanceof Integer || result instanceof NodeList || result instanceof byte[]))) {
@@ -1371,6 +1391,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     }
 
     protected void processNode(Node n, Hashtable keys, Method defaultMethod, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
+
         // Node currently processed
         Node child = null;
 
@@ -1461,9 +1482,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                         }
 
                         // Inspect the type of the method return value
-
                         // Currently NodeList, String and Integer are
-
                         // recognized. All other types will be ignored.
                         if(methodResult == null) {
                             newnodes = null;
@@ -1509,25 +1528,17 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
 
                         // printNodeList(newnodes);
                         if(newnodes != null) {
-
                             // the called method returned a valid result.
-
                             // we have do remove the old element from the tree
-
                             // and replace it by the new nodes.
-
                             // WARNING! Do not remove any subchilds from the old
-
                             // element. There could be links to the subchilds
-
                             // in our Hashtables (e.g. for datablocks).
-
                             // Only remove the child itself from the tree!
                             int numNewChilds = newnodes.getLength();
                             if(numNewChilds > 0) {
 
                                 // there are new childs.
-
                                 // so we can replace the old element
                                 for(int j = 0;j < numNewChilds;j++) {
 
@@ -1553,11 +1564,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                             else {
 
                                 // the list of the new childs is empty.
-
                                 // so we have to re-calculate the next node
-
                                 // in the tree since the old nextchild will be deleted
-
                                 // been deleted.
                                 nextchild = treeWalkerWidth(startingNode, child);
                             }

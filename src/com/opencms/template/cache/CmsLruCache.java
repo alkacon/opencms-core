@@ -1,8 +1,8 @@
 package com.opencms.template.cache;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
- * Date   : $Date: 2001/06/05 07:07:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2001/07/03 11:53:57 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -359,27 +359,27 @@ public class CmsLruCache {
      */
     private void checkCondition(){
         System.err.println("");
-        System.err.println("mgm-- Verify condition of Cache");
-        System.err.println("mgm--size: "+m_size);
+        System.err.println("-- Verify condition of Cache");
+        System.err.println("--size: "+m_size);
         CacheItem item = head;
         int count = 1;
-        System.err.println("mgm--");
-        System.err.println("mgm--testing content from head to tail:");
+        System.err.println("--");
+        System.err.println("--testing content from head to tail:");
         while(item!=null){
-            System.err.println("    mgm--"+count+". "+(String)item.key);
+            System.err.println("    --"+count+". "+(String)item.key);
             count++;
             item=item.next;
         }
         System.err.println("");
-        System.err.println("mgm--now from tail to head:");
+        System.err.println("--now from tail to head:");
         item = tail;
         count--;
         while(item!=null){
-            System.err.println("    mgm--"+count+". "+(String)item.key);
+            System.err.println("    --"+count+". "+(String)item.key);
             count--;
             item=item.previous;
         }
-        System.err.println("mgm--now what is realy in cache:");
+        System.err.println("--now what is realy in cache:");
         count = 1;
         for (int i=0; i<m_maxSize; i++){
             item = m_cache[i];
@@ -394,7 +394,7 @@ public class CmsLruCache {
                 }
             }
         }
-        System.err.println("mgm--test ready!!");
+        System.err.println("--test ready!!");
         System.err.println("");
 
     }

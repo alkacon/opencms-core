@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementVariant.java,v $
-* Date   : $Date: 2001/05/09 12:28:49 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -78,6 +78,14 @@ public class CmsElementVariant {
      */
     public void add(CmsElementLink elementLink) {
         m_content.add(elementLink);
+    }
+
+    /**
+     * Adds an method-link to this variant.
+     * @param methodLink - part of the variant. A link to an method.
+     */
+    public void add(CmsMethodLink methodLink) {
+        m_content.add(methodLink);
     }
 
     /**

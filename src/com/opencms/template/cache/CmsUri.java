@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/06/18 15:02:00 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.11 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -120,7 +120,7 @@ public class CmsUri implements I_CmsConstants {
         }
 
 
-        return elem.getContent(elementCache, cms, m_elementDefinitions, C_ROOT_TEMPLATE_NAME, parameters);
+        return elem.getContent(elementCache, cms, m_elementDefinitions, C_ROOT_TEMPLATE_NAME, parameters, null);
     }
     /**
      * checks the read access.

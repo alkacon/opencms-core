@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDescriptor.java,v $
-* Date   : $Date: 2001/05/28 08:51:27 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -103,7 +103,6 @@ public class CmsElementDescriptor {
 		// check if the object is a CmsElementDescriptor object
 		if (obj instanceof CmsElementDescriptor) {
 			// same key ?
-            // TODO: mgm-  Speed check: test if (()obj.getClassName.equ.. && ()obj.getTemp.equ..)) is faster
 			if (((CmsElementDescriptor)obj).getKey().equals(getKey()) ){
 				return true;
 			}

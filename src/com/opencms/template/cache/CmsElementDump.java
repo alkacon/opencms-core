@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2001/06/18 15:02:00 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.10 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -71,10 +71,11 @@ public class CmsElementDump extends A_CmsElement {
      * @param cms CmsObject for accessing system resources
      * @param elDefs Definitions of this element's subelements
      * @param parameters All parameters of this request
+     * @param methodParameter not used here.
      * @return Byte array with the processed content of this element.
      * @exception CmsException
      */
-    public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException  {
+    public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters, String methodParameter) throws CmsException  {
         byte[] result = null;
 
         // Get template class.
@@ -82,7 +83,7 @@ public class CmsElementDump extends A_CmsElement {
         I_CmsTemplate templateClass = getTemplateClass(cms, m_className);
 
         // Collect cache directives from subtemplates
-        CmsCacheDirectives cd = getCacheDirectives();
+        A_CmsCacheDirectives cd = getCacheDirectives();
 
         // We really don't want to stream here
         /*boolean streamable = cms.getRequestContext().isStreaming() && cd.isStreamable();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/06/08 12:59:08 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.13 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -58,7 +58,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     protected String m_templateName;
 
     /** Cache directives of this element. */
-    private CmsCacheDirectives m_cacheDirectives;
+    protected A_CmsCacheDirectives m_cacheDirectives;
 
     /** The name of the group that can read this ressource. */
     protected String m_readAccessGroup;
@@ -75,7 +75,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /**
      * Initializer for an element with the given class and template name.
      */
-    protected void init(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, int variantCachesize) {
+    protected void init(String className, String templateName, String readAccessGroup, A_CmsCacheDirectives cd, int variantCachesize) {
         m_className = className;
         m_templateName = templateName;
         m_readAccessGroup = readAccessGroup;
@@ -93,7 +93,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @param defs Vector with ElementDefinitions for this element.
      * @param variantCachesize The size of the variant cache.
      */
-    protected void init(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, CmsElementDefinitionCollection defs, int variantCachesize) {
+    protected void init(String className, String templateName, String readAccessGroup, A_CmsCacheDirectives cd, CmsElementDefinitionCollection defs, int variantCachesize) {
         m_className = className;
         m_templateName = templateName;
         m_readAccessGroup = readAccessGroup;
@@ -154,7 +154,21 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
             }
         }while(group1 != null);
 
+        // ok. last chance. It could be the owner of the file
+        boolean readError = false;
+        try{
+            cms.readFileHeader(m_templateName);
+        }catch(CmsException e){
+            readError = true;
+        }
+        if ( !readError){
+            return;
+        }
+
         // no way to read this sorry
+        if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, toString() + " no read access. ");
+        }
         throw new CmsException(currentGroup.getName()+" has no read access to "+m_templateName+". ",
                                 CmsException.C_ACCESS_DENIED);
     }
@@ -207,7 +221,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /** Get cache directives for this element.
      *  @return cache directives.
      */
-    public CmsCacheDirectives getCacheDirectives() {
+    public A_CmsCacheDirectives getCacheDirectives() {
         return m_cacheDirectives;
     }
 
@@ -251,13 +265,13 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                 }
             }
             if(!m_cacheDirectives.userSetProxyPrivate()){
-                m_cacheDirectives.setProxyPrivateCacheable(proxyPrivate);
+                ((CmsCacheDirectives)m_cacheDirectives).setProxyPrivateCacheable(proxyPrivate);
             }
             if(!m_cacheDirectives.userSetProxyPublic()){
-                m_cacheDirectives.setProxyPublicCacheable(proxyPublic);
+                ((CmsCacheDirectives)m_cacheDirectives).setProxyPublicCacheable(proxyPublic);
             }
             if(!m_cacheDirectives.userSetExport()){
-                m_cacheDirectives.setExport(export);
+                ((CmsCacheDirectives)m_cacheDirectives).setExport(export);
             }
         }
         proxySettings.merge(m_cacheDirectives);
@@ -282,10 +296,11 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @param cms CmsObject for accessing system resources
      * @param elDefs Definitions of this element's subelements
      * @param parameters All parameters of this request
+     * @param methodparameter used only for methode elements. Contains the parameter for the methode.
      * @return Byte array with the processed content of this element.
      * @exception CmsException
      */
-    public abstract byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection efDefs, String elementName, Hashtable parameters) throws CmsException;
+    public abstract byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection efDefs, String elementName, Hashtable parameters, String methodParameter) throws CmsException;
 
     /**
      * Get a template class from the template class manager.
@@ -333,7 +348,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                     if(resolveDebug) System.err.println("byte array");
                     baos.write((byte[])o);
                 } else if(o instanceof CmsElementLink) {
-                    if(resolveDebug) System.err.println("Link");
+                    if(resolveDebug) System.err.println("Element Link");
 
                     // we have to resolve the element link right NOW!
                     // Look for the element definition
@@ -354,7 +369,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                             if(resolveDebug) System.err.println("= Element object found for \"" + lookupName +"\". Calling getContent on this object. ");
                             byte[] buffer = null;
                             try {
-                                buffer = subEl.getContent(elementCache, cms, elDefs, elementName, parameters);
+                                buffer = subEl.getContent(elementCache, cms, elDefs, elementName, parameters, null);
                             } catch(Exception e) {
                                 // An error occured while getting the element's content.
                                 // Do some error handling here.
@@ -423,6 +438,44 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                             System.err.println("= No element definition found for \"" + lookupName +"\". Ignoring this link. ");
                             System.err.println(elDefs.toString());
                         }
+                    }
+                }else if(o instanceof CmsMethodLink){
+                    if(resolveDebug) System.err.println("Method Link");
+                    // get the methodelement
+                    String methodName = ((CmsMethodLink)o).getMethodeName();
+                    String methodParameter = ((CmsMethodLink)o).getMethodParameter();
+                    A_CmsElement metEle =elementCache.getElementLocator().get(cms,
+                                        new CmsElementDescriptor(m_className + "." + methodName, "METHOD"),
+                                        parameters);
+                    byte[] buffer = null;
+                    if(metEle != null){
+                        try{
+                            buffer = metEle.getContent(elementCache, cms, elDefs, null,parameters, methodParameter);
+                        }catch(Exception e){
+                            if(e instanceof CmsException) {
+                                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                                    A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Error in method " + methodName );
+                                    A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + e);
+                                }
+                            }else{
+                                // Any other Non-CmsException.
+                                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                                    A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Non-CmsException in method " + methodName);
+                                    A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + e);
+                                }
+                            }
+                        }
+                    }else{
+                        // The subelement object is null, i.e. the element could not be found.
+                        // Do nothing but a little bit logging here.
+                        if(resolveDebug) System.err.println("= Cannot find methodElemtn object for \"" + methodName +"\". Ignoring this link. ");
+                        if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                            A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, toString() + " Cannot find method Element object for \"" + methodName +"\". Ignoring this link. ");
+                        }
+                    }
+                    // If we have some results print them out.
+                    if(buffer != null) {
+                        baos.write(buffer);
                     }
                 }
             }

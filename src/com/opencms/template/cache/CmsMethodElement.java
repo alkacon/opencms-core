@@ -1,0 +1,219 @@
+/*
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.1 $
+*
+* Copyright (C) 2000  The OpenCms Group
+*
+* This File is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.com
+*
+* You should have received a copy of the GNU General Public License
+* long with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+package com.opencms.template.cache;
+
+import java.util.*;
+import java.io.*;
+import com.opencms.boot.*;
+import com.opencms.core.*;
+import com.opencms.file.*;
+import com.opencms.template.*;
+
+import java.io.*;
+import java.lang.reflect.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
+/**
+ * An instance of CmsMethodElement represents an special method Element in the OpenCms
+ * element cache area. It contains all informations to generate the output of this
+ * method. It also stores the variants of once generated content to speed up
+ * performance.
+ *
+ * @author Hanjo Riege
+ * @version 1.0
+ */
+
+public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I_CmsLogChannels {
+
+    /**
+     * the name of the methode.
+     */
+    private String m_methodName;
+
+    /**
+     * the methodCacheDirectivs
+     */
+    private CmsMethodCacheDirectives m_methodCacheDirectives;
+
+    /**
+     * Constructor for an element with the given class and template name.
+     */
+    public CmsMethodElement(String className, String methodName, CmsMethodCacheDirectives mcd, int variantCachesize) {
+        m_methodName = methodName;
+        init(className, methodName, null, (A_CmsCacheDirectives)mcd, variantCachesize);
+    }
+
+    /**
+     *  checks the proxy public and the proxy private cache settings
+     *  of this element and all subelements. This is a Methodelement so there are no subelements.
+     *  @param cms the cms object.
+     *  @param proxySettings The CacheDirectives to merge the own CacheDriectives with.
+     *  @param parameters A Hashtable with the parameters.
+     */
+    public void checkProxySettings(CmsObject cms, CmsCacheDirectives proxySettings, Hashtable parameters){
+
+        proxySettings.merge(m_cacheDirectives);
+    }
+
+    /**
+     * Get the content of this element.
+     * @param elementCache Entry point for the element cache
+     * @param cms CmsObject for accessing system resources
+     * @param elDefs Definitions of this element's subelements
+     * @param parameters All parameters of this request
+     * @param methodParameter contains the parameter for the methode (the tagcontent in the xmlfile).
+     * @return Byte array with the processed content of this element.
+     * @exception CmsException
+     */
+    public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters, String methodParameter) throws CmsException  {
+        byte[] result = null;
+
+        // get our own cache directives
+        A_CmsCacheDirectives cd = getCacheDirectives();
+
+        // streaming
+        boolean streamable = cms.getRequestContext().isStreaming();
+
+        // cacheKey with the methodeParameter so we have variantes for each parameter
+        String cacheKey = cd.getCacheKey(cms, parameters);
+        if (cacheKey != null){
+            cacheKey += methodParameter;
+        }
+
+        CmsElementVariant variant = null;
+
+        if(cd.isInternalCacheable()){
+            if(cd.isTimeCritical() && (m_timestamp < cd.getTimeout().getLastChange())){
+                clearVariantCache();
+            }else{
+                variant = getVariant(cacheKey);
+            }
+            if(variant != null){
+                result = (byte[])variant.get(0);
+            }
+        }
+        if(variant == null){
+            // this methode was not found in the variant cache
+            // we have to generate it by calling the methode in the template class
+
+            // Get template class.
+            I_CmsTemplate templateClass = null;
+            try {
+                templateClass = getTemplateClass(cms, m_className);
+            } catch(Throwable e) {
+                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
+                    return e.toString().getBytes();
+                }
+            }
+            // now call the method
+            Object methodResult = null;
+            try{
+                methodResult = templateClass.getClass().getMethod(m_methodName, new Class[] {
+                                    CmsObject.class, String.class, A_CmsXmlContent.class,
+                                     Object.class}).invoke(templateClass,
+                                     new Object[] {cms, methodParameter, null, parameters});
+            }catch(NoSuchMethodException exc) {
+                throwException("[CmsMethodElemtent] User method " + m_methodName + " was not found in class " + templateClass.getClass().getName() + ".", CmsException.C_XML_NO_USER_METHOD);
+            }catch(InvocationTargetException targetEx) {
+                // the method could be invoked, but throwed a exception
+                // itself. Get this exception and throw it again.
+                Throwable e = targetEx.getTargetException();
+                if(!(e instanceof CmsException)) {
+                    // Only print an error if this is NO CmsException
+                    throwException("User method " + m_methodName + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                }else {
+                    // This is a CmsException
+                    // Error printing should be done previously.
+                    throw (CmsException)e;
+                }
+            }catch(Exception exc2) {
+                throwException("User method " + m_methodName + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+            }
+            if(methodResult != null){
+                if(methodResult instanceof String){
+                    result = ((String)methodResult).getBytes();
+                }else if(methodResult instanceof byte[]){
+                    result = (byte[])methodResult;
+                }else if(methodResult instanceof Integer){
+                    result = ((Integer)methodResult).toString().getBytes();
+                }else if(methodResult instanceof CmsProcessedString){
+                    // result stays null but we have to write to the variant cache
+                    variant = new CmsElementVariant();
+                    variant.add(((CmsProcessedString)methodResult).toString().getBytes());
+                    addVariant(cacheKey, variant);
+                }else {
+                    throwException("User method " + m_methodName + " in class " + templateClass.getClass().getName() + " returned an unsupported Object: " + methodResult.getClass().getName(), CmsException.C_XML_PROCESS_ERROR);
+                }
+            }
+            if((result != null)&&(cacheKey != null)&&(cd.isInternalCacheable())){
+                variant = new CmsElementVariant();
+                variant.add(result);
+                addVariant(cacheKey, variant);
+            }
+        }
+        if(streamable) {
+            try {
+                cms.getRequestContext().getResponse().getOutputStream().write(result);
+            } catch(Exception e) {
+                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, this.toString() + " Error while streaming!");
+                }
+            }
+            result = null;
+        }
+        return result;
+    }
+
+    /**
+     * checks the read access. The methode elements can be read by everyone. So we
+     * don't have to check something here.
+     * @param cms The cms Object for reading groups.
+     * @exception CmsException if no read access.
+     */
+    public void checkReadAccess(CmsObject cms) throws CmsException{
+    }
+
+    /**
+     * Help method that handles any occuring exception by writing
+     * an error message to the OpenCms logfile and throwing a
+     * CmsException of the given type.
+     * @param errorMessage String with the error message to be printed.
+     * @param type Type of the exception to be thrown.
+     * @exception CmsException
+     */
+    protected void throwException(String errorMessage, int type) throws CmsException {
+        if(C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, errorMessage);
+        }
+        throw new CmsException(errorMessage, type);
+    }
+
+}

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/06/05 07:07:40 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.14 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -84,15 +84,38 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
             // the element was not found in the element cache
             // we have to generate it
             I_CmsTemplate cmsTemplate = null;
-            try {
-                cmsTemplate = (I_CmsTemplate)com.opencms.template.CmsTemplateClassManager.getClassInstance(cms, desc.getClassName());
-                result = cmsTemplate.createElement(cms, desc.getTemplateName(), parameters);
-                put(desc, result);
-            } catch(Throwable e) {
-                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not initialize (sub-)element for class \"" + desc.getClassName() + "\". ");
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
-                    return null;
+            // look if it is an methode element
+            if("METHOD".equals(desc.getTemplateName())){
+                String orgClassName = desc.getClassName();
+                String className = orgClassName.substring(0,orgClassName.lastIndexOf("."));
+                String methodName = orgClassName.substring(orgClassName.lastIndexOf(".")+1);
+                try {
+                    cmsTemplate = (I_CmsTemplate)com.opencms.template.CmsTemplateClassManager.getClassInstance(cms, className);
+                    CmsMethodCacheDirectives mcd = (CmsMethodCacheDirectives)cmsTemplate.getClass().getMethod(
+                                                    "getMethodCacheDirectives", new Class[] {
+                                                    CmsObject.class, String.class}).invoke(cmsTemplate,
+                                                    new Object[] {cms, methodName});;
+                    result = new CmsMethodElement(className, methodName, mcd,
+                             cms.getRequestContext().getElementCache().getVariantCachesize());
+                    put(desc, result);
+                } catch(Throwable e) {
+                    if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not initialize method element for class \"" + className  + "\". ");
+                        A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
+                        return null;
+                    }
+                }
+            }else{
+                try {
+                    cmsTemplate = (I_CmsTemplate)com.opencms.template.CmsTemplateClassManager.getClassInstance(cms, desc.getClassName());
+                    result = cmsTemplate.createElement(cms, desc.getTemplateName(), parameters);
+                    put(desc, result);
+                } catch(Throwable e) {
+                    if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not initialize (sub-)element for class \"" + desc.getClassName() + "\". ");
+                        A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
+                        return null;
+                    }
                 }
             }
         }

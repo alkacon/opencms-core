@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/06/18 15:02:00 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/07/03 11:53:57 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -72,30 +72,18 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
      * @param cms CmsObject for accessing system resources
      * @param elDefs Definitions of this element's subelements
      * @param parameters All parameters of this request
+     * @param methodParameter not used here, only methodelemets need it.
      * @return Byte array with the processed content of this element.
      * @exception CmsException
      */
-    public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException  {
+    public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters, String methodParameter) throws CmsException  {
         byte[] result = null;
 
         // Merge own element definitions with our parent's definitions
         CmsElementDefinitionCollection mergedElDefs = new CmsElementDefinitionCollection(elDefs, m_elementDefinitions);
 
-        // Get template class.
-        // In classic mode, this is donw by the launcher.
-        I_CmsTemplate templateClass = null;
-        try {
-            templateClass = getTemplateClass(cms, m_className);
-        } catch(Throwable e) {
-            if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
-                A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
-                return e.toString().getBytes();
-            }
-        }
-
         // Get out own cache directives
-        CmsCacheDirectives cd = getCacheDirectives();
+        A_CmsCacheDirectives cd = getCacheDirectives();
 
         // We really don't want to stream here
         /*boolean streamable = cms.getRequestContext().isStreaming() && cd.isStreamable();
@@ -104,9 +92,6 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
         boolean streamable = cms.getRequestContext().isStreaming();
 
         CmsElementVariant variant = null;
-
-        // In classic mode, now the cache-control headers of the response
-        // are setted. What shall we do here???
 
         // Now check, if there is a variant of this element in the cache.
         //if(cacheable && !templateClass.shouldReload(cms, m_templateName, m_elementName, parameters, null)) {
@@ -127,6 +112,20 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
             // This element was not found in the variant cache.
             // We have to generate it by calling the "classic" getContent() method on the template
             // class.
+
+            // Get template class.
+            // In classic mode, this is donw by the launcher.
+            I_CmsTemplate templateClass = null;
+            try {
+                templateClass = getTemplateClass(cms, m_className);
+            } catch(Throwable e) {
+                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
+                    return e.toString().getBytes();
+                }
+            }
+
             try {
                 /*if(cd.isInternalCacheable()) {
                     System.err.println(toString() + " ### Variant not in cache. Must be generated.");
@@ -174,13 +173,13 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
             }
         }
         if(streamable) {
-                try {
-                    cms.getRequestContext().getResponse().getOutputStream().write(result);
-                } catch(Exception e) {
-                    if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                        A_OpenCms.log(C_OPENCMS_CRITICAL, this.toString() + " Error while streaming!");
-                    }
+            try {
+                cms.getRequestContext().getResponse().getOutputStream().write(result);
+            } catch(Exception e) {
+                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, this.toString() + " Error while streaming!");
                 }
+            }
             result = null;
         }
         return result;
