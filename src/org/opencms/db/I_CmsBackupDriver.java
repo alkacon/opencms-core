@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/21 07:53:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/08/21 16:17:56 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/08/21 07:53:55 $
+ * @version $Revision: 1.13 $ $Date: 2003/08/21 16:17:56 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -222,14 +222,26 @@ public interface I_CmsBackupDriver {
      */
     void deleteBackups(List existingBackups) throws CmsException;
 
+	/**
+	 * Internal method to write the backup content.<p>
+	 *  
+	 * @param backupId			the backup id
+	 * @param fileId			the id of the file
+	 * @param fileContent		the content of the file
+	 * @param versionId			the revision
+	 * @throws CmsException		if something goes wrong
+	 */
+	void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int versionId) throws CmsException;
+    
     /**
-     * Internal method to write the backup content.<p>
-     *  
-     * @param backupId the backup id
-     * @param fileId the id of the file
-     * @param fileContent the content of the file
-     * @param versionId the revision
+     * Inserts an entry in the publish history for a published resource.<p>
+     * 
+     * @param currentProject the current project
+     * @param tagId the tag ID of the current publishing process
+     * @param resource the resource that was published
      * @throws CmsException if something goes wrong
+     * @see org.opencms.db.CmsDriverManager#getBackupVersionId()
      */
-    void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int versionId) throws CmsException;
+    void writePublishHistoryResource(CmsProject currentProject, int tagId, String resourcename, CmsResource resource) throws CmsException;
+    
 }

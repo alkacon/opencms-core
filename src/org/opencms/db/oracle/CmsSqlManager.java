@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/21 16:17:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.dbcp.DelegatingPreparedStatement;
  * Handles SQL queries from query.properties of the Oracle/OCI package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/08/20 16:51:16 $ 
+ * @version $Revision: 1.5 $ $Date: 2003/08/21 16:17:56 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -119,6 +119,6 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         // unfortunately, this wrapper is essential. some JDBC driver implementations 
         // don't accept the delegated objects of DBCP's connection pool.        
         return ((DelegatingPreparedStatement) con.prepareStatement(query)).getDelegate();
-    }
+    }   
 
 }
