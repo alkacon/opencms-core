@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2004/02/27 14:24:16 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.95 $
+ * @version $Revision: 1.96 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -835,18 +835,10 @@ public final class OpenCmsCore {
         String user,
         String password
     ) throws CmsException {
-//        CmsRequestHttpServlet cmsReq = null;
-//        CmsResponseHttpServlet cmsRes = null;
         String siteroot = null;
         // gather information from request / response if provided
         if ((req != null) && (res != null)) {
-//            try {
-//                cmsReq = new CmsRequestHttpServlet(req, getFileTranslator());
-//                cmsRes = new CmsResponseHttpServlet(req, res);
-                siteroot = OpenCms.getSiteManager().matchRequest(req).getSiteRoot();
-//            } catch (IOException e) {
-//                throw new CmsException("Exception initializing CmsObject for user " + user, CmsException.C_UNKNOWN_EXCEPTION, e);
-//            }
+            siteroot = OpenCms.getSiteManager().matchRequest(req).getSiteRoot();
         }
         // initialize the user        
         if (user == null) {
@@ -1729,7 +1721,7 @@ public final class OpenCmsCore {
      * @throws IOException in case of errors reading from the streams
      * @throws CmsException if user information was not correct
      */
-    private void checkBasicAuthorization(CmsObject cms, HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
+    private void checkBasicAuthorization(CmsObject cms, HttpServletRequest req, HttpServletResponse res) throws IOException {
         // no user identified from the session and basic authentication is enabled
         String auth = req.getHeader("Authorization");
 
