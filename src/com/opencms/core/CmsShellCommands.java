@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/09/05 12:44:00 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2002/10/11 15:14:55 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.52 $ $Date: 2002/09/05 12:44:00 $
+ * @version $Revision: 1.53 $ $Date: 2002/10/11 15:14:55 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -608,7 +608,12 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsProject project = m_cms.createProject(name, description, C_GROUP_USERS, C_GROUP_PROJECTLEADER, C_PROJECT_TYPE_NORMAL);
             int id = project.getId();
             m_cms.getRequestContext().setCurrentProject(id);
+            // copy the VFS folders to the project
             m_cms.copyResourceToProject(C_ROOT);
+            // copy the COS channels to the project
+            m_cms.setContextToCos();
+            m_cms.copyResourceToProject(C_ROOT);
+            m_cms.setContextToVfs();            
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
