@@ -149,7 +149,7 @@ public class CmsShowContent extends CmsXmlTemplate {
      * value which will be used if the parameter id is not found parameters passed
      * with the request (url parameters).
      * @param doc reference to the A_CmsXmlContent object of the initiating XLM document
-     * @param userObj normally the Hashtable with the url parameters
+     * @param userObject normally the Hashtable with the url parameters
      * @return String or byte[] with the content of this subelement
      * @throws com.opencms.core.CmsException in case of unrecoverable errors
      */
@@ -195,15 +195,15 @@ public class CmsShowContent extends CmsXmlTemplate {
             registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
                                 (Hashtable)userObject, null, cdVec, null);
             boolean showIt = true;
-            if(cdObject.isTimedContent()){
+            if (cdObject.isTimedContent()) {
                 I_CmsTimedContentDefinition curTimed = (I_CmsTimedContentDefinition)cdObject;
                 long currentTime = System.currentTimeMillis();
-                if(((curTimed.getPublicationDate() != 0) && (currentTime < curTimed.getPublicationDate()))
-                        || ((curTimed.getPurgeDate() != 0) && (currentTime > curTimed.getPurgeDate()))){
+                if (((curTimed.getPublicationDate() != 0) && (currentTime < curTimed.getPublicationDate()))
+                        || ((curTimed.getPurgeDate() != 0) && (currentTime > curTimed.getPurgeDate()))) {
                     showIt = false;
                 }
             }
-            if(!showIt){
+            if (!showIt) {
                 //  TODO: read an datablock from the template and set all the proccesstags with it then remove this exception
                 throw new CmsException("requested content is not valid.");
             }
@@ -226,7 +226,7 @@ public class CmsShowContent extends CmsXmlTemplate {
             try {
                 Method getUniqueIdMethod = cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class});
                 template.setData("uniqueid", (String)getUniqueIdMethod.invoke(cdObject, new Object[] {cms}));
-            } catch (Exception e) {}
+            } catch (Exception e) { }
             setDatablocks(template, cdObject, getMethods);
         } catch (InvocationTargetException e) {
             // the constructor has throwed an exception, InvocationTargetExceptions of the egt-methods
@@ -255,7 +255,7 @@ public class CmsShowContent extends CmsXmlTemplate {
      * filtermethod if given. If the url parameter is not found the default
      * value will be used as a userparameter for the filtermethod.
      * @param doc reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj normally the Hashtable with url parameters.
+     * @param userObject normally the Hashtable with url parameters.
      * @return String or byte[] with the content of this subelement.
      * @throws com.opencms.core.CmsException in case of unrecoverable errors
      */
@@ -297,18 +297,18 @@ public class CmsShowContent extends CmsXmlTemplate {
             // walk through Vector and fill content
             int size = cdObjects.size();
             long currentTime = System.currentTimeMillis();
-            for (int i=0; i < size; i++ ) {
+            for (int i=0; i < size; i++) {
                 boolean showIt = true;
                 A_CmsContentDefinition curCont = (A_CmsContentDefinition)cdObjects.elementAt(i);
-                if(curCont.isTimedContent()){
+                if (curCont.isTimedContent()) {
                     allCdClasses.add(curCont);
                     I_CmsTimedContentDefinition curTimed = (I_CmsTimedContentDefinition)curCont;
-                    if(((curTimed.getPublicationDate() != 0) && (currentTime < curTimed.getPublicationDate()))
-                            || ((curTimed.getPurgeDate() != 0) && (currentTime > curTimed.getPurgeDate()))){
+                    if (((curTimed.getPublicationDate() != 0) && (currentTime < curTimed.getPublicationDate()))
+                            || ((curTimed.getPurgeDate() != 0) && (currentTime > curTimed.getPurgeDate()))) {
                         showIt = false;
                     }
                 }
-                if(showIt){
+                if (showIt) {
                     try {
                         Method getUniqueIdMethod = cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class});
                         template.setData("uniqueid", (String)getUniqueIdMethod.invoke(curCont, new Object[] {cms}));
@@ -319,7 +319,7 @@ public class CmsShowContent extends CmsXmlTemplate {
                 }
             }
             //register the classes for the dependencies
-            registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null, parameters, null, allCdClasses,theClass);
+            registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null, parameters, null, allCdClasses, theClass);
         } catch (Exception e) {
             if (e instanceof CmsException) {
                 throw (CmsException) e;
@@ -341,17 +341,18 @@ public class CmsShowContent extends CmsXmlTemplate {
      * @param parameters Hashtable with the url parameters
      * @param tagcontent String with the content of the method tag
      * @return String with the value of the userparameter
+     * @throws CmsException if something goes wrong
      */
-   protected String getUserParameter (Hashtable parameters, String tagcontent) throws CmsException{
+   protected String getUserParameter (Hashtable parameters, String tagcontent) throws CmsException {
         String userparameter = "";
         String parameterName = null;
         String parameterValue = null;
-        if (tagcontent != null ) {
+        if (tagcontent != null) {
             int index = tagcontent.indexOf(",");
             if (index != -1) {
                 parameterName = tagcontent.substring(0, index);
                 // todo: check also if the length is ok and if the last char is in {0,1,..,9}
-                if(!(parameterName.startsWith(C_FILTER_PARAMETERS_START)  )){
+                if (!(parameterName.startsWith(C_FILTER_PARAMETERS_START))) {
                     throw new CmsException("The filterparameter has to be \""
                             +C_FILTER_PARAMETERS_START+"N\" where 0 <= N <= 9.");
                 }
@@ -401,13 +402,15 @@ public class CmsShowContent extends CmsXmlTemplate {
     * should return a String (if they don't return a String there might
     * be thrown an exception, when the return value will be casted to a String
     * in the method setDatablocks which will result in setting an error text
-    * instead of the output of the method inside the template).
+    * instead of the output of the method inside the template).<p>
+    * 
     * @param cdClass the class object of the contentdefinition class
+    * @param names array of method names
     * @return ArrayList of java.lang.reflect.Method objects
-    * @throws com.opencms.core.CmsException in case of unrecoverable errors
+    * @throws NoSuchMethodException in case of unrecoverable errors
     */
     protected ArrayList getGetMethodsByName (Class cdClass, String[] names)
-            throws NoSuchMethodException{
+            throws NoSuchMethodException {
         // the list of methods to return
         ArrayList getMethods = new ArrayList();
         Class[] argTypes = new Class[0];
@@ -424,7 +427,7 @@ public class CmsShowContent extends CmsXmlTemplate {
     * form the content defintion.
     * @param template The template file of this template
     * @param contentDefinition The actual content defintion object
-    * @methods A vector of java.lang.reflect.Method objects with all "getXYZ" methods to be used
+    * @param methods A vector of java.lang.reflect.Method objects with all "getXYZ" methods to be used
     * @throws com.opencms.core.CmsException in case of unrecoverable erros
     */
     protected void setDatablocks(CmsXmlTemplateFile template,
@@ -434,7 +437,7 @@ public class CmsShowContent extends CmsXmlTemplate {
         Method method = null;
         int size = methods.size();
         Object[] args = new Object[0];
-        for (int i=0; i < size; i++){
+        for (int i=0; i < size; i++) {
             // get the method name
             method = (Method)methods.get(i);
             //get the datablock name - the methodname without the leading "get"
@@ -447,7 +450,7 @@ public class CmsShowContent extends CmsXmlTemplate {
             try {
                 template.setData(datablockName, (String)method.invoke(contentDefinition, args));
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error during automatic call method '" + method.getName() + "':" + e.toString());
                 }
                 // set datablock with error text to indicate that calling the get-method failed
@@ -460,17 +463,19 @@ public class CmsShowContent extends CmsXmlTemplate {
      * Invokes the filtermethod and returns a Vector of contentdefinition
      * objects returned by the filtermethod.
      * If you want to use filtermethods with other sinatures you have to override
-     * this method in your own derived subclass.
-     * @cdClass Class object of the ContentDefinition class
-     * @param the name of the filtermethod to invoke
+     * this method in your own derived subclass.<p>
+     * 
+     * @param cms the cms object
+     * @param cdClass Class object of the ContentDefinition class
+     * @param name the name of the filtermethod to invoke
      * @param userparameter the value of the userparameetr which will be passed to the filtermethod
      * @return Vector of contentdefinition objects
-     * @throws java.lang.NoSuchMethodException if the filtermethod doesn't exist
-     * @throws java.lang.reflect.InvocationTargetException if the invoked filtermethod throws an exception itself
-     * @throws java.lang.IllegalAccessException if the filtermethod is inaccessible
+     * @throws NoSuchMethodException if the filtermethod doesn't exist
+     * @throws InvocationTargetException if the invoked filtermethod throws an exception itself
+     * @throws IllegalAccessException if the filtermethod is inaccessible
      */
      protected Vector invokeFilterMethod (CmsObject cms, Class cdClass, String name, String userparameter)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException{
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = cdClass.getMethod(name, new Class[] {CmsObject.class, String.class});
         return (Vector)method.invoke(cdClass, new Object[] {cms, userparameter});
      }
@@ -493,7 +498,7 @@ public class CmsShowContent extends CmsXmlTemplate {
         result.noAutoRenewAfterPublish();
         Vector para = new Vector();
         para.add(C_ID_PARAMETER);
-        for(int i=0; i < 10; i++){
+        for (int i=0; i < 10; i++) {
             para.add(C_FILTER_PARAMETERS_START + i);
         }
         result.setCacheParameters(para);

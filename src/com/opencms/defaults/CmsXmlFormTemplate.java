@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplate.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/07/14 12:49:07 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,20 +43,22 @@ import java.util.Hashtable;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2002/12/06 23:16:54 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/14 12:49:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlFormTemplate extends CmsXmlTemplate {
     
     /**
      * Reads in the template file and starts the XML parser for the expected
-     * content type <class>CmsXmlFormTemplateFile</code>
+     * content type <class>CmsXmlFormTemplateFile</code>.<p>
      * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
+     * @param cms CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName Element name of this template in our parent template
+     * @param parameters Hashtable with all template class parameters
+     * @param templateSelector template section that should be processed
+     * @return the template document
+     * @throws CmsException if something goes wrong
      */
     public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         CmsXmlFormTemplateFile xmlTemplateDocument = new CmsXmlFormTemplateFile(cms, templateFile);

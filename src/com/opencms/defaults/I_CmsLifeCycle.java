@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsLifeCycle.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/07/14 12:49:42 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,11 +43,11 @@ public interface I_CmsLifeCycle {
      *
      * @param cms a first cms-object.
      */
-    public void startUp(CmsObject cms);
+    void startUp(CmsObject cms);
 
     /**
      * This method is called when OpenCms ends.
      */
-    public void shutDown();
+    void shutDown();
 
 }
