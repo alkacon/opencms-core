@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2001/11/23 15:04:56 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/11/23 15:22:56 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -124,7 +124,6 @@ public class LinkSubstitution {
                         "</converterconfig>");
             // get parameter to create the url object of the edited file
             String servletPrefix = cms.getRequestContext().getRequest().getServletUrl();
-            String spec = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getRequestURL().toString();
             String prot = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
             String host = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
             int port = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerPort();
