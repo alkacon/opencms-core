@@ -28,6 +28,11 @@
 	</a>
 </td>
 ]]></wand>
+<deactivwand><![CDATA[
+<td class=menu nowrap width=32px valign=top>
+    <IMG SRC="]]><method name="picsUrl">bt_new_in.gif</method><![CDATA[" name="bt_new" alt="]]><LABEL value="title.new"/><![CDATA[" border=0 width=32 heigth=32> 
+</td>
+]]></deactivwand>
 
 
 <nosetup><![CDATA[]]></nosetup>
