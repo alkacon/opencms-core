@@ -151,7 +151,7 @@
 									</tr>
 									<tr>
 										<td>
-											Subres
+											Resource Lists
 										</td>
 										<td align="right">
 											<input type="text" size="10" name="cacheSubres" value="<%= Bean.getCacheSubres() %>">

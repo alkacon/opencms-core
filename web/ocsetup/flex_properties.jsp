@@ -210,7 +210,7 @@
 									</tr>	
 									<tr>
 										<td align="left">
-											MAC address:
+											MAC address (used for UUID generation, leave blank if unknown):
 										</td>
 									</tr>									
 									<tr>
