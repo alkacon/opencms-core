@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/07/18 16:37:35 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/07/18 17:02:47 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.3.5
  */
@@ -139,14 +139,13 @@ public class OpenCmsTestCase extends TestCase {
         // remove the database
         removeDatabase();
         
-        // copy the configuration files
+        // copy the configuration files to re-create the original configuration
         copyConfiguration();
 
-        // get the name of the folder for the backup configuration files
-        File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
-        
-        // remove the backup configuration files
-        CmsStaticExportManager.purgeDirectory(configBackupDir);        
+        // remove potentially created "classes, "lib" and "backup" folder
+        CmsStaticExportManager.purgeDirectory(new File(getTestDataPath() + "WEB-INF/classes/"));        
+        CmsStaticExportManager.purgeDirectory(new File(getTestDataPath() + "WEB-INF/lib/"));
+        CmsStaticExportManager.purgeDirectory(new File(getTestDataPath() + "WEB-INF/config/backup/"));        
     }
     
     /**
@@ -501,13 +500,15 @@ public class OpenCmsTestCase extends TestCase {
             File[] oriFiles = configOriDir.listFiles();
             for (int i=0; i<oriFiles.length; i++) {
                 File source = oriFiles[i];
-                String sourceName = source.getAbsolutePath();
-                String targetName = new File(configDir, source.getName()).getAbsolutePath();
-                
-                try {
-                    CmsConfigurationManager.copy(sourceName, targetName);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (source.isFile()) {
+                    // only copy files
+                    String sourceName = source.getAbsolutePath();
+                    String targetName = new File(configDir, source.getName()).getAbsolutePath();                    
+                    try {
+                        CmsConfigurationManager.copy(sourceName, targetName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

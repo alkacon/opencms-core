@@ -6,7 +6,7 @@
 		<importexporthandlers>
 			<importexporthandler class="com.opencms.legacy.CmsCosImportExportHandler"/>
 			<importexporthandler class="org.opencms.importexport.CmsVfsImportExportHandler"/>
-			<importexporthandler class="org.opencms.importexport.CmsModuleImportExportHandler"/>
+			<importexporthandler class="org.opencms.module.CmsModuleImportExportHandler"/>
 		</importexporthandlers>
 		<import>
 			<overwrite>true</overwrite>
