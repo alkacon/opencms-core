@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2000/02/17 15:48:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/18 13:00:38 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.6 $ $Date: 2000/02/17 15:48:49 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/18 13:00:38 $
  */
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -78,23 +78,44 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // if not, the lock page is shown for the first time
         filename=(String)session.getValue(C_PARA_FILE);
 		CmsFile file=(CmsFile)cms.readFileHeader(filename);
+		boolean hlock=true;
+		System.err.println("1."+hlock);
 		
         if (lock != null) {
             if (lock.equals("true")) {
-					if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-						int help = C_CONTENTBODYPATH.lastIndexOf("/");
-						cms.lockResource( (C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath()) );
+				if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+					String bodyPath = getBodyPath(cms, file);
+					try {
+						CmsFile bodyFile=(CmsFile)cms.readFileHeader(bodyPath);
+						if(bodyFile.isLocked()&& (bodyFile.isLockedBy()!=cms.getRequestContext().currentUser().getId()) ){
+							hlock =false;
+						}else {
+							cms.lockResource(bodyPath);
+						}
+					}catch (CmsException e){
+						//TODO: ErrorHandling
 					}
-                   cms.lockResource(filename);
-				   session.removeValue(C_PARA_FILE);
+				}
+				
+				System.err.println("2."+hlock);
+				
+				session.removeValue(C_PARA_FILE);
+				if(hlock){
+					System.err.println(hlock);
+					cms.lockResource(filename);
+				    // TODO: ErrorHandling
+				    // return to filelist
+					try {
+						cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+					} catch (Exception e) {
+						throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
+					}
+				}else{
+					System.err.println(hlock);
+					template="error";
+				}
             }
-             // TODO: ErrorHandling
-             // return to filelist
-            try {
-                cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
-            } catch (Exception e) {
-                  throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
-            }
+    
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
@@ -102,7 +123,19 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
-    
     }
+	
+	/**
+	 * method to check get the real body path from the content file
+	 * 
+	 * @param cms The CmsObject, to access the XML read file.
+	 * @param file File in which the body path is stored.
+	 */
+	private String getBodyPath(A_CmsObject cms, CmsFile file)
+		throws CmsException{
+		file=cms.readFile(file.getAbsolutePath());
+		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
+		return hXml.getElementTemplate("body");
+	}
 
 }

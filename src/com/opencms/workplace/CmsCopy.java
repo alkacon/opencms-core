@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/02/17 15:48:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/18 13:00:37 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.5 $ $Date: 2000/02/17 15:48:49 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/18 13:00:37 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -88,6 +88,9 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
             session.putValue(C_PARA_NAME,file.getName());
         } else {
              // copy the file and set the access flags if nescessary
+			if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+				
+			}
              cms.copyFile(file.getAbsolutePath(),newFolder+newFile);
              if (flags.equals("false")) {
                  // set access flags of the new file to the default flags

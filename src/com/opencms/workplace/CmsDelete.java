@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/02/17 15:48:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/18 13:00:38 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.6 $ $Date: 2000/02/17 15:48:49 $
+  * @version $Revision: 1.7 $ $Date: 2000/02/18 13:00:38 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -85,8 +85,12 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			//if so delete the file body and content
 			// else delete only file
 			if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+				String bodyPath=getBodyPath(cms, file);
 				int help = C_CONTENTBODYPATH.lastIndexOf("/");
-				cms.deleteFile( (C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath()) );
+				String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
+				if (hbodyPath.equals(bodyPath)){
+					cms.deleteFile(hbodyPath);
+				}
 			}
             cms.deleteFile(filename);
             session.removeValue(C_PARA_FILE);
@@ -105,4 +109,17 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template); 
     }
+	
+	/**
+	 * method to check get the real body path from the content file
+	 * 
+	 * @param cms The CmsObject, to access the XML read file.
+	 * @param file File in which the body path is stored.
+	 */
+	private String getBodyPath(A_CmsObject cms, CmsFile file)
+	throws CmsException{
+		file=cms.readFile(file.getAbsolutePath());
+		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
+		return hXml.getElementTemplate("body");
+	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/02/16 18:06:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/18 13:00:38 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.1 $ $Date: 2000/02/16 18:06:28 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/18 13:00:38 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -85,8 +85,30 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		 //check if the newFolder parameter was included in the request
          //if not, the move page is shown for the first time
          if (newFolder != null) {
+			 // check if the file type name is page
+			 // if so move the file body and content and change the content of content
+			 // else move only file
+			 if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+				String bodyPath = getBodyPath(cms, file);
+				int help = C_CONTENTBODYPATH.lastIndexOf("/");
+				String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
+				if (hbodyPath.equals(bodyPath)){
+					checkFolders(cms, newFolder);
+					cms.moveFile((C_CONTENTBODYPATH.substring(0,help))+file.getAbsolutePath(),(C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
+					if (flags.equals("false")) {
+						 // set access flags of the new file to the default flags
+						CmsFile newfile=cms.readFile(newFolder,file.getName());
+						// TODO: use the default flags in the user preferences when they are implemented             
+						newfile.setAccessFlags(C_ACCESS_DEFAULT_FLAGS);  
+				 		cms.writeFile(newfile);
+				    }
+					changeContent(cms, file, (C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
+				}
+				
+			}
              // moves the file and set the access flags if nescessary
 			 cms.moveFile(file.getAbsolutePath(),newFolder+file.getName());
+			 
              if (flags.equals("false")) {
                  // set access flags of the new file to the default flags
 				 CmsFile newfile=cms.readFile(newFolder,file.getName());
@@ -179,4 +201,63 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
             getTree(cms,folder,names,values);
         }
     }
+	
+	/**
+       * This method checks if all nescessary folders are exisitng in the content body
+       * folder and creates the missing ones. <br>
+       * All page contents files are stored in the content body folder in a mirrored directory
+       * structure of the OpenCms filesystem. Therefor it is nescessary to create the 
+       * missing folders when a new page document is createg.
+       * @param cms The CmsObject
+       * @param path The path in the CmsFilesystem where the new page should be created.
+       * @exception CmsException if something goes wrong.
+       */
+      private void checkFolders(A_CmsObject cms, String path) 
+          throws CmsException {
+          String completePath=C_CONTENTBODYPATH;
+          StringTokenizer t=new StringTokenizer(path,"/");
+          // check if all folders are there
+          while (t.hasMoreTokens()) {
+              String foldername=t.nextToken();
+               try {
+                // try to read the folder. if this fails, an exception is thrown  
+                CmsFolder folder= cms.readFolder(completePath+foldername+"/");
+              } catch (CmsException e) {
+                  // the folder could not be read, so create it.
+                  CmsFolder folder=cms.createFolder(completePath,foldername);                              
+              }
+              completePath+=foldername+"/";        
+          }          
+     }
+	  
+	  
+	/**
+	 * method to check get the real body path from the content file
+	 * 
+	 * @param cms The CmsObject, to access the XML read file.
+	 * @param file File in which the body path is stored.
+	 */
+	private String getBodyPath(A_CmsObject cms, CmsFile file)
+		throws CmsException{
+		file=cms.readFile(file.getAbsolutePath());
+		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
+		return hXml.getElementTemplate("body");
+	}
+	
+	  /**
+       * This method changes the path of the body file in the xml conten file
+       * if file type name is page
+       * 
+       * @param cms The CmsObject
+       * @param file The XML content file
+       * @param bodypath the new XML content entry
+       * @exception Exception if something goes wrong.
+       */
+	  private void changeContent(A_CmsObject cms, CmsFile file, String bodypath)
+		  throws CmsException {
+		  file=cms.readFile(file.getAbsolutePath());
+		  CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
+		  hXml.setElementTemplate("body", bodypath);
+		  hXml.write();
+	  }
 }
