@@ -87,6 +87,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		try
 		{
 			cms.deleteSite(Integer.parseInt(site_id));
+			cms.clearcache();
 			templateSelector = "done";
 		}
 		catch (CmsException e)
