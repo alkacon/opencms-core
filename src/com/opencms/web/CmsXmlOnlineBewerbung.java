@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/20 20:43:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/02/20 21:24:32 $
+ * Version: $Revision: 1.13 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,7 +42,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.12 $ $Date: 2000/02/20 20:43:11 $
+ * @version $Name:  $ $Revision: 1.13 $ $Date: 2000/02/20 21:24:32 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -391,7 +391,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				mailTable.put(C_HASH_CERTIFICATES,certificates);
 				mailTable.put(C_HASH_FROM,from);
 				mailTable.put(C_HASH_AN,an);
-				mailTable.put(C_HASH_CC,cc);
+				mailTable.put(C_HASH_CC,email);
 				mailTable.put(C_HASH_BCC,bcc);
 				mailTable.put(C_HASH_HOST,host);
 				mailTable.put(C_HASH_SUBJECT,subject);
