@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2002/10/23 15:13:14 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2002/10/23 17:40:05 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2002/10/23 15:13:14 $
+ * @version $Revision: 1.24 $ $Date: 2002/10/23 17:40:05 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -209,7 +209,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                         }
                     }
                     // now check if navigation informations have to be added to the new page.
-                    if((navtitle != null) && checkurl) {
+                    if(!"".equals(navtitle) && checkurl) {
                         cms.writeProperty(linkResource.getAbsolutePath(), C_PROPERTY_NAVTEXT, navtitle);
                         // update the navposition.
                         if(navpos != null) {
