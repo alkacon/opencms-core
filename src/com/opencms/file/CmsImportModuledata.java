@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/02/26 15:29:33 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/02/26 15:52:33 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2003/02/26 15:29:33 $
+ * @version $Revision: 1.8 $ $Date: 2003/02/26 15:52:33 $
  */
 public class CmsImportModuledata implements I_CmsConstants, Serializable {
 
@@ -449,7 +449,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
             int userId = newMaster.getOwner();
             int groupId = newMaster.getGroupId();
             // first insert the new master
-            newMaster.importMaster(m_cms);
+            newMaster.importMaster();
             // now update the master because user and group might be changed
             newMaster.chown(m_cms, userId);
             newMaster.chgrp(m_cms,groupId);
