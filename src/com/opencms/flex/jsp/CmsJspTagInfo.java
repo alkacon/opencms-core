@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInfo.java,v $
- * Date   : $Date: 2003/02/01 19:14:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/02/01 22:58:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,48 @@ import com.opencms.boot.CmsBase;
 import com.opencms.core.A_OpenCms;
 import com.opencms.flex.cache.CmsFlexRequest;
 
+//http://localhost:8080/opencms/opencms/index.jsp
+///opencms/opencms/index.jsp
+//opencms
+//C:\Java\Tomcat4_1_8\bin\..\webapps\opencms\
+///index.jsp
+///index.jsp
+///
+
 /**
- * Provides access to some system information like OpenCms version,
- * JDK version etc.
- *
+ * Provides access to OpenCms and System related information.<p>
+ * 
+ * This tag supports the following special "property" values:
+ * <ul>
+ * <li><code>opencms.version</code> returns the current OpenCms version, e.g. <i>5.0 Kaitain</i>
+ * <li><code>opencms.url</code> returns the current request URL, e.g. 
+ * <i>http://localhost:8080/opencms/opencms/index.jsp</i>
+ * <li><code>opencms.uri</code> returns the current request URI, e.g. 
+ * <i>/opencms/opencms/index.jsp</i>
+ * <li><code>opencms.webapp</code> returns the name of the OpenCms web application, e.g. 
+ * <i>opencms</i>
+ * <li><code>opencms.webbasepath</code> returns the name of system path to the OpenCms web 
+ * application, e.g. <i>C:\Java\Tomcat\webapps\opencms\</i> 
+ * <li><code>opencms.request.uri</code> returns the name of the currently requested URI in 
+ * the OpenCms VFS, e.g. <i>/index.jsp</i>
+ * <li><code>opencms.request.element.uri</code> returns the name of the currently processed element, 
+ * which might be a sub-element like a template part, 
+ * in the OpenCms VFS, e.g. <i>/system/modules/org.opencms.welcome/jsptemplates/welcome.jsp</i>
+ * <li><code>opencms.request.folder</code> returns the name of the parent folder of the currently
+ * requested URI in the OpenCms VFS, e.g. <i>/</i>
+ * </ul>
+ * 
+ * All other property values that are passes to the tag as routed to a standard 
+ * <code>System.getProperty(value)</code> call,
+ * so you can also get information about the Java VM environment,
+ * using values like <code>java.vm.version</code> or <code>os.name</code>.<p>
+ * 
+ * If the given property value does not match a key from the special OpenCms values
+ * and also not the system values, a (String) message is returned with a formatted 
+ * error message.<p>
+ *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -80,19 +116,12 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
             "opencms.url", // 1
             "opencms.uri", // 2
             "opencms.webapp", // 3
-            "opencms.webbasepath", // 4
-            "java.vm.name", // 5 
-            "java.vm.version", // 6
-            "java.vm.info", // 7
-            "java.vm.vendor", // 8
-            "os.name",  // 9
-            "os.version", // 10
-            "os.arch", // 11  
-            "opencms.request.uri", // 12
-            "opencms.request.element.uri", // 13
-            "opencms.request.folder" // 14           
-            };
-
+            "opencms.webbasepath", // 4 
+            "opencms.request.uri", // 5
+            "opencms.request.element.uri", // 6
+            "opencms.request.folder" // 7      
+        };                
+            
     /** array list of allowed property values for more convenient lookup */
 	private static final java.util.List m_userProperty =
 		java.util.Arrays.asList(m_systemProperties);
@@ -111,7 +140,7 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
                 // Return value of selected property
                 pageContext.getOut().print(result);
             } catch (Exception ex) {
-                System.err.println("Error in Jsp 'user' tag processing: " + ex);
+                System.err.println("Error in Jsp 'info' tag processing: " + ex);
                 System.err.println(com.opencms.util.Utils.getStackTrace(ex));
                 throw new javax.servlet.jsp.JspException(ex);
             }
@@ -149,27 +178,20 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
 			case 4 : // opencms.webbasepath
 				result = CmsBase.getWebBasePath();
 				break;
-            case 5: // system properties
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-                result = System.getProperty(property);
-                break;
-            case 12: // opencms.request.uri
+            case 5: // opencms.request.uri
                 result = req.getCmsRequestedResource();
                 break;   
-            case 13: // opencms.request.element.uri
+            case 6: // opencms.request.element.uri
                 result = req.getCmsResource();
                 break;                               
-            case 14: // opencms.request.folder
+            case 7: // opencms.request.folder
                 result = com.opencms.file.CmsResource.getParent(req.getCmsRequestedResource());
                 break;            
             default :
-				result =
-					"+++ Invalid info property selected: " + property + " +++";
+                result = System.getProperty(property);
+                if (result == null) {
+				    result = "+++ Invalid info property selected: " + property + " +++";
+                }
 		}
         
         return result;

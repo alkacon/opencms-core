@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/01/24 20:39:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/02/01 22:58:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0 beta 2
  */
@@ -327,6 +327,21 @@ public class CmsJspActionElement {
                 return defaultValue;
             }
         }        
+    }
+    
+    /**
+     * Returns an OpenCms or JVM system info property value, same as using
+     * the <code>&lt;cms:info property="..." /&gt;</code> tag.<p>
+     * 
+     * See the description of the class {@link CmsJspTagInfo} for a detailed list 
+     * of available options for the property value.<p>
+     *  
+     * @param property the property to look up
+     * @return String the value of the system property
+     * @see CmsJspTagInfo
+     */
+    public String info(String property) {
+        return CmsJspTagInfo.infoTagAction(property, m_request);        
     }
     
     /**
