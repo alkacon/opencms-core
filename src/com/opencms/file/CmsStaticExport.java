@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2001/11/22 09:54:34 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/11/22 15:25:10 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.2 $ $Date: 2001/11/22 09:54:34 $
+ * @version $Revision: 1.3 $ $Date: 2001/11/22 15:25:10 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -141,7 +141,11 @@ public class CmsStaticExport implements I_CmsConstants{
 
             // now create the necesary folders
             String folder = externLink.substring(0, externLink.lastIndexOf('/'));
-            File discFolder = new File(m_exportPath + folder);
+            String correctur = "";
+            if(!externLink.startsWith("/")){
+                correctur = "/";
+            }
+            File discFolder = new File(m_exportPath + correctur + folder);
             if(!discFolder.exists()){
                 if(!discFolder.mkdirs()){
                     throw new CmsException("["+this.getClass().getName() + "] " +
@@ -149,14 +153,14 @@ public class CmsStaticExport implements I_CmsConstants{
                 }
             }
             // all folders exist now create the file
-            File discFile = new File(m_exportPath + externLink);
+            File discFile = new File(m_exportPath + correctur + externLink);
             try{
                 // link the File to the request
                 OutputStream outStream = new FileOutputStream(discFile);
                 dRes.putOutputStream(outStream);
             }catch(Exception e){
                 throw new CmsException("["+this.getClass().getName() + "] " + "could't open file "
-                            + m_exportPath + externLink + ": " + e.getMessage());
+                            + m_exportPath + correctur + externLink + ": " + e.getMessage());
             }
 
             // everthing is prepared now start the template mechanism
