@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/04 15:10:41 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2003/09/05 08:14:03 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.112 $ $Date: 2003/09/04 15:10:41 $
+ * @version $Revision: 1.113 $ $Date: 2003/09/05 08:14:03 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -432,6 +432,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // update the link Count
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_LINK_COUNT");
                 stmt.setInt(1, this.countVfsLinks(project.getId(), file.getResourceId()));
+                stmt.setString(2, file.getResourceId().toString());
+                stmt.executeUpdate();
+                
+                m_sqlManager.closeAll(null, stmt, null);
+                
+                // update the resource flags
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_FLAGS");
+                stmt.setInt(1, file.getFlags());
                 stmt.setString(2, file.getResourceId().toString());
                 stmt.executeUpdate();
                 

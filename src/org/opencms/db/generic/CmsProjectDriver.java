@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/04 15:10:41 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2003/09/05 08:14:03 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.79 $ $Date: 2003/09/04 15:10:41 $
+ * @version $Revision: 1.80 $ $Date: 2003/09/05 08:14:03 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1396,14 +1396,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         onlineFile = m_driverManager.readFileInProject(context, onlineProject.getId(), currentFile.getId(), false);
                         onlineFile.setFullResourceName(currentResourceName);  
                         
-                        if (m_driverManager.removeLabeledFlag(context, context.currentProject(), currentFile)) {
-                            // update the resource flag for the offline resource
+                        if (currentFile.isLabeled() && !m_driverManager.hasLabeledLinks(context, context.currentProject(), currentFile)) {
+                            // update the resource flags to "unlabel" the siblings for the offline resource
                             int flags = currentFile.getFlags();
                             flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
                             currentFile.setFlags(flags);
                         }  
-                        if (m_driverManager.removeLabeledFlag(context, onlineProject, onlineFile)) {
-                            // update the resource flag for the online resource
+                        if (onlineFile.isLabeled() && !m_driverManager.hasLabeledLinks(context, onlineProject, onlineFile)) {
+                            // update the resource flags to "unlabel" the siblings for the online resource
                             int flags = onlineFile.getFlags();
                             flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
                             onlineFile.setFlags(flags);
@@ -1534,7 +1534,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             newFile = (CmsFile) currentFile.clone();
                             newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
                             newFile.setFullResourceName(currentResourceName);
-                            m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentId(), newFile.getResourceName());                            
+                            
+                            m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentId(), newFile.getResourceName());                        
                         } catch (CmsException e) {                            
                             if (e.getType() == CmsException.C_FILE_EXISTS) {
                                 try {

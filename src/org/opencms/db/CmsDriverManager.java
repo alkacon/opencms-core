@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/04 15:10:41 $
- * Version: $Revision: 1.193 $
+ * Date   : $Date: 2003/09/05 08:14:03 $
+ * Version: $Revision: 1.194 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.193 $ $Date: 2003/09/04 15:10:41 $
+ * @version $Revision: 1.194 $ $Date: 2003/09/05 08:14:03 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2064,7 +2064,7 @@ public class CmsDriverManager extends Object {
                     // remove the access control entries
                     m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
                     // the resource doesn't exist online => remove the file
-                    if (removeLabeledFlag(context, context.currentProject(), currentResource)) {
+                    if (currentResource.isLabeled() && !hasLabeledLinks(context, context.currentProject(), currentResource)) {
                         // update the resource flags to "unlabel" the other siblings
                         int flags = currentResource.getFlags();
                         flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
@@ -7164,9 +7164,7 @@ public class CmsDriverManager extends Object {
     }
     
     /**
-     * Checks if the resource which will be deleted is in a "marked" site.<p>
-     * 
-     * If so, the resource flags are updated during resource deletion.<p>
+     * Checks if one of the resources VFS links (except the resource itself) resides in a "labeled" site folder.<p>
      *   
      * @param context the current request context
      * @param project the project to check
@@ -7174,21 +7172,13 @@ public class CmsDriverManager extends Object {
      * @return true if the flag should be removed from the resource, otherwise false
      * @throws CmsException if something goes wrong
      */
-    public boolean removeLabeledFlag(CmsRequestContext context, CmsProject project, CmsResource resource) throws CmsException {
-        boolean removeMarkedFlag = false;
+    public boolean hasLabeledLinks(CmsRequestContext context, CmsProject project, CmsResource resource) throws CmsException {
+        boolean hasLinks = false;
         if (resource.isLabeled()) {
             // get the list of labeled site folders from the runtime property
-            List markedSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
-    
-            // check the site folders of the resource which will be deleted later
-            for (int k = 0; k < markedSites.size(); k++) {
-                if (resource.getFullResourceName().startsWith((String)markedSites.get(k))) {
-                    // the link or target lies in a marked site, so update the flags!
-                    removeMarkedFlag = true;
-                }
-            }             
-    
-            // now check if one of the other vfs links lies in a labeled site folder
+            List labeledSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
+
+            // check if one of the other vfs links lies in a labeled site folder
             List vfsLinkList = m_vfsDriver.getAllVfsSoftLinks(project, resource);
             Iterator i = vfsLinkList.iterator();
             while (i.hasNext()) {
@@ -7196,15 +7186,15 @@ public class CmsDriverManager extends Object {
                 // read the full path of the current resource
                 readPath(context, currentResource, true);
                 String curPath = currentResource.getFullResourceName();
-                for (int k = 0; k < markedSites.size(); k++) {
-                    if (curPath.startsWith((String)markedSites.get(k))) {
-                        // one link is still in the marked site, so don't update the flags
-                        return false;
+                for (int k = 0; k < labeledSites.size(); k++) {
+                    if (curPath.startsWith((String)labeledSites.get(k))) {
+                        // one link is still in the marked site
+                        return true;
                     }
                 }
             }              
         }
-        return removeMarkedFlag;
+        return hasLinks;
     }
 
     /**
