@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/28 10:30:13 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/09/28 14:55:57 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.41 $ $Date: 2000/09/28 10:30:13 $
+ * @version $Revision: 1.42 $ $Date: 2000/09/28 14:55:57 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -321,7 +321,7 @@ public class CmsShell implements I_CmsConstants {
 			LineNumberReader lnr = new LineNumberReader(fr);
 			System.out.println("Type help to get a list of commands.");
 			for(;;) { // ever
-				System.out.print(">");
+				System.out.print(m_cms.getRequestContext().currentUser().getName() + "@" + m_cms.getRequestContext().currentProject().getName() + " >");
 				StringReader reader = new StringReader(lnr.readLine());
 				StreamTokenizer st = new StreamTokenizer(reader);
 				st.eolIsSignificant(true);
@@ -517,19 +517,6 @@ public class CmsShell implements I_CmsConstants {
 			printException(exc);
 		}
 	}
-	/**
-	 * Delete the propertydefinition for the resource type.<BR/>
-	 * 
-	 * @param name The name of the propertydefinition to overwrite.
-	 * @param resourcetype The name of the resource-type for the propertydefinition.
-	 */
-	public void deletepropertydefinition(String name, String resourcetype) {
-		try {
-			m_cms.deletePropertydefinition(name, resourcetype);
-		} catch( Exception exc ) {
-			printException(exc);
-		}
-	}
 /**
  * Marks a site deleted
  *
@@ -559,6 +546,19 @@ public void deleteSite(String siteId)
 	public void deleteUser( String name ) {
 		try {
 			m_cms.deleteUser( name );
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	/**
+	 * Delete the propertydefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the propertydefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the propertydefinition.
+	 */
+	public void deletepropertydefinition(String name, String resourcetype) {
+		try {
+			m_cms.deletePropertydefinition(name, resourcetype);
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -730,21 +730,6 @@ public void getAllLanguages()
 			printException(exc);
 		}		
 	}
-	/**
-	 * Reads all sites from the Cms.
-	 */
-	public void getAllSites() {
-		try {
-			Vector sites = m_cms.getAllSites();
-			Enumeration en = sites.elements();
-			while(en.hasMoreElements())
-			{
-				System.out.println((CmsSite)en.nextElement());
-			}
-		} catch( Exception exc ) {
-			printException(exc);
-		}		
-	}
 /**
  * Reads all site urls
  */
@@ -767,6 +752,21 @@ public void getAllSiteUrls()
 		printException(exc);
 	}
 }
+	/**
+	 * Reads all sites from the Cms.
+	 */
+	public void getAllSites() {
+		try {
+			Vector sites = m_cms.getAllSites();
+			Enumeration en = sites.elements();
+			while(en.hasMoreElements())
+			{
+				System.out.println((CmsSite)en.nextElement());
+			}
+		} catch( Exception exc ) {
+			printException(exc);
+		}		
+	}
 /**
  * Insert the method's description here.
  * Creation date: (21-09-2000 16:54:13)
@@ -842,6 +842,16 @@ public void getCurrentSite()
 	}
 }
 	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	 public void getFileSystemChanges() {
+		System.out.println( m_cms.getFileSystemChanges() );
+	 }
+	/**
 	 * Returns a Vector with all subfiles.<BR/>
 	 * 
 	 * @param foldername the complete path to the folder.
@@ -861,16 +871,6 @@ public void getCurrentSite()
 			printException(exc);
 		}
 	}
-	/**
-	 * This method can be called, to determine if the file-system was changed 
-	 * in the past. A module can compare its previosly stored number with this
-	 * returned number. If they differ, a change was made.
-	 * 
-	 * @return the number of file-system-changes.
-	 */
-	 public void getFileSystemChanges() {
-		System.out.println( m_cms.getFileSystemChanges() );
-	 }
 	/**
 	 * Returns all users of the cms.
 	 */
@@ -1649,19 +1649,6 @@ private void printMethod(Method method)
 		}
 	}
 	/**
-	 * Reads the propertydefinition for the resource type.<BR/>
-	 * 
-	 * @param name The name of the propertydefinition to read.
-	 * @param resourcetype The name of the resource type for the propertydefinition.
-	 */
-	public void readpropertydefinition(String name, String resourcetype) {
-		try {
-			System.out.println( m_cms.readPropertydefinition(name, resourcetype) );
-		} catch( Exception exc ) {
-			printException(exc);
-		}
-	}
-	/**
 	 * Returns a user object.<P/>
 	 * 
 	 * @param username The name of the user that is to be read.
@@ -1684,6 +1671,19 @@ private void printMethod(Method method)
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
+	}
+	/**
+	 * Reads the propertydefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the propertydefinition to read.
+	 * @param resourcetype The name of the resource type for the propertydefinition.
+	 */
+	public void readpropertydefinition(String name, String resourcetype) {
+		try {
+			System.out.println( m_cms.readPropertydefinition(name, resourcetype) );
+		} catch( Exception exc ) {
+			printException(exc);
+		}
 	}
 	/** 
 	 * Recovers the password for a user.
@@ -1950,27 +1950,6 @@ public void updateSite(String siteId, String name, String description, String ca
 			printException(exc);
 		}
 	}
-	/**
-	 * Writes the propertydefinition for the resource type.<BR/>
-	 * 
-	 * @param name The name of the propertydefinition to overwrite.
-	 * @param resourcetype The name of the resource type to read the 
-	 * propertydefinitions for.
-	 * @param type The new type of the propertydefinition (normal|mandatory|optional).
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void writepropertydefinition(String name, 
-									String resourcetype, 
-									String type) {
-		try {
-			CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
-			propertydef.setPropertydefType(Integer.parseInt(type));			
-			System.out.println( m_cms.writePropertydefinition(propertydef) );
-		} catch( Exception exc ) {
-			printException(exc);
-		}
-	}
 	/** 
 	 * Writes a user to the Cms.
 	 * 
@@ -1991,6 +1970,27 @@ public void updateSite(String siteId, String name, String description, String ca
 			// write it back
 			m_cms.writeUser(user);		
 
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	/**
+	 * Writes the propertydefinition for the resource type.<BR/>
+	 * 
+	 * @param name The name of the propertydefinition to overwrite.
+	 * @param resourcetype The name of the resource type to read the 
+	 * propertydefinitions for.
+	 * @param type The new type of the propertydefinition (normal|mandatory|optional).
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void writepropertydefinition(String name, 
+									String resourcetype, 
+									String type) {
+		try {
+			CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
+			propertydef.setPropertydefType(Integer.parseInt(type));			
+			System.out.println( m_cms.writePropertydefinition(propertydef) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
