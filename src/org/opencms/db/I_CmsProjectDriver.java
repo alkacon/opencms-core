@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/28 11:31:27 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/11/21 10:25:23 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.37 $ $Date: 2003/10/28 11:31:27 $
+ * @version $Revision: 1.38 $ $Date: 2003/11/21 10:25:23 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -140,6 +140,16 @@ public interface I_CmsProjectDriver {
      */
     void deleteProject(CmsProject project) throws CmsException;
 
+    /**
+     * Removes the project id from all resources within a project.<p>
+     * 
+     * This must be done when a project will deleted
+     * @param project the project to delete.
+     * @throws CmsException Throws CmsException if something goes wrong
+     */
+    void unmarkProjectResources(CmsProject project) throws CmsException;
+    
+        
     /**
      * Delete a projectResource from an given CmsResource object.<p>
      *

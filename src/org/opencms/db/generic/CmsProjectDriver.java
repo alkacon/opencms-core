@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/18 14:15:51 $
- * Version: $Revision: 1.138 $
+ * Date   : $Date: 2003/11/21 10:25:23 $
+ * Version: $Revision: 1.139 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.138 $ $Date: 2003/11/18 14:15:51 $
+ * @version $Revision: 1.139 $ $Date: 2003/11/21 10:25:23 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -437,6 +437,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         // delete the resources from project_resources
         deleteProjectResources(project);
+        
+        // remove the project id form all resources within theis project
+        unmarkProjectResources(project);
 
         // finally delete the project
         Connection conn = null;
@@ -453,7 +456,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
-
+    
+    
     /**
      * delete a projectResource from an given CmsResource object.<p>
      *
@@ -498,6 +502,25 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#deletePublishHistory(int, int)
+     */
+    public void deletePublishHistory(int projectId, int maxBackupTagId) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_DELETE_PUBLISH_HISTORY");
+            stmt.setInt(1, maxBackupTagId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }        
     }
 
     /**
@@ -612,6 +635,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // ignore
         }
         super.finalize();
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#getSqlManager()
+     */
+    public CmsSqlManager getSqlManager() {
+        return m_sqlManager;
     }
 
     /**
@@ -2448,6 +2478,28 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         return property;
     }
 
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#unmarkProjectResources(com.opencms.file.CmsProject)
+     */
+    public void unmarkProjectResources(CmsProject project) throws CmsException {
+        // finally remove the project id form all resources 
+  
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_UNMARK");
+            // create the statement
+            stmt.setInt(1, project.getId());
+            stmt.executeUpdate();
+        } catch (Exception exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
     /**
      * Update the online link table (after a project is published).<p>
      *
@@ -2590,31 +2642,5 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
 
         return readSystemProperty(name);
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#getSqlManager()
-     */
-    public CmsSqlManager getSqlManager() {
-        return m_sqlManager;
-    }
-    
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#deletePublishHistory(int, int)
-     */
-    public void deletePublishHistory(int projectId, int maxBackupTagId) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_DELETE_PUBLISH_HISTORY");
-            stmt.setInt(1, maxBackupTagId);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }        
     }
 }
