@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/04/13 22:44:34 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/19 09:04:31 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,8 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/04/13 22:44:34 $
+ * @author Mario Stanke
+ * @version $Revision: 1.19 $ $Date: 2000/04/19 09:04:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -96,79 +97,123 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-       
-		// read the parameters
-        A_CmsRequestContext reqCont = cms.getRequestContext();  
-        String newName = (String)parameters.get(C_PROJECTNEW_NAME);
-        String newGroup = (String)parameters.get(C_PROJECTNEW_GROUP);
-        String newDescription = (String)parameters.get(C_PROJECTNEW_DESCRIPTION);
-        String newManagerGroup = (String)parameters.get(C_PROJECTNEW_MANAGERGROUP);
-        String newFolder = (String)parameters.get(C_PROJECTNEW_FOLDER);
-        String action = (String)parameters.get("action");
+		A_CmsRequestContext reqCont = cms.getRequestContext();  
 		
-        // modify the folderaname if nescessary (the root folder is always given
-        // as a nice name)
-        if (newFolder!= null) {
-            CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
-            if (newFolder.equals(lang.getLanguageValue("title.rootfolder"))) {
-                newFolder="/";
-            }
-        }
-        
+		String newName, newGroup, newDescription, newManagerGroup, newFolder;
+		String action = new String();
+		action = (String) parameters.get("action");
+		
+		newName = (String) parameters.get(C_PROJECTNEW_NAME);
+		newGroup = (String) parameters.get(C_PROJECTNEW_GROUP);
+		newDescription = (String) parameters.get(C_PROJECTNEW_DESCRIPTION);
+		newManagerGroup = (String) parameters.get(C_PROJECTNEW_MANAGERGROUP);
+		newFolder = (String) parameters.get(C_PROJECTNEW_FOLDER);
+		
+		// if there are values in the session (like after an error), use them
+		if (newName == null) {
+			newName = (String) session.getValue(C_NEWNAME);
+		}
+		if (newGroup == null) {
+			newGroup = (String) session.getValue(C_NEWGROUP);
+		}
+		if (newDescription == null) {
+			newDescription = (String) session.getValue(C_NEWDESCRIPTION);
+		}
+		if (newManagerGroup == null) {
+			newManagerGroup = (String) session.getValue(C_NEWMANAGERGROUP);
+		}
+		if (newFolder == null) {
+			newFolder = (String) session.getValue(C_NEWFOLDER);
+		} 
+			 
+		if (newName == null) {
+			newName	= "";  
+		}
+		if (newGroup == null) {
+			newGroup = "";  
+		}
+		if (newDescription == null) {
+			newDescription	= "";  
+		}
+		if (newManagerGroup == null) {
+			newManagerGroup	= "";  
+		}
+		if (newFolder == null) {
+			newFolder= "";  
+		}
+		
         reqCont.setCurrentProject(cms.onlineProject().getId());
         
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-
-		// is there any data? 
-		if( (newName != null) && (newGroup != null) &&  (newDescription != null) && 
-			(newManagerGroup != null) && (newFolder != null) ) {
-			// Yes: store the data into the session
-			session.putValue(C_NEWNAME, newName);
-			session.putValue(C_NEWGROUP, newGroup);
-			session.putValue(C_NEWDESCRIPTION, newDescription);
-			session.putValue(C_NEWMANAGERGROUP, newManagerGroup);
-			session.putValue(C_NEWFOLDER, newFolder);
-			templateSelector = "wait";
+		
+		if (parameters.get("submitform") != null) { 
+			// the form has just been submitted, store the data in the session
+			session.putValue(C_NEWNAME, newName); 
+			session.putValue(C_NEWGROUP, newGroup); 
+			session.putValue(C_NEWDESCRIPTION, newDescription);  
+			session.putValue(C_NEWMANAGERGROUP, newManagerGroup); 
+			session.putValue(C_NEWFOLDER, newFolder);  
+			
+			if (newName.equals("") || newGroup.equals("") || newManagerGroup.equals("") || newFolder.equals("") ) {
+				templateSelector = "datamissing";
+			} else {
+				// all the required data has been entered, display 'Please wait'
+				templateSelector = "wait";
+			}
 		}
 		
 		// is the wait-page showing?
-		if( "ok".equals(action) ) {			
+		if( "start".equals(action) ) {			
 			// YES: get the stored data
 			newName = (String) session.getValue(C_NEWNAME);
 			newGroup = (String) session.getValue(C_NEWGROUP);
 			newDescription = (String) session.getValue(C_NEWDESCRIPTION);
 			newManagerGroup = (String) session.getValue(C_NEWMANAGERGROUP);
 			newFolder = (String) session.getValue(C_NEWFOLDER);			
-			
 			// create new Project
 			try {
-
-                //test if the given folder is existing and writeable
-                
-				if(checkWriteable(cms, cms.readFolder(newFolder))) {
+				// modify the foldername if nescessary (the root folder is always given
+				// as a nice name)
+				CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
+				if (newFolder.equals(lang.getLanguageValue("title.rootfolder"))) {
+					newFolder="/";
+				} 
+                //test if the given folder is existing and writeable  
+				if(checkWriteable(cms, cms.readFolder(newFolder))) {  
          			A_CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
 					// change the current project
 					reqCont.setCurrentProject(project.getId());
-					// copy the resource the the project
-					cms.copyResourceToProject(newFolder);
+					// copy the resource the the project 
+					cms.copyResourceToProject(newFolder); 
 					// try to copy the content resources to the project
-					try {
-						cms.copyResourceToProject(C_CONTENTBODYPATH);
+					try { 
+						cms.copyResourceToProject(C_CONTENTBODYPATH); 
 					} catch (CmsException exc) {
 						// the content is in the project already - ignore the exception
 						A_OpenCms.log(C_OPENCMS_INFO, "Creating project " + newName + ": " + C_CONTENTBODYPATH + " was already in Project.");
 					}
-					templateSelector = C_PROJECTNEW_DONE;
-				} else {
-					// the choosen folder was not writeable -> don't create the project.
+					templateSelector = C_PROJECTNEW_DONE; 
+					session.removeValue(C_NEWNAME);
+					session.removeValue(C_NEWGROUP);
+					session.removeValue(C_NEWDESCRIPTION);
+					session.removeValue(C_NEWMANAGERGROUP);
+					session.removeValue(C_NEWFOLDER); 
+				} else { 
+					// the choosen folder was not writeable -> don't create the project. 
+					// NOTE: this doesn't work properly since cms.readFolder throws an exception 
 					xmlTemplateDocument.setData("details", "The choosen folder was not writeable.");
-					templateSelector = C_PROJECTNEW_ERROR;
+					templateSelector = "errornewproject";
 				}
-			} catch(CmsException exc) {
+			} catch(CmsException exc) { 
 				xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
-       			templateSelector = C_PROJECTNEW_ERROR;
+       			templateSelector = "errornewproject";
 			}
-		}
+		} 
+		// after an error the form data is retrieved and filled into the template
+		xmlTemplateDocument.setData(C_NEWNAME, newName);
+		xmlTemplateDocument.setData(C_NEWDESCRIPTION, newDescription);
+		xmlTemplateDocument.setData(C_NEWFOLDER, newFolder);
+		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
@@ -192,20 +237,27 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		// get all groups
 		Vector groups = cms.getGroups();
 		int retValue = -1;
-
+		String defaultGroup = C_GROUP_USERS;
+		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		String enteredGroup =  (String) session.getValue(C_NEWGROUP);
+		
+		if (enteredGroup != null && !enteredGroup.equals("")) {
+			// if an error has occurred before, take the previous entry of the user
+			defaultGroup = enteredGroup;
+		}  
 		// fill the names and values
+		int n=0;
 		for(int z = 0; z < groups.size(); z++) {
 			if(((A_CmsGroup)groups.elementAt(z)).getProjectCoWorker()) {
-				String name = ((A_CmsGroup)groups.elementAt(z)).getName();
-				if(C_GROUP_USERS.equals(name)) {
-					retValue = z;
+				String name = ((A_CmsGroup)groups.elementAt(z)).getName(); 
+				if(defaultGroup.equals(name)) { 
+					retValue = n;
 				}
 				names.addElement(name);
-				values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
+				values.addElement(name);
+				n++; // count the number of ProjectCoWorkers
 			}
-		}
-		
-		// no current group, set index to -1
+		}   
         return new Integer(retValue);
     }
 
@@ -229,20 +281,27 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		// get all groups
 		Vector groups = cms.getGroups();
 		int retValue = -1;
-
+		String defaultGroup = C_GROUP_PROJECTLEADER;
+		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		String enteredGroup =  (String) session.getValue(C_NEWMANAGERGROUP);
+		if (enteredGroup != null && !enteredGroup.equals("")) {
+			// if an error has occurred before, take the previous entry of the user
+			defaultGroup = enteredGroup;
+		} 
+		
 		// fill the names and values
+		int n=0;
 		for(int z = 0; z < groups.size(); z++) {
-			if(((A_CmsGroup)groups.elementAt(z)).getProjectmanager()) {
-				String name = ((A_CmsGroup)groups.elementAt(z)).getName();
-				if(C_GROUP_PROJECTLEADER.equals(name)) {
-					retValue = z;
+			if(((A_CmsGroup)groups.elementAt(z)).getProjectmanager()) { 
+				String name = ((A_CmsGroup)groups.elementAt(z)).getName(); 
+				if(defaultGroup.equals(name)) { 
+					retValue = n;
 				}
 				names.addElement(name);
-				values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
+				values.addElement(name);
+				n++; // count the number of project managers
 			}
-		}
-		
-		// no current group, set index to -1
+		} 
         return new Integer(retValue);
     }
 

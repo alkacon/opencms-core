@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/04/13 22:44:35 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/04/19 09:04:31 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/04/13 22:44:35 $
+ * @version $Revision: 1.17 $ $Date: 2000/04/19 09:04:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -126,26 +126,26 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 		
 		CmsXmlWpTemplateFile xmlTemplateDocument = 
 			(CmsXmlWpTemplateFile) getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-		String paraAcceptation = "";
-		String paraAll = "";
-		String paraCompletion = "";
-		String paraDelivery = "";
+		String paraAcceptation = "checked";
+		String paraAll = "checked";
+		String paraCompletion = "checked";
+		String paraDelivery = "checked";
 		
 		Hashtable taskSettings = (Hashtable) ((Hashtable) cms.getRequestContext().currentUser().getAdditionalInfo()) .get(C_ADDITIONAL_INFO_TASKSETTINGS);
 		if(taskSettings != null) {
 			// the tasksettings exists - use them
 			int messageAt = ((Integer)taskSettings.get(C_TASK_MESSAGES)).intValue();
-			if( (messageAt & C_TASK_MESSAGES_ACCEPTED) == C_TASK_MESSAGES_ACCEPTED) {
-				paraAcceptation = "checked";
+			if( (messageAt & C_TASK_MESSAGES_ACCEPTED) != C_TASK_MESSAGES_ACCEPTED) {
+				paraAcceptation = "";
 			}
-			if( (messageAt & C_TASK_MESSAGES_COMPLETED) == C_TASK_MESSAGES_COMPLETED) {
-				paraCompletion = "checked";
+			if( (messageAt & C_TASK_MESSAGES_COMPLETED) != C_TASK_MESSAGES_COMPLETED) {
+				paraCompletion = "";
 			}
-			if( (messageAt & C_TASK_MESSAGES_FORWARDED) == C_TASK_MESSAGES_FORWARDED) {
-				paraDelivery = "checked";
+			if( (messageAt & C_TASK_MESSAGES_FORWARDED) != C_TASK_MESSAGES_FORWARDED) {
+				paraDelivery = "";
 			}
-			if( (messageAt & C_TASK_MESSAGES_MEMBERS) == C_TASK_MESSAGES_MEMBERS) {
-				paraAll = "checked";
+			if( (messageAt & C_TASK_MESSAGES_MEMBERS) != C_TASK_MESSAGES_MEMBERS) {
+				paraAll = "";
 			}
 		}
 

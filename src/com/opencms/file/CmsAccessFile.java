@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/04/17 16:11:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/19 09:04:30 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/04/17 16:11:35 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/19 09:04:30 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -648,7 +648,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
       */
      private I_CmsAccessFile getFilesystem(String name)	{
 		String mountpoint=null;
-		String bestmatch=new String("");
+		String bestmatch=new String("/");
 		I_CmsAccessFile accessFile=null;
 	        
         // calaculate the path to the file or folder
@@ -676,6 +676,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 		 } 
 		}
 	    accessFile = (I_CmsAccessFile)m_mountpointStorage.get(bestmatch);   
+		
 	  return  accessFile;
 	}
 	

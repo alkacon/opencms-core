@@ -130,7 +130,9 @@
 				<newextension>Sorry, the new file extension could not be assigned.</newextension>
 				<newtask>Sorry, the new task could not be created.</newtask>
 				<propinuse>Some file uses this property.<![CDATA[<br>]]>You cannot delete it.</propinuse>
+				<projectdatamissing>Sorry, the new project could not be created.</projectdatamissing>
 				<publishproject>Sorry, the project could not be published.</publishproject>
+				<projectdatamissing>The fields 'Project name' and 'Folders' need to be filled in.</projectdatamissing>
 				<rmdefault>Sorry, not all users could be removed.</rmdefault>
 				<deleteproject>Sorry, the project could not be deleted.</deleteproject>
 				<unlock>Sorry, the file could not be locked.</unlock>
