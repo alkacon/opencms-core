@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
- * Date   : $Date: 2003/03/18 17:48:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/04/08 13:46:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import com.opencms.util.Encoder;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -231,6 +231,8 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
 
             try {       
                 String prop = propertyTagAction(getName(), getFile(), m_defaultValue, m_escapeHtml, c_req);
+                // Make sure that no null String is returned
+                if (prop == null) prop = "";
                 pageContext.getOut().print(prop);
                 
             } catch (Exception ex) {
@@ -264,9 +266,6 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
                 + "\nescape=" + escape);
             System.err.println("propertyTagAction() request URI=" + req.getCmsObject().getRequestContext().getUri());
         }
-        
-        // Make sure that no null String is returned
-        if (defaultValue == null) defaultValue = "";
         String value;
         
         // if action is not set use default
