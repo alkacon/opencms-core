@@ -6,11 +6,8 @@ createPropertydefinition "Sektionslogo_img" folder 0
 createPropertydefinition "Sektionslogo_target" folder 0
 createPropertydefinition "FreierLink_navtext" folder 0
 createPropertydefinition "FreierLink_target" folder 0
-createPropertydefinition "FreierLink_fontcolor" folder 0
-createPropertydefinition "FreierLink_bgcolor" folder 0
-createPropertydefinition "Nav_fontcolor" folder 0
-createPropertydefinition "Nav_bgcolor" folder 0
-createPropertydefinition "Email_fontcolor" folder 0 
-createPropertydefinition "Email_bgcolor" folder 0 
-createPropertydefinition "Suche_fontcolor" folder 0 
-createPropertydefinition "Suche_bgcolor" folder 0
+createPropertydefinition "Templ_fontcolor_hover" folder 0
+createPropertydefinition "Templ_fontcolor" folder 0
+createPropertydefinition "Templ_bgcolor" folder 0
+createPropertydefinition "Templ_bordercolor" folder 0 
+createPropertydefinition "Templ_leadcolor" folder 0

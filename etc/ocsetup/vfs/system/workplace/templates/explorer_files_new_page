@@ -113,6 +113,10 @@ function checkIt(wasdenn){
 allesok=true;
 
 
+function checkInTheBox(){
+	saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');
+	switchlyr('NEWWITHOUTLINK','NEWLINK');
+}
 
 
 //-->
@@ -140,7 +144,7 @@ allesok=true;
 
 </HEAD>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 onload="]]><PROCESS>doOnload</PROCESS><![CDATA[">
 
 <!-- Beginn neue Datei Anlegen -->
 <div id="NEWWITHOUTLINK">
@@ -160,7 +164,7 @@ allesok=true;
 								</tr>
 								<tr>
 									<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-    								<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100" action="onfocus='NEU.WEITER.disabled=false;'"/><![CDATA[</td>	
+    								<td class=dialogtxt> <input class="textfeld2" value="]]><PROCESS>name</PROCESS><![CDATA[" size=40 maxlength=100 name="NEUNAME" id="NEUNAME" onfocus='NEU.WEITER.disabled=false;'></td>
 								</tr>
 								<tr>
 									<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
@@ -225,7 +229,7 @@ allesok=true;
 										</tr>
 										<tr>
 											<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-											<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100" /><![CDATA[</td>
+											<td class=dialogtxt> <input class="textfeld2" value="]]><PROCESS>name</PROCESS><![CDATA[" size=40 maxlength=100 name="NEUNAME" id="NEUNAME" onfocus='NEU.WEITER.disabled=false;'></td>
 										</tr>
 										<tr>
 											<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>

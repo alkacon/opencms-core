@@ -494,6 +494,15 @@
 			<datecreated>Date created</datecreated>
 			<description>Description</description>
 			<downloadlist>Download Browser</downloadlist>
+			<ebtitle>Create a new Section</ebtitle>
+			<ebfolderlogo>Folderlogo</ebfolderlogo>
+			<eblogo>Mainlogo</eblogo>
+			<ebsecpic>Sectionspicture for Navigation</ebsecpic>
+			<eblink>Link in stat. Navigation</eblink>
+			<ebtemplatecolor>Templatecolor</ebtemplatecolor>
+			<ebmouseover>Mouseover</ebmouseover>
+			<ebnavborder>Navigation Border</ebnavborder>
+			<ebborder>Border</ebborder>
 			<editedat>Last edited at</editedat>
 			<editedby>Edited by</editedby>
 			<errormessage>Errormessage</errormessage>

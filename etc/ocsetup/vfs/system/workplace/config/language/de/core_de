@@ -268,12 +268,12 @@
 				<downgallery>Neue Bildergalerie anlegen</downgallery>
 				<lock>Datei sperren</lock>
 				<lockchange>Datei Sperrung übernehmen</lockchange>
- 			<login>Anmeldungsfehler</login>
+				<login>Anmeldungsfehler</login>
 				<projectlockchange>Dateisperrungen für Projekt aufheben</projectlockchange>
- 			<newproject>Neues Projekt</newproject>
+				<newproject>Neues Projekt</newproject>
 				<newprop>Neue Eigenschaft für Dateityp</newprop>
 				<newextension>Neue Dateiendung zuordnen</newextension>
- 			<newtask>Neue Aufgabe</newtask>
+				<newtask>Neue Aufgabe</newtask>
 				<picbrowser>Bildergalerie öffnen</picbrowser>
 				<picgallery>Bildergalerie anlegen</picgallery>
 				<publishproject>Projekt veröffentlichen</publishproject>
@@ -497,6 +497,15 @@
 			<datecreated>Angelegt am</datecreated>
 			<description>Beschreibung</description>
 			<downloadlist>Download Liste</downloadlist>
+			<ebtitle>Neue Sektion anlegen</ebtitle>
+			<ebfolderlogo>Verzeichnislogo</ebfolderlogo>
+			<eblogo>Hauptlogo</eblogo>
+			<ebsecpic>Sektionsbild für die Navigation</ebsecpic>
+			<eblink>Link in stat. Navigation</eblink>
+			<ebtemplatecolor>Templatefarbe</ebtemplatecolor>
+			<ebmouseover>Mouseover</ebmouseover>
+			<ebnavborder>Navigation Rand</ebnavborder>
+			<ebborder>Rahmen</ebborder>
 			<editedat>Zuletzt bearbeitet am</editedat>
 			<editedby>Bearbeitet von</editedby>
 			<errormessage>Fehlermeldung</errormessage>
@@ -554,7 +563,7 @@
 			<nocolor>Keine Farbe gewählt</nocolor>
 			<reason>Grund</reason>
 			<wait>Bitte warten...</wait>
-	 </message>
+		</message>
 		
 		<messagebox>
 			<title>

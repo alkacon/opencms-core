@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/03/16 15:01:55 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/03/28 13:26:07 $
+* Version: $Revision: 1.19 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2001/03/16 15:01:55 $
+ * @version $Revision: 1.19 $ $Date: 2001/03/28 13:26:07 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -71,7 +71,10 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         String template = null;
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
+        CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
         I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsRegistry registry = cms.getRegistry();
+        boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
 
         // clear the session on first call
         String initial = (String)parameters.get("initial");
@@ -89,6 +92,20 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             currentFilelist = cms.rootFolder().getAbsolutePath();
         }
 
+        // set the title
+        if ((extendedNavigation) && (cms.rootFolder().getAbsolutePath().equals(currentFilelist))){
+            xmlTemplateDocument.setData("frameTitle", lang.getLanguageValue("label.ebtitle"));
+        }else{
+            xmlTemplateDocument.setData("frameTitle", lang.getLanguageValue("title.newfolder"));
+        }
+
+        // set the right endbutton lable
+        if(extendedNavigation){
+            xmlTemplateDocument.setData("endbutton", lang.getLanguageValue("button.nextscreen"));
+        }else{
+            xmlTemplateDocument.setData("endbutton", lang.getLanguageValue("button.endwizard"));
+        }
+
         // get request parameters
         String newFolder = (String)parameters.get(C_PARA_NEWFOLDER);
         String title = (String)parameters.get(C_PARA_TITLE);
@@ -99,8 +116,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         String step = (String)parameters.get("step");
         if(step != null) {
             if(step.equals("1")) {
-// TODO: (true) here we must read in the resistry if ebk is activ
-                if(true){
+                if(extendedNavigation){
                     // display the extended navigation
                     session.putValue(C_SESSIONHEADER + C_PARA_NEWFOLDER, newFolder);
                     session.putValue(C_SESSIONHEADER + C_PARA_TITLE, title);
@@ -132,6 +148,17 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                             // update the navposition.
                             if(navpos != null) {
                                 updateNavPos(cms, folder, navpos);
+                                // try to unlock the folder, ignore the Exception (the parent folder is looked)
+                                try{
+                                    cms.unlockResource(folder.getAbsolutePath());
+                                }catch(CmsException e){
+                                }
+                                // prepare to call the dialog for creating the index.html page
+                                session.putValue(C_PARA_FILELIST, folder.getAbsolutePath());
+                                xmlTemplateDocument.setData("indexlocation", folder.getAbsolutePath());
+                                template = "update2";
+                            }else{
+                                template = "update";
                             }
                         }
                         // all done, now we have to clean up our mess
@@ -140,8 +167,6 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                         throw new CmsException("Error while creating new Folder" + ex.getMessage(), ex.getType(), ex);
                     }
                     // TODO: ErrorHandling
-                    // now return to filelist
-                    template = "update";
                 }
             }else if("2".equals(step)){
                 // get all the usefull parameters and the session stuff
@@ -166,13 +191,23 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                         // update the navposition.
                         if ((navtitle != null) && (navpos != null)){
                             updateNavPos(cms, folder, navpos);
+                            // try to unlock the folder, ignore the Exception (the parent folder is looked)
+                            try{
+                                cms.unlockResource(folder.getAbsolutePath());
+                            }catch(CmsException e){
+                            }
+                            // prepare to call the new Page dialog
+                            xmlTemplateDocument.setData("indexlocation", folder.getAbsolutePath());
+                            session.putValue(C_PARA_FILELIST, folder.getAbsolutePath());
+                            template = "update2";
+                        } else{
+                            template = "update";
                         }
                         // we dont need our session entrys anymore
                         clearSession(session);
                     }catch(CmsException ex) {
                         throw new CmsException("Error while creating new Folder" + ex.getMessage(), ex.getType(), ex);
                     }
-                    template = "update";
                 }else{
                     // user pressed backbutton. show the first template again
                     xmlTemplateDocument.setData("name", newFolder);
@@ -514,14 +549,14 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         insertProperty(properties, "Sektionslogo_target", (String)parameters.get("slogolink"));
         insertProperty(properties, "FreierLink_navtext", (String)parameters.get("statnav"));
         insertProperty(properties, "FreierLink_target", (String)parameters.get("statlink"));
-        insertProperty(properties, "Nav_bgcolor", (String)parameters.get("bcoldyn"));
-        insertProperty(properties, "Nav_fontcolor", (String)parameters.get("tcoldyn"));
-        insertProperty(properties, "FreierLink_bgcolor", (String)parameters.get("bcollink"));
-        insertProperty(properties, "FreierLink_fontcolor", (String)parameters.get("tcollink"));
-        insertProperty(properties, "Email_bgcolor", (String)parameters.get("bcolemail"));
-        insertProperty(properties, "Email_fontcolor", (String)parameters.get("tcolemail"));
-        insertProperty(properties, "Suche_bgcolor", (String)parameters.get("bcolsearch"));
-        insertProperty(properties, "Suche_fontcolor", (String)parameters.get("tcolsearch"));
+        insertProperty(properties, "Templ_bgcolor", (String)parameters.get("bcoldyn"));
+        insertProperty(properties, "Templ_fontcolor", (String)parameters.get("tcoldyn"));
+        //insertProperty(properties, "FreierLink_bgcolor", (String)parameters.get("bcollink"));
+        insertProperty(properties, "Templ_fontcolor_hover", (String)parameters.get("tcollink"));
+        insertProperty(properties, "Templ_bordercolor", (String)parameters.get("bcolemail"));
+        //insertProperty(properties, "Email_fontcolor", (String)parameters.get("tcolemail"));
+        insertProperty(properties, "Templ_leadcolor", (String)parameters.get("bcolsearch"));
+        //insertProperty(properties, "Suche_fontcolor", (String)parameters.get("tcolsearch"));
     }
 
     /**
@@ -546,12 +581,12 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             xmlTemplateDoc.setData("statlink", "");
             xmlTemplateDoc.setData("bcoldyn", "#CCCCCC");
             xmlTemplateDoc.setData("tcoldyn", "#000099");
-            xmlTemplateDoc.setData("bcollink", "#CCCCCC");
+            //xmlTemplateDoc.setData("bcollink", "#CCCCCC");
             xmlTemplateDoc.setData("tcollink", "#000099");
             xmlTemplateDoc.setData("bcolemail", "#CCCCCC");
-            xmlTemplateDoc.setData("tcolemail", "#000099");
+            //xmlTemplateDoc.setData("tcolemail", "#000099");
             xmlTemplateDoc.setData("bcolsearch", "#CCCCCC");
-            xmlTemplateDoc.setData("tcolsearch", "#000099");
+            //xmlTemplateDoc.setData("tcolsearch", "#000099");
         }else{
             // set the values which the user entered before he pressed the backbutton
             xmlTemplateDoc.setData("flogopic", getStringValue((String)parameters.get("Verzeichnislogo_img")));
@@ -562,14 +597,14 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             xmlTemplateDoc.setData("slogolink", getStringValue((String)parameters.get("Sektionslogo_target")));
             xmlTemplateDoc.setData("statnav", getStringValue((String)parameters.get("FreierLink_navtext")));
             xmlTemplateDoc.setData("statlink", getStringValue((String)parameters.get("FreierLink_target")));
-            xmlTemplateDoc.setData("bcoldyn", getStringValue((String)parameters.get("Nav_bgcolor")));
-            xmlTemplateDoc.setData("tcoldyn", getStringValue((String)parameters.get("Nav_fontcolor")));
-            xmlTemplateDoc.setData("bcollink", getStringValue((String)parameters.get("FreierLink_bgcolor")));
-            xmlTemplateDoc.setData("tcollink", getStringValue((String)parameters.get("FreierLink_fontcolor")));
-            xmlTemplateDoc.setData("bcolemail", getStringValue((String)parameters.get("Email_bgcolor")));
-            xmlTemplateDoc.setData("tcolemail", getStringValue((String)parameters.get("Email_fontcolor")));
-            xmlTemplateDoc.setData("bcolsearch", getStringValue((String)parameters.get("Suche_bgcolor")));
-            xmlTemplateDoc.setData("tcolsearch", getStringValue((String)parameters.get("Suche_fontcolor")));
+            xmlTemplateDoc.setData("bcoldyn", getStringValue((String)parameters.get("Templ_bgcolor")));
+            xmlTemplateDoc.setData("tcoldyn", getStringValue((String)parameters.get("Templ_fontcolor")));
+            //xmlTemplateDoc.setData("bcollink", getStringValue((String)parameters.get("FreierLink_bgcolor")));
+            xmlTemplateDoc.setData("tcollink", getStringValue((String)parameters.get("Templ_fontcolor_hover")));
+            xmlTemplateDoc.setData("bcolemail", getStringValue((String)parameters.get("Templ_bordercolor")));
+            //xmlTemplateDoc.setData("tcolemail", getStringValue((String)parameters.get("Email_fontcolor")));
+            xmlTemplateDoc.setData("bcolsearch", getStringValue((String)parameters.get("Templ_leadcolor")));
+            //xmlTemplateDoc.setData("tcolsearch", getStringValue((String)parameters.get("Suche_fontcolor")));
        }
     }
 

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/03/14 14:55:06 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2001/03/28 13:26:07 $
+* Version: $Revision: 1.35 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2001/03/14 14:55:06 $
+ * @version $Revision: 1.35 $ $Date: 2001/03/28 13:26:07 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -169,6 +169,9 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         // the template to be displayed
         String template = null;
 
+        // get the document to display
+        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
+
         // TODO: check, if this is neede: String type=null;
         byte[] content = new byte[0];
         CmsFile contentFile = null;
@@ -185,6 +188,17 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         String title = (String)parameters.get(C_PARA_TITLE);
         String keywords = (String)parameters.get(C_PARA_KEYWORDS);
         String description = (String)parameters.get(C_PARA_DESCRIPTION);
+
+        // look if createFolder called us, then we have to preselect index.html as name
+        String fromFolder = (String)parameters.get("fromFolder");
+        if((fromFolder != null) && ("true".equals(fromFolder))){
+            xmlTemplateDocument.setData("name", "index.html");
+            // deaktivate the linklayer
+            xmlTemplateDocument.setData("doOnload", "checkInTheBox();");
+        }else{
+            xmlTemplateDocument.setData("name", "");
+            xmlTemplateDocument.setData("doOnload", "");
+        }
 
         // TODO: check, if this is neede: String flags=(String)parameters.get(C_PARA_FLAGS);
         String templatefile = (String)parameters.get(C_PARA_TEMPLATE);
@@ -267,9 +281,6 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         else {
             session.removeValue(C_PARA_FILE);
         }
-
-        // get the document to display
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);

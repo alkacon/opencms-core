@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2001/03/16 15:02:33 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2001/03/28 13:26:07 $
+* Version: $Revision: 1.32 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import java.util.*;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2001/03/16 15:02:33 $
+ * @version $Revision: 1.32 $ $Date: 2001/03/28 13:26:07 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -245,10 +245,12 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
         }
         // check if the oflinefiles are selectable
         String offselect = (String)parameters.get("onlineselect");
-        if((offselect != null) && ("yes".equals(offselect))){
-            session.putValue("onlineselect_in_foldertree", offselect);
-        }else{
-            session.removeValue("onlineselect_in_foldertree");
+        if(offselect != null){
+            if ("yes".equals(offselect)){
+                session.putValue("onlineselect_in_foldertree", offselect);
+            }else{
+                session.removeValue("onlineselect_in_foldertree");
+            }
         }
 
         //set the required datablocks
