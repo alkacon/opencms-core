@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.30 $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/06/06 10:45:25 $
+ * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/06 10:45:25 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,16 @@
 
 package org.opencms.synchronize;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,24 +57,13 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
-
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.report.I_CmsReport;
 
 
 /**
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.30 $ $Date: 2004/06/04 15:42:06 $
+ * @version $Revision: 1.31 $ $Date: 2004/06/06 10:45:25 $
  */
 public class CmsSynchronize {
 
@@ -179,10 +178,10 @@ public class CmsSynchronize {
     private void syncVfsFs(String folder) throws CmsException {
         int action = 0;
         //get all resources in the given folder
-        Vector resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
+        List resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
         // now look through all resources in the folder
         for (int i = 0; i < resources.size(); i++) {            
-            CmsResource res = (CmsResource)resources.elementAt(i);
+            CmsResource res = (CmsResource)resources.get(i);
             // test if the resource is marked as deleted. if so,
             // do nothing, the corrsponding file in the FS will be removed later
             if (res.getState() != I_CmsConstants.C_STATE_DELETED) {
