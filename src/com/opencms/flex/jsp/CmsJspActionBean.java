@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionBean.java,v $
- * Date   : $Date: 2002/10/31 11:39:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2002/11/17 14:00:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0 beta 2
  */
@@ -293,4 +294,33 @@ public class CmsJspActionBean {
         }         
     }
     
+    /**
+     * Returns the CmsObject from the wrapped request.<p>
+     * 
+     * This is a convenience method in case you need access to 
+     * the CmsObject in your JSP scriplets.
+     * 
+     * @return the CmsObject from the wrapped request
+     * 
+     * @see com.opencms.flex.cache.CmsFlexRequest#getCmsObject()
+     */
+    public CmsObject getCmsObject() {
+        if (m_notInitialized) return null;        
+        return m_request.getCmsObject();
+    }    
+    
+    
+    /**
+     * Checks if a template part should be used or not, same as using 
+     * the <code>&lt;cms:template part="..." /&gt;</code> tag.<p>
+     * 
+     * @param part the template part to check 
+     * @return <code>true</code> if the part is active, <code>false</code> otherwise
+     * 
+     * @see  com.opencms.flex.jsp.CmsJspTagUser
+     */
+    public boolean template(String part) {
+        if (m_notInitialized) return true;        
+        return CmsJspTagTemplate.templateTagAction(part, m_request);
+    }
 }
