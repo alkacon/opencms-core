@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/03 15:27:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/11/03 15:37:18 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -133,7 +133,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 					// TODO: insert for the date: getStringValue(createDate)
 					reg.createModule(packetname, getStringValue(modulename), 
 												getStringValue(description),
-												getStringValue(author), 0, v);
+												getStringValue(author), getStringValue(createDate), v);
 					reg.setModuleAuthorEmail(packetname, getStringValue(email));
 					reg.setModuleMaintenanceEventClass(packetname, getStringValue(maintenance));
 					tryToCreateFolder(cms, "/system/", "modules");
