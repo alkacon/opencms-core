@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/12/04 14:47:41 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2002/12/04 18:25:49 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.57 $ $Date: 2002/12/04 14:47:41 $
+ * @version $Revision: 1.58 $ $Date: 2002/12/04 18:25:49 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -568,7 +568,7 @@ public class CmsRequestContext implements I_CmsConstants {
         if ((m_encoding != null) && ! "".equals(m_encoding)) {
             // encoding was read from resource property
             return;
-        } else {                
+        } else if (! (m_req instanceof CmsExportRequest)) {                
             if (A_OpenCms.C_LOGGING && A_OpenCms.isLogging(A_OpenCms.C_OPENCMS_DEBUG)) {                                
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
                     "[" + getClass().getName() + "] can't get encoding property for resource "
