@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/07 19:21:28 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2004/03/08 07:29:38 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.100 $
+ * @version $Revision: 1.101 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1202,47 +1202,9 @@ public final class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(". JSP errorPage commit : " + (flexErrorPageCommit.booleanValue() ? "enabled" : "disabled"));
         }
 
-        // try to initialize directory translations
-        try {
-            boolean translationEnabled = configuration.getBoolean("directory.translation.enabled", false);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Directory translation: " + (translationEnabled ? "enabled" : "disabled"));
-            }
-            if (translationEnabled) {
-                String[] translations = configuration.getStringArray("directory.translation.rules");
-                // Directory translation stops after fist match, hence the "false" parameter
-                m_directoryTranslator = new CmsResourceTranslator(translations, false);
-            }
-        } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Directory translation: non-critical error " + e.toString());
-            }
-        }
-        // make sure we always have at least an empty array      
-        if (m_directoryTranslator == null) {
-            m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
-        }
-
-        // try to initialize filename translations
-        try {
-            boolean translationEnabled = configuration.getBoolean("filename.translation.enabled", false);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Filename translation : " + (translationEnabled ? "enabled" : "disabled"));
-            }
-            if (translationEnabled) {
-                String[] translations = configuration.getStringArray("filename.translation.rules");
-                // Filename translations applies all rules, hence the true patameters
-                m_fileTranslator = new CmsResourceTranslator(translations, true);
-            }
-        } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Filename translation : non-critical error " + e.toString());
-            }
-        }
-        // make sure we always have at last an emtpy array      
-        if (m_fileTranslator == null) {
-            m_fileTranslator = new CmsResourceTranslator(new String[0], false);
-        }
+        // initialize translation engines
+        m_directoryTranslator = vfsConfiguation.getFolderTranslator();
+        m_fileTranslator = vfsConfiguation.getFileTranslator();
 
         m_defaultFilenames = null;
         // try to initialize default directory file names (e.g. index.html)

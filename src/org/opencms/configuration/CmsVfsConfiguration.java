@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/08 07:29:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsResourceTranslator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -54,6 +55,12 @@ import org.dom4j.Element;
  */
 public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     
+    /** File translationd node name */
+    protected static final String N_FILETRANSLATIONS = "filetranslations";
+
+    /** Folder translations node name */
+    protected static final String N_FOLDERTRANSLATIONS = "foldertranslations";
+    
     /** The node name of an individual resource loader */
     protected static final String N_LOADER = "loader";
     
@@ -62,12 +69,30 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The resource loaders node name */
     protected static final String N_RESOURCETYPES = "resourcetypes";    
+    
+    /** Individual translation node name */
+    protected static final String N_TRANSLATION = "translation";
+    
+    /** The translations master node name */
+    protected static final String N_TRANSLATIONS = "translations";
 
     /** The node name of an individual resource type */
     protected static final String N_TYPE = "type";       
     
     /** The man configuration node name */
     protected static final String N_VFS = "vfs";
+    
+    /** Controls if file translation is enabled */
+    private boolean m_fileTranslationEnabled;
+    
+    /** The list of file translation */
+    private List m_fileTranslations;
+    
+    /** Controls if folder translation is enabled */
+    private boolean m_folderTranslationEnabled;
+    
+    /** The list of folder translations */
+    private List m_folderTranslations;
     
     /** The configured loader manager */
     private CmsLoaderManager m_loaderManager;
@@ -85,6 +110,30 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     }
     
     /**
+     * Adds one file translation rule.<p>
+     * 
+     * @param translation the file translation rule to add
+     */
+    public void addFileTranslation(String translation) {
+        m_fileTranslations.add(translation);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". File translation     : adding rule [" + translation + "]");
+        }          
+    }
+    
+    /**
+     * Adds one foler translation rule.<p>
+     * 
+     * @param translation the folder translation rule to add
+     */
+    public void addFolderTranslation(String translation) {
+        m_folderTranslations.add(translation);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Folder translation   : adding rule [" + translation + "]");
+        }                
+    }    
+    
+    /**
      * Adds a resource type to the list of configured resource types.<p>
      * 
      * @param resourceType the resource type to add
@@ -100,7 +149,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // add factory create method for "real" instance creation
         digester.addFactoryCreate("*/" + N_VFS, CmsVfsConfiguration.class);
         digester.addCallMethod("*/" + N_VFS, "initializeFinished");    
-
+        
+        // add this configuration object to the calling configuration after is has been processed
+        digester.addSetNext("*/" + N_VFS, "addConfiguration"); 
+        
         // creation of the loader manager
         digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCELOADERS, CmsLoaderManager.class);
         // add rules for resource loaders
@@ -114,8 +166,15 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCETYPES + "/" + N_TYPE, null, A_CLASS);
         digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCETYPES + "/" + N_TYPE, "addResourceType");
         
-        // add this configuration object to the calling configuration after is has been processed
-        digester.addSetNext("*/" + N_VFS, "addConfiguration");    
+        // add rules for file translations
+        digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS + "/" + N_TRANSLATION, "addFileTranslation", 0);
+        digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS, "setFileTranslationEnabled", 1);
+        digester.addCallParam("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS, 0, A_ENABLED);        
+        
+        // add rules for file translations
+        digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS + "/" + N_TRANSLATION, "addFolderTranslation", 0);
+        digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS, "setFolderTranslationEnabled", 1);
+        digester.addCallParam("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS, 0, A_ENABLED);        
     }
     
     /**
@@ -125,6 +184,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // generate vfs node and subnodes
         Element vfs = parent.addElement(N_VFS);
         
+        // add resource loader
         Element resourceloadersElement = vfs.addElement(N_RESOURCELOADERS);
         Object[] loaders = m_loaderManager.getLoaders();
         for (int i=0; i<loaders.length; i++) {
@@ -141,7 +201,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                 Iterator it = loaderConfiguratrion.getKeys();
                 while (it.hasNext()) {
                     String name = (String)it.next();
-                    String value = loaderConfiguratrion.getString(name);
+                    String value = loaderConfiguratrion.get(name).toString();
                     Element paramNode = loaderNode.addElement(N_PARAM);
                     paramNode.addAttribute(A_NAME, name);
                     paramNode.addText(value);
@@ -149,6 +209,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             }
         }
         
+        // add resource types
         Element resourcetypesElement = vfs.addElement(N_RESOURCETYPES);
         Iterator it = m_resourceTypes.iterator();
         while (it.hasNext()) {
@@ -156,9 +217,58 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             resourcetypesElement.addElement(N_TYPE).addAttribute(A_CLASS, resourceType.getClass().getName());
         }
         
+        // add translation rules
+        Element translationsElement = vfs.addElement(N_TRANSLATIONS);
+        
+        // file translation rules
+        Element fileTransElement = 
+            translationsElement.addElement(N_FILETRANSLATIONS)
+                .addAttribute(A_ENABLED, new Boolean(m_fileTranslationEnabled).toString());        
+        it = m_fileTranslations.iterator();
+        while (it.hasNext()) {
+            fileTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
+        }
+        
+        // folder translation rules
+        Element folderTransElement = 
+            translationsElement.addElement(N_FOLDERTRANSLATIONS)
+                .addAttribute(A_ENABLED, new Boolean(m_folderTranslationEnabled).toString());        
+        it = m_folderTranslations.iterator();
+        while (it.hasNext()) {
+            folderTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
+        }               
+        
         // return the vfs node
         return vfs;
     }
+
+    /**
+     * Returns the file resource translator that has been initialized
+     * with the configured file translation rules.<p>
+     * 
+     * @return the file resource translator 
+     */
+    public CmsResourceTranslator getFileTranslator() {
+        String[] array = m_fileTranslationEnabled?new String[m_fileTranslations.size()]:new String[0];
+        for (int i = 0; i < m_fileTranslations.size(); i++) {
+            array[i] = (String)m_fileTranslations.get(i);
+        }
+        return new CmsResourceTranslator(array, true);
+    }
+    
+    /**
+     * Returns the folder resource translator that has been initialized
+     * with the configured folder translation rules.<p>
+     * 
+     * @return the folder resource translator 
+     */
+    public CmsResourceTranslator getFolderTranslator() {
+        String[] array = m_folderTranslationEnabled?new String[m_folderTranslations.size()]:new String[0];
+        for (int i = 0; i < m_folderTranslations.size(); i++) {
+            array[i] = (String)m_folderTranslations.get(i);
+        }
+        return new CmsResourceTranslator(array, false);
+    }    
     
     /**
      * Returns the initialized loader manager.<p>
@@ -183,6 +293,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
      */
     public void initialize() {
         m_resourceTypes = new ArrayList();
+        m_fileTranslations = new ArrayList();
+        m_folderTranslations = new ArrayList();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". VFS configuration    : starting");
         }           
@@ -196,6 +308,30 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". VFS configuration    : finished");
         }            
     }   
+    
+    /**
+     * Enables or disables the file translation rules.<p>
+     * 
+     * @param value if "true", file translation is enabled, otherwise it is disabled
+     */
+    public void setFileTranslationEnabled(String value) {
+        m_fileTranslationEnabled = Boolean.valueOf(value).booleanValue();     
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". File translation     : " + (m_fileTranslationEnabled ? "enabled" : "disabled"));
+        }          
+    }
+        
+    /**
+     * Enables or disables the folder translation rules.<p>
+     * 
+     * @param value if "true", folder translation is enabled, otherwise it is disabled
+     */
+    public void setFolderTranslationEnabled(String value) {
+        m_folderTranslationEnabled = Boolean.valueOf(value).booleanValue();
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Folder translation   : " + (m_folderTranslationEnabled ? "enabled" : "disabled"));
+        }          
+    }
     
     /**
      * Sets the generated loader manager.<p>

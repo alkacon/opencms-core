@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/07 19:22:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/08 07:29:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,50 +44,53 @@ import org.dom4j.Element;
  */
 public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfigurationParameterHandler {
     
-    /** Export points master node */
-    String N_EXPORTPOINTS = "exportpoints";
-    
-    /** Individual export point node */
-    String N_EXPORTPOINT = "exportpoint";
-    
-    /** Workplace views master node */
-    String N_VIEWS = "views";
-    
-    /** Individual view node */
-    String N_VIEW = "view";
-        
-    /** An individual resource node */
-    String N_RESOURCE = "resource";
-    
-    /** The "uri" attribute */
-    String A_URI = "uri";
-    
-    /** The "type" attribute */
-    String A_TYPE = "type";
-
-    /** The "from" attribute */
-    String A_FROM = "from";
-
-    /** The "to" attribute */
-    String A_TO = "to";    
-    
     /** The "class" attribute */
     String A_CLASS = "class";
-
-    /** The "name" attribute */
-    String A_NAME = "name";
-
-    /** The "key" attribute */
-    String A_KEY = "key";
-
-    /** The "order" attribute */
-    String A_ORDER = "order";
     
     /** The "destination" attribute */
     String A_DESTINATION = "destination";
     
+    /** The "enabled" attibute */
+    String A_ENABLED = "enabled";
+
+    /** The "from" attribute */
+    String A_FROM = "from";
+
+    /** The "key" attribute */
+    String A_KEY = "key";
+
+    /** The "name" attribute */
+    String A_NAME = "name";
+
+    /** The "order" attribute */
+    String A_ORDER = "order";
+
+    /** The "to" attribute */
+    String A_TO = "to";    
+    
+    /** The "type" attribute */
+    String A_TYPE = "type";
+    
+    /** The "uri" attribute */
+    String A_URI = "uri";
+    
+    /** Individual export point node */
+    String N_EXPORTPOINT = "exportpoint";
+    
+    /** Export points master node */
+    String N_EXPORTPOINTS = "exportpoints";
+    
     /** The "param" node name for generic parameters */
     String N_PARAM = "param";   
+        
+    /** An individual resource node */
+    String N_RESOURCE = "resource";
+    
+    /** Individual view node */
+    String N_VIEW = "view";
+    
+    /** Workplace views master node */
+    String N_VIEWS = "views";
     
     /**
      * Digests an XML node and creates an instance of this configurable class.<p>
