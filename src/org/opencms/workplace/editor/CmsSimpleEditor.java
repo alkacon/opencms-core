@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/04/10 23:12:23 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */
@@ -121,7 +121,7 @@ public class CmsSimpleEditor extends CmsEditor {
             // lock resource if autolock is enabled
             checkLock(getParamResource());
             // Read file encoding from the property of the temporary file 
-            encoding = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, encoding);
+            encoding = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(encoding);
             CmsFile editFile = getCms().readFile(getParamResource());
             try {
                 content = new String(editFile.getContents(), encoding);
@@ -161,7 +161,7 @@ public class CmsSimpleEditor extends CmsEditor {
             String decodedContent = CmsEncoder.unescape(getParamContent(), CmsEncoder.C_UTF8_ENCODING);
             // Read file encoding from the property of the temporary file 
             String encoding = getCms().getRequestContext().getEncoding();
-            encoding = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, encoding);
+            encoding = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(encoding);
             try {
                 editFile.setContents(decodedContent.getBytes(encoding));
             } catch (UnsupportedEncodingException e) {

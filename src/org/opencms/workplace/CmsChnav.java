@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/04/10 23:12:14 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -170,7 +170,7 @@ public class CmsChnav extends CmsDialog {
      */
     public String getCurrentNavText() {
         try {
-            String navText = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_NAVTEXT);
+            String navText = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_NAVTEXT, false).getValue();
             if (navText == null) {
                 navText = "";
             }

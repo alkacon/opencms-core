@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/03/02 21:51:03 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/04/10 23:12:14 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1
  */
@@ -186,7 +186,7 @@ public class CmsTree extends CmsWorkplace {
         String title = null;
         try { 
             resource = getCms().readFolder("/");
-            title = getCms().readProperty("/", I_CmsConstants.C_PROPERTY_TITLE);
+            title = getCms().readPropertyObject("/", I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
             if (title == null) {
                 getCms().readAbsolutePath(resource);
                 title = resource.getRootPath();

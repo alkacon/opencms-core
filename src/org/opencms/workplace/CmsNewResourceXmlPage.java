@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/04/01 10:19:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/04/10 23:12:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
@@ -321,7 +321,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             for (int j = 0; j < moduleTemplateFiles.size(); j++) {
                 // get the current template file
                 CmsFile templateFile = (CmsFile)moduleTemplateFiles.get(j);
-                String title = cms.readProperty(cms.readAbsolutePath(templateFile), I_CmsConstants.C_PROPERTY_TITLE);
+                String title = cms.readPropertyObject(cms.readAbsolutePath(templateFile), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
                 if (title == null) {
                     // no title property found, display the file name
                     title = templateFile.getName();
