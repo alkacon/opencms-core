@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/04 07:29:06 $
-* Version: $Revision: 1.269 $
+* Date   : $Date: 2001/09/05 16:43:42 $
+* Version: $Revision: 1.270 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.269 $ $Date: 2001/09/04 07:29:06 $
+ * @version $Revision: 1.270 $ $Date: 2001/09/05 16:43:42 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -436,13 +436,13 @@ protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, Cm
  */
 public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException
 {
-    Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName());
+    Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath());
     if (access != null) {
             return access.booleanValue();
     } else {
     if ((resource == null) || !accessProject(currentUser, currentProject, resource.getProjectId()) ||
             (!accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ))) {
-        m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(false));
+        m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath(), new Boolean(false));
         return false;
     }
 
@@ -460,12 +460,12 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
             throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
         }
         if (!accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ)) {
-            m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(false));
+            m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath(), new Boolean(false));
             return false;
         }
 
     }
-    m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(true));
+    m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath(), new Boolean(true));
     return true;
     }
 }
