@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/05/22 14:54:20 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/06/01 08:22:46 $
+* Version: $Revision: 1.10 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -49,8 +49,8 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
     /**
      * Constructor for an element with the given class and template name.
      */
-    public CmsElementXml(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd) {
-        init(className, templateName, readAccessGroup, cd);
+    public CmsElementXml(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, int variantCachesize) {
+        init(className, templateName, readAccessGroup, cd, variantCachesize);
     }
 
     /**
@@ -62,8 +62,8 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
      * @param cd Cache directives for this element
      * @param defs CmsElementDefinitionCollection for this element.
      */
-    public CmsElementXml(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
-        init(className, templateName, readAccessGroup, cd, defs);
+    public CmsElementXml(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, CmsElementDefinitionCollection defs, int variantCachesize) {
+        init(className, templateName, readAccessGroup, cd, defs, variantCachesize);
     }
 
     /**

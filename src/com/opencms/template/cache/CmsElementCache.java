@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2001/05/31 12:04:15 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/06/01 08:22:46 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -50,14 +50,18 @@ public class CmsElementCache {
 
     private CmsElementLocator m_elementLocator;
 
+    private int m_variantCachesize;
+
     public CmsElementCache(){
         m_uriLocator = new CmsUriLocator(10000);
         m_elementLocator = new CmsElementLocator(50000);
+        m_variantCachesize = 100;
     }
 
-    public CmsElementCache(int uriCachesize, int elementCachesize) {
+    public CmsElementCache(int uriCachesize, int elementCachesize, int variantCachesize) {
         m_uriLocator = new CmsUriLocator(uriCachesize);
         m_elementLocator = new CmsElementLocator(elementCachesize);
+        m_variantCachesize = variantCachesize;
     }
 
     public CmsUriLocator getUriLocator() {
@@ -66,6 +70,13 @@ public class CmsElementCache {
 
     public CmsElementLocator getElementLocator() {
         return m_elementLocator;
+    }
+
+    /**
+     * returns the size of the variant cache for each element.
+     */
+    public int getVariantCachesize(){
+        return m_variantCachesize;
     }
 
     /**

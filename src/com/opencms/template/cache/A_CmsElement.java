@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/05/22 14:54:20 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/06/01 08:22:46 $
+* Version: $Revision: 1.11 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -69,19 +69,19 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /** All definitions declared in this element. */
     protected CmsElementDefinitionCollection m_elementDefinitions;
 
-    /** Hashtable for element variant cache */
-    private Hashtable m_variants;
+    /** LruCache for element variant cache */
+    private CmsLruCache m_variants;
 
     /**
      * Initializer for an element with the given class and template name.
      */
-    protected void init(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd) {
+    protected void init(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, int variantCachesize) {
         m_className = className;
         m_templateName = templateName;
         m_readAccessGroup = readAccessGroup;
         m_cacheDirectives = cd;
         m_elementDefinitions = new CmsElementDefinitionCollection();
-        m_variants = new Hashtable();
+        m_variants = new CmsLruCache(variantCachesize);
     }
 
     /**
@@ -91,14 +91,15 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @param readAccessGroup The group that may read the element.
      * @param cd Cache directives for this element
      * @param defs Vector with ElementDefinitions for this element.
+     * @param variantCachesize The size of the variant cache.
      */
-    protected void init(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
+    protected void init(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, CmsElementDefinitionCollection defs, int variantCachesize) {
         m_className = className;
         m_templateName = templateName;
         m_readAccessGroup = readAccessGroup;
         m_cacheDirectives = cd;
         m_elementDefinitions = defs;
-        m_variants = new Hashtable();
+        m_variants = new CmsLruCache(variantCachesize);
     }
 
     /**
@@ -162,7 +163,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * Clears all variants. Used for TimeCritical elements.
      */
     public void clearVariantCache(){
-        m_variants.clear();
+        m_variants.clearCache();
         m_timestamp = System.currentTimeMillis();
     }
 

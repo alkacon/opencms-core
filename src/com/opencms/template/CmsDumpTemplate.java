@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2001/05/22 14:54:20 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2001/06/01 08:22:46 $
+* Version: $Revision: 1.26 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import com.opencms.template.cache.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2001/05/22 14:54:20 $
+ * @version $Revision: 1.26 $ $Date: 2001/06/01 08:22:46 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -215,6 +215,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
             }
         }
         return new CmsElementDump(getClass().getName(), templateFile, readAccessGroup,
-                    getCacheDirectives(cms, templateFile, null, parameters, null));
+                    getCacheDirectives(cms, templateFile, null, parameters, null),
+                    cms.getRequestContext().getElementCache().getVariantCachesize());
     }
 }

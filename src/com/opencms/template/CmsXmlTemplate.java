@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/05/28 15:01:55 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2001/06/01 08:22:46 $
+* Version: $Revision: 1.64 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.63 $ $Date: 2001/05/28 15:01:55 $
+ * @version $Revision: 1.64 $ $Date: 2001/06/01 08:22:46 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1143,11 +1143,13 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         CmsElementDefinitionCollection subtemplateDefinitions = new CmsElementDefinitionCollection();
         String readAccessGroup = cms.C_GROUP_ADMIN;
+        int variantCachesize = 100;
         try {
             readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(),templateFile);
             CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, null, parameters, null);
 
             CmsElementCache elementCache = cms.getRequestContext().getElementCache();
+            variantCachesize = elementCache.getVariantCachesize();
 
             Vector subtemplates = xmlTemplateDocument.getAllSubElements();
 
@@ -1184,7 +1186,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         CmsElementXml result = new CmsElementXml(getClass().getName(),
                                                  templateFile, readAccessGroup,
                                                  getCacheDirectives(cms, templateFile, null, parameters, null),
-                                                 subtemplateDefinitions);
+                                                 subtemplateDefinitions, variantCachesize);
         return result;
     }
 }

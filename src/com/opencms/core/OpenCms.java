@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2001/06/01 08:22:46 $
+* Version: $Revision: 1.55 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.54 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.55 $ $Date: 2001/06/01 08:22:46 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -179,7 +179,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         if(m_enableElementCache) {
             try {
                 c_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000),
-                                                    conf.getInteger("elementcache.elements", 50000));
+                                                    conf.getInteger("elementcache.elements", 50000),
+                                                    conf.getInteger("elementcache.variants", 100));
             }
             catch(Exception e) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
