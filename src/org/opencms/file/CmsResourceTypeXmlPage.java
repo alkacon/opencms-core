@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/06/08 09:07:30 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/08 14:10:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -86,11 +86,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      * @return the created resource 
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createResourceForTemplate(CmsObject cms, String resourcename, List properties, byte[] contents, String masterTemplate) throws CmsException {
-        if (properties == null || properties == Collections.EMPTY_LIST) {
-            properties = new ArrayList();
-        }
-        
+    public CmsResource createResourceForTemplate(CmsObject cms, String resourcename, List properties, byte[] contents, String masterTemplate) throws CmsException {        
         properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, masterTemplate, null));
         CmsFile resource = (CmsFile)createResource(cms, resourcename, properties, contents, null);                
         return resource;

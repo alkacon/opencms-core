@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/07 15:48:27 $
- * Version: $Revision: 1.375 $
+ * Date   : $Date: 2004/06/08 14:10:52 $
+ * Version: $Revision: 1.376 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.375 $ $Date: 2004/06/07 15:48:27 $
+ * @version $Revision: 1.376 $ $Date: 2004/06/08 14:10:52 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1606,27 +1606,15 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /**
      * Creates a new file with the given content and resourcetype.<p>
      *
-     * Files can only be created in an offline project, the state of the new file
-     * is set to NEW (2). <br>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can write the resource</li>
-     * <li>the folder-resource is not locked by another user</li>
-     * <li>the file doesn't exist</li>
-     * </ul>
-     *
      * @param context the current request context
      * @param newFileName the name of the new file
      * @param contents the contents of the new file
      * @param type the name of the resourcetype of the new file
-     * @param propertyinfos a Hashtable of propertyinfos, that should be set for this folder.
-     * The keys for this Hashtable are the names for propertydefinitions, the values are
-     * the values for the propertyinfos.
+     * @param properties a list of Cms property objects
      * @return the created file.
-     * @throws CmsException if operation was not succesful.
+     * @throws CmsException if something goes wrong
      */
-    public CmsFile createFile(CmsRequestContext context, String newFileName, byte[] contents, String type, List propertyinfos) throws CmsException {
+    public CmsFile createFile(CmsRequestContext context, String newFileName, byte[] contents, String type, List properties) throws CmsException {
 
         // extract folder information
         String folderName = newFileName.substring(0, newFileName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newFileName.length()) + 1);
@@ -1651,9 +1639,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         newFile.setFullResourceName(newFileName);
 
         // write the metainfos
-        //writeProperties(context, newFileName, propertyinfos);
-        m_vfsDriver.writePropertyObjects(context.currentProject(), newFile, propertyinfos);
-        m_propertyCache.clear();
+        if (properties != null && properties != Collections.EMPTY_LIST) {
+            m_vfsDriver.writePropertyObjects(context.currentProject(), newFile, properties);
+            m_propertyCache.clear();
+        }
 
         contents = null;
         clearResourceCache();
@@ -1665,24 +1654,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
     /**
      * Creates a new folder.<p>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can write the resource</li>
-     * <li>the resource is not locked by another user</li>
-     * </ul>
      *
      * @param context the current request context
      * @param newFolderName the name of the new folder (No pathinformation allowed).
-     * @param propertyinfos a Hashtable of propertyinfos, that should be set for this folder.
-     * The keys for this Hashtable are the names for propertydefinitions, the values are
-     * the values for the propertyinfos.
+     * @param properties a list of Cms property objects
      * @return the created folder.
-     * @throws CmsException for missing propertyinfos, for worng propertydefs
-     * or if the filename is not valid. The CmsException will also be thrown, if the
-     * user has not the rights for this resource.
+     * @throws CmsException if something goes wrong
      */
-    public CmsFolder createFolder(CmsRequestContext context, String newFolderName, List propertyinfos) throws CmsException {
+    public CmsFolder createFolder(CmsRequestContext context, String newFolderName, List properties) throws CmsException {
 
         // append I_CmsConstants.C_FOLDER_SEPARATOR if required
         if (!newFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
@@ -1724,8 +1703,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         newFolder.setFullResourceName(newFolderName);
 
         // write metainfos for the folder
-        m_vfsDriver.writePropertyObjects(context.currentProject(), newFolder, propertyinfos);
-        m_propertyCache.clear();
+        if (properties != null && properties != Collections.EMPTY_LIST) {
+            m_vfsDriver.writePropertyObjects(context.currentProject(), newFolder, properties);
+            m_propertyCache.clear();
+        }
 
         clearResourceCache();
 
@@ -8609,6 +8590,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         Map keyValidationMap = new HashMap();
 
         try {
+            if (properties == null || properties == Collections.EMPTY_LIST) {
+                // skip empty lists
+                return;
+            }
+            
             // check if the properties in the specified list are disjunctive.
             // in other words: the specified list must not contain two or more
             // Cms property objects with the same key
