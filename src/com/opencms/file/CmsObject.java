@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/11/08 10:20:19 $
-* Version: $Revision: 1.249 $
+* Date   : $Date: 2002/11/16 13:14:02 $
+* Version: $Revision: 1.250 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.249 $ $Date: 2002/11/08 10:20:19 $
+ * @version $Revision: 1.250 $ $Date: 2002/11/16 13:14:02 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2233,7 +2233,7 @@ public void init(I_CmsResourceBroker broker) throws CmsException {
 public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator) throws CmsException {
     m_sessionStorage = sessionStorage;
     m_rb = broker;
-    m_context = new CmsRequestContext();
+    m_context = new CmsRequestContext();    
     m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming, elementCache, directoryTranslator, fileTranslator);
     try {
         m_linkChecker = new LinkChecker();
@@ -3341,19 +3341,53 @@ public CmsBackupProject readBackupProject(int versionId) throws CmsException {
 public Vector readProjectLogs(int projectId) throws CmsException {
     return m_rb.readProjectLogs(m_context.currentUser(), m_context.currentProject(), projectId);
 }
-/**
- * Returns a Property of a file or folder.
- *
- * @param name the resource-name for which the property will be read.
- * @param property the property-definition name of the property that will be read.
- *
- * @return property the Property as string.
- *
- * @exception CmsException if operation was not successful
- */
-public String readProperty(String name, String property) throws CmsException {
-    return (m_rb.readProperty(m_context.currentUser(), m_context.currentProject(), getSiteRoot(name), property));
-}
+
+    /**
+     * Reads a property from a resource.<p>
+     *
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @return the value of the property found, <code>null</code> if nothing was found
+     * @throws CmsException in case there where problems reading the property
+     */
+    public String readProperty(String resource, String property) throws CmsException {
+        return m_rb.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.getSiteRoot(resource), property);
+    }
+
+    /**
+     * Looks up a specified property with optional direcory upward cascading.
+     * 
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders
+     *   if it is not attached to the the resource, if false not (ie. normal 
+     *   property lookup)
+     * @return the value of the property found, <code>null</code> if nothing was found
+     * @throws CmsException in case there where problems reading the property
+     */
+    public String readProperty(String resource, String property, boolean search) throws CmsException {
+        return m_rb.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.getSiteRoot(resource), m_context.getSiteRoot(), property, search);
+    }
+
+    /**
+     * Looks up a specified property with optional direcory upward cascading.
+     * A default value will be returned if the property is not found on the
+     * resource (or it's parent folders in case search is set to <code>true</code>).
+     * 
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders
+     *   if it is not attached to the the resource, if <code>false</code> not (ie. normal 
+     *   property lookup)
+     * @param propertyDefault a default value that will be returned if
+     *   the property was not found on the selected resource
+     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
+     * @throws CmsException in case there where problems reading the property
+     */
+    public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
+        return m_rb.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.getSiteRoot(resource), m_context.getSiteRoot(), property, search, propertyDefault);
+    }
+
 /**
  * Reads the property-definition for the resource type.
  *

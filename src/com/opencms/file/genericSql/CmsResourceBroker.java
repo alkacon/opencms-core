@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/11/14 10:08:14 $
-* Version: $Revision: 1.341 $
+* Date   : $Date: 2002/11/16 13:13:39 $
+* Version: $Revision: 1.342 $
 
 *
 * This library is part of OpenCms -
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.341 $ $Date: 2002/11/14 10:08:14 $
+ * @version $Revision: 1.342 $ $Date: 2002/11/16 13:13:39 $
 
  *
  */
@@ -6190,22 +6190,20 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
         throws CmsException {
         return m_dbAccess.readProjectLogs(projectid);
     }
+    
     /**
-     * Returns a propertyinformation of a file or folder.
+     * Reads a property from a resource.<p>
      *
      * <B>Security</B>
-     * Only the user is granted, who has the right to view the resource.
+     * Only the user is granted, who has the right to read the resource
      *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The name of the resource of which the propertyinformation has
-     * to be read.
-     * @param property The propertydefinition-name of which the propertyinformation has to be read.
-     *
-     * @return propertyinfo The propertyinfo as string.
-     *
-     * @exception CmsException Throws CmsException if operation was not succesful
-     */
+     * @param currentUser the current user
+     * @param currentProject the current project of the user
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @return the value of the property found, null if nothing was found
+     * @throws CmsException in case there where problems reading the property
+     */    
     public String readProperty(CmsUser currentUser, CmsProject currentProject,
                                       String resource, String property)
         throws CmsException {
@@ -6241,6 +6239,67 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
         if (returnValue.equals("")){returnValue=null;}
         return returnValue;
     }
+    
+    /**
+     * Looks up a specified property with optional direcory upward cascading.<p>
+     * 
+     * <B>Security</B> see {@link #readProperty(CmsUser, CmsProject, String, String)}<p>
+     * 
+     * TODO: caching of results to prevent multiple "search" lookups
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project of the user
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders
+     *   if it is not attached to the the resource, if false not (ie. normal 
+     *   property lookup)
+     * @return the value of the property found, <code>null</code> if nothing was found
+     * @throws CmsException in case there where problems reading the property
+     */
+    public String readProperty(CmsUser currentUser, CmsProject currentProject, String resource, String siteRoot, String property, boolean search)
+    throws CmsException {
+        if (search) {
+            String f = resource;
+            String prop = readProperty(currentUser, currentProject, f, property);
+            while ((prop == null) && (! siteRoot.equals(f))) {
+                f = f.substring(0, f.lastIndexOf("/"));
+                prop = readProperty(currentUser, currentProject, f + "/", property);
+            }      
+            return prop;
+        } else {
+            return readProperty(currentUser, currentProject, resource, property);
+        }         
+    }
+
+    /**
+     * Looks up a specified property with optional direcory upward cascading,
+     * a default value will be returned if the property is not found on the
+     * resource (or it's parent folders in case search is set to <code>true</code>).<p>
+     * 
+     * <B>Security</B> see {@link #readProperty(CmsUser, CmsProject, String, String)}
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project of the user
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders
+     *   if it is not attached to the the resource, if <code>false</code> not (ie. normal 
+     *   property lookup)
+     * @param propertyDefault a default value that will be returned if
+     *   the property was not found on the selected resource
+     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
+     * @throws CmsException in case there where problems reading the property
+     */
+    public String readProperty(CmsUser currentUser, CmsProject currentProject, String resource, String siteRoot, String property, boolean search, String propertyDefault)
+    throws CmsException{
+        String prop = readProperty(currentUser, currentProject, resource, siteRoot, property, search);
+        if ((prop == null) || "".equals(prop)) {
+            prop = propertyDefault;
+        }
+        return prop;        
+    }    
+    
     /**
      * Reads a definition for the given resource type.
      *
