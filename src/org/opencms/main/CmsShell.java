@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/05/25 10:55:30 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -614,7 +614,7 @@ public class CmsShell {
     }    
 
     /**
-     * Executes a shell command with a list of parameters (the command must be the first item in the list).<p>
+     * Executes a shell command with a list of parameters.<p>
      *
      * @param command the command to execute
      * @param parameters the list of parameters for the command
@@ -666,12 +666,13 @@ public class CmsShell {
                 printPrompt();
                 String line = lnr.readLine();
                 if (line == null) {
-                    // if null is read file is finished
+                    // if null the file has been read to the end
                     try {
                         Thread.sleep(500);
                     } catch (Throwable t) {
-                        continue;
+                        // noop
                     }
+                    break;
                 }
                 if ((line != null) && line.trim().startsWith("#")) {
                     System.out.println(line);
