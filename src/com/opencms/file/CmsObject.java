@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/05 13:43:15 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2000/06/05 15:36:49 $
+ * Version: $Revision: 1.76 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.75 $ $Date: 2000/06/05 13:43:15 $ 
+ * @version $Revision: 1.76 $ $Date: 2000/06/05 15:36:49 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1663,45 +1663,6 @@ public class CmsObject implements I_CmsConstants {
 								  name, resourcetype);
 	}
 
-	/**
-	 * Writes a shedule-task to the Cms.<BR/>
-	 * The user of the task will be set to the current user.
-	 * 
-	 * @param scheduleTask the task that should be written to the Cms.
-	 * 
-	 * @exception CmsException if something goes wrong.
-	 */
-	public void writeScheduleTask(A_CmsScheduleTask scheduleTask)
-		throws CmsException { 
-		return ; // TODO: implement this ScheduleTask operation! 
-	}
-
-	/**
-	 * Deltes a shedule-task from the Cms.<BR/>
-	 * 
-	 * A task can only be deleted by the owner or a administrator.
-	 * 
-	 * @param scheduleTask the task that should be deleted.
-	 * 
-	 * @exception CmsException if something goes wrong.
-	 */
-	public void deleteScheduleTask(A_CmsScheduleTask scheduleTask)
-		throws CmsException { 
-		return ; // TODO: implement this ScheduleTask operation!
-	}
-	
-	/**
-	 * Reads all shedule-task from the Cms.
-	 * 
-	 * @return scheduleTasks A Vector with all schedule-Tasks of the Cms.
-	 * 
-	 * @exception CmsException if something goes wrong.
-	 */
-	public Vector readAllScheduleTasks()
-		throws CmsException { 
-		return null;  // TODO: implement this ScheduleTask operation!
-	}
-	
 	/**
 	 * Gets the MimeTypes. 
 	 * The Mime-Types will be returned.
