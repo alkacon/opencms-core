@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/03/27 09:57:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/30 08:01:00 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/03/27 09:57:24 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/30 08:01:00 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {
@@ -198,18 +198,21 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
         Hashtable parameters = (Hashtable)userObj;
         String elementName = (String)parameters.get("_ELEMENT_");
         
+        CmsXmlTemplateFile newsTemplateFile = (CmsXmlTemplateFile)doc;
+        
         String newsFolder = getNewsFolder(elementName, parameters);
         Vector v = CmsNewsTemplateFile.getAllArticles(cms, newsFolder);
         String result = "";
-        CmsNewsListDefFile listDef = new CmsNewsListDefFile(cms, C_PATH_INTERNAL_TEMPLATES + C_NEWS_NEWSLISTDEF);
         
         for(int i=0; i<v.size(); i++) {
             Object o = v.elementAt(i);
             CmsNewsTemplateFile doc2 = (CmsNewsTemplateFile)o;
-            result = result + listDef.getNewsListEntry(Utils.getNiceShortDate(doc2.getNewsDate()), 
-                                                       doc2.getNewsHeadline(), 
-                                                       doc2.getNewsShortText(),
-                                                       doc2.getFilename() + "/index.html");
+        
+            newsTemplateFile.setData("date", Utils.getNiceShortDate(doc2.getNewsDate()));
+            newsTemplateFile.setData("headline", doc2.getNewsHeadline());
+            newsTemplateFile.setData("shorttext", doc2.getNewsShortText());        
+            newsTemplateFile.setData("link", doc2.getFilename() + "/index.html");
+            result = result + newsTemplateFile.getProcessedDataValue("newslistentry");        
         }                        
         return result;
     }    

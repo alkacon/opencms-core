@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+	<COLUMN_CUSTOMIZED>
+		<PROCESS>COLUMN_NEWS_STATE</PROCESS>
+		<PROCESS>COLUMN_NEWS_AUTHOR</PROCESS>
+	</COLUMN_CUSTOMIZED>
+	<COLUMN_NEWS_STATE><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.state" /><![CDATA[</p></td>]]></COLUMN_NEWS_STATE>
+	<COLUMN_NEWS_AUTHOR><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.author" /><![CDATA[</p></td>]]></COLUMN_NEWS_AUTHOR>
+	
+
+	<COLUMN_CUSTOMIZED_VALUE>
+		<PROCESS>COLUMN_NEWS_STATE_VALUE</PROCESS>
+		<PROCESS>COLUMN_NEWS_AUTHOR_VALUE</PROCESS>
+	</COLUMN_CUSTOMIZED_VALUE>
+	<COLUMN_NEWS_STATE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>NEWS_STATE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_NEWS_STATE_VALUE>
+	<COLUMN_NEWS_AUTHOR_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>NEWS_AUTHOR_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_NEWS_AUTHOR_VALUE>
+</WORKPLACE>

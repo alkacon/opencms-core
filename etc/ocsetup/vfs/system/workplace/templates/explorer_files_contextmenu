@@ -382,6 +382,35 @@
 </contextmenue>
 <!-- context menues for binary files end -->
 
+<!-- context menues for news pages start -->
+<contextmenue name="newspage">
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.pageedit"/>
+	<contextdisabled name="explorer.context.editcontrolfile" />
+	<contextspacer/>	
+	<contextdisabled name="explorer.context.delete"/>
+</contextmenue>
+
+<contextmenue name="newspagelock">
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
+	<contextspacer/>
+	<contextdisabled name="explorer.context.pageedit"/>
+	<contextdisabled name="explorer.context.editcontrolfile" />
+	<contextspacer/>
+	<contextdisabled name="explorer.context.delete"/>
+</contextmenue>
+
+<contextmenue name="newspagelockuser">
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.pageedit" href="javascript:doAction(DO_NEWSEDIT)"/>
+	<contextentry name="explorer.context.editcontrolfile" href="javascript:doAction(DO_EDIT)"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
+</contextmenue>
+<!-- context menues for news pages end -->
+
 <!-- context menues for file not in project or in online project start -->
 <contextmenue name="online">
 	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>

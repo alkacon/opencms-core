@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/I_CmsNewsConstants.java,v $
- * Date   : $Date: 2000/03/24 14:59:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/30 08:01:00 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.examples.news;
  * into a <code>news.ini</code> file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/03/24 14:59:04 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/30 08:01:00 $
  */
 public interface I_CmsNewsConstants {
     
@@ -76,4 +76,10 @@ public interface I_CmsNewsConstants {
 
     /** Name of the external link XML tag */
     public static final String C_NEWS_XML_EXTLINK = "extlink";         
+
+    /** Name of the XML tag for "news active"*/
+    public static final String C_NEWS_XML_ACTIVE = "active";         
+
+    /** Name of the XML tag for "news inactive"*/
+    public static final String C_NEWS_XML_INACTIVE = "inactive";         
 }

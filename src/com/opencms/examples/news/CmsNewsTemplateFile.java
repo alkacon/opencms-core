@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplateFile.java,v $
- * Date   : $Date: 2000/03/27 09:57:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/30 08:01:00 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.util.*;
  * Sample content definition for news articles.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/03/27 09:57:45 $
+ * @version $Revision: 1.4 $ $Date: 2000/03/30 08:01:00 $
  */
  public class CmsNewsTemplateFile extends A_CmsXmlContent implements I_CmsNewsConstants {
 
@@ -205,13 +205,49 @@ import java.util.*;
     public void setNewsExternalLink(String url) {
         setData(C_NEWS_XML_EXTLINK, url);
     }
+
+    /**
+     * Check if the current news article is marked as <em>active</em>.
+     * @return <code>true</code> if the article is active, <code>false</code> otherwise.
+     */
+    public boolean isNewsActive() {
+        return hasData(C_NEWS_XML_ACTIVE);
+    }
     
     /**
-     * Gets an enumeration of all articles in a folder.
+     * Set the <em>active</em> flag of the news article.
+     * @param active Value to be set.
+     */
+    public void setNewsActive(boolean active) {
+        if(active) {
+            removeData(C_NEWS_XML_INACTIVE);
+            setData(C_NEWS_XML_ACTIVE, "");
+        } else {
+            removeData(C_NEWS_XML_ACTIVE);
+            setData(C_NEWS_XML_INACTIVE, "");
+        }        
+    }
+    
+    /**
+     * Gets a vaector of all active articles in a folder.
      * @param cms A_CmsObject object for accessing system resources.
      * @param folder Name of the folder to scan for articles.
+     * @return Vector of all active articles.
+     * @exception CmsException when read access to the articles failed.
      */
     public static Vector getAllArticles(A_CmsObject cms, String folder) throws CmsException {
+        return getAllArticles(cms, folder, false);
+    }
+
+    /**
+     * Gets a vector of all articles in a folder.
+     * @param cms A_CmsObject object for accessing system resources.
+     * @param folder Name of the folder to scan for articles.
+     * @param showInactive Idicates, if all articles (including inactive articles) should be listed
+     * @return Vector of all articles.
+     * @exception CmsException when read access to the articles failed.
+     */
+    public static Vector getAllArticles(A_CmsObject cms, String folder, boolean showInactive) throws CmsException {
         Vector allFiles = null;
         
         // Read all files in the given folder
@@ -254,7 +290,9 @@ import java.util.*;
             CmsFile fileHeader = (CmsFile)sortedFiles.elementAt(i);
             CmsFile file = cms.readFile(fileHeader.getAbsolutePath());
             newsDoc.init(cms, file);
-            listFiles.addElement(newsDoc);
+            if(showInactive || newsDoc.isNewsActive()) {
+                listFiles.addElement(newsDoc);
+            }
         }
         return listFiles;        
     }    

@@ -45,6 +45,7 @@ var DO_DATAEDIT=19;
 var DO_EDITDOC=20;
 var DO_ATE=21;
 var DO_MAILEDIT=22;
+var DO_NEWSEDIT=23;
 
 var DO_COPYF=30;
 var DO_MOVEF=31;
@@ -183,13 +184,13 @@ function doAction(action) {
 	
 	switch(action)	{
 		case 1: {
-			location.href='lock.html?file='+ kontextparam;
+			location.href='lock.html?lasturl=' + location.href + '&file='+ kontextparam;
 			break;
 		} case 2:	{
-			location.href='lockchange.html?file='+ kontextparam;
+			location.href='lockchange.html?lasturl=' + location.href + '&file='+ kontextparam;
 			break;
 		} case 3: {
-			location.href='unlock.html?file='+ kontextparam;
+			location.href='unlock.html?lasturl=' + location.href + '&file='+ kontextparam;
 			break;
 		} case 4: {
 			location.href='copy.html?file='+ kontextparam;
@@ -201,7 +202,7 @@ function doAction(action) {
 			location.href='rename.html?file='+ kontextparam;
 			break;
 		} case 7: {
-			location.href='delete.html?file='+ kontextparam;
+			location.href='delete.html?lasturl=' + location.href + '&file='+ kontextparam;
 			break;
 		} case 8: {
 			location.href='chown.html?file='+ kontextparam;
@@ -229,13 +230,23 @@ function doAction(action) {
 		} case 15: {
 			top.location.href='htmleditor.html?file='+ kontextparam;
 			break;
-		} case 18: {
-					top.location.href='templateeditor.html?file='+ kontextparam;
-					break;
 		}
 		case 16:
 		{
 			top.location.href='edit_view.html';
+			break;
+		}
+	    case 18: 
+		{
+		    // Template Editor
+		    top.location.href='templateeditor.html?file='+ kontextparam;
+			break;
+		}
+
+	    case 23: 
+		{
+		    // News Editor
+		    top.body.location.href='news_edit.html?action=edit&lasturl=' + top.body.location.href + '&file='+ kontextparam;
 			break;
 		}
 		

@@ -216,6 +216,15 @@ INPUT.textfeld3
     FONT-WEIGHT: normal;
 	WIDTH: 300px
 }
+INPUT.textfeld4
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+	WIDTH: 500px
+}
 TEXTAREA.textarea
 {
     COLOR: #000000;
