@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
 <WORKPLACE>	
 
-
 <tabledatabegin><![CDATA[<td>]]></tabledatabegin>
 <tabledataend><![CDATA[</a></td>]]></tabledataend>
 <tablerowbegin><![CDATA[<tr>]]></tablerowbegin>
 <tablerowend><![CDATA[</tr>]]></tablerowend>
-<url><![CDATA[<a href="]]><method name="getServletPath"/><method name="getUrl"/><![CDATA[?parentId=]]><PROCESS>uniqueid</PROCESS><![CDATA[ target="body">]]></url>
+<url><![CDATA[<a href="]]><method name="getServletPath"/><method name="getUrl"/><![CDATA[?parentId=]]><PROCESS>uniqueid</PROCESS><![CDATA[">]]></url>
 
 <lockuser><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lock.gif" alt="" border=0 width=16 height=16></td>]]></lockuser>
 <lock><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lockuser.gif" alt="" border=0 width=16 height=16></td>]]></lock>
@@ -16,7 +15,7 @@
 <nowand><![CDATA[]]></nowand>
 <wand><![CDATA[
 <td class=menu nowrap width=32px valign=top>
-	<a href="javascript:document.location.href='EditBackoffice.html';parent.frames[1].location.href='EditBackoffice.html?id=new'"  
+	<a href="javascript:document.location.href=']]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[';parent.frames[1].location.href=']]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[?id=new'"  
 		onMouseDown="ChPush('bt_new')" onMouseUp="ChOn('bt_new')" onMouseOver="ChOn('bt_new')" onMouseOut="ChOff('bt_new')">
 		<img align=top src="/pics/system/bt_new_off.gif" name="bt_new" border=0 width=32 heigth=32>
 	</a>
@@ -48,7 +47,7 @@
 </head>
 
 <!-- onload="window.top.body.admin_content.location.href='Backoffice.html'" -->
-<body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed onload="window.top.body.admin_content.location.href='Backoffice.html?action=list'">
+<body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed onload="window.top.body.admin_content.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[?action=list'">
 
 	<table cellspacing=0 cellpadding=0 valign=bottom>
 	
@@ -88,6 +87,12 @@ function show_help()
 //-->
 </script>
 
+<!-- this is necessary, because methods can´t be used within the context-entry -->
+<SCRIPT LANGUAGE="JavaScript">
+	var editUrl="]]><Method name="getServletPath"/><METHOD name="getEditUrl"/><![CDATA[";
+	var backofficeUrl="]]><Method name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[";
+</SCRIPT>
+
 <head>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
@@ -124,29 +129,29 @@ start();
 ]]>
 
 <contextmenue name="backofficeedit"> 
-	<contextentry name="button.edit" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
-	<contextentry name="explorer.context.delete" href="javascript:location.href='EditBackoffice.html?iddelete='+kontextparam;"/>
+	<contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
+	<contextentry name="explorer.context.delete" href="javascript:location.href=editUrl+'?iddelete='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficelockuser"> 
-	<contextdisabled name="button.edit" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
-	<contextdisabled name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
+	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
+	<contextdisabled name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.overridelock" href="javascript:location.href='Backoffice.html?idlock='+kontextparam;"/>
+	<contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
 </contextmenue>
 		
 <contextmenue name="backofficelock"> 
-	<contextentry name="button.edit" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
-	<contextentry name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
+	<contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
+	<contextentry name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.unlock" href="javascript:location.href='Backoffice.html?idlock='+kontextparam;"/>
+	<contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
 	</contextmenue>
 
 <contextmenue name="backofficenolock"> 
-	<contextdisabled name="button.edit" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
-	<contextdisabled name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
+	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
+	<contextdisabled name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.lock" href="javascript:location.href='Backoffice.html?idlock='+kontextparam;"/>
+	<contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
 </contextmenue>
 
 </TEMPLATE>
@@ -180,7 +185,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form name="DELETE" action="Backoffice.html" method=get>
+<form name="DELETE" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -229,7 +234,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
 						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
-						onClick="window.top.body.admin_head.location.href='Backoffice.html';">
+						onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
 					</td>
 				</tr>
 				</table>
@@ -279,7 +284,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form name="DELETE" action="Backoffice.html" method=get>
+<form name="DELETE" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -328,7 +333,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="delete" width="100" action="" /><![CDATA[</td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
 						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
-						onClick="window.top.body.admin_head.location.href='Backoffice.html';">
+						onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
 					</td>
 				</tr>
 				</table>
@@ -400,7 +405,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
 					<td class=formular align=center><INPUT class=button width = 100                        
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href='Backoffice.html';"></td>
+						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
 				</tr>
 				</table>
 			</td>
@@ -470,7 +475,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
 					<td class=formular align=center><INPUT class=button width = 100                        
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href='Backoffice.html';"></td>
+						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
 				</tr>
 				</table>
 			</td>
@@ -540,7 +545,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
 					<td class=formular align=center><INPUT class=button width = 100                        
-						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href='Backoffice.html';"></td>
+						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
 				</tr>
 				</table>
 			</td>
@@ -568,7 +573,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 	<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><Method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js"></SCRIPT>
 </HEAD>
 <HTML>
-	<BODY onLoad="window.top.body.admin_head.location.href='Backoffice.html';">
+	<BODY onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
 	</BODY>
 </HTML>
 ]]>
