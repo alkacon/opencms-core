@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/04/07 07:39:37 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/04/28 22:24:42 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,12 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringSubstitution;
-
-import org.opencms.file.CmsObject;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -52,7 +51,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class CmsLinkManager {
     
@@ -237,27 +236,28 @@ public class CmsLinkManager {
             return null;
         }
 
-        // opaque uri
+        // opaque URI
         if (uri.isOpaque()) { 
             return null;
         }
         
-        // absolute uri
+        // absolute URI (i.e. uri has a scheme component like http:// ...)
         if (uri.isAbsolute()) {
             CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
             if (OpenCms.getSiteManager().isMatching(matcher)) {
                 if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                     path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
-                return OpenCms.getSiteManager().matchSite(matcher).getSiteRoot() + path + fragment + query;
+                return cms.getRequestContext().addSiteRoot(OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(), path + fragment + query);                 
             } else {
                 return null;
             }
         } 
         
-        // relative uri starting with opencms context
+        // relative URI (i.e. no scheme component, but filename can still start with "/") 
         String context = OpenCms.getSystemInfo().getOpenCmsContext();
-        if (context != null && path.startsWith(context)) {
+        if ((context != null) && path.startsWith(context)) {
+            // URI is starting with opencms context
             String siteRoot = null;
             if (relativePath != null) {
                 siteRoot = CmsSiteManager.getSiteRoot(relativePath);
@@ -266,18 +266,18 @@ public class CmsLinkManager {
             // relative path contains a site root
             // so, we are in the root site and have to add this path as site prefix
             if (siteRoot != null) {
-                return siteRoot + path.substring(context.length()) + fragment + query;
+                return cms.getRequestContext().addSiteRoot(siteRoot, path.substring(context.length()) + fragment + query);
             } else {
                 // site root is added with standard mechanism
                 return cms.getRequestContext().addSiteRoot(path.substring(context.length())) + fragment + query;
             }
         }
         
-        // uri with relative path is relative to the given relativePath if available and in a site, otherwise invalid
+        // URI with relative path is relative to the given relativePath if available and in a site, 
+        // otherwise invalid
         if (!"".equals(path) && !path.startsWith("/")) {
             if (relativePath != null) {
                 String absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(relativePath));
-                // if (absolutePath.startsWith(cms.getRequestContext().getSiteRoot())) {
                 if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
                     return absolutePath + fragment + query;
                 } 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/04/28 22:24:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsRequestContext {
 
@@ -122,30 +122,42 @@ public class CmsRequestContext {
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
     }
-    
+
     /**
-     * Returns the name of a resource with the complete site root name,
-     * (e.g. /default/vfs/index.html) by adding the currently set site root prefix.<p>
+     * Adds the given site root of this context to the given resource name,
+     * taking into account special folders like "/system" where no site root must be added,
+     * and also translates the resource name with the configured the directory translator.<p>
      * 
-     * The resource name will also be translated using the directory translator.<p>
-     * 
+     * @param siteRoot the site root to add
      * @param resourcename the resource name
-     * @return the resource name including site root
+     * @return the translated resource name including site root
      */
-    public String addSiteRoot(String resourcename) {
-        if (resourcename == null) {
+    public String addSiteRoot(String siteRoot, String resourcename) {
+        if ((resourcename == null) || (siteRoot == null)) {
             return null;
         }
-        String siteRoot = getAdjustedSiteRoot(resourcename);        
+        siteRoot = getAdjustedSiteRoot(siteRoot, resourcename);        
         StringBuffer result = new StringBuffer(128);
         result.append(siteRoot);
         if (((siteRoot.length() == 0) || (siteRoot.charAt(siteRoot.length()-1) != '/'))
-              && ((resourcename.length() == 0) || (resourcename.charAt(0) != '/'))) {
+        && ((resourcename.length() == 0) || (resourcename.charAt(0) != '/'))) {
             // add slash between site root and resource if required
             result.append('/');
         }
         result.append(resourcename);
         return m_directoryTranslator.translateResource(result.toString());
+    }
+    
+    /**
+     * Adds the current site root of this context to the given resource name,
+     * and also translates the resource name with the configured the directory translator.<p>
+     * 
+     * @param resourcename the resource name
+     * @return the translated resource name including site root
+     * @see #addSiteRoot(String, String)
+     */
+    public String addSiteRoot(String resourcename) {
+        return addSiteRoot(m_siteRoot, resourcename);
     }    
 
     /**
@@ -167,20 +179,32 @@ public class CmsRequestContext {
     } 
 
     /**
-     * Returns the adjusted site root for a resoure.<p>
+     * Returns the adjusted site root for a resoure this context current site root.<p>
+     * 
+     * @param resourcename the resource name to get the adjusted site root for
+     * @return the adjusted site root for the resoure
+     * @see #getAdjustedSiteRoot(String, String)
+     */
+    public String getAdjustedSiteRoot(String resourcename) {
+        return getAdjustedSiteRoot(m_siteRoot, resourcename);
+    }
+
+    /**
+     * Returns the adjusted site root for a resoure using the provided site root as a base.<p>
      * 
      * Usually, this would be the site root for the current site.
      * However, if a resource from the /system/ folder is requested,
      * this will be the empty String.<p>
      * 
+     * @param siteRoot the site root to use
      * @param resourcename the resource name to get the adjusted site root for
-     * @return the adjusted site root for a resoure
+     * @return the adjusted site root for the resoure
      */
-    public String getAdjustedSiteRoot(String resourcename) {
+    public String getAdjustedSiteRoot(String siteRoot, String resourcename) {
         if (resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
             return "";
         } else {
-            return m_siteRoot;
+            return siteRoot;
         }  
     }
     
