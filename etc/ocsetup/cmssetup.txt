@@ -26,6 +26,7 @@ createPropertydefinition TemplateType plain
 createPropertydefinition TemplateType compatiblePlain
 createPropertydefinition TemplateType XMLTemplate
 createPropertydefinition Keywords XMLTemplate
+createPropertydefinition Description XMLTemplate
 createPropertydefinition Description page
 createPropertydefinition Keywords page
 createPropertydefinition Description plain
