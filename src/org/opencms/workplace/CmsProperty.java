@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/02/05 08:28:07 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 5.1
  */

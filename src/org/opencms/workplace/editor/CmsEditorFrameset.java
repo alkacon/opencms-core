@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace.editor;
 import com.opencms.core.CmsException;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.Enumeration;
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.12
  */

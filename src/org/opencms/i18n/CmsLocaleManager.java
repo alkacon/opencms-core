@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/locale/Attic/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.locale;
+package org.opencms.i18n;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.util.CmsStringSubstitution;
@@ -47,8 +47,8 @@ import java.util.Set;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2004/02/04 17:18:07 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.1 $
  */
 public class CmsLocaleManager {
     
@@ -71,7 +71,7 @@ public class CmsLocaleManager {
      * Initializes the CmsLocaleManager by reading the properties
      * <code>locale.available</code>
      * <code>locale.default</code>
-     * in <code>opencms.properties</code>
+     * in <code>opencms.properties</code>.<p>
      *
      * @param driverManager the driver manager
      * @param configuration the configuration from <code>opencms.properties</code>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.report;
 
-import org.opencms.locale.CmsMessages;
+import org.opencms.i18n.CmsMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public abstract class A_CmsReport implements I_CmsReport {
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/05 08:28:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 
 /**
@@ -52,7 +52,7 @@ import org.opencms.main.OpenCms;
  * @see org.opencms.workplace.I_CmsDialogHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/02/05 08:28:07 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
 
 package com.opencms.workplace;
 
-import org.opencms.locale.CmsMessages;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {

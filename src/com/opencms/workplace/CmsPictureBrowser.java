@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2004/02/05 08:28:07 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 
 /**
@@ -52,7 +52,7 @@ import org.opencms.main.OpenCms;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.55 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.56 $ $Date: 2004/02/05 08:28:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

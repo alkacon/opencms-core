@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2004/02/04 17:18:06 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2004/02/05 08:28:07 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
 
 package com.opencms.workplace;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -49,7 +49,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.67 $ $Date: 2004/02/04 17:18:06 $
+ * @version $Revision: 1.68 $ $Date: 2004/02/05 08:28:07 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault {

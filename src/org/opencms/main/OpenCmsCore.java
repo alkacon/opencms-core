@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,8 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
-import org.opencms.locale.CmsLocaleManager;
-import org.opencms.locale.I_CmsLocaleHandler;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.I_CmsLocaleHandler;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.security.CmsSecurityException;
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * @since 5.1
  */
 public final class OpenCmsCore {

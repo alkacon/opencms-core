@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.CmsHelperMastertemplates;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.workplace.CmsChnav;
 import org.opencms.workplace.CmsProperty;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.0
  */

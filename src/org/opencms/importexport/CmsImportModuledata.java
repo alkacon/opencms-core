@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/02/04 17:18:08 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/02/05 08:28:08 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@
 
 package org.opencms.importexport;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.18 $ $Date: 2004/02/04 17:18:08 $
+ * @version $Revision: 1.19 $ $Date: 2004/02/05 08:28:08 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 

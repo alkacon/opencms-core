@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2004/02/05 08:28:07 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
 
 package com.opencms.workplace;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsTree;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -59,7 +59,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.65 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.66 $ $Date: 2004/02/05 08:28:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2004/02/05 08:28:07 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
 
 package com.opencms.workplace;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsStaticExportThread;
@@ -47,7 +47,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

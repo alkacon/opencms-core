@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
  
 package org.opencms.report;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.util.CmsStringSubstitution;
 
 import com.opencms.core.CmsException;
@@ -46,7 +46,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsHtmlReport extends A_CmsReport {
     

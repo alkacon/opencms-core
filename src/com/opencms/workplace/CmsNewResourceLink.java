@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/02/05 08:28:07 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -57,7 +57,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.54 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.55 $ $Date: 2004/02/05 08:28:07 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault {

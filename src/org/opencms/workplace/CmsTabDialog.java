@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 
 import com.opencms.flex.jsp.CmsJspActionElement;
 
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2004/02/04 17:18:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
  
 package org.opencms.db.mysql;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 
 
@@ -41,7 +41,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2004/02/04 17:18:08 $ 
+ * @version $Revision: 1.11 $ $Date: 2004/02/05 08:28:08 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {

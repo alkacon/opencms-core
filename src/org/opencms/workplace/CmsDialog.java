@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.util.CmsStringSubstitution;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.1
  */

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/locale/Attic/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/01/23 10:35:09 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.locale;
+package org.opencms.i18n;
 
 import org.opencms.main.OpenCms;
 
@@ -38,13 +38,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/01/23 10:35:09 $
+ * @version $Revision: 1.1 $ $Date: 2004/02/05 08:28:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
     /**
-     * @see org.opencms.locale.I_CmsLocaleHandler#getLocaleName(com.opencms.file.CmsRequestContext, java.lang.String)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocaleName(com.opencms.file.CmsRequestContext, java.lang.String)
      */
     public String getLocaleName(
         CmsRequestContext context,

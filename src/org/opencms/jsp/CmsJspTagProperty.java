@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.jsp;
 
 import org.opencms.flex.CmsFlexController;
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
@@ -87,7 +87,7 @@ import javax.servlet.jsp.JspException;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     

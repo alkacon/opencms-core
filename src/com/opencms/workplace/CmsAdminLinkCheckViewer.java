@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkCheckViewer.java,v $
-* Date   : $Date: 2004/02/04 17:18:06 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2004/02/05 08:28:07 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
 
 package com.opencms.workplace;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
@@ -41,7 +41,7 @@ import java.util.Hashtable;
 /**
  * Template class for displaying OpenCms workplace administration synchronisation properties.
  *
- * @version $Revision: 1.9 $ $Date: 2004/02/04 17:18:06 $
+ * @version $Revision: 1.10 $ $Date: 2004/02/05 08:28:07 $
  * @author Edna Falkenhan
  */
 public class CmsAdminLinkCheckViewer extends CmsWorkplaceDefault {

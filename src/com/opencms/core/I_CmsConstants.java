@@ -1,30 +1,33 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2004/01/28 09:32:23 $
-* Version: $Revision: 1.284 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.285 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.core;
 
@@ -40,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.284 $ $Date: 2004/01/28 09:32:23 $
+ * @version $Revision: 1.285 $ $Date: 2004/02/05 08:28:08 $
  */
 public interface I_CmsConstants {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.file.CmsRegistry;
 
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.loader.CmsLoaderManager;
-import org.opencms.locale.CmsLocaleManager;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.site.CmsSiteManager;
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public final class OpenCms {
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.flex.CmsFlexResponse;
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader

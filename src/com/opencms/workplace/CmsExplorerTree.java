@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2004/02/05 08:28:07 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
 
 package com.opencms.workplace;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -51,7 +51,7 @@ import java.util.Vector;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.31 $ $Date: 2004/02/05 08:28:07 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault {

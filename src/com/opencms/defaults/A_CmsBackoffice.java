@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2004/02/05 08:28:08 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
 
 package com.opencms.defaults;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -74,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * 
  * @since 5.1
  */

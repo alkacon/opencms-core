@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/02/04 17:18:08 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2004/02/05 08:28:08 $
+ * Version: $Revision: 1.115 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.114 $
+ * @version $Revision: 1.115 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -506,9 +506,9 @@ public class CmsRegistry extends A_CmsXmlContent {
                     // encoding project:
                     String digestContent;
                     try {
-                        digestContent = org.opencms.locale.CmsEncoder.escape(new String(m_digest.digest(file.getContents()), m_cms.getRequestContext().getEncoding()), m_cms.getRequestContext().getEncoding());
+                        digestContent = org.opencms.i18n.CmsEncoder.escape(new String(m_digest.digest(file.getContents()), m_cms.getRequestContext().getEncoding()), m_cms.getRequestContext().getEncoding());
                     } catch (UnsupportedEncodingException e) {
-                        digestContent = org.opencms.locale.CmsEncoder.escape(new String(m_digest.digest(file.getContents())), m_cms.getRequestContext().getEncoding());
+                        digestContent = org.opencms.i18n.CmsEncoder.escape(new String(m_digest.digest(file.getContents())), m_cms.getRequestContext().getEncoding());
                     }
                     if (!currentChecksum.equals(digestContent)) {
                         // the file was changed, the checksums are different
@@ -2018,7 +2018,7 @@ public class CmsRegistry extends A_CmsXmlContent {
                 file.appendChild(checksum);
                 name.appendChild(newModule.getOwnerDocument().createTextNode((String)resourceNames.elementAt(i)));
                 // Encoding project:
-                checksum.appendChild(newModule.getOwnerDocument().createTextNode(org.opencms.locale.CmsEncoder.escape((String)resourceCodes.elementAt(i), m_cms.getRequestContext().getEncoding())));
+                checksum.appendChild(newModule.getOwnerDocument().createTextNode(org.opencms.i18n.CmsEncoder.escape((String)resourceCodes.elementAt(i), m_cms.getRequestContext().getEncoding())));
             }
 
             // append the files to the module-entry

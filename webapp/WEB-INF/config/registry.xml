@@ -41,7 +41,7 @@
             <class>org.opencms.workplace.editor.CmsEditorActionDefault</class>
         </editoraction>
         <localehandler>
-            <class>org.opencms.locale.CmsDefaultLocaleHandler</class>
+            <class>org.opencms.i18n.CmsDefaultLocaleHandler</class>
         </localehandler>        
         <resourceinit />
         <synchronizemodifications />

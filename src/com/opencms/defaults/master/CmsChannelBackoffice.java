@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2004/02/04 17:18:08 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2004/02/05 08:28:08 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
 
 package com.opencms.defaults.master;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;

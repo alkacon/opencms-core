@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2004/02/05 08:28:07 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
 
 package com.opencms.workplace;
 
-import org.opencms.locale.CmsEncoder;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -48,7 +48,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.65 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.66 $ $Date: 2004/02/05 08:28:07 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault {
