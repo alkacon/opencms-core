@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/09/25 15:43:41 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2001/01/17 11:06:59 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.32 $ $Date: 2000/09/25 15:43:41 $
+ * @version $Revision: 1.33 $ $Date: 2001/01/17 11:06:59 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -157,7 +157,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 	public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
 							 Hashtable parameters, String templateSelector)
 		throws CmsException {
-		I_CmsSession session= cms.getRequestContext().getSession(true);
+        I_CmsSession session= cms.getRequestContext().getSession(true);
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 		
 		// the template to be displayed
@@ -177,18 +177,29 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		String lasturl = getLastUrl(cms, parameters);   
 		
 		// TODO: check, if this is neede: String lock=(String)parameters.get(C_PARA_LOCK);
-		String filename=(String)parameters.get(C_PARA_FILE);
+		String filename=(String)parameters.get(C_PARA_FILE);        
 		if (filename != null) {
 			session.putValue(C_PARA_FILE,filename);        
 		}
+
 		filename=(String)session.getValue(C_PARA_FILE);
-		
+        
 		String newFile=(String)parameters.get(C_PARA_NAME);
-		if (newFile != null) {
-			session.putValue(C_PARA_NAME,newFile);        
-		}
-		newFile=(String)session.getValue(C_PARA_NAME);
-		
+        if(session.getValue(C_PARA_NAME) != null) {
+            if (newFile != null) {
+                // Save the new parameter of the new filename.
+                // Only do this, if the session value already exists.
+                // We use the existance of a session value as a flag
+                // For initial try / retry after exception.
+                session.putValue(C_PARA_NAME,newFile);        
+            } else {
+                // Get back the saved value (if one exists)
+                newFile=(String)session.getValue(C_PARA_NAME);
+            }            
+        }
+            
+        //newFile=(String)session.getValue(C_PARA_NAME);
+		        
 		String action = (String)parameters.get("action");
 
 		CmsResource file=(CmsResource)cms.readFileHeader(filename);
@@ -201,8 +212,13 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 	  
 		//check if the name parameter was included in the request
 		// if not, the lock page is shown for the first time    
-		if (newFile == null) {
-			session.putValue(C_PARA_NAME,file.getName());
+		//if (newFile == null) {
+		if (newFile == null || session.getValue(C_PARA_NAME) == null) {
+            if(newFile == null) {
+                session.putValue(C_PARA_NAME,file.getName());
+            } else {
+                session.putValue(C_PARA_NAME, newFile);
+            }
 		} else {
 			if (action== null) {
 				template="wait";                
@@ -244,7 +260,10 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 					
 					String parent=file.getParent();
 					try {     
-					   // first create the new folder
+                        if(!cms.accessWrite(filename)) {
+                            throw new CmsException(filename, CmsException.C_NO_ACCESS);
+                        }
+                        // first create the new folder
 					   cms.copyFolder(filename,parent+newFile+"/");
 									
 						// then copy all folders
@@ -296,7 +315,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 						
 					} catch (CmsException ex) {
 						// something went wrong, so remove all session parameters
-						session.removeValue(C_PARA_FILE);
+						//session.removeValue(C_PARA_FILE); don't delete this. We really need this to try again.
 	    		        session.removeValue(C_PARA_NAME);
 						throw ex;
 					}

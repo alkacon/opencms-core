@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2001/01/03 15:42:33 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2001/01/17 11:06:59 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.36 $ $Date: 2001/01/03 15:42:33 $
+ * @version $Revision: 1.37 $ $Date: 2001/01/17 11:06:59 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -281,8 +281,10 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 					Vector allFiles=new Vector();
 					getAllResources(cms,filename,allFiles,allFolders);
 		  
-					try {     
-					
+					try {     					
+                        if(!cms.accessWrite(filename)) {
+                            throw new CmsException(filename, CmsException.C_NO_ACCESS);
+                        }
 						// first creatre the new folder
 						cms.copyFolder(filename,newFolder+file.getName()+"/");
 									
