@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/03/04 13:42:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/07 15:30:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
 
 import org.dom4j.Element;
@@ -54,7 +55,7 @@ import org.dom4j.Element;
  * Lucene search configuration class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3.5
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
@@ -290,12 +291,16 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                 sourcesElement.addElement(N_SOURCE).addText((String)sourcesIterator.next());
             }
             // iterate additional params
-            Map params = searchIndex.getParams();
-            Iterator paramIterator = params.keySet().iterator();
-            while (paramIterator.hasNext()) {
-                String paramKey = (String) paramIterator.next();
-                // add <param name=""> element(s)                
-                indexElement.addElement(I_CmsXmlConfiguration.N_PARAM).addAttribute(I_CmsXmlConfiguration.A_NAME, paramKey).addText((String)params.get(paramKey));
+            ExtendedProperties indexConfiguration = searchIndex.getConfiguration();
+            if (indexConfiguration != null) {
+                Iterator it = indexConfiguration.getKeys();
+                while (it.hasNext()) {
+                    String name = (String)it.next();
+                    String value = indexConfiguration.get(name).toString();
+                    Element paramNode = indexElement.addElement(N_PARAM);
+                    paramNode.addAttribute(A_NAME, name);
+                    paramNode.addText(value);
+                }
             }
         }
         // </indexes>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/03/04 13:42:37 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/03/07 15:30:50 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.18 $ $Date: 2005/03/04 13:42:37 $
+ * @version $Revision: 1.19 $ $Date: 2005/03/07 15:30:50 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -70,8 +70,8 @@ public class CmsSearch implements Serializable, Cloneable {
     protected transient CmsObject m_cms;
 
     /** The list of fields to search. */
-    protected String m_fields;
-
+    protected String[] m_fields;
+    
     /** The index to search. */
     protected CmsSearchIndex m_index;
 
@@ -161,7 +161,12 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public String getFields() {
 
-        return m_fields;
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < m_fields.length; i++) {
+            result.append(m_fields[i]);
+            result.append(" ");
+        }
+        return result.toString();
     }
 
     /**
@@ -423,12 +428,7 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public void setField(String[] fields) {
 
-        StringBuffer fBuf = new StringBuffer();
-        for (int i = 0; i < fields.length; i++) {
-            fBuf.append(fields[i]);
-            fBuf.append(" ");
-        }
-        m_fields = fBuf.toString();
+        m_fields = fields;
         m_result = null;
         m_lastException = null;
     }

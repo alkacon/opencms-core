@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/03/04 13:42:37 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/03/07 15:30:50 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_TermHighlighter;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.29 $ $Date: 2005/03/04 13:42:37 $
+ * @version $Revision: 1.30 $ $Date: 2005/03/07 15:30:50 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -376,16 +377,18 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         I_CmsReport report = null;
         boolean writeLog = parameters.getBoolean("writeLog", false);
-        
+
         if (writeLog) {
             report = new CmsLogReport(I_CmsReport.C_BUNDLE_NAME, cms.getRequestContext().getLocale(), getClass());
         }
 
+        long startTime = System.currentTimeMillis();
         manager.updateIndex(report);
+        long runTime = System.currentTimeMillis() - startTime;
 
-        String finishMessage = "[" + this.getClass().getName() + "] " + "Reindexing finished.";
-        if (OpenCms.getLog(this).isWarnEnabled()) {
-            OpenCms.getLog(this).warn(finishMessage);
+        String finishMessage = "Finished rebuilding all search indexes, time required " + CmsStringUtil.formatRuntime(runTime);
+        if (OpenCms.getLog(this).isInfoEnabled()) {
+            OpenCms.getLog(this).info(finishMessage);
         }
         return finishMessage;
     }
