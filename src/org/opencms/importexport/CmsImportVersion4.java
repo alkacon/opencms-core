@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2003/08/18 13:50:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/27 13:57:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -153,7 +153,11 @@ public class CmsImportVersion4 extends A_CmsImport {
                 description = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
                 flags = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
                 parentgroup = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
+                if ((parentgroup!=null) && (parentgroup.length()>0)) {
+                    parentgroup = OpenCms.getDefaultUsers().translateGroup(parentgroup);
+                }
                 // import this group
+             
                 importGroup(null, name, description, flags, parentgroup);
             }
 

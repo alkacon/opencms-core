@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/08/07 09:04:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/27 13:57:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -273,13 +273,15 @@ public abstract class A_CmsImport implements I_CmsImport {
         if (description == null) {
             description = "";
         }
+       
         CmsGroup parentGroup = null;
         try {
             if ((parentgroupName != null) && (!"".equals(parentgroupName))) {
                 try {
-                    parentGroup = m_cms.readGroup(parentgroupName);
+                    parentGroup = m_cms.readGroup(parentgroupName);                   
                 } catch (CmsException exc) { }
             }
+            
             if (((parentgroupName != null) && (!"".equals(parentgroupName))) && (parentGroup == null)) {
                 // cannot create group, put on stack and try to create later
                 Hashtable groupData = new Hashtable();
@@ -299,6 +301,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
                 }
             }
+          
         } catch (Exception exc) {
             m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
