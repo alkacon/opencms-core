@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsAdjacencyTree.java,v $
- * Date   : $Date: 2003/07/03 13:29:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/07 09:31:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.flex.util.CmsUUID;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,7 +50,7 @@ import java.util.Map;
  * ArrayLists of child CmsResources.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/07/03 13:29:45 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/07 09:31:53 $
  * @since 5.1.3
  */
 public class CmsAdjacencyTree extends Object implements Serializable, Cloneable {
@@ -75,14 +76,14 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
      */
     public void addResource(CmsResource resource) {
         // get the child list of the current folder
-        List children = (List) m_treeMap.get(resource.getParentId());
+        List children = (List) m_treeMap.get(resource.getParentId().toString());
 
         if (children == null) {
             // the current folder is obviously the first child of it's parent folder
             children = (List) new ArrayList();
 
             // add the new child list as a sub-tree
-            m_treeMap.put(resource.getParentId(), children);
+            m_treeMap.put(resource.getParentId().toString(), children);
         }
 
         // add the current folder to the child list
@@ -106,7 +107,7 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
         // iterate over all adjacency lists to clear them
         Iterator i = m_treeMap.keySet().iterator();
         while (i.hasNext()) {
-            CmsUUID currentParentId = (CmsUUID) i.next();
+            String currentParentId = (String) i.next();
 
             // clear and remove the current adjacency list
             List currentAdjacencyList = (List) m_treeMap.get(currentParentId);
@@ -144,7 +145,7 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
         result.add(parentResource);
 
         // get the adjacency list with the child resources of the current parent resource
-        List children = (List) m_treeMap.get(parentResource.getId());
+        List children = (List) m_treeMap.get(parentResource.getId().toString());
         if (children == null) {
             return result;
         }
@@ -158,6 +159,21 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
 
         return result;
     }
+    
+    public List toList() {
+        List result = (List) new ArrayList();
+        List parentIdList = Arrays.asList(m_treeMap.keySet().toArray());
+                
+        Collections.sort(parentIdList);
+        Iterator i = parentIdList.iterator();
+        while (i.hasNext()) {
+            String parentId = (String) i.next();
+            List children = (List) m_treeMap.get(parentId);
+            result.addAll(children);
+        }
+        
+        return result;
+    }    
 
     /**
      * Returns true if this tree is empty.<p>

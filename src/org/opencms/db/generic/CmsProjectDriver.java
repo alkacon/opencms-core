@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/07 09:31:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.9 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.10 $ $Date: 2003/07/07 09:31:53 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1162,6 +1162,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         long publishDate = System.currentTimeMillis();
         int publishProjectId = publishProject.getId();
         Iterator i = null;
+        String projectResourcePath = null;
         
         // TODO ensure that online resources from my own project get published        
 
@@ -1169,6 +1170,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             backupVersionId = m_driverManager.getBackupVersionId();
             m_driverManager.backupProject(publishProject, backupVersionId, publishDate, currentUser);
         }
+        
+        projectResourcePath = m_driverManager.getVfsDriver().readProjectResource(publishProject);
 
         // read all folders in the offline project
         offlineFolders = m_driverManager.getVfsDriver().readFolders(publishProject, false, true);
@@ -1176,6 +1179,12 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         i = offlineFolders.iterator();
         while (i.hasNext()) {
             currentFolder = (CmsFolder)i.next();
+            currentResourceName = m_driverManager.readPath(currentUser, publishProject, currentFolder, true);
+            
+            if (!currentResourceName.startsWith(projectResourcePath)) {
+                break;
+            }
+            
             currentResourceName = CmsResource.getAbsolutePath(m_driverManager.readPath(currentUser, publishProject, currentFolder, true));
             currentExportKey = checkExport(currentResourceName, exportpoints);
             
@@ -1318,6 +1327,12 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         i = offlineFiles.iterator();
         while (i.hasNext()) {
             currentFile = (CmsFile) i.next();
+            currentResourceName = m_driverManager.readPath(currentUser, publishProject, currentFile, true);
+            
+            if (!currentResourceName.startsWith(projectResourcePath)) {
+                break;
+            }            
+            
             currentResourceName = CmsResource.getAbsolutePath(m_driverManager.readPath(currentUser, publishProject, currentFile, true));
             currentExportKey = checkExport(currentResourceName, exportpoints);
             
@@ -1539,6 +1554,12 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         i = deletedFolders.iterator();
         while (i.hasNext()) {
             currentFolder = (CmsFolder) i.next();
+            currentResourceName = m_driverManager.readPath(currentUser, publishProject, currentFolder, true);
+            
+            if (!currentResourceName.startsWith(projectResourcePath)) {
+                break;
+            }            
+            
             currentResourceName = CmsResource.getAbsolutePath(m_driverManager.readPath(currentUser, publishProject, currentFolder, true));
             currentExportKey = checkExport(currentResourceName, exportpoints);
                         

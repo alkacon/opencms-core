@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/04 16:00:24 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/07/07 09:31:53 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.20 $ $Date: 2003/07/04 16:00:24 $
+ * @version $Revision: 1.21 $ $Date: 2003/07/07 09:31:53 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1558,8 +1558,8 @@ public class CmsDriverManager extends Object {
 		checkPermissions(currentUser, currentProject, parentFolder, I_CmsConstants.C_WRITE_ACCESS);     
 
         // try to read owner and group
-        CmsUser owner = this.readUser(currentUser, currentProject, ownername);
-        CmsGroup group = this.readGroup(currentUser, groupname);
+        CmsUser owner = readUser(currentUser, currentProject, ownername);
+        CmsGroup group = readGroup(currentUser, groupname);
 
         // create a new CmsResourceObject
         if (filecontent == null) {
@@ -1572,7 +1572,8 @@ public class CmsDriverManager extends Object {
         // create the folder.
         newResource = m_vfsDriver.importResource(currentProject, parentFolder.getId(), newResource, filecontent, currentUser.getId(), isFolder);
 
-        this.clearResourceCache(newResourceName, currentProject, currentUser);
+        clearResourceCache(newResourceName, currentProject, currentUser);
+        
         // write metainfos for the folder
         m_vfsDriver.writeProperties(propertyinfos, currentProject.getId(), newResource, newResource.getType(), true);
 

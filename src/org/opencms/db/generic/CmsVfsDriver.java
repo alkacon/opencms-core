@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/04 12:03:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/07 09:31:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,14 +57,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 import source.org.apache.java.util.Configurations;
 
@@ -72,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/07/04 12:03:06 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/07 09:31:53 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -886,7 +879,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             }            
             
             // write the resource
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");           
             stmt.setString(1, resourceId.toString());
             stmt.setInt(2, newResource.getType());
             stmt.setInt(3, newResource.getFlags());
@@ -902,7 +895,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
             
-            // write the structure
+            // write the structure                                  
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
             stmt.setString(1, structureId.toString());
             stmt.setString(2, parentId.toString());
@@ -2535,6 +2528,15 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
+    /**
+     * Reads all folders from the Cms, that are in one project.<BR/>
+     *
+     * @param project The project in which the folders are.
+     *
+     * @return A Vecor of folders.
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
     public List readFolders(CmsProject currentProject, boolean includeUnchanged, boolean onlyProject) throws CmsException {
         List folders = (List) new ArrayList();
         CmsFolder currentFolder;
@@ -2581,13 +2583,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
 
     /**
-     * select a projectResource from an given project and resourcename
-     *
-     * @param project The project in which the resource is used.
-     * @param resource The resource to be read from the Cms.
-     *
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @see org.opencms.db.I_CmsVfsDriver#readProjectResource(int, java.lang.String)
      */
     public String readProjectResource(int projectId, String resourcename) throws CmsException {
         PreparedStatement stmt = null;
@@ -2616,6 +2612,36 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
         return resName;
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readProjectResource(com.opencms.file.CmsProject)
+     */
+    public String readProjectResource(CmsProject project) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        String resName = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_READ_BY_ID");
+
+            stmt.setInt(1, project.getId());
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                resName = res.getString("RESOURCE_NAME");
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + ".readProjectResource] no project resource for ID: " + project.getId(), CmsException.C_NOT_FOUND);
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        
+        return resName;
+    }    
 
     /**
      * Returns a list of all properties of a file or folder.<p>

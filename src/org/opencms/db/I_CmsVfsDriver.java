@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/04 12:03:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/07 09:31:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/07/04 12:03:06 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/07 09:31:53 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -225,7 +225,26 @@ public interface I_CmsVfsDriver {
     CmsFolder readFolder(int projectId, CmsUUID folderId) throws CmsException;
     CmsFolder readFolder(int projectId, CmsUUID parentId, String filename) throws CmsException;
     List readFolders(CmsProject currentProject, boolean includeUnchanged, boolean onlyProject) throws CmsException;
+    
+    /**
+     * Reads the project resource path for a given project and resource path,
+     * to validate if a resource path for a given project already exists.<p>
+     * 
+     * @param projectId the ID of the project for which the resource path is read
+     * @param resourcename the project's resource path
+     * @return String the project's resource path
+     * @throws CmsException if something goes wrong
+     */
     String readProjectResource(int projectId, String resourcename) throws CmsException;
+    
+    /**
+     * Reads the project resource path for a given project.<p>
+     * 
+     * @param project the project for which the resource path is read
+     * @return String the project's resource path
+     * @throws CmsException if something goes wrong
+     */
+    public String readProjectResource(CmsProject project) throws CmsException;
     
     /**
      * Reads all properties of a resource.<p>
