@@ -24,12 +24,27 @@ var EXPORTAS=14;
 
 var PRINT=15;
 
+// Indicates if the text of the editor window is already set
+var textSetted = false;
 
-// to load the file content into the editor
+// loads the file content into the editor
 function setText()
 {
-   	document.all.edit1.Text = unescape(text);
-	EDITOR.edit1.focus();
+   	// setting text can not be done now here for the text editor.
+	// MS IE 5 has problems with setting text when the editor control is
+	// not loaded. 
+	// Workaround: focus() the text editor here and set the text
+	// using the onFocus event of the editor.
+	document.all.edit1.focus();
+}
+
+// load the file content into the editor. this is called by the onFocus event of the edit control
+function setTextDelayed()
+{
+	if(! textSetted) {
+		document.all.edit1.Text = unescape(text);
+		textSetted = true;
+	}
 }
 
 function doSubmit()

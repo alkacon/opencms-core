@@ -80,22 +80,6 @@ return DisplayChanged()
 
 <table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%"> <tr> <td valign="top">
 <form 
-	name=PREVIEW 
-	id=PREVIEW
-	TARGET="PREVIEW"
-	METHOD=POST>
-	<INPUT TYPE=HIDDEN name="bodyclass">
-	<INPUT TYPE=HIDDEN name="bodyfile">
-	<INPUT TYPE=HIDDEN name="title">
-	<INPUT TYPE=HIDDEN name="action">
-	<INPUT TYPE=HIDDEN name="body">
-	<INPUT TYPE=HIDDEN name="bodytitle">
-	<INPUT TYPE=HIDDEN name="template">
-	<INPUT TYPE=HIDDEN name="editor">
-	<INPUT TYPE=HIDDEN NAME="CONTENT">
-	<INPUT TYPE=HIDDEN NAME="file">		
-</form>
-<form 
 	name=EDITOR 
 	id=EDITOR
 	METHOD=POST>
@@ -118,9 +102,26 @@ return DisplayChanged()
 </table>
 
 <hr>
+
   ]]><ELEMENT name="editor"/><![CDATA[
 </form>
-</td> </tr> </table>
+</table>
+<form 
+	name=PREVIEW 
+	id=PREVIEW
+	TARGET="PREVIEW"
+	METHOD=POST>
+	<INPUT TYPE=HIDDEN name="bodyclass">
+	<INPUT TYPE=HIDDEN name="bodyfile">
+	<INPUT TYPE=HIDDEN name="title">
+	<INPUT TYPE=HIDDEN name="action">
+	<INPUT TYPE=HIDDEN name="body">
+	<INPUT TYPE=HIDDEN name="bodytitle">
+	<INPUT TYPE=HIDDEN name="template">
+	<INPUT TYPE=HIDDEN name="editor">
+	<INPUT TYPE=HIDDEN NAME="CONTENT">
+	<INPUT TYPE=HIDDEN NAME="file">		
+</form>
 </body>
 </html>
 ]]>

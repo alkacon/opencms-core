@@ -3,7 +3,7 @@
 <TEMPLATE>
 <![CDATA[
 <!-- Buttonleiste -->
-<table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%">
+<table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu>]]><BUTTON href="javascript:doEdit(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="javascript:doEdit(3);" name="bt_save" action="" alt="save"/><![CDATA[</td>
@@ -36,15 +36,15 @@
 		<td class=menu width="100%" align=right>]]><BUTTON href="javascript:doEdit(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>
 	</tr>
 	<tr><td colspan=23><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=2 height=2></td></tr>
-
-	
+</table>
+</td></tr>	
 
 
 <!-- Inhalt -->
 <tr>
 	<td class="texteditor" colspan=23 height="100%" width=100%>
             <OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02 
-            height=100% id=edit1 name=edit1 width=100%>
+            height=100% id=edit1 name=edit1 width=100% onFocus="setTextDelayed();">
 	<PARAM NAME="_Version" VALUE="131083">
 	<PARAM NAME="_ExtentX" VALUE="22887">
 	<PARAM NAME="_ExtentY" VALUE="7223">
@@ -104,6 +104,7 @@
 	<INPUT TYPE=HIDDEN NAME="file" value="]]><PROCESS>file</PROCESS><![CDATA[">	
 </td></tr>
 </table>
+<table>
 ]]>
 </TEMPLATE>
 </WORKPLACE>
