@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/02/21 14:21:02 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2000/02/21 22:28:01 $
+ * Version: $Revision: 1.49 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,14 +36,14 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.48 $ $Date: 2000/02/21 14:21:02 $
+ * @version $Revision: 1.49 $ $Date: 2000/02/21 22:28:01 $
  */
 public interface I_CmsConstants
 {
 	/**
 	 * The version-string for the cvs.
 	 */
-	static String C_VERSION = "Version 4.0a17 Giedi Prime: Rabban";
+	static String C_VERSION = "Version 4.0a18 Giedi Prime: Rabban";
 	
 	/**
 	 * The copyright message for the cvs.

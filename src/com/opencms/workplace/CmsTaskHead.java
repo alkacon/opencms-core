@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/02/20 19:22:52 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/21 22:28:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -61,14 +61,10 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
         A_CmsRequestContext reqCont = cms.getRequestContext();
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
-		// read parameters and set them into the session
-		// is the checkbox checked?
-		if(parameters.containsKey("ALL") ) {
-			if("OK".equals(parameters.get("ALL"))) {
-				session.removeValue(C_SESSION_TASK_PROJECTNAME);
-			} else {
-				session.putValue(C_SESSION_TASK_PROJECTNAME, reqCont.currentProject().getName());
-			}
+		if("OK".equals(parameters.get("ALL"))) {
+			session.removeValue(C_SESSION_TASK_PROJECTNAME);
+		} else {
+			session.putValue(C_SESSION_TASK_PROJECTNAME, reqCont.currentProject().getName());
 		}
 		
 		// is the listbox chosen?

@@ -142,7 +142,7 @@ iMaxOpts = iMaxOpts + 1;
 	<tr><td colspan=5 class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
-				<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="return( checkDate(DATE.value) );" /><![CDATA[</td>
+				<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="return( true );" /><![CDATA[</td>
 				<td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='tasks_content.html'" /><![CDATA[</td>
 			</tr>
 			</table>
