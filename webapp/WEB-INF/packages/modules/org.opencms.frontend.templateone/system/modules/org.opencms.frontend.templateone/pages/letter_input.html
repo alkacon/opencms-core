@@ -22,7 +22,7 @@ cms.includePopup("popuphead", cms.key("letter.title"), cms.getPageUri(true));
 		<p style="padding: 2px;">
 		<%= cms.key("letter.text.page") %><br />
 		<a href="javascript:showFile('<%= cms.getPageUrl() %>');"><%= cms.getPageTitle() %></a><br />
-		<%= cms.key("letter.text.url") %><br /><%= cms.getPageUrl() %>
+		<%= cms.key("letter.text.url") %><br /><%= cms.getFormattedString(cms.getPageUrl(), '/', 80, "<br>") %>
 		</p>
 
 		<form name="letter" method="post" action="<%= cms.getFormUri() %>">

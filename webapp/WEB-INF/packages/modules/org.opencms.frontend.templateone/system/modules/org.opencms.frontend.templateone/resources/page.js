@@ -31,7 +31,7 @@ function openRecommendForm(recommendUri, pageUri, theLocale) {
 	}
 	pageUri = encodeURIComponent(pageUri); 
 	pageUri = "?__locale=" + theLocale + "&uri=" + pageUri;
-	window.open(recommendUri + pageUri, "recommend", "width=500,height=700,dependent=yes,status=no,toolbar=no,location=no,scrollbars=yes,resizable=yes");
+	window.open(recommendUri + pageUri, "recommend", "width=670,height=700,dependent=yes,status=no,toolbar=no,location=no,scrollbars=yes,resizable=yes");
 }
 
 /* open the recommend page form popup window */
@@ -41,5 +41,5 @@ function openLetterForm(letterUri, pageUri, theLocale) {
 	}
 	pageUri = encodeURIComponent(pageUri); 
 	pageUri = "?__locale=" + theLocale + "&uri=" + pageUri;
-	window.open(letterUri + pageUri, "contact", "width=500,height=700,dependent=yes,status=no,toolbar=no,location=no,scrollbars=yes,resizable=yes");
+	window.open(letterUri + pageUri, "contact", "width=670,height=700,dependent=yes,status=no,toolbar=no,location=no,scrollbars=yes,resizable=yes");
 }

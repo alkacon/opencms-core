@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateImprint.java,v $
- * Date   : $Date: 2004/10/28 14:04:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/23 11:19:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.frontend.templateone;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the imprint popup information of the pages of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTemplateImprint extends CmsTemplateBean {
     
@@ -131,7 +130,7 @@ public class CmsTemplateImprint extends CmsTemplateBean {
         try {
             // get value from configuration
             nodeValue = m_configuration.getStringValue(getCmsObject(), nodeName, getRequestContext().getLocale());
-        } catch (CmsXmlException e) {
+        } catch (Exception e) {
             // ignore this exception    
         }
         if (CmsStringUtil.isNotEmpty(nodeValue)) {
@@ -161,10 +160,10 @@ public class CmsTemplateImprint extends CmsTemplateBean {
             // get value from configuration
             nodeValue = m_configuration.getStringValue(getCmsObject(), nodeName, getRequestContext().getLocale());
             if (CmsStringUtil.isEmpty(nodeValue)) {
-                nodeValue = "";    
+                return "";    
             }
-        } catch (CmsXmlException e) {
-            // ignore this exception
+        } catch (Exception e) {
+            // ignore this exception, either configuration is not found or XML value is incorrect
         }
         return nodeValue;
     }
@@ -253,7 +252,7 @@ public class CmsTemplateImprint extends CmsTemplateBean {
         try {
             // get email value from configuration
             nodeValue = m_configuration.getStringValue(getCmsObject(), "email", getRequestContext().getLocale());
-        } catch (CmsXmlException e) {
+        } catch (Exception e) {
             // ignore this exception    
         }
         if (CmsStringUtil.isEmpty(nodeValue)) {

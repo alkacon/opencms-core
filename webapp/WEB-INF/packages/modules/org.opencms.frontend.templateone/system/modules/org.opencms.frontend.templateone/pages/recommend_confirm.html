@@ -16,7 +16,7 @@ cms.init(pageContext, request, response);
 		<p>
 		<%= cms.key("recommend.text.page") %><br />
 		<a href="javascript:showFile('<%= cms.getPageUrl() %>');"><%= cms.getPageTitle() %></a><br />
-		<%= cms.key("recommend.text.url") %><br /><%= cms.getPageUrl() %>
+		<%= cms.key("recommend.text.url") %><br /><%= cms.getFormattedString(cms.getPageUrl(), '/', 80, "<br>") %>
 		</p>
 		<p>
 		<%= cms.key("recommend.text.confirmation") %>

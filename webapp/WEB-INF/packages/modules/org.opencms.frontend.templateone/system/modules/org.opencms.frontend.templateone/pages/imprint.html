@@ -20,7 +20,7 @@ if (cms.template("content")) {
 <table class="imprint" border="0" cellpadding="2" cellspacing="1">
 <tr>
 	<td class="imprint"><%= cms.key("imprint.url") %>:</td>
-	<td class="imprint"><%= cms.getUrl() %></td>
+	<td class="imprint"><%= CmsTemplateForm.getFormattedString(cms.getUrl(), '/', 80, "<br>") %></td>
 </tr>
 <tr>
 	<td class="imprint"><%= cms.key("imprint.title") %>:</td>

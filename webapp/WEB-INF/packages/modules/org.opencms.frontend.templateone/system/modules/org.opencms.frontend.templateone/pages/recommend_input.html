@@ -22,7 +22,7 @@ cms.includePopup("popuphead", cms.key("recommend.title"), cms.getPageUri(true));
 		<p>
 		<%= cms.key("recommend.text.page") %><br />
 		<a href="javascript:showFile('<%= cms.getPageUrl() %>');"><%= cms.getPageTitle() %></a><br />
-		<%= cms.key("recommend.text.url") %><br /><%= cms.getPageUrl() %>
+		<%= cms.key("recommend.text.url") %><br /><%= cms.getFormattedString(cms.getPageUrl(), '/', 80, "<br>") %>
 		</p>
 
 		<form name="recommend" method="post" action="<%= cms.getFormUri() %>">
@@ -32,19 +32,19 @@ cms.includePopup("popuphead", cms.key("recommend.title"), cms.getPageUri(true));
 
 		<p>
 		<%= cms.key("recommend.form.email.recipient") %>*<br />
-		<input type="text" name="emailRecipient" value="<%= cms.getEmailRecipient() %>" class="popupform"><br />
+		<input type="text" name="emailRecipient" value="<%= cms.getEmailRecipient() %>" class="popupform" style="width: 100%;"><br />
 		<span class="formerror"><%= cms.getError("recipient") %></span>
 		</p>
 
 		<p>
 		<%= cms.key("recommend.form.message") %>*<br />
-		<textarea name="message" wrap="virtual" style="height: 120px; overflow: auto;" class="popupform"><%= cms.getMessage() %></textarea><br />
+		<textarea name="message" wrap="virtual" style="width: 100%; height: 120px; overflow: auto;" class="popupform"><%= cms.getMessage() %></textarea><br />
 		<span class="formerror"><%= cms.getError("message") %></span>
 		</p>
 
 		<p>
 		<%= cms.key("recommend.form.email.sender") %>*<br />
-		<input type="text" name="emailSender" value="<%= cms.getEmailSender() %>" class="popupform"><br />
+		<input type="text" name="emailSender" value="<%= cms.getEmailSender() %>" class="popupform" style="width: 100%;"><br />
 		<span class="formerror"><%= cms.getError("sender") %></span>
 		</p>
 

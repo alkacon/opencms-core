@@ -60,7 +60,7 @@ String contentLinkVisited = style.getConfigValue("content.link.visited", content
 <p>
 	<%= cms.key("letter.text.page") %>
 	<a href="<%= cms.getPageUrl() %>);"><%= cms.getPageTitle() %></a><br />
-	<%= cms.key("letter.text.url") %> <%= cms.getPageUrl() %>
+	<%= cms.key("letter.text.url") %> <%= cms.getFormattedString(cms.getPageUrl(), '/', 80, "<br>") %>
 </p>
 <p>
 	<%= cms.key("letter.form.concern.title") %> <%= cms.key("letter.form.concern." + cms.getConcern()) %><%
@@ -120,7 +120,7 @@ String contentLinkVisited = style.getConfigValue("content.link.visited", content
 
 <p>
 	<%= cms.key("letter.mail.text.url") %><br>
-	<a href="<%= cms.getPageUrl() %>"><%= cms.getPageUrl() %></a>
+	<a href="<%= cms.getPageUrl() %>"><%= cms.getFormattedString(cms.getPageUrl(), '/', 80, "<br>") %></a>
 </p>
 </div>
 <p>

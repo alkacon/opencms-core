@@ -60,7 +60,7 @@ String contentLinkVisited = style.getConfigValue("content.link.visited", content
 <p>
 	<%= cms.key("recommend.text.page") %>
 	<a href="<%= cms.getPageUrl() %>"><%= cms.getPageTitle() %></a><br />
-	<%= cms.key("recommend.text.url") %> <%= cms.getPageUrl() %>
+	<%= cms.key("recommend.text.url") %> <%= cms.getFormattedString(cms.getPageUrl(), '/', 80, "<br>") %>
 </p>
 <p>
 	<%= cms.getMessage() %>
