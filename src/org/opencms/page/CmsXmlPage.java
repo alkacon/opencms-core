@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/02/19 13:01:50 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public class CmsXmlPage {
     
@@ -281,8 +281,8 @@ public class CmsXmlPage {
      * 
      * @return the keys of bookmarked elements
      */
-    protected Set getBookmarks() {        
-        return m_bookmarks.keySet(); 
+    protected Set getBookmarks() {
+        return (m_bookmarks != null)? m_bookmarks.keySet() : new HashSet(); 
     }
     
     /**
@@ -436,7 +436,8 @@ public class CmsXmlPage {
     public List getNames(Locale locale) {        
         List names = new ArrayList();
         String localeName = locale.toString();
-            for (Iterator i = getBookmarks().iterator(); i.hasNext();) {
+
+        for (Iterator i = getBookmarks().iterator(); i.hasNext();) {
             String name = (String)i.next();
             if (name.startsWith(localeName + "|")) {
                 names.add(name.substring(localeName.length() + 1));
