@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2002/06/30 22:41:41 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2002/10/21 15:25:17 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2002/06/30 22:41:41 $
+ * @version $Revision: 1.24 $ $Date: 2002/10/21 15:25:17 $
  */
 public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_CmsLogChannels {
 
@@ -179,8 +179,7 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      */
     public void sendCmsRedirect(String location) throws IOException {
         String hostName;
-        if((m_clusterurl == null) || (m_clusterurl.length() < 1)) {
-            // TESTFIX (AJS) Old code: hostName = m_req.getScheme() + "://" + m_req.getHeader("HOST");                       
+        if((m_clusterurl == null) || (m_clusterurl.length() < 1)) {                      
             hostName = m_req.getScheme() + "://" + m_req.getServerName() + ":" + m_req.getServerPort();
         }
         else {
@@ -235,7 +234,6 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      */
     public void sendRedirect(String location) throws IOException {
         String shortLocation = location;
-        // TESTFIX (AJS) Old code: String hostName = m_req.getHeader("HOST");
         String hostName = m_req.getServerName() + ":" + m_req.getServerPort();
         // remove 'http', '://', servername and '/servlets/opencms' and send CmsRedirect
         if(shortLocation.startsWith(m_req.getScheme())) {
