@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2001/08/23 09:38:27 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/10/12 16:57:51 $
+* Version: $Revision: 1.10.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,6 +58,12 @@ public class CmsSetup {
    *  or advanced (true) setup
    */
   private boolean m_setupType;
+
+  /**
+   * name of the database (mysql)
+   */
+  private String m_database;
+
 
   /**
    * database password used to drop and create database
@@ -1033,17 +1039,11 @@ public class CmsSetup {
   }
 
   public String getDb() {
-      String temp = m_dbSetupProps.getProperty("database");
-      if(temp != null)  {
-          return temp;
-      }
-      else  {
-          return "";
-      }
+    return m_database;
   }
 
   public void setDb(String db)  {
-      m_dbSetupProps.put("database",db);
+    m_database = db;
   }
 
   public Hashtable getReplacer() {
