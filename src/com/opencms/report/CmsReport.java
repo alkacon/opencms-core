@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsReport.java,v $
-* Date   : $Date: 2002/05/31 13:20:58 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/12/04 18:32:38 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -121,7 +121,17 @@ public class CmsReport implements I_CmsReport{
      */
     public void addString(String value){
         m_type.add(C_TYPE_STRING);
-        m_content.add(value);
+        // replace all " with ' (otherwise the generated JavaScript will not work)
+        value = value.replace('\"', '\'');
+        // now exchange all linefeeds with <br> (otherwise the generated JavaScript will not work)
+        // this is esp. required for exception stack traces that might be added here
+        StringTokenizer tok = new StringTokenizer(value, "\r\n");
+        String brValue = "";
+        while (tok.hasMoreTokens()) {
+            brValue += tok.nextToken();
+            if (tok.hasMoreTokens()) brValue += "<br>";
+        }        
+        m_content.add(brValue);
     }
 
     /**
