@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.28 Chusuk       - 0x December 2001
+OpenCms 4.5.28 Chusuk       - 07 December 2001
 ! Added 3 new methods to the Template for getting the keywords and description property and one for
   getting a property named in the tagcontent.
 ! When creating a project you can choose if you want to export static resources after the project is published.
