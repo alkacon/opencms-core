@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/22 08:28:43 $
-* Version: $Revision: 1.415 $
+* Date   : $Date: 2003/09/22 10:57:34 $
+* Version: $Revision: 1.416 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.415 $
+ * @version $Revision: 1.416 $
  */
 public class CmsObject {
 
@@ -2550,11 +2550,9 @@ public class CmsObject {
         CmsUser newUser = m_driverManager.loginUser(m_context, username, password, remoteAddress);
         // init the new user
         init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
-
+        // fire a login event
         this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
-
         // return the user-name
-        this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
         return (newUser.getName());
     }
 
