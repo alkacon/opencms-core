@@ -1,0 +1,48 @@
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_edithtml.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+//<!--
+backurl="administration_content_foren.html";
+foldersmainurl='administration_content_foren_folders';
+headmainurl='administration_head_foren';
+
+forward="administration_content_foren_folders_p2.html";
+
+function goforward(){
+	parent.admin_content.location.href=forward;
+	parent.admin_head.location.href=headmainurl+"_p2.html";
+}
+
+function contextHelp()
+{
+	opensmallwin('help/de/help_frameset.html', 'Hilfe', 310, 600);
+}
+function viewSelection_forum(){
+	parent.admin_content.location.href=foldersmainurl+document.head.forum_type.options[document.head.forum_type.selectedIndex].value;
+	parent.admin_head.location.href=headmainurl+document.head.forum_type.options[document.head.forum_type.selectedIndex].value;
+}
+function viewSelection_page(){
+	parent.admin_content.location.href=foldersmainurl+document.head.page.options[document.head.forum_type.selectedIndex].value;
+	parent.admin_head.location.href=headmainurl+document.head.page.options[document.head.page.selectedIndex].value;
+}
+
+//-->
+</SCRIPT>
+</head>
+
+<body bgcolor="#C0C0C0" background="pics/bg_grau.gif"  bgproperties=fixed>
+<form name="head" id="head">
+  <table cellspacing=0 cellpadding=0 border=0>
+    <tr valign=center> 
+      <td class=menu nowrap width=32px><a href="javascript:location.href='administration_head_2.html';" onclick="parent.admin_content.location.href=backurl;" onMouseDown="ChPush('bt_back')" onMouseUp="ChOn('bt_back')" onMouseOver="ChOn('bt_back')" onMouseOut="ChOff('bt_back')"><img src="pics/bt_back_off.gif" name="bt_back" alt="Zurück" border=0 width=32 heigth=32 height="32"></a></td>
+      <!-- <td class=menu nowrap width=32px><IMG SRC="pics/bt_up_in.gif" alt="Aufwärts" name="bt_up" border=0 width=32 height=32></td>--> 
+      <td class=menu nowrap width=32px><a href="administration_content_foren_manager_types_new.html" target="admin_content" onMouseDown="ChPush('bt_new')" onMouseUp="ChOn('bt_new')" onMouseOver="ChOn('bt_new')" onMouseOut="ChOff('bt_new')"> 
+        <IMG SRC="pics/bt_new_off.gif" alt="Neuer Forentyp" name="bt_new" border=0 width=32 heigth=32 height="32"></a></td>
+</table>
+</form>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '5_2_6_2.html';
+}
+
+function check() {
+	if ((!document.NEU.READ.checked)&&(document.NEU.WRITE.checked))
+		{
+		document.NEU.WRITE.checked=false;
+		}
+}
+function inputOK() {
+	if (document.NEU.NAME.value=="")
+	{	
+		return false;
+	} 
+	if (document.NEU.OWNER.value=="")
+	{
+		return false;
+	}
+	return true;
+}
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+
+<link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+
+</HEAD>
+
+<body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed onLoad="window.top.body.admin_head.admincontenturl='administration_content_picgallery_folders.html'" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<!-- Beginn neue Datei Anlegen -->
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id="NEU" name="NEU" action="administration_content_foren_threads.html" onSubmit="return checkFormData('NEU','NAME',null)">
+<table border=2 cellspacing=0 cellpadding=0 width=555px>
+<tr><td><table cellspacing=0 cellpadding=5 border=0 width=100%>
+<tr>
+                  <td colspan=2 class=head><img src="pics/ic_file_news.gif" width="16" height="16" align="absmiddle">Neuen 
+                    Thread erstellen</td>
+                </tr>
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<tr>
+		          <td class=formular width=35%>Name:</td>
+		<td class=dialogtxt><INPUT type="text" size=40 class="textfeld2" id=NAME name=NAME onchange="if (inputOK()) document.NEU.FERTIG.disabled=false; else document.NEU.FERTIG.disabled=true;"></td>
+	</tr>
+	<tr>
+		          <td class=formular>Besitzer:</td>
+		<td class=dialogtxt>
+                    <INPUT type="text" size=40 class="textfeld2" id=OWNER name=OWNER onchange="if (inputOK()) document.NEU.FERTIG.disabled=false; else document.NEU.FERTIG.disabled=true;" value="a.kanzior">
+                  </td>
+	</tr>
+	<tr>
+		<td class=formular>&nbsp;</td>
+		<td class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular width=50% align=center><INPUT disabled class=button width=100 type="submit" value="Fertig stellen" id=FERTIG name=FERTIG></td>
+				<td class=formular width=50% align=center><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='administration_content_foren_threads.html';"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+</form>
+		<center>
+        <a href="administration_content_foren_threads_new_01.html">[Fehlermeldung]</a>
+</center>
+</td></tr>
+</table>
+
+
+</body>
+</HTML>
