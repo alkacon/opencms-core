@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/01/31 17:03:50 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/02/01 23:01:07 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.60 $ $Date: 2003/01/31 17:03:50 $
+ * @version $Revision: 1.61 $ $Date: 2003/02/01 23:01:07 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -193,8 +193,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             result = getData("bodytag");
         }
         else {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Cannot find \"bodytag\" tag in XML template file " + getFilename() + ".");
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG) ) {
+                A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Cannot find \"bodytag\" tag in XML template file " + getFilename() + ".");
             }
         }
         return result;
