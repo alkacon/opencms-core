@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/09/25 15:53:43 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/10/11 22:06:32 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2000/09/25 15:53:43 $
+ * @version $Revision: 1.17 $ $Date: 2000/10/11 22:06:32 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,
 																   I_CmsWpConstants,
@@ -219,7 +219,7 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
 	 */
 	private void mergeLanguageFiles(CmsObject cms, String language) throws CmsException {
 		Vector langFiles = new Vector();
-		langFiles = cms.getFilesInFolder(m_languagePath + language + "/");
+		langFiles = cms.getFilesInFolderRecursively(m_languagePath + language + "/");
 		CmsFile file = null;
 		for(int i=0; i < langFiles.size(); i++) {
 			file = (CmsFile)langFiles.elementAt(i);
