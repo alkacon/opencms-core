@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/01 10:39:58 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/08/01 12:27:24 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.44 $ $Date: 2003/08/01 10:39:58 $
+ * @version $Revision: 1.45 $ $Date: 2003/08/01 12:27:24 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1165,9 +1165,13 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             currentResourceName = m_driverManager.readPath(context, currentFolder, true);
             currentLock = m_driverManager.getLock(context, currentResourceName);
 
-            // the resource must have either a new/deleted/changed state in the link or a new/delete/changed state in the resource record
-            publishCurrentResource = currentFolder.getState() > I_CmsConstants.C_STATE_UNCHANGED;
-            
+            // the resource must have either a new/deleted state in the link or a new/delete state in the resource record
+            publishCurrentResource = currentFolder.getState() > I_CmsConstants.C_STATE_CHANGED;
+
+            // or the resource must have a changed state and must be changed in the project that is currently published
+            if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED)
+                publishCurrentResource = currentFolder.getProjectId() == context.currentProject().getId();
+                            
             // the resource must be in one of the paths defined for the project
             // attention: the resource needs a full resource path ! (so readPath has to be done before !)            
             publishCurrentResource = publishCurrentResource && m_driverManager.isInsideProject(projectResources, currentFolder);
@@ -1326,8 +1330,12 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             currentResourceName = m_driverManager.readPath(context, currentFile, true);
             currentLock = m_driverManager.getLock(context, currentResourceName);
             
-            // the resource must have either a new/deleted/changed state in the link or a new/delete/changed state in the resource record
-            publishCurrentResource = currentFile.getState() > I_CmsConstants.C_STATE_UNCHANGED;
+            // the resource must have either a new/deleted state in the link or a new/delete state in the resource record
+            publishCurrentResource = currentFile.getState() > I_CmsConstants.C_STATE_CHANGED;
+            
+            // or the resource must have a changed state and must be changed in the project that is currently published
+            if (currentFile.getState() == I_CmsConstants.C_STATE_CHANGED)
+                publishCurrentResource = currentFile.getProjectId() == context.currentProject().getId();
             
             // the resource must be in one of the paths defined for the project
             // attention: the resource needs a full resource path ! (so readPath has to be done before !)
