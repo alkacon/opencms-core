@@ -26,6 +26,7 @@ OpenCms 4.5.11 Gom Jabbar   - 24 September 2001
   are excluded.
 - When a project is deleted the waiting page is shown with the blue growing picture.
 - A new project includes /content/elements/ if the extendedNavigation-flag is set.
+- Changes for compatibility with Tomcat 4.0
   
 OpenCms 4.4.3   Gom Jabbar   - 13 September 2001
 - new major release created

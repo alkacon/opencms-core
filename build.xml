@@ -12,7 +12,7 @@
     <property name="build.home"                 value="../build"/>
     <property name="zip.home"                   value="../zip"/>
     <property name="pdf.home"                   value="../pdf"/>
-    <property name="tomcat.home"                value="${env.TOMCAT_HOME}" />
+    <property name="tomcat.home"                value="${env.CATALINA_HOME}" />
     <property name="build.classes"              value="${build.home}/classes"/>
     <property name="build.inputlib"             value="../ExternalComponents"/>
     <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>

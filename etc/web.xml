@@ -1,6 +1,6 @@
 <!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
-        "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
 
@@ -12,10 +12,10 @@
 
     <servlet>
       <servlet-name>OpenCmsServlet</servlet-name>
-      <servlet-class>com.opencms.boot.OpenCmsServlet</servlet-class>
       <description>
         OpenCms is one servlet that handles all requests.
       </description>
+      <servlet-class>com.opencms.boot.OpenCmsServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -27,21 +27,20 @@
       <servlet-name>OpenCmsServlet</servlet-name>
       <url-pattern>*.jsp</url-pattern>
     </servlet-mapping>
-	
+    
     <servlet-mapping>
       <servlet-name>jsp</servlet-name>
-      <url-pattern>*.ocjsp</url-pattern>	  
+      <url-pattern>*.ocjsp</url-pattern>      
     </servlet-mapping>
-	
-	<welcome-file-list>
-		<welcome-file>index.ocjsp</welcome-file>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>index.htm</welcome-file>
-	</welcome-file-list>
-	
+    
     <session-config>
       <session-timeout>30</session-timeout>    <!-- 30 minutes -->
     </session-config>
-	
+    
+    <welcome-file-list>
+        <welcome-file>index.ocjsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.htm</welcome-file>
+    </welcome-file-list>
 </web-app>
 
