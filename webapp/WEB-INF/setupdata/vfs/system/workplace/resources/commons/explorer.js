@@ -547,8 +547,12 @@ function printList(wo) {
 					wo.write("</a>");
 				}
 			} else {
-				if ((mode == "projectview") || (mode == "galleryview") || showlinks) {
+				if ((mode == "galleryview") || showlinks) {
 					wo.writeln(vi.liste[i].path);
+				} else if (mode == "projectview" ) {	
+					wo.write("<a href=\"javascript:top.openwinfull('");
+					wo.write(vi.liste[i].path);
+					wo.writeln("');\" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].path + "</a>");
 				} else if (vi.liste[i].state == 3) {
 					wo.write(vi.liste[i].name);
 				} else if (flaturl != "") {
