@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/08/17 16:03:18 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2000/08/18 15:19:55 $
+ * Version: $Revision: 1.105 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.104 $ $Date: 2000/08/17 16:03:18 $ 
+ * @version $Revision: 1.105 $ $Date: 2000/08/18 15:19:55 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -989,10 +989,6 @@ public class CmsObject implements I_CmsConstants {
 	 /**
 	 * Gets the Registry.<BR/>
 	 *
-	 * Only the admin can do this.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * Only users, which are in the group "administrators" are granted.
 	 *
 	 * @exception Throws CmsException if access is not allowed.
 	 */
@@ -1000,7 +996,7 @@ public class CmsObject implements I_CmsConstants {
 	 public I_CmsRegistry getRegistry()
 	 	throws CmsException {
 	    return( m_rb.getRegistry(m_context.currentUser(), 
-									 m_context.currentProject() ));
+								 m_context.currentProject(),this ));
 	 }
 	/**
 	 * Returns the current request-context.

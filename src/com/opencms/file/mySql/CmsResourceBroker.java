@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/18 10:51:40 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/08/18 15:19:58 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/08/18 10:51:40 $
+ * @version $Revision: 1.21 $ $Date: 2000/08/18 15:19:58 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2821,25 +2821,18 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 /**
 	 * Gets the Registry.<BR/>
 	 *
-	 * Only the admin can do this.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * Only users, which are in the group "administrators" are granted.
 	 *
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
+	 * @param cms The actual CmsObject.
 	 * @exception Throws CmsException if access is not allowed.
 	 */
 
-	 public I_CmsRegistry getRegistry(CmsUser currentUser, CmsProject currentProject)
+	 public I_CmsRegistry getRegistry(CmsUser currentUser, CmsProject currentProject, CmsObject cms)
 	 	throws CmsException {
 	     // Check the security
-		if( isAdmin(currentUser, currentProject) ) {
-			return m_registry;
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " , 
-				CmsException.C_NO_ACCESS);
-		}
+		return m_registry;
+		
 	 }
 	/**
 	 * Returns a CmsResourceTypes.

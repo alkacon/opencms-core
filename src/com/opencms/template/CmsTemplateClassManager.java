@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2000/08/08 14:08:29 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/08/18 15:19:58 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * be cached and re-used. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/08/08 14:08:29 $
+ * @version $Revision: 1.12 $ $Date: 2000/08/18 15:19:58 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels { 
 	
@@ -128,11 +128,24 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
 		} else {
 			Vector repositories = new Vector();
 			String[] repositoriesFromConfigFile = null;
-			repositoriesFromConfigFile = cms.getConfigurations().getStringArray("repositories");
+			String[] repositoriesFromRegistry = null;
+
+			// add repositories from the configuration file
+
+			repositoriesFromConfigFile = cms.getConfigurations().getStringArray("repositories");	
 			
 			for (int i=0; i < repositoriesFromConfigFile.length; i++)
 				repositories.addElement(repositoriesFromConfigFile[i]);
 
+
+			// add the repositories from the registry
+
+			I_CmsRegistry reg=cms.getRegistry();
+			repositoriesFromRegistry = reg.getRepositories();
+
+			for (int i=0; i < repositoriesFromRegistry.length; i++)
+				repositories.addElement(repositoriesFromRegistry[i]);
+					
 			try {
 				CmsClassLoader loader = new CmsClassLoader(cms, repositories, null);
 				Class c = loader.loadClass(classname);        

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/17 16:05:56 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2000/08/18 15:19:56 $
+ * Version: $Revision: 1.99 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.98 $ $Date: 2000/08/17 16:05:56 $
+ * @version $Revision: 1.99 $ $Date: 2000/08/18 15:19:56 $
  * 
  */
 
@@ -1112,17 +1112,14 @@ import com.opencms.core.*;
 	  /**
 	 * Gets the Registry.<BR/>
 	 *
-	 * Only the admin can do this.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * Only users, which are in the group "administrators" are granted.
 	 *
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
+	 * @param cms The actual CmsObject.
 	 * @exception Throws CmsException if access is not allowed.
 	 */
 
-	 public I_CmsRegistry getRegistry(CmsUser currentUser, CmsProject currentProject)
+	 public I_CmsRegistry getRegistry(CmsUser currentUser, CmsProject currentProject, CmsObject cms)
 	 	throws CmsException;
 	/**
 	 * Returns a CmsResourceTypes.
