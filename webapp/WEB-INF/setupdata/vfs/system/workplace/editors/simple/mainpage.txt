@@ -1,0 +1,72 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
+<title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
+
+<link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>commons/css_workplace.css">
+
+<script type="text/javascript">
+<!--
+	// Sets the Document Source-Code for later including into the editor
+	var content="<%= wp.getParamContent() %>";
+
+	// Workplacepath needed in included javascript files
+	var workplacePath="<%= cms.link("/system/workplace/") %>";
+	
+	// action parameters of the form
+	var actionExit = "<%= wp.EDITOR_EXIT %>";
+	var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
+	var actionSave = "<%= wp.EDITOR_SAVE %>";
+	
+	// Ask user whether he really wants to leave Texteditor without saving
+	function confirmExit()
+	{
+		if (confirm ("<%= wp.key("editor.message.exit") %>")) {
+			buttonAction(1);
+		}
+	}
+//-->
+</script>
+
+<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>edit.js"></script>
+
+</head>
+<body class="buttons-head" unselectable="on" onload="setContent();">
+
+<table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
+<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
+<input type="hidden" name="<%= wp.PARAM_CONTENT %>">
+<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
+<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= wp.PARAM_LOADDEFAULT %>" value="<%= wp.getParamLoaddefault() %>">
+<input type="hidden" name="<%= wp.PARAM_EDITASTEXT %>" value="<%= wp.getParamEditastext() %>">
+<input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
+<input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
+	<tr>
+		<td>
+
+<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBarStartTab(0, 5) %>
+<%= wp.button("javascript:buttonAction(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(3);", null, "save", "button.save", buttonStyle) %>
+<%
+if (wp.isHelpEnabled()) {%>
+	<%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:treewin=opensmallwin(workplacePath + 'help/" + wp.getLocale() + "/" + wp.key("help.pageeditor") + "', '" + wp.key("button.help") + "', 600, 450);treewin.focus();", null, "help", "button.help", buttonStyle) %><%
+} %>
+<td class="maxwidth">&nbsp;</td>
+<%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
+<%= wp.buttonBarSpacer(5) %>
+<%= wp.buttonBar(wp.HTML_END) %>
+
+	</td>
+</tr>
+<tr>
+<td class="texteditor" height="100%" width="100%">
+	<textarea wrap="off" name="edit1" id="edit1" onfocus="setContentDelayed();" style="width:100%; height:100%; font-family:Fixedsys, monospace"></textarea>
+</td>
+</tr>
+</form>
+</table>
+</body>
+</html>

@@ -66,7 +66,7 @@ top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.publish_directly"/>
                 <table cellspacing=0 cellpadding=5 width=100%>
                 <tr>
                     <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='publish_resource.html?action=check';"></td>
-                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='../jsp/explorer_files.html';"></td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='../views/explorer/explorer_files.jsp';"></td>
                 </tr>
                 </table>
             </td>
@@ -171,7 +171,7 @@ top.head.helpUrl=']]><LABEL value="help.explorer"/><![CDATA[';
                 <table cellspacing=0 cellpadding=5 width=100%>
                 <tr>
                     <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='publish_resource.html?action=rmlocks&fromExplorer=true&projectid=]]><PROCESS>projectid</PROCESS><![CDATA['"></td>
-                    <td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='../jsp/explorer_files.html';" /><![CDATA[</td>
+                    <td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='../views/explorer/explorer_files.jsp';" /><![CDATA[</td>
                 </tr>
                 </table>
             </td>
@@ -191,7 +191,7 @@ top.head.helpUrl=']]><LABEL value="help.explorer"/><![CDATA[';
 <TEMPLATE name="done">
 <![CDATA[
 <HTML>
-<BODY onload="location.href='../jsp/explorer_files.html';">
+<BODY onload="location.href='../views/explorer/explorer_files.jsp';">
 </BODY>
 </html>
 ]]>

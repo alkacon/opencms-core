@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/08/19 11:26:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.Locale;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.8 $ $Date: 2004/08/19 11:26:32 $
  */
 
 public interface I_CmsWpConstants {
@@ -104,6 +104,9 @@ public interface I_CmsWpConstants {
 
     /** Path to online help pages. */
     String C_VFS_PATH_HELP = C_VFS_PATH_WORKPLACE + "help/";
+    
+    /** Path to workplace views. */
+    String C_VFS_PATH_VIEWS = C_VFS_PATH_WORKPLACE + "views/";
 
     /** Directory name of content templates folder. */
     String C_VFS_DIR_TEMPLATES = "templates/";

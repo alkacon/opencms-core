@@ -87,7 +87,7 @@ top.head.helpUrl=']]><LABEL value="help.administration.cron_management"/><![CDAT
 <TEMPLATE name="done">
 <![CDATA[
 <HTML>
-<BODY onload="window.top.head.location.href='../../jsp/top_head.html'; parent.frames[1].location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/'">
+<BODY onload="window.top.head.location.href='../../views/top_head.jsp'; parent.frames[1].location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/'">
 </BODY>
 </HTML>
 ]]>

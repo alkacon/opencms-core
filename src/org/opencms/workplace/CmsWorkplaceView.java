@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceView.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/19 11:26:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package org.opencms.workplace;
  *  
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsWorkplaceView implements Comparable {
@@ -44,7 +44,7 @@ public class CmsWorkplaceView implements Comparable {
     private String m_key;
     
     /** The sort order of the view. */
-    private Integer m_order;
+    private Float m_order;
 
     /** The URI of the OpenCms VFS resource (folder) of the view. */
     private String m_uri;
@@ -56,7 +56,7 @@ public class CmsWorkplaceView implements Comparable {
      * @param uri of the view page in the OpenCms VFS
      * @param order the sort order of the view 
      */
-    public CmsWorkplaceView(String key, String uri, Integer order) {
+    public CmsWorkplaceView(String key, String uri, Float order) {
         m_key = key;
         m_uri = uri;
         m_order = order;
@@ -97,7 +97,7 @@ public class CmsWorkplaceView implements Comparable {
      * 
      * @return the sort order of this view
      */
-    public Integer getOrder() {
+    public Float getOrder() {
         return m_order;
     }
     

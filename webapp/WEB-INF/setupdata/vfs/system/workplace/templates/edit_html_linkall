@@ -283,7 +283,7 @@ Version: $Revision: 1.8 $
         <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
         <script language="JavaScript" type="text/javascript" src="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
         <script language="JavaScript" type="text/javascript" src="]]><method name="scriptsUri">opencms_edithtml.js</method><![CDATA["></script>
-        <script language="JavaScript" type="text/javascript" src="../skins/modern/files/tree.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../exportpoint/commons/tree.js"></script>
         <script language="JavaScript" type="text/javascript">
         <!--
         ]]><method name="initTree" /><![CDATA[

@@ -360,7 +360,7 @@ function doPAction(action) // which action on layer Project is clicked
         }
         case 3:
         {
-            location.href='../../../jsp/dialogs/publishproject.html?lasturl=' + encLasturl + '&projectid=' + kontextparam+ '&initial=true';
+            location.href='../../../commons/publishproject.jsp?lasturl=' + encLasturl + '&projectid=' + kontextparam+ '&initial=true';
             break;
         }
         case 4:

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2004/08/19 11:26:34 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.55 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.56 $ $Date: 2004/08/19 11:26:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -174,7 +174,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
 
                 // get the path from the workplace.ini
                 String superfolder = getConfigFile(cms).getDownGalleryPath();
-                CmsFolder folder = (CmsFolder)cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                CmsResource folder = cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                 cms.writeProperty(cms.getSitePath(folder), C_PROPERTY_TITLE, title);
                 // TODO: check how to set the appropriate access using acl 
                 /*

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/08/10 15:46:18 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/08/19 11:26:32 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,18 +42,27 @@ import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsLocaleHandler;
-import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsEventListener;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.editor.CmsEditorHandler;
-import org.opencms.workplace.editor.CmsWorkplaceEditorManager;
-import org.opencms.workplace.editor.I_CmsEditorActionHandler;
-import org.opencms.workplace.editor.I_CmsEditorHandler;
+import org.opencms.security.CmsSecurityException;
+import org.opencms.workplace.editors.CmsEditorHandler;
+import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
+import org.opencms.workplace.editors.I_CmsEditorActionHandler;
+import org.opencms.workplace.editors.I_CmsEditorHandler;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -65,11 +74,11 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.3.1
  */
-public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEventListener {
+public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     /** The default encoding for the workplace (UTF-8). */
     // TODO: Encoding feature of the workplace is not active 
@@ -162,12 +171,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
         // m_defaultEncoding = C_DEFAULT_WORKPLACE_ENCODING;
         m_defaultUserSettings = new CmsDefaultUserSettings();
-        
-        // register this object as event listener
-        OpenCms.addCmsEventListener(this, new int[] {
-                I_CmsEventListener.EVENT_WORKPLACE_UPDATE,
-         });
-        
     }
     
     /**
@@ -225,47 +228,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
     
     /**
-     * Adds a new view to the workplace configuration.<p>
-     * 
-     * @param key the view key
-     * @param uri the view uri
-     * @param order the view order
-     */
-    public void addView(String key, String uri, String order) {
-        CmsWorkplaceView view = new CmsWorkplaceView(key, uri, Integer.valueOf(order));
-        m_views.add(view);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace view       : " + view.getUri());
-        }          
-    }
-    
-    /**
      * Returns if the autolock resources feature is enabled.<p>
      * 
      * @return true if the autolock resources feature is enabled, otherwise false
      */
     public boolean autoLockResources() {
         return m_autoLockResources;
-    }
-        
-    /**
-     * Implements the CmsEvent interface, the to trigger the workplace to reinitalize several settings like locales, editors, etc. <p>
-     *
-     * @param event CmsEvent that has occurred
-     */
-    public synchronized void cmsEvent(CmsEvent event) {  
-
-        switch (event.getType()) {       
-            case I_CmsEventListener.EVENT_WORKPLACE_UPDATE:
-                CmsObject cms = (CmsObject)event.getData().get(I_CmsEventListener.KEY_CMSOBJECT); 
-                // re-initialize the locale handler
-                initHandler(cms); 
-                // re-initilize the editor manager           
-                m_editorManager = new CmsWorkplaceEditorManager(cms);
-                break;
-            default:
-                // no operation
-        }
     }
     
     /**
@@ -515,8 +483,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * @throws CmsException if something goes wrong
      */    
     public void initialize(CmsObject cms) throws CmsException {
-        // sort the views
-        Collections.sort(m_views);
+        if (!cms.isAdmin()) {
+            // current user has no administration rights, throw exception
+            throw new CmsSecurityException("Workplace manager initialization can only be done by an OpenCms Administrator", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+        }
+        // initialize the workplace views
+        initWorkplaceViews(cms);
         // initialize the workplace editor manager
         m_editorManager = new CmsWorkplaceEditorManager(cms);
         // initialize the locale handler
@@ -696,11 +668,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
     
     /**
-     * Initilizes the workplace locale set.<p>
+     * Initializes the workplace locale set.<p>
      * 
      * Currently, this is defined by the existence of a special folder 
      * <code>/system/workplace/locales/{locale-name}/</code>.
-     * This is likley to change in future implementations.<p>
+     * This is likely to change in future implementations.<p>
      * 
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @return the workplace locale set
@@ -727,5 +699,77 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             m_locales.add(new Locale(locale.getLanguage()));         
         }        
         return m_locales;
+    }
+    
+    /**
+     * Initializes the available workplace views.<p>
+     * 
+     * Currently, this is defined by iterating the subfolder of the folder 
+     * <code>/system/workplace/views/</code>.
+     * These subfolders must have the properties NavPos, NavText and default-file set.<p>
+     * 
+     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
+     * @return the available workplace views
+     */
+    private List initWorkplaceViews(CmsObject cms) {
+        List viewFolders = new ArrayList();
+        try {
+            // get the subfolders of the "views" folder
+            viewFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_VIEWS);
+        } catch (CmsException e) {
+            OpenCms.getLog(this).error("Workplace init: Unable to read views folder '" + I_CmsWpConstants.C_VFS_PATH_VIEWS + "', no views available!");
+            // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
+            viewFolders = new ArrayList();            
+        }
+        m_views = new ArrayList(viewFolders.size()); 
+        for (int i=0; i<viewFolders.size(); i++) {
+            // loop through all view folders
+            CmsFolder folder = (CmsFolder)viewFolders.get(i);
+            String folderPath = cms.getSitePath(folder);
+            try {
+                // get view information from folder properties
+                String order = cms.readPropertyObject(folderPath, I_CmsConstants.C_PROPERTY_NAVPOS, false).getValue();
+                String key = cms.readPropertyObject(folderPath, I_CmsConstants.C_PROPERTY_NAVTEXT, false).getValue();
+                String viewUri = cms.readPropertyObject(folderPath, I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false).getValue();
+                if (viewUri == null) {
+                    // no view URI found
+                    viewUri = folderPath;
+                } else if (!viewUri.startsWith("/")) {
+                    // default file is in current view folder, create absolute path to view URI
+                    viewUri = folderPath + viewUri;
+                }
+                if (order == null) {
+                    // no valid NavPos property value found, use loop count as order value
+                    order = "" + i;    
+                }
+                Float orderValue;
+                try {
+                    // create Float order object
+                    orderValue = Float.valueOf(order);    
+                } catch (NumberFormatException e) {
+                    // String was not formatted correctly, use loop counter
+                    orderValue = Float.valueOf("" + i);    
+                }
+                if (key == null) {
+                    // no language key found, use default String to avoid NullPointerException
+                    key = "View " + i;
+                }
+                // create new view object
+                CmsWorkplaceView view = new CmsWorkplaceView(key, viewUri, orderValue);
+                m_views.add(view);
+                // log the view
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info (". Workplace view       : " + view.getUri());
+                }
+            } catch (CmsException e) {
+                // should usually never happen
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error reading view folder: " + folderPath);
+                }
+            } 
+        }
+        // sort the views by their order number
+        Collections.sort(m_views);
+        return m_views;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/08/19 11:26:32 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides methods for tab styled dialogs.<p> 
  * 
- * Extend this class in order to create a tab styled dialog and provide a method
- * getTabs() in the new dialog class which should return a list of localized Strings
+ * Extend this class in order to create a tab styled dialog and provide the methods
+ * getTabs() and getTabParameterOrder() in the new dialog class which should return lists
  * which represent the tabs of the dialog.<p> 
  * 
  * This class is used for the following dialogs:
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */
@@ -344,13 +344,13 @@ public abstract class CmsTabDialog extends CmsDialog {
     public String htmlStart(String helpUrl) { 
         String stylesheet = null;
         if ("true".equals(getParamIsPopup())) {
-            stylesheet = "files/css_popup.css";
+            stylesheet = "commons/css_popup.css";
         }
         StringBuffer result = new StringBuffer(super.pageHtmlStyle(HTML_START, null, stylesheet));
         if (getSettings().isViewExplorer()) {
             result.append("<script type=\"text/javascript\" src=\"");
             result.append(getSkinUri());
-            result.append("files/explorer.js\"></script>\n");
+            result.append("commons/explorer.js\"></script>\n");
         }
         result.append("<script type=\"text/javascript\">\n");
         if (helpUrl != null) {          

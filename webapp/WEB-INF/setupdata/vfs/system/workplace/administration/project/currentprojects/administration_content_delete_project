@@ -189,7 +189,7 @@ if(top.frames[0].document.wpProjectSelect.wpProject.options[top.frames[0].docume
 
 <dontswitchheadproject>
 <![CDATA[
-<BODY onload="window.top.head.location.href='../../../jsp/top_head.html';">
+<BODY onload="window.top.head.location.href='../../../views/top_head.jsp';">
 ]]>
 </dontswitchheadproject>
 

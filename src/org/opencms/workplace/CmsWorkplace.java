@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/07/18 16:34:53 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2004/08/19 11:26:33 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,12 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsTree;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -78,38 +81,38 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.87 $
+ * @version $Revision: 1.88 $
  * 
  * @since 5.1
  */
 public abstract class CmsWorkplace {
     
     /** Constant for the JSP workplace path. */
-    protected static final String C_PATH_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/";
+    public static final String C_PATH_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE;
     
     /** Constant for the JSP dialogs path. */
-    protected static final String C_PATH_DIALOGS = C_PATH_WORKPLACE + "dialogs/";
+    public static final String C_PATH_DIALOGS = C_PATH_WORKPLACE + "commons/";
     
     /** Constant for the JSP common files (e.g. error page) path. */
-    protected static final String C_PATH_DIALOG_COMMON = C_PATH_DIALOGS + "common/";
+    protected static final String C_PATH_DIALOG_COMMON = C_PATH_DIALOGS + "includes/";
     
     /** Constant for the JSP common close dialog page. */
-    protected static final String C_FILE_DIALOG_CLOSE = C_PATH_DIALOG_COMMON + "closedialog.html";
+    protected static final String C_FILE_DIALOG_CLOSE = C_PATH_DIALOG_COMMON + "closedialog.jsp";
     
     /** Constant for the JSP common confirmation dialog. */
-    protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_PATH_DIALOG_COMMON + "confirmation.html";
+    protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_PATH_DIALOG_COMMON + "confirmation.jsp";
     
     /** Constant for the JSP common error dialog. */
-    protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_PATH_DIALOG_COMMON + "error.html";
+    protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_PATH_DIALOG_COMMON + "error.jsp";
     
     /** Constant for the JSP common wait screen. */
-    protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_PATH_DIALOG_COMMON + "wait.html";
+    protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_PATH_DIALOG_COMMON + "wait.jsp";
     
     /** Constant for the JSP explorer filelist file. */
-    protected static final String C_FILE_EXPLORER_FILELIST = C_PATH_WORKPLACE + "explorer_files.html";
+    public static final String C_FILE_EXPLORER_FILELIST = C_PATH_WORKPLACE + "views/explorer/explorer_files.jsp";
     
     /** Constant for the JSP common report page. */
-    protected static final String C_FILE_REPORT_OUTPUT = C_PATH_DIALOG_COMMON + "report.html";
+    protected static final String C_FILE_REPORT_OUTPUT = C_PATH_DIALOG_COMMON + "report.jsp";
     
     /** Key name for the request attribute to reload the folder tree view. */
     protected static final String C_REQUEST_ATTRIBUTE_RELOADTREE = "__CmsWorkplace.RELOADTREE";
@@ -211,7 +214,7 @@ public abstract class CmsWorkplace {
      */
     public static String getSkinUri() {
         if (m_skinUri == null) {
-            m_skinUri = OpenCms.getSystemInfo().getContextPath() + "/skins/modern/";
+            m_skinUri = OpenCms.getSystemInfo().getContextPath() + "/resources/";
         }
         return m_skinUri;      
     }
@@ -314,7 +317,7 @@ public abstract class CmsWorkplace {
         // get the default view from the user settings
         settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));
         
-        // save the visible resource types for the current user
+        // save the editable resource types for the current user
         settings.setResourceTypes(initWorkplaceResourceTypes(cms));
                   
         return settings;   
@@ -332,26 +335,35 @@ public abstract class CmsWorkplace {
     }
         
     /**
-     * Initializes a Map with all visible resource types for the current user.<p>
+     * Initializes a Map with all editable resource types for the current user.<p>
      * 
      * @param cms the CmsObject
-     * @return all visible resource types in a map with the resource type id as key value
+     * @return all editable resource types in a map with the resource type id as key value
      */
     private static Map initWorkplaceResourceTypes(CmsObject cms) {
         Map resourceTypes = new HashMap();
         List allResTypes = OpenCms.getResourceManager().getResourceTypes();
         for (int i=0; i<allResTypes.size(); i++) {
+            // loop through all types and check which types can be displayed and edited for the user
             I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
-            // loop through all types and check which types can be displayed for the user
-            try {                
-                cms.readResource(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + type.getTypeName());
-                resourceTypes.put(new Integer(type.getTypeId()), type);               
+            // get the settings for the resource type
+            CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+            // determine if this resource type is editable for the current user
+            CmsPermissionSet permissions;
+            try {
+                // get permissions of the current user
+                permissions = typeSettings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
             } catch (CmsException e) {
-                // can usually be ignored
-                if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
-                    OpenCms.getLog(CmsWorkplace.class).info(e);
-                }
-            }                    
+                // error reading the groups of the current user
+                permissions = typeSettings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+                if (OpenCms.getLog(CmsWorkplace.class).isWarnEnabled()) {
+                    OpenCms.getLog(CmsTree.class).warn("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
+                }      
+            }
+            if (permissions.getPermissionString().indexOf("+w") != -1) {
+                // user is allowed to edit this resource type
+                resourceTypes.put(new Integer(type.getTypeId()), type);
+            }      
         }
         return resourceTypes;      
     }        
@@ -1205,7 +1217,7 @@ public abstract class CmsWorkplace {
      * 
      * @param segment the HTML segment (START / END)
      * @param title the title of the page, if null no title tag is inserted
-     * @param stylesheet the used style sheet, usually "files/css_workplace.css"
+     * @param stylesheet the used style sheet, usually "commons/css_workplace.css"
      * @return the default html for a workplace page
      */
     public String pageHtmlStyle(int segment, String title, String stylesheet) {
@@ -1226,7 +1238,7 @@ public abstract class CmsWorkplace {
             if (stylesheet != null) {
                 result.append(stylesheet);
             } else {
-                result.append("files/css_workplace.css"); 
+                result.append("commons/css_workplace.css"); 
         }        
             result.append("\">\n");
             return result.toString();

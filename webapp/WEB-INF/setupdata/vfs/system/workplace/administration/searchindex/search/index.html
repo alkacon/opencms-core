@@ -17,7 +17,7 @@
 %><%   
     
     // Create a JSP action element
-    org.opencms.jsp.CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+    CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
     
     // Get the search manager
     CmsSearchManager searchManager = OpenCms.getSearchManager(); 

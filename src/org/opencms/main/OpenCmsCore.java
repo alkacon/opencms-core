@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/08/18 11:53:29 $
- * Version: $Revision: 1.139 $
+ * Date   : $Date: 2004/08/19 11:26:34 $
+ * Version: $Revision: 1.140 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.139 $
+ * @version $Revision: 1.140 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1493,7 +1493,7 @@ public final class OpenCmsCore {
         
         errorHtml = CmsStringUtil.substitute(errorHtml, "${title}", messages.key("error.system.message"));
         errorHtml = CmsStringUtil.substitute(errorHtml, "${encoding}", getSystemInfo().getDefaultEncoding());
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${warnimageuri}", CmsWorkplace.getSkinUri() + "explorer/error.gif");
+        errorHtml = CmsStringUtil.substitute(errorHtml, "${warnimageuri}", CmsWorkplace.getSkinUri() + "commons/error.gif");
         if (cause.getLocalizedMessage() != null) {
             errorHtml = CmsStringUtil.substitute(errorHtml, "${message}", "<p><b>" + CmsStringUtil.substitute(cause.getLocalizedMessage(), "\n", "\n<br>") + "</b></p>");
         } else {

@@ -14,7 +14,6 @@
 	dialoghandlers, 
 	editorhandler, 
 	editoraction, 
-	views,
 	exportpoints, 
 	autolock?, 
 	enableusermanagement?, 
@@ -52,16 +51,6 @@
 
 <!ELEMENT editoraction EMPTY>
 <!ATTLIST editoraction class CDATA #REQUIRED>
-
-<!--
-# The Workplace views are displayed in the top frame of the workplace.
-# Each view is a link to a certain resource in the OpenCms VFS.
-# Usually this resource is a JSP or some other template that creates
-# a user interface with special options.
--->
-<!ELEMENT views (view+)>
-<!ELEMENT view EMPTY>
-<!ATTLIST view key CDATA #REQUIRED uri CDATA #REQUIRED order CDATA #REQUIRED>
 
 <!--
 # An export point is a folder inside the OpenCms VFS that is copied 1:1 to a 

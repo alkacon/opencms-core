@@ -13,7 +13,7 @@
 <!--
 top.head.helpUrl=']]><LABEL value="help.administration.extlinkgalleries"/><![CDATA[';
 window.top.body.admin_head.location.href='administration_head_extlinkgalleries1.html';
-document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/jsp/explorer_files.html?mode=galleryview&resource=]]><process>link_value</process><![CDATA[&flaturl=window.body.admin_head.location.href%3d\"]]><method name="getServletPath"/><![CDATA[system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries2.html";
+document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/views/explorer/explorer_files.jsp?mode=galleryview&resource=]]><process>link_value</process><![CDATA[&flaturl=window.body.admin_head.location.href%3d\"]]><method name="getServletPath"/><![CDATA[system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries2.html";
 //-->
 </script>
 

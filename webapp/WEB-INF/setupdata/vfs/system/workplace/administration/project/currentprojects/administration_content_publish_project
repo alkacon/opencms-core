@@ -134,7 +134,7 @@ location.href="administration_content_publish_project.html?action=working&time=]
 <TEMPLATE name="done">
 <![CDATA[
 <HTML>
-<BODY onload="window.top.head.location.href='../../../jsp/top_head.html';">
+<BODY onload="window.top.head.location.href='../../../views/top_head.jsp';">
 </BODY>
 </html>
 ]]>
@@ -329,9 +329,9 @@ location.href=]]><process>jsActionUri1</process><![CDATA[;
 <actionParameter><![CDATA[showResult]]></actionParameter>
 
 <headLabel><LABEL value="project.publish.title" /></headLabel>
-<okUri><![CDATA[window.top.head.location.href='../../../jsp/top_head.html';]]></okUri>
+<okUri><![CDATA[window.top.head.location.href='../../../views/top_head.jsp';]]></okUri>
 <nextUri><![CDATA[location='administration_content_publish_project.html?action=doThePublish';]]></nextUri>
-<cancelUri><![CDATA[window.top.head.location.href='../../../jsp/top_head.html';]]></cancelUri>
+<cancelUri><![CDATA[window.top.head.location.href='../../../views/top_head.jsp';]]></cancelUri>
 <iframeActionUri>administration_content_publish_project.html?action=</iframeActionUri>
 <jsActionUri1>"administration_content_publish_project.html?action="+parent.getActionParameter()</jsActionUri1>
 <jsActionUri2>"administration_content_publish_project.html?action=doThePublish"</jsActionUri2>

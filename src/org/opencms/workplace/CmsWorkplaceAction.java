@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/08/19 11:26:32 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,32 +43,35 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1
  */
 public final class CmsWorkplaceAction { 
     
-    /** Path to the JSP workplace. */    
-    public static final String C_PATH_JSP_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/";
+    /** Path to the different workplace views. */    
+    public static final String C_PATH_VIEWS_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "views/";
+    
+    /** Path to the explorer workplace view. */    
+    public static final String C_PATH_VIEW_EXPLORER = C_PATH_VIEWS_WORKPLACE + "explorer/";
     
     /** Path to the XML workplace. */    
     public static final String C_PATH_XML_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/";
    
     /** Path to the JSP workplace frame loader file. */    
-    public static final String C_JSP_WORKPLACE_URI = C_PATH_JSP_WORKPLACE + "top_fs.html";
+    public static final String C_JSP_WORKPLACE_URI = C_PATH_VIEWS_WORKPLACE + "top_fs.jsp";
     
     /** Path to the XML workplace frame loader file. */    
     public static final String C_XML_WORKPLACE_URI = C_PATH_XML_WORKPLACE + "index.html";   
     
     /** File name of explorer file list loader (same for JSP and XML). */
-    public static final String C_FILE_WORKPLACE_FILELIST = "explorer_files.html";
+    public static final String C_FILE_WORKPLACE_FILELIST = "explorer_files.jsp";
     
-    /** Path to the JSP explorer. */
-    public static final String C_JSP_WORKPLACE_FILELIST = "../jsp/" + C_FILE_WORKPLACE_FILELIST;
+    /** Relative path to the JSP explorer. */
+    public static final String C_JSP_WORKPLACE_FILELIST = "../views/explorer/" + C_FILE_WORKPLACE_FILELIST;
         
     /**
-     * Constructor is private since there must be no intances of this class.<p>
+     * Constructor is private since there must be no instances of this class.<p>
      */
     private CmsWorkplaceAction() {
         // empty
@@ -182,6 +185,6 @@ public final class CmsWorkplaceAction {
         if (settings == null) {
             return OpenCms.getLinkManager().substituteLink(cms, link);
         }
-        return OpenCms.getLinkManager().substituteLink(cms, C_PATH_JSP_WORKPLACE + C_FILE_WORKPLACE_FILELIST);        
+        return OpenCms.getLinkManager().substituteLink(cms, C_PATH_VIEW_EXPLORER + C_FILE_WORKPLACE_FILELIST);        
     } 
 }

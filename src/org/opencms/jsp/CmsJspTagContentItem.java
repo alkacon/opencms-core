@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContentItem.java,v $
- * Date   : $Date: 2004/08/18 11:53:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/19 11:26:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.editor.I_CmsEditorActionHandler;
+import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContent;
@@ -66,7 +66,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsJspTagContentItem extends BodyTagSupport { 

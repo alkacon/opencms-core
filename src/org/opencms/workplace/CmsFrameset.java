@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/07/07 18:01:09 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/08/19 11:26:32 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,14 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,13 +58,13 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * The following files use this class:
  * <ul>
- * <li>/jsp/top.html
- * <li>/jsp/top_foot.html
- * <li>/jsp/top_head.html
+ * <li>/views/top.html
+ * <li>/views/top_foot.html
+ * <li>/views/top_head.html
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 5.1
  */
@@ -276,8 +278,12 @@ public class CmsFrameset extends CmsWorkplace {
             }
             if (visible) {
                 String loopLink = getJsp().link(viewUri);
-                
-                options.add(key(viewKey));
+                String localizedKey = key(viewKey);
+                if (localizedKey.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
+                    // no localized key found, show key name
+                    localizedKey = viewKey;
+                }
+                options.add(localizedKey);
                 values.add(loopLink);
 
                 if (loopLink.equals(getSettings().getViewUri())) {

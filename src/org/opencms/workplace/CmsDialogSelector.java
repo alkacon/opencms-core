@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/08/19 11:26:32 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,17 +41,17 @@ import org.opencms.main.OpenCms;
  * You can define the class of your dialog handler in the OpenCms registry.xml in the &lt;dialoghandler&gt; node. 
  * The following files use this class:
  * <ul>
- * <li>/jsp/dialogs/property_html
- * <li>/jsp/dialogs/delete_html
- * <li>/jsp/dialogs/lock_html
- * <li>/jsp/dialogs/lockchange_html
- * <li>/jsp/dialogs/unlock_html
+ * <li>/commons/property_html
+ * <li>/commons/delete_html
+ * <li>/commons/lock_html
+ * <li>/commons/lockchange_html
+ * <li>/commons/unlock_html
  * </ul>
  *
  * @see org.opencms.workplace.I_CmsDialogHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */

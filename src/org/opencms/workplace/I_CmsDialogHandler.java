@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/I_CmsDialogHandler.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/19 11:26:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,12 @@ import org.opencms.jsp.CmsJspActionElement;
 /**
  * Provides a method for selecting an individual jsp dialog.<p>
  * 
- * You can define the class of your own dialog handler in the OpenCms registry.xml
- * changing the &lt;class&gt; subnode of the system node &lt;dialoghandler&gt; to another value. 
+ * You can define the class of your own dialog handler in the OpenCms opencms-workplace.xml
+ * changing the &lt;class&gt; attribute of the node &lt;dialoghandler&gt; to another value. 
  * The class you enter must implement this interface to obtain the URI of the displayed dialog.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/07/18 16:31:32 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/08/19 11:26:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,9 @@ package org.opencms.configuration;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.CmsExplorerContextMenuItem;
-import org.opencms.workplace.CmsExplorerTypeSettings;
 import org.opencms.workplace.CmsWorkplaceManager;
-import org.opencms.workplace.CmsWorkplaceView;
+import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -348,12 +347,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORACTION, A_CLASS, CmsConfigurationException.class);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORACTION, "setEditorAction");        
         
-        // add rules for the workplace views  
-        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_VIEWS + "/" + N_VIEW, "addView", 3);        
-        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_VIEWS + "/" + N_VIEW, 0, A_KEY);
-        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_VIEWS + "/" + N_VIEW, 1, A_URI);        
-        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_VIEWS + "/" + N_VIEW, 2, A_ORDER);
-        
         // add rules for the workplace export points 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_EXPORTPOINTS + "/" + N_EXPORTPOINT, "addExportPoint", 2);        
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EXPORTPOINTS + "/" + N_EXPORTPOINT, 0, A_URI);
@@ -537,17 +530,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             .addAttribute(A_CLASS, m_workplaceManager.getEditorHandler().getClass().getName());
         workplaceElement.addElement(N_EDITORACTION)
             .addAttribute(A_CLASS, m_workplaceManager.getEditorActionHandler().getClass().getName());
-        
-        // add <views> subnode
-        Element viewsElement = workplaceElement.addElement(N_VIEWS);
-        i = m_workplaceManager.getViews().iterator();
-        while (i.hasNext()) {
-            CmsWorkplaceView view = (CmsWorkplaceView)i.next();
-            viewsElement.addElement(N_VIEW)
-            .addAttribute(A_KEY, view.getKey())
-            .addAttribute(A_URI, view.getUri())
-            .addAttribute(A_ORDER, view.getOrder().toString());                
-        }            
                 
         // add <exportpoints> subnode
         Element resourceloadersElement = workplaceElement.addElement(N_EXPORTPOINTS);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/06/16 07:31:19 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/08/19 11:26:32 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -300,7 +300,7 @@ public class CmsWorkplaceSettings {
      * @return true if the current view is the explorer view, otherwise false 
      */
     public boolean isViewExplorer() {
-        return getViewUri().endsWith("/system/workplace/jsp/explorer_fs.html");
+        return getViewUri().endsWith(CmsWorkplace.C_FILE_EXPLORER_FILELIST);
     }
 
     /**

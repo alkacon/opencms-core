@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/08/19 11:26:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.10
  */
@@ -306,7 +306,7 @@ public class CmsReport extends CmsDialog {
             if (loadStyles) {
                 result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
                 result.append(getSkinUri());
-                result.append("files/css_workplace.css\">\n");
+                result.append("commons/css_workplace.css\">\n");
                 result.append("<script type=\"text/javascript\">\n");
                 result.append(dialogScriptSubmit());
                 result.append("</script>\n");

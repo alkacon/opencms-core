@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
+<title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
+
+<link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>commons/css_workplace.css">
+
+<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>edit.js"></script> 
+	
+<script type="text/javascript">
+<!--
+// sets the Document Source-Code for later including into the editor
+var __content = "<%= wp.getParamContent() %>";
+
+// action parameters of the form
+var actionPreview = "<%= wp.EDITOR_PREVIEW %>";
+var actionShow = "<%= wp.EDITOR_SHOW %>";
+var actionChangeElement = "<%= wp.EDITOR_CHANGE_ELEMENT %>";
+var actionExit = "<%= wp.EDITOR_EXIT %>";
+var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
+var actionSave = "<%= wp.EDITOR_SAVE %>";
+var actionSaveAction = "<%= wp.EDITOR_SAVEACTION %>";
+
+// deletes the content of the current element
+function deleteEditorContent(elementName, language) {
+	if (elementName == document.EDITOR.<%= wp.PARAM_ELEMENTNAME %>.value && language == document.EDITOR.<%= wp.PARAM_ELEMENTLANGUAGE %>.value) {
+		document.EDITOR.edit1.value = "";
+	}
+}
+
+// changes the displayed element in case the current element is deactivated
+function changeElement(elementName, language) {
+	if (elementName != document.EDITOR.<%= wp.PARAM_ELEMENTNAME %>.value && language == document.EDITOR.<%= wp.PARAM_ELEMENTLANGUAGE %>.value) {
+		document.EDITOR.<%= wp.PARAM_ELEMENTNAME %>.value = elementName;
+		buttonAction(3);
+	} else {
+		buttonAction(1);
+	}
+}
+
+// ask user whether he really wants to leave editor without saving
+function confirmExit()
+{
+	if (confirm("<%= wp.key("editor.message.exit") %>")) {
+		buttonAction(6);
+	}
+}
+
+// called when unloading the page (to delete the temporary file in the VFS)
+function closeDialog() {
+	if (dialogElementWindow) {
+		window.dialogElementWindow.close();
+	}
+	if (dialogPropertyWindow) {
+		window.dialogPropertyWindow.close();
+	}
+	if (document.EDITOR.<%= wp.PARAM_ACTION %>.value == "null" || document.EDITOR.<%= wp.PARAM_ACTION %>.value == "") {
+		top.closeframe.closePage("<%= wp.getParamTempfile() %>", "<%= wp.getParamResource() %>");
+	}
+}
+
+function popupCloseAction(closeObj) {
+	if (closeObj.refreshOpener && closeObj.refreshOpener == true) {
+		buttonAction(1);
+	} else if (closeObj.elemName) {
+		changeElement(closeObj.elemName, closeObj.elemLocale);
+	}
+}
+//-->
+</script>
+</head>
+
+<body class="buttons-head" unselectable="on" onload="initContent();" onunload="closeDialog();">
+
+<table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
+<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
+<input type="hidden" name="<%= wp.PARAM_CONTENT %>">
+<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
+<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="<%= wp.PARAM_LOADDEFAULT %>" value="<%= wp.getParamLoaddefault() %>">
+<input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
+<input type="hidden" name="<%= wp.PARAM_OLDELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
+<input type="hidden" name="<%= wp.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
+<input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
+	<tr>
+		<td>
+
+<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBarStartTab(0, 5) %>
+<%
+if (options.showElement("selector.elements")) {
+	out.println(wp.buttonBarLabel("input.element"));
+	out.println("<td>" + wp.buildSelectElementLanguage("class=\"textfeld\" name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
+	out.println(wp.buttonBarSpacer(2));
+	out.println("<td>" + wp.buildSelectElementName("class=\"textfeld\" name=\"" + wp.PARAM_ELEMENTNAME + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
+	out.println(wp.buttonBarSeparator(5, 5));
+} else { %>
+	<input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
+<%
+}
+%>
+<%= wp.button("javascript:buttonAction(4);", null, "elements", "editor.dialog.elements.button", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:buttonAction(5);", null, "properties", "editor.dialog.properties.button", buttonStyle) %>				
+<td class="maxwidth">&nbsp;</td>
+<%= wp.button("javascript:buttonAction(2);", null, "preview", "button.preview", buttonStyle) %>
+<%= wp.buttonBarSpacer(5) %>
+<%= wp.buttonBar(wp.HTML_END) %>
+<%= wp.buttonBarHorizontalLine() %>
+		
+<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBarStartTab(0, 5) %>
+<%
+if (options.showElement("button.customized")) {%>
+	<td><%= wp.buttonActionDirectEdit("buttonAction(9);", buttonStyle) %></td><%
+}
+%>
+<%= wp.button("javascript:buttonAction(7);", null, "save_exit", "button.saveclose", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(8);", null, "save", "button.save", buttonStyle) %>
+<%
+if (wp.isHelpEnabled()) {%>
+	<%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:treewin=opensmallwin(workplacePath + 'help/" + wp.getLocale() + "/" + wp.key("help.pageeditor") + "', '" + wp.key("button.help") + "', 600, 450);treewin.focus();", null, "help", "button.help", buttonStyle) %><%
+} %>
+<td class="maxwidth">&nbsp;</td>
+<%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
+<%= wp.buttonBarSpacer(5) %>
+<%= wp.buttonBar(wp.HTML_END) %>
+
+</td>
+</tr>
+
+<tr>
+<td valign="top" class="texteditor" height="100%" width="100%">
+<textarea wrap="off" name="edit1" id ="edit1" onfocus="initContentDelayed();" style="width:100%; height:100%; font-family: Fixedsys, monospace;"></textarea>
+</td>
+</tr>
+		
+</form>
+
+<form name="ELEMENTS" action="dialogs/elements.html" target="DIALOGELEMENT" method="post">
+<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
+<input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
+<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= wp.PARAM_ISPOPUP %>" value="true">
+</form>
+
+<form name="PROPERTIES" action="../dialogs/property.html" target="DIALOGPROPERTY" method="post">
+<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="usetempfileproject" value="true">
+<input type="hidden" name="<%= wp.PARAM_ISPOPUP %>" value="true">
+</form>
+
+</table>
+</body>
+</html>

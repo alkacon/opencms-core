@@ -5,20 +5,14 @@
 	<workplace>
 		<defaultlocale>en</defaultlocale>
 		<dialoghandlers>
-			<dialoghandler class="org.opencms.workplace.CmsDelete"/>
-			<dialoghandler class="org.opencms.workplace.CmsLock"/>
-			<dialoghandler class="org.opencms.workplace.CmsPropertyAdvanced"/>
+			<dialoghandler class="org.opencms.workplace.commons.CmsDelete"/>
+			<dialoghandler class="org.opencms.workplace.commons.CmsLock"/>
+			<dialoghandler class="org.opencms.workplace.commons.CmsPropertyAdvanced"/>
 		</dialoghandlers>
-		<editorhandler class="org.opencms.workplace.editor.CmsEditorHandler"/>
-		<editoraction class="org.opencms.workplace.editor.CmsEditorActionDefault"/>
-		<views>
-			<view key="select.explorer" uri="/system/workplace/jsp/explorer_fs.html" order="10"/>
-			<view key="select.admin" uri="/system/workplace/action/administration.html" order="20"/>
-			<view key="select.tasks" uri="/system/workplace/action/tasks.html" order="30"/>
-		</views>
+		<editorhandler class="org.opencms.workplace.editors.CmsEditorHandler"/>
+		<editoraction class="org.opencms.workplace.editors.CmsEditorActionDefault"/>
 		<exportpoints>
 			<exportpoint uri="/system/workplace/resources/" destination="resources/"/>
-			<exportpoint uri="/system/workplace/skins/" destination="skins/"/>
 		</exportpoints>
 		<autolock>true</autolock>
 		<enableusermanagement>true</enableusermanagement>
@@ -28,7 +22,7 @@
 		<labeledfolders/>
 		<explorertypes>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
-				<newresource uri="newresource_folder.html" order="10"/>
+				<newresource uri="newresource_folder.jsp" order="10"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -39,29 +33,29 @@
 						<property name="Title"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d aaaa aaaa dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d aaaa aaaa dddd" order="60"/>
 						<separator order="70"/>
-						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d iiii aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid aaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d iiii aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="200"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
-						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="310"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="340"/>
-						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
-				<newresource uri="newresource.html?newresourcetype=xmlcontent" order="25"/>
+				<newresource uri="newresource.jsp?newresourcetype=xmlcontent" order="25"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -74,36 +68,36 @@
 						<property name="Description"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
-						<entry key="explorer.context.edit" uri="editors/editor.html" target="_top" rules="d d iiii aaai dddd" order="80"/>
+						<entry key="explorer.context.edit" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
 						<separator order="100"/>
-						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
-						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="310"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="330"/>
-						<entry key="explorer.context.editcontrolfile" uri="editors/editor.html?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
+						<entry key="explorer.context.editcontrolfile" uri="editors/editor.jsp?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
-						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
-				<newresource uri="newresource_xmlpage.html" order="20"/>
+				<newresource uri="newresource_xmlpage.jsp" order="20"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -116,37 +110,37 @@
 						<property name="Description"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
-						<entry key="explorer.context.pageedit" uri="editors/editor.html" target="_top" rules="d d iiii aaai dddd" order="80"/>
-						<entry key="explorer.context.edit" uri="editors/editor.html?editormode=edit" target="_top" rules="d d iiii aaai dddd" order="90"/>
+						<entry key="explorer.context.pageedit" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
+						<entry key="explorer.context.edit" uri="editors/editor.jsp?editormode=edit" target="_top" rules="d d iiii aaai dddd" order="90"/>
 						<separator order="100"/>
-						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
-						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="310"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="330"/>
-						<entry key="explorer.context.editcontrolfile" uri="editors/editor.html?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
+						<entry key="explorer.context.editcontrolfile" uri="editors/editor.jsp?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
-						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
 			<explorertype name="plain" key="fileicon.plain" icon="plain.gif">
-				<newresource uri="newresource.html?newresourcetype=plain" order="30"/>
+				<newresource uri="newresource.jsp?newresourcetype=plain" order="30"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -158,29 +152,29 @@
 						<property name="export"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
-						<entry key="explorer.context.edit" uri="editors/editor.html" target="_top" rules="d d iiii aaai dddd" order="80"/>
+						<entry key="explorer.context.edit" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
 						<separator order="100"/>
-						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
-						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
@@ -194,34 +188,34 @@
 				<editoptions>
 					<defaultproperties enabled="false" shownavigation="false"/>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
-						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.replace" uri="replace.html?overwrite=yes&amp;mode=replace" isxml="true" rules="d d iiii aaai dddd" order="185"/>
-						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
-						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="320"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
-						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
 			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
-				<newresource uri="newresource.html?newresourcetype=jsp" order="50"/>
+				<newresource uri="newresource.jsp?newresourcetype=jsp" order="50"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
@@ -235,30 +229,30 @@
 						<property name="export"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
-						<entry key="explorer.context.edit" uri="editors/editor.html" target="_top" rules="d d iiii aaai dddd" order="80"/>
+						<entry key="explorer.context.edit" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
 						<separator order="100"/>
-						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
-						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="320"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
-						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
@@ -274,34 +268,34 @@
 						<property name="Title"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
-						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.replace" uri="replace.html?overwrite=yes&amp;mode=replace" isxml="true" rules="d d iiii aaai dddd" order="185"/>
-						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
-						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="320"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
-						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
 			<explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif">
-				<newresource uri="newresource_pointer.html" order="70"/>
+				<newresource uri="newresource_pointer.jsp" order="70"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -312,27 +306,27 @@
 						<property name="Title"/>
 					</defaultproperties>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.editlink" uri="explorer_files_new_externallink.html?newlink=false" isxml="true" rules="d d iiii aaai dddd" order="80"/>
 						<separator order="100"/>
-						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
-						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="320"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
-						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
@@ -340,39 +334,39 @@
 				<newresource uri="" order="80"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="false" shownavigation="false"/>
 					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
-						<entry key="explorer.context.edit" uri="editors/editor.html" target="_top" rules="d d iiii aaai dddd" order="80"/>
+						<entry key="explorer.context.edit" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
 						<separator order="100"/>
-						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
-						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>
 			<explorertype name="link" key="fileicon.link" icon="link.gif">
-				<newresource uri="newresource_sibling.html" order="90"/>
+				<newresource uri="newresource_sibling.jsp" order="90"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -380,7 +374,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="upload" key="fileicon.upload" icon="upload.gif">
-				<newresource uri="newresource_upload.html" order="100"/>
+				<newresource uri="newresource_upload.jsp" order="100"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -398,7 +392,7 @@
 				<workplace-startupsettings>
 					<locale>en</locale>
 					<project>Offline</project>
-					<workplaceview>/system/workplace/jsp/explorer_fs.html</workplaceview>
+					<workplaceview>/system/workplace/views/explorer/explorer_fs.jsp</workplaceview>
 					<folder>/</folder>
 					<site>/sites/default/</site>
 					<restrictexplorerview>false</restrictexplorerview>

@@ -8,7 +8,7 @@
 <!--
 
 if(top.frames[0].document.wpProjectSelect.wpProject.options[top.frames[0].document.wpProjectSelect.wpProject.selectedIndex].value !=]]><PROCESS>proId</PROCESS><![CDATA[){
-    window.top.head.location.href='../../../jsp/top_head.html';
+    window.top.head.location.href='../../../views/top_head.jsp';
 }
 
 top.head.helpUrl=']]><LABEL value="help.administration.project.current"/><![CDATA[';
