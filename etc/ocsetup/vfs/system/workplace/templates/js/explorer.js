@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/01/04 09:58:14 $
-  * Version: $Revision: 1.11 $
+  * Date   : $Date: 2001/01/04 14:48:31 $
+  * Version: $Revision: 1.12 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -1019,16 +1019,11 @@
   *  do an update (filelist display)
   */
  function dU(doc){
- 	if(vi.liste.length >20){
- 		doc.open();
- 		doc.writeln("<html><body><center><br><br><br><br><font face=Helvetica size=2>Building Page...</center></body></html>");
- 		doc.close();
- 	}
- 	vi.lastLayer=null;
+ 	 vi.lastLayer=null;
      vi.locklength=0;
      showCols(vr.viewcfg);
      printList(doc);
- 	folderOpen(vr.actDirId);
+ 	 folderOpen(vr.actDirId);
      showTree(explorer_tree);
      displayHead(explorer_head);
  }
