@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerFileList.java,v $
- * Date   : $Date: 2000/02/16 09:15:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/29 16:15:04 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,10 +43,10 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/02/16 09:15:18 $
+ * @version $Revision: 1.10 $ $Date: 2000/03/29 16:15:04 $
  */
 public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
-                                                                I_CmsConstants{    
+                                                                I_CmsConstants, I_CmsFileListUsers {    
 
     /**
      * Indicates if the results of this class are cacheable.
@@ -62,26 +62,6 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
         return false;
     }
     
-    /**
-   * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
-   * Gets the content of the file list template and processe the data input.
-   * @param cms The CmsObject.
-   * @param templateFile The file list template file
-   * @param elementName not used
-   * @param parameters Parameters of the request and the template.
-   * @param templateSelector Selector of the template tag to be displayed.
-   * @return Bytearre containgine the processed data of the template.
-   * @exception Throws CmsException if something goes wrong.
-   */
-   public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-         
-     CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
-    
-     // process the selected template
-     return startProcessing(cms,xmlTemplateDocument,"",parameters,"template");
-   }
-    
-   
    /** 
     * Collects all folders and files that are displayed in the file list.
     * @param cms The CmsObject.
@@ -151,5 +131,32 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
             
         return filesfolders;
    }
-       
+
+    /**
+     * Fills all customized columns with the appropriate settings for the given file 
+     * list entry. Any column filled by this method may be used in the customized template
+     * for the file list.
+     * @param cms Cms object for accessing system resources.
+     * @param filelist Template file containing the definitions for the file list together with
+     * the included customized defintions.
+     * @param res A_CmsResource Object of the current file list entry.
+     * @param lang Current language file.
+     * @exception CmsException if access to system resources failed.
+     * @see I_CmsFileListUsers
+     */
+    public void getCustomizedColumnValues(A_CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, A_CmsResource res, CmsXmlLanguageFile lang) {
+    }       
+
+    /**
+     * Used to modify the bit pattern for hiding and showing columns in
+     * the file list.
+     * @param cms Cms object for accessing system resources.
+     * @param prefs Old bit pattern.
+     * @return New modified bit pattern.
+     * @see I_CmsFileListUsers
+     */
+    public int modifyDisplayedColumns(A_CmsObject cms, int prefs) {
+        return prefs;
+    }
+   
 }

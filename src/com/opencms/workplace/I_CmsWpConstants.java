@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/29 15:23:01 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2000/03/29 16:16:02 $
+ * Version: $Revision: 1.75 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.74 $ $Date: 2000/03/29 15:23:01 $
+ * @version $Revision: 1.75 $ $Date: 2000/03/29 16:16:02 $
  */
 public interface I_CmsWpConstants {
 
@@ -632,6 +632,87 @@ public interface I_CmsWpConstants {
         
     /** template value for the file list */
     public static final String C_FILELIST_TEMPLATE="template";
+
+    /** customized template value for the file list */
+    public static final String C_FILELIST_CUSTOMTEMPLATE="customtemplate";
+    
+    /** The title column*/
+    public final static String C_FILELIST_COLUMN_TITLE="COLUMN_TITLE";
+    
+    /** The type column*/
+    public final static String C_FILELIST_COLUMN_TYPE="COLUMN_TYPE";
+    
+    /** The changed column*/
+    public final static String C_FILELIST_COLUMN_CHANGED="COLUMN_CHANGED";
+
+    /** The size column*/
+    public final static String C_FILELIST_COLUMN_SIZE="COLUMN_SIZE";
+    
+    /** The state column*/
+    public final static String C_FILELIST_COLUMN_STATE="COLUMN_STATE";
+
+    /** The owner column*/
+    public final static String C_FILELIST_COLUMN_OWNER="COLUMN_OWNER";
+    
+    /** The group column*/
+    public final static String C_FILELIST_COLUMN_GROUP="COLUMN_GROUP";
+
+    /** The access column*/
+    public final static String C_FILELIST_COLUMN_ACCESS="COLUMN_ACCESS";
+
+    /** The locked column*/
+    public final static String C_FILELIST_COLUMN_LOCKED="COLUMN_LOCKED";
+
+    /** The customizable column*/
+    public final static String C_FILELIST_COLUMN_CUSTOMIZED="COLUMN_CUSTOMIZED";
+
+    /** The stylesheet class to be used for a file or folder entry */
+    public final static String C_FILELIST_CLASS_VALUE="OUTPUT_CLASS";
+    
+    /** The customizable value column*/
+    public final static String C_FILELIST_COLUMN_CUSTOMIZED_VALUE="COLUMN_CUSTOMIZED_VALUE";
+
+    /** The link for a file or folder entry */
+    public final static String C_FILELIST_LINK_VALUE="LINK_VALUE";    
+    
+    /** The suffic for file list values */
+    public final static String C_FILELIST_SUFFIX_VALUE="_VALUE";
+
+    /** The lock value column */
+    public final static String C_FILELIST_LOCK_VALUE="LOCK_VALUE";
+    
+    /** The name value column */
+    public final static String C_FILELIST_NAME_VALUE="NAME_VALUE";
+    
+    /** The title value column */
+    public final static String C_FILELIST_TITLE_VALUE="TITLE_VALUE";
+
+    /** The icon value column */
+    public final static String C_FILELIST_ICON_VALUE="ICON_VALUE";
+    
+    /** The type value column */
+    public final static String C_FILELIST_TYPE_VALUE="TYPE_VALUE";
+  
+    /** The changed value column */
+    public final static String C_FILELIST_CHANGED_VALUE="CHANGED_VALUE";
+
+    /** The size value column */
+    public final static String C_FILELIST_SIZE_VALUE="SIZE_VALUE";
+
+    /** The state value column */
+    public final static String C_FILELIST_STATE_VALUE="STATE_VALUE";
+    
+    /** The owner value column */
+    public final static String C_FILELIST_OWNER_VALUE="OWNER_VALUE";
+
+    /** The group value column */
+    public final static String C_FILELIST_GROUP_VALUE="GROUP_VALUE";
+
+    /** The access value column */
+    public final static String C_FILELIST_ACCESS_VALUE="ACCESS_VALUE";
+
+    /** The lockedby value column */
+    public final static String C_FILELIST_LOCKED_VALUE="LOCKED_VALUE";
     
     
 
@@ -642,7 +723,10 @@ public interface I_CmsWpConstants {
     
     /** Prefix for button texts in the language file */
     public static final String C_LANG_ICON = "icon";
-	
+
+    /** Prefix for label texts in the language file */
+    public static final String C_LANG_LABEL = "label";
+    
     // Constants for user default preferences
     
     /** Number of images to be shown per page in the picture browser */
