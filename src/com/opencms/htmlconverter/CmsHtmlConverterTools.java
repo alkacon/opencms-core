@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2001/12/06 14:03:15 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/02/27 15:09:38 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -158,6 +158,10 @@ final class CmsHtmlConverterTools {
         try {
             URL myURL = new URL(parameter);
             parameter = myURL.getFile();
+            String reference = myURL.getRef();
+            if(reference != null){
+                parameter += "#"+reference;
+            }
         }
         catch (MalformedURLException e) {
             if(!parameter.startsWith("/")){
@@ -165,6 +169,10 @@ final class CmsHtmlConverterTools {
                 try{
                     URL newUrl = new URL(orgUrl, parameter);
                     parameter = newUrl.getFile();
+                    String reference = newUrl.getRef();
+                    if(reference != null){
+                        parameter += "#"+reference;
+                    }
                 }catch(MalformedURLException exc){
                 }
             }
