@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/11/12 11:32:37 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/11/17 07:47:09 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -99,10 +99,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public static final String C_EXPORT_MARKER = "exporturi";
     
     /** Cache for the export uris */
-    private LRUMap m_cacheExportUris;
+    private Map m_cacheExportUris;
     
     /** Cache for the online links */
-    private LRUMap m_cacheOnlineLinks;
+    private Map m_cacheOnlineLinks;
     
     /** List of all resources that have the "exportname" property set */
     private Map m_exportnameResources;
@@ -135,14 +135,20 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_exportRelativeLinks = false;
         m_staticExportEnabled = false;
         m_exportPropertyDefault = true;
+                
+        LRUMap lruMap;
         
-        m_cacheOnlineLinks = new LRUMap(1024);
-        m_cacheExportUris = new LRUMap(1024);
-        
+        lruMap = new LRUMap(1024);
+        m_cacheOnlineLinks = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheOnlineLinks", m_cacheOnlineLinks);
-            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheExportUris", m_cacheExportUris);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheOnlineLinks", lruMap);
         }              
+        
+        lruMap = new LRUMap(1024);
+        m_cacheExportUris = Collections.synchronizedMap(lruMap);
+        if (OpenCms.getMemoryMonitor().enabled()) {
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheExportUris", lruMap);
+        }
         
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {
