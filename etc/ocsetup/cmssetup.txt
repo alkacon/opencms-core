@@ -1,6 +1,7 @@
 echo on
 login Admin admin
 createPropertydefinition Title plain
+createPropertydefinition Title compatiblePlain
 createPropertydefinition Title page
 createPropertydefinition Title XMLTemplate
 createPropertydefinition Title binary
@@ -11,6 +12,8 @@ createPropertydefinition NavText page
 createPropertydefinition NavPos page
 createPropertydefinition NavText plain
 createPropertydefinition NavPos plain
+createPropertydefinition NavText compatiblePlain
+createPropertydefinition NavPos compatiblePlain
 createPropertydefinition NavText folder
 createPropertydefinition NavPos folder
 createPropertydefinition Title folder
@@ -18,12 +21,15 @@ createPropertydefinition Title pdfpage
 createPropertydefinition NavText pdfpage
 createPropertydefinition NavPos pdfpage
 createPropertydefinition TemplateType plain
+createPropertydefinition TemplateType compatiblePlain
 createPropertydefinition TemplateType pdfpage
 createPropertydefinition TemplateType XMLTemplate
 createPropertydefinition Description page
 createPropertydefinition Keywords page
 createPropertydefinition Description plain
 createPropertydefinition Keywords plain
+createPropertydefinition Description compatiblePlain
+createPropertydefinition Keywords compatiblePlain
 createPropertydefinition Description script
 createPropertydefinition Keywords script
 addFileExtension doc binary
