@@ -8,6 +8,12 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.36 Arakis - 03 November 2000
+
+! added module-cycle
+* removed a bug in the editor for selecting a mastertemplate
+- the oracleplsql is free to test
+
 OpenCms 4.1.36 Arakis - 29 September 2000
 
 ! added workplace-interface for module-maintenace
