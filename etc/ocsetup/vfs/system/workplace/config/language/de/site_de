@@ -34,8 +34,8 @@
 				</message>
 				
 				<reason>
-					<newsite>The entered data is invalid.</newsite>				
-					<editsite>The entered data is invalid.</editsite>				
+					<newsite>The entered data is invalid. The site name or domain name may already exist or the category, language and domain combination may already exist</newsite>				
+					<editsite>The entered data is invalid. The site name or domain name may already exist or the category, language and domain combination may already exist</editsite>				
 					<datamissing>The fields need to be filled out</datamissing>				
 					<deletesite></deletesite>
 				</reason>
