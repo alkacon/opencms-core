@@ -22,7 +22,8 @@
     <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql_2_uncomp.jar"/>
     <property name="build.inputlib.fop"         value="${build.inputlib}/fop_bin.jar"/>
     <property name="build.web"                  value="${build.home}/${app.name}"/>
-    <property name="build.webinf"               value="${build.web}/web-inf"/>
+    <property name="build.webinf"               value="${build.web}/WEB-INF"/>
+    <property name="build.metainf"              value="${build.web}/META-INF"/>
     <property name="build.lib"                  value="${build.webinf}/lib"/>
     <property name="build.oclib"                value="${build.webinf}/oclib"/>
 
@@ -107,8 +108,10 @@
        <copy file="${build.inputlib.fop}" todir="${build.oclib}"/>
 
        <copy todir="${build.webinf}">
-            <fileset dir="etc" excludes="*/CVS/*,web.xml"/>
+            <fileset dir="etc" excludes="*/CVS/*,MANIFEST.MF"/>
        </copy>
+
+       <copy file="etc/MANIFEST.MF" todir="${build.metainf}"/>
 
        <copy todir="${build.web}">
             <fileset dir="web" excludes="*/CVS/*"/>
@@ -119,11 +122,11 @@
     </target>
 
     <target name="war" depends="copy">
-        <war
-            warfile="${build.home}/${app.name}.war"
-            webxml="etc/web.xml"
-            basedir="${build.web}"
-            />
+        <zip zipfile="${build.home}/${app.name}.war">
+            <zipfileset dir="${build.web}/META-INF" prefix="META-INF"/>
+            <zipfileset dir="${build.web}/WEB-INF" prefix="WEB-INF"/>
+            <zipfileset dir="${build.web}/ocsetup" prefix="ocsetup"/>
+        </zip>
     </target>
 
     <target name="zip" depends="war">
@@ -147,8 +150,8 @@
         <copy todir="${tomcat.home}/webapps/${app.name}">
             <fileset dir="${build.web}"/>
         </copy>
-        <copy file="etc/web.xml" todir="${tomcat.home}/webapps/${app.name}/web-inf"/>
-        <copy file="${build.inputlib.oracle}" todir="${tomcat.home}/webapps/${app.name}/web-inf/oclib"/>
+        <copy file="etc/web.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
+        <copy file="${build.inputlib.oracle}" todir="${tomcat.home}/webapps/${app.name}/WEB-INF/oclib"/>
         <copy todir="${tomcat.home}/webapps/${app.name}/pics">
             <fileset dir="${build.webinf}/ocsetup/vfs/pics"/>
         </copy>
@@ -177,8 +180,8 @@
             />
         <java
             classname="com.opencms.boot.CmsMain"
-            classpath="${tomcat.home}/webapps/${app.name}/web-inf/lib/opencmsboot.jar"
-            dir="${tomcat.home}/webapps/${app.name}/web-inf"
+            classpath="${tomcat.home}/webapps/${app.name}/WEB-INF/lib/opencmsboot.jar"
+            dir="${tomcat.home}/webapps/${app.name}/WEB-INF"
             fork="true">
             <arg value="-script=ocsetup/cmssetup.txt" />
         </java>

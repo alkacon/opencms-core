@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/07/18 13:37:23 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/07/19 19:11:50 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2001/07/18 13:37:23 $
+ * @version $Revision: 1.12 $ $Date: 2001/07/19 19:11:50 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -160,7 +160,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * @param e The caught CmsException.
      * @return String containing the HTML code of the error message.
      */
-    private String createErrorBox(CmsException e) {
+    private String createErrorBox(CmsException e, CmsObject cms) {
         StringBuffer output = new StringBuffer();
         output.append("<HTML>\n");
         output.append("<script language=JavaScript>\n");
@@ -366,7 +366,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         output.append("<tr> <td colspan=2 class=\"leerzeile\">&nbsp;</td></tr>\n");
         output.append("<!-- Ende Leerzeile-->\n");
         output.append("<tr> \n");
-        output.append("<td class=\"dialogtxt\" rowspan=3 valign=top><IMG border=0 src=\"/pics/system/ic_caution.gif\" width=32 height=32></td>\n");
+        output.append("<td class=\"dialogtxt\" rowspan=3 valign=top><IMG border=0 src=\"" + cms.getRequestContext().getRequest().getWebAppUrl() + "/pics/system/ic_caution.gif\" width=32 height=32></td>\n");
         output.append("<td class=dialogtxt>Ein Systemfehler ist aufgetreten.</td>\n");
         output.append("</tr>	\n");
         output.append("<tr><td class=dialogtxt>F&uuml;r weitere Informationen klicken Sie auf \"Details anzeigen\" oder kontaktieren Sie Ihren Systemadministrator.</td></tr>\n");
@@ -589,7 +589,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                     // set some HTTP headers preventing proxy servers from caching the error box
                     res.setHeader("Cache-Control", "no-cache");
                     res.setHeader("Pragma", "no-cache");
-                    res.getWriter().print(createErrorBox(e));
+                    res.getWriter().print(createErrorBox(e, cms));
                   }
             //res.sendError(res.SC_INTERNAL_SERVER_ERROR);
             }

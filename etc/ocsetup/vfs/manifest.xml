@@ -2505,8 +2505,8 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/ic_file_xmltemplate.gif</source>
-            <destination>pics/system/ic_file_xmltemplate.gif</destination>
+            <source>pics/system/ic_file_XMLTemplate.gif</source>
+            <destination>pics/system/ic_file_XMLTemplate.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
