@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/03/21 15:07:11 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/28 08:12:55 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/03/21 15:07:11 $
+ * @version $Revision: 1.10 $ $Date: 2000/03/28 08:12:55 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -275,6 +275,7 @@ import com.opencms.core.*;
 	public CmsFolder readFolder(A_CmsProject project, String folder)
 		throws CmsException{
          CmsFolder res=null;
+         System.err.println("Read from cache "+folder);
          String key=C_FOLDER+project.getId()+folder;
          // try to read folder from cache
          res=(CmsFolder)m_filecache.get(key);
@@ -344,4 +345,32 @@ import com.opencms.core.*;
         m_accessFile.deleteFolder(project,foldername,force);
         m_filecache.remove(key);
      }
+    
+          /**
+	 * Deletes a folder in the Cms.<br>
+	 * 
+     * In difference to the deleteFile method, the given file is physically removed <br> 
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read and write this resource and all subresources</li>
+	 * <li>the resource is not locked</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername The complete path of the folder.	
+	 * If force is set to false, the folder will be deleted only if it is empty.
+	 * This parameter is not used yet as only empty folders can be deleted!
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void removeFolder(A_CmsProject project, String foldername)
+		throws CmsException {
+        String key=C_FOLDER+project.getId()+foldername;
+        m_accessFile.removeFolder(project,foldername);
+        m_filecache.remove(key);
+     }
+    
 }
