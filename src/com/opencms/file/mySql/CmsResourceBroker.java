@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/15 16:25:31 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/08/17 16:05:57 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/08/15 16:25:31 $
+ * @version $Revision: 1.19 $ $Date: 2000/08/17 16:05:57 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -74,7 +74,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	private CmsDbAccess m_dbAccess = null;
 	
-	
+	/**
+	* The registry
+	*/
+	private I_CmsRegistry m_registry=null;
 	
 	/**
 	 *  Define the caches
@@ -89,7 +92,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	private CmsCache m_propertyDefCache=null;
 	private CmsCache m_propertyDefVectorCache=null;
 	private String m_refresh=null;
-
 
 
 	/**
@@ -2816,6 +2818,29 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		String parentresourceName = readFileHeader(currentUser, currentProject, resourcename).getParent();
 		return readFileHeader(currentUser, currentProject, parentresourceName);
 	}
+	 /**
+	 * Gets the Registry.<BR/>
+	 *
+	 * Only the admin can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @exception Throws CmsException if access is not allowed.
+	 */
+
+	 public I_CmsRegistry getRegistry(CmsUser currentUser, CmsProject currentProject)
+	 	throws CmsException {
+	     // Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			return m_registry;
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " , 
+				CmsException.C_NO_ACCESS);
+		}
+	 } 
 	/**
 	 * Returns a CmsResourceTypes.
 	 * 
@@ -3211,6 +3236,50 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				 CmsException.C_NO_ACCESS);
 		}
 	}
+	/**
+	 * Imports a module (a zip file) to the cms.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param importContent The modle content. 
+	 * @param cms the cms-object to use for the import.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importModule(CmsUser currentUser,  CmsProject currentProject, byte[] importContent, CmsObject cms)
+		throws CmsException {
+		if(isAdmin(currentUser, currentProject)) {
+			//new CmsModuleImport(importContent, cms);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] importResources",
+				 CmsException.C_NO_ACCESS);
+		}
+	}
+	 /**
+	 * Imports a module (a zip file) to the cms.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param importFile the name (absolute Path) of the import resource. 
+	 * @param cms the cms-object to use for the import.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importModule(CmsUser currentUser,  CmsProject currentProject, String importFile, CmsObject cms)
+		throws CmsException {
+		if(isAdmin(currentUser, currentProject)) {
+			//new CmsModuleImport(importFile, importPath, cms);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] importResources",
+				 CmsException.C_NO_ACCESS);
+		}
+	}
 	// Methods working with database import and export
 	
 	/**
@@ -3265,7 +3334,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_propertyCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".property", 1000));
 		m_propertyDefCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100));                  
 		m_propertyDefVectorCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
-		m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");       
+		m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
+
+		// initialize the registry
+		m_registry= new CmsRegistryDummy(config.getString(C_CONFIGURATION_REGISTRY));
 	}
 	/**
 	 * Determines, if the users current group is the admin-group.

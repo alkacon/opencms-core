@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/08/14 14:35:07 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2000/08/17 16:05:56 $
+ * Version: $Revision: 1.98 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.97 $ $Date: 2000/08/14 14:35:07 $
+ * @version $Revision: 1.98 $ $Date: 2000/08/17 16:05:56 $
  */
 public interface I_CmsConstants
 {
@@ -856,6 +856,11 @@ public interface I_CmsConstants
 	 * A string in the configuration-file.
 	 */
 	public static String C_CONFIGURATION_CLASS = "class";
+
+	/**
+	 * A string in the configuration-file.
+	 */
+	public static String C_CONFIGURATION_REGISTRY = "registry";
 	
 	 /**
 	 * A string in the configuration-file.

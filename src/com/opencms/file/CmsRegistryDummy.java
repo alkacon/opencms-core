@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistryDummy.java,v $
- * Date   : $Date: 2000/08/17 13:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/08/17 16:05:56 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,10 +34,15 @@ import java.util.*;
  * This class implements a dumy registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/08/17 13:47:34 $
+ * @version $Revision: 1.2 $ $Date: 2000/08/17 16:05:56 $
  * 
  */
 public class CmsRegistryDummy implements I_CmsRegistry {
+
+
+	public CmsRegistryDummy(String Registryfile) {
+		
+	}
 	/**
 	 * This method clones the registry.
 	 *

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/11 12:58:57 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2000/08/17 16:05:56 $
+ * Version: $Revision: 1.98 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,11 +43,11 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.97 $ $Date: 2000/08/11 12:58:57 $
+ * @version $Revision: 1.98 $ $Date: 2000/08/17 16:05:56 $
  * 
  */
-public interface I_CmsResourceBroker {
 
+ public interface I_CmsResourceBroker {
 
 	 /**
 	  * Accept a task from the Cms.
@@ -1109,6 +1109,21 @@ public interface I_CmsResourceBroker {
 	public CmsResource getParentResource(CmsUser currentUser, CmsProject currentProject,
 										 String resourcename) 
 		throws CmsException;
+	  /**
+	 * Gets the Registry.<BR/>
+	 *
+	 * Only the admin can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @exception Throws CmsException if access is not allowed.
+	 */
+
+	 public I_CmsRegistry getRegistry(CmsUser currentUser, CmsProject currentProject)
+	 	throws CmsException;
 	/**
 	 * Returns a CmsResourceTypes.
 	 * 
@@ -1264,6 +1279,36 @@ public interface I_CmsResourceBroker {
 	 */
 	public void importFolder(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
 		throws CmsException;
+	/**
+	 * Imports a module (a zip file) to the cms.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param importContent The modle content. 
+	 * @param cms the cms-object to use for the import.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importModule(CmsUser currentUser,  CmsProject currentProject, byte[] importContent, CmsObject cms)
+		throws CmsException ;
+	 	/**
+	 * Imports a module (a zip file) to the cms.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param importFile the name (complete Path) of the import module
+	 * @param cms the cms-object to use for the import.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importModule(CmsUser currentUser,  CmsProject currentProject, String importFile, CmsObject cms)
+		throws CmsException ;
 	// Methods working with database import and export
 	
 	/**
