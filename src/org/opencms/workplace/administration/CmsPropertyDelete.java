@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsPropertyDelete.java,v $
- * Date   : $Date: 2004/11/19 09:34:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/19 10:03:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.3
  */
@@ -174,7 +175,9 @@ public class CmsPropertyDelete extends CmsDialog {
                 setParamMessage(key("error.message.deleteproperty"));
                 StringBuffer reason = new StringBuffer();
                 reason.append(key("error.reason.deleteproperty"));
-                reason.append(buildResourceList(resourcesLockedByOtherUser, true));                
+                reason.append(dialogWhiteBoxStart());
+                reason.append(buildResourceList(resourcesLockedByOtherUser, true));
+                reason.append(dialogWhiteBoxEnd());
                 setParamReasonSuggestion(reason.toString());
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
             }
@@ -222,23 +225,23 @@ public class CmsPropertyDelete extends CmsDialog {
         result.append("\t<td style=\"width:5%;\" class=\"textbold\">");
         result.append(key("input.type"));
         result.append("</td>\n");   
-        // Name
-        result.append("\t<td style=\"width:10%;\" class=\"textbold\">");
-        result.append(key("input.name"));
-        result.append("</td>\n");  
         // Uri
-        result.append("\t<td style=\"width:45%;\" class=\"textbold\">");
+        result.append("\t<td style=\"width:40%;\" class=\"textbold\">");
         result.append(key("input.adress"));
         result.append("</td>\n");
+        // Name
+        result.append("\t<td style=\"width:25%;\" class=\"textbold\">");
+        result.append(key("input.title"));
+        result.append("</td>\n");          
         if (!lockInfo) {
             // Property value
-            result.append("\t<td style=\"width:40%;\" class=\"textbold\">");
+            result.append("\t<td style=\"width:30%;\" class=\"textbold\">");
             result.append(key("input.propertyvalue"));
             result.append("</td>\n");
         }
         if (lockInfo) {
             // Property value
-            result.append("\t<td style=\"width:40%;\" class=\"textbold\">");
+            result.append("\t<td style=\"width:30%;\" class=\"textbold\">");
             result.append(key("explorer.lockedby"));
             result.append("</td>\n");
             result.append("</tr>\n");
@@ -254,6 +257,7 @@ public class CmsPropertyDelete extends CmsDialog {
                 CmsResource resource = (CmsResource)i.next(); 
                 String filetype = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
                 result.append("<tr>\n");
+                // file type
                 result.append("\t<td>");
                 result.append("<img src=\"");
                 result.append(getSkinUri());
@@ -261,17 +265,21 @@ public class CmsPropertyDelete extends CmsDialog {
                 result.append(filetype);
                 result.append(".gif\">");                
                 result.append("</td>\n");
-                result.append("\t<td>");
-                result.append(resource.getName());
-                result.append("</td>\n");
+                // file address
                 result.append("\t<td>");
                 result.append(getCms().getSitePath(resource));
-                result.append("</td>\n");
+                result.append("</td>\n");                
+                // title
+                result.append("\t<td>");
+                result.append(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, resource.getRootPath(), ""));
+                result.append("</td>\n");                
+                // current value of the property
                 if (!lockInfo) {
                     result.append("\t<td>");
                     result.append(getJsp().property(getParamPropertyName(), resource.getRootPath()));
                     result.append("</td>\n");
                 }
+                // locked by user
                 if (lockInfo) {
                     CmsLock lock = getCms().getLock(resource);                    
                     result.append("\t<td>");
