@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/20 15:24:36 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2000/02/20 19:08:38 $
+ * Version: $Revision: 1.70 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.69 $ $Date: 2000/02/20 15:24:36 $
+ * @version $Revision: 1.70 $ $Date: 2000/02/20 19:08:38 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3821,13 +3821,18 @@ System.err.println(">>> readFile(2) error for\n" +
 									int priority)
 		 throws CmsException {
 		 
+		 A_CmsGroup role = null;
+		 
 		 // read the role
-		 A_CmsGroup role = readGroup(currentUser, null, roleName);
+		 if(roleName!=null) {
+			role = readGroup(currentUser, null, roleName);
+		 }
 		 // create the timestamp
 		 java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
-						 
+		System.err.println("RB createproject2");
 		 return m_taskRb.createProject(currentUser, projectname, projectType, 
 									   role, timestamp, priority);
+		 
 	 }
 
 
@@ -3862,7 +3867,6 @@ System.err.println(">>> readFile(2) error for\n" +
 		 A_CmsGroup role = readGroup(currentUser, currentProject, roleName);
 		 // create the timestamp
 		 java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
-		 
 		 return m_taskRb.createTask(currentUser, currentProject, agent, role, 
 									taskname, taskcomment, timestamp, priority);
 	 }
@@ -3892,10 +3896,18 @@ System.err.println(">>> readFile(2) error for\n" +
 								 long timeout, int priority)
 		 throws CmsException {
 		 
+		 A_CmsUser agent = null;
+		 A_CmsGroup role = null;
+		 
 		 // read agent
-		 A_CmsUser agent = readUser(currentUser, null, agentName);
+		 if(agentName!=null) {
+			agent = readUser(currentUser, null, agentName);
+		 }
+		 
 		 // read the role
-		 A_CmsGroup role = readGroup(currentUser, null, roleName);
+		 if(roleName!=null) {
+			role = readGroup(currentUser, null, roleName);
+		 }
 		 // create the timestamp
 		 java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
 	 
