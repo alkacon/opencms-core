@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/15 09:50:41 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2003/10/17 07:46:58 $
+ * Version: $Revision: 1.126 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.125 $ $Date: 2003/10/15 09:50:41 $
+ * @version $Revision: 1.126 $ $Date: 2003/10/17 07:46:58 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1324,13 +1324,19 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             // read the project resources of the project that gets published
+            report.println(report.key("report.publish_prepare_folders"), I_CmsReport.C_FORMAT_HEADLINE);
+            report.print(report.key("report.publish_read_projectresources") + report.key("report.dots"));
             projectResources = m_driverManager.readProjectResources(context.currentProject());
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
             // read all changed/new/deleted folders
+            report.print(report.key("report.publish_read_projectfolders")+ report.key("report.dots"));
             offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject().getId());
-
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            
             // ensure that the folders appear in the correct (DFS) tree order
             // sort out folders that will not be published
+            report.print(report.key("report.publish_filter_folders") + report.key("report.dots"));
             sortedFolderMap = (Map) new HashMap();
             i = offlineFolders.iterator();
             while (i.hasNext()) {
@@ -1365,6 +1371,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
             Collections.sort(sortedFolderList);
+            
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            report.println(report.key("report.publish_prepare_folders_finished"), I_CmsReport.C_FORMAT_HEADLINE);
 
             offlineFolders.clear();
             offlineFolders = null;
@@ -1416,9 +1425,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             ///////////////////////////////////////////////////////////////////////////////////////
 
             // now read all changed/new/deleted files
+            report.println(report.key("report.publish_prepare_files"), I_CmsReport.C_FORMAT_HEADLINE);
+            report.print(report.key("report.publish_read_projectfiles") + report.key("report.dots"));
             offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId());
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
             // sort out files that will not be published
+            report.print(report.key("report.publish_filter_files") + report.key("report.dots"));
             i = offlineFiles.iterator();
             while (i.hasNext()) {
                 publishCurrentResource = false;
@@ -1489,6 +1502,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     i.remove();
                 }
             }
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            report.println(report.key("report.publish_prepare_files_finished"), I_CmsReport.C_FORMAT_HEADLINE);
 
             publishedFileCount = 0;
             n = offlineFiles.size();
