@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2002/03/12 16:14:50 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/07/12 17:50:46 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2002/03/12 16:14:50 $
+ * @version $Revision: 1.31 $ $Date: 2002/07/12 17:50:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -755,16 +755,17 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         }
     }
 
-    private static String getTaskUrl(CmsObject cms, int taskid, int projectid) throws CmsException {
+    public static String getTaskUrl(CmsObject cms, int taskid, int projectid) throws CmsException {
         String servletPath = cms.getRequestContext().getRequest().getServletUrl();
         String serverName = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
+        String scheme =  ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
         int serverPort = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerPort();
         if(serverPort != 80) {
             serverName += ":" + serverPort;
         }
         CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
         String actionPath = conf.getWorkplaceActionPath();
-        return "http://" + serverName + servletPath + actionPath + "login.html?startTaskId="
+        return scheme + "://" + serverName + servletPath + actionPath + "login.html?startTaskId="
                 + taskid + "&startProjectId=" + projectid;
     }
 }
