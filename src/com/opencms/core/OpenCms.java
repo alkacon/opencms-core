@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/04/09 10:00:44 $
-* Version: $Revision: 1.120 $
+* Date   : $Date: 2003/04/09 11:06:25 $
+* Version: $Revision: 1.121 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.120 $ $Date: 2003/04/09 10:00:44 $
+ * @version $Revision: 1.121 $ $Date: 2003/04/09 11:06:25 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -360,8 +360,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         if (m_directoryTranslator == null) m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
         
         // read the maximum file upload size limit
-        Integer fileMaxUploadSize = new Integer(conf.getInteger("file.maxuploadsize", -1));
-        setRuntimeProperty("file.maxuploadsize", fileMaxUploadSize);
+        Integer fileMaxUploadSize = new Integer(conf.getInteger("workplace.file.maxuploadsize", -1));
+        setRuntimeProperty("workplace.file.maxuploadsize", fileMaxUploadSize);
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". File max. upload size: " + (fileMaxUploadSize.intValue()>0?(fileMaxUploadSize+" KB"):"unlimited"));
         
         // try to initialize filename translations
@@ -419,10 +419,10 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         
         // read the default user settings
         try {
-            int userDefaultAccessFlags = conf.getInteger("user.default.flags", C_ACCESS_DEFAULT_FLAGS);
+            int userDefaultAccessFlags = conf.getInteger("workplace.user.default.flags", C_ACCESS_DEFAULT_FLAGS);
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". User permission init : Default access flags are " + userDefaultAccessFlags);
             setUserDefaultAccessFlags(userDefaultAccessFlags);
-            String userDefaultLanguage = conf.getString("user.default.language", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
+            String userDefaultLanguage = conf.getString("workplace.user.default.language", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
             setUserDefaultLanguage(userDefaultLanguage);
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". User permission init : Default language is '" + userDefaultLanguage + "'");
         } catch(Exception e) {
