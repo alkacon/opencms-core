@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2004/12/23 13:16:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/01/03 13:50:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -423,11 +423,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      * Tests publish scenario "E".<p>
      * 
      * This scenario is described as follows:
-     * Deletion of folders containing shared locked siblings 
-     * e.g. 
-     * user test1 edits a sibling
-     * then user test2 deletes the folder containing a sibling with shared lock
-     * direct publish of deleted folder geenrates an exception.<p>
+     * Deletion of folders containing shared locked siblings after copying 
+     * a folder creating siblings into a new folder and publication. <p>
      * 
      * @throws Throwable if something goes wrong
      */
@@ -443,12 +440,9 @@ public class TestPublishIssues extends OpenCmsTestCase {
         // create folder
         cms.createResource("/test", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
         
-        // create sibling
-        cms.copyResource("/folder1/subfolder12/subsubfolder121", "/test/zaptest", I_CmsConstants.C_COPY_AS_SIBLING);
+        // create siblings
+        cms.copyResource("/folder1/subfolder12/subsubfolder121", "/test/subtest", I_CmsConstants.C_COPY_AS_SIBLING);
         cms.unlockResource("/test");
-        
-        // read sibling again
-        cms.readResource("/test/zaptest/image1.gif");
         
         // publish
         cms.publishResource("/test");
@@ -456,19 +450,19 @@ public class TestPublishIssues extends OpenCmsTestCase {
         // lock sibling 
         cms.lockResource("/folder1/subfolder12/subsubfolder121/image1.gif");
         
+        // login as user test2
         cms.addUserToGroup("test2", "Projectmanagers");
-
-        // login as user test2 and delete folder
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(project);
         
-        assertEquals(cms.getLock("/test/zaptest/image1.gif").getType(), CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        // check lock
+        assertEquals(cms.getLock("/test/subtest/image1.gif").getType(), CmsLock.C_TYPE_SHARED_EXCLUSIVE);
         
         // delete the folder
-        cms.lockResource("/test/zaptest");
-        cms.deleteResource("/test/zaptest", I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-        cms.unlockResource("/test/zaptest");
-        
+        cms.lockResource("/test/subtest");
+        cms.deleteResource("/test/subtest", I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        cms.unlockResource("/test/subtest");
+
         // publish
         cms.publishResource("/test");
         
