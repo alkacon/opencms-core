@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsUUID.java,v $
- * Date   : $Date: 2003/03/19 19:39:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/13 15:53:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * This class is just a facade wrapper for the "real" UUID implementation.<p> 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0.0
  */
@@ -157,7 +157,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * @return true if this UUID is equal to the null UUID
      */
     public boolean isNullUUID() {
-        return m_uuid.equals(getNullUUID());
+        return m_uuid.equals(UUID.getNullUUID());
     }
 
     /**
@@ -182,7 +182,11 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * @see java.lang.Object#equals(java.lang.Object)
      */    
     public boolean equals(Object o) {
-        return m_uuid.equals(o);
+        if (o instanceof CmsUUID) {
+            return m_uuid.equals(new UUID(((CmsUUID)o).toString()));
+        }
+        
+        return false;
     }
             
     /**
