@@ -5,7 +5,7 @@
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu>]]><BUTTON href="javascript:doEditHTML(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="javascript:doEditHTML(3);" name="bt_save" action="" alt="saveclose"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:doEditHTML(3);" name="bt_save" action="" alt="save"/><![CDATA[</td>
 			
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_undo" action="doEditHTML(4);" alt="undo"/><![CDATA[</td>
