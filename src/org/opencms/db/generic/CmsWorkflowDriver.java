@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/09/15 15:17:23 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/09/15 15:29:59 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2003/09/15 15:17:23 $
+ * @version $Revision: 1.16 $ $Date: 2003/09/15 15:29:59 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -90,22 +90,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * Creates a new task.<p>
-     * 
-     * @param rootId id of the root task project
-     * @param parentId id of the parent task
-     * @param tasktype type of the task
-     * @param ownerId id of the owner
-     * @param agentId id of the agent
-     * @param roleId id of the role
-     * @param taskname name of the task
-     * @param wakeuptime time when the task will be wake up
-     * @param timeout time when the task times out
-     * @param priority priority of the task
-     *
-     * @return the Task object of the generated task
-     *
-     * @throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsWorkflowDriver#createTask(int, int, int, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.sql.Timestamp, java.sql.Timestamp, int)
      */
     public CmsTask createTask(int rootId, int parentId, int tasktype, CmsUUID ownerId, CmsUUID agentId, CmsUUID roleId, String taskname, java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout, int priority) throws CmsException {
 
@@ -131,39 +116,6 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         // write task
         task = writeTask(task);
         return task;
-    }
-
-    /**
-     * Semi-constructor to create a CmsTask instance from a JDBC result set.
-     * 
-     * @param res the result set from the query
-     * @return the CmsTash created from the data
-     * @throws SQLException if something goes wrong
-     */
-    protected final CmsTask createTaskFromResultSet(ResultSet res) throws SQLException {
-        int autofinish = res.getInt(m_sqlManager.get("C_TASK_AUTOFINISH"));
-        java.sql.Timestamp endtime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_ENDTIME"));
-        int escalationtype = res.getInt(m_sqlManager.get("C_TASK_ESCALATIONTYPE"));
-        int id = res.getInt(m_sqlManager.get("C_TASK_ID"));
-        CmsUUID initiatoruser = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_INITIATORUSER")));
-        int milestone = res.getInt(m_sqlManager.get("C_TASK_MILESTONE"));
-        String name = res.getString(m_sqlManager.get("C_TASK_NAME"));
-        CmsUUID originaluser = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_ORIGINALUSER")));
-        CmsUUID agentuser = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_AGENTUSER")));
-        int parent = res.getInt(m_sqlManager.get("C_TASK_PARENT"));
-        int percentage = res.getInt(m_sqlManager.get("C_TASK_PERCENTAGE"));
-        String permission = res.getString(m_sqlManager.get("C_TASK_PERMISSION"));
-        int priority = res.getInt(m_sqlManager.get("C_TASK_PRIORITY"));
-        CmsUUID role = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_ROLE")));
-        int root = res.getInt(m_sqlManager.get("C_TASK_ROOT"));
-        java.sql.Timestamp starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_STARTTIME"));
-        int state = res.getInt(m_sqlManager.get("C_TASK_STATE"));
-        int tasktype = res.getInt(m_sqlManager.get("C_TASK_TASKTYPE"));
-        java.sql.Timestamp timeout = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_TIMEOUT"));
-        java.sql.Timestamp wakeuptime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_WAKEUPTIME"));
-        String htmllink = res.getString(m_sqlManager.get("C_TASK_HTMLLINK"));
-
-        return new CmsTask(id, name, state, tasktype, root, parent, initiatoruser, role, agentuser, originaluser, starttime, wakeuptime, timeout, endtime, percentage, permission, priority, escalationtype, htmllink, milestone, autofinish);
     }
 
     /**
@@ -211,39 +163,6 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * Finds an agent for a given role (group).
-     * @param roleId The Id for the role (group).
-     *
-     * @return A vector with the tasks
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public CmsUUID readAgent(CmsUUID roleId) throws CmsException {
-        CmsUUID result = CmsUUID.getNullUUID();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASK_FIND_AGENT");
-            stmt.setString(1, roleId.toString());
-            res = stmt.executeQuery();
-
-            if (res.next()) {
-                result = new CmsUUID(res.getString(1));
-            }
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return result;
-    }
-
-    /**
      * @see org.opencms.db.I_CmsWorkflowDriver#forwardTask(int, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
     public void forwardTask(int taskId, CmsUUID newRoleId, CmsUUID newUserId) throws CmsException {
@@ -263,70 +182,69 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
+
     /**
-     * Get a parameter value for a task.<p>
-     *
-     * @param taskId the id of the task
-     * @param parname Name of the parameter
-     * @return the parameter value
-     * @throws CmsException if something goes wrong
+     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public String readTaskParameter(int taskId, String parname) throws CmsException {
+    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
+        String poolUrl = config.getString("db.workflow.pool");
 
-        String result = null;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
+        m_sqlManager = this.initQueries();
+        m_sqlManager.setOfflinePoolUrl(poolUrl);
+        m_sqlManager.setOnlinePoolUrl(poolUrl);
+        m_sqlManager.setBackupPoolUrl(poolUrl);
 
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKPAR_GET");
-            stmt.setInt(1, taskId);
-            stmt.setString(2, parname);
-            res = stmt.executeQuery();
-            if (res.next()) {
-                result = res.getString(m_sqlManager.get("C_PAR_VALUE"));
-            }
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
+        m_driverManager = driverManager;
+
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + poolUrl);
         }
-        return result;
+
+        if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, this.getClass().toString() + " does not support successive drivers.");
+            }
+        }
     }
 
     /**
-     * Get the template task id fo a given taskname.
-     *
-     * @param taskName Name of the Task
-     *
-     * @return id from the task template
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsWorkflowDriver#initQueries(java.lang.String)
      */
-    public int readTaskType(String taskName) throws CmsException {
-        int result = 1;
+    public org.opencms.db.generic.CmsSqlManager initQueries() {
+        return new org.opencms.db.generic.CmsSqlManager();
+    }
 
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
+    /**
+     * Semi-constructor to create a CmsTask instance from a JDBC result set.
+     * 
+     * @param res the result set from the query
+     * @return the CmsTash created from the data
+     * @throws SQLException if something goes wrong
+     */
+    protected final CmsTask internalCreateTask(ResultSet res) throws SQLException {
+        int autofinish = res.getInt(m_sqlManager.get("C_TASK_AUTOFINISH"));
+        java.sql.Timestamp endtime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_ENDTIME"));
+        int escalationtype = res.getInt(m_sqlManager.get("C_TASK_ESCALATIONTYPE"));
+        int id = res.getInt(m_sqlManager.get("C_TASK_ID"));
+        CmsUUID initiatoruser = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_INITIATORUSER")));
+        int milestone = res.getInt(m_sqlManager.get("C_TASK_MILESTONE"));
+        String name = res.getString(m_sqlManager.get("C_TASK_NAME"));
+        CmsUUID originaluser = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_ORIGINALUSER")));
+        CmsUUID agentuser = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_AGENTUSER")));
+        int parent = res.getInt(m_sqlManager.get("C_TASK_PARENT"));
+        int percentage = res.getInt(m_sqlManager.get("C_TASK_PERCENTAGE"));
+        String permission = res.getString(m_sqlManager.get("C_TASK_PERMISSION"));
+        int priority = res.getInt(m_sqlManager.get("C_TASK_PRIORITY"));
+        CmsUUID role = new CmsUUID(res.getString(m_sqlManager.get("C_TASK_ROLE")));
+        int root = res.getInt(m_sqlManager.get("C_TASK_ROOT"));
+        java.sql.Timestamp starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_STARTTIME"));
+        int state = res.getInt(m_sqlManager.get("C_TASK_STATE"));
+        int tasktype = res.getInt(m_sqlManager.get("C_TASK_TASKTYPE"));
+        java.sql.Timestamp timeout = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_TIMEOUT"));
+        java.sql.Timestamp wakeuptime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_TASK_WAKEUPTIME"));
+        String htmllink = res.getString(m_sqlManager.get("C_TASK_HTMLLINK"));
 
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASK_GET_TASKTYPE");
-            stmt.setString(1, taskName);
-            res = stmt.executeQuery();
-            if (res.next()) {
-                result = res.getInt("id");
-            }
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return result;
+        return new CmsTask(id, name, state, tasktype, root, parent, initiatoruser, role, agentuser, originaluser, starttime, wakeuptime, timeout, endtime, percentage, permission, priority, escalationtype, htmllink, milestone, autofinish);
     }
 
     /**
@@ -336,7 +254,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      * @param tasktype the type to query
      * @return the sql condition
      */
-    protected String getTaskTypeConditon(boolean first, int tasktype) {
+    protected String internalReadTaskTypeCondition(boolean first, int tasktype) {
 
         String result = "";
         // handle the tasktype for the SQL String
@@ -372,34 +290,27 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     * Updates a task parameter.<p>
+     * 
+     * @param parid the id of the parameter
+     * @param parvalue the value of the parameter 
+     * @throws CmsException if something goes wrong
      */
-    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
-        String poolUrl = config.getString("db.workflow.pool");
+    protected void internalWriteTaskParameter(int parid, String parvalue) throws CmsException {
 
-        m_sqlManager = this.initQueries();
-        m_sqlManager.setOfflinePoolUrl(poolUrl);
-        m_sqlManager.setOnlinePoolUrl(poolUrl);
-        m_sqlManager.setBackupPoolUrl(poolUrl);
-
-        m_driverManager = driverManager;
-
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + poolUrl);
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKPAR_UPDATE");
+            stmt.setString(1, parvalue);
+            stmt.setInt(2, parid);
+            stmt.executeUpdate();
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
         }
-
-        if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, this.getClass().toString() + " does not support successive drivers.");
-            }
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsWorkflowDriver#initQueries(java.lang.String)
-     */
-    public org.opencms.db.generic.CmsSqlManager initQueries() {
-        return new org.opencms.db.generic.CmsSqlManager();
     }
 
     /**
@@ -410,7 +321,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      * @return the id of the new parameter
      * @throws CmsException if something goes wrong
      */
-    protected int insertTaskPar(int taskId, String parname, String parvalue) throws CmsException {
+    protected int internalWriteTaskParameter(int taskId, String parname, String parvalue) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         int newId = I_CmsConstants.C_UNKNOWN_ID;
@@ -433,6 +344,42 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
+     * Updates a task.<p>
+     * 
+     * @param taskId the id of the task
+     * @param autofinish tbd
+     * @param escalationtyperef tbd
+     * @param htmllink tbd
+     * @param name tbd
+     * @param permission tbd
+     * @param priorityref tbd
+     * @param roleref tbd
+     * @throws CmsException if something goes wrong
+     */
+    protected void internalWriteTaskType(int taskId, int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKTYPE_UPDATE");
+            stmt.setInt(1, autofinish);
+            stmt.setInt(2, escalationtyperef);
+            stmt.setString(3, htmllink);
+            stmt.setString(4, name);
+            stmt.setString(5, permission);
+            stmt.setInt(6, priorityref);
+            stmt.setInt(7, roleref);
+            stmt.setInt(8, taskId);
+            stmt.executeUpdate();
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
      * Inserts a new task.<p>
      * 
      * @param autofinish tbd
@@ -445,7 +392,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      * @return tbd
      * @throws CmsException tbd
      */
-    protected int insertTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException {
+    protected int internalWriteTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -474,13 +421,35 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * Reads a task from the Cms.
-     *
-     * @param id The id of the task to read.
-     *
-     * @return a task object or null if the task is not found.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsWorkflowDriver#readAgent(org.opencms.util.CmsUUID)
+     */
+    public CmsUUID readAgent(CmsUUID roleId) throws CmsException {
+        CmsUUID result = CmsUUID.getNullUUID();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASK_FIND_AGENT");
+            stmt.setString(1, roleId.toString());
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                result = new CmsUUID(res.getString(1));
+            }
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } catch (Exception exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsWorkflowDriver#readTask(int)
      */
     public CmsTask readTask(int id) throws CmsException {
         ResultSet res = null;
@@ -494,7 +463,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             res = stmt.executeQuery();
 
             if (res.next()) {
-                task = createTaskFromResultSet(res);
+                task = internalCreateTask(res);
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -508,11 +477,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * Reads a log for a task.
-     *
-     * @param id The id for the tasklog .
-     * @return A new TaskLog object
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsWorkflowDriver#readTaskLog(int)
      */
     public CmsTaskLog readTaskLog(int id) throws CmsException {
         ResultSet res = null;
@@ -546,11 +511,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * Reads log entries for a task.
-     *
-     * @param taskId The id of the task for the tasklog to read .
-     * @return A Vector of new TaskLog objects
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsWorkflowDriver#readTaskLogs(int)
      */
     public Vector readTaskLogs(int taskId) throws CmsException {
         Connection conn = null;
@@ -590,19 +551,35 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * Reads all tasks of a user in a project.<p>
-     * 
-     * @param project The Project in which the tasks are defined.
-     * @param agent The task agent
-     * @param owner The task owner
-     * @param role the task role
-     * @param tasktype C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
-     * @param orderBy Chooses, how to order the tasks.
-     * @param sort Sort Ascending or Descending (ASC or DESC)
-     *
-     * @return A vector with the tasks
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsWorkflowDriver#readTaskParameter(int, java.lang.String)
+     */
+    public String readTaskParameter(int taskId, String parname) throws CmsException {
+
+        String result = null;
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKPAR_GET");
+            stmt.setInt(1, taskId);
+            stmt.setString(2, parname);
+            res = stmt.executeQuery();
+            if (res.next()) {
+                result = res.getString(m_sqlManager.get("C_PAR_VALUE"));
+            }
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            // close all db-resources
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsWorkflowDriver#readTasks(com.opencms.file.CmsProject, com.opencms.file.CmsUser, com.opencms.file.CmsUser, com.opencms.file.CmsGroup, int, java.lang.String, java.lang.String)
      */
     public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) throws CmsException {
         boolean first = true;
@@ -649,7 +626,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             first = false;
         }
 
-        sqlstr = sqlstr + getTaskTypeConditon(first, tasktype);
+        sqlstr = sqlstr + internalReadTaskTypeCondition(first, tasktype);
 
         // handel the order and sort parameter for the SQL String
         if (orderBy != null) {
@@ -672,7 +649,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
 
             // if resultset exists - return vector of tasks
             while (recset.next()) {
-                task = createTaskFromResultSet(recset);
+                task = internalCreateTask(recset);
                 tasks.addElement(task);
             }
 
@@ -689,38 +666,22 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * Set a Parameter for a task.<p>
-     *
-     * @param taskId the task
-     * @param parname the name of the parameter
-     * @param parvalue the value of the parameter
-     *
-     * @return The id of the inserted parameter or 0 if the parameter exists for this task.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsWorkflowDriver#readTaskType(java.lang.String)
      */
-    public int writeTaskParameter(int taskId, String parname, String parvalue) throws CmsException {
+    public int readTaskType(String taskName) throws CmsException {
+        int result = 1;
 
-        ResultSet res = null;
-        int result = 0;
-        Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
 
         try {
             conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKPAR_TEST");
-            // test if the parameter already exists for this task
-            stmt.setInt(1, taskId);
-            stmt.setString(2, parname);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASK_GET_TASKTYPE");
+            stmt.setString(1, taskName);
             res = stmt.executeQuery();
-
             if (res.next()) {
-                //Parameter exisits, so make an update
-                updateTaskPar(res.getInt(m_sqlManager.get("C_PAR_ID")), parvalue);
-            } else {
-                //Parameter is not exisiting, so make an insert
-                result = insertTaskPar(taskId, parname, parvalue);
-
+                result = res.getInt("id");
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -732,66 +693,6 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * Updates a task parameter.<p>
-     * 
-     * @param parid the id of the parameter
-     * @param parvalue the value of the parameter 
-     * @throws CmsException if something goes wrong
-     */
-    protected void updateTaskPar(int parid, String parvalue) throws CmsException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKPAR_UPDATE");
-            stmt.setString(1, parvalue);
-            stmt.setInt(2, parid);
-            stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Updates a task.<p>
-     * 
-     * @param taskId the id of the task
-     * @param autofinish tbd
-     * @param escalationtyperef tbd
-     * @param htmllink tbd
-     * @param name tbd
-     * @param permission tbd
-     * @param priorityref tbd
-     * @param roleref tbd
-     * @throws CmsException if something goes wrong
-     */
-    protected void updateTaskType(int taskId, int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKTYPE_UPDATE");
-            stmt.setInt(1, autofinish);
-            stmt.setInt(2, escalationtyperef);
-            stmt.setString(3, htmllink);
-            stmt.setString(4, name);
-            stmt.setString(5, permission);
-            stmt.setInt(6, priorityref);
-            stmt.setInt(7, roleref);
-            stmt.setInt(8, taskId);
-            stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
      * @see org.opencms.db.I_CmsWorkflowDriver#writeSystemTaskLog(int, java.lang.String)
      */
     public void writeSystemTaskLog(int taskid, String comment) throws CmsException {
@@ -799,11 +700,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * Updates a task.<p>
-     *
-     * @param task The task that will be written.
-     * @return the CmsTask from the database
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsWorkflowDriver#writeTask(org.opencms.workflow.CmsTask)
      */
     public CmsTask writeTask(CmsTask task) throws CmsException {
 
@@ -845,15 +742,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * Writes new log for a task.<p>
-     *
-     * @param taskId The id of the task.
-     * @param userId User who added the Log.
-     * @param starttime Time when the log is created.
-     * @param comment Description for the log.
-     * @param type Type of the log. 0 = Sytem log, 1 = User Log
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsWorkflowDriver#writeTaskLog(int, org.opencms.util.CmsUUID, java.sql.Timestamp, java.lang.String, int)
      */
     public void writeTaskLog(int taskId, CmsUUID userId, java.sql.Timestamp starttime, String comment, int type) throws CmsException {
 
@@ -886,18 +775,42 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * Creates a new tasktype set in the database.<p>
-     * 
-     * @param autofinish tbd
-     * @param escalationtyperef tbd
-     * @param htmllink tbd
-     * @param name tbd
-     * @param permission tbd
-     * @param priorityref tbd
-     * @param roleref tbd
-     * @return The id of the inserted parameter or 0 if the parameter exists for this task.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @see org.opencms.db.I_CmsWorkflowDriver#writeTaskParameter(int, java.lang.String, java.lang.String)
+     */
+    public int writeTaskParameter(int taskId, String parname, String parvalue) throws CmsException {
+
+        ResultSet res = null;
+        int result = 0;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKPAR_TEST");
+            // test if the parameter already exists for this task
+            stmt.setInt(1, taskId);
+            stmt.setString(2, parname);
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                //Parameter exisits, so make an update
+                internalWriteTaskParameter(res.getInt(m_sqlManager.get("C_PAR_ID")), parvalue);
+            } else {
+                //Parameter is not exisiting, so make an insert
+                result = internalWriteTaskParameter(taskId, parname, parvalue);
+
+            }
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            // close all db-resources
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsWorkflowDriver#writeTaskType(int, int, java.lang.String, java.lang.String, java.lang.String, int, int)
      */
     public int writeTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException {
         ResultSet res = null;
@@ -914,11 +827,11 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
 
             if (res.next()) {
                 //Parameter exists, so make an update
-                updateTaskType(res.getInt(m_sqlManager.get("C_PAR_ID")), autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
+                internalWriteTaskType(res.getInt(m_sqlManager.get("C_PAR_ID")), autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
 
             } else {
                 //Parameter is not existing, so make an insert
-                result = insertTaskType(autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
+                result = internalWriteTaskType(autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
 
             }
         } catch (SQLException exc) {
