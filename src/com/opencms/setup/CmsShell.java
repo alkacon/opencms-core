@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2000/02/08 13:22:32 $
+ * @version $Revision: 1.23 $ $Date: 2000/02/09 09:53:53 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -107,19 +107,18 @@ public class CmsShell implements I_CmsConstants {
 			tokenizer.eolIsSignificant(true);
 			Vector input;
 			System.out.println("Type help to get a list of commands.");
-			System.out.print("> ");
-			input = new Vector();
 			for(;;) { // ever
-				tokenizer.nextToken();
-				if(tokenizer.ttype == tokenizer.TT_NUMBER) {
-					input.addElement(tokenizer.nval + "");
-				} else if(tokenizer.ttype == tokenizer.TT_WORD) {
-					input.addElement(tokenizer.sval);
-				} else {
-					call(input);
-					System.out.print("> ");
-					input = new Vector();
+				System.out.print("> ");
+				input = new Vector();
+				while(tokenizer.nextToken() != tokenizer.TT_EOL) {
+					if(tokenizer.ttype == tokenizer.TT_NUMBER) {
+						input.addElement(tokenizer.nval + "");
+					} else {
+						input.addElement(tokenizer.sval);
+					}
 				}
+				// call the command
+				call(input);
 			}
 		}catch(Exception exc){
 			printException(exc);
