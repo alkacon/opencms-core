@@ -120,7 +120,7 @@ top.help_url='FunkButtonNeu/index.html';
             <tr>
                 <INPUT type="hidden" NAME="STEP" ID="STEP" value="2">
                 <td class=formular align=right width=60%><INPUT  class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new_upload.html';"></td>
-                <td class=formular align=middle width=20%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=FERTIG name=FERTIG onClick="if(UPLOAD.newtype[2].checked){location='explorer_files_new_upload.html'}else{location='explorer_files_new_upload.html';}"></td>
+                <td class=formular align=middle width=20%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=FERTIG name=FERTIG onClick="location='explorer_files_new_upload.html';"></td>
                 <td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
             </tr>
             </table>
