@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/03/15 10:32:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/16 10:04:44 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/03/15 10:32:57 $
+ * @version $Revision: 1.4 $ $Date: 2000/03/16 10:04:44 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -56,6 +56,12 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 	/** Constant for filter */
 	private static final String C_SPACER = "------------------------------------------------";
 	    
+    /** Vector storing all view names */
+    Vector m_viewNames = null;
+
+    /** Vector storing all view values */
+    Vector m_viewLinks = null;
+    
      /**
      * Indicates if the results of this class are cacheable.
      * 
@@ -85,8 +91,9 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         
-       
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+        A_CmsRequestContext reqCont = cms.getRequestContext();     
+        
+        HttpSession session= ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(true);   
         
         String template="";
         String panel;
@@ -150,6 +157,14 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                         session.putValue("USERSETTINGS",userSettings);
                     }
                 }
+                
+                // the active panel are the starup settings, save its data
+                if (panel.equals("start")) {
+                    Hashtable startSettings=getStartSettings(parameters);
+                    if (startSettings != null) {
+                        session.putValue("STARTSETTINGS",startSettings);
+                    }
+                }
             }
             // now update the user settings
             String explorerSettings=(String)session.getValue("EXPLORERSETTINGS");
@@ -165,6 +180,11 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             String userSettings=(String)session.getValue("USERSETTINGS");
             if (userSettings!= null) {
                 cms.getRequestContext().setCurrentGroup(userSettings);
+            }
+            
+            Hashtable startSettings=(Hashtable)session.getValue("STARTSETTINGS");
+            if (startSettings != null) {
+                cms.getRequestContext().currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS,startSettings);
             }
             
             // write the user data to the database
@@ -315,7 +335,93 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                     xmlTemplateDocument.setXmlData("CHMESSAGEMEMEBERS",C_CHECKED);
                 } else {
                     xmlTemplateDocument.setXmlData("CHMESSAGEMEMEBERS"," ");
-                }              
+                }          
+                
+            } else if (panel.equals("start")) {     
+                // this is the panel for setting the start preferences
+                Hashtable startSettings=null;
+              
+                startSettings=(Hashtable)session.getValue("STARTSETTINGS");
+        
+                // if this fails, get the settings from the user obeject
+                if (startSettings== null) {
+                   startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+                }                 
+                  
+                 Hashtable blub=cms.getRequestContext().currentUser().getAdditionalInfo();
+                 Enumeration sdkeys=blub.keys();
+                while (sdkeys.hasMoreElements()) {
+                   String sdkey=(String)sdkeys.nextElement();
+                   System.err.println(sdkey+" : "+ blub.get(sdkey));
+                }
+                     
+                // if the settings are still empty, set them to default
+                if (startSettings== null) {
+                    startSettings=new Hashtable();
+                    startSettings.put(C_START_LANGUAGE,"de");
+                    startSettings.put(C_START_PROJECT,reqCont.currentProject().getName()); 
+                    String currentView = (String)session.getValue(C_PARA_VIEW);
+                    if (currentView == null) {
+                        currentView="explorer.html";
+                    }
+                    startSettings.put(C_START_VIEW,currentView);
+                    startSettings.put(C_START_DEFAULTGROUP,reqCont.currentGroup().getName());
+                    startSettings.put(C_START_ACCESSFLAGS,new Integer(C_ACCESS_DEFAULT_FLAGS));
+                }
+                
+                // now update the data in the template                                    
+                int flags=((Integer)startSettings.get(C_START_ACCESSFLAGS)).intValue();
+                if ((flags & C_ACCESS_OWNER_READ) >0 ) {
+                    xmlTemplateDocument.setXmlData("CHECKUR","CHECKED");    
+                } else {
+                    xmlTemplateDocument.setXmlData("CHECKUR"," ");    
+                }
+                if ((flags & C_ACCESS_OWNER_WRITE) >0 ) {
+                    xmlTemplateDocument.setXmlData("CHECKUW","CHECKED");    
+                } else {
+                    xmlTemplateDocument.setXmlData("CHECKUW"," ");    
+                }
+                if ((flags & C_ACCESS_OWNER_VISIBLE) >0 ) {
+                    xmlTemplateDocument.setXmlData("CHECKUV","CHECKED");    
+                } else {
+                    xmlTemplateDocument.setXmlData("CHECKUV"," ");    
+                }     
+                if ((flags & C_ACCESS_GROUP_READ) >0 ) {
+                    xmlTemplateDocument.setXmlData("CHECKGR","CHECKED");    
+                } else {
+                    xmlTemplateDocument.setXmlData("CHECKGR"," ");    
+                }
+                if ((flags & C_ACCESS_GROUP_WRITE) >0 ) {
+                    xmlTemplateDocument.setXmlData("CHECKGW","CHECKED");    
+                } else {
+                    xmlTemplateDocument.setXmlData("CHECKGW"," ");    
+                }
+                if ((flags & C_ACCESS_GROUP_VISIBLE) >0 ) {
+                    xmlTemplateDocument.setXmlData("CHECKGV","CHECKED");    
+                } else {
+                    xmlTemplateDocument.setXmlData("CHECKGV"," ");    
+                }  
+                if ((flags & C_ACCESS_PUBLIC_READ) >0 ) {
+                    xmlTemplateDocument.setXmlData("CHECKPR","CHECKED");    
+                } else {
+                    xmlTemplateDocument.setXmlData("CHECKPR"," ");    
+                }
+                if ((flags & C_ACCESS_PUBLIC_WRITE) >0 ) {
+                    xmlTemplateDocument.setXmlData("CHECKPW","CHECKED");    
+                } else {
+                    xmlTemplateDocument.setXmlData("CHECKPW"," ");    
+                }
+                if ((flags & C_ACCESS_PUBLIC_VISIBLE) >0 ) {
+                    xmlTemplateDocument.setXmlData("CHECKPV","CHECKED");    
+                } else {
+                    xmlTemplateDocument.setXmlData("CHECKPV"," ");    
+                }  
+                if ((flags & C_ACCESS_INTERNAL_READ) >0 ) {
+                    xmlTemplateDocument.setXmlData("CHECKIF","CHECKED");    
+                } else {
+                    xmlTemplateDocument.setXmlData("CHECKIF"," ");    
+                }  
+                
             } else if (panel.equals("user")) { 
                 // this is the panel for setting the user preferences
                 A_CmsUser user=cms.getRequestContext().currentUser();
@@ -350,6 +456,13 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                             session.putValue("USERSETTINGS",userSettings);
                         }
                     }
+                    // the previous panel was the start panel, save all the data form there
+                    if (oldPanel.equals("start")) {  
+                         Hashtable startSettings=getStartSettings(parameters);
+                         if (startSettings != null) {
+                            session.putValue("STARTSETTINGS",startSettings);
+                        }
+                    }
                 }
             session.putValue(C_PARA_OLDPANEL,panel);
         }
@@ -361,6 +474,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         session.removeValue("EXPLORERSETTINGS");
         session.removeValue("TASKSETTINGS");
         session.removeValue("USERSETTINGS");
+        session.removeValue("STARTSETTINGS");
         session.removeValue(C_PARA_OLDPANEL);
    
         try {
@@ -419,8 +533,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Explorer filelist flags.
      */
     private Hashtable getTaskSettings(Hashtable parameters, HttpSession session) {
-      
-        
+              
         Hashtable taskSettings=new Hashtable();
                
         if (parameters.get("CBALL")!= null) {
@@ -428,7 +541,9 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         } else {
             taskSettings.put(C_TASK_VIEW_ALL,new Boolean(false));
         }
-              
+        session.putValue(C_SESSION_TASK_ALLPROJECTS,taskSettings.get(C_TASK_VIEW_ALL));      
+        
+        
         int taskMessages=0;
         
         if (parameters.get("CBMSGACCEPTED")!= null) {
@@ -457,6 +572,89 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         return taskSettings;
     }
     
+    /**
+    * Calculates the start settings from the data submitted in
+    * the preference task panel.
+    * @param parameters Hashtable containing all request parameters
+    * @return Hashtable containing the start settings.
+    */
+    private Hashtable getStartSettings(Hashtable parameters) {
+           Hashtable startSettings=new Hashtable();
+
+           startSettings.put(C_START_LANGUAGE,(String)parameters.get("LANGUAGE"));
+           startSettings.put(C_START_PROJECT,(String)parameters.get("project")); 
+           startSettings.put(C_START_VIEW,(String)parameters.get("view"));
+           startSettings.put(C_START_DEFAULTGROUP,(String)parameters.get("dgroup"));
+           
+           // get all access flags from the request
+           String ur=(String)parameters.get("ur");
+           String uw=(String)parameters.get("uw");
+           String uv=(String)parameters.get("uv");
+           String gr=(String)parameters.get("gr");
+           String gw=(String)parameters.get("gw");
+           String gv=(String)parameters.get("gv");
+           String pr=(String)parameters.get("pr");
+           String pw=(String)parameters.get("pw");
+           String pv=(String)parameters.get("pv");
+           String ir=(String)parameters.get("ir");
+           
+           int flag=0;
+           // now check and set all flags
+           if (ur!= null) {
+            if (ur.equals("on")){
+                flag+=C_ACCESS_OWNER_READ;
+            }
+           }
+           if (uw != null) {
+            if (uw.equals("on")){
+                flag+=C_ACCESS_OWNER_WRITE;
+            }
+           }           
+           if (uv != null) {
+            if (uv.equals("on")){
+                flag+=C_ACCESS_OWNER_VISIBLE;
+            }
+           }     
+           if (gr != null) {
+             if (gr.equals("on")){
+                flag+=C_ACCESS_GROUP_READ;
+             }
+           }
+           if (gw != null) {
+            if (gw.equals("on")){
+                flag+=C_ACCESS_GROUP_WRITE;
+            }
+           }           
+           if (gv  != null) {
+            if (gv.equals("on")){
+                flag+=C_ACCESS_GROUP_VISIBLE;
+            }
+           }   
+           if (pr != null) {
+            if (pr.equals("on")){
+                flag+=C_ACCESS_PUBLIC_READ;
+            }
+           }
+           if (pw != null) {
+            if (pw.equals("on")){
+                flag+=C_ACCESS_PUBLIC_WRITE;
+            }
+           }           
+           if (pv  != null) {
+            if (pv.equals("on")){
+                flag+=C_ACCESS_PUBLIC_VISIBLE;
+            }
+           }  
+           if (ir != null) {
+            if (ir.equals("on")){                        
+                flag+=C_ACCESS_INTERNAL_READ;
+            }
+           }  
+           
+           startSettings.put(C_START_ACCESSFLAGS,new Integer(flag));
+       return startSettings;
+    }
+              
     
      /**
      * Calculates the settings for the user filelist from the data submitted in
@@ -496,11 +694,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * The given vectors <code>names</code> and <code>values</code> will 
      * be filled with the appropriate information to be used for building
      * a select box.
-     * <P>
-     * <code>names</code> will contain language specific view descriptions
-     * and <code>values</code> will contain the correspondig URL for each
-     * of these views after returning from this method.
-     * <P>
      * 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
@@ -517,7 +710,19 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         A_CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
       
-        String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
+        String filter= null;
+        // try to get the default value
+        Hashtable taskSettings=null;
+        taskSettings=(Hashtable)session.getValue("TASKSETTINGS");
+        // if this fails, get the settings from the user obeject
+        if (taskSettings== null) {
+            taskSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_TASKSETTINGS);                    
+        }
+        if (taskSettings != null) {
+            filter = (String)taskSettings.get(C_TASK_FILTER);  
+        } else {        
+            filter = (String)session.getValue(C_SESSION_TASK_FILTER);
+        }
        
 		int selected = 0;
 		
@@ -647,4 +852,193 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         return new Integer(currentGroupNum);
     }
     
+     /**
+     * Gets all available langages in the system.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index representing the user's current group in the vectors.
+     * @exception CmsException
+     */
+    public Integer getLanguageFiles(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+            throws CmsException {
+         
+        CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);
+        // get all language files
+        Vector allLangFiles = cms.getFilesInFolder(conf.getLanguagePath());
+       
+        int select=0;
+        
+        // now go through all language files and add their name and reference to the
+        // output vectors
+        for (int i=0;i<allLangFiles.size();i++) {
+            CmsFile file=(CmsFile)allLangFiles.elementAt(i);
+            CmsXmlLanguageFile langFile=new CmsXmlLanguageFile(cms,file.getAbsolutePath());
+            names.addElement(langFile.getDataValue("name"));
+            values.addElement(file.getName());
+            if (langFile.equals(lang)) {
+                select=i;
+            }
+        }     
+        return new Integer(select);
+    }
+    
+      /**
+     * Gets all views available in the workplace screen.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * <P>
+     * <code>names</code> will contain language specific view descriptions
+     * and <code>values</code> will contain the correspondig URL for each
+     * of these views after returning from this method.
+     * <P>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index representing the user's current workplace view in the vectors.
+     * @exception CmsException
+     */
+    public Integer getViews(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+            throws CmsException {
+        
+        // Let's see if we have a session
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
+
+        // If there ist a session, let's see if it has a view stored
+        String currentView = null;
+        if(session != null) {
+            currentView = (String)session.getValue(C_PARA_VIEW);
+        }    
+        if (currentView == null) {
+            currentView="";
+        }
+        
+        // Check if the list of available views is not yet loaded from the workplace.ini
+        if(m_viewNames == null || m_viewLinks == null) {
+            m_viewNames = new Vector();
+            m_viewLinks = new Vector();
+
+            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);            
+            configFile.getWorkplaceIniData(m_viewNames, m_viewLinks,"WORKPLACEVIEWS","VIEW");            
+        }
+        
+        // OK. Now m_viewNames and m_viewLinks contail all available
+        // view information.
+        // Loop through the vectors and fill the result vectors.
+        int currentViewIndex = 0;
+        int numViews = m_viewNames.size();        
+        for(int i=0; i<numViews; i++) {
+            String loopValue = (String)m_viewLinks.elementAt(i);
+            String loopName = (String)m_viewNames.elementAt(i);
+            values.addElement(loopValue);
+            names.addElement(lang.getLanguageValue("select." + loopName));
+            if(loopValue.equals(currentView)) {
+                currentViewIndex = i;
+            }
+        }
+        return new Integer(currentViewIndex);
+    }
+    
+     /**
+     * Gets all projects of the currently logged in user.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * <P>
+     * Both <code>names</code> and <code>values</code> will contain
+     * the project names after returning from this method.
+     * <P>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index representing the user's current project in the vectors.
+     * @exception CmsException
+     */
+    public Integer getProjects(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+            throws CmsException {
+        // Get all project information
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        A_CmsProject currentProject = reqCont.currentProject();
+        Vector allProjects = cms.getAllAccessibleProjects();
+        
+        // Now loop through all projects and fill the result vectors
+        int numProjects = allProjects.size();
+        int currentProjectNum = 0;
+        for(int i=0; i<numProjects; i++) {
+            A_CmsProject loopProject = (A_CmsProject)allProjects.elementAt(i);
+            String loopProjectName = loopProject.getName();
+            values.addElement(loopProjectName);
+            names.addElement(loopProjectName);
+            if(loopProject.equals(currentProject)) {
+                // Fine. The project of this loop is the user's current project. Save it!
+                currentProjectNum = i;
+            }
+        }
+        return new Integer(currentProjectNum);
+    }
+    
+     /**
+     * Gets all groups of the currently logged in user.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * <P>
+     * Both <code>names</code> and <code>values</code> will contain
+     * the group names after returning from this method.
+     * <P>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index representing the user's current group in the vectors.
+     * @exception CmsException
+     */
+    public Integer getDefaultGroup(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+            throws CmsException {
+
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        String group=null;
+       
+        // Get a vector of all of the user's groups by asking the request context
+        A_CmsGroup currentGroup = reqCont.currentGroup();
+        Vector allGroups = cms.getGroupsOfUser(reqCont.currentUser().getName());
+         
+        if (group == null) {
+               group=currentGroup.getName();
+        }
+        
+        // Now loop through all groups and fill the result vectors
+        int numGroups = allGroups.size();
+        int currentGroupNum = 0;
+        for(int i=0; i<numGroups; i++) {
+            A_CmsGroup loopGroup = (A_CmsGroup)allGroups.elementAt(i);
+            String loopGroupName = loopGroup.getName();
+            values.addElement(loopGroupName);
+            names.addElement(loopGroupName);
+            if(loopGroup.getName().equals(group)) {
+                // Fine. The group of this loop is the user's current group. Save it!
+                currentGroupNum = i;
+            }
+        }
+        return new Integer(currentGroupNum);
+    }
 }

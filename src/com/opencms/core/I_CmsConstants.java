@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/03/15 13:51:27 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2000/03/16 10:04:44 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.55 $ $Date: 2000/03/15 13:51:27 $
+ * @version $Revision: 1.56 $ $Date: 2000/03/16 10:04:44 $
  */
 public interface I_CmsConstants
 {
@@ -255,6 +255,9 @@ public interface I_CmsConstants
    
      /** Key for additional info task settings. */
 	 final static String C_ADDITIONAL_INFO_TASKSETTINGS ="USER_TASKSETTINGS";
+        
+     /** Key for additional info start settings. */
+	 final static String C_ADDITIONAL_INFO_STARTSETTINGS ="USER_STARTSETTINGS";
      
 	/**
 	 * This constant is used to order the tasks by date.
@@ -595,15 +598,6 @@ public interface I_CmsConstants
 	
 	/**User type value for the task log */
 	public static final int C_TASKLOG_USER   = 1;	
-	
-    /** Task preferenses filter */
-	public static final String  C_TASK_FILTER = "TaskFilter";
-    
-    /** Task preferenses view all */
-	public static final String  C_TASK_VIEW_ALL = "TaskViewAll";
-    
-    /** Task preferenses message flags */
-	public static final String C_TASK_MESSAGES  = "TaskMessages";
     
     /** state values of task messages when accepted */
 	public static final int C_TASK_MESSAGES_ACCEPTED   = 1;

@@ -90,6 +90,76 @@ Other Preference input forms will be added here
 ]]>
 </TEMPLATE>
 
+<TEMPLATE name="start">
+<![CDATA[
+<table border=0 cellspacing=0 cellpadding=5 width=100% height=200px>
+	<tr>
+		<td class=formular>]]><LABEL value="input.lang" /><![CDATA[:</td>
+		<td class=dialogtxt>
+			]]><SELECT class="textfeld" name="LANGUAGE" width="150" method="getLanguageFiles" /><![CDATA[                            
+		</td>
+	</tr>
+	<tr>
+		<td class=formular width=30%>]]><LABEL value="input.startupproject" /><![CDATA[:</td>
+		<td class=dialogtxt>
+			]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.form1.submit()"/><![CDATA[
+		</td>
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="input.startupview" /><![CDATA[:</td>
+		<td class=dialogtxt>
+			]]><SELECT class="textfeld" name="view" width="150" method="getViews" /><![CDATA[
+		</td>
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="input.startupgroup" /><![CDATA[:</td>
+		<td class=dialogtxt>
+			]]><SELECT class="textfeld" name="dgroup" width="150" method="getDefaultGroup" /><![CDATA[
+		</td>
+		</tr>
+	<tr>
+		<td class=formular colspan=2>]]><LABEL value="input.startupnewfile" /><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=2>
+			<table border=0 cellspacing=5 cellpadding=0>
+				<TR>
+					<TD ALIGN=CENTER class=formular colspan=3>]]><LABEL value="input.owner" /><![CDATA[</TD>
+					<TD ALIGN=CENTER class=formular colspan=3>]]><LABEL value="input.group" /><![CDATA[</TD>
+					<TD ALIGN=CENTER class=formular colspan=3>]]><LABEL value="input.unknown" /><![CDATA[</TD>
+					<TD ALIGN=CENTER class=formular	>]]><LABEL value="input.intern" /><![CDATA[</TD>
+				</TR>
+				<TR>
+					<TD ALIGN=CENTER class=dialogtxt>r</TD>
+					<TD ALIGN=CENTER class=dialogtxt>w</TD>
+					<TD ALIGN=CENTER class=dialogtxt>v</TD>
+					<TD ALIGN=CENTER class=dialogtxt>r</TD>
+					<TD ALIGN=CENTER class=dialogtxt>w</TD>
+					<TD ALIGN=CENTER class=dialogtxt>v</TD>
+					<TD ALIGN=CENTER class=dialogtxt>r</TD>
+					<TD ALIGN=CENTER class=dialogtxt>w</TD>
+					<TD ALIGN=CENTER class=dialogtxt>v</TD>
+					<TD ALIGN=CENTER class=dialogtxt>i</TD>
+				</TR>
+				<TR>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="ur" ]]><PROCESS>CHECKUR</PROCESS><![CDATA[></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="uw" ]]><PROCESS>CHECKUW</PROCESS><![CDATA[></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="uv" ]]><PROCESS>CHECKUV</PROCESS><![CDATA[></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="gr" ]]><PROCESS>CHECKGR</PROCESS><![CDATA[></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="gw" ]]><PROCESS>CHECKGW</PROCESS><![CDATA[></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="gv" ]]><PROCESS>CHECKGV</PROCESS><![CDATA[></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="pr" ]]><PROCESS>CHECKPR</PROCESS><![CDATA[></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="pw" ]]><PROCESS>CHECKPW</PROCESS><![CDATA[></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="pv" ]]><PROCESS>CHECKPV</PROCESS><![CDATA[></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="ir" ]]><PROCESS>CHECKIF</PROCESS><![CDATA[></TD>
+				</TR>
+			</table>
+		</td>
+	</tr>
+</table>		
+]]>
+</TEMPLATE>
+
 <TEMPLATE name="user">
 <![CDATA[
 <table border=0 cellspacing=0 cellpadding=5 width=100% height=200>
