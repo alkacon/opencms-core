@@ -80,10 +80,13 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/25 13:49:48 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
+
+    /** Boolean for additional debug output control */
+    private static final boolean C_DEBUG = false;
 
     /**
      * Generation counter, incremented for each classloader as they are
@@ -186,8 +189,8 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
     protected synchronized Class loadClass(String name, boolean resolve)
         throws ClassNotFoundException { 
 
-        if(A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "OpenCMS ClassLoader started for class " + name);
+        if(C_DEBUG && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsClassLoader] Class " + name + " requested.");
         }
         
         Class c = null;
