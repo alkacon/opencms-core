@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartRequest.java,v $
- * Date   : $Date: 2000/03/08 08:59:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/03/09 10:11:16 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,7 +54,7 @@ import com.opencms.file.*;
 * 
 * @author Alexander Kandzior
 * @author Michael Emmerich
-* @version $Revision: 1.5 $ $Date: 2000/03/08 08:59:28 $  
+* @version $Revision: 1.6 $ $Date: 2000/03/09 10:11:16 $  
 * 
 */
 public class CmsMultipartRequest implements HttpServletRequest {
@@ -290,9 +290,9 @@ public class CmsMultipartRequest implements HttpServletRequest {
 	 * 
 	 * @return Current Session associated with the user making the request.
 	 */
-	public HttpSession getSession () {
+/*	public HttpSession getSession () {
 		return m_req.getSession();
-	}
+	}*/
     
 	
 	 /**
@@ -327,14 +327,15 @@ public class CmsMultipartRequest implements HttpServletRequest {
 	 * 
 	 * @return True, if the client submitted a session ID via  an URL.
 	 */
-    public boolean isRequestedSessionIdFromURL () {
+ /*   public boolean isRequestedSessionIdFromURL () {
 		return m_req.isRequestedSessionIdFromURL();
-	}
+	}*/
 
     /**
 	 * Implements HttpServletRequest method.
 	 * 
 	 * @return True, if the client submitted a session ID via  an URL.
+	 * @deprecated test
 	 */
     public boolean isRequestedSessionIdFromUrl () {
 		return m_req.isRequestedSessionIdFromUrl();
@@ -450,18 +451,18 @@ public class CmsMultipartRequest implements HttpServletRequest {
 	 * @param name Name of the attribute.
 	 * @param valut Value of the attibute.
 	 */
-    public void setAttribute(String name, Object object) {
+  /*  public void setAttribute(String name, Object object) {
 		m_req.setAttribute(name, object);
-	}
+	}*/
 
      /**
 	 * Implements ServletRequest method.
 	 * 
 	 * @return The names of all attibutes.
 	 */
-    public Enumeration getAttributeNames(){
+    /*public Enumeration getAttributeNames(){
 		return m_req.getAttributeNames();
-	}
+	}*/
     
 	
 	 /**
