@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/15 16:44:24 $
- * Version: $Revision: 1.24 $
+ * File   : $RCSfile: CmsAccessFileMySql.java,v $
+ * Date   : $Date: 2000/02/15 16:45:12 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/02/15 16:44:24 $
+ * @version $Revision: 1.25 $ $Date: 2000/02/15 16:45:12 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
