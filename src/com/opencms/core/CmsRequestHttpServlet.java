@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/07/10 16:05:47 $
+* Version: $Revision: 1.20 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.20 $ $Date: 2001/07/10 16:05:47 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -682,5 +682,33 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
                 }
             }
         }
+    }
+
+    /**
+     * Returns the part of the Url that descibes the Web-Application.
+     *
+     * E.g: http://www.myserver.com/opencms/engine/index.html returns
+     * http://www.myserver.com/opencms
+     */
+    public String getWebAppUrl() {
+        String retValue = "";
+        retValue += m_req.getScheme() + "://";
+        retValue += m_req.getServerName() + ":";
+        retValue += m_req.getServerPort();
+        try {
+            retValue += m_req.getContextPath();
+        } catch(NoSuchMethodError err) {
+            // this is the old servlet-api without this method
+            // ignore this missing method and the context-path
+        }
+        return retValue;
+    }
+
+    /**
+     * Gets the part of the Url that describes the current servlet of this
+     * Web-Application.
+     */
+    public String getServletUrl(){
+        return getWebAppUrl() + m_req.getServletPath();
     }
 }

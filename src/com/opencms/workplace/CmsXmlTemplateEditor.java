@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2001/07/10 16:05:47 $
+* Version: $Revision: 1.44 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.43 $ $Date: 2001/05/17 14:10:32 $
+ * @version $Revision: 1.44 $ $Date: 2001/07/10 16:05:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -563,7 +563,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             cms.deleteFile(tempBodyFilename);
             cms.deleteFile(tempPageFilename);
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceMainPath());
+                cms.getRequestContext().getResponse().sendCmsRedirect("/system/workplace/action/index.html");
             }
             catch(IOException e) {
                 throwException("Could not send redirect to workplace main screen.", e);
@@ -597,7 +597,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         for(int i = 0;i < numEditors;i++) {
             if(editor.equals(C_SELECTBOX_EDITORVIEWS[i])) {
                 parameters.put("editor._CLASS_", C_SELECTBOX_EDITORVIEWS_CLASSES[i]);
-                parameters.put("editor._TEMPLATE_", getConfigFile(cms).getWorkplaceTemplatePath() + C_SELECTBOX_EDITORVIEWS_TEMPLATES[i]);
+                parameters.put("editor._TEMPLATE_", "/system/workplace/templates/" + C_SELECTBOX_EDITORVIEWS_TEMPLATES[i]);
             }
         }
         session.putValue("te_oldedit", editor);

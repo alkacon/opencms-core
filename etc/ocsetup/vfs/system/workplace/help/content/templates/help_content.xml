@@ -9,7 +9,7 @@
     <head>
     
 
-      <link rel=stylesheet type="text/css" href="/servlets/opencms/system/workplace/css/help.css">
+      <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/help.css">
       
     </head>
     

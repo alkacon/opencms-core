@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/07/10 15:44:15 $
-* Version: $Revision: 1.173 $
+* Date   : $Date: 2001/07/10 16:05:47 $
+* Version: $Revision: 1.174 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.173 $ $Date: 2001/07/10 15:44:15 $
+ * @version $Revision: 1.174 $ $Date: 2001/07/10 16:05:47 $
  */
 public interface I_CmsConstants {
 
@@ -95,9 +95,6 @@ public interface I_CmsConstants {
      * flag for groups
      */
     static final int C_FLAG_GROUP_ROLE = 8;
-
-    /** Path to the workplace ini file */
-    static final String C_WORKPLACE_INI = "/system/workplace/config/workplace.ini";
 
     /** Path to the workplace ini file */
     static final String C_PATH_INTERNAL_TEMPLATES = "/content/internal/";
@@ -1104,6 +1101,7 @@ public interface I_CmsConstants {
 	 * The name of the launcher tag in registry.
 	 */
 	static final String C_REGISTRY_LAUNCHER = "launcher";
+
 }
 
 

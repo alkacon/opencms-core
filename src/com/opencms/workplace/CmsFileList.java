@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2001/06/29 13:44:06 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2001/07/10 16:05:47 $
+* Version: $Revision: 1.50 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -50,7 +50,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.49 $ $Date: 2001/06/29 13:44:06 $
+ * @version $Revision: 1.50 $ $Date: 2001/07/10 16:05:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -432,7 +432,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
                     I_CmsResourceType type = cms.getResourceType(res.getType());
                     String icon = getIcon(cms, type, config);
-                    template.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPictureUrl() + icon);
+                    template.fastSetXmlData(C_FILELIST_ICON_VALUE, cms.getManagedLink(config.getWpPicturePath() + icon));
 
                     // set the link, but only if the folder is not deleted
                     if(res.getState() != C_STATE_DELETED) {
@@ -534,7 +534,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
                     I_CmsResourceType type = cms.getResourceType(file.getType());
                     String icon = getIcon(cms, type, config);
-                    template.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPictureUrl() + icon);
+                    template.fastSetXmlData(C_FILELIST_ICON_VALUE, cms.getManagedLink(config.getWpPicturePath() + icon));
 
                     // set the link, but only if the resource is not deleted
                     if(res.getState() != C_STATE_DELETED) {

@@ -52,4 +52,22 @@ public class CmsDummyRequest implements I_CmsRequest {
     public void setRequestedResource(String res){
         m_resourcePath = res;
     }
+
+    /**
+     * Returns the part of the Url that descibes the Web-Application.
+     *
+     * E.g: http://www.myserver.com/opencms/engine/index.html returns
+     * http://www.myserver.com/opencms
+     */
+    public String getWebAppUrl() {
+        return null;
+    }
+
+    /**
+     * Gets the part of the Url that describes the current servlet of this
+     * Web-Application.
+     */
+    public String getServletUrl() {
+        return null;
+    }
 }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/07/10 16:05:47 $
+* Version: $Revision: 1.37 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2001/05/17 14:10:32 $
+ * @version $Revision: 1.37 $ $Date: 2001/07/10 16:05:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -311,95 +311,6 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         CmsRequestContext reqContext = cms.getRequestContext();
         CmsUser currentUser = reqContext.currentUser();
         return currentUser.getName();
-    }
-
-    /**
-     * Gets all views available in the workplace screen.
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * <P>
-     * <code>names</code> will contain language specific view descriptions
-     * and <code>values</code> will contain the correspondig URL for each
-     * of these views after returning from this method.
-     * <P>
-     *
-     * @param cms CmsObject Object for accessing system resources.
-     * @param lang reference to the currently valid language file
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the user's current workplace view in the vectors.
-     * @exception CmsException
-     */
-
-    public Integer getViews(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
-            Hashtable parameters) throws CmsException {
-
-        // Let's see if we have a session
-        CmsRequestContext reqCont = cms.getRequestContext();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
-
-        // try to get an existing view
-        String currentView = null;
-        Hashtable startSettings = null;
-
-        // check out the user infor1ation if a default view is stored there.
-        startSettings = (Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-        if(startSettings != null) {
-            currentView = (String)startSettings.get(C_START_VIEW);
-        }
-
-        // If there is a session, let's see if it has a view stored
-        if(session != null) {
-            if(session.getValue(C_PARA_VIEW) != null) {
-                currentView = (String)session.getValue(C_PARA_VIEW);
-            }
-        }
-        if(currentView == null) {
-            currentView = "";
-        }
-
-        // Check if the list of available views is not yet loaded from the workplace.ini
-        if(m_viewNames == null || m_viewLinks == null) {
-            m_viewNames = new Vector();
-            m_viewLinks = new Vector();
-            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
-            configFile.getWorkplaceIniData(m_viewNames, m_viewLinks, "WORKPLACEVIEWS", "VIEW");
-        }
-
-        //------- TEMPORARY: NOT display admin view if user should't see it
-
-        // to remove this feature delete the lines with: //--TEMPADMIN ...
-        boolean adminView = true;
-        boolean omittedAdmin = false;
-        if(!(reqCont.isAdmin() || reqCont.isProjectManager())) {
-            adminView = false;
-        }
-
-        //-------------- ... and above 5 lines
-
-        // OK. Now m_viewNames and m_viewLinks contail all available
-        // view information.
-        // Loop through the vectors and fill the result vectors.
-        int currentViewIndex = 0;
-        int numViews = m_viewNames.size();
-        for(int i = 0;i < numViews;i++) {
-            String loopValue = (String)m_viewLinks.elementAt(i);
-            String loopName = (String)m_viewNames.elementAt(i);
-            if(!adminView && loopName.equals("admin")) { //--TEMPADMIN
-                omittedAdmin = true; //--TEMPADMIN
-            }
-            else { //--TEMPADMIN
-                values.addElement(loopValue);
-                names.addElement(lang.getLanguageValue("select." + loopName));
-                if(loopValue.equals(currentView)) {
-                    currentViewIndex = omittedAdmin ? i - 1 : i; // = i
-                }
-            } //--TEMPADMIN
-        }
-        return new Integer(currentViewIndex);
     }
 
     /**

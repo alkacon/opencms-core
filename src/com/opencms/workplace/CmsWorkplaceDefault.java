@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2001/05/10 12:33:13 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/07/10 16:05:47 $
+* Version: $Revision: 1.39 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2001/05/10 12:33:13 $
+ * @version $Revision: 1.39 $ $Date: 2001/07/10 16:05:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -113,34 +113,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
         catch(Exception e) {
             return false;
         }
-    }
-
-    /**
-     * User method to generate an URL for the commom template pics folder.
-     * <P>
-     * All pictures should reside in the docroot of the webserver for
-     * performance reasons. This folder can be mounted into the OpenCms system to
-     * make it accessible for the OpenCms explorer.
-     * <P>
-     * The path to the docroot can be set in the workplace ini.
-     * <P>
-     * In any workplace template file, this method can be invoked by
-     * <code>&lt;METHOD name="picsUrl"&gt;<em>PictureName</em>&lt;/METHOD&gt;</code>.
-     *
-     * @param cms CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.
-     * @param userObj Hashtable with parameters <em>(not used here)</em>.
-     * @return String with the pics URL.
-     * @exception CmsException
-     */
-
-    public Object commonPicsUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        if(m_picsurl == null) {
-            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
-            m_picsurl = configFile.getCommonPictureUrl();
-        }
-        return m_picsurl + tagcontent;
     }
 
     /**
@@ -403,35 +375,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     }
 
     /**
-     * User method to generate an URL for a help file.
-     * The system help file path and the currently selected language will
-     * be considered.
-     * <P>
-     * The path to the help file folder can be set in the workplace ini.
-     * <P>
-     * In any workplace template file, this method can be invoked by
-     * <code>&lt;METHOD name="helpUrl"&gt;<em>HelpFileName</em>&lt;/METHOD&gt;</code>.
-     *
-     * @param cms CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.
-     * @param userObj Hashtable with parameters <em>(not used here)</em>.
-     * @return String with the pics URL.
-     * @exception CmsException
-     */
-
-    public Object helpUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        if(m_helpfolder == null) {
-            m_helpfolder = getConfigFile(cms).getHelpPath();
-        }
-        CmsRequestContext reqCont = cms.getRequestContext();
-        String servletPath = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getServletPath();
-        String currentLanguage = C_CURRENT_LANGUAGE.toLowerCase();
-        char separator = m_picsurl.charAt(m_picsurl.length() - 1);
-        return servletPath + m_helpfolder + currentLanguage + separator + tagcontent;
-    }
-
-    /**
      * Checks if the current user is <strong>administrator</strong>.
      * <P>
      * This method is used by workplace icons to decide whether the icon should
@@ -592,9 +535,9 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     public Object picsUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         if(m_picsurl == null) {
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
-            m_picsurl = configFile.getWpPictureUrl();
+            m_picsurl = configFile.getWpPicturePath();
         }
-        return m_picsurl + tagcontent;
+        return cms.getManagedLink(m_picsurl + tagcontent);
     }
 
     /**

@@ -2480,15 +2480,6 @@
             <properties/>
         </file>
         <file>
-            <source>config/workplace.ini</source>
-            <destination>system/workplace/config/workplace.ini</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <destination>system/workplace/config/language</destination>
             <type>folder</type>
             <user>Admin</user>

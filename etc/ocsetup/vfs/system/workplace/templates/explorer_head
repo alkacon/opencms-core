@@ -9,14 +9,12 @@
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">
-	var filelist="]]><PROCESS>FILELIST</PROCESS><![CDATA[";
+    var filelist="]]><PROCESS>FILELIST</PROCESS><![CDATA[";
     var previouslist="]]><PROCESS>PREVIOUSLIST</PROCESS><![CDATA[";
-	
-	<!-- URL for pictures -->
-	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
-		
-	<!-- URL for help file -->
-	var help="]]><METHOD name="helpUrl"/><![CDATA[";
+    
+    <!-- URL for pictures -->
+    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+        
 </SCRIPT>
 
 <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
@@ -28,17 +26,17 @@
 <body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed>
 <form>
 <table cellspacing=0 cellpadding=0 border=0>
-	<tr valign=center>
-		]]><PROCESS>PREVIOUS</PROCESS><![CDATA[
-		]]><PROCESS>PARENT</PROCESS><![CDATA[
-		]]><PROCESS>NEW</PROCESS><![CDATA[
-		<td class=menu width=30px nowrap align=right>&nbsp;</td>
-		<td class=menubold nowrap align=right valign=middle><IMG border=0  src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" width=16 height=16></td>
-		<td class=menubold nowrap align=right valign=middle><p class=einzug>]]><LABEL value="input.adress" /><![CDATA[:</td>
-		<td class=menu nowrap align=left valign=middle><p class=einzug>]]><INPUTFIELD name="URL" class="textfeld2" size="50" length="255" method="setValue" /><![CDATA[</td>
-		<!--<td class=menu nowrap align=left valign=middle><p class=einzug><input size=50 class="textfeld2" value="/" name=URL ID=URL></td>-->
-	</tr>
-	
+    <tr valign=center>
+        ]]><PROCESS>PREVIOUS</PROCESS><![CDATA[
+        ]]><PROCESS>PARENT</PROCESS><![CDATA[
+        ]]><PROCESS>NEW</PROCESS><![CDATA[
+        <td class=menu width=30px nowrap align=right>&nbsp;</td>
+        <td class=menubold nowrap align=right valign=middle><IMG border=0  src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" width=16 height=16></td>
+        <td class=menubold nowrap align=right valign=middle><p class=einzug>]]><LABEL value="input.adress" /><![CDATA[:</td>
+        <td class=menu nowrap align=left valign=middle><p class=einzug>]]><INPUTFIELD name="URL" class="textfeld2" size="50" length="255" method="setValue" /><![CDATA[</td>
+        <!--<td class=menu nowrap align=left valign=middle><p class=einzug><input size=50 class="textfeld2" value="/" name=URL ID=URL></td>-->
+    </tr>
+    
 </table>
 </form>
 </body>
@@ -53,8 +51,8 @@
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT>
-	<!-- URL for pictures -->
-	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+    <!-- URL for pictures -->
+    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
 </SCRIPT>
 
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></script>
@@ -75,27 +73,27 @@
 
 <PARENT_DISABLED>
 <![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_up_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.parent"  />"<![CDATA[" name="bt_up" border=0 width=32 height=32></td>]]>
-</PARENT_DISABLED>		
+</PARENT_DISABLED>      
 
 <PARENT_ENABLED>
 <![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files.html?filelist='+filelist);updateFrame('body.explorer_content.explorer_head','explorer_head.html?filelist='+filelist);updateFrame('body.explorer_tree','explorer_tree.html?filelist='+filelist)" name="bt_up" action="" alt="parent"/><![CDATA[</td>]]>
-</PARENT_ENABLED>	
+</PARENT_ENABLED>   
 
 <PREVIOUS_DISABLED>
-<![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_back_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.back" />"<![CDATA[" name="bt_up" border=0 width=32 height=32></td>]]>		
+<![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_back_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.back" />"<![CDATA[" name="bt_up" border=0 width=32 height=32></td>]]>      
 </PREVIOUS_DISABLED>
 
 <PREVIOUS_ENABLED>
 <![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files.html?filelist='+previouslist);updateFrame('body.explorer_content.explorer_head','explorer_head.html?filelist='+previouslist);updateFrame('body.explorer_tree','explorer_tree.html?filelist='+previouslist)" name="bt_back" action="" alt="back"/><![CDATA[</td>]]>
-</PREVIOUS_ENABLED>	
+</PREVIOUS_ENABLED> 
 
 <NEW_DISABLED>
 <![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">bt_new_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.new" />"<![CDATA[" name="bt_new" border=0 width=32 height=32></a></td>]]>
-</NEW_DISABLED>	
+</NEW_DISABLED> 
 
 <NEW_ENABLED>
 <![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files_new.html')" name="bt_new" action="" alt="new"/><![CDATA[</td>]]>
-</NEW_ENABLED>	
+</NEW_ENABLED>  
 
 
 <STARTUP_FOLDER>

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/07/10 16:05:47 $
+* Version: $Revision: 1.20 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,9 +41,10 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.20 $ $Date: 2001/07/10 16:05:47 $
  */
 public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_CmsLogChannels {
+
     private static String C_LAST_MODIFIED = "Last-Modified";
 
     /**
@@ -187,7 +188,13 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
         }
         m_redir = true;
         String servlet = m_req.getServletPath();
-        m_res.sendRedirect(hostName + servlet + location);
+        String contextPath = "";
+        try {
+            contextPath = m_req.getContextPath();
+        } catch(NoSuchMethodError err) {
+            // ignore this error - old servlet-api
+        }
+        m_res.sendRedirect(hostName + contextPath + servlet + location);
     }
 
     /**
@@ -233,8 +240,14 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
         }
         if(shortLocation.startsWith(hostName)) {
             shortLocation = shortLocation.substring(hostName.length());
-            if(shortLocation.startsWith(m_req.getServletPath())) {
-                shortLocation = shortLocation.substring(m_req.getServletPath().length());
+            String contextPath = "";
+            try {
+                contextPath = m_req.getContextPath();
+            } catch(NoSuchMethodError err) {
+                // ignore this error - old servlet-api
+            }
+            if(shortLocation.startsWith(contextPath  + m_req.getServletPath())) {
+                shortLocation = shortLocation.substring((contextPath + m_req.getServletPath()).length());
             }
             sendCmsRedirect(shortLocation);
         }

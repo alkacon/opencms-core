@@ -9,7 +9,7 @@
 
 
   <HEAD><TITLE>OpenCms Online-Hilfe</TITLE>  
-   <link rel=stylesheet type="text/css" href="/servlets/opencms/system/workplace/css/help.css">
+   <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/help.css">
 <SCRIPT language="JavaScript">
 //  alert(window.opener.top.show_help());
 function updateContent() {
@@ -34,7 +34,7 @@ function updateContent() {
 <TEMPLATE name="top_Frame">
 <![CDATA[
 <HTML><HEAD>
-  <link rel=stylesheet type="text/css" href="/servlets/opencms/system/workplace/css/help.css">
+  <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/help.css">
   <style type="text/css">
      body { background-color:#C0C0C0; }
   </style>
@@ -49,7 +49,7 @@ function updateContent() {
 
 <![CDATA[
 <HTML><HEAD>
-  <link rel=stylesheet type="text/css" href="/servlets/opencms/system/workplace/css/help.css"></HEAD>
+  <link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/help.css"></HEAD>
   <BODY>]]><ELEMENT name="ContentFrame"/><![CDATA[
   </BODY>
 </HTML>

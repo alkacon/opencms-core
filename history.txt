@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.24 Bela Tegeuse - ?????
+- Reorganisation for tomcat-support.
+
 OpenCms 4.3.23 Bela Tegeuse - 9 July 2001
 ! New features for resources (only on the shell): resources can be undeleted, changes can be 
   undone by copying the resource from the online project, a version of a resource can be 
