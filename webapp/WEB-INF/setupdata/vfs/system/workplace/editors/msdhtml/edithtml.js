@@ -540,7 +540,7 @@ function doEditHTML(para) {
 		makeImageLinks();
 		break;
 	case 43:
-		openWindow = window.open(workplacePath + "action/picturebrowser.html?initial=true", "PicBrowser", "width=550, height=500, resizable=yes, top=200, left=450");
+		openWindow = window.open(workplacePath + "commons/galleries/img_fs.jsp", "PicBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;

@@ -5612,6 +5612,152 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/commons/galleries</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 02 Nov 2004 10:47:37 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 02 Nov 2004 10:47:11 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Gallery dialogs]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/img_fs.jsp</source>
+			<destination>system/workplace/commons/galleries/img_fs.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>4df9ebe4-2cb4-11d9-9ef5-a93dabd07c3b</uuidresource>
+			<datelastmodified>Wed, 03 Nov 2004 14:01:31 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 02 Nov 2004 10:48:09 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery frameset]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/img_fs_sub.jsp</source>
+			<destination>system/workplace/commons/galleries/img_fs_sub.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>d3d55f93-2d75-11d9-a308-a93dabd07c3b</uuidresource>
+			<datelastmodified>Wed, 03 Nov 2004 14:01:03 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 03 Nov 2004 09:53:27 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery subframeset]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/img_head.jsp</source>
+			<destination>system/workplace/commons/galleries/img_head.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>cf31fd9d-2cb6-11d9-9ef5-a93dabd07c3b</uuidresource>
+			<datelastmodified>Wed, 03 Nov 2004 13:55:19 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 02 Nov 2004 11:06:05 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery head]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/img_list.jsp</source>
+			<destination>system/workplace/commons/galleries/img_list.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>e3af3313-2cb6-11d9-9ef5-a93dabd07c3b</uuidresource>
+			<datelastmodified>Wed, 03 Nov 2004 12:42:45 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 02 Nov 2004 11:06:39 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery list]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/img_preview.jsp</source>
+			<destination>system/workplace/commons/galleries/img_preview.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>ed933e39-2cb6-11d9-9ef5-a93dabd07c3b</uuidresource>
+			<datelastmodified>Wed, 03 Nov 2004 13:46:00 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 02 Nov 2004 11:06:56 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery preview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/commons/includes</destination>
 			<type>folder</type>
 			<datelastmodified>Tue, 17 Aug 2004 15:37:28 CEST</datelastmodified>
@@ -13271,6 +13417,24 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[JS to edit html fields]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/imageselector.js</source>
+			<destination>system/workplace/resources/components/widgets/imageselector.js</destination>
+			<type>plain</type>
+			<uuidresource>0488a5d0-2d83-11d9-bb12-a93dabd07c3b</uuidresource>
+			<datelastmodified>Wed, 03 Nov 2004 13:35:58 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 03 Nov 2004 11:27:52 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to open image gallery]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

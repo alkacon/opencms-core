@@ -28,7 +28,7 @@
 			<xsd:element name="head.nav.border" type="OpenCmsColor" />
 			<xsd:element name="navleft.bg" type="OpenCmsColor" />
 			<xsd:element name="navleft.font" type="OpenCmsColor" />
-			<xsd:element name="navleft.img.bg.uri" type="OpenCmsVfsFile" />
+			<xsd:element name="navleft.img.bg.uri" type="OpenCmsVfsImage" />
 			<xsd:element name="content.bg" type="OpenCmsColor" />
 			<xsd:element name="content.border" type="OpenCmsColor" />
 			<xsd:element name="content.font" type="OpenCmsColor" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/10/22 10:03:43 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2004/11/03 14:55:56 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  * 
  * @since 5.1
  */
@@ -1034,7 +1034,7 @@ public abstract class CmsWorkplace {
         if (paramIndex != -1) {
             // remove request parameters from URI before putting it to Map
             uri = uri.substring(0, uri.indexOf("?"));
-    }
+        }
         getSettings().getFrameUris().put(frameName, uri);
         return frameString;
     }
