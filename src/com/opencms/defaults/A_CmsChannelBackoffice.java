@@ -302,12 +302,17 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
                 media_position="";
             }
             //open window on reload
-            if(media_action.equals("prevPicture") && (selectedmediaCD!=null)){
+            if (media_action.equals("prevPicture") && (selectedmediaCD != null)) {
                 //set the url
-                templateFile.setData("preview",templateFile.getProcessedDataValue("media_preview",this));
-            }else{
+                templateFile.setData("sid", "" + masterCD.getSubId());
+                templateFile.setData("cid", "" + selectedmediaCD.getMasterId());
+                templateFile.setData("mid", "" + selectedmediaCD.getId());
+                templateFile.setData("file", "" + selectedmediaCD.getName());
+
+                templateFile.setData("preview", templateFile.getProcessedDataValue("media_preview", this));
+            } else {
                 //set the url to default
-                templateFile.setData("preview","");
+                templateFile.setData("preview", "");
             }
             //special template for edit
             if(media_action.equals("editPicture") && (selectedmediaCD!=null)){
