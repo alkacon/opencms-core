@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/30 09:26:57 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2003/07/30 09:37:41 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.62 $ $Date: 2003/07/30 09:26:57 $
+ * @version $Revision: 1.63 $ $Date: 2003/07/30 09:37:41 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -2949,8 +2949,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             if (changed == CmsDriverManager.C_UPDATE_STRUCTURE || changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE || changed == CmsDriverManager.C_UPDATE_ALL) {
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_STRUCTURE_STATE");
                 stmt.setInt(1, resource.getState());
-                stmt.setInt(2, project.getId());
-                stmt.setString(3, resource.getId().toString());
+                stmt.setString(2, resource.getId().toString());
                 stmt.executeUpdate();
             }
                         
