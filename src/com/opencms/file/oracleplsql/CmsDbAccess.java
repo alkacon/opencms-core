@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/11/14 10:08:53 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2002/03/25 11:21:28 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.45 $ $Date: 2001/11/14 10:08:53 $ *
+ * @version $Revision: 1.46 $ $Date: 2002/03/25 11:21:28 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1797,6 +1797,7 @@ public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onli
         // for deleted folder
         res1 = (ResultSet) statement.getObject(6);
         while (res1.next()) {
+            changedResources.add(res1.getString("RESOURCE_NAME"));
             String exportKey = checkExport(getShortResourceName(res1.getString("RESOURCE_NAME")));
             if (exportKey != null) {
                 discAccess.removeResource(getShortResourceName(res1.getString("RESOURCE_NAME")), exportKey);
