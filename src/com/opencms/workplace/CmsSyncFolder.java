@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2003/09/10 07:20:04 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/09/10 16:13:06 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.25 $ $Date: 2003/09/10 07:20:04 $
+ * @version $Revision: 1.26 $ $Date: 2003/09/10 16:13:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -74,11 +74,6 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
      *
      */
     private static String C_SYNCFOLDER_THREAD = "sync_folder_thread";
-
-    /**
-     * The flag is set true, if a new project for synchronisation has been created
-     */
-    private static boolean m_newProject = false;
 
 
     /**
@@ -186,7 +181,6 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
                     if (count == 1){
                         // only one syncproject was found, so set this project
                         reqCont.setCurrentProject(projectId);
-                        m_newProject = false;
                     } else if (count == 0){
                         // there is no syncproject, so create a new one and set this as the current project
                         // the necessary resources will be copied later to this project
@@ -197,7 +191,6 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
                             OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
                             C_PROJECT_TYPE_NORMAL).getId()
                         );
-                        m_newProject = true;
                     } else {
                         // there are too many projects with the name of the syncproject, so return an error
                         xmlTemplateDocument.setData("details", "Too many projects for synchronisation.");
@@ -205,7 +198,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
                             parameters, "error");
                     }
                     // start the thread for: synchronize the resources
-                    A_CmsReportThread doSyncFolder = new CmsSynchronizeThread(cms, synchronizeResources, m_newProject);
+                    A_CmsReportThread doSyncFolder = new CmsSynchronizeThread(cms, synchronizeResources);
                     session.putValue(C_SYNCFOLDER_THREAD, doSyncFolder);
                     xmlTemplateDocument.setData("time", "5");
                     templateSelector = "wait";

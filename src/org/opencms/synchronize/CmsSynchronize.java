@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/09/10 07:20:04 $
- * Version: $Revision: 1.11 $
- * Date   : $Date: 2003/09/10 07:20:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/10 16:13:06 $
+ * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/10 16:13:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/09/10 07:20:04 $
+ * @version $Revision: 1.12 $ $Date: 2003/09/10 16:13:06 $
  */
 public class CmsSynchronize {
 
@@ -118,7 +118,7 @@ public class CmsSynchronize {
     public CmsSynchronize(CmsObject cms, String resourcePath, I_CmsReport report) throws CmsException {
         m_cms = cms;
         m_report = report;
-        m_count = 0;
+        m_count = 1;
         // test if the list of all file modifiaction interface implementations
         // has to be generatetd. 
         // This has only made once.
@@ -183,14 +183,13 @@ public class CmsSynchronize {
         // now look through all resources in the folder
         for (int i = 0; i < resources.size(); i++) {            
             CmsResource res = (CmsResource)resources.elementAt(i);
-            log("[SyncVfstoFs] "+res.getFullResourceName());
             // test if the resource is marked as deleted. if so,
             // do nothing, the corrsponding file in the FS will be removed later
             if (res.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // do a recursion if the current resource is a folder
                 if (res.isFolder()) {
                     // first check if this folder must be synchronised
-                    action = testSyncVFS(res);
+                    action = testSyncVfs(res);
                     // do the correct action according to the test result
                     if (action == C_EXPORT_VFS) {
                         exportToFS(res);
@@ -206,7 +205,7 @@ public class CmsSynchronize {
                 } else {
                     // if the current resource is a file, check if it has to 
                     // be synchronized
-                    action = testSyncVFS(res);
+                    action = testSyncVfs(res);
                     // do the correct action according to the test result
                     switch (action) {
                         case C_EXPORT_VFS :
@@ -262,9 +261,20 @@ public class CmsSynchronize {
 
             // there is an entry, so delete the resource
             if (sync != null) {
+                
+                m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
+                if (res[i].isFile()) {
+                    m_report.print(m_report.key("report.sync_deleting_rfs_file"), I_CmsReport.C_FORMAT_NOTE);
+                } else {     
+                    m_report.print(m_report.key("report.sync_deleting_rfs_folder"), I_CmsReport.C_FORMAT_NOTE);
+                }     
+                m_report.print(res[i].getAbsolutePath().replace('\\', '/'));               
+                m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);   
+                
                 res[i].delete();
                 m_syncList.remove(translate(vfsFile));
-                log("[removeFromFs] "+vfsFile);
+                
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
             }
         }
         // free mem
@@ -327,7 +337,6 @@ public class CmsSynchronize {
                     if (!m_newSyncList.containsKey(translate(resname))) {
                         // this file does not exist in the VFS, so import it
                         importToVfs(res[i], resname, folder);
-                        log("[copyFromFS] "+resname);
                     }
                 } else {
                     // do a recursion if the current resource is a folder
@@ -345,7 +354,7 @@ public class CmsSynchronize {
      * @param res the VFS resource to check
      * @return integer value for the action to be done for this VFS resource
      */
-    private int testSyncVFS(CmsResource res) {
+    private int testSyncVfs(CmsResource res) {
         int action = 0;
         File fsFile;
         //data from sync list
@@ -407,6 +416,10 @@ public class CmsSynchronize {
         m_newSyncList.put(translate(resname), syncList);
         // .. and remove it from the old one
         m_syncList.remove(translate(resname));
+        // update the report
+        m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
+        m_report.print(m_report.key("report.sync_skipping"), I_CmsReport.C_FORMAT_NOTE);     
+        m_report.println(resname);         
     }
 
     /**
@@ -426,7 +439,21 @@ public class CmsSynchronize {
             String type = getFileType(resName);
             // create the file
             String filename = translate(fsFile.getName());
+            
+            m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
+            if (fsFile.isFile()) {
+                m_report.print(m_report.key("report.sync_importing_file"), I_CmsReport.C_FORMAT_NOTE);
+            } else {     
+                m_report.print(m_report.key("report.sync_importing_folder"), I_CmsReport.C_FORMAT_NOTE);
+            }     
+
+            m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));               
+            m_report.print(m_report.key("report.sync_from_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                     
+            
             CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder), filename, m_cms.getResourceTypeId(type), null, content);
+            
+            m_report.print(m_cms.readAbsolutePath(newFile));
+            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE); 
      
             // now check if there is some external method to be called which
             // should modify the imported resource in the VFS
@@ -438,19 +465,17 @@ public class CmsSynchronize {
                     break;
                 }
             }
-            // unlock it
-
-            //m_cms.unlockResource(m_cms.readAbsolutePath(newFile), false);
-            // we have to read the new resource again, to get the correct
-            // timestamp.
+            // we have to read the new resource again, to get the correct timestamp
             m_cms.touch(m_cms.readAbsolutePath(newFile), fsFile.lastModified(), false);
             CmsResource newRes = m_cms.readFileHeader(m_cms.readAbsolutePath(newFile));
-            // m_cms.add resource to synchronisation list
+            // add resource to synchronisation list
             CmsSynchronizeList syncList = new CmsSynchronizeList(resName, translate(resName), newRes.getDateLastModified(), fsFile.lastModified());
             m_newSyncList.put(translate(resName), syncList);
             // free mem  
             newFile = null;
             content = null;
+            
+            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
         } catch (Exception e) {
             throw new CmsException(e.toString());
         }
@@ -498,7 +523,13 @@ public class CmsSynchronize {
             // if the resource is marked for deletion, do not export it!
             if (res.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // if its a file, create export the file to the FS
+                m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
                 if (res.isFile()) {
+                    m_report.print(m_report.key("report.sync_exporting_file"), I_CmsReport.C_FORMAT_NOTE);     
+                    m_report.print(m_cms.readAbsolutePath(res));               
+                    m_report.print(m_report.key("report.sync_to_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                    
+                    m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));
+                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);                
                     // create the resource if nescessary
                     if (!fsFile.exists()) {
                         createNewLocalFile(fsFile);
@@ -519,6 +550,11 @@ public class CmsSynchronize {
                         }
                     }
                 } else {
+                    m_report.print(m_report.key("report.sync_exporting_folder"), I_CmsReport.C_FORMAT_NOTE);     
+                    m_report.print(m_cms.readAbsolutePath(res));               
+                    m_report.print(m_report.key("report.sync_to_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                    
+                    m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));   
+                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);                                                          
                     // its a folder, so create a folder in the FS
                     fsFile.mkdir();
                 }
@@ -527,6 +563,7 @@ public class CmsSynchronize {
                 m_newSyncList.put(translate(resourcename), syncList);
                 // and remove it fomr the old one
                 m_syncList.remove(translate(resourcename));
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
             }
             // free mem
             vfsFile = null;
@@ -552,6 +589,11 @@ public class CmsSynchronize {
         CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
         File fsFile = getFileInFs(sync.getResName());
         try {
+            m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(m_report.key("report.sync_updating_file"), I_CmsReport.C_FORMAT_NOTE);     
+            m_report.print(resourcename);               
+            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);    
+            
             // lock the file in the VFS, so that it can be updated
             m_cms.lockResource(resourcename);
             // read the file in the VFS
@@ -584,6 +626,8 @@ public class CmsSynchronize {
             // and remove it from the old one
             m_syncList.remove(translate(resourcename));
             vfsFile = null;
+            
+            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
         } catch (CmsException ex) {
             // if this resource could not be locked, it could not be 
             // synchronized
@@ -614,12 +658,22 @@ public class CmsSynchronize {
         String resourcename = m_cms.readAbsolutePath(res);
 
         try {
+            m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
+            if (res.isFile()) {
+                m_report.print(m_report.key("report.sync_deleting_file"), I_CmsReport.C_FORMAT_NOTE);
+            } else {     
+                m_report.print(m_report.key("report.sync_deleting_folder"), I_CmsReport.C_FORMAT_NOTE);
+            }     
+            m_report.print(resourcename);               
+            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);   
+            
             // lock the file in the VFS, so that it can be updated
             m_cms.lockResource(resourcename);
             m_cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
             // Remove it from the sync list
             m_syncList.remove(translate(resourcename));
 
+            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
         } catch (CmsException ex) {
             // if this resource could not be locked, it could not be 
             // synchronized mark this in the error list and the new sync list
@@ -919,20 +973,5 @@ public class CmsSynchronize {
                     fOut.close();
             } catch (IOException e) { }
         }
-    }
-        
-    /**
-     * Writes some data to the logging channel.
-     * 
-     * @param logdata data to write on the on logonh channel
-     */
-    private void log(String logdata) {
-        /*
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STREAMING))        
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_STREAMING, "["+ m_count++ +"] " + logdata);
-        */
-        m_report.println("( "+ m_count++ +" ) " + logdata);
-    }
-    
-
+    }       
 }

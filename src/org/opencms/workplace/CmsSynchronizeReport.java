@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2003/09/10 07:20:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/10 16:13:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.10
  */
@@ -104,7 +104,7 @@ public class CmsSynchronizeReport extends CmsDialog {
                     System.err.println(e);
                     break;
                 }
-                CmsSynchronizeThread thread = new CmsSynchronizeThread(getCms(), resources, false);
+                CmsSynchronizeThread thread = new CmsSynchronizeThread(getCms(), resources);
                 CmsReport.loadReportBegin(getJsp(), thread.getId().toString());  
                 break;
         }
