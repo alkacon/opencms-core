@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/02/29 16:44:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/03/15 13:57:06 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2000/02/29 16:44:47 $
+ * @version $Revision: 1.19 $ $Date: 2000/03/15 13:57:06 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -321,7 +321,12 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
             }      
         }      
                         
-        // all parameters are now parsed. let's call the subtemplate
+        // all parameters are now parsed. Finally give the own subelement name
+        // as parameter
+        // TODO: replace _ELEMENT_ by a constant
+        parameterHashtable.put("_ELEMENT_", tagcontent);
+                
+        // OK. let's call the subtemplate
         if(result == null) {
             try {
                 result = subTemplate.getContent(cms, templateFilename, tagcontent, parameterHashtable, templateSelector);
