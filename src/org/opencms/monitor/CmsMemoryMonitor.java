@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/13 11:20:14 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/11/13 13:47:34 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.14 $ $Date: 2003/11/13 11:20:14 $
+ * @version $Revision: 1.15 $ $Date: 2003/11/13 13:47:34 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -675,10 +675,12 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             m_lastLogStatus = System.currentTimeMillis();
         }
 
-        String memStatus = ", Memory max: " + maxMemory + " mb " 
-            + "total: " + totalMemory + " mb " 
-            + "free: " + freeMemory + " mb " 
-            + "used: " + usedMemory + " mb";
+        String memStatus = ", Memory max: " + maxMemory + " mb  " 
+            + "total: " + totalMemory + " mb  " 
+            + "free: " + freeMemory + " mb  " 
+            + "used: " + usedMemory + " mb  " 
+            + "percent: " + usage + "%  " 
+            + "limit: " + m_maxUsagePercent + "%  ";
                 
         if (warning) {
             OpenCms.getLog(this).warn(memStatus);
@@ -707,7 +709,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
                         + "Limit:, " + form.sprintf(getLimit(obj)) + ", " 
                         + "Size:, " + form.sprintf(Long.toString(size)));
             }
-            memStatus += " " + "size monitored: " + totalSize + " (" + totalSize / 1048576 + ")";
+            memStatus += "size monitored: " + totalSize + " (" + totalSize / 1048576 + ")";
             OpenCms.getLog(this).debug(memStatus);
             
             OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
