@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/03/29 09:07:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/04/02 13:56:46 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2004/03/29 09:07:11 $
+ * @version $Revision: 1.13 $ $Date: 2004/04/02 13:56:46 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -233,8 +233,8 @@ public class CmsHtmlLinkValidator extends Object {
             link = ((String) i.next()).trim();
             isValidLink = true;
 
-            if (validatedLinks.contains(link)) {
-                // skip links that are already validated
+            if (validatedLinks.contains(link) || "".equals(link)) {
+                // skip links that are already validated or empty
                 continue;
             }
 
