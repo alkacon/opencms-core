@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/11/28 16:13:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/12/02 16:25:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 
 /**
  * Creates the output for editing a CmsDefaultPage with the MS DHTML ActiveX control editor.<p> 
@@ -56,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */
@@ -81,54 +82,68 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(EDITOR_TYPE);
+        
         // Initialize a page object from the temporary file
         if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
             try {
                 m_page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
             } catch (CmsException e) {
-                // ignore this exception
+                // error during initialization
+                try {
+                    showErrorPage(this, e, "read");
+                } catch (JspException exc) {
+                    // ignore this exception
+                }
             }
         }
-        try {
-            // set the action for the JSP switch 
-            if (EDITOR_SAVE.equals(getParamAction())) {
-                setAction(ACTION_SAVE);
-            } else if (EDITOR_SAVEEXIT.equals(getParamAction())) {
-                setAction(ACTION_SAVEEXIT);         
-            } else if (EDITOR_EXIT.equals(getParamAction())) {
-                setAction(ACTION_EXIT);
-            } else if (EDITOR_CHANGE_BODY.equals(getParamAction())) {
-                setAction(ACTION_SHOW);
-                actionChangeBodyElement();
-            } else if (EDITOR_CHANGE_TEMPLATE.equals(getParamAction())) {
-                setAction(ACTION_SHOW);
-                actionChangeTemplate();
-            } else if (EDITOR_NEW_BODY.equals(getParamAction())) {
-                setAction(ACTION_SHOW);
-                actionNewBody();
-            } else if (EDITOR_SHOW.equals(getParamAction())) {
-                setAction(ACTION_SHOW);
-            } else if (EDITOR_PREVIEW.equals(getParamAction())) {
-                setAction(ACTION_PREVIEW);
-            } else {
-                // initial call of editor
-                setAction(ACTION_DEFAULT);
+
+        // set the action for the JSP switch 
+        if (EDITOR_SAVE.equals(getParamAction())) {
+            setAction(ACTION_SAVE);
+        } else if (EDITOR_SAVEEXIT.equals(getParamAction())) {
+            setAction(ACTION_SAVEEXIT);         
+        } else if (EDITOR_EXIT.equals(getParamAction())) {
+            setAction(ACTION_EXIT);
+        } else if (EDITOR_CHANGE_BODY.equals(getParamAction())) {
+            setAction(ACTION_SHOW);
+            actionChangeBodyElement();
+        } else if (EDITOR_CHANGE_TEMPLATE.equals(getParamAction())) {
+            setAction(ACTION_SHOW);
+            actionChangeTemplate();
+        } else if (EDITOR_NEW_BODY.equals(getParamAction())) {
+            setAction(ACTION_SHOW);
+            actionNewBody();
+        } else if (EDITOR_SHOW.equals(getParamAction())) {
+            setAction(ACTION_SHOW);
+        } else if (EDITOR_PREVIEW.equals(getParamAction())) {
+            setAction(ACTION_PREVIEW);
+        } else {
+            // initial call of editor, initialize page and page parameters
+            setAction(ACTION_DEFAULT);
+            try {
                 // create the temporary file
                 setParamTempfile(createTempFile());
-                // initialize a page object from the temporary file
+                // initialize a page object from the created temporary file
                 m_page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
-                // set the initial body language & name
-                initBodyElementLanguage();
-                initBodyElementName();
-                // initialize the editor content
-                initContent();
-                // set template and page title  
-                setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
-                setParamPagetitle(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamTempfile(), ""));
-            } 
-        } catch (CmsException e) {
-            // TODO: show error page!
-        }
+            } catch (CmsException e) {
+                // error during initialization
+                try {
+                    showErrorPage(this, e, "read");
+                } catch (JspException exc) {
+                    // ignore this exception
+                }
+            }
+            // set the initial body language & name
+            initBodyElementLanguage();
+            initBodyElementName();
+            // initialize the editor content
+            initContent();
+            // set template and page title  
+            setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
+            setParamPagetitle(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamTempfile(), ""));
+        } 
+        
+        // prepare the content String for the editor
         prepareContent(false);
         if (!(getAction() == ACTION_SAVE) && !(getAction() == ACTION_SAVEEXIT)) {
             setParamPagetitle(Encoder.escapeXml(getParamPagetitle()));
@@ -185,9 +200,8 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
      * 
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @return the html for the editorview selectbox
-     * @throws CmsException if something goes wrong
      */
-    public String buildSelectViews(String attributes) throws CmsException {
+    public String buildSelectViews(String attributes) {
         Vector names = new Vector();
         Vector values = new Vector();
         // get the available views fron the constant

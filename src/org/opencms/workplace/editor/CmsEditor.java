@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2003/11/28 12:49:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/12/02 16:25:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */
@@ -91,6 +91,7 @@ public abstract class CmsEditor extends CmsDialog {
     private String m_paramTempFile;
     private String m_paramContent;
     private String m_paramNoActiveX;
+    private String m_paramEditAsText;
        
     /** Helper variable to store the clients browser type.<p> */
     private String m_browserType = null;
@@ -105,6 +106,24 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public CmsEditor(CmsJspActionElement jsp) {
         super(jsp);
+    }
+    
+    /**
+     * Returns the edit as text parameter.<p>
+     * 
+     * @return the edit as text parameter
+     */
+    public String getParamEditastext() {
+        return m_paramEditAsText;
+    }
+    
+    /**
+     * Sets the  edit as text parameter.<p>
+     * 
+     * @param editAsText "true" if the resource should be handled like a text file
+     */
+    public void setParamEditastext(String editAsText) {
+        m_paramEditAsText = editAsText;
     }
     
     /**
@@ -215,6 +234,20 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public void setParamNoactivex(String noActiveX) {
         m_paramNoActiveX = noActiveX;
+    }
+    
+    /**
+     * Returns the editor action for a "cancel" button.<p>
+     * 
+     * This overwrites the cancel method of the CmsDialog class.<p>
+     * 
+     * Always use this value, do not write anything directly in the html page.<p>
+     * 
+     * @return the default action for a "cancel" button
+     */
+    public String buttonActionCancel() {
+        String target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+        return "onClick=\"top.location.href='" + target + "';\"";
     }
        
     /**
@@ -365,9 +398,35 @@ public abstract class CmsEditor extends CmsDialog {
             return true;
         } catch (CmsException e) {
             // help folder is not available
-            return false;
-            
+            return false;         
         }
+    }
+    
+    /**
+     * Shows the common error page in case of an exception.<p>
+     * 
+     * @param theClass initialized instance of the editor class
+     * @param cmsException the current exception
+     * @param keySuffix the suffix for the localized error messages, e.g. "save" for key "error.message.editorsave"
+     * @throws JspException if inclusion of the error page fails
+     */
+    public void showErrorPage(Object theClass, CmsException cmsException, String keySuffix) throws JspException {
+        // save initialized instance of the editor class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, theClass);
+        // reading of file contents failed, show error dialog
+        setAction(ACTION_SHOW_ERRORMESSAGE);
+        setParamErrorstack(cmsException.getStackTraceAsString());
+        setParamTitle(key("error.title.editor" + keySuffix));
+        setParamMessage(key("error.message.editor" + keySuffix));
+        String reasonSuggestion = key("error.reason.editor" + keySuffix) + "<br>\n" + key("error.suggestion.editor" + keySuffix) + "\n";
+        setParamReasonSuggestion(reasonSuggestion);
+        // log the error 
+        String errorMessage = "Error while trying to " + keySuffix + " file " + getParamResource() + ": " + cmsException;
+        if (OpenCms.getLog(theClass).isErrorEnabled()) {
+            OpenCms.getLog(theClass).error(errorMessage, cmsException);
+        }
+        // include the common error dialog
+        getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
     }
     
     /**
@@ -403,27 +462,13 @@ public abstract class CmsEditor extends CmsDialog {
         getCms().getRequestContext().setCurrentProject(tempProject);
         return tempProject;
     }
-
-    /**
-     * Returns the editor action for a "cancel" button.<p>
-     * 
-     * This overwrites the cancel method of the CmsDialog class.<p>
-     * 
-     * Always use this value, do not write anything directly in the html page.<p>
-     * 
-     * @return the default action for a "cancel" button
-     */
-    public String buttonActionCancel() {
-        String target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
-        return "onClick=\"top.location.href='" + target + "';\"";
-    }
         
     /**
      * Performs the exit editor action.<p>
      * 
      * @throws CmsException if something goes wrong
      * @throws IOException if a redirection fails
-     * @throws JspException if something goes wrong
+     * @throws JspException if including an element fails
      */
     public abstract void actionExit() throws CmsException, IOException, JspException;
     
@@ -432,7 +477,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @throws CmsException if something goes wrong
      * @throws IOException if a redirection fails
-     * @throws JspException if something goes wrong
+     * @throws JspException if including an element fails
      */
     public abstract void actionSave() throws CmsException, IOException, JspException;
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2003/11/28 12:49:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/12/02 16:25:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */
@@ -84,12 +84,17 @@ public class CmsEditorFrameset extends CmsEditor {
      */
     public String getEditorUri() {
         int resTypeId = -1;
-        try {
-            // get the type of the edited resource
-            CmsResource res = getCms().readFileHeader(getParamResource());
-            resTypeId = res.getType();
-        } catch (CmsException e) {
-            // do nothing here
+        if ("true".equals(getParamEditastext())) {
+            // the resource should be treated as text, set the id
+            resTypeId = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
+        } else {
+            try {
+                // get the type of the edited resource
+                CmsResource res = getCms().readFileHeader(getParamResource());
+                resTypeId = res.getType();
+            } catch (CmsException e) {
+                // do nothing here
+            }
         }
         
         switch (resTypeId) {

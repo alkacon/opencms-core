@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2003/11/28 16:13:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/12/02 16:25:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -67,13 +67,14 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      
     private String m_paramBodylanguage;
     private String m_paramBodyname;
+    private String m_paramNewbodylanguage;
     private String m_paramNewbodyname;
     private String m_paramOldbodylanguage;
     private String m_paramOldbodyname; 
     private String m_paramPageTemplate;
 
+    /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method.<p>  */
     protected CmsDefaultPage m_page;
-
     
     /** Helper variable to store the html content for the template selector.<p> */
     private String m_selectTemplates = null;
@@ -127,6 +128,27 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     * Returns the new body element language.<p>
     * 
     * @return the new body element language
+    */
+    public String getParamNewbodylanguage() {
+        if (m_paramNewbodylanguage == null) {
+            m_paramNewbodyname = "";
+        }
+        return m_paramNewbodylanguage;
+    }
+
+    /**
+     * Sets the new body element language.<p>
+     * 
+     * @param newBodyLang the new body element language
+     */
+    public void setParamNewbodylanguage(String newBodyLang) {
+        m_paramNewbodylanguage = newBodyLang;
+    }
+    
+    /**
+    * Returns the new body element name.<p>
+    * 
+    * @return the new body element name
     */
     public String getParamNewbodyname() {
         if (m_paramNewbodyname == null) {
@@ -200,10 +222,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     
     /**
      * Initializes the body element language for the first call of the editor.<p>
-     * 
-     * @throws CmsException if something goes wrong
      */
-    protected void initBodyElementLanguage() throws CmsException {
+    protected void initBodyElementLanguage() {
         Set languages = m_page.getLanguages();
         String defaultLanguage = OpenCms.getUserDefaultLanguage();
         if (languages.size() == 0) {
@@ -211,7 +231,16 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             if (!m_page.hasElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage)) {
                 m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage);
             }
-            getCms().writeFile(m_page.marshal());
+            try {
+                getCms().writeFile(m_page.marshal());
+            } catch (CmsException e) {
+                // show error page
+                try {
+                showErrorPage(this, e, "save");
+                } catch (JspException exc) {
+                    // ignore this exception
+                }
+            }
             setParamBodylanguage(defaultLanguage);
         } else {
             // body present, get the language
@@ -230,16 +259,23 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * Initializes the body element name of the editor.<p>
      * 
      * This has to be called after the element language has been set with setParamBodylanguage().<p>
-     * 
-     * @throws CmsException if something goes wrong
      */
-    protected void initBodyElementName() throws CmsException {
+    protected void initBodyElementName() {
         // set the initial body element name
        List bodies = m_page.getNames(getParamBodylanguage());
        if (bodies.size() == 0) {
            // no body present, so create an empty default body
             m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, getParamBodylanguage());
+            try {
             getCms().writeFile(m_page.marshal());
+            } catch (CmsException e) {
+                // writing file failed, show error page
+                try {
+                showErrorPage(this, e, "save");
+                } catch (JspException exc) {
+                    // ignore this exception
+                }
+            }
             setParamBodyname(I_CmsConstants.C_XML_BODY_ELEMENT);
         } else {
             // body present, set body to default body if possible
@@ -267,23 +303,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 setParamContent("");
             }
         } catch (CmsException e) {
-            // reading of file contents failed, show error dialog
-            setAction(ACTION_SHOW_ERRORMESSAGE);
-            setParamErrorstack(e.getStackTraceAsString());
-            setParamTitle(key("error.title.editorread"));
-            setParamMessage(key("error.message.editorread"));
-            String reasonSuggestion = key("error.reason.editorread") + "<br>\n" + key("error.suggestion.editorread") + "\n";
-            setParamReasonSuggestion(reasonSuggestion);
-            // log the error 
-            String errorMessage = "Error while reading file " + getParamResource() + ": " + e;
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(errorMessage, e);
-            }
-            // save initialized instance of this class in request attribute for included sub-elements
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+            // reading of file contents failed, show error page
             try {
-                // include the common error dialog
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+                showErrorPage(this, e, "read");
             } catch (JspException exc) {
                 // inclusion of error page failed, ignore
             }
@@ -310,9 +332,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      *  
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @return the html for the body language selectbox
-     * @throws CmsException if something goes wrong
      */
-    public String buildSelectBodyLanguage(String attributes) throws CmsException {
+    public String buildSelectBodyLanguage(String attributes) {
         Set languages = m_page.getLanguages();
         List options = new ArrayList(languages.size());
         List selectList = new ArrayList(languages.size());
@@ -346,9 +367,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      *  
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @return the html for the body name selectbox
-     * @throws CmsException if something goes wrong
      */
-    public String buildSelectBodyName(String attributes) throws CmsException {
+    public String buildSelectBodyName(String attributes) {
         List bodies = m_page.getNames(getParamBodylanguage());
         Collections.sort(bodies);
         int currentIndex = bodies.indexOf(getParamBodyname());   
@@ -400,26 +420,40 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
    
     /**
      * Performs a change template action.<p>
-     * 
-     * @throws CmsException if changing the template fails
      */
-    public void actionChangeTemplate() throws CmsException {
-        // switch to the temporary file project
-        switchToTempProject();       
-        // write the changed template property to the temporary file
-        getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, getParamPagetemplate());        
-        // switch back to the current users project
-        switchToCurrentProject();     
+    public void actionChangeTemplate() {
+        try {
+            // switch to the temporary file project
+            switchToTempProject();       
+            // write the changed template property to the temporary file
+            getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, getParamPagetemplate());
+            // switch back to the current users project
+            switchToCurrentProject();     
+        } catch (CmsException e) {
+            // show error page
+            try {
+            showErrorPage(this, e, "save");
+            } catch (JspException exc) {
+                // ignore this exception
+            }
+        }
     }
     
     /**
      * Performs the change body action of the editor.<p>
-     * 
-     * @throws CmsException if something goes wrong
      */
-    public void actionChangeBodyElement() throws CmsException {
+    public void actionChangeBodyElement() {
         // save eventually changed content of the editor to the temporary file
-        performSaveContent(getParamOldbodyname(), getParamOldbodylanguage());
+        try {
+            performSaveContent(getParamOldbodyname(), getParamOldbodylanguage());
+        } catch (CmsException e) {
+            // show error page
+            try {
+            showErrorPage(this, e, "save");
+            } catch (JspException exc) {
+                // ignore this exception
+            }
+        }
         // re-initialize the body element name if the language has changed
         if (!getParamBodylanguage().equals(getParamOldbodylanguage())) {
             initBodyElementName();
@@ -433,45 +467,62 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * 
      * @see org.opencms.workplace.editor.CmsEditor#actionExit()
      */
-    public void actionExit() throws CmsException, IOException {
+    public void actionExit() throws IOException {
         // delete the temporary file        
         deleteTempFile();
-        // now redirect to the workplace explorer view
-        getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));   
+        if ("true".equals(getParamDirectedit())) {
+            // redirect to the edited resource
+            getJsp().getResponse().sendRedirect(getJsp().link(getParamResource()));
+        } else {
+            // redirect to the workplace explorer view 
+            getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));
+        }
     }
     
     /**
      * Performs the creation of a new body action.<p>
-     * 
-     * @throws CmsException if something goes wrong
      */
-    public void actionNewBody() throws CmsException {
-        // save content of the editor to the temporary file
-        performSaveContent(getParamBodyname(), getParamBodylanguage());
-        String newBody = getParamNewbodyname();
-        if (newBody != null && !"".equals(newBody.trim()) && !"null".equals(newBody)) {
-            if (!m_page.hasElement(newBody, getParamBodylanguage())) {
-                m_page.addElement(newBody, getParamBodylanguage());
-                getCms().writeFile(m_page.marshal());
-                setParamBodyname(newBody);
-                initContent();
+    public void actionNewBody() {
+        try {
+            // save content of the editor to the temporary file
+            performSaveContent(getParamBodyname(), getParamBodylanguage());
+            String newBody = getParamNewbodyname();
+            if (newBody != null && !"".equals(newBody.trim()) && !"null".equals(newBody)) {
+                if (!m_page.hasElement(newBody, getParamBodylanguage())) {
+                    m_page.addElement(newBody, getParamBodylanguage());
+                    getCms().writeFile(m_page.marshal());
+                    setParamBodyname(newBody);
+                    initContent();
+                }
+            } 
+        } catch (CmsException e) {
+            // show error page
+            try {
+            showErrorPage(this, e, "save");
+            } catch (JspException exc) {
+                // ignore this exception
             }
-        }        
+        }
     }
     
     /**
      * Performs the preview page action in a new browser window.<p>
      * 
-     * @throws CmsException if something goes wrong
+     * @throws IOException if redirect fails
+     * @throws JspException if inclusion of error page fails
      */
-    public void actionPreview() throws CmsException {
+    public void actionPreview() throws IOException, JspException {
         // save content of the editor to the temporary file
-        performSaveContent(getParamBodyname(), getParamBodylanguage());
         try {
-            getCms().getRequestContext().getResponse().sendCmsRedirect(getParamTempfile());
-        } catch (IOException e) {
-            // do nothing...
+            performSaveContent(getParamBodyname(), getParamBodylanguage());
+        } catch (CmsException e) {
+            // show error page
+            showErrorPage(this, e, "save");
         }
+        
+        // redirect to the temporary file
+        getCms().getRequestContext().getResponse().sendCmsRedirect(getParamTempfile());
+        
     }
 
     /**
@@ -489,12 +540,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             commitTempFile();
         } catch (CmsException e) {
             // error during saving, show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
-            setParamTitle(key("error.title.editorsave"));
-            setParamMessage(key("error.message.editorsave"));
-            String reasonSuggestion = key("error.reason.editorsave") + "<br>\n" + key("error.suggestion.editorsave") + "\n";
-            setParamReasonSuggestion(reasonSuggestion);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            showErrorPage(this, e, "save");
         }
         // now escape the title parameter in case the editor is re-displayed
         setParamPagetitle(Encoder.escapeXml(getParamPagetitle()));
@@ -505,7 +551,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * 
      * @param body the body name to write
      * @param language the body language to write
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if writing the file fails
      */
     protected void performSaveContent(String body, String language) throws CmsException {
         // prepare the content for saving
@@ -518,7 +564,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     }
     
     /**
-     * Manipulates the content String for the different editor views and the save operation.<p>
+     * Manipulates the content String for different editor views and the save operation.<p>
      * 
      * @param save if set to true, the result String is not escaped and the content parameter is not updated
      * @return the prepared content String
