@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/03/06 17:37:18 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2003/03/07 15:16:36 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.84 $ $Date: 2003/03/06 17:37:18 $
+ * @version $Revision: 1.85 $ $Date: 2003/03/07 15:16:36 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -1048,7 +1048,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 // ensure subdirectories of the same name are not replaced
                 search = "([}>\"'\\[]\\s*)" + search;
                 replace = "$1" + replace;
-                content = CmsStringSubstitution.substitute(content, search, replace);
+                content = CmsStringSubstitution.substitutePerl(content, search, replace, "g");
             }
         }
         return content;
@@ -1137,10 +1137,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     editString = editNodes.item(i).getFirstChild().getNodeValue();
                     for (int k = 0; k < m_webAppNames.size(); k++) {
                         editString =
-                            CmsStringSubstitution.substitute(
-                                editString,
-                                CmsStringSubstitution.escapePattern((String)m_webAppNames.get(k)),
-                                CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT + "/"));
+                            CmsStringSubstitution.substitute(editString, (String)m_webAppNames.get(k), C_MACRO_OPENCMS_CONTEXT + "/");
                     }
                     editNodes.item(i).getFirstChild().setNodeValue(editString);
                 }

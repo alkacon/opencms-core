@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/03/05 18:46:54 $
- * Version: $Revision: 1.465 $
+ * Date   : $Date: 2003/03/07 15:16:36 $
+ * Version: $Revision: 1.466 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ OpenCms 5.0 (next version)
 ! Improved "new module" options, it's now possible to select if exportable 
   "classes/" and/or "lib/" folders should be created for the module
 ! Updated and improved english workplace online help is now available as a separate module "org.opencms.help.en"
+* Fixed issue with JSP static export not always restoring the previous URI context
 * Fixed compatibility issues with MySQL 4 (note that MySQL 4 has not been extensivly tested with OpenCmd so far)
 * Fixed issue #56: Links in "Text" pages edited with the WYSIWYG "Edit as HTML"
 * Fixed issue with hardcoded servlet context path in <edittemplate>, it's now possible to 

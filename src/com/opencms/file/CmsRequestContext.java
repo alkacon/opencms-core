@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/02/03 14:15:14 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/03/07 15:16:36 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.64 $ $Date: 2003/02/03 14:15:14 $
+ * @version $Revision: 1.65 $ $Date: 2003/03/07 15:16:36 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -370,7 +370,6 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return the path to the requested resource.
      */
     public String getUri() {
-
         if (m_fakeUri != null) return m_fakeUri;
         if( m_req != null ) {
             return( m_req.getRequestedResource() );

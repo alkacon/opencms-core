@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/03/07 15:16:36 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -513,6 +513,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
             System.err.println("========== JspLoader loading: " + file.getAbsolutePath());
+            System.err.println("JspLoader.load()  cms uri is: " + cms.getRequestContext().getUri());
         }
 
         boolean streaming = false;            
