@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/03/31 10:08:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/31 12:50:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,15 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0
  */
@@ -189,9 +190,10 @@ public class CmsSecure extends CmsDialog {
      * @return true if dialogs should be shown, otherwise false
      */
     public boolean showExportSettings() {
+
         return getSettings().getUserSettings().getDialogShowExportSettings();
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
@@ -223,7 +225,7 @@ public class CmsSecure extends CmsDialog {
 
         String propVal = null;
         try {
-            propVal = getCms().readPropertyObject(getParamResource(), propertyName, true).getValue();
+            propVal = getCms().readPropertyObject(getParamResource(), propertyName, false).getValue();
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info(e);
@@ -260,21 +262,32 @@ public class CmsSecure extends CmsDialog {
      */
     public String getResourceUrl() {
 
-        boolean secure = Boolean.valueOf(readProperty(I_CmsConstants.C_PROPERTY_SECURE)).booleanValue();
-        StringBuffer result = new StringBuffer();
-        CmsSite currentSite = CmsSiteManager.getCurrentSite(getCms());
-        if (currentSite == OpenCms.getSiteManager().getDefaultSite()) {
-            result.append(OpenCms.getSiteManager().getWorkplaceServer());
-        } else {
-            if (secure) {
-                result.append(currentSite.getSecureUrl());
-            } else {
-                result.append(currentSite.getUrl());
+        CmsObject cms = getCms();
+        String address = "";
+        String vfsName = CmsLinkManager.getAbsoluteUri(getParamResource(), cms.getRequestContext().getUri());
+        String secureResource = "";
+        String exportedResource = "";
+        try {
+            secureResource = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_SECURE, false)
+                .getValue();
+            exportedResource = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_EXPORT, false)
+                .getValue();
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
             }
         }
-        result.append(OpenCms.getLinkManager().substituteLink(getCms(), getParamResource()));
-
-        return result.toString();
+        if (Boolean.valueOf(exportedResource).booleanValue()) {
+            address = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+        } else {
+            address = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+        }
+        if (Boolean.valueOf(secureResource).booleanValue()) {
+            address = CmsSiteManager.getCurrentSite(cms).getSecureUrl().concat(address);
+        } else {
+            address = CmsSiteManager.getCurrentSite(cms).getUrl().concat(address);
+        }
+        return address;
     }
 
     /**
@@ -300,10 +313,10 @@ public class CmsSecure extends CmsDialog {
 
             // change the flag of the resource so that it is internal            
             CmsResource resource = getCms().readResource(filename);
-            if ("true".equals(getParamIntern())) {
-                getCms().chflags(filename, resource.getFlags() | I_CmsConstants.C_RESOURCEFLAG_INTERNAL);
-            } else {
+            if (resource.isInternal() && !Boolean.valueOf(getParamIntern()).booleanValue()) {
                 getCms().chflags(filename, resource.getFlags() & (~I_CmsConstants.C_RESOURCEFLAG_INTERNAL));
+            } else if (!resource.isInternal() && Boolean.valueOf(getParamIntern()).booleanValue()) {
+                getCms().chflags(filename, resource.getFlags() | I_CmsConstants.C_RESOURCEFLAG_INTERNAL);
             }
 
             actionCloseDialog();
@@ -397,8 +410,31 @@ public class CmsSecure extends CmsDialog {
                     newProp.setResourceValue(propertyValue);
                 }
             }
+
             newProp.setAutoCreatePropertyDefinition(true);
-            getCms().writePropertyObject(getParamResource(), newProp);
+
+            String oldStructureValue = oldProp.getStructureValue();
+            String newStructureValue = newProp.getStructureValue();
+            if (CmsStringUtil.isEmpty(oldStructureValue)) {
+                oldStructureValue = CmsProperty.C_DELETE_VALUE;
+            }
+            if (CmsStringUtil.isEmpty(newStructureValue)) {
+                newStructureValue = CmsProperty.C_DELETE_VALUE;
+            }
+
+            String oldResourceValue = oldProp.getResourceValue();
+            String newResourceValue = newProp.getResourceValue();
+            if (CmsStringUtil.isEmpty(oldResourceValue)) {
+                oldResourceValue = CmsProperty.C_DELETE_VALUE;
+            }
+            if (CmsStringUtil.isEmpty(newResourceValue)) {
+                newResourceValue = CmsProperty.C_DELETE_VALUE;
+            }
+
+            // change property only if it has been changed            
+            if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
+                getCms().writePropertyObject(getParamResource(), newProp);
+            }
 
         } catch (CmsException e) {
             // error during chnav, show error dialog
@@ -421,13 +457,16 @@ public class CmsSecure extends CmsDialog {
 
         String propVal = readProperty(propName);
         StringBuffer result = new StringBuffer("<table border=\"0\"><tr>");
-        result.append("<td><input type=\"radio\" value=\"true\" onClick=\"checkNoIntern()\" name=\"").append(propName).append("\" ").append(
-            "true".equals(propVal) ? "checked=\"checked\"" : "").append("/></td><td id=\"tablelabel\">").append(key("label.true")).append("</td>");
-        result.append("<td><input type=\"radio\" value=\"false\" onClick=\"checkNoIntern()\" name=\"").append(propName).append("\" ").append(
-            "false".equals(propVal) ? "checked=\"checked\"" : "").append("/></td><td id=\"tablelabel\">").append(key("label.false")).append("</td>");
-        result.append("<td><input type=\"radio\" value=\"\" onClick=\"checkNoIntern()\" name=\"").append(propName).append("\" ").append(
-            CmsStringUtil.isEmpty(propVal) ? "checked=\"checked\"" : "").append("/></td><td id=\"tablelabel\">").append(
-            getPropertyInheritanceInfo(propName, propVal)).append("</td></tr></table>");
+        result.append("<td><input type=\"radio\" value=\"true\" onClick=\"checkNoIntern()\" name=\"").append(propName)
+            .append("\" ").append("true".equals(propVal) ? "checked=\"checked\"" : "").append(
+                "/></td><td id=\"tablelabel\">").append(key("label.true")).append("</td>");
+        result.append("<td><input type=\"radio\" value=\"false\" onClick=\"checkNoIntern()\" name=\"").append(propName)
+            .append("\" ").append("false".equals(propVal) ? "checked=\"checked\"" : "").append(
+                "/></td><td id=\"tablelabel\">").append(key("label.false")).append("</td>");
+        result.append("<td><input type=\"radio\" value=\"\" onClick=\"checkNoIntern()\" name=\"").append(propName)
+            .append("\" ").append(CmsStringUtil.isEmpty(propVal) ? "checked=\"checked\"" : "").append(
+                "/></td><td id=\"tablelabel\">").append(getPropertyInheritanceInfo(propName, propVal)).append(
+                "</td></tr></table>");
         return result.toString();
     }
 }
