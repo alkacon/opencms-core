@@ -47,6 +47,18 @@
         <a href="http://www.apache.org/httpd.html">http://www.apache.org/httpd.html</a>.
         </p>
         
+        <p>
+        To make sure Tomcat works with the correct charset to read and write files you should add the following
+        parameter to the commandline that is used to start Tomcat:
+        
+        <pre>-Dfile.encoding=ISO8859_1</pre>
+        
+        Add that parameter at the end of the file TOMCAT_HOME/conf/jk/wrapper.properties .
+        </p>
+        
+        
+        </p>
+        
         <hr></hr>
 
         <p>        
