@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/08/03 13:29:54 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/08/07 14:03:16 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2001/08/03 13:29:54 $
+ * @version $Revision: 1.16 $ $Date: 2001/08/07 14:03:16 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -825,9 +825,11 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 
           String completePath=C_CONTENTBODYPATH;
           StringTokenizer t=new StringTokenizer(path,"/");
+          String correspFolder = "/";
           // check if all folders are there
           while (t.hasMoreTokens()) {
               String foldername=t.nextToken();
+              correspFolder = correspFolder+foldername+"/";
                try {
                 // try to read the folder. if this fails, an exception is thrown
 
@@ -843,7 +845,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                   cms.doChmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
                   cms.doChown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
                   try{
-                    CmsFolder correspondingFolder = cms.readFolder("/"+foldername+"/");
+                    CmsFolder correspondingFolder = cms.readFolder(correspFolder);
                     if(!correspondingFolder.isLocked()){
                         cms.doUnlockResource(newfolder.getAbsolutePath());
                     }
