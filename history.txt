@@ -8,6 +8,13 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.36 Chusuk - xx March 2001
+! New function for HTML-Editor: inserting internal links
+! Added menu entry for folders, pages and links: changing the navigation informations (Navigation Text and Position)
+! Now navigation information can be inserted when creating a link. You need to add the required propertydefinitions
+  NavText and NavPos to do this.
+* Bugfix for export and import moduledata
+
 OpenCms 4.5.35 Release Candidate Chusuk - 15 February 2001
 ! Export and Import of channels and moduledata
 * When static export was disabled the servletpath was not configurable. Now it can be 
