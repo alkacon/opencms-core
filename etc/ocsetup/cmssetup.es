@@ -9,6 +9,8 @@ cms.createPropertydefinition("Title","image");
 cms.createPropertydefinition("Title","link");
 cms.createPropertydefinition("NavText","page");
 cms.createPropertydefinition("NavPos","page");
+cms.createPropertydefinition("NavText","link");
+cms.createPropertydefinition("NavPos","link");
 cms.createPropertydefinition("NavText","plain");
 cms.createPropertydefinition("NavPos","plain");
 cms.createPropertydefinition("NavText","compatiblePlain");

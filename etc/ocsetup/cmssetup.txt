@@ -11,6 +11,8 @@ createPropertydefinition NavText page
 createPropertydefinition NavPos page
 createPropertydefinition NavText plain
 createPropertydefinition NavPos plain
+createPropertydefinition NavText link
+createPropertydefinition NavPos link
 createPropertydefinition NavText compatiblePlain
 createPropertydefinition NavPos compatiblePlain
 createPropertydefinition NavText folder
