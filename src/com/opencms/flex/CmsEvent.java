@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsEvent.java,v $
- * Date   : $Date: 2002/07/01 11:54:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/08/21 11:29:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,18 +37,21 @@ import com.opencms.file.CmsObject;
  * Description of the class CmsEvent here.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsEvent extends java.util.EventObject {
-
+    
     /** The CmsObject on which this event occurred */
     private CmsObject m_cms = null;
 
     /** The event data associated with this event */
-    private Object m_data = null;
+    private java.util.Map m_data = null;
 
     /** The event type this instance represents */
     private int m_type = -1;
+    
+    /** Boolean whether this event should be clustered */
+    private boolean m_isClusterEvent;
 
     /**
      * Construct a new CmsEvent with the specified parameters.
@@ -57,20 +60,33 @@ public class CmsEvent extends java.util.EventObject {
      * @param type Event type
      * @param data Event data
      */
-    public CmsEvent(CmsObject cms, int type, Object data) {
+    public CmsEvent(CmsObject cms, int type, java.util.Map data) {
+        this( cms, type, data, false );
+    }
+    
+    /**
+     * Construct a new CmsEvent with the specified parameters.
+     *
+     * @param cms CmsObject on which this event occurred
+     * @param type Event type
+     * @param data Event data
+     * @param isClusterEvent true if this event should be forwarded to the other servers in the cluster
+     */    
+    public CmsEvent(CmsObject cms, int type, java.util.Map data, boolean isClusterEvent ) {
         super(cms);
+        
         this.m_cms = cms;
         this.m_type = type;
         this.m_data = data;
-
+        this.m_isClusterEvent = isClusterEvent;
     }
 
     /**
      * Provides access to the event data.
-     *
+     * 
      * @return The event data of this event
      */
-    public Object getData() {
+    public java.util.Map getData() {
         return (m_data);
     }
 
@@ -85,7 +101,7 @@ public class CmsEvent extends java.util.EventObject {
 
     /**
      * Provides access to the event type.
-     *
+     * 
      * @return The event type of this event
      */
     public int getType() {
@@ -101,4 +117,21 @@ public class CmsEvent extends java.util.EventObject {
         return ("CmsEvent['" + m_cms + "','" + m_type + "']");
     }
 
+    /**
+     * Set the boolean condition whether this event should be forwarded to the other servers in the cluster.
+     *
+     * @param value true if this event should be forwarded to the other servers in the cluster, false otherwise
+     */
+    public void setClusterEvent( boolean value ) {
+        this.m_isClusterEvent = value;
+    }
+    
+    /**
+     * Prove whether this event should be forwarded to the other servers in the cluster or not
+     *
+     * @return true if this event should be forwarded to the other servers in the cluster, false otherwise
+     */
+    public boolean isClusterEvent() {
+        return this.m_isClusterEvent;
+    }
 }

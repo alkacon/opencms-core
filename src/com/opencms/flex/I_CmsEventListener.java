@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsEventListener.java,v $
- * Date   : $Date: 2002/07/01 11:54:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/08/21 11:29:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,18 +35,30 @@ package com.opencms.flex;
  * Description of the class CmsListener here.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface I_CmsEventListener {
-
+    
     public static int EVENT_LOGIN_USER = 1;
-
+    
     public static int EVENT_PUBLISH_PROJECT = 2;
+    
+    public static int EVENT_PUBLISH_RESOURCE = 3;    
 
-    public static int EVENT_PUBLISH_RESOURCE = 3;
-
-    public static int EVENT_STATIC_EXPORT = 4;
-
+    public static int EVENT_PUBLISH_BO_RESOURCE = 4;    
+        
+    public static int EVENT_CLEAR_CACHES = 5;
+    
+    public static int EVENT_FLEX_CLUSTER_CHECK_SOURCE = 6;
+    
+    public static int EVENT_FLEX_CLUSTER_HOOK = 7;
+        
+    public static int EVENT_FLEX_PURGE_JSP_REPOSITORY = 8;
+    
+    public static int EVENT_FLEX_CACHE_CLEAR = 9;
+    
+    public static int EVENT_STATIC_EXPORT = 10;
+   
     /**
      * Acknowledge the occurrence of the specified event.
      *
