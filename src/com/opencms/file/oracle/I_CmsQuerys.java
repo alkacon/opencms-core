@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/07/06 15:55:21 $
- * Version: $Revision: 1.50 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracle/Attic/I_CmsQuerys.java,v $
+ * Date   : $Date: 2000/07/06 15:55:04 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file.genericSql;
+package com.opencms.file.Oracle;
 
 import com.opencms.core.*;
 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.50 $ $Date: 2000/07/06 15:55:21 $
+ * @version $Revision: 1.1 $ $Date: 2000/07/06 15:55:04 $
  */
 public interface I_CmsQuerys {
     
@@ -78,12 +78,12 @@ public interface I_CmsQuerys {
     public static final Integer C_RESOURCES_GET_LOST_ID_KEY = new Integer(104);
 	
     // generic SQL
-    public static final String C_RESOURCES_GET_LOST_ID = "SELECT A.FILE_ID FROM "+C_DATABASE_PREFIX+"FILES A LEFT JOIN "
-										+C_DATABASE_PREFIX+"RESOURCES B ON A.FILE_ID=B.FILE_ID WHERE B.FILE_ID is NULL";
+    //public static final String C_RESOURCES_GET_LOST_ID = "SELECT A.FILE_ID FROM "+C_DATABASE_PREFIX+"FILES A LEFT JOIN "
+	//									+C_DATABASE_PREFIX+"RESOURCES B ON A.FILE_ID=B.FILE_ID WHERE B.FILE_ID is NULL";
     
     // Use this for Oracle !!!!!
-    //public static final String C_RESOURCES_GET_LOST_ID = "SELECT FILE_ID FROM "+
-    //                                                     C_DATABASE_PREFIX+"FILES WHERE FILE_ID NOT IN ( SELECT FILE_ID FROM "+C_DATABASE_PREFIX+"RESOURCES)";
+    public static final String C_RESOURCES_GET_LOST_ID = "SELECT FILE_ID FROM "+
+                                                         C_DATABASE_PREFIX+"FILES WHERE FILE_ID NOT IN ( SELECT FILE_ID FROM "+C_DATABASE_PREFIX+"RESOURCES)";
     
         
     public static final Integer C_RESOURCES_DELETE_PROJECT_KEY = new Integer(105);
