@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/11/26 15:13:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/11/26 15:59:58 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,8 @@ import com.opencms.workplace.I_CmsWpConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.page.CmsDefaultPage;
+import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
@@ -59,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.12
  */
@@ -106,10 +108,9 @@ public class CmsMSDHtmlEditor extends CmsEditor {
                 setAction(ACTION_DEFAULT);
                 
                     setParamTempfile(createTempFile());
-                    // TODO: get the contents of the default body from the temporary file...
-                    setParamContent("<h2>TEST!!!</h2><p>Ein kleiner Text...</p>");
-                    CmsXmlPage page = new CmsXmlPage(getCms().readFile(this.getParamTempfile()));
-                    setParamContent(new String(page.getElementData("Body", "de")));
+
+                    CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
+                    setParamContent(new String(page.getElementData("body", "en")));
  
                     //setParamPagetemplate("/system/modules/com.lgt.intranet.modules.frontend/templates/lgt_intranet_main");
                     setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
@@ -283,8 +284,9 @@ public class CmsMSDHtmlEditor extends CmsEditor {
     public void initContent() {
         // TODO: initialize content of editor properly
         try {
-            CmsXmlPage page = new CmsXmlPage(getCms().readFile(this.getParamTempfile()));
-            setParamContent(new String(page.getElementData("Body", "de")));
+            CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
+            setParamContent(new String(page.getElementData("body", "en")));
+
         } catch (CmsException e) {
             // reading of file contents failed, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
