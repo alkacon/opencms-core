@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlBooleanWidget.java,v $
- * Date   : $Date: 2004/11/08 15:55:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
@@ -67,22 +67,21 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
         I_CmsXmlDocument document,
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
-        I_CmsXmlContentValue value) {
-
-        CmsXmlBooleanValue castValue = (CmsXmlBooleanValue)value;
+        I_CmsXmlContentValue value) throws CmsXmlException {
 
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(widgetDialog, contentDefinition, value.getNodeName()));
+        result.append(getMessage(widgetDialog, contentDefinition, value.getElementName()));
         result.append(": </td>");
-        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getNodeName()));
+        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getElementName()));
         result.append("<td class=\"xmlTd\">");        
-        boolean booleanValue = castValue.getBooleanValue();
-        String id = getParameterName(value);
         
+        String id = getParameterName(value);       
         result.append("<input type=\"checkbox\" name=\"");
         result.append(id);
         result.append("\" value=\"true\"");
+        
+        boolean booleanValue = CmsXmlBooleanValue.getBooleanValue(cms, document, value);
         if (booleanValue) {
             result.append(" checked=\"checked\"");    
         }
@@ -103,15 +102,21 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
 
         String[] values = (String[])formParameters.get(getParameterName(value));
         if ((values != null) && (values.length > 0)) {
-            CmsXmlBooleanValue castValue = (CmsXmlBooleanValue)value;
-            boolean castBooleanValue = castValue.getBooleanValue();
-            String booleanValue = values[0].trim();
-            if (CmsStringUtil.isNotEmpty(booleanValue)) {
-                castBooleanValue = Boolean.valueOf(booleanValue).booleanValue();
+
+            // first get the current boolean value for the element
+            boolean booleanValue = CmsXmlBooleanValue.getBooleanValue(cms, document, value);
+            
+            // now check if there's a new value in the form parameters
+            String formValue = values[0].trim();
+            if (CmsStringUtil.isNotEmpty(formValue)) {
+                booleanValue = Boolean.valueOf(formValue).booleanValue();
             }
-            value.setStringValue(cms, document, String.valueOf(castBooleanValue));
+            
+            // set the value
+            value.setStringValue(cms, document, String.valueOf(booleanValue));
+            
         } else {
-            value.setStringValue(cms, document, "false");
+            value.setStringValue(cms, document, Boolean.FALSE.toString());
         }
     }
 }

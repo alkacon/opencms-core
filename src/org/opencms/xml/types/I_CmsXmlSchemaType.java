@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -71,6 +71,10 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * 
      * This is used to dynamically build a vaild XML content object from an initialized
      * {@link org.opencms.xml.CmsXmlContentDefinition} class.<p>
+     * 
+     * Important: This method can only be used during initialization of a XML content object,
+     * not to add values to an already initialized XML content. To add values after initialization,
+     * use {@link org.opencms.xml.content.CmsXmlContent#addValue(String, java.util.Locale, int)}.<p>
      * 
      * @param root the element to append the XML to
      * @param index the index of the XML element in the source document
@@ -105,6 +109,18 @@ public interface I_CmsXmlSchemaType extends Comparable {
     String getDefault();
 
     /**
+     * Returns the XML element node name of this type in the current schema.<p>
+     *
+     * The XML element node name can be configured in the schema.
+     * For example, the node name could be <code>"Title"</code>,
+     * <code>"Teaser"</code> or <code>"Text"</code>. The XML schema controls 
+     * what node names are allowed.<p> 
+     *
+     * @return the XML node name of this type in the current schema
+     */
+    String getElementName();
+
+    /**
      * Returns the maximum occurences of this type in the current schema.<p>
      *
      * @return the maximum occurences of this type in the current schema
@@ -117,18 +133,6 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * @return the minimum occurences of this type in the current schema
      */
     int getMinOccurs();
-
-    /**
-     * Returns the XML node name of this type in the current schema.<p>
-     *
-     * The XML node name can be configured in the schema.
-     * For example, the node name could be <code>"Title"</code>,
-     * <code>"Teaser"</code> or <code>"Text"</code>. The XML schema controls 
-     * what node names are allowed.<p> 
-     *
-     * @return the XML node name of this type in the current schema
-     */
-    String getNodeName();
 
     /**
      * Returns a String representation of the XML definition for this schema type.<p>  
@@ -151,6 +155,14 @@ public interface I_CmsXmlSchemaType extends Comparable {
     String getTypeName();
 
     /**
+     * Returns <code>true</code> if this is  a simple type, or <code>false</code>
+     * if this type is a cascaded schema.<p>
+     * 
+     * @return true if this is  a simple type, or false if this type is a cascaded schema
+     */
+    boolean isSimpleType();
+
+    /**
      * Creates a new instance of this XML schema type initialized with the given values.<p>
      * 
      * @param name the name to use in the xml document
@@ -166,12 +178,4 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * @param defaultValue the default value to set
      */
     void setDefault(String defaultValue);
-    
-    /**
-     * Returns <code>true</code> if this is  a simple type, or <code>false</code>
-     * if this type is a cascaded schema.<p>
-     * 
-     * @return true if this is  a simple type, or false if this type is a cascaded schema
-     */
-    boolean isSimpleType();
 }

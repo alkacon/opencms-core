@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,13 +48,16 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -65,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -138,6 +141,102 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     }
 
     /**
+     * Adds a new XML content value for the given element name and locale at the given index position
+     * to this XML content document.<p> 
+     * 
+     * @param name the name of the XML content value element
+     * @param locale the locale where to add the new value 
+     * @param index the index where to add the value (relatice to all other values of this type)
+     * 
+     * @return the created XML content value
+     */
+    public I_CmsXmlContentValue addValue(String name, Locale locale, int index) {
+
+        int todo = 0;
+        // TODO: handle cascaded value types, also handle index based names like "Title[0]"
+        Element parentElement = getLocaleNode(locale);
+
+        int insertIndex;
+        I_CmsXmlSchemaType type;
+
+        List values = getValues(name, locale);
+
+        if (values.size() > 0) {
+
+            // there is at last one value already available of this type 
+            type = (I_CmsXmlContentValue)values.get(index == values.size() ? index - 1 : index);
+
+            // iterate all elements of the parent node            
+            Iterator i = parentElement.content().iterator();
+            int pos = 0;
+            int foundCount = 0;
+            while (i.hasNext()) {
+                pos++;
+                Node node = (Node)i.next();
+                if (node instanceof Element) {
+                    if (node.getName().equals(name)) {
+                        // found an element of this type
+                        foundCount++;
+                        if (foundCount >= index) {
+                            // found the index position required
+                            if (index == 0) {
+                                // insert before the last position found as first element of this type
+                                pos--;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            insertIndex = pos;
+
+        } else {
+
+            // no value of this type is currently available            
+            type = m_contentDefinition.getSchemaType(name);
+
+            // check where in the type sequence the type should appear
+            int typeIndex = m_contentDefinition.getTypeSequence().indexOf(type);
+            if (typeIndex == 0) {
+                // this is the first type, so we just add at the very first position
+                insertIndex = 0;
+            } else {
+
+                // create a list of all element names that should occur before the selected type
+                List previousTypeNames = new ArrayList();
+                for (int i = 0; i < typeIndex; i++) {
+                    I_CmsXmlSchemaType t = (I_CmsXmlSchemaType)m_contentDefinition.getTypeSequence().get(i);
+                    previousTypeNames.add(t.getElementName());
+                }
+
+                // iterate all elements of the parent node
+                Iterator i = parentElement.content().iterator();
+                int pos = 0;
+                while (i.hasNext()) {
+                    Node node = (Node)i.next();
+                    if (node instanceof Element) {
+                        if (!previousTypeNames.contains(node.getName())) {
+                            // the element name is NOT in the list of names that occure before the selected type, 
+                            // so it must be an element that occurs AFTER the type
+                            break;
+                        }
+                    }
+                    pos++;
+                }
+                insertIndex = pos;
+            }
+        }
+
+        // append the new element at the calculated position
+        I_CmsXmlContentValue newValue = addValue(parentElement, type, insertIndex, index);
+
+        // re-initialize this XML content 
+        initDocument(m_document, m_encoding, m_contentDefinition);
+
+        return newValue;
+    }
+
+    /**
      * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition(org.xml.sax.EntityResolver)
      */
     public CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) {
@@ -173,6 +272,20 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // initialize link processor
         return new CmsLinkProcessor(cms, linkTable, getEncoding(), null);
     }
+    
+    /**
+     * Returns the value sequence for the selected element name in this XML content.<p>
+     * 
+     * @param name the element name (XML node name) to the the value sequence for
+     * @param locale the locale to get the value sequence for
+     * 
+     * @return the value sequence for the selected element name in this XML content
+     */
+    public CmsXmlContentValueSequence getValueSequence(String name, Locale locale) {
+
+        I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(name);
+        return new CmsXmlContentValueSequence(type, locale, this);
+    }
 
     /**
      * Resolves the information in the optional "appinfo" schema node according to the rules of the XML content handler that 
@@ -185,6 +298,33 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         // call the appinfo resolver of the configured XML content handler
         m_contentDefinition.getContentHandler().resolveAppInfo(cms, this, m_contentDefinition);
+    }
+
+    /**
+     * Returns the XML root element node for the given locale.<p>
+     * 
+     * @param locale the locale to get the root element for
+     * 
+     * @return the XML root element node for the given locale
+     */
+    protected Element getLocaleNode(Locale locale) {
+
+        if (!m_locales.contains(locale)) {
+            throw new RuntimeException("No initialized locale " + locale + " available in XML document");
+        }
+
+        String localeStr = locale.toString();
+        Iterator i = m_document.getRootElement().elements().iterator();
+        while (i.hasNext()) {
+            Element element = (Element)i.next();
+            if (localeStr.equals(element.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE))) {
+                // language element found, return it
+                return element;
+            }
+        }
+
+        // language element was not found (should not happen since we throw a RuntimeException in this case
+        return null;
     }
 
     /**
@@ -204,16 +344,15 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             try {
                 Locale locale = CmsLocaleManager.getLocale(node.attribute(
                     CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
-                                
+
                 processSchemaNode(node, null, locale, definition);
             } catch (NullPointerException e) {
                 OpenCms.getLog(this).error("Error while initalizing XML content bookmarks", e);
             }
-        }            
-        
+        }
 
     }
-    
+
     /**
      * Sets the file this XML content is written to.<p> 
      * 
@@ -222,6 +361,35 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     protected void setFile(CmsFile file) {
 
         m_file = file;
+    }
+
+    /**
+     * Adds a new XML schema type with the default value to the given parent node.<p>
+     * 
+     * @param parent the XML parent element to add the new value to
+     * @param type the type of the value to add
+     * @param insertIndex the index in the XML document where to add the XML node
+     * @param index the index of the schema type relative to all other values of this type
+     * 
+     * @return the created XML content value
+     */
+    private I_CmsXmlContentValue addValue(Element parent, I_CmsXmlSchemaType type, int insertIndex, int index) {
+
+        Element element = (Element)parent.addElement(type.getElementName()).detach();
+        List parentContent = parent.content();
+        parentContent.add(insertIndex, element);
+
+        I_CmsXmlContentValue value = type.createValue(element, type.getElementName(), index);
+        if (type.getDefault() != null) {
+            try {
+                value.setStringValue(type.getDefault());
+            } catch (CmsXmlException e) {
+                // should not happen if default value is correct
+                OpenCms.getLog(this).error("Invalid default value '" + type.getDefault() + "' for XML content", e);
+                element.clearContent();
+            }
+        }
+        return value;
     }
 
     /**
@@ -237,7 +405,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         int count = 0;
         String previousName = null;
-        
+
         for (Iterator j = root.elementIterator(); j.hasNext();) {
             Element element = (Element)j.next();
 

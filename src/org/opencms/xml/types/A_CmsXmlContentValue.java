@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/11/16 16:58:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -84,10 +84,10 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
      */
     public void appendDefaultXml(Element root, int index) {
 
-        Element element = root.addElement(getNodeName());
+        Element element = root.addElement(getElementName());
         if (getDefault() != null) {
             try {
-                I_CmsXmlContentValue value = createValue(element, getNodeName(), index);
+                I_CmsXmlContentValue value = createValue(element, getElementName(), index);
                 value.setStringValue(getDefault());
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct
@@ -96,7 +96,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
             }
         }
     }
-
+    
     /**
      * Appends an element XML representation of this type to the given root node.<p>
      * 
@@ -105,7 +105,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     public void appendXmlSchema(Element root) {
 
         Element element = root.addElement(CmsXmlContentDefinition.XSD_NODE_ELEMENT);
-        element.addAttribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME, getNodeName());
+        element.addAttribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME, getElementName());
         element.addAttribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_TYPE, getTypeName());
         if ((getMinOccurs() > 1) || (getMinOccurs() == 0)) {
             element.addAttribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_MIN_OCCURS, String.valueOf(getMinOccurs()));
@@ -144,7 +144,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
             return false;
         }
         I_CmsXmlSchemaType other = (I_CmsXmlSchemaType)o;
-        return (getNodeName().equals(other.getNodeName())
+        return (getElementName().equals(other.getElementName())
             && getTypeName().equals(other.getTypeName())
             && (getMinOccurs() == other.getMinOccurs()) && (getMaxOccurs() == other.getMaxOccurs()));
     }
@@ -200,7 +200,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
      *
      * @return the name
      */
-    public String getNodeName() {
+    public String getElementName() {
 
         return m_name;
     }

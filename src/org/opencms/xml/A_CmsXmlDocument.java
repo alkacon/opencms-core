@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/11/22 15:35:06 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/11/28 21:57:58 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -141,7 +141,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         // this path has only 1 node, append [index] if required
         return createXpathElementCheck(path, index);
     }
-    
+
     /**
      * Appends the provided index parameter in square brackets to the given name,
      * like <code>path[index]</code>.<p>
@@ -308,12 +308,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Returns all available elements names for a given locale used in this document.<p>
-     * 
-     * If no element for the given locale is available, an empty list is returned.<p>
-     * 
-     * @param locale the locale
-     * @return list of available element names (Strings)
+     * @see org.opencms.xml.I_CmsXmlDocument#getNames(java.util.Locale)
      */
     public List getNames(Locale locale) {
 
@@ -367,23 +362,48 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getValues(java.util.Locale)
+     */
+    public List getValues(Locale locale) {
+
+        List result = new ArrayList();
+
+        // bookmarks are stored with the locale as first prefix
+        String prefix = '/' + locale.toString() + '/';
+
+        // it's better for performance to iterate through the list of bookmarks directly
+        Iterator i = m_bookmarks.keySet().iterator();
+        while (i.hasNext()) {
+            String key = (String)i.next();
+            if (key.startsWith(prefix)) {
+                result.add(m_bookmarks.get(key));
+            }
+        }
+
+        // sort the result
+        Collections.sort(result);
+
+        return result;
+    }
+
+    /**
      * @see org.opencms.xml.I_CmsXmlDocument#getValues(java.lang.String, java.util.Locale)
      */
     public List getValues(String name, Locale locale) {
 
-        List elements = new ArrayList();
+        List result = new ArrayList();
         int count = 0;
         Object o;
         do {
             String path = createXpathElement(name, count);
             o = getBookmark(path, locale);
             if (o != null) {
-                elements.add(o);
+                result.add(o);
                 count++;
             }
         } while (o != null);
 
-        return elements;
+        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/11/19 15:07:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -155,14 +155,14 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      */
     public void appendDefaultXml(Element root, int index) {
 
-        Element element = root.addElement(getNodeName());
-        element.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getNodeName() + index);
+        Element element = root.addElement(getElementName());
+        element.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getElementName() + index);
         element.addElement(CmsXmlPage.NODE_LINKS);
         element.addElement(CmsXmlPage.NODE_CONTENT);
 
         if (m_defaultValue != null) {
             try {
-                I_CmsXmlContentValue value = createValue(element, getNodeName(), index);
+                I_CmsXmlContentValue value = createValue(element, getElementName(), index);
                 value.setStringValue(m_defaultValue);
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct
@@ -219,6 +219,19 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     }
 
     /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
+     */
+    public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
+
+        try {
+            CmsHtmlExtractor extractor = new CmsHtmlExtractor();
+            return extractor.extractText(this.getStringValue(cms, document), document.getEncoding());
+        } catch (Exception exc) {
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
      */
     public String getSchemaDefinition() {
@@ -250,19 +263,6 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
         return C_TYPE_NAME;
     }
 
-    /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
-     */
-    public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
-        
-        try {
-            CmsHtmlExtractor extractor = new CmsHtmlExtractor();
-            return extractor.extractText(this.getStringValue(cms, document), document.getEncoding());
-        } catch (Exception exc) {
-            return null;   
-        }
-    }
-    
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#newInstance(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -315,7 +315,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
             content.addCDATA(value);
             if (linkProcessor != null) {
                 // may be null in case of default value generation (i.e. setStringValue(String) was called)
-    
+
                 CmsLinkTable linkTable = linkProcessor.getLinkTable();
                 for (Iterator i = linkTable.iterator(); i.hasNext();) {
                     CmsLink link = (CmsLink)i.next();
@@ -326,11 +326,11 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                         .addAttribute(CmsXmlPage.ATTRIBUTE_INTERNAL, Boolean.toString(link.isInternal()));
     
                     linkElement.addElement(CmsXmlPage.NODE_TARGET).addCDATA(link.getTarget());
-    
+
                     if (link.getAnchor() != null) {
                         linkElement.addElement(CmsXmlPage.NODE_ANCHOR).addCDATA(link.getAnchor());
                     }
-    
+
                     if (link.getQuery() != null) {
                         linkElement.addElement(CmsXmlPage.NODE_QUERY).addCDATA(link.getQuery());
                     }

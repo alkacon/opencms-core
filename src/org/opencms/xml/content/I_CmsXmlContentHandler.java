@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,11 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,17 +50,14 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
 
     /** Array of all allowed attribute mapping names. */
-    String[] C_ATTRIBUTES = {
-        "datereleased",
-        "dateexpired"
-    };
-    
+    String[] C_ATTRIBUTES = {"datereleased", "dateexpired"};
+
     /** List of all allowed attribute mapping names, for fast lookup. */
     List C_ATTRIBUTES_LIST = Collections.unmodifiableList(Arrays.asList(C_ATTRIBUTES));
 
@@ -86,6 +86,25 @@ public interface I_CmsXmlContentHandler {
     void freeze();
 
     /**
+     * Returns the editor widget that should be used for the given XML content value.<p>
+     * 
+     * The handler implementations should use the "appinfo" node of the XML content definition
+     * schema to define the mappings of elements to widgets.<p>
+     * 
+     * @param value the XML content value to get the widget for
+     * @param content the XML content to resolve the mappings for
+     * @param contentDefinition the XML content definition of the XML content
+     * 
+     * @return the editor widget that should be used for the given XML content value
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    I_CmsXmlWidget getEditorWidget(
+        I_CmsXmlContentValue value,
+        I_CmsXmlDocument content,
+        CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
+
+    /**
      * Resolves the "appinfo" schema node of the XML content definition according 
      * to the rules of this XML content handler.<p>
      * 
@@ -97,7 +116,7 @@ public interface I_CmsXmlContentHandler {
      */
     void resolveAppInfo(CmsObject cms, CmsXmlContent content, CmsXmlContentDefinition contentDefinition)
     throws CmsException;
-    
+
     // TODO: Method for content validation
     // TODO: Method for default values
     // TODO: Method for preview URL

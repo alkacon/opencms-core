@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Widgetmappingtests
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test5.xsd">
+  
+	<Widgetmappingtest language="en">
+		<Title>This is just a test</Title>
+	</Widgetmappingtest>
+</Widgetmappingtests>

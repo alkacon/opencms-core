@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/11/26 14:27:05 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2004/11/28 21:57:58 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 5.3.5
  */
@@ -123,9 +123,6 @@ public class OpenCmsTestCase extends TestCase {
 
     /** The initialized OpenCms shell instance. */
     private static CmsShell m_shell;
-
-    /** The name of the test class. */
-    private static String m_testClassName;
 
     /** The list of paths to the additional test data files. */
     private static List m_testDataPath;
@@ -216,8 +213,7 @@ public class OpenCmsTestCase extends TestCase {
             if (m_resourceStorages == null) {
                 m_resourceStorages = new HashMap();
             }
-            m_testClassName = this.getClass().getName();
-
+            
             // initialize configuration
             initConfiguration();
 
@@ -261,7 +257,7 @@ public class OpenCmsTestCase extends TestCase {
 
         // output a message
         m_shell.printPrompt();
-        System.out.println("----- " + m_testClassName + ": Test cases finished -----");
+        System.out.println("----- Test cases finished -----");
 
         // exit the shell
         m_shell.exit();
@@ -332,10 +328,13 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder, boolean publish) {
 
+        // intialize a new resource storage
+        m_resourceStorages = new HashMap();
+        
         // turn off exceptions after error logging during setup (won't work otherwise)
         OpenCmsTestLogAppender.setBreakOnError(false);
         // output a message 
-        System.out.println("\n\n\n----- " + m_testClassName + ": Starting test case: Importing OpenCms VFS data -----");
+        System.out.println("\n\n\n----- Starting test case: Importing OpenCms VFS data -----");
 
         // kill any old shell that might have remained from a previous test 
         if (m_shell != null) {
@@ -400,7 +399,7 @@ public class OpenCmsTestCase extends TestCase {
             cms.getRequestContext().setSiteRoot("/sites/default/");
 
             // output a message 
-            System.out.println("----- " + m_testClassName + ": Starting test cases -----");
+            System.out.println("----- Starting test cases -----");
         } catch (Throwable t) {
             t.printStackTrace(System.err);
             fail("Unable to setup OpenCms\n" + CmsException.getStackTraceAsString(t));

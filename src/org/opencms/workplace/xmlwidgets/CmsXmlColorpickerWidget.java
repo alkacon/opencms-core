@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlColorpickerWidget.java,v $
- * Date   : $Date: 2004/10/20 10:54:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.2
  */
 public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
@@ -115,9 +115,9 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
 
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(widgetDialog, contentDefinition, value.getNodeName()));
+        result.append(getMessage(widgetDialog, contentDefinition, value.getElementName()));
         result.append(": </td>");        
-        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getNodeName()));
+        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getElementName()));
         result.append("<td class=\"xmlTd\">");
         String colorValue = castValue.getStringValue(cms, document);
         String id = getParameterName(value);

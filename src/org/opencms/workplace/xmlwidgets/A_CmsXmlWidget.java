@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/10/20 10:54:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -55,6 +55,19 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
 
     /** Prefix for message locales. */
     static final String C_MESSAGE_PREFIX = "editor.label.";
+    
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (! (obj instanceof A_CmsXmlWidget)) {
+            return false;
+        }
+        
+        // widgets are equal if they use the same class
+        return getClass().getName().equals(obj.getClass().getName());
+    }
     
     
     /**
@@ -67,7 +80,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         CmsXmlContentDefinition contentDefinition,
         I_CmsXmlContentValue value) {
 
-        return getHelpText(widgetDialog, contentDefinition, value.getNodeName());
+        return getHelpText(widgetDialog, contentDefinition, value.getElementName());
     }
 
     /**
@@ -98,8 +111,12 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         I_CmsXmlDocument document,
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition,
-        I_CmsXmlContentValue value) {
-
+        I_CmsXmlContentValue value) throws CmsXmlException {
+        
+        if (document == null) {
+            throw new CmsXmlException();
+        }
+        
         return "";
     }
     
@@ -111,10 +128,18 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         StringBuffer result = new StringBuffer(128);
         result.append(value.getTypeName());
         result.append(".");
-        result.append(value.getNodeName());
+        result.append(value.getElementName());
         result.append(".");
         result.append(value.getIndex());
         return result.toString();
+    }
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return getClass().getName().hashCode();
     }
 
     /**

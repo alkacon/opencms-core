@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlVfsFileWidget.java,v $
- * Date   : $Date: 2004/10/20 10:54:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
@@ -120,9 +120,9 @@ public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
         String id = getParameterName(value);
         StringBuffer result = new StringBuffer(128);
         result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(widgetDialog, contentDefinition, value.getNodeName()));
+        result.append(getMessage(widgetDialog, contentDefinition, value.getElementName()));
         result.append(": </td>");
-        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getNodeName()));        
+        result.append(getHelpBubble(cms, widgetDialog, contentDefinition, value.getElementName()));        
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"); 
         result.append("<input class=\"xmlInputMedium\" value=\"");

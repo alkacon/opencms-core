@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/10/23 06:50:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/28 21:57:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public interface I_CmsXmlDocument {
@@ -267,5 +267,29 @@ public interface I_CmsXmlDocument {
      * @throws CmsXmlException in case the locale did not exist in the document, or if something else goes wrong
      */
     void removeLocale(Locale locale) throws CmsXmlException;
+    
+    /**
+     * Returns all available elements names used in this document for the given locale.<p>
+     * 
+     * If no element for the given locale is available, an empty list is returned.<p>
+     * 
+     * @param locale the locale
+     * @return list of available element names (Strings)
+     * 
+     * @see #getValues(Locale)
+     */
+    List getNames(Locale locale);
+    
+    /**
+     * Returns all available elements values used in this document for the given locale.<p>
+     * 
+     * If no element for the given locale is available, an empty list is returned.<p>
+     * 
+     * @param locale the locale
+     * @return list of available element valies (type {@link I_CmsXmlContentValue})
+     * 
+     * @see #getNames(Locale)
+     */    
+    List getValues(Locale locale);
 
 }

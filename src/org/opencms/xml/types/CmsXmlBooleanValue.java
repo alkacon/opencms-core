@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2004/10/23 06:50:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.xml.types;
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import org.dom4j.Element;
@@ -43,7 +44,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
@@ -140,6 +141,30 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
     }
 
     /**
+     * Returns the boolean value of the given XML content value.<p>
+     * 
+     * @param cms an initialized instance of a CmsObject
+     * @param document the XML document this value belongs to
+     * @param value the XML content value to get the boolean value of
+     * 
+     * @return the boolean value of the given XML content value
+     * @throws CmsXmlException if something goes wrong
+     */
+    public static boolean getBooleanValue(CmsObject cms, I_CmsXmlDocument document, I_CmsXmlContentValue value)
+    throws CmsXmlException {
+
+        boolean result;
+        if (value instanceof CmsXmlBooleanValue) {
+            // this is a "native" boolean type
+            result = ((CmsXmlBooleanValue)value).getBooleanValue();
+        } else {
+            // get the boolean value from the String value
+            result = Boolean.valueOf(value.getStringValue(cms, document)).booleanValue();
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, int)
      */
     public I_CmsXmlContentValue createValue(Element element, String name, int index) {
@@ -206,7 +231,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
     public void setStringValue(String value) {
 
         m_element.clearContent();
-        if (CmsStringUtil.isNotEmpty(value)) { 
+        if (CmsStringUtil.isNotEmpty(value)) {
             m_element.addText(value);
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/11/02 08:30:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -58,13 +60,16 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The element mappings (defined in the annotations). */
     protected Map m_elementMappings;
+
+    /** The widgets used for the elements (defined in the annotations). */
+    protected Map m_elementWidgets;
 
     /** Indicates if <code>{@link #freeze()}</code> has alreaby been called on this instance. */
     protected boolean m_frozen;
@@ -75,6 +80,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public CmsDefaultXmlContentHandler() {
 
         m_elementMappings = new HashMap();
+        m_elementWidgets = new HashMap();
     }
 
     /**
@@ -97,6 +103,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * Adds a GUI widget for a soecified element.<p> 
+     * 
+     * @param elementName the element name to map
+     * @param className the name of the widget class to use as GUI for the element
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    public void addWidget(String elementName, String className) throws CmsXmlException {
+
+        I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidgetByClassName(className);
+
+        if (widget == null) {
+            throw new CmsXmlException("Unregistered XML widget '"
+                + className
+                + "'configureed as GUI for element "
+                + elementName);
+        }
+
+        m_elementWidgets.put(elementName, widget);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#analyzeAppInfo(org.dom4j.Element, org.opencms.xml.CmsXmlContentDefinition)
      */
     public synchronized void analyzeAppInfo(Element appInfoElement, CmsXmlContentDefinition contentDefinition)
@@ -111,13 +139,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         while (i.hasNext()) {
             // iterate all elements in the appinfo node
             Element appinfo = (Element)i.next();
-            if (appinfo.getName().equals("mapping")) {
+            String nodeName = appinfo.getName();
+            if (nodeName.equals("mapping")) {
                 // this is a mapping node
-                String key = appinfo.attributeValue("element");
+                String elementName = appinfo.attributeValue("element");
                 String value = appinfo.attributeValue("mapto");
-                if ((key != null) && (value != null)) {
-                    // add the mapping to the XML content definition
-                    addMapping(contentDefinition, key, value);
+                if ((elementName != null) && (value != null)) {
+                    // add the element mapping 
+                    addMapping(contentDefinition, elementName, value);
+                }
+            } else if (nodeName.equals("gui")) {
+                // this is a gui widget node
+                String elementName = appinfo.attributeValue("element");
+                String className = appinfo.attributeValue("widget");
+                if ((elementName != null) && (className != null)) {
+                    // add the GUI widget
+                    addWidget(elementName, className);
                 }
             }
         }
@@ -132,6 +169,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_frozen = true;
         // make the element mappings unmodifiable
         m_elementMappings = Collections.unmodifiableMap(m_elementMappings);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getEditorWidget(org.opencms.xml.types.I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContent, org.opencms.xml.CmsXmlContentDefinition)
+     */
+    public I_CmsXmlWidget getEditorWidget(
+        I_CmsXmlContentValue value,
+        I_CmsXmlDocument content,
+        CmsXmlContentDefinition contentDefinition) {
+
+        // try the specific widget settings first
+        I_CmsXmlWidget result = (I_CmsXmlWidget)m_elementWidgets.get(value.getElementName());
+        if (result != null) {
+            return result;
+        }
+
+        // use default widget mappings
+        return OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());
     }
 
     /**
@@ -167,7 +222,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
             // walk through all the possible values in the XML content definition
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
-            String nodeName = type.getNodeName();
+            String nodeName = type.getElementName();
             int indexCount = content.getIndexCount(nodeName, locale);
             // ensure there's at last one value available in the XML content
             if (indexCount > 0) {

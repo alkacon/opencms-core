@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/28 21:57:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
@@ -73,7 +73,10 @@ public class CmsXmlContentTypeManager {
 
     /** Stores the registered content widgets. */
     private Map m_registeredWidgets;
-    
+
+    /** Stores the registed content widgegts by class name. */
+    private Map m_registeredWidgetsByClassName;
+
     /**
      * Creates a new content type manager.<p> 
      */
@@ -81,7 +84,8 @@ public class CmsXmlContentTypeManager {
 
         m_registeredTypes = new HashMap();
         m_registeredWidgets = new HashMap();
-        
+        m_registeredWidgetsByClassName = new HashMap();
+
         // use the fast hash map implementation since there will be far more read then write accesses
         FastHashMap fastMap = new FastHashMap();
         fastMap.setFast(true);
@@ -168,6 +172,7 @@ public class CmsXmlContentTypeManager {
             throw new CmsXmlException("Invalid XML content widget registered");
         }
         m_registeredWidgets.put(typeName, widget);
+        m_registeredWidgetsByClassName.put(clazz.getName(), widget);
         return widget;
     }
 
@@ -197,9 +202,13 @@ public class CmsXmlContentTypeManager {
         }
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". XML content config   : added type '" 
-                + type.getTypeName() + "' using widget class '" + widgetClazz.getName() + "'");
-        }        
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". XML content config   : added type '"
+                    + type.getTypeName()
+                    + "' using widget class '"
+                    + widgetClazz.getName()
+                    + "'");
+        }
     }
 
     /**
@@ -231,7 +240,7 @@ public class CmsXmlContentTypeManager {
         // now add the classes 
         addXmlContent(classClazz, widgetClazz);
     }
-    
+
     /**
      * Returns the XML content handler instance class for the specified class name.<p>
      * 
@@ -253,13 +262,13 @@ public class CmsXmlContentTypeManager {
         buffer.append('#');
         buffer.append(className);
         String key = buffer.toString();
-        
+
         // look up the content handler from the cache
-        I_CmsXmlContentHandler contentHandler = (I_CmsXmlContentHandler)m_contentHandlers.get(key);                
+        I_CmsXmlContentHandler contentHandler = (I_CmsXmlContentHandler)m_contentHandlers.get(key);
         if (contentHandler != null) {
             return contentHandler;
         }
-        
+
         // generate an instance for the content handler
         try {
             contentHandler = (I_CmsXmlContentHandler)Class.forName(className).newInstance();
@@ -270,11 +279,11 @@ public class CmsXmlContentTypeManager {
         } catch (ClassCastException e) {
             throw new CmsXmlException("Invalid XML content handler requested: " + key);
         } catch (ClassNotFoundException e) {
-            throw new CmsXmlException("Invalid XML content handler requested: " + key);            
+            throw new CmsXmlException("Invalid XML content handler requested: " + key);
         }
-        
+
         // cache and return the content handler instance
-        m_registeredWidgets.put(key, contentHandler);
+        m_contentHandlers.put(key, contentHandler);
         return contentHandler;
     }
 
@@ -310,11 +319,11 @@ public class CmsXmlContentTypeManager {
         boolean simpleType = true;
         I_CmsXmlSchemaType schemaType = (I_CmsXmlSchemaType)m_registeredTypes.get(type);
         if (schemaType == null) {
-            
+
             // the name is not a simple type, try to resolve from cascaded schemas
-            Iterator i = cascadedDefinitions.iterator();            
+            Iterator i = cascadedDefinitions.iterator();
             while (i.hasNext()) {
-                
+
                 CmsXmlContentDefinition cd = (CmsXmlContentDefinition)i.next();
                 if (type.equals(cd.getTypeName())) {
 
@@ -322,15 +331,17 @@ public class CmsXmlContentTypeManager {
                     return new CmsXmlCascadedContentDefinition(cd, name, minOccrs, maxOccrs);
                 }
             }
-            
-            if (simpleType) { 
-                throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Schema type '" + type + "' unknown");
+
+            if (simpleType) {
+                throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Schema type '"
+                    + type
+                    + "' unknown");
             }
         }
 
         if (simpleType) {
             schemaType = schemaType.newInstance(name, minOccrs, maxOccrs);
-    
+
             if (CmsStringUtil.isNotEmpty(defaultValue)) {
                 schemaType.setDefault(defaultValue);
             }
@@ -359,6 +370,17 @@ public class CmsXmlContentTypeManager {
     public I_CmsXmlWidget getEditorWidget(String typeName) {
 
         return (I_CmsXmlWidget)m_registeredWidgets.get(typeName);
+    }
+
+    /**
+     * Returns an initialized widget class by it's class name.<p>
+     *  
+     * @param className the class name to get the widget for
+     * @return the widget instance for the class name
+     */
+    public I_CmsXmlWidget getEditorWidgetByClassName(String className) {
+
+        return (I_CmsXmlWidget)m_registeredWidgetsByClassName.get(className);
     }
 
     /** 

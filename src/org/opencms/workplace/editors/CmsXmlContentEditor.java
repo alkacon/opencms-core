@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/26 16:33:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/11/28 21:57:59 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -94,8 +94,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /** Parameter to indicate if a new XML content resource should be created. */
     private String m_paramNewLink;
     
-    /** Stores the different schema types used in the editor form.  */
-    private List m_types;
+    /** Stores the different XML editor widgets used in the editor form.  */
+    private List m_widgets;
     
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     private static final String EDITOR_TYPE = "xmlcontent";
@@ -379,12 +379,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             while (i.hasNext()) {
                                                 
                 I_CmsXmlSchemaType schemaType = (I_CmsXmlSchemaType)i.next();                
-                String name = schemaType.getNodeName();
+                String name = schemaType.getElementName();
                 int count = m_content.getIndexCount(name, locale);
                 for (int j=0; j<count; j++) {
 
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
-                    I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());
+                    m_contentDefinition.getContentHandler();
+                    
+                    I_CmsXmlWidget widget = 
+                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_content, m_contentDefinition);
+                    
                     widget.setEditorValue(getCms(), m_content, getJsp().getRequest().getParameterMap(), this, value);
                 }               
             }
@@ -485,12 +489,13 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             while (i.hasNext()) {
                                                 
                 I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();                
-                String name = type.getNodeName();
+                String name = type.getElementName();
                 int count = m_content.getIndexCount(name, locale);
                 for (int j=0; j<count; j++) {
 
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
-                    I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());                    
+                    I_CmsXmlWidget widget = 
+                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_content, m_contentDefinition);                    
                     result.append(widget.getDialogWidget(getCms(), m_content, this, m_contentDefinition, value));
                 }               
             }
@@ -522,12 +527,13 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             while (i.hasNext()) {
                                                 
                 I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();                
-                String name = type.getNodeName();
+                String name = type.getElementName();
                 int count = m_content.getIndexCount(name, locale);
                 for (int j=0; j<count; j++) {
     
                     I_CmsXmlContentValue value = m_content.getValue(name, locale, j);
-                    I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(value.getTypeName());                    
+                    I_CmsXmlWidget widget = 
+                        m_contentDefinition.getContentHandler().getEditorWidget(value, m_content, m_contentDefinition);
                     result.append(widget.getDialogHtmlEnd(getCms(), m_content, this, m_contentDefinition, value));
                 }               
             }
@@ -547,10 +553,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         
         StringBuffer result = new StringBuffer(128);
         try {
-            Iterator i = getTypes().iterator();
+            Iterator i = getWidgets().iterator();
             while (i.hasNext()) {
-                String key = (String)i.next();
-                I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(key);
+                I_CmsXmlWidget widget = (I_CmsXmlWidget)i.next();
                 result.append(widget.getDialogIncludes(getCms(), this, m_contentDefinition));
                 result.append("\n");
             }
@@ -569,10 +574,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public String getXmlEditorInitCalls() throws JspException {
         StringBuffer result = new StringBuffer(128);
         try {
-            Iterator i = getTypes().iterator();
+            Iterator i = getWidgets().iterator();
             while (i.hasNext()) {
-                String key = (String)i.next();
-                I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(key);
+                I_CmsXmlWidget widget = (I_CmsXmlWidget)i.next();
                 result.append(widget.getDialogInitCall(getCms(), this));
             }
         } catch (CmsXmlException e) {
@@ -590,10 +594,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public String getXmlEditorInitMethods() throws JspException {
         StringBuffer result = new StringBuffer(128);
         try {
-            Iterator i = getTypes().iterator();
+            Iterator i = getWidgets().iterator();
             while (i.hasNext()) {
-                String key = (String)i.next();
-                I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidget(key);
+                I_CmsXmlWidget widget = (I_CmsXmlWidget)i.next();
                 result.append(widget.getDialogInitMethod(getCms(), m_content, this, m_contentDefinition, null));
                 result.append("\n");
             }
@@ -623,24 +626,31 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
     
     /**
-     * Returns the different xml schema types used in the form to display.<p>
-     * 
-     * @return the different xml schema type names
+     * Returns the different xml editor widgets used in the form to display.<p>
+     *
+     * @return the different xml editor widgets used in the form to display
      */
-    private List getTypes() {
+    private List getWidgets() {
         
-        if (m_types == null) {
-            List typeSequence = m_contentDefinition.getTypeSequence();
+        if (m_widgets == null) {
+            List values = m_content.getValues(getElementLocale());
             // collect different widget types
             Set types = new HashSet();
-            for (int i=0; i<typeSequence.size(); i++) {
-                I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)typeSequence.get(i);
-                types.add(type.getTypeName());
+            for (int i=0; i<values.size(); i++) {
+                I_CmsXmlContentValue value = (I_CmsXmlContentValue)values.get(i);
+                try {
+                    I_CmsXmlWidget widget = m_contentDefinition.getContentHandler().getEditorWidget(value, m_content, m_contentDefinition);
+                    types.add(widget);
+                } catch (CmsXmlException e) {
+                    // should usually not happen
+                    OpenCms.getLog(this).error("Could not access widget for content value " + value, e);
+                }
             }  
-            m_types = new ArrayList(types.size());
-            m_types.addAll(types);
+            // create a list of the collected widgets
+            m_widgets = new ArrayList(types.size());
+            m_widgets.addAll(types);
         }
-        return m_types;
+        return m_widgets;
     }
     
     /**

@@ -1797,30 +1797,6 @@
 	</files>
 	<usergroupdata>
 		<groupdata>
-			<name>Administrators</name>
-			<description><![CDATA[The administrators group]]></description>
-			<flags>2</flags>
-			<parentgroup/>
-		</groupdata>
-		<groupdata>
-			<name>Guests</name>
-			<description><![CDATA[The guest group]]></description>
-			<flags>0</flags>
-			<parentgroup/>
-		</groupdata>
-		<groupdata>
-			<name>Projectmanagers</name>
-			<description><![CDATA[The projectmanager group]]></description>
-			<flags>14</flags>
-			<parentgroup>Users</parentgroup>
-		</groupdata>
-		<groupdata>
-			<name>Users</name>
-			<description><![CDATA[The users group]]></description>
-			<flags>12</flags>
-			<parentgroup/>
-		</groupdata>
-		<groupdata>
 			<name>group1</name>
 			<description><![CDATA[group1]]></description>
 			<flags>4</flags>
@@ -1832,57 +1808,6 @@
 			<flags>6</flags>
 			<parentgroup/>
 		</groupdata>
-		<userdata>
-			<name>Guest</name>
-			<password><![CDATA[MUIyTTJZOEFzZ1RwZ0FtWTdQaENmZz09]]></password>
-			<description><![CDATA[The guest user]]></description>
-			<firstname/>
-			<lastname/>
-			<email/>
-			<flags>0</flags>
-			<address/>
-			<type>0</type>
-			<userinfo>/~userinfo/Guest.dat</userinfo>
-			<usergroups>
-				<groupname>
-					<name>Guests</name>
-				</groupname>
-			</usergroups>
-		</userdata>
-		<userdata>
-			<name>Admin</name>
-			<password><![CDATA[SVNNdktYcFhwYWREaVVvT1NvQWZ3dz09]]></password>
-			<description><![CDATA[The admin user]]></description>
-			<firstname/>
-			<lastname/>
-			<email/>
-			<flags>0</flags>
-			<address/>
-			<type>0</type>
-			<userinfo>/~userinfo/Admin.dat</userinfo>
-			<usergroups>
-				<groupname>
-					<name>Administrators</name>
-				</groupname>
-			</usergroups>
-		</userdata>
-		<userdata>
-			<name>Export</name>
-			<password><![CDATA[bXdzL0pXeFRPUlo2UGNSOXRzTDMydz09]]></password>
-			<description><![CDATA[The static export user]]></description>
-			<firstname/>
-			<lastname/>
-			<email/>
-			<flags>0</flags>
-			<address/>
-			<type>0</type>
-			<userinfo>/~userinfo/Export.dat</userinfo>
-			<usergroups>
-				<groupname>
-					<name>Guests</name>
-				</groupname>
-			</usergroups>
-		</userdata>
 		<userdata>
 			<name>test1</name>
 			<password><![CDATA[V2hCZWk1MUE0VEtYZ05ZdW9pWmRpZz09]]></password>
