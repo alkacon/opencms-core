@@ -23,6 +23,7 @@ OpenCms 4.5.15 Chusuk       - xx October 2001
   if the resourcename is not valid.
 * When deleting and undeleting a pagefile no exception is thrown if the bodyfile does not exist.
 - Changed the build.xml. Therefor you need ant 1.4.
+- Posted files are no longer limited to 8MB.
 
 OpenCms 4.4.6  Gom Jabbar   - XX October 2001
 * if a body file in a folder is deleted the folder can nevertheless be deleted.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/11/02 08:13:26 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2001/07/31 15:50:12 $
+ * @version $Revision: 1.25 $ $Date: 2001/11/02 08:13:26 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -622,11 +622,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
             throw new IOException(C_REQUEST_NOMULTIPART);
         }
 
-        // Check the content length to prevent denial of service attacks
         int length = m_req.getContentLength();
-        if(length > m_maxSize) {
-            throw new IOException("Posted content length of " + length + " exceeds limit of " + m_maxSize);
-        }
 
         // Get the boundary string; it's included in the content type.
         // Should look something like "------------------------12012133613061"
