@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 07:49:32 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2000/06/09 07:50:59 $
+ * Version: $Revision: 1.39 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.38 $ $Date: 2000/06/09 07:49:32 $ * 
+ * @version $Revision: 1.39 $ $Date: 2000/06/09 07:50:59 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -2461,18 +2461,53 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
       } 
             
      
-
+    /**
+	 * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
+	 * 
+	 * 
+	 *
+	 */
+	private void clearFilesTable()	
+      throws CmsException{
+		PreparedStatement statementSearch = null;
+		PreparedStatement statementDestroy = null;
+		ResultSet res = null;
+		try{
+			statementSearch = m_pool.getPreparedStatement(C_RESOURCES_GET_LOST_ID_KEY);
+			res = statementSearch.executeQuery();
+			// delete the lost fileId's
+			statementDestroy = m_pool.getPreparedStatement(C_FILE_DELETE_KEY);
+			while (res.next() ){
+				statementDestroy.setInt(1,res.getInt(C_FILE_ID));
+				statementDestroy.executeUpdate();
+				statementDestroy.clearParameters();
+			}
+			res.close();
+		} catch (SQLException e){
+    		throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		  }finally {
+				if( statementSearch != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_GET_LOST_ID_KEY, statementSearch);
+				}
+				if( statementDestroy != null) {
+					m_pool.putPreparedStatement(C_FILE_DELETE_KEY, statementDestroy);
+				}
+			 }	
+	}
+	
 	 
 	/**
 	 * Private method to init all statements in the pool.
 	 */
 	private void initStatements() 
 		throws CmsException {
-		// init statements for resources
+		// init statements for resources and files
 		m_pool.initPreparedStatement(C_RESOURCES_MAXID_KEY,C_RESOURCES_MAXID);
         m_pool.initPreparedStatement(C_FILES_MAXID_KEY,C_FILES_MAXID);
         m_pool.initPreparedStatement(C_RESOURCES_READ_KEY,C_RESOURCES_READ);
         m_pool.initPreparedStatement(C_RESOURCES_WRITE_KEY,C_RESOURCES_WRITE);
+        m_pool.initPreparedStatement(C_RESOURCES_GET_LOST_ID_KEY,C_RESOURCES_GET_LOST_ID);
+        m_pool.initPreparedStatement(C_FILE_DELETE_KEY,C_FILE_DELETE);
         	
         // init statements for groups
 		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);

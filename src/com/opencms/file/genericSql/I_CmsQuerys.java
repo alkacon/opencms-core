@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/09 07:49:32 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/06/09 07:50:59 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.26 $ $Date: 2000/06/09 07:49:32 $
+ * @version $Revision: 1.27 $ $Date: 2000/06/09 07:50:59 $
  */
 public interface I_CmsQuerys {
     
@@ -75,13 +75,21 @@ public interface I_CmsQuerys {
     public static final Integer C_RESOURCES_WRITE_KEY = new Integer(103);
 	public static final String C_RESOURCES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
+    public static final Integer C_RESOURCES_GET_LOST_ID_KEY = new Integer(104);
+	public static final String C_RESOURCES_GET_LOST_ID = "SELECT A.FILE_ID FROM "+C_DATABASE_PREFIX+"FILES A LEFT JOIN "
+										+C_DATABASE_PREFIX+"RESOURCES B ON A.FILE_ID=B.FILE_ID WHERE B.FILE_ID is NULL";
     
 	
+	// Constants for files table
+	public static final String C_FILE_ID="FILE_ID";
+    	
 	// Constants for files
 	public static final Integer C_FILES_MAXID_KEY = new Integer(150);
 	public static final String C_FILES_MAXID = "SELECT MAX(FILE_ID) FROM " + C_DATABASE_PREFIX + "FILES";	
 	
-	
+	public static final Integer C_FILE_DELETE_KEY = new Integer(151);
+	public static final String C_FILE_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "FILES WHERE FILE_ID = ?";
+
 
     // Constants for Groups table
     public static final String C_GROUPS_GROUP_ID="GROUP_ID";
