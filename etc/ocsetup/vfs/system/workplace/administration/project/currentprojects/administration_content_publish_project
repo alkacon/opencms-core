@@ -98,10 +98,15 @@ function show_help()
 <![CDATA[
 <HTML>
 <HEAD>
-<meta http-equiv="refresh" content="15; URL=administration_content_publish_project.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA[">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="Javascript">
+function reload()
+{
+location.href="administration_content_publish_project.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA[" ;
+}
+</SCRIPT>
 </HEAD>
-<BODY onload="">
+<BODY onload="setTimeout('reload()', 15000);">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>

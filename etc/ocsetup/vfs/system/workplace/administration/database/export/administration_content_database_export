@@ -57,11 +57,7 @@ function checkFormData()
 	
 	entry = document.DBEXPORT.VNAME.value;
 	strLength=entry.length;
-	if (strLength < 1){
-		alert(']]><LABEL value="error.reason.namemissing" /><![CDATA[');
-		document.DBEXPORT.VNAME.focus;
-		return false;
-	}
+	
 	for (i=0; i < strLength; i++) 
 	{
 		if (charList.indexOf(entry.charAt(i))==-1)
@@ -70,10 +66,6 @@ function checkFormData()
 			document.DBEXPORT.VNAME.focus;
 			return false;
 		}
-	}
-	if(document.DBEXPORT.ALLRES.value.length < 1){
-		alert(']]><LABEL value="error.reason.projectdatamissing" /><![CDATA[');
-		return false;
 	}
 	return result;
 }		
@@ -233,10 +225,18 @@ function selectAll(theList) {
 <![CDATA[
 <HTML>
 <HEAD>
-<meta http-equiv="refresh" content="15; URL=index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA[">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
+
+<SCRIPT LANGUAGE="Javascript">
+function reload()
+{
+location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA[" ;
+}
+</SCRIPT>
+
+
 </HEAD>
-<BODY onload="">
+<BODY onload="setTimeout('reload()', 15000);">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
