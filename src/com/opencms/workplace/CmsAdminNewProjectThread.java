@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminNewProjectThread.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/07/23 09:58:55 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ public class CmsAdminNewProjectThread extends A_CmsReportThread {
     private I_CmsSession m_session;
 
     public CmsAdminNewProjectThread(CmsObject cms, Vector folders, I_CmsSession session) {
+        super("OpenCms: Project creation");
         m_cms = cms;
         m_folders = folders;
         m_session = session;

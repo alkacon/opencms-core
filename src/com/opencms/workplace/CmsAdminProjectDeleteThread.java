@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDeleteThread.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/07/23 09:58:55 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,6 +56,7 @@ public class CmsAdminProjectDeleteThread extends A_CmsReportThread {
      */
 
     public CmsAdminProjectDeleteThread(CmsObject cms, int projectId, I_CmsSession session) {
+        super("OpenCms: Project deletion of " + projectId);
         m_cms = cms;
         m_session = session;
         m_projectId = projectId;

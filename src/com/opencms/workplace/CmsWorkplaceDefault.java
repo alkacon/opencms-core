@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2003/07/08 12:29:29 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2003/07/23 09:58:55 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.57 $ $Date: 2003/07/08 12:29:29 $
+ * @version $Revision: 1.58 $ $Date: 2003/07/23 09:58:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -194,8 +194,11 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 
         CmsRequestContext reqContext = cms.getRequestContext();
 
-        String result = "" + reqContext.currentProject().getId() + ":"
-                + reqContext.currentUser().getName() + templateFile;
+        String result = "" 
+            + reqContext.currentProject().getId() 
+            + ":" 
+            + reqContext.currentUser().getName() 
+            + reqContext.addSiteRoot(templateFile);
         Enumeration keys = parameters.keys();
 
         // select the right language to use

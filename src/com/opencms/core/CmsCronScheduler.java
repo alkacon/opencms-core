@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduler.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/07/23 09:59:14 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ class CmsCronScheduler extends Thread {
      * @param table the CmsCronTable with all CmsCronEntry's to launch.
      */
     CmsCronScheduler(A_OpenCms opencms, CmsCronTable table) {
-        super();
+        super("OpenCms: CronScheduler");
         // store the crontable
         m_table = table;
         // store the OpenCms to get access to the system

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
- * Date   : $Date: 2003/07/14 18:43:54 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/07/23 09:58:55 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ public class CmsAdminPublishProjectThread extends A_CmsReportThread {
     private I_CmsReport m_report;
 
     public CmsAdminPublishProjectThread(CmsObject cms, I_CmsSession session) {
+        super("OpenCms: Project publishing of " + cms.getRequestContext().currentProject().getName());
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         //m_projectId = projectId;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupThread.java,v $
-* Date   : $Date: 2003/06/13 10:04:21 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/07/23 09:59:09 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,6 +61,9 @@ public class CmsSetupThread extends Thread {
 
     /** Constructor */
     public CmsSetupThread() {
+        
+        super("OpenCms: Setup");
+        
         /** init stream and logging thread */
         m_pipedOut = new PipedOutputStream();
         m_lt = new CmsSetupLoggingThread(m_pipedOut);

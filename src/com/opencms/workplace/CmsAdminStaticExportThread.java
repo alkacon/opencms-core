@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExportThread.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/07/23 09:58:55 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ public class CmsAdminStaticExportThread extends A_CmsReportThread {
     private CmsHtmlReport m_report;
 
     public CmsAdminStaticExportThread(CmsObject cms, I_CmsSession session) {
+        super("OpenCms: Static export of project " + cms.getRequestContext().currentProject().getName());
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);

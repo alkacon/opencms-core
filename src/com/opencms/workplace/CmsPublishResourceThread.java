@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResourceThread.java,v $
- * Date   : $Date: 2003/02/21 15:18:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/23 09:58:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ public class CmsPublishResourceThread extends A_CmsReportThread {
     private I_CmsReport m_report;
 
     public CmsPublishResourceThread(CmsObject cms, String resourceName) {
+        super("OpenCms: Publishing of resource " + resourceName);
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_resourceName = resourceName;

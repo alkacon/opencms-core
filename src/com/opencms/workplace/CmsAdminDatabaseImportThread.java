@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseImportThread.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/07/23 09:58:55 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.I_CmsReport;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsAdminDatabaseImportThread extends A_CmsReportThread {
 
@@ -58,6 +58,7 @@ public class CmsAdminDatabaseImportThread extends A_CmsReportThread {
         CmsObject cms, 
         String existingFile
     ) {
+        super("OpenCms: Database import from " + existingFile);
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_existingFile = existingFile;

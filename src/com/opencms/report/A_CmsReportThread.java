@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/A_CmsReportThread.java,v $
- * Date   : $Date: 2003/02/21 15:18:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/23 10:02:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,19 @@ package com.opencms.report;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.0
  */
 public abstract class A_CmsReportThread extends Thread {
+    
+    /**
+     * Constructs a new thread with the given name.<p>
+     * 
+     * @param name the name of the Thread
+     */
+    public A_CmsReportThread(String name) {
+        super(name);
+    }
     
     /**
      * Returns the part of the report that is ready for output.

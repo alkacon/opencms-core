@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolderThread.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/23 09:58:55 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ public class CmsSyncFolderThread extends A_CmsReportThread {
     private I_CmsSession m_session;
 
     public CmsSyncFolderThread(CmsObject cms, Vector folders, boolean newProject, I_CmsSession session) {
+        super("OpenCms: Synchronizing foldes in project " + cms.getRequestContext().currentProject().getName());
         m_cms = cms;
         m_folders = folders;
         m_newProject = newProject;

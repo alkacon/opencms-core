@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseExportThread.java,v $
-* Date   : $Date: 2003/03/22 07:24:54 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/07/23 09:58:55 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.report.I_CmsReport;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsAdminDatabaseExportThread extends A_CmsReportThread {
 
@@ -69,6 +69,7 @@ public class CmsAdminDatabaseExportThread extends A_CmsReportThread {
         boolean exportUserdata, 
         long contentAge
     ) {        
+        super("OpenCms: Database VFS export to " + fileName);
         m_cms = cms;
         m_exportPaths = exportPaths;
         m_fileName = fileName;
@@ -90,6 +91,7 @@ public class CmsAdminDatabaseExportThread extends A_CmsReportThread {
         String[] exportChannels, 
         String[] exportModules
     ) {        
+        super("OpenCms: Database COS export to " + fileName);
         m_cms = cms;    
         m_exportPaths = exportChannels;
         m_exportModules = exportModules;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleReplaceThread.java,v $
- * Date   : $Date: 2003/06/25 13:52:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/23 09:58:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.0
  */
 public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
@@ -68,6 +68,7 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
      * @param projectFiles vector of project files
      */
     public CmsAdminModuleReplaceThread(CmsObject cms, I_CmsRegistry reg, String moduleName, String zipName, Vector conflictFiles, Vector projectFiles) {
+        super("OpenCms: Module replacement of " + moduleName);
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_moduleName = moduleName;

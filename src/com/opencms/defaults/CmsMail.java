@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2003/07/22 00:29:23 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/07/23 09:59:22 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.16 $ $Date: 2003/07/22 00:29:23 $
+ * @version $Name:  $ $Revision: 1.17 $ $Date: 2003/07/23 09:59:22 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -179,6 +179,8 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
      */
     public CmsMail(CmsObject cms, CmsUser from, CmsUser[] to, String subject, String content, String type) throws CmsException {
 
+        super("OpenCms: Sending mail from " + from.getName());
+        
         // Get Registry
         I_CmsRegistry reg = A_OpenCms.getRegistry();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2003/07/14 18:43:54 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/07/23 09:58:55 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
@@ -74,6 +74,7 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
      * @param projectFiles vector of project files
      */
     public CmsAdminModuleDeleteThread(CmsObject cms, I_CmsRegistry reg, String moduleName, Vector conflictFiles, Vector projectFiles, boolean replaceMode) {
+        super("OpenCms: Module deletion of " + moduleName);
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_moduleName = moduleName;
