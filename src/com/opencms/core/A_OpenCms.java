@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package com.opencms.core;
 
+import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.site.CmsSiteManager;
@@ -59,7 +60,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public abstract class A_OpenCms {
 
@@ -71,6 +72,9 @@ public abstract class A_OpenCms {
 
     /** Default encoding, can be overwritten in "opencms.properties" */
     private static String m_defaultEncoding = "ISO-8859-1";
+
+    /** The default user and group names */
+    private static CmsDefaultUsers m_defaultUsers;
 
     /** The driver manager to access the database */
     protected static CmsDriverManager m_driverManager = null;
@@ -168,6 +172,15 @@ public abstract class A_OpenCms {
      */
     public static String getDefaultEncoding() {
         return m_defaultEncoding;
+    }
+    
+    /**
+     * Returns the default user and group name configuration.<p>
+     * 
+     * @return the default user and group name configuration
+     */
+    public static CmsDefaultUsers getDefaultUsers() {
+        return m_defaultUsers;
     }
 
     /**
@@ -466,6 +479,15 @@ public abstract class A_OpenCms {
      */
     protected void setDefaultEncoding(String encoding) {
         m_defaultEncoding = encoding;
+    }
+    
+    /**
+     * Sets the default user and group name configuration
+     * 
+     * @param defaultUsers the default user and group name configuration
+     */
+    protected void setDefaultUsers(CmsDefaultUsers defaultUsers) {
+        m_defaultUsers = defaultUsers;
     }
 
     /**

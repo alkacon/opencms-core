@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2003/07/19 01:51:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import source.org.apache.java.util.Configurations;
  * Loader "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
@@ -102,8 +102,9 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#init(com.opencms.core.A_OpenCms)
      */
     public void init(A_OpenCms openCms, Configurations conf) {
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) 
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, this.getClass().getName() + " initialized!");        
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
+        }        
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
- * Date   : $Date: 2003/08/03 15:11:59 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  */
 public class OpenCmsHttpServlet extends HttpServlet {
     
@@ -348,10 +348,10 @@ public class OpenCmsHttpServlet extends HttpServlet {
 
         try {
             isNotGuest = isNotGuest || (((cms.getRequestContext().currentUser()) != null) 
-                && (! I_CmsConstants.C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())) 
-                && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_USERS)) 
-                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_PROJECTLEADER)) 
-                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_ADMIN))));
+                && (! A_OpenCms.getDefaultUsers().getUserGuest().equals(cms.getRequestContext().currentUser().getName())) 
+                && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupUsers())) 
+                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupProjectmanagers())) 
+                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupAdministrators()))));
         } catch (CmsException e) {
             // result is false
         }
@@ -536,8 +536,8 @@ public class OpenCmsHttpServlet extends HttpServlet {
         } else {
             // initialize the requested site root
             CmsSite site = A_OpenCms.getSiteManager().matchRequest(req);
-            // no user name found in session or no session, login the user as "Guest"
-            m_opencms.initUser(cms, cmsReq, cmsRes, I_CmsConstants.C_USER_GUEST, site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_sessionStorage);            
+            // no user name found in session or no session, login the user as guest user
+            m_opencms.initUser(cms, cmsReq, cmsRes, A_OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_sessionStorage);            
             if (m_useBasicAuthentication) {
                 // check if basic authorization data was provided
                 checkBasicAuthorization(cms, req, res);
@@ -638,7 +638,7 @@ public class OpenCmsHttpServlet extends HttpServlet {
         // if the user was authenticated via sessions, update the information in the
         // sesssion stroage
         if ((session != null)) {
-            if (!cms.getRequestContext().currentUser().getName().equals(I_CmsConstants.C_USER_GUEST)) {
+            if (!cms.getRequestContext().currentUser().getName().equals(A_OpenCms.getDefaultUsers().getUserGuest())) {
 
                 Hashtable sessionData = new Hashtable(4);
                 sessionData.put(I_CmsConstants.C_SESSION_USERNAME, cms.getRequestContext().currentUser().getName());

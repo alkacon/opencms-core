@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -135,16 +135,16 @@ public class CmsLoginNew extends CmsXmlTemplate {
                 if (DEBUG > 1) System.err.println("CmsLoginNew: cms.loginUser() failed");
             }
 
-            if((username != null) && (username.equals(I_CmsConstants.C_USER_GUEST))) {
+            if((username != null) && (username.equals(A_OpenCms.getDefaultUsers().getUserGuest()))) {
                 // please no Guest user in the workplace
                 // use the same behaviour as if the access was unauthorized
                 validLogin = false;
                 if (DEBUG > 1) System.err.println("CmsLoginNew: user was guest user");
             } else if ((username != null) 
-                && (! cms.userInGroup(username, I_CmsConstants.C_GROUP_USERS)) 
-                && (! cms.userInGroup(username, I_CmsConstants.C_GROUP_PROJECTLEADER)) 
-                && (! cms.userInGroup(username, I_CmsConstants.C_GROUP_ADMIN))) {
-                // user MUST be in at last one of the default groups "Administrators", "Users" or "Projectmanagers"
+                && (! cms.userInGroup(username, A_OpenCms.getDefaultUsers().getGroupUsers())) 
+                && (! cms.userInGroup(username, A_OpenCms.getDefaultUsers().getGroupProjectmanagers())) 
+                && (! cms.userInGroup(username, A_OpenCms.getDefaultUsers().getGroupAdministrators()))) {
+                // user MUST be in at last one of the default groups for administrators, users or project managers
                 // use the same behaviour as if the access was unauthorized
                 validLogin = false;
                 if (DEBUG > 1) System.err.println("CmsLoginNew: user was not in default groups");
@@ -192,10 +192,10 @@ public class CmsLoginNew extends CmsXmlTemplate {
             // trigger call of "login()" JavaScript in Template on page load
             xmlTemplateDocument.setData("onload", "onload='login();'");
         } else if ((! logout) && ((cms.getRequestContext().currentUser()) != null) 
-            && (! I_CmsConstants.C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())) 
-            && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_USERS)) 
-                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_PROJECTLEADER)) 
-                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_ADMIN)))) {
+            && (! A_OpenCms.getDefaultUsers().getUserGuest().equals(cms.getRequestContext().currentUser().getName())) 
+            && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupUsers())) 
+                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupProjectmanagers())) 
+                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupAdministrators())))) {
             // the user is already logged in and no logout parameter is present, open a new window
             if (DEBUG > 1) System.err.println("CmsLoginNew: re-using old login");            
             xmlTemplateDocument.setData("onload", "onload='login();'");        

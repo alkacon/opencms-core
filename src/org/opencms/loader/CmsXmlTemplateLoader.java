@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
@@ -168,8 +168,9 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             m_elementCache = null;
         }
         
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) 
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, this.getClass().getName() + " initialized!");            
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
+        }             
     }
     
     /**
@@ -721,7 +722,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
         }
 
-        // if the user is "Guest" (and its not a login exception, we send an servlet error,
+        // if the user is a guest (and it's not a login exception) we send an servlet error,
         // otherwise we try to throw an exception.
         CmsRequestContext reqContext = cms.getRequestContext();
         if ((DEBUG == 0) && reqContext.currentUser().isGuestUser()

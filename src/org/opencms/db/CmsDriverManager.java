@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/07 13:17:31 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.147 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.146 $ $Date: 2003/08/07 13:17:31 $
+ * @version $Revision: 1.147 $ $Date: 2003/08/07 18:47:27 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -288,7 +288,7 @@ public class CmsDriverManager extends Object {
             // create a driver manager instance
             driverManager = new CmsDriverManager();
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 1 ok - initializing database");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 1 - initializing database");
             }
         } catch (Exception exc) {
             String message = "Critical error while loading driver manager";
@@ -300,16 +300,28 @@ public class CmsDriverManager extends Object {
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 2 - initializing pools");
+        }        
+
         // read the pool names to initialize
         String driverPoolNames[] = configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource pools       : ");
+            String names = "";
+            for (int p = 0; p < driverPoolNames.length; p++) {
+                names += driverPoolNames[p] + " ";
+            }            
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource pools       : " + names);
         }
-
+        
         // initialize each pool
         for (int p = 0; p < driverPoolNames.length; p++) {
             driverManager.newPoolInstance(configurations, driverPoolNames[p]);
         }
+        
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 3 - initializing drivers");
+        }                
 
         // read the vfs driver class properties and initialize a new instance 
         driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".vfs.driver");
@@ -340,7 +352,7 @@ public class CmsDriverManager extends Object {
             // invoke the init method of the driver manager
             driverManager.init(configurations, vfsDriver, userDriver, projectDriver, workflowDriver, backupDriver);
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 3 ok - finished");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 4 ok - finished");
             }
         } catch (Exception exc) {
             String message = "Critical error while loading driver manager";
@@ -1670,8 +1682,8 @@ public class CmsDriverManager extends Object {
         String description = "Project for temporary files";
         if (isAdmin(context)) {
             // read the needed groups from the cms
-            CmsGroup group = readGroup(context, "Users");
-            CmsGroup managergroup = readGroup(context, "Administrators");
+            CmsGroup group = readGroup(context, A_OpenCms.getDefaultUsers().getGroupUsers());
+            CmsGroup managergroup = readGroup(context, A_OpenCms.getDefaultUsers().getGroupAdministrators());
 
             // create a new task for the project
             CmsTask task = createProject(context, name, 1, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
@@ -2304,11 +2316,11 @@ public class CmsDriverManager extends Object {
 
         // Check the security
         // Avoid to delete admin or guest-user
-        if (isAdmin(context) && !(username.equals(I_CmsConstants.C_USER_ADMIN) || username.equals(I_CmsConstants.C_USER_GUEST))) {
+        if (isAdmin(context) && !(username.equals(A_OpenCms.getDefaultUsers().getUserAdmin()) || username.equals(A_OpenCms.getDefaultUsers().getUserGuest()))) {
             m_userDriver.deleteUser(username);
             // delete user from cache
             clearUserCache(user);
-        } else if (username.equals(I_CmsConstants.C_USER_ADMIN) || username.equals(I_CmsConstants.C_USER_GUEST)) {
+        } else if (username.equals(A_OpenCms.getDefaultUsers().getUserAdmin()) || username.equals(A_OpenCms.getDefaultUsers().getUserGuest())) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteUser() " + username, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteUser() " + username, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
@@ -2756,7 +2768,7 @@ public class CmsDriverManager extends Object {
         for (int i = 0; i < groups.size(); i++) {
             Vector projectsByGroup;
             // is this the admin-group?
-            if (((CmsGroup) groups.elementAt(i)).getName().equals(I_CmsConstants.C_GROUP_ADMIN)) {
+            if (((CmsGroup) groups.elementAt(i)).getName().equals(A_OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
                 projectsByGroup = m_projectDriver.getAllProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
             } else {
@@ -2822,7 +2834,7 @@ public class CmsDriverManager extends Object {
             // get all projects, which can be managed by the current group
             Vector projectsByGroup;
             // is this the admin-group?
-            if (((CmsGroup) groups.elementAt(i)).getName().equals(I_CmsConstants.C_GROUP_ADMIN)) {
+            if (((CmsGroup) groups.elementAt(i)).getName().equals(A_OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
                 projectsByGroup = m_projectDriver.getAllProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
             } else {
@@ -4135,7 +4147,7 @@ public class CmsDriverManager extends Object {
 
         // initialize the access-module.
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 3 ok - creating db drivers");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 4 - connecting to the database");
         }
 
         // store the access objects
@@ -4194,7 +4206,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isAdmin(CmsRequestContext context) throws CmsException {
-        return userInGroup(context, context.currentUser().getName(), I_CmsConstants.C_GROUP_ADMIN);
+        return userInGroup(context, context.currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupAdministrators());
     }
 
     /**
@@ -4266,7 +4278,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isProjectManager(CmsRequestContext context) throws CmsException {
-        return userInGroup(context, context.currentUser().getName(), I_CmsConstants.C_GROUP_PROJECTLEADER);
+        return userInGroup(context, context.currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupProjectmanagers());
     }
 
     public boolean isTempfileProject(CmsProject project) {
@@ -4274,7 +4286,7 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Determines if the user is a member of the "Users" group.<p>
+     * Determines if the user is a member of the default users group.<p>
      *
      * <B>Security:</B>
      * All users are granted.
@@ -4285,7 +4297,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isUser(CmsRequestContext context) throws CmsException {
-        return userInGroup(context, context.currentUser().getName(), I_CmsConstants.C_GROUP_USERS);
+        return userInGroup(context, context.currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupUsers());
     }
 
     /**
@@ -4296,9 +4308,9 @@ public class CmsDriverManager extends Object {
      */
     protected boolean isWebgroup(CmsGroup group) throws CmsException {
         try {
-            CmsUUID user = m_userDriver.readGroup(I_CmsConstants.C_GROUP_USERS).getId();
-            CmsUUID admin = m_userDriver.readGroup(I_CmsConstants.C_GROUP_ADMIN).getId();
-            CmsUUID manager = m_userDriver.readGroup(I_CmsConstants.C_GROUP_PROJECTLEADER).getId();
+            CmsUUID user = m_userDriver.readGroup(A_OpenCms.getDefaultUsers().getGroupUsers()).getId();
+            CmsUUID admin = m_userDriver.readGroup(A_OpenCms.getDefaultUsers().getGroupAdministrators()).getId();
+            CmsUUID manager = m_userDriver.readGroup(A_OpenCms.getDefaultUsers().getGroupProjectmanagers()).getId();
             if ((group.getId().equals(user)) || (group.getId().equals(admin)) || (group.getId().equals(manager))) {
                 return false;
             } else {
@@ -7953,7 +7965,7 @@ public class CmsDriverManager extends Object {
      * Writes the file extensions
      *
      * <B>Security:</B>
-     * Users, which are in the group "Administrators" are authorized.<BR/>
+     * Users, which are in the group for administrators are authorized.<BR/>
      *
      * @param context the current request context
      * @param extensions Holds extensions as keys and resourcetypes (Stings) as values

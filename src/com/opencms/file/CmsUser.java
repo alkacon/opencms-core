@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2003/08/03 15:12:00 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.security.I_CmsPrincipal;
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -411,12 +411,12 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
     
     /**
-     * Returns <code>true</code> if this user is the "Guest" user.<p>
+     * Returns <code>true</code> if this user is the default guest user.<p>
      * 
-     * @return true if this user is the "Guest" user
+     * @return true if this user is the default guest user
      */
     public boolean isGuestUser() {
-        return I_CmsConstants.C_USER_GUEST.equals(getName());
+        return A_OpenCms.getDefaultUsers().getUserGuest().equals(getName());
     }
 
     /**

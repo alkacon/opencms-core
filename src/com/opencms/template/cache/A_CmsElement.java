@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/08/04 12:22:38 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/08/07 18:47:27 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -458,7 +458,7 @@ public abstract class A_CmsElement {
                                 // An error occured while getting the element's content.
                                 // Do some error handling here.
                                 if(I_CmsConstants.C_USER_TYPE_SYSTEMUSER == cms.getRequestContext().currentUser().getType()
-                                    && !I_CmsConstants.C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())){
+                                    && !A_OpenCms.getDefaultUsers().getUserGuest().equals(cms.getRequestContext().currentUser().getName())){
                                     // a systemuser gets the real message.(except guests)
                                     errorMessage = e.toString();
                                 }

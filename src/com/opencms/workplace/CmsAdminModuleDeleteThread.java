@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2003/07/23 09:58:55 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
@@ -96,10 +96,13 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
             String moduleName = m_moduleName.replace('\\', '/');
 
             // create a Project to delete the module.
-            CmsProject project = m_cms.createProject("DeleteModule", "A System generated project to delete the module " + moduleName, 
-                I_CmsConstants.C_GROUP_ADMIN,
-                I_CmsConstants.C_GROUP_ADMIN,
-                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);            
+            CmsProject project = m_cms.createProject(
+                "DeleteModule", 
+                "A System generated project to delete the module " + moduleName, 
+                A_OpenCms.getDefaultUsers().getGroupAdministrators(),
+                A_OpenCms.getDefaultUsers().getGroupAdministrators(),
+                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
+            );            
             m_cms.getRequestContext().setCurrentProject(project.getId());
 
             m_report.print(m_report.key("report.delete_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/07/22 00:29:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -390,11 +390,11 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         m_cache = (CmsFlexCache)A_OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);
         // Get the export URL from the runtime properties
         m_jspExportUrl = (String)A_OpenCms.getRuntimeProperty(C_LOADER_JSPEXPORTURL);
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) {
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "Initialized!");        
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "JSP repository (absolute path): " + m_jspRepository);        
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "JSP repository (web application path): " + m_jspWebAppRepository);              
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "JSP export URL: " + m_jspExportUrl);
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP Loader           : JSP repository (absolute path): " + m_jspRepository);        
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP Loader           : JSP repository (web application path): " + m_jspWebAppRepository);              
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP Loader           : JSP export URL: " + m_jspExportUrl);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");   
         }
         // Get the "error pages are commited or not" flag from the runtime properties
         Boolean errorPagesAreNotCommited = (Boolean)A_OpenCms.getRuntimeProperty(C_LOADER_ERRORPAGECOMMIT);

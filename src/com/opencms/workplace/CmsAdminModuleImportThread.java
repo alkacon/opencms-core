@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImportThread.java,v $
- * Date   : $Date: 2003/08/01 07:53:00 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleImportThread extends A_CmsReportThread {
@@ -96,10 +96,13 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
                 m_cms.getRequestContext().saveSiteRoot();
                 m_cms.getRequestContext().setSiteRoot("/");
                 // create a Project to import the module.
-                project = m_cms.createProject("ImportModule", "A System generated project to import the module " + moduleName, 
-                    I_CmsConstants.C_GROUP_ADMIN, 
-                    I_CmsConstants.C_GROUP_ADMIN, 
-                    I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
+                project = m_cms.createProject(
+                    "ImportModule", 
+                    "A System generated project to import the module " + moduleName, 
+                    A_OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                        A_OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                    I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
+                );
                 m_cms.getRequestContext().setCurrentProject(project.getId());
                 // copy the root folder to the project
                 m_cms.copyResourceToProject("/");

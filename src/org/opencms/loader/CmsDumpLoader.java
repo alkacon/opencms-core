@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/07/19 01:51:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -105,9 +105,10 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * @param openCms the initialized OpenCms object
      * @param conf the OpenCms configuration 
      */
-    public void init(A_OpenCms openCms, Configurations conf) {
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) 
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, this.getClass().getName() + " initialized!");        
+    public void init(A_OpenCms openCms, Configurations conf) {        
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
+        }        
     }
     
     /**

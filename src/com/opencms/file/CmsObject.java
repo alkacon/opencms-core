@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/07 13:17:31 $
-* Version: $Revision: 1.367 $
+* Date   : $Date: 2003/08/07 18:47:27 $
+* Version: $Revision: 1.368 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.367 $
+ * @version $Revision: 1.368 $
  */
 public class CmsObject {
 
@@ -1819,7 +1819,7 @@ public class CmsObject {
     public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportResponse dRes) throws CmsException {
 
         CmsObject cmsForStaticExport = new CmsObject();
-        cmsForStaticExport.init(m_driverManager, dReq, dRes, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        cmsForStaticExport.init(m_driverManager, dReq, dRes, A_OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         return cmsForStaticExport;
     }
 
@@ -2806,7 +2806,13 @@ public class CmsObject {
             // check access to project
             if (isAdmin() || isManagerOfProject()) {
                 String projectName = justPrepare ? "Check direct publish" : "Direct publish";
-                int newProjectId = m_driverManager.createDirectPublishProject(m_context, projectName, "", "Users", "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
+                int newProjectId = m_driverManager.createDirectPublishProject(
+                    m_context, projectName, 
+                    "", 
+                    A_OpenCms.getDefaultUsers().getGroupUsers(), 
+                    A_OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
+                    I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
+                ).getId();
                 retValue = newProjectId;
                 getRequestContext().setCurrentProject(newProjectId);
                 I_CmsResourceType rt = getResourceType(res.getType());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/06/13 14:48:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
+ * @version $Revision: 1.3 $ $Date: 2003/08/07 18:47:27 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
@@ -762,7 +762,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             } else {
                 // no user is specified so set to system user is only valid for system task log
                 // TODO: this is a workaround. not sure if this is correct
-                stmt.setString(3, m_driverManager.getUserDriver().readUser(I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
+                stmt.setString(3, m_driverManager.getUserDriver().readUser(A_OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
             }
             stmt.setTimestamp(4, starttime);
             stmt.setString(5, m_sqlManager.validateNull(comment));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.50 $ $Date: 2003/08/06 16:32:48 $
+ * @version $Revision: 1.51 $ $Date: 2003/08/07 18:47:27 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -685,20 +685,20 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         } catch (CmsException exc) {
             // ignore the exception - the project was not readable so fill in the defaults
         }
-
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] Initial setup of the OpenCms database starts NOW!");
+        
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database init        : filling default values");
         }
-
+              
         // set the groups
-        CmsGroup guests = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_GUEST), I_CmsConstants.C_GROUP_GUEST, "The guest group", I_CmsConstants.C_FLAG_ENABLED, null);
-        CmsGroup administrators = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_ADMIN), I_CmsConstants.C_GROUP_ADMIN, "The administrators group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER, null);
-        CmsGroup users = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_USERS), I_CmsConstants.C_GROUP_USERS, "The users group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_ROLE | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER, null);
-        CmsGroup projectmanager = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_PROJECTLEADER), I_CmsConstants.C_GROUP_PROJECTLEADER, "The projectmanager group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName());
+        CmsGroup guests = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getGroupGuests()), A_OpenCms.getDefaultUsers().getGroupGuests(), "The guest group", I_CmsConstants.C_FLAG_ENABLED, null);
+        CmsGroup administrators = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getGroupAdministrators()), A_OpenCms.getDefaultUsers().getGroupAdministrators(), "The administrators group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER, null);
+        CmsGroup users = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getGroupUsers()), A_OpenCms.getDefaultUsers().getGroupUsers(), "The users group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_ROLE | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER, null);
+        CmsGroup projectmanager = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getGroupProjectmanagers()), A_OpenCms.getDefaultUsers().getGroupProjectmanagers(), "The projectmanager group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName());
 
         // add the users
-        CmsUser guest = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(I_CmsConstants.C_USER_GUEST),I_CmsConstants.C_USER_GUEST,  m_driverManager.getUserDriver().digest(""), m_driverManager.getUserDriver().digest(""), "The guest user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        CmsUser admin = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(I_CmsConstants.C_USER_ADMIN),I_CmsConstants.C_USER_ADMIN,  m_driverManager.getUserDriver().digest("admin"), m_driverManager.getUserDriver().digest(""), "The admin user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser guest = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getUserGuest()), A_OpenCms.getDefaultUsers().getUserGuest(), m_driverManager.getUserDriver().digest(""), m_driverManager.getUserDriver().digest(""), "The guest user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser admin = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getUserAdmin()), A_OpenCms.getDefaultUsers().getUserAdmin(), m_driverManager.getUserDriver().digest("admin"), m_driverManager.getUserDriver().digest(""), "The admin user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         m_driverManager.getUserDriver().addUserToGroup(guest.getId(), guests.getId());
         m_driverManager.getUserDriver().addUserToGroup(admin.getId(), administrators.getId());
         m_driverManager.getWorkflowDriver().writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2003/08/03 15:11:59 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/08/07 18:47:27 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.28 $ $Date: 2003/08/03 15:11:59 $
+ * @version $Revision: 1.29 $ $Date: 2003/08/07 18:47:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -250,11 +250,11 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     user = "";
                     selectedGroups = new Vector();
                     notSelectedGroups = new Vector();
-                    selectedGroups.addElement(C_GROUP_USERS); // preselect Users
+                    selectedGroups.addElement(A_OpenCms.getDefaultUsers().getGroupUsers()); // preselect Users
                     Vector groups = cms.getGroups();
                     for(int z = 0;z < groups.size();z++) {
                         String aName = ((CmsGroup)groups.elementAt(z)).getName();
-                        if(!C_GROUP_USERS.equals(aName)) {
+                        if(!A_OpenCms.getDefaultUsers().getGroupUsers().equals(aName)) {
                             notSelectedGroups.addElement(aName);
                         }
                     }
@@ -468,12 +468,12 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                     theUser.setAddress(street);
                                     theUser.setAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE, zipcode);
                                     theUser.setAdditionalInfo(C_ADDITIONAL_INFO_TOWN, town);
-                                    if((C_USER_ADMIN.equals(theUser.getName()))
-                                            && (!selectedGroups.contains(C_GROUP_ADMIN))) {
+                                    if((A_OpenCms.getDefaultUsers().getUserAdmin().equals(theUser.getName()))
+                                            && (!selectedGroups.contains(A_OpenCms.getDefaultUsers().getGroupAdministrators()))) {
                                         throw new CmsException("cant remove Admin from "
-                                                + C_GROUP_ADMIN, CmsException.C_NOT_ADMIN);
+                                                + A_OpenCms.getDefaultUsers().getGroupAdministrators(), CmsException.C_NOT_ADMIN);
                                     }
-                                    if(disabled && selectedGroups.contains(C_GROUP_ADMIN)) {
+                                    if(disabled && selectedGroups.contains(A_OpenCms.getDefaultUsers().getGroupAdministrators())) {
                                         throw new CmsException("disabled admin",
                                                  CmsException.C_NOT_ADMIN);
                                     }
@@ -638,7 +638,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
         // fill the names and values
         for(int z = 0;z < groups.size();z++) {
             String name = ((CmsGroup)groups.elementAt(z)).getName();
-            if(C_GROUP_USERS.equals(name)) {
+            if(A_OpenCms.getDefaultUsers().getGroupUsers().equals(name)) {
                 retValue = z;
             }
             names.addElement(name);
@@ -750,7 +750,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
             // fill the names and values
             for(int z = 0;z < notSelectedGroups.size();z++) {
                 String name = (String)notSelectedGroups.elementAt(z);
-                if(C_GROUP_USERS.equals(name)) {
+                if(A_OpenCms.getDefaultUsers().getGroupUsers().equals(name)) {
                     retValue = z;
                 }
                 names.addElement(name);

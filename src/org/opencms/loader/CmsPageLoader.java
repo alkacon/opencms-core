@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsPageLoader.java,v $
- * Date   : $Date: 2003/08/03 09:42:42 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.loader;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -53,7 +54,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.1
  */
 public class CmsPageLoader implements I_CmsResourceLoader {   
@@ -72,7 +73,9 @@ public class CmsPageLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#init(com.opencms.core.A_OpenCms, source.org.apache.java.util.Configurations)
      */
     public void init(A_OpenCms openCms, Configurations conf) {
-        // NOOP
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
+        }  
     }
 
     /**

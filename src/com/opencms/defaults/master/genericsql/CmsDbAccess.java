@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/08/03 15:12:00 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/08/07 18:47:27 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.security.CmsSecurityException;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.master.CmsMasterContent;
@@ -145,7 +146,7 @@ public class CmsDbAccess {
         
         CmsUUID groupId = CmsUUID.getNullUUID();        
         try {
-            CmsGroup users = cms.readGroup(I_CmsConstants.C_GROUP_USERS);
+            CmsGroup users = cms.readGroup(A_OpenCms.getDefaultUsers().getGroupUsers());
             groupId = users.getId();
         } catch (CmsException e) {
             // null UUID will be used 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2003/08/04 11:19:42 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import source.org.apache.java.util.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.83 $ $Date: 2003/08/04 11:19:42 $
+ * @version $Revision: 1.84 $ $Date: 2003/08/07 18:47:27 $
  */
 public class CmsShell {
 
@@ -96,7 +96,7 @@ public class CmsShell {
             m_shortException = false;
             m_exitCalled = false;
             m_echo = false;
-            m_openCms.initUser(m_cms, null, null, I_CmsConstants.C_USER_GUEST, A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            m_openCms.initUser(m_cms, null, null, A_OpenCms.getDefaultUsers().getUserGuest(), A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
         } catch (Exception exc) {
             printException(exc);
         }

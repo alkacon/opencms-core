@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/08/06 14:48:29 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2003/08/07 18:47:27 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.80 $ $Date: 2003/08/06 14:48:29 $
+ * @version $Revision: 1.81 $ $Date: 2003/08/07 18:47:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -421,7 +421,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         // get all groups
         Vector groups = cms.getGroups();
         int retValue = -1;
-        String defaultGroup = C_GROUP_USERS;
+        String defaultGroup = A_OpenCms.getDefaultUsers().getGroupUsers();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String enteredGroup = (String)session.getValue(C_NEWGROUP);
         if(enteredGroup != null && !enteredGroup.equals("")) {
@@ -467,7 +467,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         // get all groups
         Vector groups = cms.getGroups();
         int retValue = -1;
-        String defaultGroup = C_GROUP_PROJECTLEADER;
+        String defaultGroup = A_OpenCms.getDefaultUsers().getGroupProjectmanagers();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String enteredGroup = (String)session.getValue(C_NEWMANAGERGROUP);
         if(enteredGroup != null && !enteredGroup.equals("")) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.158 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.159 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,15 @@
 
 package com.opencms.core;
 
+import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
-import org.opencms.staticexport.*;
+import org.opencms.staticexport.CmsStaticExport;
+import org.opencms.staticexport.CmsStaticExportProperties;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
@@ -54,6 +56,7 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -90,7 +93,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.158 $
+ * @version $Revision: 1.159 $
  */
 public final class OpenCms extends A_OpenCms {
 
@@ -140,7 +143,11 @@ public final class OpenCms extends A_OpenCms {
     public OpenCms(Configurations conf) throws Exception {
         // Save the configuration
         setConfiguration(conf);
-
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ".");
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms startup      : System time is " + new Date());
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ".");
+        }
         // this will initialize the encoding with some default from the A_OpenCms
         String defaultEncoding = getDefaultEncoding();
         // check the opencms.properties for a different setting
@@ -153,8 +160,9 @@ public final class OpenCms extends A_OpenCms {
         } catch (SecurityException se) {
             // security manager is active, but we will try other options before giving up
         }
-        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             log(I_CmsLogChannels.C_OPENCMS_INIT, ". System file.encoding : " + systemEncoding);
+        }
         if (!defaultEncoding.equals(systemEncoding)) {
             String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + "' not equal to OpenCms encoding '" + defaultEncoding + "'";
             if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL))
@@ -173,16 +181,18 @@ public final class OpenCms extends A_OpenCms {
             // so you must make sure your setting in "opencms.properties" is correct.             
         }
         setDefaultEncoding(defaultEncoding);
-        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             log(I_CmsLogChannels.C_OPENCMS_INIT, ". Encoding set to      : " + defaultEncoding);
+        }
 
         // Read server ethernet address (MAC) and init UUID generator
         String ethernetAddress = conf.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
-        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
             log(I_CmsLogChannels.C_OPENCMS_INIT, ". Ethernet address used: " + ethernetAddress);
+        }
         CmsUUID.init(ethernetAddress);
-
-        // invoke the ResourceBroker via the initalizer
+        
+        // Check the installed Java SDK
         try {
             if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
                 String jdkinfo = System.getProperty("java.vm.name") + " ";
@@ -201,14 +211,37 @@ public final class OpenCms extends A_OpenCms {
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
+                
+        // Read the default user configuration
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Default user names   : initializing");
+        }        
+        try {
+            String[] defaultUserArray = conf.getStringArray("db.default.users");
+            CmsDefaultUsers defaultUsers = new CmsDefaultUsers(defaultUserArray);
+            setDefaultUsers(defaultUsers);         
+        } catch (Exception e) {
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/6: " + e.getMessage());
+            }
+        }
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Admin user           : " + getDefaultUsers().getUserAdmin());
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Guest user           : " + getDefaultUsers().getUserGuest());
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Administrators group : " + getDefaultUsers().getGroupAdministrators());
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Projectmanagers group: " + getDefaultUsers().getGroupProjectmanagers());
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Users group          : " + getDefaultUsers().getGroupUsers());
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Guests group         : " + getDefaultUsers().getGroupGuests());
+        }           
 
         try {
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
             m_driverManager = CmsDriverManager.newInstance(conf);            
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL))
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/3: " + e.getMessage());
+            }
             // any exception here is fatal and will cause a stop in processing
             throw new CmsException("Database init failed", CmsException.C_RB_INIT_ERROR, e);
         }
@@ -216,8 +249,9 @@ public final class OpenCms extends A_OpenCms {
         try {
             // initalize the Hashtable with all available mimetypes
             m_mt = m_driverManager.readMimeTypes();
-            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
                 log(I_CmsLogChannels.C_OPENCMS_INIT, ". Found mime types     : " + m_mt.size() + " entrys");
+            }
 
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if (!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
@@ -545,6 +579,11 @@ public final class OpenCms extends A_OpenCms {
             if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
                 log(I_CmsLogChannels.C_OPENCMS_INIT, ". Link rules init      : non-critical error " + e.toString());
         }
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ".");
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms startup      : Finished!");
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ".");
+        }        
     }
 
     /**
@@ -564,7 +603,7 @@ public final class OpenCms extends A_OpenCms {
         CmsObject cms = new CmsObject();
         try {
             // TODO: Check for correct site root setting here
-            initUser(cms, null, null, I_CmsConstants.C_USER_ADMIN, I_CmsConstants.VFS_FOLDER_DEFAULT_SITE, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            initUser(cms, null, null, A_OpenCms.getDefaultUsers().getUserAdmin(), I_CmsConstants.VFS_FOLDER_DEFAULT_SITE, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             new CmsStaticExport(cms, null, false, null, null, null);
         } catch (Exception e) {
             if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))

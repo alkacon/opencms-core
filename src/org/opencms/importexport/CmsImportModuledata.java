@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/08/07 09:04:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/08/07 18:47:27 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $ $Date: 2003/08/07 09:04:32 $
+ * @version $Revision: 1.3 $ $Date: 2003/08/07 18:47:27 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -293,7 +293,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             }
         } catch (Exception e) {
             try {
-                groupId = m_cms.readGroup(I_CmsConstants.C_GROUP_USERS).getId();
+                groupId = m_cms.readGroup(A_OpenCms.getDefaultUsers().getGroupUsers()).getId();
             } catch (Exception e2) { }
         }
 

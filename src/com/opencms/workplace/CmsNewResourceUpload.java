@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/08/07 18:47:27 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.48 $ $Date: 2003/08/07 18:47:27 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault {
     
@@ -85,7 +85,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
         // get the file size upload limitation value (value is in kB)
         int maxFileSize = ((Integer)A_OpenCms.getRuntimeProperty("workplace.file.maxuploadsize")).intValue();                          
         // check if current user belongs to Admin group, if so no file upload limit
-        if ((maxFileSize <= 0) || cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN)) {
+        if ((maxFileSize <= 0) || cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupAdministrators())) {
             maxFileSize = -1;
         }        
         

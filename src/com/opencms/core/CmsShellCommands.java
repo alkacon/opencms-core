@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2003/08/04 11:19:42 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.108 $ $Date: 2003/08/04 11:19:42 $
+ * @version $Revision: 1.109 $ $Date: 2003/08/07 18:47:27 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -93,7 +93,7 @@ class CmsShellCommands {
     public CmsShellCommands(OpenCms openCms, CmsObject cms) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
-        m_openCms.initUser(m_cms, null, null, I_CmsConstants.C_USER_GUEST, A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+        m_openCms.initUser(m_cms, null, null, A_OpenCms.getDefaultUsers().getUserGuest(), A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
 
         // print the version-string
         version();
@@ -473,8 +473,8 @@ class CmsShellCommands {
     /**
      * Creates a default cms project.
      * This default project has the following properties:<ul>
-     * <li>The users groups is "Users"
-     * <li>The project managers group is "Projectmanager"
+     * <li>The users groups is the default user group
+     * <li>The project managers group is the default project manager group
      * <li>All resources are contained in the project
      * <li>The project will remain after publishing</ul>
      * 
@@ -486,7 +486,13 @@ class CmsShellCommands {
         try {
             m_cms.getRequestContext().saveSiteRoot();
             m_cms.getRequestContext().setSiteRoot("/");
-            CmsProject project = m_cms.createProject(name, description, I_CmsConstants.C_GROUP_USERS, I_CmsConstants.C_GROUP_PROJECTLEADER, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
+            CmsProject project = m_cms.createProject(
+                name, 
+                description, 
+                A_OpenCms.getDefaultUsers().getGroupUsers(), 
+                A_OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
+                I_CmsConstants.C_PROJECT_TYPE_NORMAL
+            );
             m_cms.getRequestContext().setCurrentProject(project.getId());
             // copy the VFS folders to the project
             m_cms.copyResourceToProject("/");
@@ -1810,7 +1816,13 @@ class CmsShellCommands {
         // import the module
         try {
             // create a temporary project for the import
-            CmsProject project = m_cms.createProject("ModuleImport", "A temporary project to import the module " + importFile, I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
+            CmsProject project = m_cms.createProject(
+                "ModuleImport", 
+                "A temporary project to import the module " + importFile, 
+                A_OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                A_OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
+            );
             int id = project.getId();
             m_cms.getRequestContext().setCurrentProject(id);
             m_cms.getRequestContext().saveSiteRoot();
@@ -1868,7 +1880,13 @@ class CmsShellCommands {
     public void importResourcesWithTempProject(String importFile) {
         // import the resources
         try {
-            CmsProject project = m_cms.createProject("SystemUpdate", "A temporary project for a system update", I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
+            CmsProject project = m_cms.createProject(
+                "SystemUpdate", 
+                "A temporary project for a system update", 
+                A_OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                A_OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
+            );
             int id = project.getId();
             m_cms.getRequestContext().setCurrentProject(id);
             m_cms.copyResourceToProject(I_CmsConstants.C_ROOT);

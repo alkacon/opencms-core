@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/06 07:44:07 $
-* Version: $Revision: 1.256 $
+* Date   : $Date: 2003/08/07 18:47:27 $
+* Version: $Revision: 1.257 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.256 $ $Date: 2003/08/06 07:44:07 $
+ * @version $Revision: 1.257 $ $Date: 2003/08/07 18:47:27 $
  */
 public interface I_CmsConstants {
 
@@ -139,38 +139,6 @@ public interface I_CmsConstants {
     /** Property for the content encoding */
     String C_PROPERTY_CONTENT_ENCODING = "content-encoding";
     
-    /**
-     * This is the group for guests.
-     */
-    String C_GROUP_GUEST = "Guests";
-
-    /**
-     * This is the group for administrators.
-     */
-    String C_GROUP_ADMIN = "Administrators";
-
-    /**
-     * This is the group for projectleaders. It is the only group, which
-     * can create new projects.
-     */
-    String C_GROUP_PROJECTLEADER = "Projectmanager";
-
-    /**
-     * This is the group for users. If you are in this group, you can use
-     * the workplace.
-     */
-    String C_GROUP_USERS = "Users";
-
-    /**
-     * This is the group for guests.
-     */
-    String C_USER_GUEST = "Guest";
-
-    /**
-     * This is the group for administrators.
-     */
-    String C_USER_ADMIN = "Admin";
-
     /**
      * A user-type
      */

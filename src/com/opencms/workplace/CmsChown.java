@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2003/07/31 13:19:37 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/08/07 18:47:27 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,6 +29,7 @@ package com.opencms.workplace;
 
 import org.opencms.workplace.CmsWorkplaceAction;
 
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -44,7 +45,7 @@ import java.util.Vector;
  * Template class for displaying the chown screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.41 $ $Date: 2003/08/07 18:47:27 $
  */
 public class CmsChown extends CmsWorkplaceDefault {
     
@@ -103,7 +104,7 @@ public class CmsChown extends CmsWorkplaceDefault {
 			// check if the current user has the right to change the owner of the
 			// resource. Only the owner of a file and the admin are allowed to do this.
 			if((requestContext.currentUser().equals(cms.readOwner(file)))
-			|| (cms.userInGroup(requestContext.currentUser().getName(), C_GROUP_ADMIN))) {
+			|| (cms.userInGroup(requestContext.currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupAdministrators()))) {
 
 				// boolean rekursive = false;
 				// if the resource is a folder, check if there is a corresponding
