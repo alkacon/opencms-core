@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.7 Ecaz - 14 June 2002
+! First version of JUnit testing classes, not fully functional 
+* Fixed bug in direct publish. When publishing a not changed folder with changed resources
+  the template class throwed an exception.
+
 OpenCms 4.7.6 Ecaz - 10 June 2002
 ! Added gallery for external links and checking tool for external links
 ! Added gallery for html snippets
