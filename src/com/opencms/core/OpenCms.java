@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/04/04 12:19:14 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2001/04/27 16:59:17 $
+* Version: $Revision: 1.48 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -38,6 +38,7 @@ import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 import com.opencms.file.*;
 import com.opencms.launcher.*;
+import com.opencms.staging.*;
 
 /**
  * This class is the main class of the OpenCms system.
@@ -51,7 +52,7 @@ import com.opencms.launcher.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.47 $ $Date: 2001/04/04 12:19:14 $
+ * @version $Revision: 1.48 $ $Date: 2001/04/27 16:59:17 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -97,6 +98,12 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * Indicates, if the streaming should be enabled by the configurations
      */
     private boolean m_streaming = true;
+
+    /**
+     * Reference to the Staging object containing locators for all
+     * URIs and elements in cache.
+     */
+    private static CmsStaging c_staging = null;
 
     /**
      * Constructor, creates a new OpenCms object.
@@ -152,6 +159,19 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize launchers...");
             }
             m_launcherManager = new CmsLauncherManager();
+        }
+        catch(Exception e) {
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
+            }
+        }
+
+        // create the staging object
+        try {
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize staging...");
+            }
+            c_staging = new CmsStaging();
         }
         catch(Exception e) {
             if(A_OpenCms.isLogging()) {
@@ -384,5 +404,13 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public static I_CmsRegistry getRegistry() throws CmsException {
         return c_rb.getRegistry(null, null, null);
+    }
+
+    /**
+     * Get the system wide CmsStaging object.
+     * @return CmsStaging object
+     */
+    public CmsStaging getStaging() {
+        return c_staging;
     }
 }

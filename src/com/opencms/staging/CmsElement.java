@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElement.java,v $
-* Date   : $Date: 2001/04/27 15:21:48 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/04/27 17:01:51 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -79,5 +79,9 @@ public class CmsElement {
       */
      public Vector getAllDefinitions() {
         return m_elementDefinitions;
+     }
+
+     public byte[] getContent(CmsStaging staging, CmsObject cms, Hashtable parameters) {
+        return null;
      }
 }

@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsJavascriptLauncher.java,v $
-* Date   : $Date: 2001/01/24 09:42:27 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/04/27 17:01:15 $
+* Version: $Revision: 1.7 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -32,14 +32,14 @@ package com.opencms.launcher;
 import com.opencms.core.*;
 import com.opencms.file.*;
 
-/** 
+/**
  * Document the purpose of this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2001/01/24 09:42:27 $
+ * @version $Revision: 1.7 $ $Date: 2001/04/27 17:01:15 $
  */
 class CmsJavascriptLauncher extends A_CmsLauncher {
-    
+
     /**
      * Gets the ID that indicates the type of the launcher.
      * @return launcher ID
@@ -47,15 +47,15 @@ class CmsJavascriptLauncher extends A_CmsLauncher {
     public int getLauncherId() {
         return C_TYPE_JAVASCRIPT;
     }
-    
+
     /**
      * Unitary method to start generating the output.
      * Every launcher has to implement this method.
      * In it possibly the selected file will be analyzed, and the
-     * Canonical Root will be called with the appropriate 
-     * template class, template file and parameters. At least the 
+     * Canonical Root will be called with the appropriate
+     * template class, template file and parameters. At least the
      * canonical root's output must be written to the HttpServletResponse.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
      * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
@@ -63,6 +63,6 @@ class CmsJavascriptLauncher extends A_CmsLauncher {
      * @exception CmsException
      */
     protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
-        
+
     }
 }

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2001/04/06 10:13:39 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2001/04/27 16:59:35 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.34 $ $Date: 2001/04/06 10:13:39 $
+ * @version $Revision: 1.35 $ $Date: 2001/04/27 16:59:35 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -84,6 +84,9 @@ public class CmsRequestContext implements I_CmsConstants {
      * Is this response streaming?
      */
     private boolean m_streaming = true;
+
+    /** Are we staging? */
+    private boolean m_staging = false;
 
     /** Current languages */
     private Vector m_language = new Vector();
@@ -335,6 +338,24 @@ public class CmsRequestContext implements I_CmsConstants {
             throw new CmsException("[CmsRequestContext] Cannot switch streaming mode, if output stream is used previously.", CmsException.C_STREAMING_ERROR);
         }
         m_streaming = b;
+    }
+
+    /**
+     * Get the current mode for staging.
+     *
+     * @return <code>true</code> if staging is active, <code>false</code> otherwise.
+     */
+    public boolean isStaging() {
+        return m_staging;
+    }
+
+    /**
+     * Set the current mode for staging.<p>
+     *
+     * @param b <code>true</code> if staging could be activated, <code>false</code> otherwise.
+     */
+    public void setStaging(boolean b) {
+        m_staging = b;
     }
 
     /**

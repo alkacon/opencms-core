@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsStaging.java,v $
-* Date   : $Date: 2001/04/27 15:41:26 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/04/27 17:01:51 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -60,6 +60,11 @@ public class CmsStaging {
 
     public CmsElementLocator getElementLocator() {
         return m_elementLocator;
+    }
+
+    public byte[] callCanonicalRoot(CmsObject cms, Hashtable parameters) {
+        CmsUri uri = m_uriLocator.get(new CmsUriDescriptor(cms.getRequestContext().getUri()));
+        return uri.callCanonicalRoot(this, cms, parameters);
     }
 
 }
