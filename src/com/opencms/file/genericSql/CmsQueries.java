@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/22 09:44:42 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/09/22 13:06:48 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.10 $ $Date: 2000/09/22 09:44:42 $
+ * @version $Revision: 1.11 $ $Date: 2000/09/22 13:06:48 $
  */
 public class CmsQueries
 {
@@ -293,6 +293,12 @@ public class CmsQueries
 	public String C_CATEGORY_GETCATEGORYFROMID = "SELECT NAME, DESCRIPTION, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "CATEGORY WHERE CATEGORY_ID = ?";
 	public Integer C_CATEGORY_GETALLCATEGORIES_KEY = new Integer(458);
 	public String C_CATEGORY_GETALLCATEGORIES = "SELECT CATEGORY_ID, NAME, DESCRIPTION, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "CATEGORY";
+	public Integer C_LANGUAGE_GETALLLANGUAGES_KEY = new Integer(460);
+	public String C_LANGUAGE_GETALLLANGUAGES = "SELECT LANGUAGE_ID, NAME, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "LANGUAGE";
+	public Integer C_COUNTRY_GETALLCOUNTRIES_KEY = new Integer(461);
+	public String C_COUNTRY_GETALLCOUNTRIES = "SELECT COUNTRY_ID, NAME, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "COUNTRY";
+	public Integer C_SITEURLS_GETALLSITEURLS_KEY = new Integer(462);
+	public String C_SITEURLS_GETALLSITEURLS = "SELECT URL_ID, URL, SITE_ID, PRIMARYURL FROM " + C_DATABASE_PREFIX + "SITE_URLS";
 	
 	
 	//statements needen for newSite

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/22 10:10:18 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/09/22 13:06:46 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.35 $ $Date: 2000/09/22 10:10:18 $
+ * @version $Revision: 1.36 $ $Date: 2000/09/22 13:06:46 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -640,6 +640,50 @@ public void getAllCategories()
 		printException(exc);
 	}
 }
+/**
+ * Reads all countries
+ */
+public void getAllCountries()
+{
+	try
+	{
+		Vector list = m_cms.getAllCountries();
+		for (int i=0; i<list.size(); i++)
+		{
+			CmsCountry country = (CmsCountry) list.elementAt(i);
+			System.out.println("Country id: "+country.getCountryId());
+			System.out.println("Country name: "+country.getName());	
+			System.out.println("Country shortname: "+country.getShortName());
+			System.out.println("Country priority: "+country.getPriority());
+		}
+	}
+	catch (Exception exc)
+	{
+		printException(exc);
+	}
+}
+/**
+ * Reads all languages
+ */
+public void getAllLanguages()
+{
+	try
+	{
+		Vector list = m_cms.getAllLanguages();
+		for (int i=0; i<list.size(); i++)
+		{
+			CmsLanguage language = (CmsLanguage) list.elementAt(i);
+			System.out.println("Language id: "+language.getLanguageId());
+			System.out.println("Language name: "+language.getName());	
+			System.out.println("Language shortname: "+language.getShortName());
+			System.out.println("Language priority: "+language.getPriority());
+		}
+	}
+	catch (Exception exc)
+	{
+		printException(exc);
+	}
+}
 	/**
 	 * Returns  all I_CmsResourceTypes.
 	 */
@@ -670,6 +714,28 @@ public void getAllCategories()
 			printException(exc);
 		}		
 	}
+/**
+ * Reads all site urls
+ */
+public void getAllSiteUrls()
+{
+	try
+	{
+		Vector list = m_cms.getAllSiteUrls();
+		for (int i=0; i<list.size(); i++)
+		{
+			CmsSiteUrls siteUrls = (CmsSiteUrls) list.elementAt(i);
+			System.out.println("Url id: "+siteUrls.getUrlId());
+			System.out.println("url: "+siteUrls.getUrl());	
+			System.out.println("Site id: "+siteUrls.getSiteId());
+			System.out.println("Primary url: "+siteUrls.getPrimaryUrl());
+		}
+	}
+	catch (Exception exc)
+	{
+		printException(exc);
+	}
+}
 /**
  * Insert the method's description here.
  * Creation date: (21-09-2000 16:54:13)

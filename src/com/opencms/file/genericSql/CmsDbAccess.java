@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/22 12:45:52 $
- * Version: $Revision: 1.138 $
+ * Date   : $Date: 2000/09/22 13:06:47 $
+ * Version: $Revision: 1.139 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.138 $ $Date: 2000/09/22 12:45:52 $ * 
+ * @version $Revision: 1.139 $ $Date: 2000/09/22 13:06:47 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -2104,6 +2104,79 @@ public Vector getAllCategories() throws CmsException
 	}
 	return categories;
 }
+/**
+ * Returns all countries
+ * @return java.util.Vector all countries
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public Vector getAllCountries() throws CmsException
+{
+	Vector countries = new Vector();
+	PreparedStatement statement = null;
+	try
+	{
+		statement = m_pool.getPreparedStatement(m_cq.C_COUNTRY_GETALLCOUNTRIES_KEY);
+		ResultSet res = statement.executeQuery();
+		while (res.next())
+		{
+			countries.addElement(new CmsCountry(res.getInt("COUNTRY_ID"), res.getString("NAME"), res.getString("SHORTNAME"), res.getInt("PRIORITY")));
+		}
+		res.close();
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	catch (Exception e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(m_cq.C_COUNTRY_GETALLCOUNTRIES_KEY, statement);
+		}
+	}
+	return countries;
+}
+/**
+ * return all languages
+ * Creation date: (22-09-2000 13:04:53)
+ * @return java.util.Vector all languages
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public Vector getAllLanguages() throws CmsException
+{
+	Vector languages = new Vector();
+	PreparedStatement statement = null;
+	try
+	{
+		statement = m_pool.getPreparedStatement(m_cq.C_LANGUAGE_GETALLLANGUAGES_KEY);
+		ResultSet res = statement.executeQuery();
+		while (res.next())
+		{
+			languages.addElement(new CmsLanguage(res.getInt("LANGUAGE_ID"), res.getString("NAME"), res.getString("SHORTNAME"), res.getInt("PRIORITY")));
+		}
+		res.close();
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	catch (Exception e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(m_cq.C_LANGUAGE_GETALLLANGUAGES_KEY, statement);
+		}
+	}
+	return languages;
+}
 	/**
 	 * Returns all projects, with the overgiven state.
 	 * 
@@ -2185,6 +2258,43 @@ public Vector getAllSites() throws CmsException
 		}
 	}
 	return sites;
+}
+/**
+ * Returns all site urls
+ * Creation date: (22-09-2000 13:11:32)
+ * @return java.util.Vector all site urls
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public Vector getAllSiteUrls() throws com.opencms.core.CmsException
+{
+	Vector siteUrls = new Vector();
+	PreparedStatement statement = null;
+	try
+	{
+		statement = m_pool.getPreparedStatement(m_cq.C_SITEURLS_GETALLSITEURLS_KEY);
+		ResultSet res = statement.executeQuery();
+		while (res.next())
+		{
+			siteUrls.addElement(new CmsSiteUrls(res.getInt("URL_ID"), res.getString("URL"), res.getInt("SITE_ID"), res.getInt("PRIMARYURL")));
+		}
+		res.close();
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	catch (Exception e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(m_cq.C_SITEURLS_GETALLSITEURLS_KEY, statement);
+		}
+	}
+	return siteUrls;
 }
 /**
  * Retrieves the onlineproject from the database based on the given project.
@@ -3342,7 +3452,9 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 		m_pool.initPreparedStatement(m_cq.C_CATEGORY_GETCATEGORYFROMID_KEY, m_cq.C_CATEGORY_GETCATEGORYFROMID);
 		m_pool.initPreparedStatement(m_cq.C_CATEGORY_GETALLCATEGORIES_KEY, m_cq.C_CATEGORY_GETALLCATEGORIES);
 		m_pool.initPreparedStatement(m_cq.C_GET_SITEMATRIXINFO_KEY, m_cq.C_GET_SITEMATRIXINFO);
-
+		m_pool.initPreparedStatement(m_cq.C_LANGUAGE_GETALLLANGUAGES_KEY, m_cq.C_LANGUAGE_GETALLLANGUAGES);
+		m_pool.initPreparedStatement(m_cq.C_COUNTRY_GETALLCOUNTRIES_KEY, m_cq.C_COUNTRY_GETALLCOUNTRIES);
+		m_pool.initPreparedStatement(m_cq.C_SITEURLS_GETALLSITEURLS_KEY, m_cq.C_SITEURLS_GETALLSITEURLS);
 		// init statements for systemproperties
 		m_pool.initPreparedStatement(m_cq.C_SYSTEMPROPERTIES_MAXID_KEY, m_cq.C_SYSTEMPROPERTIES_MAXID);
 		m_pool.initPreparedStatement(m_cq.C_SYSTEMPROPERTIES_READ_KEY,m_cq.C_SYSTEMPROPERTIES_READ);
