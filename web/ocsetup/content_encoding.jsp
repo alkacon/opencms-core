@@ -12,8 +12,7 @@ String nextPage = "database_connection.jsp";
 Properties vmProperties = System.getProperties();
 
 String vmEncoding = vmProperties.getProperty("file.encoding");
-String ocEncoding = Bean.getDefaultContentEncoding();
-boolean encodingOk = ocEncoding.equalsIgnoreCase(vmEncoding);
+boolean encodingOk = Bean.getDefaultContentEncoding().equalsIgnoreCase(vmEncoding);
 
 //boolean encodingEditable = Bean.getSetupType();
 boolean encodingEditable = true;
@@ -33,7 +32,12 @@ function runSubmit() {
 	var vmEncoding = "<%= vmEncoding %>";
 	var ocEncoding = "" + form.defaultContentEncoding.value;
 	
-	return (vmEncoding == ocEncoding);
+	if (vmEncoding == ocEncoding) {
+		return true;
+	}
+	
+	alert( "The character encoding of your Java VM is different from the default OpenCms encoding!" );
+	return false;
 }
 // -->
 </script>
@@ -76,9 +80,9 @@ function runSubmit() {
 									</tr>
 									<tr>
 <% if (encodingEditable) { %>
-									<td>OpenCms encoding:</td><td align="left"><input type="text" name="defaultContentEncoding" size="22" style="width:125px;" value='<%= ocEncoding %>'></td>
+									<td>OpenCms encoding:</td><td align="left"><input type="text" name="defaultContentEncoding" size="22" onKeyup="checkEncoding();" style="width:125px;" value='<%= Bean.getDefaultContentEncoding() %>'></td>
 <% } else { %>
-									<td>OpenCms encoding:</td><td align="left"><%= ocEncoding %></td>
+									<td>OpenCms encoding:</td><td align="left"><%= Bean.getDefaultContentEncoding() %></td>
 <% } %>
 									</tr>									
 								</table>
@@ -94,7 +98,7 @@ function runSubmit() {
 						<ul>
 						<li>change the setting for the default character encoding of OpenCms,</li>
 						<li><b>OR</b> change the character encoding of your Java VM, and restart the setup wizard. Using Apache Tomcat, a different
-						character encoding is set in the environment variable CATALINA_OPTS using the -D parameter: <pre>CATALINA_OPTS=-Dfile.encoding=UTF-8</pre></li>
+						character encoding is set in the environment variable CATALINA_OPTS using the -D parameter: <pre>CATALINA_OPTS=-Dfile.encoding=ISO-8859-1</pre></li>
 						</ul>
 						Please refer to the <a href="http://java.sun.com/j2se/1.4/docs/guide/intl/encoding.doc.html" target="_blank">Sun documentation</a> for a list of supported encodings.
 						</td></tr>
@@ -129,5 +133,6 @@ function runSubmit() {
 </table>
 </td></tr>
 </table>
+
 </body>
 </html>
