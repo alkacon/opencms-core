@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/17 16:16:38 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/17 16:16:38 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -157,7 +157,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         int from = (page-1) * C_PICBROWSER_MAXIMAGES;
         int to = ((from+C_PICBROWSER_MAXIMAGES)>numPics)?numPics:(from+C_PICBROWSER_MAXIMAGES);
         
-        String picsUrl = getConfigFile(cms).getPictureUrl();
+        String picsUrl = getConfigFile(cms).getCommonPictureUrl();
         
         // Generate the picture list
         for(int i=from; i<to; i++) {

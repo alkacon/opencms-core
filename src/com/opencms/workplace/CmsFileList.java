@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/02/17 10:29:50 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/02/17 16:17:03 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/02/17 10:29:50 $
+ * @version $Revision: 1.18 $ $Date: 2000/02/17 16:17:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -318,7 +318,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     
                     A_CmsResourceType type=cms.getResourceType(folder.getType());
                     String icon=icon=getIcon(cms,type,config);
-                    template.setXmlData(C_ICON_VALUE,config.getPictureUrl()+icon);
+                    template.setXmlData(C_ICON_VALUE,config.getWpPictureUrl()+icon);
                     // set the link, but only if the folder is not deleted
                     if (res.getState()!=C_STATE_DELETED) {                
                         template.setXmlData(C_LINK_VALUE,folder.getAbsolutePath());   
@@ -383,7 +383,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     
                     A_CmsResourceType type=cms.getResourceType(file.getType());
                     String icon=getIcon(cms,type,config);
-                    template.setXmlData(C_ICON_VALUE,config.getPictureUrl()+icon);
+                    template.setXmlData(C_ICON_VALUE,config.getWpPictureUrl()+icon);
                     // set the link, but only if the resource is not deleted
                     if (res.getState()!=C_STATE_DELETED) {
                         template.setXmlData(C_LINK_VALUE,servlets+file.getAbsolutePath());  

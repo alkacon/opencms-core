@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/17 16:16:32 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/02/15 17:51:19 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/17 16:16:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -100,7 +100,40 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     }        
 
     /**
-     * User method to generate an URL for the pics folder.
+     * User method to generate an URL for the system pics folder.
+     * <P>
+     * All pictures should reside in the docroot of the webserver for
+     * performance reasons. This folder can be mounted into the OpenCms system to 
+     * make it accessible for the OpenCms explorer.
+     * <P>
+     * The path to the docroot can be set in the workplace ini.
+     * <P>
+     * In any workplace template file, this method can be invoked by
+     * <code>&lt;METHOD name="picsUrl"&gt;<em>PictureName</em>&lt;/METHOD&gt;</code>.
+     * <P>
+     * <b>Warning:</b> Using this method, only workplace pictures, usually residing
+     * in the <code>pics/system/</code> folder, can be accessed. In any workplace class 
+     * template pictures can be accessed via <code>commonPicsUrl</code>.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
+     * @param userObj Hashtable with parameters <em>(not used here)</em>.
+     * @return String with the pics URL.
+     * @exception CmsException
+     * @see #commonPicsUrl
+     */    
+    public Object picsUrl(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+            throws CmsException {
+        if(m_picsurl == null) {            
+            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+            m_picsurl = configFile.getWpPictureUrl();
+        }
+        return m_picsurl + tagcontent;
+    }
+
+    /**
+     * User method to generate an URL for the commom template pics folder.
      * <P>
      * All pictures should reside in the docroot of the webserver for
      * performance reasons. This folder can be mounted into the OpenCms system to 
@@ -118,15 +151,15 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @return String with the pics URL.
      * @exception CmsException
      */    
-    public Object picsUrl(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+    public Object commonPicsUrl(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
         if(m_picsurl == null) {            
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
-            m_picsurl = configFile.getPictureUrl();
+            m_picsurl = configFile.getCommonPictureUrl();
         }
         return m_picsurl + tagcontent;
     }
- 
+        
     /**
      * User method to generate an URL for a help file.
      * The system help file path and the currently selected language will

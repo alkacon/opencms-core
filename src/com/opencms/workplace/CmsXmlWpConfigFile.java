@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/02/17 16:15:41 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/02/15 17:51:19 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/17 16:15:41 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -179,12 +179,21 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
     }
     
     /**
-     * Gets the path for the "pics" mountpoint.
+     * Gets the URL where workplace pisc reside.
      * @return Path for the "pics" mountpoint.
      * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
-    public String getPictureUrl() throws CmsException {
-        return getDataValue("path.picsurl");
+    public String getWpPictureUrl() throws CmsException {
+        return getDataValue("path.wppicsurl");
+    }
+
+    /**
+     * Gets the URL where common template pics reside.
+     * @return Path for the "pics" mountpoint.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public String getCommonPictureUrl() throws CmsException {
+        return getDataValue("path.commonpicsurl");
     }
     
     /**
