@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/27 09:52:42 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2003/08/27 13:05:09 $
+ * Version: $Revision: 1.105 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.104 $ $Date: 2003/08/27 09:52:42 $
+ * @version $Revision: 1.105 $ $Date: 2003/08/27 13:05:09 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1492,9 +1492,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_ALL_VFS_LINKS");
+            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_NONDELETED_VFS_LINKS");
             stmt.setString(1, resource.getResourceId().toString());
-            stmt.setInt(2, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
+            // stmt.setInt(2, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -1523,11 +1523,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_SOFT_VFS_LINKS");
+            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_NONDELETED_SIBLINGS");
             stmt.setString(1, resource.getResourceId().toString());
             stmt.setString(2, resource.getId().toString());
             //stmt.setInt(3, I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
-            stmt.setInt(3, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
+            //stmt.setInt(3, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -2495,9 +2495,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(projectId);            
             //query = m_sqlManager.get(projectId, "C_RESOURCES_READ_FOLDERS_BY_PROJECT") + CmsSqlManager.replaceTableKey(projectId, projectClause + changedClause + orderClause);
             //stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_FOLDERS_BY_PROJECT");
-            stmt.setInt(1, I_CmsConstants.C_STATE_UNCHANGED);
-            stmt.setInt(2, I_CmsConstants.C_STATE_UNCHANGED);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_CHANGED_FOLDERS_BY_PROJECT");
+            // stmt.setInt(1, I_CmsConstants.C_STATE_UNCHANGED);
+            // stmt.setInt(2, I_CmsConstants.C_STATE_UNCHANGED);
             res = stmt.executeQuery();
             while (res.next()) {
                 currentFolder = createCmsFolderFromResultSet(res, projectId, true);
@@ -2643,11 +2643,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_READ");
             
             String resourceId = resource.getResourceId().toString();
-            stmt.setString(1, resourceId);
-            stmt.setString(2, resourceName);
-            stmt.setString(3, meta);
-            stmt.setInt(4, resourceType);
-            
+            stmt.setString(1, meta);
+            stmt.setInt(2, resourceType);
+            stmt.setString(3, resourceId);
+            stmt.setString(4, resourceName);
+ 
             result = stmt.executeQuery();
             if (result.next()) {
                 returnValue = result.getString(m_sqlManager.get("C_PROPERTY_VALUE"));
