@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.60 Arakis - 22 February 2001
+
+* General bugfixing.
+- Removed old unused stuff from the repository.
+
 OpenCms 4.1.59 Arakis - 21 February 2001
 
 * General bugfixing.
