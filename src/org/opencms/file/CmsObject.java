@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/08/11 10:42:33 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2004/08/11 16:55:50 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  */
 public class CmsObject {
 
@@ -2906,13 +2906,13 @@ public class CmsObject {
      * 
      * @param report an instance of I_CmsReport to print messages
      * @param publishList a publish list
+     * 
      * @throws CmsException if something goes wrong
+     * 
      * @see #getPublishList(I_CmsReport)
      * @see #getPublishList(CmsResource, boolean, I_CmsReport)
      */
     public void publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
-        // TODO check if useful/neccessary
-        m_driverManager.clearcache();
 
         synchronized (m_driverManager) {            
             try {                                
@@ -2929,23 +2929,6 @@ public class CmsObject {
                 }
 
                 throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
-            } finally {
-                // TODO check if useful/neccessary
-                m_driverManager.clearcache();
-                
-                // set current project to online project if the published project was temporary
-                // and the published project is still the current project
-                if (m_context.currentProject().getId() == m_context.currentProject().getId() && (m_context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
-                    m_context.setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
-                }
-
-                // fire an event that a project has been published
-                Map eventData = new HashMap();
-                eventData.put(I_CmsEventListener.KEY_CMSOBJECT, this);
-                eventData.put(I_CmsEventListener.KEY_REPORT, report);
-                eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishList.getPublishHistoryId().toString());
-                CmsEvent exportPointEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
-                OpenCms.fireCmsEvent(exportPointEvent);                 
             }
         }
     }    
