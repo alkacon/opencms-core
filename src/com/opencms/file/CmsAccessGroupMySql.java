@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/03 09:54:34 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/04 16:23:26 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -47,6 +47,12 @@ import com.opencms.core.*;
     private static final String C_GROUP_CHILDS = "SELECT * FROM GROUPS WHERE PARENT_GROUP_ID = ?";
     
     /**
+    * SQL Command for getting the parent group of a group.
+    */   
+    private static final String C_GROUP_PARENT = "SELECT * FROM GROUPS WHERE GROUP_ID = ?";
+       
+    
+    /**
     * SQL Command for getting all groups.
     */   
     private static final String C_GROUP_GETALL = "SELECT * FROM GROUPS";
@@ -73,7 +79,7 @@ import com.opencms.core.*;
         
 
     /**
-    * SQL Command for getting all groups of a userp.
+    * SQL Command for getting all groups of a user.
     */   
     private static final String C_GETGROUPSOFUSER = "SELECT GROUPS.* FROM GROUPS,GROUPUSERS WHERE USER_ID = ? AND GROUPS.GROUP_ID = GROUPUSERS.GROUP_ID";
       
@@ -149,6 +155,11 @@ import com.opencms.core.*;
     */
     private PreparedStatement m_statementGroupChilds;
 
+    /**
+    * Prepared SQL Statement for reading the parent goup of a group.
+    */
+    private PreparedStatement m_statementGroupParent;
+    
     /**
     * Prepared SQL Statement for adding a user to a group.
     */
@@ -589,6 +600,44 @@ import com.opencms.core.*;
          return childs;
      }
      
+         
+     /**
+	 * Returns the parent group of  a groups<P/>
+	 * 
+	 * 
+	 * @param groupname The name of the group.
+	 * @return The parent group of the actual group or null;
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup getParent(String groupname)
+        throws CmsException {
+        A_CmsGroup parent = null;
+        
+        // read the actual user group to get access to the parent group id.
+        A_CmsGroup group= readGroup(groupname);
+        
+        ResultSet res = null;
+   
+        try{ 
+             synchronized (m_statementGroupParent) {
+                // read the group from the database
+                m_statementGroupParent.setInt(1,group.getParentId());
+                res = m_statementGroupParent.executeQuery();
+             }
+             // create new Cms group object
+			 if(res.next()) {
+                parent=new CmsGroup(res.getInt(C_GROUP_ID),
+                                    res.getInt(C_PARENT_GROUP_ID),
+                                    res.getString(C_GROUP_NAME),
+                                    res.getString(C_GROUP_DESCRIPTION),
+                                    res.getInt(C_GROUP_FLAGS));                                
+             }
+       
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+        return parent;
+    }
     
     /**
      * This method creates all preparted SQL statements required in this class.
@@ -605,6 +654,7 @@ import com.opencms.core.*;
               m_statementGroupDelete=m_Con.prepareStatement(C_GROUP_DELETE);
               m_statementGroupGetAll=m_Con.prepareStatement(C_GROUP_GETALL);
               m_statementGroupChilds=m_Con.prepareStatement(C_GROUP_CHILDS);
+              m_statementGroupParent=m_Con.prepareStatement(C_GROUP_PARENT);
               m_statementAddUserToGroup=m_Con.prepareStatement(C_ADDUSERTOGROUP);
               m_statementRemoveUserFromGroup=m_Con.prepareStatement(C_REMOVEUSERFROMGROUP);
               m_statementUserInGroup=m_Con.prepareStatement(C_USERINGROUP);

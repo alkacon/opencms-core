@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/04 15:01:50 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/04 16:23:26 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -417,6 +417,21 @@ import com.opencms.core.*;
         }
         return allChilds;
      }
+     
+     /**
+	 * Returns the patent group of  a group<P/>
+	 * 
+	 * 
+	 * @param groupname The name of the group.
+	 * @return The parent group of the actual group or null;
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup getParent(String groupname)
+        throws CmsException {
+        A_CmsGroup parent= null;
+        parent = m_accessUserGroup.getParent(groupname);
+        return parent;
+    }
      
 	/** 
 	 * Sets the password for a user.

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/01/04 15:01:51 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/04 16:23:26 $
  */
 interface I_CmsRbUserGroup {
 
@@ -286,6 +286,17 @@ interface I_CmsRbUserGroup {
 	 */
      public Vector getChilds(String groupname)
       throws CmsException ;
+     
+     /**
+	 * Returns the patent group of  a group<P/>
+	 * 
+	 * 
+	 * @param groupname The name of the group.
+	 * @return The parent group of the actual group or null;
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup getParent(String groupname)
+         throws CmsException;	
 
 	/** 
 	 * Sets the password for a user.

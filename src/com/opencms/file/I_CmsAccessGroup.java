@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/01/03 09:54:34 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/04 16:23:26 $
  */
 interface I_CmsAccessGroup {
 		
@@ -153,6 +153,17 @@ interface I_CmsAccessGroup {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public Vector getChild(String groupname)
+         throws CmsException;	
+    
+     /**
+	 * Returns the patent group of  a group<P/>
+	 * 
+	 * 
+	 * @param groupname The name of the group.
+	 * @return The parent group of the actual group or null;
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup getParent(String groupname)
          throws CmsException;	
 
 }

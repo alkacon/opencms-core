@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/03 09:54:34 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/04 16:23:26 $
  */
  class CmsAccessUserGroup implements I_CmsAccessUserGroup, I_CmsConstants {
 
@@ -452,7 +452,21 @@ import com.opencms.core.*;
          return m_accessGroup.getChild(groupname);
      }
          
+ 
+     /**
+	 * Returns the patent group of a group<P/>
+	 * 
+	 * 
+	 * @param groupname The name of the group.
+	 * @return The parent group of the actual group or null;
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup getParent(String groupname)
+        throws CmsException {
+        return m_accessGroup.getParent(groupname);
+    }
 
+     
 	/** 
 	 * Sets the password for a user.
 	 * 
