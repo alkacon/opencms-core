@@ -125,10 +125,9 @@
 
 function checkHowMuch(){
 
-	if(!document.META.selectpar){
-			document.META.CANCEL.disabled=true;
+    if(document.META.selectpara.length<1){
+				document.META.CANCEL.disabled=true;
 	}
-
 
 }
 
