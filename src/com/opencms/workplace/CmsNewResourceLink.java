@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/02/28 13:51:18 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.21 $ $Date: 2002/02/28 13:51:18 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -92,9 +92,12 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         }
 
         // get the parameters
+        String navtitle = (String)parameters.get(C_PARA_NAVTEXT);
+        String navpos = (String)parameters.get(C_PARA_NAVPOS);
         String notChange = (String)parameters.get("newlink");
         String linkName = null;
         CmsFile editFile = null;
+        CmsResource linkResource = null;
         String content = null;
         String step = cms.getRequestContext().getRequest().getParameter("step");
         if(notChange != null && notChange.equals("false") && step == null) {
@@ -139,15 +142,23 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                     editFile.setContents(link.getBytes());
                     cms.writeFile(editFile);
                     cms.writeProperty(linkName, C_PROPERTY_TITLE, title);
+                    linkResource = (CmsResource)editFile;
                 }
                 else {
 
                     // create the new file
                     Hashtable prop = new Hashtable();
                     prop.put(C_PROPERTY_TITLE, title);
-                    cms.createResource(foldername, filename, type, prop, link.getBytes());
+                    linkResource = cms.createResource(foldername, filename, type, prop, link.getBytes());
                 }
-
+                // now check if navigation informations have to be added to the new page.
+                if(navtitle != null) {
+                    cms.writeProperty(linkResource.getAbsolutePath(), C_PROPERTY_NAVTEXT, navtitle);
+                    // update the navposition.
+                    if(navpos != null) {
+                        updateNavPos(cms, linkResource, navpos);
+                    }
+                }
                 // remove values from session
                 session.removeValue(C_PARA_FILE);
                 session.removeValue(C_PARA_VIEWFILE);
@@ -224,5 +235,215 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             filename = "";
         }
         return filename;
+    }
+
+    /**
+     * Gets the files displayed in the navigation select box.
+     * @param cms The CmsObject.
+     * @param lang The langauge definitions.
+     * @param names The names of the new rescources.
+     * @param values The links that are connected with each resource.
+     * @param parameters Hashtable of parameters (not used yet).
+     * @returns The vectors names and values are filled with data for building the navigation.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    public Integer getNavPos(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
+            Vector values, Hashtable parameters) throws CmsException {
+
+        // get the nav information
+        Hashtable storage = getNavData(cms);
+        if(storage.size() > 0) {
+            String[] nicenames = (String[])storage.get("NICENAMES");
+            int count = ((Integer)storage.get("COUNT")).intValue();
+
+            // finally fill the result vectors
+            for(int i = 0;i <= count;i++) {
+                names.addElement(nicenames[i]);
+                values.addElement(nicenames[i]);
+            }
+        }
+        else {
+            values = new Vector();
+        }
+        return new Integer(values.size() - 1);
+    }
+
+    /**
+     * Gets all required navigation information from the files and subfolders of a folder.
+     * A file list of all files and folder is created, for all those resources, the navigation
+     * property is read. The list is sorted by their navigation position.
+     * @param cms The CmsObject.
+     * @return Hashtable including three arrays of strings containing the filenames,
+     * nicenames and navigation positions.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    private Hashtable getNavData(CmsObject cms) throws CmsException {
+        I_CmsSession session = cms.getRequestContext().getSession(true);
+        CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+        String[] filenames;
+        String[] nicenames;
+        String[] positions;
+        Hashtable storage = new Hashtable();
+        CmsFolder folder = null;
+        CmsFile file = null;
+        String nicename = null;
+        String currentFilelist = null;
+        int count = 1;
+        float max = 0;
+
+        // get the current folder
+        currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        if(currentFilelist == null) {
+            currentFilelist = cms.rootFolder().getAbsolutePath();
+        }
+
+        // get all files and folders in the current filelist.
+        Vector files = cms.getFilesInFolder(currentFilelist);
+        Vector folders = cms.getSubFolders(currentFilelist);
+
+        // combine folder and file vector
+        Vector filefolders = new Vector();
+        Enumeration enum = folders.elements();
+        while(enum.hasMoreElements()) {
+            folder = (CmsFolder)enum.nextElement();
+            filefolders.addElement(folder);
+        }
+        enum = files.elements();
+        while(enum.hasMoreElements()) {
+            file = (CmsFile)enum.nextElement();
+            filefolders.addElement(file);
+        }
+        if(filefolders.size() > 0) {
+
+            // Create some arrays to store filename, nicename and position for the
+            // nav in there. The dimension of this arrays is set to the number of
+            // found files and folders plus two more entrys for the first and last
+            // element.
+            filenames = new String[filefolders.size() + 2];
+            nicenames = new String[filefolders.size() + 2];
+            positions = new String[filefolders.size() + 2];
+
+            //now check files and folders that are not deleted and include navigation
+            // information
+            enum = filefolders.elements();
+            while(enum.hasMoreElements()) {
+                CmsResource res = (CmsResource)enum.nextElement();
+
+                // check if the resource is not marked as deleted
+                if(res.getState() != C_STATE_DELETED) {
+                    String navpos = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVPOS);
+
+                    // check if there is a navpos for this file/folder
+                    if(navpos != null) {
+                        nicename = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVTEXT);
+                        if(nicename == null) {
+                            nicename = res.getName();
+                        }
+
+                        // add this file/folder to the storage.
+                        filenames[count] = res.getAbsolutePath();
+                        nicenames[count] = nicename;
+                        positions[count] = navpos;
+                        if(new Float(navpos).floatValue() > max) {
+                            max = new Float(navpos).floatValue();
+                        }
+                        count++;
+                    }
+                }
+            }
+        }
+        else {
+            filenames = new String[2];
+            nicenames = new String[2];
+            positions = new String[2];
+        }
+
+        // now add the first and last value
+        filenames[0] = "FIRSTENTRY";
+        nicenames[0] = lang.getDataValue("input.firstelement");
+        positions[0] = "0";
+        filenames[count] = "LASTENTRY";
+        nicenames[count] = lang.getDataValue("input.lastelement");
+        positions[count] = new Float(max + 1).toString();
+
+        // finally sort the nav information.
+        sort(cms, filenames, nicenames, positions, count);
+
+        // put all arrays into a hashtable to return them to the calling method.
+        storage.put("FILENAMES", filenames);
+        storage.put("NICENAMES", nicenames);
+        storage.put("POSITIONS", positions);
+        storage.put("COUNT", new Integer(count));
+        return storage;
+    }
+
+    /**
+     * Sorts a set of three String arrays containing navigation information depending on
+     * their navigation positions.
+     * @param cms Cms Object for accessign files.
+     * @param filenames Array of filenames
+     * @param nicenames Array of well formed navigation names
+     * @param positions Array of navpostions
+     */
+    private void sort(CmsObject cms, String[] filenames, String[] nicenames, String[] positions, int max) {
+
+        // Sorting algorithm
+        // This method uses an bubble sort, so replace this with something more
+        // efficient
+        for(int i = max - 1;i > 1;i--) {
+            for(int j = 1;j < i;j++) {
+                float a = new Float(positions[j]).floatValue();
+                float b = new Float(positions[j + 1]).floatValue();
+                if(a > b) {
+                    String tempfilename = filenames[j];
+                    String tempnicename = nicenames[j];
+                    String tempposition = positions[j];
+                    filenames[j] = filenames[j + 1];
+                    nicenames[j] = nicenames[j + 1];
+                    positions[j] = positions[j + 1];
+                    filenames[j + 1] = tempfilename;
+                    nicenames[j + 1] = tempnicename;
+                    positions[j + 1] = tempposition;
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates the navigation position of all resources in the actual folder.
+     * @param cms The CmsObject.
+     * @param newfile The new file added to the nav.
+     * @param navpos The file after which the new entry is sorted.
+     */
+    private void updateNavPos(CmsObject cms, CmsResource newfile, String newpos) throws CmsException {
+        float newPos = 0;
+
+        // get the nav information
+        Hashtable storage = getNavData(cms);
+        if(storage.size() > 0) {
+            String[] nicenames = (String[])storage.get("NICENAMES");
+            String[] positions = (String[])storage.get("POSITIONS");
+            int count = ((Integer)storage.get("COUNT")).intValue();
+
+            // now find the file after which the new file is sorted
+            int pos = 0;
+            for(int i = 0;i < nicenames.length;i++) {
+                if(newpos.equals((String)nicenames[i])) {
+                    pos = i;
+                }
+            }
+            if(pos < count) {
+                float low = new Float(positions[pos]).floatValue();
+                float high = new Float(positions[pos + 1]).floatValue();
+                newPos = (high + low) / 2;
+            }
+            else {
+                newPos = new Float(positions[pos]).floatValue() + 1;
+            }
+        }
+        else {
+            newPos = 1;
+        }
+        cms.writeProperty(newfile.getAbsolutePath(), C_PROPERTY_NAVPOS, new Float(newPos).toString());
     }
 }
