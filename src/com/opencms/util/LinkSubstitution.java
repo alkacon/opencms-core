@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2001/11/19 14:32:11 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/11/20 10:06:10 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ public class LinkSubstitution {
         c_perlUtil = new Perl5Util();
     }
 
-    public String substituteEditorContent(String content){
+    public String substituteEditorContent(String content)throws CmsException{
         return content;
     }
     /**
