@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/29 08:33:31 $
- * Version: $Revision: 1.254 $
+ * Date   : $Date: 2003/09/29 19:12:04 $
+ * Version: $Revision: 1.255 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.254 $ $Date: 2003/09/29 08:33:31 $
+ * @version $Revision: 1.255 $ $Date: 2003/09/29 19:12:04 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -8162,16 +8162,16 @@ public class CmsDriverManager extends Object {
                 currentExportKey = checkExportPoint(currentPublishedResource.getRootPath(), exportPoints);
 
                 if (currentExportKey != null) {
-                    if (currentPublishedResource.getResourceType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                    if (currentPublishedResource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
                         // export the folder                        
-                        if (currentPublishedResource.getResourceState() == I_CmsConstants.C_STATE_DELETED) {
+                        if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
                             discAccess.removeResource(currentPublishedResource.getRootPath(), currentExportKey);
                         } else {
                             discAccess.createFolder(currentPublishedResource.getRootPath(), currentExportKey);
                         }
                     } else {
                         // export the file            
-                        if (currentPublishedResource.getResourceState() == I_CmsConstants.C_STATE_DELETED) {
+                        if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
                             discAccess.removeResource(currentPublishedResource.getRootPath(), currentExportKey);
                         } else {
                             writeExportPoint(context, discAccess, currentExportKey, currentPublishedResource);
@@ -8180,14 +8180,14 @@ public class CmsDriverManager extends Object {
 
                     if (report != null) {
                         // print some report messages
-                        if (currentPublishedResource.getResourceState() == I_CmsConstants.C_STATE_DELETED) {
+                        if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
                             report.println(report.key("report.export_points_delete") + currentPublishedResource.getRootPath(), I_CmsReport.C_FORMAT_NOTE);
                         } else {
                             report.println(report.key("report.export_points_write") + currentPublishedResource.getRootPath(), I_CmsReport.C_FORMAT_NOTE);
                         }
                     } else if (OpenCms.getLog(this).isDebugEnabled()) {
                         // print some log messages
-                        if (currentPublishedResource.getResourceState() == I_CmsConstants.C_STATE_DELETED) {
+                        if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
                             OpenCms.getLog(this).debug(report.key("report.export_points_delete") + currentPublishedResource.getRootPath());
                         } else {
                             OpenCms.getLog(this).debug(report.key("report.export_points_write") + currentPublishedResource.getRootPath());
