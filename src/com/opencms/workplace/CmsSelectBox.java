@@ -7,14 +7,16 @@ import com.opencms.core.*;
 import com.opencms.template.*;
 import com.opencms.file.*;
 
+import java.lang.reflect.*;
 import java.util.*;
+
 
 /**
  * Class for building workplace buttons. <BR>
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/27 15:04:04 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/28 11:44:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -37,17 +39,67 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
      * @exception CmsException
      */    
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        // Read button parameters
-        //String buttonName = n.getAttribute(C_BUTTON_NAME);
         
-        // Get button definition and language values
+        StringBuffer result = new StringBuffer();
+        
+        // Read selectbox parameters
+        String selectClass = n.getAttribute(C_SELECTBOX_CLASS);
+        String selectName = n.getAttribute(C_SELECTBOX_NAME);
+        String selectMethod = n.getAttribute(C_SELECTBOX_METHOD);
+        String selectWidth = n.getAttribute(C_SELECTBOX_WIDTH);
+        String selectOnchange = n.getAttribute(C_SELECTBOX_ONCHANGE);
+        
+        // Get input definition file
         CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms); 
         
-        // get the processed button.
-        String result = inputdef.getSelectBoxHeader();
-        result = result + "<option>kuckuck ";
-        result = result + inputdef.getSelectBoxOption("test1", "test1");
-        result = result + inputdef.getSelectBoxSelOption("test2", "test2");
-        return result; 
+        // get the processed selectbox start.
+        result.append(inputdef.getSelectBoxStart(selectClass, selectName, selectWidth, selectOnchange));
+        
+        // call the method for generating listbox elements
+        Method groupsMethod = null;
+        Vector values = new Vector();
+        Vector names = new Vector();
+        int selectedOption = 0;
+        try {
+            groupsMethod = callingObject.getClass().getMethod(selectMethod, new Class[] {A_CmsObject.class, Vector.class, Vector.class});
+            selectedOption = ((Integer)groupsMethod.invoke(callingObject, new Object[] {cms, values, names})).intValue();
+        } catch(NoSuchMethodException exc) {
+            throwException("Could not find method " + selectMethod + " in calling class " + callingObject.getClass().getName() + " for generating select box content.", CmsException.C_NOT_FOUND);
+        } catch(InvocationTargetException targetEx) {
+            // the method could be invoked, but throwed a exception
+            // itself. Get this exception and throw it again.              
+            Throwable e = targetEx.getTargetException();
+            if(!(e instanceof CmsException)) {
+                // Only print an error if this is NO CmsException
+                e.printStackTrace();
+                throwException("User method " + selectMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+            } else {
+                // This is a CmsException
+                // Error printing should be done previously.
+                throw (CmsException)e;
+            }
+        } catch(Exception exc2) {
+            throwException("User method " + selectMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+        }
+        
+        
+        
+        // check the returned elements and put them into option tags.
+        // The element with index "selectedOption" has to get the "selected" tag.
+        int numValues = values.size();
+        int numNames = names.size();
+        
+        for(int i=0; i<numValues; i++) {
+            if(i == selectedOption) {
+                result.append(inputdef.getSelectBoxSelOption((String)values.elementAt(i), (String)names.elementAt(i)));
+            } else {
+                result.append(inputdef.getSelectBoxOption((String)values.elementAt(i), (String)names.elementAt(i)));
+            }                        
+        }
+        
+        // get the processed selectbox end.
+        result.append(inputdef.getSelectBoxEnd());
+        
+        return result.toString(); 
     }           
 }

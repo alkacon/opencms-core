@@ -13,7 +13,7 @@ import java.util.*;
  *  Content definition for the workplace input element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/01/27 15:01:43 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/28 11:44:03 $
  */
 public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -102,19 +102,33 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
      }  
 
 
-    public String getSelectBoxHeader() throws CmsException {
-        return getProcessedDataValue(C_TAG_SELECTBOX_HEADER);
+    public String getSelectBoxStart(String classname, String name, String width, String onchange) throws CmsException {
+        if(classname == null || "".equals(classname)) {
+            setData(C_SELECTBOX_CLASS, "");
+        } else {
+            setData(C_SELECTBOX_CLASSNAME, classname);
+            setData(C_SELECTBOX_CLASS, getProcessedData(C_TAG_SELECTBOX_CLASS));
+        }
+        setData(C_SELECTBOX_NAME, name);
+        setData(C_SELECTBOX_WIDTH, width);
+        setData(C_SELECTBOX_ONCHANGE, onchange);
+        return getProcessedDataValue(C_TAG_SELECTBOX_START);
     }
 
+    public String getSelectBoxEnd() throws CmsException {
+        return getProcessedDataValue(C_TAG_SELECTBOX_END);
+    }
+    
+    
     public String getSelectBoxOption(String name, String value) throws CmsException {
-        setData(C_SELECTBOX_NAME, name);
-        setData(C_SELECTBOX_VALUE, value);
+        setData(C_SELECTBOX_OPTIONNAME, name);
+        setData(C_SELECTBOX_OPTIONVALUE, value);
         return getProcessedDataValue(C_TAG_SELECTBOX_OPTION);
     }
 
     public String getSelectBoxSelOption(String name, String value) throws CmsException {
-        setData(C_SELECTBOX_NAME, name);
-        setData(C_SELECTBOX_VALUE, value);
+        setData(C_SELECTBOX_OPTIONNAME, name);
+        setData(C_SELECTBOX_OPTIONVALUE, value);
         return getProcessedDataValue(C_TAG_SELECTBOX_SELOPTION);
     }
     
