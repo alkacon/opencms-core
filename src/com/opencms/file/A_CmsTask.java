@@ -7,24 +7,10 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.5 $ $Date: 2000/01/25 19:11:55 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/28 18:46:41 $
  */
 public abstract class A_CmsTask
 {
-	
-	/**
-	 * state values of a task
-	 */
-    static final int C_TASK_STATE_PREPARE  = 0;
-    static final int C_TASK_STATE_START	   = 1;
-    static final int C_TASK_STATE_STARTED  = 2;
-    static final int C_TASK_STATE_NOTENDED = 3;
-    static final int C_TASK_STATE_ENDED	   = 4;
-    static final int C_TASK_STATE_HALTED   = 5;
-    static final int C_TASK_STATE_MAIL	   = 7;
-	static final int C_TASK_STATE_ONHOLD   = 8; 
-
-	
 	/**
 	 * Returns the id of this task.
 	 * 
@@ -96,6 +82,6 @@ public abstract class A_CmsTask
 	 * 
 	 * @return true, if the object is identically else it returns false.
 	 */
-    abstract public boolean equals(Object obj);
+	abstract public boolean equals(Object obj);
 
 }

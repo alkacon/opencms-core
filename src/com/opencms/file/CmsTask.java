@@ -1,5 +1,4 @@
 
-
 package com.opencms.file;
 
 import com.opencms.core.*;
@@ -10,125 +9,124 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.3 $ $Date: 2000/01/25 19:11:55 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/28 18:46:41 $
  */
 public class CmsTask extends A_CmsTask implements I_CmsConstants {
 
-
 	/**
-     * The Id of the task.
-     */
+	 * The Id of the task.
+	 */
 	private int			m_Id = C_UNKNOWN_ID;
 
 	/**
-     * The name of the task.
-     */
+	 * The name of the task.
+	 */
 	private String		m_Name = null;
 	
 	/**
-     * The id of the user who initiated the task.
-     */
+	 * The id of the user who initiated the task.
+	 */
 	private int			m_InitiatorUser = C_UNKNOWN_ID;
 	
 	/**
-     * The id of the user name who was the original agent.
-     */
+	 * The id of the user name who was the original agent.
+	 */
 	private int			m_OriginalUser = C_UNKNOWN_ID;
 	
 	/**
-     * The id of the user who is the agent of the task.
-     */
+	 * The id of the user who is the agent of the task.
+	 */
 	private int			m_AgentUser = C_UNKNOWN_ID;
 	
 	/**
-     * The id of the role which has to do the task.
-     */
+	 * The id of the role which has to do the task.
+	 */
 	private int			m_Role = C_UNKNOWN_ID;
 	
 	private int			m_AutoFinish = 0;
 	
 	/**
-     * Link to the html page which handle the task.
-     */
+	 * Link to the html page which handle the task.
+	 */
 	private String		m_HtmlLink = null;
 
 	/**
-     * The id of the Milstone to wich the task belongs.
-     */
+	 * The id of the Milstone to wich the task belongs.
+	 */
 	private int			m_Milestone = C_UNKNOWN_ID;
 	
 	/**
-     * The id of the task which is the root task of this task.
-     */
+	 * The id of the task which is the root task of this task.
+	 */
 	private int			m_Root = C_UNKNOWN_ID;
 	
 	/**
-     * The id of the task which is the parent of this task.
-     */
+	 * The id of the task which is the parent of this task.
+	 */
 	private int			m_Parent = C_UNKNOWN_ID;
 
 	/**
-     * percentage value of the task.
-     */
+	 * percentage value of the task.
+	 */
 	private int			m_Percentage = 0;
 	
 	/**
-     * Permissin flag of the task.
-     */
+	 * Permissin flag of the task.
+	 */
 	private String		m_Permission = "-rw-rw-rw";
 	
 	/**
-     * State of the task.
-     */
+	 * State of the task.
+	 */
 	private int			m_State = 0;
 	
 	/**
-     * Type of the task.
-     */
+	 * Type of the task.
+	 */
 	private int			m_TaskType = C_UNKNOWN_ID;
 	
 	/**
-     * Escalationtype of the task.
-     */
+	 * Escalationtype of the task.
+	 */
 	private int			m_EscalationType = 0;
 	
 	/**
-     * Priority of the task.
-     */
+	 * Priority of the task.
+	 */
 	private int			m_Priority = C_UNKNOWN_ID;
 	
 	/**
-     * Timestamp when the task has been started.
-     */
+	 * Timestamp when the task has been started.
+	 */
 	private java.sql.Timestamp m_StartTime = null;
 	
 	/**
-     * Timestamp when the task has been ended.
-     */
+	 * Timestamp when the task has been ended.
+	 */
 	private java.sql.Timestamp m_EndTime    = null;
 	
 	/**
-     * Timestamp when the task has to be completed.
-     */
+	 * Timestamp when the task has to be completed.
+	 */
 	private java.sql.Timestamp m_TimeOut    = null;
 	
 	/**
-     * Timestamp when the task has to be activated.
-     */
+	 * Timestamp when the task has to be activated.
+	 */
 	private java.sql.Timestamp m_WakeupTime = null;
 	
 	/**
-      * Constructor, creates a new CmsTask object.
-      */
+	 * Constructor, creates a new CmsTask object.
+	 */
 	public CmsTask(){
 	}
 	
 	/**
-      * Constructor, creates a new CmsTask object.
-      * 
-      * @param resourceName The name (including complete path) of the resouce.
-      * 
-      */
+	 * Constructor, creates a new CmsTask object.
+	 * 
+	 * @param resourceName The name (including complete path) of the resouce.
+	 * 
+	 */
 	public CmsTask(int id, String name, int state, int tasktype,
 				   int root, int parent, int initiatoruser,
 				   int role, int agentuser, int originaluser,
@@ -159,13 +157,13 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 		m_Milestone = milestone;
 		m_AutoFinish = autofinish;
 	}
-	
+
 	/**
 	 * Returns the id of this task.
 	 * 
 	 * @return the id of this task.
 	 */
-	public int getId() {
+	int getId() {
 		return m_Id; 
 	}
 	
@@ -185,6 +183,10 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 	 */
 	public int getState() {
 		return m_State;	
+	}
+	
+	public String getStateString() {
+		return State2String(m_State);	
 	}
 
 	public int getTaskType(){
@@ -215,7 +217,7 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 	public int getOriginalUser(){
 		return m_OriginalUser;
 	}
-		
+	
 	public java.sql.Timestamp getStartTime(){
 		return m_StartTime;
 	}
@@ -326,11 +328,24 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 	 * @return string-representation for this object.
 	 */
 	public String toString() {
-        StringBuffer output=new StringBuffer();
-        output.append("[Task]:");
-        output.append(" Id=");
-        output.append(getId());
-        return output.toString();
+		StringBuffer output=new StringBuffer();
+		output.append("[Task]:");
+		output.append(" Id=");
+		output.append(this.getId());
+		output.append(" Name=");
+		output.append(this.getName());
+		output.append(" Root=");
+		output.append(this.getRoot());
+		output.append(" State=");
+		output.append(this.getStateString());
+		output.append(" Owner=");
+		output.append(this.getInitiatorUser());
+		output.append(" Agent=");
+		output.append(this.getAgentUser());
+		output.append(" Role=");
+		output.append(this.getRole());
+		
+		return output.toString();
 	}
 	
 	/**
@@ -339,14 +354,66 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 	 * @return true, if the object is identically else it returns false.
 	 */
 	public boolean equals(Object obj) {
-        boolean equal=false;
-        // check if the object is a CmsUser object
-        if (obj instanceof CmsTask) {
-            // same ID than the current Task Object?
-            if (((CmsTask)obj).getId() == this.getId()){
-                equal = true;
-            }
-        }
-        return equal;
+		boolean equal=false;
+		// check if the object is a CmsUser object
+		if (obj instanceof CmsTask) {
+			// same ID than the current Task Object?
+			if (((CmsTask)obj).getId() == this.getId()){
+				equal = true;
+			}
+		}
+		return equal;
+	}
+	
+	private String State2String(int state)
+	{
+		String result = null;
+		
+		switch(state)
+		{
+		case C_TASK_STATE_PREPARE:
+			{
+				result = "Prepared";
+				break;
+			}
+		case C_TASK_STATE_START:
+			{
+				result = "Start";
+				break;
+			}
+		case C_TASK_STATE_STARTED:
+			{
+				result = "Started";
+				break;				
+			}
+		case C_TASK_STATE_NOTENDED:
+			{
+				result = "Not Ended";
+				break;				
+			}
+		case C_TASK_STATE_ENDED:
+			{
+				result = "Ended";
+				break;				
+			}
+		case C_TASK_STATE_HALTED:
+			{
+				result = "Halted";
+				break;				
+			}
+		case C_TASK_STATE_MAIL:
+			{
+				result = "Mail";
+				break;				
+			}
+		case C_TASK_STATE_ONHOLD:
+			{
+				result = "On Hold";
+				break;				
+			}			
+		default:
+			result = "Unkown";
+		}
+		return result;
 	}
 }
