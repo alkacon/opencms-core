@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/25 16:23:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/06/26 15:36:12 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.12 $ $Date: 2003/06/25 16:23:11 $
+ * @version $Revision: 1.13 $ $Date: 2003/06/26 15:36:12 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -108,7 +108,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.12 $ $Date: 2003/06/25 16:23:11 $
+	 * @version $Revision: 1.13 $ $Date: 2003/06/26 15:36:12 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -152,18 +152,20 @@ public class CmsDriverManager implements I_CmsConstants {
 
 			CmsPermissionSet permissions = null;
             int denied = 0;
-			
-			// if this is the onlineproject, write is rejected 
-			if((checks & C_CHECK_PROJECT) > 0 && this.getProject().isOnlineProject())
-				denied |= C_PERMISSION_WRITE;
 
+			// if this is the onlineproject, write is rejected 
+			if((checks & C_CHECK_PROJECT) > 0 && this.getProject().isOnlineProject()) {
+				denied |= C_PERMISSION_WRITE;
+			}
+			
 			// if the resource type is jsp or xml template
 			// write is only allowed for administrators
 			if ((checks & C_CHECK_RESTYPE) > 0) {
 				I_CmsResourceType resType = getResourceType(getUser(), getProject(), resource.getType());
 				if(("XMLTemplate".equals(resType.getResourceTypeName())||"jsp".equals(resType.getResourceTypeName())) 
-					&& !isAdmin(getUser(),getProject()))
+					&& !isAdmin(getUser(),getProject())) {
 					denied |= C_PERMISSION_WRITE;	
+				}
 			}
 			
 			// TODO: handling of locked resources 
@@ -172,19 +174,6 @@ public class CmsDriverManager implements I_CmsConstants {
 				//  read must still be possible, since the explorer file list needs some properties
 				if (!this.getUser().getId().equals(resource.isLockedBy()))
 					denied |= C_PERMISSION_WRITE;
-				 
-				// if the resource is locked in another project, read and write are rejected
-				// exception: if the current project is the tempfileProject, reading from other projects is allowed
-				// exception: if the resource is locked in the tempfileProject, read and write are allowed
-				if((this.getProject().getId() != resource.getLockedInProject()) 
-					&& !isTempfileProject(readProject(resource.getLockedInProject()))) {
-					
-					if (isTempfileProject(this.getProject())) {
-						denied |= C_PERMISSION_WRITE;
-					} else {
-						denied |= C_PERMISSION_WRITE;
-					}
-				}
 			}
 			
 			// TODO: check how to handle projects
@@ -217,7 +206,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.12 $ $Date: 2003/06/25 16:23:11 $
+	 * @version $Revision: 1.13 $ $Date: 2003/06/26 15:36:12 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -3214,7 +3203,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
  * Access is granted, if:
  * <ul>
  * <li>the user has access to the project</li>
- * <li>the user can read this resource</li>
+ * <li>the user can view this resource</li>
  * </ul>
  *
  * @param currentUser The user who requested this method.
@@ -3349,43 +3338,9 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
 			g = (CmsGroup)groups.nextElement();
 			if ((acList.getPermissions(g).getPermissions() & C_PERMISSION_READ) > 0)
 				rpgroupName = g.getName(); 
-    }
+    	}
 
-System.err.println("ReadingpermittedGroup=" + rpgroupName);
 		return (rpgroupName != null) ? rpgroupName : I_CmsConstants.C_GROUP_ADMIN;
-		
-    /**
-		CmsUUID groupId = CmsUUID.getNullUUID();
-		boolean noGroupCanReadThis = false;
-		do {
-			int flags = res.getAccessFlags();
-			if (!((flags & I_CmsConstants.C_ACCESS_PUBLIC_READ) == I_CmsConstants.C_ACCESS_PUBLIC_READ)) {
-				if ((flags & I_CmsConstants.C_ACCESS_GROUP_READ) == I_CmsConstants.C_ACCESS_GROUP_READ) {
-					if ((groupId.isNullUUID()) || (groupId.equals(res.getGroupId()))) {
-						groupId = res.getGroupId();
-					} else {
-						CmsUUID result = m_userDriver.checkGroupDependence(groupId, res.getGroupId());
-						if (result.isNullUUID()) {
-							noGroupCanReadThis = true;
-						} else {
-							groupId = result;
-						}
-					}
-				} else {
-					noGroupCanReadThis = true;
-				}
-			}
-			res = m_vfsDriver.readFileHeader(projectId, res.getParentId());
-		} while (!(noGroupCanReadThis || I_CmsConstants.C_ROOT.equals(res.getAbsolutePath())));
-		if (noGroupCanReadThis) {
-			return I_CmsConstants.C_GROUP_ADMIN;
-		}
-		if (groupId.isNullUUID()) {
-			return null;
-		} else {
-			return m_userDriver.readGroup(groupId).getName();
-		}
-		*/
 	}
 	
     /**
@@ -4655,7 +4610,6 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                         con.connect();
                         InputStream in = con.getInputStream();
                         in.close();
-                        //System.err.println(in.toString());
                     } catch (Exception ex) {
                         throw new CmsException(0, ex);
                     }
@@ -5127,7 +5081,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * Access is granted, if:
      * <ul>
      * <li>the user has access to the project</li>
-     * <li>the user can read the resource</li>
+     * <li>the user can read or view the resource</li>
      * </ul>
      *
      * @param currentUser The user who requested this method.
@@ -5140,30 +5094,26 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public CmsResource readFileHeader(CmsUser currentUser, CmsProject currentProject, int projectId, String filename) throws CmsException {
+
         CmsResource cmsFile = null;
+
         // check if this method is misused to read a folder
         if (filename.endsWith("/")) {
-            return (CmsResource)readFolder(currentUser, currentProject, projectId, filename);
+            cmsFile = (CmsResource)readFolderInProject(currentUser, currentProject, projectId, filename, false);
+        } else {
+	        String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
+	        cmsFile = (CmsResource)m_resourceCache.get(cacheKey);
+	        if (cmsFile == null) {
+	            cmsFile = m_vfsDriver.readFileHeaderInProject(projectId, filename);
+	            m_resourceCache.put(cacheKey, cmsFile);
+	        }
         }
-        // read the resource from the currentProject
-        try {
-            String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
-            cmsFile = (CmsResource)m_resourceCache.get(cacheKey);
-            if (cmsFile == null) {
-                cmsFile = m_vfsDriver.readFileHeaderInProject(projectId, filename);
-                m_resourceCache.put(cacheKey, cmsFile);
-            }
-            
-            // TODO: check if access control is sound here
-			// check if the user has read or view access to the folder
-			getVfsAccessGuard(currentUser, currentProject).check(cmsFile, C_READVIEW_ACCESS, false, true);
+              
+		// check if the user has read or view access to the folder
+		getVfsAccessGuard(currentUser, currentProject).check(cmsFile, C_READVIEW_ACCESS, false, true);
 		
-            // acces was granted - return the file-header.
-                return cmsFile;
-        } catch (CmsException exc) {
-			//System.err.println("readFileHeader:" + filename);
-            throw exc;
-        }
+        // acces was granted - return the file-header.
+        return cmsFile;
     }
     
     /**
@@ -5176,7 +5126,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * Access is granted, if:
      * <ul>
      * <li>the user has access to the project</li>
-     * <li>the user can read the resource</li>
+     * <li>the user can read or view the resource</li>
      * </ul>
      *
      * @param currentUser The user who requested this method.
@@ -5188,27 +5138,21 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public CmsResource readFileHeader(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException {
+
         CmsResource cmsFile = null;
+
         // check if this method is misused to read a folder
         if (filename.endsWith("/")) {
-            return (CmsResource) readFolder(currentUser, currentProject, filename);
-        }
-
-        // read the resource from the currentProject, or the online-project
-        try {
-            // try to read form cache first
+            cmsFile = (CmsResource)readFolderInProject(currentUser, currentProject, currentProject.getId(), filename, false);
+        } else {
             String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
             cmsFile = (CmsResource) m_resourceCache.get(cacheKey);
             if (cmsFile == null) {
                 cmsFile = m_vfsDriver.readFileHeader(currentProject.getId(), filename, false);
                 m_resourceCache.put(cacheKey, cmsFile);
             }
-        } catch (CmsException exc) {
-            // the resource was not readable
-            //System.err.println("readFileHeader:" + filename);
-            throw exc;
-        }
-
+        } 
+        
         // check if the user has read or view access to the folder
         getVfsAccessGuard(currentUser, currentProject).check(cmsFile, C_READVIEW_ACCESS, false, true);
 
@@ -5238,26 +5182,20 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public CmsResource readFileHeader(CmsUser currentUser, CmsProject currentProject, String filename, boolean includeDeleted) throws CmsException {
+
         CmsResource cmsFile = null;
+
         // check if this method is misused to read a folder
         if (filename.endsWith("/")) {
-            return (CmsResource) readFolder(currentUser, currentProject, filename, includeDeleted);
-        }
-
-        // read the resource from the currentProject, or the online-project
-        try {
-            // try to read form cache first
+            cmsFile = (CmsResource)readFolderInProject(currentUser, currentProject, currentProject.getId(), filename, includeDeleted);
+        } else {
             String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
             cmsFile = (CmsResource) m_resourceCache.get(cacheKey);
             if (cmsFile == null) {
                 cmsFile = m_vfsDriver.readFileHeader(currentProject.getId(), filename, includeDeleted);
                 m_resourceCache.put(cacheKey, cmsFile);
             }
-        } catch (CmsException exc) {
-            // the resource was not readable
-            //System.err.println("readFileHeader:" + filename);
-            throw exc;
-        }
+        } 
 
         // check if the user has read access to the file
         getVfsAccessGuard(currentUser, currentProject).check(cmsFile, C_READVIEW_ACCESS, false, true);
@@ -5359,68 +5297,126 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
 
         return retValue;
     }
-/**
- * Reads a folder from the Cms.<BR/>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can read the resource</li>
- * </ul>
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param project the project to read the folder from.
- * @param foldername The complete m_path of the folder to be read.
- *
- * @return folder The read folder.
- *
- * @throws CmsException will be thrown, if the folder couldn't be read.
- * The CmsException will also be thrown, if the user has not the rights
- * for this resource
- */
-protected CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int project, String folder) throws CmsException {
-    if (folder == null) return null;
-    if (! folder.endsWith(C_FOLDER_SEPARATOR)) folder += C_FOLDER_SEPARATOR;
-    String cacheKey = getCacheKey(null, currentUser, currentProject, folder);
-    CmsFolder cmsFolder = (CmsFolder) m_resourceCache.get(cacheKey);
-    if (cmsFolder == null) {
-        cmsFolder = m_vfsDriver.readFolderInProject(project, folder);
-        if (cmsFolder != null){
-            m_resourceCache.put(cacheKey, cmsFolder);
-        }
-    }
-
-	// check if the user has read access to the folder
-	getVfsAccessGuard(currentUser, currentProject).check(cmsFolder, C_READ_ACCESS);
+    
+	/**
+	 * Internal method to read a folder from the Cms.<BR/>
+	 *
+	 * <B>Security:</B>
+	 * No security checks applied, since this is a protected method.
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param projectId the project to read the folder from.
+	 * @param folderName The complete m_path of the folder to be read.
+	 * @param includeDeleted flag if reading a deleted folder will throw an exception
+	 *
+	 * @return folder The read folder.
+	 *
+	 * @throws CmsException will be thrown, if the folder couldn't be read.
+	 * The CmsException will also be thrown, if the user has not the rights
+	 * for this resource
+	 */
+	protected CmsFolder readFolderInProject(CmsUser currentUser, CmsProject currentProject, int projectId, String folderName, boolean includeDeleted) throws CmsException {
 		
-    return cmsFolder;
-}
+	    String cacheKey = getCacheKey(null, currentUser, currentProject, folderName);
+	    CmsFolder cmsFolder = (CmsFolder) m_resourceCache.get(cacheKey);
+	    if (cmsFolder == null) {
+	        cmsFolder = m_vfsDriver.readFolderInProject(projectId, folderName);
+	
+	        if ((cmsFolder != null) && (cmsFolder.getState() != C_STATE_DELETED)){
+	            m_resourceCache.put(cacheKey, cmsFolder);
+	        }
+	    }
+	
+		// TODO: hack - correct later
+		// ensure that an offline resource never claims to be in the online project
+		if ((projectId != I_CmsConstants.C_PROJECT_ONLINE_ID) && (cmsFolder.getProjectId() == I_CmsConstants.C_PROJECT_ONLINE_ID)) {    
+			cmsFolder.setProjectId(currentProject.getId());
+		}
+		// /HACK
+		
+		if ((cmsFolder.getState() == C_STATE_DELETED) && (!includeDeleted)) {
+			throw new CmsException("[" + getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
+		} else {
+			return cmsFolder;
+		}		 
+	}
 
-/**
- * Reads a folder from the Cms.<BR/>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can read the resource</li>
- * </ul>
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param foldername The complete m_path of the folder to be read.
- *
- * @return folder The read folder.
- *
- * @throws CmsException will be thrown, if the folder couldn't be read.
- * The CmsException will also be thrown, if the user has not the rights
- * for this resource.
- */
-public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder) throws CmsException {
-    return readFolder(currentUser, currentProject, folder, false);
-}
+	/**
+	 * Internal method to read a folder from the Cms.<BR/>
+	 *
+	 * <B>Security:</B>
+	 * No security checks applied, since this is a protected method.
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param projectId the project to read the folder from.
+	 * @param folderId The id of the folder to read.
+	 * @param includeDeleted flag if reading a deleted folder will throw an exception
+	 * 
+	 * @return folder The read folder.
+	 *
+	 * @throws CmsException will be thrown, if the folder couldn't be read.
+	 * The CmsException will also be thrown, if the user has not the rights
+	 * for this resource
+	 */	
+	protected CmsFolder readFolderInProject(CmsUser currentUser, CmsProject currentProject, int projectId, CmsUUID folderId, boolean includeDeleted) throws CmsException {
+
+		CmsFolder cmsFolder = null;
+		
+		// read the resource from the currentProject, or the online-project
+		cmsFolder = m_vfsDriver.readFolder(projectId, folderId);
+
+		// TODO: hack - correct later
+		// ensure that an offline resource never claims to be in the online project
+		if ((projectId != I_CmsConstants.C_PROJECT_ONLINE_ID) && (cmsFolder.getProjectId() == I_CmsConstants.C_PROJECT_ONLINE_ID)) {    
+			cmsFolder.setProjectId(currentProject.getId());
+		}
+		// /HACK
+			
+		// access was granted - return the folder.
+		if ((cmsFolder.getState() == C_STATE_DELETED) && (!includeDeleted)) {
+			throw new CmsException("[" + getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
+		} else {
+			return cmsFolder;
+		}
+	}
+
+	/**
+	 * Reads a folder from the Cms.<BR/>
+	 *
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername The complete m_path of the folder to be read.
+	 *
+	 * @return folder The read folder.
+	 *
+	 * @throws CmsException will be thrown, if the folder couldn't be read.
+	 * The CmsException will also be thrown, if the user has not the rights
+	 * for this resource.
+	 */
+	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder) throws CmsException {
+
+		if (folder == null) 
+			return null;
+	
+		if (! folder.endsWith(C_FOLDER_SEPARATOR)) 
+			folder += C_FOLDER_SEPARATOR;
+					
+	    CmsFolder cmsFolder = readFolderInProject(currentUser, currentProject, currentProject.getId(), folder, false);
+	
+		// check if the user has read access to the folder
+		getVfsAccessGuard(currentUser, currentProject).check(cmsFolder, C_READ_ACCESS, false, true);
+		
+		return cmsFolder;
+	}
 
     /**
      * Reads a folder from the Cms.<BR/>
@@ -5444,87 +5440,57 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
      * for this resource.
      */
     public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder, boolean includeDeleted) throws CmsException {
-        if (folder == null)
-            return null;
-        if (!folder.endsWith(C_FOLDER_SEPARATOR))
-            folder += C_FOLDER_SEPARATOR;
-        CmsFolder cmsFolder = null;
-    
-        // read the resource from the currentProject, or the online-project
-        try {
-            String cacheKey = getCacheKey(null, currentUser, currentProject, folder);
-            cmsFolder = (CmsFolder) m_resourceCache.get(cacheKey);
-            if (cmsFolder == null) {
-                cmsFolder = m_vfsDriver.readFolder(currentProject.getId(), folder);
-    
-                // TODO: hack - correct later
-                // ensure that an offline resource never claims to be in the online project
-                if ((currentProject.getId() != I_CmsConstants.C_PROJECT_ONLINE_ID) && (cmsFolder.getProjectId() == I_CmsConstants.C_PROJECT_ONLINE_ID)) {
-    
-                    cmsFolder.setProjectId(currentProject.getId());
-                }
-                // /HACK
-    
-                if (cmsFolder.getState() != C_STATE_DELETED) {
-                    m_resourceCache.put(cacheKey, cmsFolder);
-                }
-            }
-        } catch (CmsException exc) {
-            throw exc;
-        }
-    
-        // check if the user has read access to the folder
-        getVfsAccessGuard(currentUser, currentProject).check(cmsFolder, C_READ_ACCESS);
-    
-        // acces to all subfolders was granted - return the folder.
-        if ((cmsFolder.getState() == C_STATE_DELETED) && (!includeDeleted)) {
-            throw new CmsException("[" + getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
-        } else {
-            return cmsFolder;
-        }
-    }
 
-/**
- * Reads a folder from the Cms.<BR/>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can read the resource</li>
- * </ul>
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param folderid The id of the folder to be read.
- * @param includeDeleted Include the folder it it is marked as deleted
- *
- * @return folder The read folder.
- *
- * @throws CmsException will be thrown, if the folder couldn't be read.
- * The CmsException will also be thrown, if the user has not the rights
- * for this resource.
- */
-public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsUUID folderid, boolean includeDeleted) throws CmsException {
-    CmsFolder cmsFolder = null;
-    // read the resource from the currentProject, or the online-project
-    try {
-        cmsFolder = m_vfsDriver.readFolder(currentProject.getId(), folderid);
-    } catch (CmsException exc) {
-		System.err.println("readFolder:" + folderid);
-        throw exc;
-    }
-    
-	// check if the user has write access to the folder
-	getVfsAccessGuard(currentUser, currentProject).check(cmsFolder, C_READ_ACCESS);
+		if (folder == null) 
+			return null;
 	
-    // access was granted - return the folder.
+		if (! folder.endsWith(C_FOLDER_SEPARATOR)) 
+			folder += C_FOLDER_SEPARATOR;
+			
+		CmsFolder cmsFolder = readFolderInProject(currentUser, currentProject, currentProject.getId(), folder, includeDeleted);
+		
+		// check if the user has read access to the folder
+		getVfsAccessGuard(currentUser, currentProject).check(cmsFolder, C_READ_ACCESS, false, true);
+		
+		return cmsFolder;
+	}
+
+	/**
+	 * Reads a folder from the Cms.<BR/>
+	 *
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param folderid The id of the folder to be read.
+	 * @param includeDeleted Include the folder it it is marked as deleted
+	 *
+	 * @return folder The read folder.
+	 *
+	 * @throws CmsException will be thrown, if the folder couldn't be read.
+	 * The CmsException will also be thrown, if the user has not the rights
+	 * for this resource.
+	 */
+	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsUUID folderId, boolean includeDeleted) throws CmsException {
+	    
+	    CmsFolder cmsFolder = readFolderInProject(currentUser, currentProject, currentProject.getId(), folderId, includeDeleted); 
+	    
+		// check if the user has write access to the folder
+		getVfsAccessGuard(currentUser, currentProject).check(cmsFolder, C_READ_ACCESS, false, true);
+		
+	    // access was granted - return the folder.
         if ((cmsFolder.getState() == C_STATE_DELETED) && (!includeDeleted)) {
             throw new CmsException("[" + getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
         } else {
             return cmsFolder;
         }
     }
+    
     /**
      * Reads all given tasks from a user for a project.
      *
@@ -8192,20 +8158,20 @@ protected void validName(String name, boolean blank) throws CmsException {
             buffer.append(prefix);
             buffer.append("_");
         }
-        if (user != null) {
-            buffer.append(user.getId());
-            buffer.append("_");            
-        }
+        //if (user != null) {
+        //    buffer.append(user.getId());
+        //    buffer.append("_");            
+        //}
         if (project != null) {
-            if (project.getFlags() >= 0) {
-                buffer.append(project.getId());
-            } else {
+            //if (project.getFlags() >= 0) {
+            //    buffer.append(project.getId());
+            //} else {
                 if (project.isOnlineProject()) {
                     buffer.append("on");
                 } else {
                     buffer.append("of");
                 }
-            }
+            //}
             buffer.append("_");
         } 
         buffer.append(resource);
