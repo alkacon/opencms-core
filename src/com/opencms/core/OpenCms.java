@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/08/21 11:32:45 $
-* Version: $Revision: 1.88 $
+* Date   : $Date: 2002/08/22 09:58:46 $
+* Version: $Revision: 1.89 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.88 $ $Date: 2002/08/21 11:32:45 $
+ * @version $Revision: 1.89 $ $Date: 2002/08/22 09:58:46 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -233,9 +233,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
             }
         }
-
-        // Initialize OpenCms ClassLoader
-        initClassLoader(this);
 
         // get the password validating class
         c_passwordValidatingClass = conf.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/08/21 11:32:45 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/08/22 09:58:46 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2002/08/21 11:32:45 $
+ * @version $Revision: 1.29 $ $Date: 2002/08/22 09:58:46 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -448,64 +448,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         source.org.apache.java.util.Configurations openCmsConfig = m_opencms.getConfiguration();
         this.m_UseBasicAuthentication = openCmsConfig.getBoolean( "auth.basic", true );        
         this.m_AuthenticationFormURI = openCmsConfig.getString( "auth.form_uri" , "/system/workplace/action/authenticate.html" );		        
-
-        
-        /**
-         * MERGE: This was removed in FLEX branch, let's see if it is stell needed...
-         * 
-        // create the cms-object for the class-loader to read classes from the vfs
-        CmsObject cms = new CmsObject();
-        try {
-            // m_sessionStorage.getClass().
-            m_opencms.initUser(cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID, m_sessionStorage);
-        } catch (CmsException exc) {
-            throw new ServletException("Error while initializing the cms-object for the classloader", exc);
-        }
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsClassLoader ");
-        }
-        // get the repositories for the classloader
-        Vector repositories = new Vector();
-        String[] repositoriesFromConfigFile = null;
-        String[] repositoriesFromRegistry = null;
-
-        // add repositories from the configuration file
-        repositoriesFromConfigFile = cms.getConfigurations().getStringArray("repositories");
-        for(int i = 0;i < repositoriesFromConfigFile.length;i++) {
-            repositories.addElement(repositoriesFromConfigFile[i]);
-        }
-
-        // add the repositories from the registry, if it is available
-        I_CmsRegistry reg = null;
-        try{
-            reg = cms.getRegistry();
-        }catch(CmsException e){
-             throw new ServletException(e.getMessage());
-        }
-        CmsClassLoader loader = (CmsClassLoader) (getClass().getClassLoader());
-        if(reg != null) {
-            repositoriesFromRegistry = reg.getRepositories();
-            for(int i = 0;i < repositoriesFromRegistry.length;i++) {
-                try {
-                    cms.readFileHeader(repositoriesFromRegistry[i]);
-                    //repositories.addElement(repositoriesFromRegistry[i]);
-                    loader.addRepository(repositoriesFromRegistry[i], CmsClassLoader.C_REPOSITORY_VIRTUAL_FS);
-                }
-                catch(CmsException e) {
-                // this repository was not found, do do not add it to the repository list
-                // no exception handling is nescessary here.
-                }
-            }
-        }
-        loader.init(cms);
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsClassLoader... DONE");
-        }
-        try{
-            Utils.getModulStartUpMethods(cms);
-        } catch(CmsException e){}
-         *
-         */
     }
 
     /**

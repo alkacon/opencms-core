@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2002/05/10 20:54:10 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/08/22 09:58:46 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.boot;
  *
  * @author Alexander Lucas
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2002/05/10 20:54:10 $
+ * @version $Revision: 1.10 $ $Date: 2002/08/22 09:58:46 $
  */
 public interface I_CmsLogChannels {
 
@@ -99,8 +99,5 @@ public interface I_CmsLogChannels {
     public static final String C_FLEX_CACHE = "flex_cache";
     
     /** Flex loader messages */
-    public static final String C_FLEX_LOADER = "flex_loader";
-    
-    /** Flex ClassLoader messages */
-    public static final String C_FLEX_CLASSLOADER = "flex_classloader";    
+    public static final String C_FLEX_LOADER = "flex_loader"; 
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
-* Date   : $Date: 2002/08/21 11:32:46 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/08/22 09:58:48 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * be cached and re-used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2002/08/21 11:32:46 $
+ * @version $Revision: 1.26 $ $Date: 2002/08/22 09:58:48 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels {
 
@@ -121,10 +121,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
             o = instanceCache.get(classname);
         }else {
             try {
-                /* FLEX: The class loading mechanism has been changed for JSP compatibility reasons 
                 Class c = CmsTemplateClassManager.class.getClassLoader().loadClass(classname);
-                */
-                Class c = A_OpenCms.loadClass(classname);
                 // Now we have to look for the constructor
                 Constructor con = c.getConstructor(parameterTypes);
                 o = con.newInstance(callParameters);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2002/08/21 11:32:45 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2002/08/22 09:58:46 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.flex.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2002/08/21 11:32:45 $
+ * @version $Revision: 1.24 $ $Date: 2002/08/22 09:58:46 $
  *
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
@@ -65,9 +65,6 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
 
     /** The runtime configuration */
     private Configurations m_conf = null;
-    
-    /** The OpenCms class loader (which is able to load classes from the OpenCms VFS */
-    private static com.opencms.flex.CmsFlexClassLoader m_loader = null;
     
     /**
      * Destructor, called when the the servlet is shut down.
@@ -295,62 +292,6 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
         synchronized (m_listeners) {
             m_listeners.remove(listener);
         }
-    }  
-    
-    /**
-     * Returns the OpenCms class loader for the running OpenCms instance.
-     * The OpenCms class loader tries loading the class with the parent ClassLoader first,
-     * which probably will look in the standard directories of the 
-     * web application and the system directories.
-     * If the requested class is not found there, 
-     * it looks in the OpenCms VFS for the class.
-     *
-     * @return The OpenCms class loader
-     */    
-    public static ClassLoader getClassLoader() {
-        return m_loader;
-    }
-
-    /**
-     * Load a class with the OpenCms class loader.
-     * The OpenCms class loader tries loading the class with the parent ClassLoader first,
-     * which probably will look in the standard directories of the 
-     * web application and the system directories.
-     * If the requested class is not found there, 
-     * it looks in the OpenCms VFS for the class.
-     *
-     * @param name The class name to load
-     * @throws ClassNotFoundException In case the class could not be found
-     * @return The class found
-     */    
-    public static Class forName(String name) throws ClassNotFoundException {
-        return loadClass(name);
-    }
-    
-    /**
-     * Load a class with the OpenCms class loader.
-     * The OpenCms class loader tries loading the class with the parent ClassLoader first,
-     * which probably will look in the standard directories of the 
-     * web application and the system directories.
-     * If the requested class is not found there, 
-     * it looks in the OpenCms VFS for the class.
-     *
-     * @param name The class name to load
-     * @throws ClassNotFoundException In case the class could not be found
-     * @return The class found
-     */
-    public static Class loadClass(String name) throws ClassNotFoundException {
-        return m_loader.loadClass(name);
-    }
-    
-    /**
-     * Initialize the OpenCms ClassLoader.
-     * This must be done after or during the initial OpenCms initialization.
-     *
-     * @param openCms An initialized OpenCms object
-     */
-    protected void initClassLoader(A_OpenCms openCms) {
-        m_loader = new com.opencms.flex.CmsFlexClassLoader(this.getClass().getClassLoader(), openCms);
     }
 
     abstract public void initStartupClasses() throws CmsException;    

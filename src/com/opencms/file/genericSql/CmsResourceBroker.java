@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/08/21 11:32:46 $
-* Version: $Revision: 1.332 $
+* Date   : $Date: 2002/08/22 09:58:46 $
+* Version: $Revision: 1.333 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import java.net.*;
 import java.io.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
-// Flex: Removed CmsClassLoader import com.opencms.boot.CmsClassLoader;
 import com.opencms.boot.CmsBase;
 import com.opencms.core.*;
 import com.opencms.file.*;
@@ -56,7 +55,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.332 $ $Date: 2002/08/21 11:32:46 $
+ * @version $Revision: 1.333 $ $Date: 2002/08/22 09:58:46 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2961,7 +2960,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             for (int i = 0; i < resTypeCount; i++){
                 // add the resource-type
                 try{
-                    Class c = A_OpenCms.forName((String)resourceClass.elementAt(i));
+                    Class c = Class.forName((String)resourceClass.elementAt(i));
                     I_CmsResourceType resTypeClass = (I_CmsResourceType) c.newInstance();
                     resTypeClass.init(i, Integer.parseInt((String)launcherTypes.elementAt(i)),
                                          (String)resTypeNames.elementAt(i),
@@ -4530,18 +4529,6 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
         // check the security
         if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) &&
             (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED) && (id != C_PROJECT_ONLINE_ID)) {
-            // check, if we update class-files with this publishing
-            ClassLoader loader = getClass().getClassLoader();
-            boolean shouldReload = false;
-            // check if we are using our own classloader
-            // e.g. the cms-shell uses the default classloader
-            /* FLEX: Removed ClassLoader
-            if(loader instanceof CmsClassLoader) {
-                // yes we have our own classloader
-                Vector classFiles = ((CmsClassLoader)loader).getFilenames();
-                shouldReload = shouldReloadClasses(id, classFiles);
-            }
-            */
             try{
                 changedResources = m_dbAccess.publishProject(currentUser, id,
                                     onlineProject(currentUser, currentProject), isHistoryEnabled(cms), 
@@ -4573,7 +4560,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                     try{
                         // The changed masters are added to the vector changedModuleMasters, so after the last module
                         // was published the vector contains the changed masters of all published modules                        
-                        A_OpenCms.forName((String)publishModules.elementAt(i)).getMethod("publishProject",
+                        Class.forName((String)publishModules.elementAt(i)).getMethod("publishProject",
                                                 new Class[] {CmsObject.class, Boolean.class, Integer.class, Integer.class,
                                                 Long.class, Vector.class, Vector.class}).invoke(null, new Object[] {cms,
                                                 new Boolean(isHistoryEnabled(cms)), new Integer(id), new Integer(versionId), new Long(publishDate),
@@ -4623,12 +4610,6 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                         throw new CmsException(0, ex);
                     }
                 }
-                // inform about the reload classes
-                /* Flex: Removed ClassLoader
-                if(loader instanceof CmsClassLoader) {
-                    ((CmsClassLoader)loader).setShouldReload(shouldReload);
-                }
-                */
             }
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
