@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2003/09/01 09:09:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/08 09:27:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,21 @@
  
 package org.opencms.db;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
+import com.opencms.flex.CmsEvent;
+import com.opencms.flex.I_CmsEventListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -52,7 +56,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsImportFolder {
 
@@ -243,6 +247,8 @@ public class CmsImportFolder {
         int totalBytes = 0;
         int offset = 0;
         byte[] buffer = null;
+        boolean resourceExists;
+        
         while (true) {
             // handle the single entries ...
             j = 0;
@@ -346,32 +352,23 @@ public class CmsImportFolder {
                 }
 
                 filename = actImportPath + path[path.length - 1];
-                Map oldProperties = null;
-
+                
                 try {
-                    // lock the filename to see whether it already exists
-                    m_cms.lockResource(filename, true);
-
-                    // save the properties of the old file
-                    oldProperties = m_cms.readProperties(filename);
-
-                    // trash the old file
-                    m_cms.deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+                    m_cms.readFileHeader(filename);
+                    resourceExists = true;
                 } catch (CmsException e) {
-                    // ignore the exception (did not exist)
+                    resourceExists = false;
                 }
-
-                try {
-                    // create the new file ...
-                    m_cms.createResource(actImportPath, path[path.length - 1], type, null, buffer);
-
-                    // set the properties of the old file on the new file
-                    if (oldProperties != null) {
-                        m_cms.writeProperties(filename, oldProperties);
-                    }
-                } catch (CmsException e) {
-                    // ignore the exception
-                    throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+                
+                if (resourceExists) {
+                    CmsResource res = m_cms.readFileHeader(filename, true);
+                    
+                    m_cms.deleteAllProperties(filename);
+                    m_cms.replaceResource(filename, type, Collections.EMPTY_MAP, buffer);
+                    
+                    OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MAP_MODIFIED, Collections.singletonMap("resource", res)));
+                } else {
+                    m_cms.createResource(actImportPath, path[path.length - 1], type, Collections.EMPTY_MAP, buffer);
                 }
             }
 
