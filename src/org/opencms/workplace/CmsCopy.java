@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/08/01 14:49:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/08/13 10:02:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -183,13 +183,14 @@ public class CmsCopy extends CmsDialog {
         } catch (CmsException e) { }
         
         if (isFolder) {
-            // for folders, show an additional option "preserve links" and mark it as default
-            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_PRESERVE_LINK + "\" checked=\"checked\"> ");
+            // for folders, show an additional option "preserve links", mark create only links as default
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_LINK + "\" checked=\"checked\"> ");
+            retValue.append(getSettings().getMessages().key("messagebox.option.folder.aslink.copy") + "<br>\n");
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_PRESERVE_LINK + "\"> ");
             retValue.append(getSettings().getMessages().key("messagebox.option.folder.preserve.copy") + "<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\"> ");
             retValue.append(getSettings().getMessages().key("messagebox.option.folder.asnewresource.copy") + "<br>\n");       
-            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_LINK + "\"> ");
-            retValue.append(getSettings().getMessages().key("messagebox.option.folder.aslink.copy") + "<br>\n");
+            
         } else {
             // for files, mark "copy as new" as default
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\" checked=\"checked\"> ");
