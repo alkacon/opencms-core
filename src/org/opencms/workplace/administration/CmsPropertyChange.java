@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsPropertyChange.java,v $
- * Date   : $Date: 2004/11/09 15:31:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/17 16:15:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.3
  */
@@ -359,7 +359,7 @@ public class CmsPropertyChange extends CmsDialog {
         checkLock(getParamResource());        
         // change the property values    
         List changedResources = new ArrayList();
-        changedResources = getCms().changePropertyValue(getParamResource(), getParamPropertyName(), getParamOldValue(), getParamNewValue(), recursive);
+        changedResources = getCms().changeResourcesInFolderWithProperty(getParamResource(), getParamPropertyName(), getParamOldValue(), getParamNewValue(), recursive);
         setChangedResources(changedResources);
         return true;
     }

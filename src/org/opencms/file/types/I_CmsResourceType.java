@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/11/11 11:46:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/17 16:15:04 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 
 import java.util.List;
 
@@ -135,9 +136,9 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Changes the resource flags of a resource.<p>
      * 
      * The resource flags are used to indicate various "special" conditions
-     * for a resource. Most notably the "internal only" setting which signals 
+     * for a resource. Most notably, the "internal only" setting which signals 
      * that a resource can not be directly requested with it's URL.<p>
-     * 
+     *
      * @param cms the initialized CmsObject
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to change the flags for
@@ -158,12 +159,12 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     /**
      * Changes the resource type of a resource.<p>
      * 
-     * OpenCms handles resource according to the resource type,
+     * OpenCms handles resources according to the resource type,
      * not the file suffix. This is e.g. why a JSP in OpenCms can have the 
      * suffix ".html" instead of ".jsp" only. Changing the resource type
      * makes sense e.g. if you want to make a plain text file a JSP resource,
-     * or a binary file an image etc.<p> 
-     * 
+     * or a binary file an image, etc.<p> 
+     *
      * @param cms the initialized CmsObject
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to change the type for
@@ -184,12 +185,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     /**
      * Copies a resource.<p>
      * 
+     * You must ensure that the destination path is an absolute, valid and
+     * existing VFS path. Relative paths from the source are currently not supported.<p>
+     * 
      * The copied resource will always be locked to the current user
      * after the copy operation.<p>
      * 
+     * In case the target resource already exists, it is overwritten with the 
+     * source resource.<p>
+     * 
      * The <code>siblingMode</code> parameter controls how to handle siblings 
-     * during the copy operation.
-     * Possible values for this parameter are: 
+     * during the copy operation.<br>
+     * Possible values for this parameter are: <br>
      * <ul>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_NEW}</code></li>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_SIBLING}</code></li>
@@ -219,7 +226,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Copies a resource to the current project of the user.<p>
      * 
      * This is used to extend the current users project with the
-     * specified resource, in case that resource is not yet part of the project.
+     * specified resource, in case that the resource is not yet part of the project.
      * The resource is not really copied like in a regular copy operation, 
      * it is in fact only "enabled" in the current users project.<p>   
      * 
@@ -239,7 +246,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     ) throws CmsException;
 
     /**
-     * Creates a new resource with the provided content and properties.<p>
+     * Creates a new resource of the given resource type
+     * with the provided content and properties.<p>
      * 
      * @param cms the initialized CmsObject
      * @param securityManager the initialized OpenCms security manager
@@ -286,11 +294,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     ) throws CmsException;
 
     /**
-     * Deletes a resource.<p>
+     * Deletes a resource given its name.<p>
      * 
      * The <code>siblingMode</code> parameter controls how to handle siblings 
-     * during the delete operation.
-     * Possible values for this parameter are: 
+     * during the delete operation.<br>
+     * Possible values for this parameter are: <br>
      * <ul>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS}</code></li>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS}</code></li>
@@ -298,7 +306,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @param cms the initialized CmsObject
      * @param securityManager the initialized OpenCms security manager
-     * @param resource the name of the resource to delete (full path)
+     * @param resource the resource to delete 
      * @param siblingMode indicates how to handle siblings of the deleted resource
      *
      * @throws CmsException if something goes wrong
@@ -424,8 +432,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     /**
      * Locks a resource.<p>
      *
-     * The <code>mode</code> parameter controls what kind of lock is used.
-     * Possible values for this parameter are: 
+     * The <code>mode</code> parameter controls what kind of lock is used.<br>
+     * Possible values for this parameter are: <br>
      * <ul>
      * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_TEMP}</code></li>
@@ -453,8 +461,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * A move operation in OpenCms is always a copy (as sibling) followed by a delete,
      * this is a result of the online/offline structure of the 
-     * OpenCms VFS. This way you can see the deleted files/folder in the offline
-     * project, and are unable to undelete them.<p>
+     * OpenCms VFS. This way you can see the deleted files/folders in the offline
+     * project, and you will be unable to undelete them.<p>
      * 
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager
@@ -462,6 +470,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param destination the destination resource name
      *
      * @throws CmsException if something goes wrong
+     * 
      * @see CmsObject#moveResource(String, String)
      * @see CmsObject#renameResource(String, String)
      * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, int)
@@ -525,20 +534,20 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     void setAdditionalModuleResourceType(boolean additionalType);
 
     /**
-     * Change the timestamp information of a resource.<p>
+     * Changes the timestamp information of a resource.<p>
      * 
      * This method is used to set the "last modified" date
      * of a resource, the "release" date of a resource, 
-     * and also the "expires" date of a resource.<p>
+     * and also the "expire" date of a resource.<p>
      * 
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to touch
-     * @param dateLastModified the new last modified date of the resource
-     * @param dateReleased the new release date of the resource, 
-     *      use <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged
-     * @param dateExpired the new expire date of the resource, 
-     *      use <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged
+     * @param dateLastModified timestamp the new timestamp of the changed resource.
+     * @param dateReleased the new release date of the changed resource. 
+     *              Set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}<code> to keep it unchanged.
+     * @param dateExpired the new expire date of the changed resource. 
+     *              Set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}<code> to keep it unchanged.
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * 
      * @throws CmsException if something goes wrong
