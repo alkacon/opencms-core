@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/10/07 16:20:07 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/10/13 18:00:58 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -104,7 +104,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         if (exportStream != null) {
             exportStream.write(file.getContents());
         }
-        service(cms, file, req, res);  
+        load(cms, file, req, res);  
     }
     
     /**
@@ -140,9 +140,22 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#load(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException {                   
+    throws ServletException, IOException {   
+        // set content length header
+        res.setContentLength(file.getContents().length);
+        // set date last modified header
+        res.setDateHeader("Last-Modified", file.getDateLastModified());
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            // for binary data, allow proxy caching of 5 minutes
+            res.setHeader("Cache-Control", "max-age=300"); // HTTP 1.1
+            res.setDateHeader("Expires", System.currentTimeMillis() + 300000); // HTTP 1.0            
+        } else {
+            // no caching allowed for offline project
+            res.setHeader("Cache-Control", "no-cache"); // HTTP 1.1
+            res.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        }
         service(cms, file, req, res);        
-    }   
+    }
         
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(com.opencms.file.CmsObject, com.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
@@ -163,5 +176,4 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         }
         res.getOutputStream().write(content);
     }
-
  }
