@@ -10,7 +10,7 @@
 <script language=JavaScript>
 <!--
 
-top.help_url='Administration/logfileviewer.html';
+top.help_url=']]><LABEL value="help.administration.logfileviewer"/><![CDATA[';
 
 
 //-->

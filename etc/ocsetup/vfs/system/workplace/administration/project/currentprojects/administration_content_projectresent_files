@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/projektverwaltung/ProjaktuellDetails.html';
+top.help_url=']]><LABEL value="help.administration.project.current.details"/><![CDATA[';
 ]]><PROCESS>loadheader</PROCESS><![CDATA[
 //-->
 </script>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.properties"/><![CDATA[';
 //-->
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
@@ -95,7 +95,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.properties"/><![CDATA[';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
@@ -201,7 +201,7 @@ function checkSelect()
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.properties"/><![CDATA[';
 //-->
 </script>
 
@@ -295,7 +295,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.properties"/><![CDATA[';
 //-->
 </script>
 
@@ -328,7 +328,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.properties"/><![CDATA[';
 //-->
 </script>
 
@@ -425,7 +425,7 @@ top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.properties"/><![CDATA[';
 //-->
 </script>
 

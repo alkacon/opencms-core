@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/downloadgallerien/dateienHochladen.html';
+top.help_url=']]><LABEL value="help.administration.downgalleries.upload"/><![CDATA[';
 
 var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 //-->
@@ -74,7 +74,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/downloadgallerien/dateienHochladen.html';
+top.help_url=']]><LABEL value="help.administration.downgalleries.upload"/><![CDATA[';
 var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 //-->
 </script>
@@ -154,7 +154,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
     <script language=JavaScript>
     <!--
-    top.help_url='Administration/downloadgallerien/dateienHochladen.html';
+    top.help_url=']]><LABEL value="help.administration.downgalleries.upload"/><![CDATA[';
     var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
     //-->
     </script>
@@ -190,7 +190,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/downloadgallerien/dateienHochladen.html';
+top.help_url=']]><LABEL value="help.administration.downgalleries.upload"/><![CDATA[';
 var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 //-->

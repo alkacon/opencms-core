@@ -14,7 +14,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/datenbankverwaltung/import.html';
+top.help_url=']]><LABEL value="help.administration.database.import"/><![CDATA[';
 //-->
 </script>
 
@@ -140,12 +140,12 @@ top.help_url='Administration/datenbankverwaltung/import.html';
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='Administration/datenbankverwaltung/import.html';
+top.help_url=']]><LABEL value="help.administration.database.import"/><![CDATA[';
 //-->
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
@@ -243,7 +243,7 @@ top.help_url='Administration/datenbankverwaltung/import.html';
 <script language=JavaScript>
 <!--
 var pageStart="<html>\n<head>\n" +
-    "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=iso-8859-1'>\n"+ 
+    "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=]]><METHOD name="getEncoding"/><![CDATA['>\n"+ 
     "<script language='JavaScript'>\n" + 
     "function init() { setTimeout('window.scrollBy(0,100000)',100); }\n" +
     "</script>\n" +
@@ -278,7 +278,7 @@ function fillHead(content){
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
@@ -341,7 +341,7 @@ function fillHead(content){
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <script language=JavaScript>
 <!--

@@ -420,6 +420,12 @@ function doEditHTML(para)
         linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
         linkwin = window.open('edit_html_linkall.html','SetLink', "width=450, height=" + winheight + ", resizable=no, top=300, left=250");        
         break;      	         
+    case 51:
+        checkTableElSelection("TR");
+        break;          
+    case 52:
+        checkTableElSelection("TD");
+        break;          
     default:
         alert("Sorry, the requested function code " + para + " is not implemented.");          
     }   
@@ -695,6 +701,115 @@ function checkTableSelection() {
   
 }
 
+/* Checks if tablerow- or tablecell-element is selected in the DHTML Editor */
+function checkTableElSelection(type)
+{
+  var editor = document.all.EDIT_HTML;
+  var sel = editor.DOM.selection;
+  var sel2 = null;
+  var args1 = new Array();
+
+  cursorPos=sel.createRange();
+
+  // there should be no selection !
+  if (sel.type == 'None') {
+    var elt = cursorPos.parentElement(); 
+	// find next TD or TR
+    while (elt) {
+      if (elt.tagName == type) {
+        break;
+      }
+      elt = elt.parentElement;
+    }
+
+    if (elt) {
+      // don't select document area
+      if (elt.id != editor.id) {
+        // get all attributes
+        var eltheight = elt.getAttribute("height", 0);      
+        var eltwidth = elt.getAttribute("width", 0);      
+        var eltalign = elt.getAttribute("align", 0);      
+        var eltvAlign = elt.getAttribute("vAlign", 0);      
+        var eltbgColor = elt.getAttribute("bgColor", 0);      
+        var eltborderColor = elt.getAttribute("borderColor", 0);      
+        // set arguments for dialog
+        if(eltbgColor != null && eltbgColor != "undefined" && eltbgColor.length > 0) {
+          args1["bgColor"] = eltbgColor;       
+        } else {
+	      args1["bgColor"] = "";
+  	    }
+        if(eltborderColor != null && eltborderColor != "undefined" && eltborderColor.length > 0) {
+          args1["borderColor"] = eltborderColor;       
+        } else {
+	      args1["borderColor"] = "";
+	    }
+        if(eltheight != null && eltheight.length > 0) {
+          args1["height"] = eltheight;       
+        } else {
+	      args1["height"] = "";
+  	    }
+        if(eltwidth != null && eltwidth.length > 0) {
+          args1["width"] = eltwidth;       
+        } else {
+	      args1["width"] = "";
+	    }
+        if(eltalign != null && eltalign.length > 0) {
+          args1["align"] = eltalign;       
+        } else {
+	      args1["align"] = "";
+	    }
+        if(eltvAlign != null && eltvAlign.length > 0) {
+          args1["vAlign"] = eltvAlign; 
+        } else {
+	      args1["vAlign"] = "";
+	    }
+  	    args1["title"] = type;
+	  
+		// call dialog
+        args2 = showModalDialog( "edit_html_changetable_el.html", args1,"font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:32em");
+
+		// args == null if cancel button was pressed
+        if (args2 != null) {     
+		  // clear all attributes	
+  	      elt.removeAttribute("bgColor", 0);
+  	      elt.removeAttribute("borderColor", 0);
+  	      elt.removeAttribute("height", 0);
+	      elt.removeAttribute("width", 0);
+	      elt.removeAttribute("align", 0);
+	      elt.removeAttribute("vAlign", 0);
+	      // get values from dialog and set attributes of table element
+          for ( elem in args2 ) {
+            if ("bgColor" == elem && args2["bgColor"] != null) {
+              elt.setAttribute("bgColor", args2["bgColor"]);
+            } else if ("borderColor" == elem && args2["borderColor"] != null) {      
+              elt.borderColor = args2["borderColor"];
+            } else if ("height" == elem && args2["height"] != null) {      
+              elt.height = args2["height"];
+            } else if ("width" == elem && args2["width"] != null) {      
+              elt.width = args2["width"];
+            } else if ("align" == elem && args2["align"] != null) {      
+                elt.align = args2["align"];
+            } else if ("vAlign" == elem && args2["vAlign"] != null) {      
+                elt.vAlign = args2["vAlign"];
+            }          
+          }
+        }
+      } else {
+        // id of found element == id of Editor, so cursor is not inside table
+    	args1["error_notable"] = "true";
+    	showModalDialog( "edit_html_changetable_el.html", args1,"font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:32em");
+      } 
+    } else {
+      // no parent found with tag.name == TR or TD
+      args1["error_notable"] = "true";
+      showModalDialog( "edit_html_changetable_el.html", args1,"font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:32em");
+    }
+  } else {
+    // text or picture or control selected
+    args1["error_selection"] = "true";
+    showModalDialog( "edit_html_changetable_el.html", args1,"font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:32em");
+  }
+}
 
 /* Builds a new table */
 function InsertTable()

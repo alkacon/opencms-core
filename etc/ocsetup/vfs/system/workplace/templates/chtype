@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/ChType.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.chtype"/><![CDATA[';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 

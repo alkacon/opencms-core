@@ -11,7 +11,7 @@ if(top.frames[0].document.projectchange.project.options[top.frames[0].document.p
     window.top.head.location.href='../../../action/head.html';
 }
 
-top.help_url='Administration/projektverwaltung/Projektaktuell.html';
+top.help_url=']]><LABEL value="help.administration.project.current"/><![CDATA[';
 //-->
 </script>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>

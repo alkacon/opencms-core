@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
 
 MSHTML edit dialog for links that allows the insertion of anchors (a name="") and targets in the link.
@@ -7,21 +7,23 @@ Based on previous versions of the OpenCms link dialog.
 Author : Alexander Kandzior (a.kandzior@alkacon.com)
 
 File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/Attic/edit_html_linkall,v $
-Date   : $Date: 2002/11/02 10:24:01 $
-Version: $Revision: 1.5 $
+Date   : $Date: 2003/01/31 19:15:28 $
+Version: $Revision: 1.6 $
 
 -->
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
 <html>
-    <script language=JavaScript>
-    <!--
-        top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
-    //-->
-    </script>
-
     <head>
+    	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+    	    
+	    <script language=JavaScript>
+	    <!--
+	        top.help_url=']]><LABEL value="help.explorer.new.link"/><![CDATA[';
+	    //-->
+	    </script>    
+
         <script language=JavaScript>
         <!--
             var linkEditor = null;
@@ -283,7 +285,6 @@ Version: $Revision: 1.5 $
         //-->
         </script>
 
-        <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
         <title>]]><LABEL value="title.newlink" /><![CDATA[</title>
         <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
         <script language="JavaScript" type="text/javascript" src="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>

@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/Kontextmenue/zugriffsAktionen/ChGroup.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.chgrp"/><![CDATA[';
 
 var selectedowner=null;
 
@@ -119,7 +119,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/Kontextmenue/zugriffsAktionen/ChGroup.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.chgrp"/><![CDATA[';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
@@ -147,7 +147,7 @@ function checkSelected()
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">

@@ -11,7 +11,7 @@
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
-top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/delete.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.delete"/><![CDATA[';
 //-->
 </script>
 
@@ -110,7 +110,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/delete.html';
 //for the filename to delete
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 
-top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/delete.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.delete"/><![CDATA[';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
@@ -118,7 +118,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
@@ -203,7 +203,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
@@ -249,7 +249,7 @@ function update_frames()
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">

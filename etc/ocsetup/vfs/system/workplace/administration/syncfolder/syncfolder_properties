@@ -10,7 +10,7 @@
 <script language=JavaScript>
 <!--
 
-top.help_url='Administration/syncVerwaltung.html';
+top.help_url=']]><LABEL value="help.administration.sync_management"/><![CDATA[';
 
 function deleteAnItem(theList,itemNo) {
     var n=theList.length;

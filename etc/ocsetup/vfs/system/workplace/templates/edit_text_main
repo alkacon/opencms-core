@@ -1,144 +1,137 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE name="ie">
-<![CDATA[
-<!-- Buttonleiste -->
-<table cellspacing=0 cellpadding=0 border=0 width="100%">
-    <tr>
-        <td class=menu>]]><BUTTON href="javascript:doEdit(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="javascript:doEdit(3);" name="bt_save" action="" alt="save"/><![CDATA[</td>
-
-        <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_undo" action="doEdit(4);" alt="undo"/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_redo" action="doEdit(5);" alt="redo"/><![CDATA[</td>
-
-        <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_search" action="doEdit(6);" alt="search"/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_searchreplace" action="doEdit(7);" alt="searchreplace"/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_goto" action="doEdit(8);" alt="goto"/><![CDATA[</td>
-
-        <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_cut" action="doEdit(9);" alt="cut"/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_copy" action="doEdit(10);" alt="copy"/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_paste" action="doEdit(11);" alt="paste"/><![CDATA[</td>
-
-        <script language="JavaScript">
-        if (USE_IMPORTBUTTONS) {
-            document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><METHOD name="resourcesUri">gr_line.gif</METHOD><![CDATA[" width=2></td>');
-            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileimport\');doEdit(12);" onmouseout="ChOff(\'bt_fileimport\')" onmouseover="ChOn(\'bt_fileimport\')" onmouseup="ChOn(\'bt_fileimport\')"><IMG alt="]]><LABEL value="button.fileimport"/><![CDATA[" width=32 border=0 name=bt_fileimport src="]]><METHOD name="resourcesUri">bt_fileimport_off.gif</METHOD><![CDATA[" ></a></td>');
-            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexport\');doEdit(13);" onmouseout="ChOff(\'bt_fileexport\')" onmouseover="ChOn(\'bt_fileexport\')" onmouseup="ChOn(\'bt_fileexport\')"><IMG alt="]]><LABEL value="button.fileexport"/><![CDATA[" width=32 border=0 name=bt_fileexport src="]]><METHOD name="resourcesUri">bt_fileexport_off.gif</METHOD><![CDATA[" ></a></td>');
-            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexportas\');doEdit(14);" onmouseout="ChOff(\'bt_fileexportas\')" onmouseover="ChOn(\'bt_fileexportas\')" onmouseup="ChOn(\'bt_fileexportas\')"><IMG alt="]]><LABEL value="button.fileexportas"/><![CDATA[" width=32 border=0 name=bt_fileexportas src="]]><METHOD name="resourcesUri">bt_fileexportas_off.gif</METHOD><![CDATA[" ></a></td>');
-        }
-        </script>
-
-        <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-        <td class=menu>]]><BUTTON name="bt_print" action="doEdit(15);" alt="print"/><![CDATA[</td>
-
-        <td class=menu width=2>]]><!--<BUTTONSEPARATOR/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="javascript:treewin=opensmallwin('../help/de/index.html', 'Hilfe', 300, 600),treewin.focus();;" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
-
-        ]]>--><![CDATA[<td class=menu width="100%" align=right>]]><BUTTON href="javascript:doEdit(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>
-    </tr>
-    <tr><td colspan=22><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" border=0 width=2 height=2></td></tr>
-</table>
-</td></tr>
-
+<![CDATA[<table width="100%" border="0" cellspacing="0" cellpadding="0" class="toolbar">
+			<tr height="28">
+				<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="28"></td>
+				<td align="left" width="20"><img src="]]><METHOD name="resourcesUri">bu_tb_start.gif</METHOD><![CDATA[" width="10" height="28"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="10" height="28"></td>
+				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr height="20"> 
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu2.className='over';" onMouseOut="bu2.className='norm';" onMouseDown="bu2.className='push';" onMouseUp="bu2.className='over';doEdit(2);"><img name="bu2" src="]]><METHOD name="resourcesUri">bu_save_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.saveclose"/><![CDATA["></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu3.className='over';" onMouseOut="bu3.className='norm';" onMouseDown="bu3.className='push';" onMouseUp="bu3.className='over';doEdit(3);"><img name="bu3" src="]]><METHOD name="resourcesUri">bu_save.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.save"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu4.className='over';" onMouseOut="bu4.className='norm';" onMouseDown="bu4.className='push';" onMouseUp="bu4.className='over';doEdit(4);"><img name="bu4" src="]]><METHOD name="resourcesUri">bu_undo.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.undo"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu5.className='over';" onMouseOut="bu5.className='norm';" onMouseDown="bu5.className='push';" onMouseUp="bu5.className='over';doEdit(5);"><img name="bu5" src="]]><METHOD name="resourcesUri">bu_redo.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.redo"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu6.className='over';" onMouseOut="bu6.className='norm';" onMouseDown="bu6.className='push';" onMouseUp="bu6.className='over';doEdit(6);"><img name="bu6" src="]]><METHOD name="resourcesUri">bu_search.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.search"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu7.className='over';" onMouseOut="bu7.className='norm';" onMouseDown="bu7.className='push';" onMouseUp="bu7.className='over';doEdit(7);"><img name="bu7" src="]]><METHOD name="resourcesUri">bu_replace.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.replace"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu8.className='over';" onMouseOut="bu8.className='norm';" onMouseDown="bu8.className='push';" onMouseUp="bu8.className='over';doEdit(8);"><img name="bu8" src="]]><METHOD name="resourcesUri">bu_goto.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.goto"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu9.className='over';" onMouseOut="bu9.className='norm';" onMouseDown="bu9.className='push';" onMouseUp="bu9.className='over';doEdit(9);"><img name="bu9" src="]]><METHOD name="resourcesUri">bu_cut.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.cut"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu10.className='over';" onMouseOut="bu10.className='norm';" onMouseDown="bu10.className='push';" onMouseUp="bu10.className='over';doEdit(10);"><img name="bu10" src="]]><METHOD name="resourcesUri">bu_copy.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.copy"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu11.className='over';" onMouseOut="bu11.className='norm';" onMouseDown="bu11.className='push';" onMouseUp="bu11.className='over';doEdit(11);"><img name="bu11" src="]]><METHOD name="resourcesUri">bu_paste.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.paste"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu15.className='over';" onMouseOut="bu15.className='norm';" onMouseDown="bu15.className='push';" onMouseUp="bu15.className='over';doEdit(15);"><img name="bu15" src="]]><METHOD name="resourcesUri">bu_print.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.print"/><![CDATA["></td>
+						<script>
+						if (USE_HELPBUTTON) {
+							document.write('<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>');
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className=\'over\';" onMouseOut="bu16.className=\'norm\';" onMouseDown="bu16.className=\'push\';treewin=opensmallwin(\'../help/de/index.html\', \'Hilfe\', 300, 600);treewin.focus();"><img name="bu16" src="]]><METHOD name="resourcesUri">bu_help.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.help"/><![CDATA["></td>');
+						}
+						</script>
+						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu1.className='over';" onMouseOut="bu1.className='norm';" onMouseDown="bu1.className='push';" onMouseUp="bu1.className='over';return confirmExit();"><img name="bu1" src="]]><METHOD name="resourcesUri">bu_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.close"/><![CDATA["><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>
+					</tr>
+				</table></td>
+			</tr>
+		</table></td>
+	</tr>
 
 <!-- Inhalt -->
-<tr>
-    <td class="texteditor" height="100%" width="100%">
-        <OBJECT classid="clsid:EB3A74C0-5343-101D-BB4D-040224009C02"
-            width="100%" height="100%" id="edit1" name="edit1" onFocus="setTextDelayed();">
-            <PARAM NAME="_Version" VALUE="131083">
-            <PARAM NAME="_ExtentX" VALUE="22887">
-            <PARAM NAME="_ExtentY" VALUE="7223">
-            <PARAM NAME="_StockProps" VALUE="125">
-            <PARAM NAME="Text" VALUE="Loading .....">
-            <PARAM NAME="ForeColor" VALUE="0">
-            <PARAM NAME="BackColor" VALUE="16777215">
-            <PARAM NAME="BorderStyle" VALUE="1">
-            <PARAM NAME="Enabled" VALUE="-1">
-            <PARAM NAME="AutoIndent" VALUE="-1">
-            <PARAM NAME="BackColorSelected" VALUE="8388608">
-            <PARAM NAME="BookmarksMax" VALUE="16">
-            <PARAM NAME="CanChangeFile" VALUE="0">
-            <PARAM NAME="CanChangeFont" VALUE="0">
-            <PARAM NAME="CaretWidth" VALUE="0">
-            <PARAM NAME="DefaultSelection" VALUE="-1">
-            <PARAM NAME="ExtraComments" VALUE="0">
-            <PARAM NAME="Item2AsComment" VALUE="0">
-            <PARAM NAME="UnixStyleSave" VALUE="0">
-            <PARAM NAME="CurrentWordAsText" VALUE="0">
-            <PARAM NAME="MultilineItems" VALUE="0">
-            <PARAM NAME="MultilineStrings" VALUE="0">
-            <PARAM NAME="SinglelineStrings" VALUE="0">
-            <PARAM NAME="ExtraHorzSpacing" VALUE="3">
-            <PARAM NAME="ExtraVertSpacing" VALUE="0">
-            <PARAM NAME="FileMask" VALUE="/All Files/*.*/">
-            <PARAM NAME="FileName" VALUE="+">
-            <PARAM NAME="ForeColorSelected" VALUE="16777215">
-            <PARAM NAME="HasFile" VALUE="-1">
-            <PARAM NAME="HasMenu" VALUE="0">
-            <PARAM NAME="Highlight" VALUE="0">
-            <PARAM NAME="InsertMode" VALUE="1">
-            <PARAM NAME="ScrollBars" VALUE="3">
-            <PARAM NAME="Syntax" VALUE="">
-            <PARAM NAME="PaintMode" VALUE="0">
-            <PARAM NAME="TabStopSize" VALUE="4">
-            <PARAM NAME="ReadOnly" VALUE="0">
-            <PARAM NAME="UndoDepth" VALUE="-1">
-            <PARAM NAME="InitializeType" VALUE="0">
-            <PARAM NAME="GroupNumber" VALUE="0">
-            <PARAM NAME="StartInComments" VALUE="0">
-            <PARAM NAME="MacStyleSave" VALUE="0">
-            <PARAM NAME="WantTab" VALUE="-1">
-            <PARAM NAME="WordWrap" VALUE="0">
-            <PARAM NAME="WordWrapAuto" VALUE="-1">
-            <PARAM NAME="WordWrapRMargin" VALUE="0">
-            <PARAM NAME="WordWrapWidth" VALUE="0">
-            <PARAM NAME="NoPrintDialog" VALUE="0">
-            <PARAM NAME="NoPrintProgress" VALUE="0">
-            <PARAM NAME="WrapKeys" VALUE="0">
-            <PARAM NAME="BackColorPrint" VALUE="16777215">
-            <PARAM NAME="PrintJobName" VALUE="Document">
-            <PARAM NAME="ZeroSubstitute" VALUE="0">
-        </OBJECT>
-        <script language="javascript">
-            if(document.edit1 != true) document.location=document.location+"&noactivex=true";
-        </script>
-    </td>
-</tr>
-<tr><td>
+	<tr>
+		<td class="texteditor" height="100%" width="100%"><OBJECT classid="clsid:EB3A74C0-5343-101D-BB4D-040224009C02"
+		width="100%" height="100%" id="edit1" name="edit1" onFocus="setTextDelayed();">
+			<PARAM NAME="_Version" VALUE="131083">
+			<PARAM NAME="_ExtentX" VALUE="22887">
+			<PARAM NAME="_ExtentY" VALUE="7223">
+			<PARAM NAME="_StockProps" VALUE="125">
+			<PARAM NAME="Text" VALUE="Loading .....">
+			<PARAM NAME="ForeColor" VALUE="0">
+			<PARAM NAME="BackColor" VALUE="16777215">
+			<PARAM NAME="BorderStyle" VALUE="1">
+			<PARAM NAME="Enabled" VALUE="-1">
+			<PARAM NAME="AutoIndent" VALUE="-1">
+			<PARAM NAME="BackColorSelected" VALUE="8388608">
+			<PARAM NAME="BookmarksMax" VALUE="16">
+			<PARAM NAME="CanChangeFile" VALUE="0">
+			<PARAM NAME="CanChangeFont" VALUE="0">
+			<PARAM NAME="CaretWidth" VALUE="0">
+			<PARAM NAME="DefaultSelection" VALUE="-1">
+			<PARAM NAME="ExtraComments" VALUE="0">
+			<PARAM NAME="Item2AsComment" VALUE="0">
+			<PARAM NAME="UnixStyleSave" VALUE="0">
+			<PARAM NAME="CurrentWordAsText" VALUE="0">
+			<PARAM NAME="MultilineItems" VALUE="0">
+			<PARAM NAME="MultilineStrings" VALUE="0">
+			<PARAM NAME="SinglelineStrings" VALUE="0">
+			<PARAM NAME="ExtraHorzSpacing" VALUE="3">
+			<PARAM NAME="ExtraVertSpacing" VALUE="0">
+			<PARAM NAME="FileMask" VALUE="/All Files/*.*/">
+			<PARAM NAME="FileName" VALUE="+">
+			<PARAM NAME="ForeColorSelected" VALUE="16777215">
+			<PARAM NAME="HasFile" VALUE="-1">
+			<PARAM NAME="HasMenu" VALUE="0">
+			<PARAM NAME="Highlight" VALUE="0">
+			<PARAM NAME="InsertMode" VALUE="1">
+			<PARAM NAME="ScrollBars" VALUE="3">
+			<PARAM NAME="Syntax" VALUE="">
+			<PARAM NAME="PaintMode" VALUE="0">
+			<PARAM NAME="TabStopSize" VALUE="4">
+			<PARAM NAME="ReadOnly" VALUE="0">
+			<PARAM NAME="UndoDepth" VALUE="-1">
+			<PARAM NAME="InitializeType" VALUE="0">
+			<PARAM NAME="GroupNumber" VALUE="0">
+			<PARAM NAME="StartInComments" VALUE="0">
+			<PARAM NAME="MacStyleSave" VALUE="0">
+			<PARAM NAME="WantTab" VALUE="-1">
+			<PARAM NAME="WordWrap" VALUE="0">
+			<PARAM NAME="WordWrapAuto" VALUE="-1">
+			<PARAM NAME="WordWrapRMargin" VALUE="0">
+			<PARAM NAME="WordWrapWidth" VALUE="0">
+			<PARAM NAME="NoPrintDialog" VALUE="0">
+			<PARAM NAME="NoPrintProgress" VALUE="0">
+			<PARAM NAME="WrapKeys" VALUE="0">
+			<PARAM NAME="BackColorPrint" VALUE="16777215">
+			<PARAM NAME="PrintJobName" VALUE="Document">
+			<PARAM NAME="ZeroSubstitute" VALUE="0">
+		</OBJECT>
+		<script language="javascript">
+			if(document.edit1 != true) document.location=document.location+"&noactivex=true";
+		</script>
+		</td>
+	</tr>
 ]]>
 </TEMPLATE>
 
 <TEMPLATE name="ns">
-<![CDATA[
-<!-- Buttonleiste -->
-<table cellspacing=0 cellpadding=0 border=0 width="100%">
-    <tr>
-        <td class=menu>]]><BUTTON href="javascript:doNsEdit(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="javascript:doNsEdit(3);" name="bt_save" action="" alt="save"/><![CDATA[</td>
-        <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="javascript:treewin=opensmallwin('../help/de/index.html', 'Hilfe', 300, 600),treewin.focus();" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
-        <td class=menu width="100%">&nbsp;</td>
-        <td class=menu align=right>]]><BUTTON href="javascript:doNsEdit(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>
-    </tr>
-</table>
-
-<!-- Inhalt -->
-<tr>
-    <td class="texteditor" height="100%" width=100%>
-    <!-- write the text area -->
-    <script language="JavaScript">
-    <!--      
-        str = '<textarea wrap="off" name="edit1" onfocus="setTextDelayed();" style="width:100%; height:100%; font-family:Fixedsys, monospace"></textarea>';
-        document.write(str);
-    //-->
-    </script>
-    </td>
-</tr>
-<tr><td>
+<![CDATA[<table width="100%" height="28" border="0" cellspacing="0" cellpadding="0" class="toolbar">
+			<tr height="28">
+				<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="28"></td>
+				<td align="left" width="10"><img src="]]><METHOD name="resourcesUri">bu_tb_start.gif</METHOD><![CDATA[" width="10" height="28"></td>
+				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr height="20"> 
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu2.className='over';" onMouseOut="bu2.className='norm';" onMouseDown="bu2.className='push';doNsEdit(2);"><img name="bu2" src="]]><METHOD name="resourcesUri">bu_save_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.saveclose"/><![CDATA["></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu3.className='over';" onMouseOut="bu3.className='norm';" onMouseDown="bu3.className='push';doNsEdit(3);"><img name="bu3" src="]]><METHOD name="resourcesUri">bu_save.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.save"/><![CDATA["></td>
+						<script>
+						if (USE_HELPBUTTON) {
+							document.write('<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>');
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className=\'over\';" onMouseOut="bu16.className=\'norm\';" onMouseDown="bu16.className=\'push\';treewin=opensmallwin(\'../help/de/index.html\', \'Hilfe\', 300, 600);treewin.focus();"><img name="bu16" src="]]><METHOD name="resourcesUri">bu_help.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.help"/><![CDATA["></td>');
+						}
+						</script>
+						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu1.className='over';" onMouseOut="bu1.className='norm';" onMouseDown="bu1.className='push';doNsEdit(1);"><img name="bu1" src="]]><METHOD name="resourcesUri">bu_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.close"/><![CDATA["><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>
+					</tr>
+				</table></td>
+			</tr>
+		</table></td>
+	</tr>
+	<tr>
+		<td valign="top" class="texteditor"width="100%">
+		<!-- write the text area -->
+		<script>
+		    iRows = Math.round((window.innerHeight - tbsize)/15) - 1;
+			str = '<textarea wrap="off" name="edit1" onfocus="setTextDelayed();" rows="' + iRows + '" style="width:100%; font-family:Fixedsys, monospace"></textarea>';
+			document.write(str);
+		</script>
+		</td>
+	</tr>
 ]]>
 </TEMPLATE>
 </WORKPLACE>

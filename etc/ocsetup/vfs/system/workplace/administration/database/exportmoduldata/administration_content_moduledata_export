@@ -12,7 +12,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/datenbankverwaltung/exportieren.html';
+top.help_url=']]><LABEL value="help.administration.moduledata.export"/><![CDATA[';
 //-->
 </script>
 

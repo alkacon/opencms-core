@@ -10,7 +10,7 @@
 <script language=JavaScript>
 <!--
 
-top.help_url='Administration/cronmanagement.html';
+top.help_url=']]><LABEL value="help.administration.cron_management"/><![CDATA[';
 
 
 //-->

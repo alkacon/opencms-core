@@ -10,7 +10,7 @@
 <script language=JavaScript>
 <!--
 
-top.help_url='Administration/linkcheckviewer.html';
+top.help_url=']]><LABEL value="help.administration.linkchecker"/><![CDATA[';
 
 
 //-->

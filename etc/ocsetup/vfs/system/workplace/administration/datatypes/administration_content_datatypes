@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/DateiTyp.html';
+top.help_url=']]><LABEL value="help.administration.datatypes"/><![CDATA[';
 //-->
     <!-- URL for pictures -->
         var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
@@ -39,7 +39,7 @@ top.help_url='Administration/DateiTyp.html';
 
 <script LANGUAGE="JavaScript">
 <!--
-top.help_url='Administration/DateiTyp.html';
+top.help_url=']]><LABEL value="help.administration.datatypes"/><![CDATA[';
 //-->
 </script>
 
@@ -119,7 +119,7 @@ top.help_url='Administration/DateiTyp.html';
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/DateiTyp.html';
+top.help_url=']]><LABEL value="help.administration.datatypes"/><![CDATA[';
 //-->
 </script>
 

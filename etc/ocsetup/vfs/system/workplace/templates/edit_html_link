@@ -5,7 +5,7 @@
 <html>
     <script language=JavaScript>
     <!--
-        top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
+        top.help_url=']]><LABEL value="help.explorer.new.link"/><![CDATA[';
     //-->
     </script>
 

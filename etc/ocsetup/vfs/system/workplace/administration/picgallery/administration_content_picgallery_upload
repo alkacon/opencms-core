@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/bildergallerien/Bilderhochladen.html';
+top.help_url=']]><LABEL value="help.administration.picgalleries.upload"/><![CDATA[';
 
 var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
@@ -75,7 +75,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/bildergallerien/Bilderhochladen.html';
+top.help_url=']]><LABEL value="help.administration.picgalleries.upload"/><![CDATA[';
 var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 function check_textfeld(formular, feld)

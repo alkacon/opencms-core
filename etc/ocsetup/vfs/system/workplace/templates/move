@@ -10,7 +10,7 @@
 <!--
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
-top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.move"/><![CDATA[';
 //-->
 </script>
 
@@ -108,7 +108,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
+top.help_url=']]><LABEL value="help.explorer.contextmenu.move"/><![CDATA[';
 
 function SubmitIfCR(form, key){
   if (key == 13 || key == 65293) {
@@ -123,7 +123,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
@@ -208,7 +208,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
@@ -254,7 +254,7 @@ function update_frames()
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">

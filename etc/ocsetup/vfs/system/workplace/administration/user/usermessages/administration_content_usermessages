@@ -24,7 +24,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/Benutzerverwaltung/BenutzerMessages.html';
+top.help_url=']]><LABEL value="help.administration.usermessages"/><![CDATA[';
 //-->
 </script>
 

@@ -760,3 +760,66 @@ DIV.timer_day
 #divCont{position:absolute; top:80; left:245; width:470; height:350; overflow:hidden; clip:rect(0,465,350,0); visibility:hidden; z-index:100}
 #divText{position:absolute; top:0; left:10; z-index:10}
 #frame{position:absolute; left:220; top:0; width:500; height:350; clip:rect(0,500,502,0); z-index:1}
+
+/*============================================*/
+/* Styles for new layout in Editor            */
+/*============================================*/
+table.toolbar {
+    background-color: #ECE9D8;
+}
+
+td.tbl {
+	font-family: Arial, Helvetica, sans-serif;
+	padding:0; 
+	padding-bottom:0; 
+	padding-top:0;
+	vertical-align: middle;
+}
+.tbl img {
+   	border: 1px solid #ECE9D8; 
+	margin:0; 
+	padding:1;
+	cursor: hand;
+}
+.tbl img.norm{
+   	border: 1px solid #ECE9D8; 
+	margin:0; 
+	padding:1;
+	cursor: hand;
+}
+.tbl img.over{
+    border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	border-bottom: 1px solid #ACA899;
+	border-right: 1px solid #ACA899;
+}
+.tbl img.push{
+    border-top: 1px solid #ACA899;
+	border-left: 1px solid #ACA899;
+	border-bottom: 1px solid #FFFFFF;
+	border-right: 1px solid #FFFFFF;
+}
+/*============================================*/
+/* Styles for new layout in Explorer          */
+/*============================================*/
+td.expl_text {
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 12px;
+    COLOR: #000000;
+    FONT-WEIGHT: normal;
+}
+
+td.expl_textbold {
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 12px;
+    COLOR: #000000;
+    FONT-WEIGHT: bold;
+}
+
+.expl_select {
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 12px;
+	color: #000000;
+	background-color: #FFFFFF;
+	width: 150px;
+}

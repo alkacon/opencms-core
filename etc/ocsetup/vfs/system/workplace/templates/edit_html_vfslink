@@ -5,7 +5,7 @@
 <html>
     <script language=JavaScript>
     <!--
-        top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
+        top.help_url=']]><LABEL value="help.explorer.new.link"/><![CDATA[';
     //-->
     </script>
 
@@ -144,7 +144,7 @@
         //-->
         </script>
 
-        <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+        <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
         <title>]]><LABEL value="title.newlink" /><![CDATA[</title>
         <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
         <script language="JavaScript" type="text/javascript" src="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>

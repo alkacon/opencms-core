@@ -55,6 +55,19 @@ var PRINT=15;
 // Indicates if the text of the editor window is already set
 var textSetted = false;
 
+
+var windowWidth=null;
+var windowHeight=null;
+
+
+// function for calculating the right dimensions of a HTML textarea
+function getDimensions() {
+    windowWidth = innerWidth - 15;
+    windowHeight = innerHeight - space;
+    windowWidth = Math.round(windowWidth/8.3);
+    windowHeight = Math.round(windowHeight/18.8);
+}
+
 // loads the file content into the editor
 function setText()
 {
@@ -73,6 +86,7 @@ function setTextDelayed()
     if(! textSetted) {
         document.EDITOR.edit1.Text = decodeURIComponent(text);
         document.EDITOR.edit1.value = decodeURIComponent(text);
+        document.EDITOR.edit1.ClearModify(2);
         textSetted = true;
     }
 }

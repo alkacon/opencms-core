@@ -10,7 +10,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='Administration/Modulverwaltung/index.html';
+top.help_url=']]><LABEL value="help.administration.module_management"/><![CDATA[';
 //-->
 </script>
 

@@ -1,192 +1,144 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <workplace>
 <template>
-<![CDATA[
+<![CDATA[<table width="100%" border="0" cellspacing="0" cellpadding="0" class="toolbar">
+			<tr height="28">
+				<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="28"></td>
+				<td align="left" width="20"><img src="]]><METHOD name="resourcesUri">bu_tb_start.gif</METHOD><![CDATA[" width="10" height="28"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="10" height="28"></td>
+				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr height="20"> 
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu2.className='over';" onMouseOut="bu2.className='norm';" onMouseDown="bu2.className='push';" onMouseUp="bu2.className='over';doEditHTML(2);"><img name="bu2" src="]]><METHOD name="resourcesUri">bu_save_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.saveclose"/><![CDATA["></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu3.className='over';" onMouseOut="bu3.className='norm';" onMouseDown="bu3.className='push';" onMouseUp="bu3.className='over';doEditHTML(3);"><img name="bu3" src="]]><METHOD name="resourcesUri">bu_save.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.save"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu4.className='over';" onMouseOut="bu4.className='norm';" onMouseDown="bu4.className='push';" onMouseUp="bu4.className='over';doEditHTML(4);"><img name="bu4" src="]]><METHOD name="resourcesUri">bu_undo.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.undo"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu5.className='over';" onMouseOut="bu5.className='norm';" onMouseDown="bu5.className='push';" onMouseUp="bu5.className='over';doEditHTML(5);"><img name="bu5" src="]]><METHOD name="resourcesUri">bu_redo.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.redo"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu6.className='over';" onMouseOut="bu6.className='norm';" onMouseDown="bu6.className='push';" onMouseUp="bu6.className='over';doEditHTML(6);"><img name="bu6" src="]]><METHOD name="resourcesUri">bu_search.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.search"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu9.className='over';" onMouseOut="bu9.className='norm';" onMouseDown="bu9.className='push';" onMouseUp="bu9.className='over';doEditHTML(9);"><img name="bu9" src="]]><METHOD name="resourcesUri">bu_cut.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.cut"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu10.className='over';" onMouseOut="bu10.className='norm';" onMouseDown="bu10.className='push';" onMouseUp="bu10.className='over';doEditHTML(10);"><img name="bu10" src="]]><METHOD name="resourcesUri">bu_copy.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.copy"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu11.className='over';" onMouseOut="bu11.className='norm';" onMouseDown="bu11.className='push';" onMouseUp="bu11.className='over';doEditHTML(11);"><img name="bu11" src="]]><METHOD name="resourcesUri">bu_paste.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.paste"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu40.className='over';" onMouseOut="bu40.className='norm';" onMouseDown="bu40.className='push';doEditHTML(40);"><img name="bu40" src="]]><METHOD name="resourcesUri">bu_table.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.table"/><![CDATA["></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu90.className='over';" onMouseOut="bu90.className='norm';" onMouseDown="bu90.className='push';doEditHTML(51);"><img name="bu90" src="]]><METHOD name="resourcesUri">bu_table_tr.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.tablerow"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu91.className='over';" onMouseOut="bu91.className='norm';" onMouseDown="bu91.className='push';doEditHTML(52);"><img name="bu91" src="]]><METHOD name="resourcesUri">bu_table_td.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.tablecell"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<script language="JavaScript">					
+						if (USE_WORKINGLINKDIALOG) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu50.className=\'over\';" onMouseOut="bu50.className=\'norm\';" onMouseDown="bu50.className=\'push\';doEditHTML(50);"><img name="bu50" src="]]><METHOD name="resourcesUri">bu_link.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.linkto"/><![CDATA["></td>');
+						} else {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu46.className=\'over\';" onMouseOut="bu46.className=\'norm\';" onMouseDown="bu46.className=\'push\';doEditHTML(46);"><img name="bu46" src="]]><METHOD name="resourcesUri">bu_link.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.linkinternal"/><![CDATA["></td>');
+						}
+						</script>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu42.className='over';" onMouseOut="bu42.className='norm';" onMouseDown="bu42.className='push';" onMouseUp="bu42.className='over';doEditHTML(42);"><img name="bu42" src="]]><METHOD name="resourcesUri">bu_image.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.image"/><![CDATA["></a></td>
+						<script language="JavaScript">					
+						if (USE_IMAGEGALS) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu43.className=\'over\';" onMouseOut="bu43.className=\'norm\';" onMouseDown="bu43.className=\'push\';doEditHTML(43);"><img name="bu43" src="]]><METHOD name="resourcesUri">bu_imagegallery.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.imagelist"/><![CDATA["></td>');
+						}
+						if (USE_DOWNLOADGALS) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu44.className=\'over\';" onMouseOut="bu44.className=\'norm\';" onMouseDown="bu44.className=\'push\';doEditHTML(44);"><img name="bu44" src="]]><METHOD name="resourcesUri">bu_downloadgallery.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.downloadlist"/><![CDATA["></td>');
+						}
+						if (USE_EXTERNLINKGALS) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu92.className=\'over\';" onMouseOut="bu92.className=\'norm\';" onMouseDown="bu92.className=\'push\';window.open(\'linkbrowser.html?initial=true\',\'LinkBrowser\', \'width=550, height=500, resizable=yes, top=200, left=450\');"><img name="bu92" src="]]><METHOD name="resourcesUri">bu_linkgallery.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.linklist"/><![CDATA["></td>');
+						}
+						if (USE_HTMLGALS) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu93.className=\'over\';" onMouseOut="bu93.className=\'norm\';" onMouseDown="bu93.className=\'push\';window.open(\'htmlbrowser.html?initial=true\',\'HtmlBrowser\', \'width=550, height=500, resizable=yes, top=200, left=450\');"><img name="bu93" src="]]><METHOD name="resourcesUri">bu_htmlgallery.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.htmllist"/><![CDATA["></td>');
+						}
+						</script>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<script language="JavaScript">					
+						if (USE_PRINTBUTTON) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu15.className=\'over\';" onMouseOut="bu15.className=\'norm\';" onMouseDown="bu15.className=\'push\';" onMouseUp="bu15.className=\'over\';doEditHTML(15);"><img name="bu15" src="]]><METHOD name="resourcesUri">bu_print.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.print"/><![CDATA["></td>');
+							document.write('<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>');
+						}
+						</script>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu47.className='over';" onMouseOut="bu47.className='norm';" onMouseDown="bu47.className='push';" onMouseUp="bu47.className='over';doEditHTML(47);"><img name="bu47" src="]]><METHOD name="resourcesUri">bu_details.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.toggledetails"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu48.className='over';" onMouseOut="bu48.className='norm';" onMouseDown="bu48.className='push';doEditHTML(48);"><img name="bu48" src="]]><METHOD name="resourcesUri">bu_specialchar.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.specialchars"/><![CDATA["></td>
+						<script language="JavaScript">					
+						if (USE_HELPBUTTON) {
+							document.write('<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>');
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className=\'over\';" onMouseOut="bu16.className=\'norm\';" onMouseDown="bu16.className=\'push\';treewin=opensmallwin(\'../help/de/index.html\', \'Hilfe\', 300, 600);treewin.focus();"><img name="bu16" src="]]><METHOD name="resourcesUri">bu_help.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.help"/><![CDATA["></td>');
+						}
+						</script>		
+						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu1.className='over';" onMouseOut="bu1.className='norm';" onMouseDown="bu1.className='push';" onMouseUp="bu1.className='over';confirmExitHTML();"><img name="bu1" src="]]><METHOD name="resourcesUri">bu_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.close"/><![CDATA["><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>
+					</tr>
+				</table></td>
+			</tr>
+			<tr>
+				<td colspan="3" height="4" width="100%" background="]]><METHOD name="resourcesUri">bu_sep_horizontal.gif</METHOD><![CDATA["><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="1" height="4"></td>
+			</tr>
+			<tr height="28">
+				<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="28"></td>
+				<td align="left" width="20"><img src="]]><METHOD name="resourcesUri">bu_tb_start.gif</METHOD><![CDATA[" width="10" height="28"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="10" height="28"></td>
+				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr height="20"> 
+						<td>]]><SELECT class="textfeld" name="BLOCK" width="100" method="getFontStyles" onchange="return ParagraphStyle_onchange()"/><![CDATA[</td>
+						<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>
+						<script language="JavaScript">					
+						if (USE_FONTFACE) {
+							document.write('<td>]]><SELECT class="textfeld" name="FONTFACE" width="120" method="getFonts" onchange="doEditHTML(22);"/><![CDATA[</td>');
+							document.write('<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>');
+						} else {
+							document.write('<td><INPUT TYPE=HIDDEN name="FONTFACE"></td>');
+							document.write('<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>');
+						}
+						if (USE_FONTSIZE) {
+							document.write('<td>]]><SELECT class="textfeld" name="FONTSIZE" width="40" method="getFontSizes" onchange="doEditHTML(23);"/><![CDATA[</td>');
+							document.write('<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>');
+						} else {
+							document.write('<td><INPUT TYPE=HIDDEN name="FONTSIZE"></td>');
+						}
+						</script>		
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu24.className='over';" onMouseOut="bu24.className='norm';" onMouseDown="bu24.className='push';" onMouseUp="bu24.className='over';doEditHTML(24);"><img name="bu24" src="]]><METHOD name="resourcesUri">bu_bold.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.bold"/><![CDATA["></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu25.className='over';" onMouseOut="bu25.className='norm';" onMouseDown="bu25.className='push';" onMouseUp="bu25.className='over';doEditHTML(25);"><img name="bu25" src="]]><METHOD name="resourcesUri">bu_italic.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.italic"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu26.className='over';" onMouseOut="bu26.className='norm';" onMouseDown="bu26.className='push';" onMouseUp="bu26.className='over';doEditHTML(26);"><img name="bu26" src="]]><METHOD name="resourcesUri">bu_underline.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.underline"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu31.className='over';" onMouseOut="bu31.className='norm';" onMouseDown="bu31.className='push';" onMouseUp="bu31.className='over';doEditHTML(31);"><img name="bu31" src="]]><METHOD name="resourcesUri">bu_left.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.alignleft"/><![CDATA["></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu32.className='over';" onMouseOut="bu32.className='norm';" onMouseDown="bu32.className='push';" onMouseUp="bu32.className='over';doEditHTML(32);"><img name="bu32" src="]]><METHOD name="resourcesUri">bu_center.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.aligncenter"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu33.className='over';" onMouseOut="bu33.className='norm';" onMouseDown="bu33.className='push';" onMouseUp="bu33.className='over';doEditHTML(33);"><img name="bu33" src="]]><METHOD name="resourcesUri">bu_right.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.alignright"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
 
-<table cellspacing=0 cellpadding=0 border=0 width="100%">
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu34.className='over';" onMouseOut="bu34.className='norm';" onMouseDown="bu34.className='push';" onMouseUp="bu34.className='over';doEditHTML(34);"><img name="bu34" src="]]><METHOD name="resourcesUri">bu_bullist.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.ul"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu35.className='over';" onMouseOut="bu35.className='norm';" onMouseDown="bu35.className='push';" onMouseUp="bu35.className='over';doEditHTML(35);"><img name="bu35" src="]]><METHOD name="resourcesUri">bu_numlist.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.ol"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu36.className='over';" onMouseOut="bu36.className='norm';" onMouseDown="bu36.className='push';" onMouseUp="bu36.className='over';doEditHTML(36);"><img name="bu36" src="]]><METHOD name="resourcesUri">bu_indent.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.indentin"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu37.className='over';" onMouseOut="bu37.className='norm';" onMouseDown="bu37.className='push';" onMouseUp="bu37.className='over';doEditHTML(37);"><img name="bu37" src="]]><METHOD name="resourcesUri">bu_outdent.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.indentout"/><![CDATA["></td>
+						<script language="JavaScript">					
+						if (USE_FONTCOLOR || USE_BGCOLOR) {
+							document.write('<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>');
+						}
+						if (USE_FONTCOLOR) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu38.className=\'over\';" onMouseOut="bu38.className=\'norm\';" onMouseDown="bu38.className=\'push\';doEditHTML(38);"><img name="bu38" src="]]><METHOD name="resourcesUri">bu_color_text.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.fontcolor"/><![CDATA["></td>');
+						}
+						if (USE_BGCOLOR) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu39.className=\'over\';" onMouseOut="bu39.className=\'norm\';" onMouseDown="bu39.className=\'push\';doEditHTML(39);"><img name="bu39" src="]]><METHOD name="resourcesUri">bu_color_fill.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.color"/><![CDATA["></td>');
+						}
+						</script>
+						<td width="100%">&nbsp;</td>
+					</tr>
+				</table></td>
+			</tr>
+		</table></td>
+	</tr>
 	<tr>
-		<td class=menu>]]><BUTTON href="javascript:doEditHTML(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="javascript:doEditHTML(3);" name="bt_save" action="" alt="save"/><![CDATA[</td>
-			
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_undo" action="doEditHTML(4);" alt="undo"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_redo" action="doEditHTML(5);" alt="redo"/><![CDATA[</td>
-
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_search" action="doEditHTML(6);" alt="search"/><![CDATA[</td>
-		
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_cut" action="doEditHTML(9);" alt="cut"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_copy" action="doEditHTML(10);" alt="copy"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_paste" action="doEditHTML(11);" alt="paste"/><![CDATA[</td>
-				
-		]]><!-- FLEX: Removed static button entries and replaced them with dynamic entries:
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_fileimport" action="doEditHTML(12);" alt="fileimport"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_fileexport" action="doEditHTML(13);" alt="fileexport"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_fileexportas" action="doEditHTML(14);" alt="fileexportas"/><![CDATA[</td>
-		
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON name="bt_print" action="doEditHTML(15);" alt="print"/><![CDATA[</td>
-
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="javascript:treewin=opensmallwin('../help/de/index.html', 'Hilfe', 300, 600),treewin.focus();" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
-		--><![CDATA[
-
-		<script language="JavaScript">					
-		if (USE_IMPORTBUTTONS) {
-			document.write('<td class=menu width=2><IMG border=0 src="]]><method name="resourcesUri">gr_line.gif</method><![CDATA[" height=32 width=2></td>');
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileimport\');doEditHTML(12);" onmouseout="ChOff(\'bt_fileimport\')" onmouseover="ChOn(\'bt_fileimport\')" onmouseup="ChOn(\'bt_fileimport\')"><IMG alt="]]><LABEL value="button.fileimport"/><![CDATA[" width=32 border=0 name=bt_fileimport src="]]><method name="resourcesUri">bt_fileimport_off.gif</method><![CDATA["></a></td>');
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexport\');doEditHTML(13);" onmouseout="ChOff(\'bt_fileexport\')" onmouseover="ChOn(\'bt_fileexport\')" onmouseup="ChOn(\'bt_fileexport\')"><IMG alt="]]><LABEL value="button.fileexport"/><![CDATA[" width=32 border=0 name=bt_fileexport src="]]><method name="resourcesUri">bt_fileexport_off.gif</method><![CDATA["></a></td>');
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fileexportas\');doEditHTML(14);" onmouseout="ChOff(\'bt_fileexportas\')" onmouseover="ChOn(\'bt_fileexportas\')" onmouseup="ChOn(\'bt_fileexportas\')"><IMG alt="]]><LABEL value="button.fileexportas"/><![CDATA[" width=32 border=0 name=bt_fileexportas src="]]><method name="resourcesUri">bt_fileexportas_off.gif</method><![CDATA["></a></td>');
-		}
-		if (USE_PRINTBUTTON) {
-			document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><method name="resourcesUri">gr_line.gif</method><![CDATA[" width=2></td>');
-			document.write('<td class=menu><A href="" onmousedown="ChPush(\'bt_print\');doEditHTML(15);" onmouseout="ChOff(\'bt_print\')" onmouseover="ChOn(\'bt_print\')" onmouseup="ChOn(\'bt_print\')"><IMG alt="]]><LABEL value="button.print"/><![CDATA[" width=32 border=0 name=bt_print src="]]><method name="resourcesUri">bt_print_off.gif</method><![CDATA["></a></td>');
-		}
-		if (USE_HELPBUTTON) {
-			document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><method name="resourcesUri">gr_line.gif</method><![CDATA[" width=2></td>');
-			document.write('<td class=menu><A href="javascript:treewin=opensmallwin(\'../help/de/index.html\', \'Hilfe\', 300, 600),treewin.focus();" onmousedown="ChPush(\'bt_hilfe\');" onmouseout="ChOff(\'bt_hilfe\')" onmouseover="ChOn(\'bt_hilfe\')" onmouseup="ChOn(\'bt_hilfe\')"><IMG alt="]]><LABEL value="button.help"/><![CDATA[" width=32 border=0 name=bt_hilfe src="]]><method name="resourcesUri">bt_hilfe_off.gif</method><![CDATA[" ></a></td>');
-		}
-		</script>		
-		
-		<td class=menu width="100%" align=right>]]><BUTTON href="javascript:doEditHTML(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>
+		<td width=100% height=100%><OBJECT
+			CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" 
+			ID="EDIT_HTML"
+			WIDTH="100%"
+			height="100%"
+			VIEWASTEXT>
+			<param name=Scrollbars value=true>
+			<param name=ShowBorders value=true>							
+		</OBJECT>
+		<!-- DEInsertTableParam Object -->
+		<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
+		</object>
+		<!-- DEGetBlockFmtNamesParam Object -->
+		<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
+		</object></td>
 	</tr>
-</table>
-		
-<hr>
-
-		<!-- Schriftformatierung -->
-<table cellspacing=0 cellpadding=0 border=0 width="100%"> 
-	<tr height=34>
-		<td class=menu>]]><SELECT class="textfeld" name="BLOCK" width="100" method="getFontStyles" onchange="return ParagraphStyle_onchange()"/><![CDATA[</td>
-		
-		<!-- FLEX: Removed static select entries and replaced them with dynamic entries: -->		
-		<script language="JavaScript">					
-		if (USE_FONTFACE) {
-			document.write('<td class=menu>]]><SELECT class="textfeld" name="FONTFACE" width="120" method="getFonts" onchange="doEditHTML(22);"/><![CDATA[</td>');
-		} else {
-			document.write('<td><INPUT TYPE=HIDDEN name="FONTFACE"></td>');
-		}
-		if (USE_FONTSIZE) {
-			document.write('<td class=menu>]]><SELECT class="textfeld" name="FONTSIZE" width="40" method="getFontSizes" onchange="doEditHTML(23);"/><![CDATA[</td>');
-		} else {
-			document.write('<td><INPUT TYPE=HIDDEN name="FONTSIZE"></td>');
-		}
-		</script>		
-		
-		<td class=menu>]]><BUTTON href="#" name="bt_bold" action="doEditHTML(24);" alt="bold"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_italic" action="doEditHTML(25);" alt="italic"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_underline" action="doEditHTML(26);" alt="underline"/><![CDATA[</td>
-		<td class=menu align="center">]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_alignleft" action="doEditHTML(31);" alt="alignleft"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_aligncenter" action="doEditHTML(32);" alt="aligncenter"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_alignright" action="doEditHTML(33);" alt="alignright"/><![CDATA[</td>
-			
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_ul" action="doEditHTML(34);" alt="ul"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_ol" action="doEditHTML(35);" alt="ol"/><![CDATA[</td>
-		
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_indentin" action="doEditHTML(36);" alt="indentin"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_indentout" action="doEditHTML(37);" alt="indentout"/><![CDATA[</td>
-	
-		]]><!-- FLEX: Removed static button entries and replaced them with dynamic entries:
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_fontcolor" action="doEditHTML(38);" alt="fontcolor"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_color" action="doEditHTML(39);" alt="color"/><![CDATA[</td>
-		--><![CDATA[
-		
-		<script language="JavaScript">					
-		if (USE_FONTCOLOR || USE_BGCOLOR) {
-			document.write('<td class=menu width=2><IMG border=0 height=32 src="]]><method name="resourcesUri">gr_line.gif</method><![CDATA[" width=2></td>');
-		}
-		if (USE_FONTCOLOR) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_fontcolor\');doEditHTML(38);" onmouseout="ChOff(\'bt_fontcolor\')" onmouseover="ChOn(\'bt_fontcolor\')" onmouseup="ChOn(\'bt_fontcolor\')"><IMG alt="]]><LABEL value="button.fontcolor"/><![CDATA[" width=32 border=0 name=bt_fontcolor src="]]><method name="resourcesUri">bt_fontcolor_off.gif</method><![CDATA[" ></a></td>');
-		}
-		if (USE_BGCOLOR) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_color\');doEditHTML(39);" onmouseout="ChOff(\'bt_color\')" onmouseover="ChOn(\'bt_color\')" onmouseup="ChOn(\'bt_color\')"><IMG alt="]]><LABEL value="button.color"/><![CDATA[" width=32 border=0 name=bt_color src="]]><method name="resourcesUri">bt_color_off.gif</method><![CDATA[" ></a></td>');
-		}
-		</script>
-				
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_table" action="doEditHTML(40);" alt="table"/><![CDATA[</td>
-				
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		
-		]]><!-- FLEX: Made new link dialog optional		
-		<td class=menu>]]><BUTTON href="#" name="bt_link" action="doEditHTML(49);" alt="linkto"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_link" action="doEditHTML(41);" alt="linkto"/><![CDATA[</td>
-		--><![CDATA[
-				
-		<script language="JavaScript">			
-		if (USE_WORKINGLINKDIALOG) {
-	        document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_link\');doEditHTML(50);" onmouseout="ChOff(\'bt_link\')" onmouseover="ChOn(\'bt_link\')" onmouseup="ChOn(\'bt_link\')"><IMG alt="]]><LABEL value="button.linkto"/><![CDATA[" width=32 border=0 name=bt_link src="]]><method name="resourcesUri">bt_link_off.gif</method><![CDATA[" ></a></td>');
-		} else {	
-		    document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_vfslink\');doEditHTML(46);" onmouseout="ChOff(\'bt_vfslink\')" onmouseover="ChOn(\'bt_vfslink\')" onmouseup="ChOn(\'bt_vfslink\')"><IMG alt="]]><LABEL value="button.linkinternal"/><![CDATA[" width=32 border=0 name=bt_vfslink src="]]><method name="resourcesUri">bt_vfslink_off.gif</method><![CDATA[" ></a></td>');
-		}				
-		</script>
-		
-		]]><!-- FLEX: Made new link dialog optional		
-		<td class=menu>]]><BUTTON href="#" name="bt_vfslink" action="doEditHTML(50);" alt="linkinternal"/><![CDATA[</td>
-		--><![CDATA[
-		
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_image" action="doEditHTML(42);" alt="image"/><![CDATA[</td>
-
-		]]><!-- FLEX: Removed static button entries and replaced them with dynamic entries:				
-		<td class=menu>]]><BUTTON href="#" name="bt_imagelist" action="doEditHTML(43);" alt="imagelist"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_download" action="doEditHTML(44);" alt="downloadlist"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_extlinkgallery" action="window.open('linkbrowser.html?initial=true','LinkBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');" alt="linklist"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_htmlgallery" action="window.open('htmlbrowser.html?initial=true','HtmlBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');" alt="htmllist"/><![CDATA[</td>
-		--><![CDATA[
-
-		<script language="JavaScript">					
-		if (USE_IMAGEGALS) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_imagelist\');doEditHTML(43);" onmouseout="ChOff(\'bt_imagelist\')" onmouseover="ChOn(\'bt_imagelist\')" onmouseup="ChOn(\'bt_imagelist\')"><IMG alt="]]><LABEL value="button.imagelist"/><![CDATA[" width=32 border=0 name=bt_imagelist src="]]><method name="resourcesUri">bt_imagelist_off.gif</method><![CDATA[" ></a></td>');
-		}
-		if (USE_DOWNLOADGALS) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_download\');doEditHTML(44);" onmouseout="ChOff(\'bt_download\')" onmouseover="ChOn(\'bt_download\')" onmouseup="ChOn(\'bt_download\')"><IMG alt="]]><LABEL value="button.downloadlist"/><![CDATA[" width=32 border=0 name=bt_download src="]]><method name="resourcesUri">bt_download_off.gif</method><![CDATA[" ></a></td>');
-		}
-		if (USE_EXTERNLINKGALS) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_extlinkgallery\');window.open(\'linkbrowser.html?initial=true\',\'LinkBrowser\', \'width=550, height=500, resizable=yes, top=200, left=450\');" onmouseout="ChOff(\'bt_extlinkgallery\')" onmouseover="ChOn(\'bt_extlinkgallery\')" onmouseup="ChOn(\'bt_extlinkgallery\')"><IMG alt="]]><LABEL value="button.linklist"/><![CDATA[" width=32 border=0 name=bt_extlinkgallery src="]]><method name="resourcesUri">bt_extlinkgallery_off.gif</method><![CDATA[" ></a></td>');
-		}
-		if (USE_HTMLGALS) {
-			document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_htmlgallery\');window.open(\'htmlbrowser.html?initial=true\',\'HtmlBrowser\', \'width=550, height=500, resizable=yes, top=200, left=450\');" onmouseout="ChOff(\'bt_htmlgallery\')" onmouseover="ChOn(\'bt_htmlgallery\')" onmouseup="ChOn(\'bt_htmlgallery\')"><IMG alt="]]><LABEL value="button.htmllist"/><![CDATA[" width=32 border=0 name=bt_htmlgallery src="]]><method name="resourcesUri">bt_htmlgallery_off.gif</method><![CDATA[" ></a></td>');
-		}
-		</script>
-						
-		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_details" action="doEditHTML(47);" alt="toggledetails"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_chars" action="doEditHTML(48);" alt="specialchars"/><![CDATA[</td>			
-				
-		<td class=menu width="100%">&nbsp;</td>
-	</tr>
-</table>
-</td></tr>
-	<tr>
-		<td colspan=20 width=100% height=100%> 
-
-			<OBJECT
-				CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" 
-				ID="EDIT_HTML"
-				WIDTH="100%"
-				height="100%"
-				VIEWASTEXT>
-				<param name=Scrollbars value=true>
-				<param name=ShowBorders value=true>							
-			</OBJECT>
-			<!-- DEInsertTableParam Object -->
-			<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
-			</object>
-			<!-- DEGetBlockFmtNamesParam Object -->
-			<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
-			</object>
-			</td>
-	</tr>
-</table> 
-<table>
 ]]>
 </template>
-
 </workplace>

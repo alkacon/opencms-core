@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='DialogEinstellungen/index.html';
+top.help_url=']]><LABEL value="help.explorer.settings.properties"/><![CDATA[';
 //-->
 
 

@@ -13,7 +13,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='Aufgaben/aufgabeerstellen.html';
+top.help_url=']]><LABEL value="help.tasks.new"/><![CDATA[';
 
 function fillDate()
 {
