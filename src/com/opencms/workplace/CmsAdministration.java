@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/03/04 14:11:14 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.27 $ $Date: 2003/03/02 18:43:54 $
+ * @version $Name:  $ $Revision: 1.28 $ $Date: 2003/03/04 14:11:14 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -81,10 +81,14 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 
         boolean hasAccessVisible = (new Boolean(accessVisible)).booleanValue();
         String iconPicPath = (String)resourcesUri(cms, "", null, null);
+        // change the iconPicPath if the point is from a module
         if(sender.startsWith("/system/modules")) {
-
-            // change the iconPicPath if the point is from a module
-            iconPicPath = cms.getRequestContext().getRequest().getServletUrl() + sender.substring(0, sender.indexOf("administration/")) + "pics/";
+            if (picName.startsWith("/")) {
+                iconPicPath = cms.getRequestContext().getRequest().getServletUrl() + sender.substring(0, sender.indexOf("/administration/"));
+            }
+            else {
+                iconPicPath = cms.getRequestContext().getRequest().getServletUrl() + sender.substring(0, sender.indexOf("administration/")) + "pics/";
+            }
         }
 
         // call the method for activation decision
