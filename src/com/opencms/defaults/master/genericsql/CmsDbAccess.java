@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/02/14 14:34:27 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/06/30 22:32:48 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,9 +65,11 @@ public class CmsDbAccess {
     protected String m_rootChannel = "/";
 
     /**
-     * Make this constructor private, so noone cann call the default constructor.
+     * Public empty constructor, call "init()" on this class afterwards.
+     * This allows more flexible custom module development.
+     * FLEX: Made the constructor public!
      */
-    private CmsDbAccess() {
+    public CmsDbAccess() {
     }
 
     /**
@@ -77,13 +79,20 @@ public class CmsDbAccess {
      * @param backupPoolName the pool to access the backup ressources.
      */
     public CmsDbAccess(String poolName, String onlinePoolName, String backupPoolName) {
-        m_poolName = poolName;
-        m_onlinePoolName = onlinePoolName;
-        m_backupPoolName = backupPoolName;
+        init(poolName, onlinePoolName, backupPoolName);
+    }
+    
+    /**
+     * Initializes the DBAccessObject.
+     */
+    public void init(String offline, String online, String backup) {
+        m_poolName = online;
+        m_onlinePoolName = offline;
+        m_backupPoolName = backup;
         m_queries = new Properties();
         // collect all query.properties in all packages of superclasses
         loadQueries(getClass());
-        combineQueries();
+        combineQueries();        
     }
 
     /**
