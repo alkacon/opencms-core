@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/05/12 08:51:10 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:53:48 $  
+ * @version $Revision: 1.5 $ $Date: 2000/05/12 08:51:10 $  
  */
 public class CmsResponseHttpServlet implements I_CmsConstants,  
                                                I_CmsResponse{ 
@@ -139,8 +139,9 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
      */
     public void sendCmsRedirect(String location)
         throws IOException {
+        String hostName = m_req.getScheme() + "://" + m_req.getHeader("HOST");       
         String servlet = m_req.getServletPath();
-        m_res.sendRedirect(servlet+location);
+        m_res.sendRedirect(hostName + servlet + location);
     }
     
     /**
