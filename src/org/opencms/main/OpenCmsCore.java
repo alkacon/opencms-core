@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/29 19:10:16 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/10/09 09:40:31 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -953,7 +953,7 @@ public class OpenCmsCore {
             // initialize site root from request
             String siteroot = null;
             // a dedicated workplace site is configured
-            if ((getSiteManager().getWorkplaceSite().equals(site.getSiteMatcher()))) {
+            if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
                 // if no dedicated workplace site is configured, 
                 // or for the dedicated workplace site, use the site root from the session attribute
                 siteroot = m_sessionStorage.getCurrentSite(session.getId());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/10/01 11:30:13 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/10/09 09:40:31 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,9 +42,11 @@ import com.opencms.file.CmsResource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -64,11 +66,14 @@ public final class CmsSiteManager implements Cloneable {
     /** The default site root */
     private CmsSite m_defaultSite;
     
-    /** The list of configured site roots */
+    /** The set of all configured site root paths (as String) */
+    private Set m_siteRoots;
+    
+    /** The map of configured sites */
     private HashMap m_sites;
     
-    /** The site where the workplace is accessed through */
-    private CmsSiteMatcher m_workplaceSite;
+    /** The site matcher that matches the workplace site */
+    private CmsSiteMatcher m_workplaceSiteMatcher;
     
     /**
      * Creates a new site manager.<p>
@@ -84,7 +89,8 @@ public final class CmsSiteManager implements Cloneable {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site roots configured: " + (siteRoots.length + ((siteDefault!=null)?1:0)));
         }
                         
-        m_sites = new HashMap(siteRoots.length);        
+        m_sites = new HashMap(siteRoots.length);      
+        m_siteRoots = new HashSet();  
         
         for (int i=0; i<siteRoots.length; i++) {
     
@@ -98,6 +104,7 @@ public final class CmsSiteManager implements Cloneable {
                     }
                 }
                 m_sites.put(site.getSiteMatcher(), site);
+                m_siteRoots.add(site.getSiteRoot());
             
                 if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root added      : " + site.toString());
@@ -122,9 +129,9 @@ public final class CmsSiteManager implements Cloneable {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root default    : " + (m_defaultSite!=null?"" + m_defaultSite: "(not configured)"));
         }
-        m_workplaceSite = new CmsSiteMatcher(siteWorkplace);
+        m_workplaceSiteMatcher = new CmsSiteMatcher(siteWorkplace);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site of workplace    : " + (m_workplaceSite!=null?"" + m_workplaceSite: "(not configured)"));
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site of workplace    : " + (m_workplaceSiteMatcher!=null?"" + m_workplaceSiteMatcher: "(not configured)"));
         }        
     }
     
@@ -210,16 +217,61 @@ public final class CmsSiteManager implements Cloneable {
      * @return the current site for the provided cms context object
      */
     public static CmsSite getCurrentSite(CmsObject cms) {
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        CmsSite site = getSite(siteRoot);
+        if (site == null) {
+            return OpenCms.getSiteManager().getDefaultSite();
+        } else {
+            return site;
+        }
+    }
+    
+    /**
+     * Returns the site with has the provided site root path, 
+     * or null if no configured site has that root path.<p>
+     * 
+     * @param siteRoot the root path to look up the site for
+     * @return the site with has the provided site root path, 
+     *      or null if no configured site has that root path
+     */
+    public static CmsSite getSite(String siteRoot) {
         Map sites = OpenCms.getSiteManager().getSiteList();
         Iterator i = sites.keySet().iterator();
-        String siteRoot = cms.getRequestContext().getSiteRoot();
         while (i.hasNext()) {
             CmsSite site = (CmsSite)sites.get(i.next());
             if (siteRoot.equals(site.getSiteRoot())) {
                 return site;
             }
         }
-        return OpenCms.getSiteManager().getDefaultSite();
+        return null;     
+    }
+    
+    /**
+     * Returns the site root part of the resources root path, 
+     * or null if the path does not match any site root.<p>
+     * 
+     * @param path the root path of a resource
+     * @return the site root part of the resources root path, or null if the path does not match any site root
+     */
+    public static String getSiteRoot(String path) {
+        Set roots = OpenCms.getSiteManager().getSiteRoots();
+        // most sites will be subfolders of the "/sites/" folder, 
+        int pos = path.indexOf('/', 7);
+        if (pos > 0) {
+            String candidate = path.substring(0, pos);
+            if (roots.contains(candidate)) {
+                return candidate;
+            }
+        }        
+        // site root not found as subfolder of "/sites/"
+        Iterator i = roots.iterator();
+        while (i.hasNext()) {
+            String siteRoot = (String)i.next();         
+            if (path.startsWith(siteRoot)) {
+                return siteRoot;
+            }
+        }        
+        return null;
     }
     
     /**
@@ -264,31 +316,51 @@ public final class CmsSiteManager implements Cloneable {
     public Map getSiteList() {
         return m_sites;
     }
+    
+    /**
+     * Returns a set of all configured site roots (Strings).<p>
+     *  
+     * @return a set of all configured site roots (Strings)
+     */
+    public Set getSiteRoots() {
+        return m_siteRoots;
+    }
 
     /**
-     * Returns the site where the workplace is accessed through.<p>
+     * Returns the site matcher that matches the workplace site.<p>
      * 
-     * @return the site where the workplace is accessed through
+     * @return the site matcher that matches the workplace site
      */
-    public CmsSiteMatcher getWorkplaceSite() {
-        return m_workplaceSite;
+    public CmsSiteMatcher getWorkplaceSiteMatcher() {
+        return m_workplaceSiteMatcher;
     }   
     
     /**
      * Matches the given request against all configures sites and returns 
-     * the matching site, or null if no sites matches.<p>
+     * the matching site, or the default site if no sites matches.<p>
      * 
      * @param req the request to match 
-     * @return the matching site, or null if no sites matches
+     * @return the matching site, or the defaule site if no sites matches
      */
     public CmsSite matchRequest(HttpServletRequest req) {
         CmsSiteMatcher matcher = new CmsSiteMatcher(req.getProtocol(), req.getServerName(), req.getServerPort());                    
+        return matchSite(matcher);
+    }
+    
+    /**
+     * Return the site that matches the given site matcher,
+     * or the default site if no sites matches.<p>
+     * 
+     * @param matcher the site matcher to match the site with
+     * @return the matching site, or the defaule site if no sites matches
+     */
+    public CmsSite matchSite(CmsSiteMatcher matcher) {
         CmsSite site = (CmsSite)m_sites.get(matcher);
         if (site == null) {
             // return the default site (might be null as well)
             site = m_defaultSite;
         }
-        return site;
+        return site;        
     }
     
     /**
