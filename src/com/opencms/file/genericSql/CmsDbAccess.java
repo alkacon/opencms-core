@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/16 10:17:58 $
- * Version: $Revision: 1.205 $
+ * Date   : $Date: 2001/07/19 13:18:40 $
+ * Version: $Revision: 1.206 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.205 $ $Date: 2001/07/16 10:17:58 $ *
+ * @version $Revision: 1.206 $ $Date: 2001/07/19 13:18:40 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -2566,7 +2566,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
 
 		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] shutdown complete.");
 		}
 	}
 
