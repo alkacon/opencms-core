@@ -1302,6 +1302,14 @@
 			<access>95</access>
 			<properties/>
 		</file>
+        <file>
+            <destination>system/classes</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>95</access>
+            <properties/>
+        </file>
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
