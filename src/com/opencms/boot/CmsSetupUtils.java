@@ -47,34 +47,56 @@ public class CmsSetupUtils {
 
     private boolean m_errorLogging = true;
 
+    private Vector m_errors;
 
+
+    /** Constructor */
     public CmsSetupUtils(String basePath) {
+      m_errors = new Vector();
       m_basePath = basePath;
       m_ocsetupFolder = basePath + "WEB-INF/ocsetup/";
       m_configFolder = basePath + "WEB-INF/config/";
 
     }
 
+    /**
+     *  Saves properties to specified file.
+     *  @param extProp Properties to be saved
+     *  @param originalFile File to save props to
+     *  @param backup if true, create backupfile
+     */
     public void saveProperties(ExtendedProperties extProp, String originalFile, boolean backup)  {
         if (new File(m_configFolder + originalFile).isFile()) {
             String backupFile = originalFile.substring(0,originalFile.lastIndexOf('.')) + ".ori";
             String tempFile = originalFile.substring(0,originalFile.lastIndexOf('.')) + ".tmp";
+
+            m_errors.clear();
+
+            // make a backup copy
             if(backup)  {
                backup(originalFile, backupFile);
             }
+
+            //save to temporary file
             backup(originalFile, tempFile);
+
+            // save properties
             save(extProp, tempFile, originalFile);
+
             // delete temp file
             File temp = new File(m_configFolder + tempFile);
             temp.delete();
         }
         else  {
-            CmsSetup.setErrors("No valid file: " + originalFile);
+            m_errors.addElement("No valid file: " + originalFile+ "\n");
         }
 
     }
 
-
+    /** Copies a given file. (backup)
+     *  @param originalFile source file
+     *  @param backupFile target file
+     */
     private void backup(String originalFile, String backupFile) {
         try {
             LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configFolder
@@ -90,12 +112,17 @@ public class CmsSetupUtils {
         }
         catch (IOException e) {
           e.printStackTrace();
-          CmsSetup.setErrors("Could not save " + originalFile + " to " + backupFile + " \n");
-          CmsSetup.setErrors(e.toString());
+          m_errors.addElement("Could not save " + originalFile + " to " + backupFile + " \n");
+          m_errors.addElement(e.toString()+"\n");
         }
     }
 
-
+    /**
+     * Save properties to file.
+     * @param extProp The properties to be saved
+     * @param source source file to get the keys from
+     * @param target target file to save the properties to
+     */
     private void save(ExtendedProperties extProp, String source, String target) {
         try {
             LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configFolder
@@ -137,21 +164,63 @@ public class CmsSetupUtils {
         }
         catch (Exception e) {
             e.printStackTrace();
-            CmsSetup.setErrors("Could not save properties to " + target + " \n");
-            CmsSetup.setErrors(e.toString() + "\n");
+            m_errors.addElement("Could not save properties to " + target + " \n");
+            m_errors.addElement(e.toString() + "\n");
+        }
+    }
+
+    /**
+     * Connects to a database and tries to drop it, by executing the statements
+     * from a file specified in dbsetup.properties.
+     * @param DbDriver database driver
+     * @param DbConStr database connection string
+     * @param DbUser database user
+     * @param DbPwd database password
+     * @param resourceBroker identifier for the matching drop db script
+     * @param replacer keys found in drop script will be replaced by value
+     */
+    public boolean dropDatabase(String DbDriver, String DbConStr, String DbUser,
+            String DbPwd, String resourceBroker, Hashtable replacer) {
+        try {
+            Class.forName(DbDriver);
+            Connection con = DriverManager.getConnection(DbConStr,DbUser,DbPwd);
+
+            String file = getScript(resourceBroker+".dropdb");
+            m_errors.clear();
+            if (file != null) {
+                m_errorLogging = true;
+                parseScript(con,file,replacer);
+                return m_errors.isEmpty();
+            }
+            else  {
+                return false;
+            }
+        }
+        catch (SQLException e)  {
+            m_errors.addElement(e.toString());
+            e.printStackTrace();
+            return false;
+        }
+        catch(ClassNotFoundException e) {
+            m_errors.addElement(e.toString());
+            e.printStackTrace();
+            return false;
         }
     }
 
 
-    /** This function opens a connection to a database and gives sql statements from
-     *  the setup scripts (indicated by the resourceBroker) to the database.
-     *  @param DbDriver The database driver
-     *  @param DbUser The user of the database
-     *  @param DbPwd Users password
-     *  @param resourceBroker The resourceBroker for the database
+    /**
+     *  Connects to a database server and tries to create an new database
+     *  by executing the statements from a file specified in dbsetup.properties.
+     * @param DbDriver database driver
+     * @param DbConStr database connection string
+     * @param DbUser database user
+     * @param DbPwd database password
+     * @param resourceBroker identifier for the matching create db script
+     * @param replacer keys found in create script will be replaced by value
      */
-    public void createDatabase(String DbDriver, String DbConStr,
-            String DbUser, String DbPwd, String resourceBroker) {
+    public boolean createDatabase(String DbDriver, String DbConStr,
+            String DbUser, String DbPwd, String resourceBroker, Hashtable replacer) {
 
         Connection con;
 
@@ -160,25 +229,40 @@ public class CmsSetupUtils {
             con = DriverManager.getConnection(DbConStr,DbUser,DbPwd);
 
             String file = getScript(resourceBroker+".createdb");
+            m_errors.clear();
             if (file != null) {
-                m_errorLogging = false;
-                parseScript(con,file);
                 m_errorLogging = true;
+                parseScript(con,file,replacer);
+                return m_errors.isEmpty();
+            }
+            else  {
+                m_errors.addElement("No create database file found. \n");
+                return false;
             }
         }
         catch (SQLException e)  {
-            CmsSetup.setErrors(e.toString() + "\n");
+            m_errors.addElement(e.toString() + "\n");
             e.printStackTrace();
+            return false;
         }
         catch (ClassNotFoundException e)  {
-            CmsSetup.setErrors(e.toString() + "\n");
+            m_errors.addElement(e.toString() + "\n");
             e.printStackTrace();
+            return false;
         }
     }
 
 
-
-    public void createTables(String DbDriver, String DbConStr,
+    /**
+     *  Connects to a database and tries to execute the statements
+     *  from a file specified in dbsetup.properties.
+     * @param DbDriver database driver
+     * @param DbConStr database connection string
+     * @param DbUser database user
+     * @param DbPwd database password
+     * @param resourceBroker identifier for the matching create db script
+     */
+    public boolean createTables(String DbDriver, String DbConStr,
             String DbUser, String DbPwd, String resourceBroker) {
 
         Connection con;
@@ -188,19 +272,36 @@ public class CmsSetupUtils {
             con = DriverManager.getConnection(DbConStr,DbUser,DbPwd);
 
             String file = getScript(resourceBroker+".createtables");
-            parseScript(con,file);
+            m_errors.clear();
+            if (file != null) {
+                m_errorLogging = true;
+                parseScript(con,file,null);
+                return m_errors.isEmpty();
+            }
+            else  {
+                m_errors.addElement("No create tables file found. \n");
+                return false;
+            }
         }
         catch (SQLException e)  {
-            CmsSetup.setErrors(e.toString() + "\n");
+            m_errors.addElement(e.toString() + "\n");
             e.printStackTrace();
+            return false;
         }
         catch (ClassNotFoundException e)  {
-            CmsSetup.setErrors(e.toString() + "\n");
+            m_errors.addElement(e.toString() + "\n");
             e.printStackTrace();
+            return false;
         }
     }
 
-    private void parseScript(Connection con, String file)   {
+    /**
+     * Gets sql queries from a file and executes them.
+     * @param con database connection
+     * @param file File to be parsed
+     * @param replacers replaces keys found in file with values
+     */
+    private void parseScript(Connection con, String file, Hashtable replacers)   {
 
         /* indicates if the setup script contains included files (oracle) */
         boolean includedFile = false;
@@ -247,32 +348,45 @@ public class CmsSetupUtils {
 
                           /* there is an included File. Get it and execute it */
                           if (includedFile) {
-                              ExecuteStatement(con, getIncludedFile(statement));
+                              if (replacers != null) {
+                                  ExecuteStatement(con, replaceValues(getIncludedFile(statement),replacers));
+                              }
+                              else  {
+                                  ExecuteStatement(con, getIncludedFile(statement));
+                              }
                               //reset
                               includedFile = false;
                           }
                           /* normal statement. Execute it */
                           else  {
-                              ExecuteStatement(con, statement);
+                              if (replacers != null) {
+                                  ExecuteStatement(con, replaceValues(statement,replacers));
+                              }
+                              else  {
+                                  ExecuteStatement(con, statement);
+                              }
                           }
                           //reset
                           statement = "";
                       }
                   }
               }
+              con.close();
               reader.close();
           }
           catch (Exception e) {
-              CmsSetup.setErrors(e.toString() + "\n");
+              m_errors.addElement(e.toString() + "\n");
               e.printStackTrace();
           }
       }
 
-    /** This function is called every time a file is included in the setup script.
+    /**
+    * This function is called every time a file is included in the setup script.
     *  The sql statement from the setup script in fact contains the relative
     *  path to the included file, so that this file can be opened.
     *  The complete content of the included file (one large statement) is returned.
     *  @param statement Statement from the main setup script. Should contain relative path to the included file.
+    *  @return sql query
     */
     private String getIncludedFile(String statement)  {
         String file;
@@ -311,25 +425,30 @@ public class CmsSetupUtils {
     }
 
     /** Executes a given statement on the database
-     *  @param con Connection to the database on which the statement shall be executed
+     *  @param con Connection to the database
      *  @param statement The statement to be executed
      */
     private void ExecuteStatement(Connection con, String statement)  {
         Statement stat;
         if(statement != null)  {
             try  {
+                System.err.println("-----------------------------------------");
+                System.err.println("-----------------------------------------");
+                System.err.println("JETZT HIER DENN DA: "+statement);
                 stat = con.createStatement();
                 stat.executeUpdate(statement);
             }
             catch (Exception e)  {
                 if(m_errorLogging)  {
-                  CmsSetup.setErrors(e.toString() + "\n");
+                  m_errors.addElement(e.toString() + "\n");
                 }
+                e.printStackTrace();
             }
         }
     }
 
-    /** This function returns the matching script filename
+    /**
+     *  This function returns the matching script filename
      *  from "dbsetup.properties"
      *  @param key Key for the properties
      *  @return script filename for the given key
@@ -347,6 +466,39 @@ public class CmsSetupUtils {
         }
     }
 
+    /**
+     * Replaces a token from a string.
+     * Each token which starts and ends with "$$" gets replaced
+     * @param source String with the tokens to be replaced
+     * @param replacers replacing values
+     */
+    private String replaceValues(String source, Hashtable replacers)  {
+        StringTokenizer tokenizer = new StringTokenizer(source);
+        String temp = "";
+
+        while(tokenizer.hasMoreTokens())  {
+            String token = tokenizer.nextToken();
+
+            // replace identifier found
+            if(token.startsWith("$$") && token.endsWith("$$"))  {
+
+                // look in the hashtable
+                Object value = replacers.get(token);
+
+                //found value
+                if(value != null) {
+                    token = value.toString();
+                }
+            }
+            temp += token + " ";
+        }
+        return temp;
+    }
+
+    /**
+     * URLEncodes a given string.
+     * @param source string to be encoded
+     */
     public static String escape(String source) {
         StringBuffer ret = new StringBuffer();
 
@@ -363,4 +515,11 @@ public class CmsSetupUtils {
         }
         return ret.toString();
     }
+
+    public Vector getErrors() {
+        return m_errors;
+    }
+
+
+
 }

@@ -54,25 +54,15 @@ public class CmsSetup {
    */
   private boolean m_setupType;
 
-
-  /** Contains the connection string to the database
-   *  used by the setup wizard to connect to the db
+  /**
+   * database password used to drop and create database
    */
-  private String m_dbSetupConStr;
-
-  /** Contains the user of the database
-   *  used by the setup wizard to connect to the db
-   */
-  private String m_dbSetupUser;
-
-  /** Contains the password of the database
-   *  used by the setup wizard to connect to the db
-   */
-  private String m_dbSetupPwd;
-
-
-  private String m_dbCreateUser;
   private String m_dbCreatePwd;
+
+  /**
+   * replacer string
+   */
+  private Hashtable m_replacer;
 
 
   /** This method reads the properties from the opencms.propertie file
@@ -146,7 +136,14 @@ public class CmsSetup {
 
   /** Gets the resource broker */
   public String getResourceBroker() {
-    return m_extProp.get("resourcebroker").toString();
+    Object temp =  m_extProp.get("resourcebroker");
+    if(temp != null)  {
+        return temp.toString();
+    }
+    else  {
+      return "";
+    }
+
   }
 
   /** Returns all resource Broker found in 'dbsetupscripts.properties' */
@@ -161,77 +158,6 @@ public class CmsSetup {
       return values;
   }
 
-  /** Sets the connection string used by the setup to the given value */
-  public void setDbSetupConStr(String dbSetupConStr)  {
-      m_dbSetupConStr = dbSetupConStr;
-  }
-
-  /**
-   * Returns a connection string to the database used by the setup
-   */
-  public String getDbSetupConStr()  {
-      if (m_dbSetupConStr != null)  {
-          return m_dbSetupConStr;
-      }
-      else  {
-          Object pwd =  m_extProp.get("pool." + getResourceBroker() + ".url");
-          if(pwd != null)  {
-              return m_extProp.get("pool." + getResourceBroker() + ".url").toString();
-          }
-          else  {
-            return "";
-          }
-      }
-  }
-
-
-  /** Sets the user of the database used by the setup to the given value */
-  public void setDbSetupUser(String dbSetupUser)  {
-    // String
-    m_dbSetupUser = dbSetupUser;
-  }
-
-  /**
-   * Returns the user of the database used by the setup
-   */
-  public String getDbSetupUser() {
-      if (m_dbSetupUser != null)  {
-          return m_dbSetupUser;
-      }
-      else  {
-          Object pwd =  m_extProp.get("pool." + getResourceBroker() + ".user");
-          if(pwd != null)  {
-              return m_extProp.get("pool." + getResourceBroker() + ".user").toString();
-          }
-          else  {
-            return "";
-          }
-      }
-  }
-
-  /** Sets the password of the database used by the setup to the given value */
-  public void setDbSetupPwd(String dbSetupPwd)  {
-    // String
-    m_dbSetupPwd = dbSetupPwd;
-  }
-
-  /**
-   * Returns the password of the database used by the setup
-   */
-  public String getDbSetupPwd() {
-      if (m_dbSetupPwd != null)  {
-          return m_dbSetupPwd;
-      }
-      else  {
-          Object pwd =  m_extProp.get("pool." + getResourceBroker() + ".password");
-          if(pwd != null)  {
-              return m_extProp.get("pool." + getResourceBroker() + ".password").toString();
-          }
-          else  {
-            return "";
-          }
-      }
-  }
 
 
   /** Sets the connection string to the database to the given value */
@@ -241,16 +167,6 @@ public class CmsSetup {
     setProperties("pool." + getResourceBroker() + "online.url",dbWorkConStr);
   }
 
-  /** Returns the connection string to the database from the properties */
-  public String getDbWorkConStr()  {
-    Object ConStr =  m_extProp.get("pool." + getResourceBroker() + ".url");
-    if(ConStr != null)  {
-      return m_extProp.get("pool." + getResourceBroker() + ".url").toString();
-    }
-    else  {
-      return "";
-    }
-  }
 
   /** Sets the user of the database to the given value */
   public void setDbWorkUser(String dbWorkUser)  {
@@ -276,6 +192,19 @@ public class CmsSetup {
     setProperties("pool." + getResourceBroker() + "backup.password",dbWorkPwd);
     setProperties("pool." + getResourceBroker() + "online.password",dbWorkPwd);
   }
+
+  /** Returns a conenction string */
+  public String getDbWorkConStr()  {
+    Object ConStr =  m_extProp.get("pool." + getResourceBroker() + ".url");
+    if(ConStr != null)  {
+      return ConStr.toString();
+    }
+    else  {
+      return "";
+    }
+  }
+
+
 
   /** Returns the password of the database from the properties */
   public String getDbWorkPwd()  {
@@ -1001,7 +930,7 @@ public class CmsSetup {
   }
 
   public String getDbCreateConStr()   {
-      Object constr = m_dbSetupProps.get(getResourceBroker()+".constr").toString();
+      Object constr = m_dbSetupProps.get(getResourceBroker()+".constr");
       if(constr != null)  {
           return constr.toString();
       }
@@ -1015,8 +944,9 @@ public class CmsSetup {
   }
 
   public String getDbCreateUser()   {
-      if(m_dbCreateUser != null)  {
-          return m_dbCreateUser;
+      Object constr = m_dbSetupProps.get(getResourceBroker()+".user");
+      if(constr != null)  {
+          return constr.toString();
       }
       else  {
           return "";
@@ -1024,7 +954,7 @@ public class CmsSetup {
   }
 
   public void setDbCreateUser(String dbCreateUser)  {
-      m_dbCreateUser = dbCreateUser;
+      m_dbSetupProps.put(getResourceBroker()+".user",dbCreateUser);
   }
 
   public String getDbCreatePwd()   {
@@ -1059,6 +989,29 @@ public class CmsSetup {
   public void lockWizard()  {
       setProperties("wizard.enabled","false");
   }
+
+  public Properties getDbSetupProps()  {
+      return m_dbSetupProps;
+  }
+
+  public String getDb() {
+      String temp = m_dbSetupProps.getProperty("database");
+      if(temp != null)  {
+          return temp;
+      }
+      else  {
+          return "";
+      }
+  }
+
+  public Hashtable getReplacer() {
+      return m_replacer;
+  }
+
+  public void setReplacer(Hashtable replacer)  {
+      m_replacer = replacer;
+  }
+
 
 
 }
