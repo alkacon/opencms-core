@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLink.java,v $
-* Date   : $Date: 2002/12/06 23:16:58 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/12/12 18:42:40 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.util.LinkSubstitution;
 
 import javax.servlet.jsp.JspException;
 
@@ -39,12 +40,9 @@ import javax.servlet.jsp.JspException;
  * export to work properly. 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
-    
-    /** One static substitutor should be enough */
-    private static com.opencms.util.LinkSubstitution m_substitutor = new com.opencms.util.LinkSubstitution();   
     
     /** Debugging on / off */
     private static final boolean DEBUG = false;
@@ -97,9 +95,9 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
      */
     public static String linkTagAction(String link, CmsFlexRequest req) {
         if (link.indexOf(':') >= 0) {
-            return m_substitutor.getLinkSubstitution(req.getCmsObject(), link);
+            return LinkSubstitution.getLinkSubstitution(req.getCmsObject(), link);
         } else {
-            return m_substitutor.getLinkSubstitution(req.getCmsObject(), req.toAbsolute(link));
+            return LinkSubstitution.getLinkSubstitution(req.getCmsObject(), req.toAbsolute(link));
         }        
     }
 }
