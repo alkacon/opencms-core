@@ -11,10 +11,10 @@ import java.util.*;
 
 
 /**
- * Content definition for Workplace template files.
+ * Content definition for the workplace button element definition file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/25 17:19:29 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/26 09:16:28 $
  */
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent 
         implements I_CmsLogChannels, I_CmsWpConstants {
@@ -49,8 +49,7 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
         super();
         init(cms, file);
     }        
-    
-    
+        
     /**
      * Gets the expected tagname for the XML documents of this content type
      * @return Expected XML tagname.
@@ -64,10 +63,14 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
      * @return Content type description.
      */
     public String getContentDescription() {
-        return "OpenCms workplace buttons";
-    }
-    
+        return "OpenCms workplace buttons definition";
+    }    
 
+    /**
+     * Gets the processed data for a button.
+     * @return Processed button.
+     * @exception CmsException
+     */
     public String getButton(String name, String action, String alt) throws CmsException {
         setData("name", name);
         setData("action", action);
@@ -75,6 +78,11 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
         return getProcessedDataValue("defaultbutton");                
     }        
     
+    /**
+     * Gets the processed data for a button separator.
+     * @return Processed button separator.
+     * @exception CmsException
+     */
     public String getButtonSeparator() throws CmsException {
         return getProcessedDataValue("buttonseparator");
     }    

@@ -7,7 +7,14 @@ import com.opencms.template.*;
 
 import java.util.*;
 
-
+/**
+ * Template class for displaying the text editor of the OpenCms workplace.<P>
+ * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
+ * 
+ * @author Alexander Lucas
+ * @version $Revision: 1.2 $ $Date: 2000/01/26 09:16:28 $
+ * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ */
 public class CmsEditor extends CmsXmlTemplate {
         
     /**

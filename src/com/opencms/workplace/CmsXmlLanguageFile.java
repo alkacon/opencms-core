@@ -9,10 +9,13 @@ import com.opencms.template.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/25 16:16:17 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/26 09:16:28 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
+    /** Constant for the current language
+     * HACK: replace this by the corresponding value from the user object
+     */
     private final static String C_CURRENT_LANGUAGE = "de";
     
     /** Name of the class specific language section. */
