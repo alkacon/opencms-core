@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/10/20 07:47:32 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/10/20 07:50:51 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,12 +46,12 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2000/10/20 07:47:32 $
+ * @version $Revision: 1.36 $ $Date: 2000/10/20 07:50:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
 				
-	private void commitTemporaryFile(CmsObject cms, String originalFilename, String temporaryFilename)
+	protected void commitTemporaryFile(CmsObject cms, String originalFilename, String temporaryFilename)
 			throws CmsException {
 		CmsFile orgFile = cms.readFile(originalFilename);
 		CmsFile tempFile = cms.readFile(temporaryFilename);
@@ -66,7 +66,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 			cms.writeProperty(originalFilename, keyName, (String)minfos.get(keyName));
 		}
 	}
-	private String createTemporaryFile(CmsObject cms, CmsResource file) throws CmsException{
+	protected String createTemporaryFile(CmsObject cms, CmsResource file) throws CmsException{
 		String temporaryFilename = file.getPath() + C_TEMP_PREFIX + file.getName();
 		
 		// This is the code for single temporary files.
@@ -634,7 +634,7 @@ public Integer getAvailableTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vec
 	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
 		return false;
 	}
-	private void preview(String previewPath, CmsRequestContext reqCont) throws CmsException {
+	protected void preview(String previewPath, CmsRequestContext reqCont) throws CmsException {
 		HttpServletRequest srvReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();            
 		String servletPath = srvReq.getServletPath();
 		try {

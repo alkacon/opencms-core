@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/10/31 13:11:29 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.19 $ $Date: 2000/10/31 13:11:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -58,7 +58,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
 	 * @param templateFile the editor's template file containing different sections
 	 * @return name of the browser specific section in <code>templateFile</code>
 	 */
-	private String getBrowserSpecificSection(CmsObject cms, CmsXmlTemplateFile templateFile) {        
+	protected String getBrowserSpecificSection(CmsObject cms, CmsXmlTemplateFile templateFile) {        
 		
 	   
 		HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();                
@@ -180,7 +180,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
 	 * @param filename Name of the file to be loaded
 	 * @return CmsFile object of the loaded file
 	 */
-	private CmsFile readFile(CmsObject cms, String filename) throws CmsException {
+	protected CmsFile readFile(CmsObject cms, String filename) throws CmsException {
 		
 		CmsFile result = null;
 		try {
