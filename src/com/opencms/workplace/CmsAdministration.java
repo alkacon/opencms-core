@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2005/03/24 09:43:56 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.57 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Name:  $ $Revision: 1.58 $ $Date: 2005/03/24 09:43:56 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -269,6 +269,8 @@ public class CmsAdministration extends CmsWorkplaceDefault {
                 } catch (CmsVfsResourceNotFoundException e) {
                     // folder does not exists
                     continue;
+                } catch (CmsSecurityException e1) {
+                    // no access to this adminstration point, skip it
                 }
                 for(int j = 0;j < moduleAdminPoints.size();j++) {
                     CmsFolder currentModuleAdminFolder = (CmsFolder) moduleAdminPoints.get(j);
