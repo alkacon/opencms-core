@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <export>
     <info>
-        <creator>Admin</creator>
-        <opencms_version>andsch_2002-08-15-16-09 Ecaz</opencms_version>
-        <createdate>20.08.2002 10:46</createdate>
+        <creator>Alexander Kandzior (a.kandzior@alkacon.com)</creator>
+        <opencms_version>5.0_beta_2 Kaitain</opencms_version>
+        <createdate>05.09.2002 10:21</createdate>
         <project>Online</project>
         <export_version>1</export_version>
     </info>
@@ -2194,7 +2194,8 @@
             <user>Admin</user>
             <group>Users</group>
             <access>79</access>
-        </file>        
+            <properties/>
+        </file>
         <file>
             <source>pics/system/ic_admin_module.gif</source>
             <destination>pics/system/ic_admin_module.gif</destination>
@@ -2403,6 +2404,15 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_file_jsp.gif</source>
+            <destination>pics/system/ic_file_jsp.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>pics/system/ic_file_link.gif</source>
             <destination>pics/system/ic_file_link.gif</destination>
             <type>image</type>
@@ -2457,33 +2467,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/ic_file_jsp.gif</source>
-            <destination>pics/system/ic_file_jsp.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>        
-        <file>
-            <source>pics/system/ic_file_velocity.gif</source>
-            <destination>pics/system/ic_file_velocity.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>                
-        <file>
-            <source>pics/system/ic_file_compatiblePlain.gif</source>
-            <destination>pics/system/ic_file_compatiblePlain.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/ic_file_script.gif</source>
             <destination>pics/system/ic_file_script.gif</destination>
             <type>image</type>
@@ -2504,6 +2487,15 @@
         <file>
             <source>pics/system/ic_file_upload.gif</source>
             <destination>pics/system/ic_file_upload.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/ic_file_velocity.gif</source>
+            <destination>pics/system/ic_file_velocity.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -4875,45 +4867,6 @@
             <properties/>
         </file>
         <file>
-            <destination>system/workplace/administration/flexcache</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[flex.cache.label.title]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[ic_admin_flexcache]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[30]]></value>
-                </property>
-            </properties>
-        </file>        
-        <file>
-            <source>system/workplace/administration/flexcache/index.html</source>
-            <destination>system/workplace/administration/flexcache/index.html</destination>
-            <type>jsp</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>9</type>
-                    <value><![CDATA[FlexCache Administration page]]></value>
-                </property>
-            </properties>
-        </file>        
-        <file>
             <destination>system/workplace/administration/externallinkgallery</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -5069,6 +5022,26 @@
                     <name>NavPos</name>
                     <type>0</type>
                     <value><![CDATA[30]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/flexcache/index.html</source>
+            <destination>system/workplace/administration/flexcache/index.html</destination>
+            <type>jsp</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>8</type>
+                    <value><![CDATA[FlexCache Administration page]]></value>
+                </property>
+                <property>
+                    <name>export</name>
+                    <type>8</type>
+                    <value><![CDATA[false]]></value>
                 </property>
             </properties>
         </file>
@@ -6549,6 +6522,23 @@
             <properties/>
         </file>
         <file>
+            <destination>system/workplace/config/language/en</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/config/language/en/core_en</source>
+            <destination>system/workplace/config/language/en/core_en</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <destination>system/workplace/config/language/it</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -6559,23 +6549,6 @@
         <file>
             <source>system/workplace/config/language/it/core_it</source>
             <destination>system/workplace/config/language/it/core_it</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <destination>system/workplace/config/language/uk</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/config/language/uk/core_uk</source>
-            <destination>system/workplace/config/language/uk/core_uk</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
@@ -8042,7 +8015,7 @@
                 <property>
                     <name>NavText</name>
                     <type>4</type>
-                    <value><![CDATA[Elementcache löschen]]></value>
+                    <value><![CDATA[Elementcache loeschen]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -8052,12 +8025,12 @@
                 <property>
                     <name>Title</name>
                     <type>4</type>
-                    <value><![CDATA[Elementcache löschen]]></value>
+                    <value><![CDATA[Elementcache loeschen]]></value>
                 </property>
                 <property>
                     <name>Description</name>
                     <type>4</type>
-                    <value><![CDATA[Elementcache löschen]]></value>
+                    <value><![CDATA[Elementcache loeschen]]></value>
                 </property>
             </properties>
         </file>
@@ -8296,7 +8269,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>4</type>
-                    <value><![CDATA[12.0]]></value>s
+                    <value><![CDATA[12.0]]></value>
                 </property>
                 <property>
                     <name>Title</name>
@@ -8821,7 +8794,7 @@
                 <property>
                     <name>NavText</name>
                     <type>4</type>
-                    <value><![CDATA[Aktuelle Projekte: Übersicht]]></value>
+                    <value><![CDATA[Aktuelle Projekte: Uebersicht]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -8831,7 +8804,7 @@
                 <property>
                     <name>Title</name>
                     <type>4</type>
-                    <value><![CDATA[Aktuelle Projekte: Übersicht]]></value>
+                    <value><![CDATA[Aktuelle Projekte: Uebersicht]]></value>
                 </property>
             </properties>
         </file>
@@ -9356,7 +9329,7 @@
                 <property>
                     <name>NavText</name>
                     <type>4</type>
-                    <value><![CDATA[Löschen]]></value>
+                    <value><![CDATA[Loeschen]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -9366,7 +9339,7 @@
                 <property>
                     <name>Title</name>
                     <type>4</type>
-                    <value><![CDATA[Löschen]]></value>
+                    <value><![CDATA[Loeschen]]></value>
                 </property>
             </properties>
         </file>
@@ -9728,7 +9701,7 @@
                 <property>
                     <name>NavText</name>
                     <type>4</type>
-                    <value><![CDATA[Gruppe ändern]]></value>
+                    <value><![CDATA[Gruppe Aendern]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -9738,7 +9711,7 @@
                 <property>
                     <name>Title</name>
                     <type>4</type>
-                    <value><![CDATA[Gruppe ändern]]></value>
+                    <value><![CDATA[Gruppe Aendern]]></value>
                 </property>
             </properties>
         </file>
@@ -9803,7 +9776,7 @@
                 <property>
                     <name>NavText</name>
                     <type>4</type>
-                    <value><![CDATA[Zugriff ändern]]></value>
+                    <value><![CDATA[Zugriff Aendern]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -9813,7 +9786,7 @@
                 <property>
                     <name>Title</name>
                     <type>4</type>
-                    <value><![CDATA[Zugriff ändern]]></value>
+                    <value><![CDATA[Zugriff Aendern]]></value>
                 </property>
             </properties>
         </file>
@@ -10238,7 +10211,7 @@
                 <property>
                     <name>NavText</name>
                     <type>4</type>
-                    <value><![CDATA[Einfügen eines Bildes]]></value>
+                    <value><![CDATA[Einfuegen eines Bildes]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -10248,7 +10221,7 @@
                 <property>
                     <name>Title</name>
                     <type>4</type>
-                    <value><![CDATA[Einfügen eines Bildes]]></value>
+                    <value><![CDATA[Einfuegen eines Bildes]]></value>
                 </property>
             </properties>
         </file>
@@ -10263,7 +10236,7 @@
                 <property>
                     <name>NavText</name>
                     <type>4</type>
-                    <value><![CDATA[Einfügen einer Datei]]></value>
+                    <value><![CDATA[Einfuegen einer Datei]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -10273,7 +10246,7 @@
                 <property>
                     <name>Title</name>
                     <type>4</type>
-                    <value><![CDATA[Einfügen einer Datei]]></value>
+                    <value><![CDATA[Einfuegen einer Datei]]></value>
                 </property>
             </properties>
         </file>
@@ -10288,7 +10261,7 @@
                 <property>
                     <name>NavText</name>
                     <type>4</type>
-                    <value><![CDATA[Einfügen einer Tabelle]]></value>
+                    <value><![CDATA[Einfuegen einer Tabelle]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -10298,7 +10271,7 @@
                 <property>
                     <name>Title</name>
                     <type>4</type>
-                    <value><![CDATA[Einfügen einer Tabelle]]></value>
+                    <value><![CDATA[Einfuegen einer Tabelle]]></value>
                 </property>
             </properties>
         </file>
@@ -10363,7 +10336,7 @@
                 <property>
                     <name>NavText</name>
                     <type>4</type>
-                    <value><![CDATA[Veränderung einer Tabelle]]></value>
+                    <value><![CDATA[Veraenderung einer Tabelle]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -10373,7 +10346,7 @@
                 <property>
                     <name>Title</name>
                     <type>4</type>
-                    <value><![CDATA[Veränderung einer Tabelle]]></value>
+                    <value><![CDATA[Veraenderung einer Tabelle]]></value>
                 </property>
             </properties>
         </file>
@@ -10487,7 +10460,7 @@
                 <property>
                     <name>NavText</name>
                     <type>4</type>
-                    <value><![CDATA[Vermeidung von unrechtmäßigem Zugang]]></value>
+                    <value><![CDATA[Vermeidung von unberechtigtem Zugang]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -10497,7 +10470,7 @@
                 <property>
                     <name>Title</name>
                     <type>4</type>
-                    <value><![CDATA[Vermeidung von unrechtmäßigem Zugang]]></value>
+                    <value><![CDATA[Vermeidung von unberechtigtem Zugang]]></value>
                 </property>
             </properties>
         </file>
@@ -10558,6 +10531,26 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/restypes/jsp</source>
+            <destination>system/workplace/restypes/jsp</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+<!--        
+        <file>
+            <source>system/workplace/restypes/velocity</source>
+            <destination>system/workplace/restypes/velocity</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>        
+-->            
+        <file>
             <source>system/workplace/restypes/link</source>
             <destination>system/workplace/restypes/link</destination>
             <type>plain</type>
@@ -10611,26 +10604,6 @@
             <access>383</access>
             <properties/>
         </file>
-        <file>
-            <source>system/workplace/restypes/jsp</source>
-            <destination>system/workplace/restypes/jsp</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties/>
-        </file>        
-<!--        
-        <file>
-            <source>system/workplace/restypes/velocity</source>
-            <destination>system/workplace/restypes/velocity</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties/>
-        </file>        
--->        
         <file>
             <source>system/workplace/restypes/XMLTemplate</source>
             <destination>system/workplace/restypes/XMLTemplate</destination>
@@ -12055,21 +12028,6 @@
             <group>Users</group>
             <access>15</access>
             <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/js/opencms_channeleditor.js</source>
-            <destination>system/workplace/templates/js/opencms_channeleditor.js</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[]]></value>
-                </property>
-            </properties>
         </file>
         <file>
             <source>system/workplace/templates/js/opencms_choosebrowser.js</source>
