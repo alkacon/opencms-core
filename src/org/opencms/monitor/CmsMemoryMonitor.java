@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/10 10:21:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/11 13:59:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,18 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.PrintfFormat;
 
 import com.opencms.core.CmsException;
 import com.opencms.defaults.CmsMail;
 import com.opencms.file.CmsFile;
-import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsUser;
 import com.opencms.util.Utils;
 
 import java.util.Arrays;
@@ -60,7 +64,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2003/11/10 10:21:16 $
+ * @version $Revision: 1.9 $ $Date: 2003/11/11 13:59:24 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -70,7 +74,12 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     
     /** set interval for clearing the caches to 15 minutes */
     private static final int C_INTERVAL_CLEAR = 1000 * 60 * 15;
+    
+    /** max depth for object size recursion */
+    private static final int C_MAX_DEPTH = 5;
 
+    private static boolean m_currentlyRunning = false;
+    
     /** receivers fro status emails */
     private String[] m_emailReceiver;
 
@@ -183,7 +192,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             OpenCms.getLog(this).warn("Clearing caches because memory consumption has reached a critical level");
         }        
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
-        System.gc();      
+        System.gc();       
     }
 
     /**
@@ -286,67 +295,166 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * 
      * @param obj the object 
      * @return the value sizes of value objects or "-"-fields
-     */
-    private String getValueSize(Object obj) {
+     */    
+    private long getValueSize(Object obj) {
 
-        Map map = null;
-        int valueSize[] = {0, 0, 0, 0, 0, 0};
-        int unresolved = 0;
-
-        try {
-            map = (Map)obj;
-            if (map != null) {
-                for (Iterator i = map.values().iterator(); i.hasNext();) {
-                    Object value = i.next();
-                    if (value instanceof I_CmsLruCacheObject) {
-                        value = ((I_CmsLruCacheObject)value).getValue();
-                    }
-                    if (value instanceof byte[]) {
-                        valueSize[0] += ((byte[])value).length;
-                        continue;
-                    }
-                    if (value instanceof String) {
-                        valueSize[1] += ((String)value).length();
-                        continue;
-                    }
-                    if (value instanceof List) {
-                        valueSize[2] += ((List)value).size();
-                        continue;
-                    }
-                    if (value instanceof Map) {
-                        valueSize[3] += ((Map)value).size();
-                        continue;
-                    }
-                    if (value instanceof CmsFile) {
-                        CmsFile f = (CmsFile)value;
-                        int l = f.getContents().length;
-                        valueSize[4] += (l > 0) ? l : 1;
-                        continue;
-                    }
-                    if (value instanceof CmsFolder || value instanceof CmsResource) {
-                        valueSize[5] += 1;
-                        continue;
-                    }
-                    unresolved++;
-                }
-            }
-        } catch (Exception exc) {
-            // noop
+        if (obj instanceof CmsLruCache) {
+            return ((CmsLruCache)obj).size();
         }
-        if (map != null) {
-            return Integer.toString(valueSize[0]) + ", byte[] size, " + Integer.toString(valueSize[1]) + ", String size, " + Integer.toString(valueSize[2]) + ", List items, " + Integer.toString(valueSize[3]) + ", Map items, " + Integer.toString(valueSize[4]) + ", CmsFiles, " + Integer.toString(valueSize[5]) + ", CmsResources/Folders, " + Integer.toString(unresolved) + ", unresolved";
-        } else {
-            return "-, byte[] size, " + "-, String size, " + "-, List items, " + "-, Map items, " + "-, CmsFiles, " + "-, CmsResources/Folders, " + "-, unresolved";
+        
+        if (obj instanceof Map) {
+            return getValueSize((Map)obj, 1);
+        }
+        
+        if (obj instanceof List) {
+            return getValueSize((List)obj, 1);
+        }
+        
+        try {
+            return getMemorySize(obj);
+        } catch (Exception exc) {
+            return 0;
         }
     }
-
+    
     /**
+     * Returns the total value size of a map object.<p>
+     * 
+     * @param mapValue the map object
+     * @param depth the max recursion depth for calculation the size
+     * @return the size of the map object
+     */
+    private long getValueSize(Map mapValue, int depth) {
+      
+        long totalSize = 0;
+        for (Iterator i = mapValue.values().iterator(); i.hasNext();) {
+            
+            Object obj = i.next();
+
+            if (obj instanceof CmsAccessControlList) {
+                obj = ((CmsAccessControlList)obj).getPermissionMap();
+            }
+            
+            if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                totalSize += getValueSize((Map)obj, depth+1);
+                continue;
+            }
+            
+            if (obj instanceof List && depth < C_MAX_DEPTH) {
+                totalSize += getValueSize((List)obj, depth+1);
+                continue;
+            }
+
+            totalSize += getMemorySize(obj);
+        }
+        
+        return totalSize;
+    }
+    
+    /**
+     * Returns the total value size of a list object.<p>
+     * 
+     * @param listValue the list object
+     * @param depth the max recursion depth for calculation the size
+     * @return the size of the list object
+     */
+    private long getValueSize(List listValue, int depth) {
+        
+        long totalSize = 0;
+        for (Iterator i = listValue.iterator(); i.hasNext();) {
+            
+            Object obj = i.next();
+    
+            if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                totalSize += getValueSize((Map)obj, depth+1);
+                continue;
+            }
+    
+            if (obj instanceof List && depth < C_MAX_DEPTH) {
+                totalSize += getValueSize((List)obj, depth+1);
+                continue;
+            }
+    
+            totalSize += getMemorySize(obj);
+        }
+        
+        return totalSize;
+    }
+    
+    /**
+     * Returns the size of objects that are instances of
+     * <code>byte[]</code>, <code>String</code>, <code>CmsFile</code>,<code>I_CmsLruCacheObject</code>.<p>
+     * For other objects, a size of 0 is returned.
+     * 
+     * @param obj the object
+     * @return the size of the object 
+     */
+    private long getMemorySize(Object obj) {
+
+        if (obj instanceof I_CmsLruCacheObject) {
+            obj = ((I_CmsLruCacheObject)obj).getValue();
+        }
+        
+        if (obj instanceof byte[]) {
+            return ((byte[])obj).length;
+        }
+        
+        if (obj instanceof String) {
+            return ((String)obj).length() * 2;
+        }        
+
+        if (obj instanceof CmsFile) {
+            CmsFile f = (CmsFile)obj;
+            if (f.getContents() != null) {
+                return f.getContents().length;
+            }
+        }
+        
+        if (obj instanceof CmsPermissionSet) {
+            return 8; // two ints
+        }
+
+        if (obj instanceof CmsResource) {
+            return 512; // estimated size
+        }
+        
+        if (obj instanceof CmsUser) {
+            return 1024; // estimated size
+        }
+        
+        if (obj instanceof CmsGroup) {
+            return 260; // estimated size
+        }
+        
+        if (obj instanceof CmsProject) {
+            return 0;
+        }
+        
+        if (obj instanceof Boolean) {
+            return 1; // one boolean
+        }
+        
+        if (obj.getClass().getName().equals("org.opencms.flex.CmsFlexCache$CmsFlexCacheVariation")) {
+            return 0;
+        }
+        
+        System.err.println("Unresolved: " + obj.getClass().getName());
+        return 0;
+    }
+    
+    /**a
      * @see org.opencms.cron.I_CmsCronJob#launch(com.opencms.file.CmsObject, java.lang.String)
      */
     public String launch(CmsObject cms, String params) throws Exception {
         
         CmsMemoryMonitor monitor = OpenCms.getMemoryMonitor();
 
+        if (m_currentlyRunning) {
+            return "";
+        } else {
+            m_currentlyRunning = true;
+        }
+        
         // check if the system is in a low memory condition
         if (monitor.lowMemory()) {
             // log warning
@@ -367,6 +475,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             monitor.monitorSendEmail(false);
         }
 
+        m_currentlyRunning = false;
         return "";
     }
     
