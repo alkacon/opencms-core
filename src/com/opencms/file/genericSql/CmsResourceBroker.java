@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/26 13:04:14 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2000/06/26 16:03:23 $
+ * Version: $Revision: 1.75 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.74 $ $Date: 2000/06/26 13:04:14 $
+ * @version $Revision: 1.75 $ $Date: 2000/06/26 16:03:23 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3828,7 +3828,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     
                     m_resourceCache.put(C_FOLDER+currentProject.getId()+resourcename,(CmsFolder)cmsResource);              
                 } else {           
-
                     m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
                     // update the cache   
      
@@ -4056,7 +4055,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         // has the user write-access?
 		if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
-				
+            
+            if (file.getState()==C_STATE_UNCHANGED) {
+                file.setState(C_STATE_CHANGED);
+            }				
 			// write-acces  was granted - write the file.
 			m_dbAccess.writeFile(currentProject, 
 							   onlineProject(currentUser, currentProject), file,true );

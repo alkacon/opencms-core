@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/26 13:04:13 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2000/06/26 16:03:23 $
+ * Version: $Revision: 1.80 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.79 $ $Date: 2000/06/26 13:04:13 $ * 
+ * @version $Revision: 1.80 $ $Date: 2000/06/26 16:03:23 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2630,16 +2630,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		for (int i = 0; i < offlineFiles.size(); i++){
 			currentFile = ((CmsFile)offlineFiles.elementAt(i));
             
-            System.err.println(currentFile);
-            System.err.println(currentFile.getLength());
-            
      		if (currentFile.getName().startsWith(C_TEMP_PREFIX)) {
                  removeFile(projectId,currentFile.getAbsolutePath());
                 
             // C_STATE_DELETE
             }else if (currentFile.getState() == C_STATE_DELETED){
-                System.err.println("*deleted*");
-   				// delete in filesystem if necessary
+      			// delete in filesystem if necessary
 				String exportKey = checkExport(currentFile.getAbsolutePath());
 				if (exportKey != null){
 					discAccess.removeResource(currentFile.getAbsolutePath(), exportKey);
@@ -2662,7 +2658,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				}	
 			// C_STATE_CHANGED	
 			}else if ( currentFile.getState() == C_STATE_CHANGED){
-			   System.err.println("*changed*");
 				// export to filesystem if necessary
 				String exportKey = checkExport(currentFile.getAbsolutePath());
 				if (exportKey != null){
@@ -2729,7 +2724,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
 			// C_STATE_NEW
 			}else if (currentFile.getState() == C_STATE_NEW){
-			    System.err.println("*new*");
 				// export to filesystem if necessary
 				String exportKey = checkExport(currentFile.getAbsolutePath());
 				if (exportKey != null){
@@ -3893,13 +3887,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 statementResourceUpdate.setInt(6,file.getAccessFlags());
                 //STATE       
                 int state=file.getState();
+                    
                 if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
                     statementResourceUpdate.setInt(7,state);
+                    System.err.println("keep old state");
                 } else {                                                                       
                     if (changed==true) {
                         statementResourceUpdate.setInt(7,C_STATE_CHANGED);
+                        System.err.println("set to changed");
                     } else {
                         statementResourceUpdate.setInt(7,file.getState());
+                        System.err.println("do nothing");
                     }
                 }
                 statementResourceUpdate.setInt(8,file.isLockedBy());
