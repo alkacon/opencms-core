@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/10 15:00:16 $
- * Version: $Revision: 1.205 $
+ * Date   : $Date: 2003/09/10 15:23:04 $
+ * Version: $Revision: 1.206 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.205 $ $Date: 2003/09/10 15:00:16 $
+ * @version $Revision: 1.206 $ $Date: 2003/09/10 15:23:04 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1117,9 +1117,10 @@ public class CmsDriverManager extends Object {
             return;
         }
 
+
         // validate the destination path/filename
         validFilename(destination.replace('/', 'a'));
-
+        
         // extract the destination folder and filename
         destinationFolderName = destination.substring(0, destination.lastIndexOf("/") + 1);
         destinationFileName = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
@@ -1128,36 +1129,38 @@ public class CmsDriverManager extends Object {
         CmsFile sourceFile = readFile(context, source, false);
         CmsFolder destinationFolder = readFolder(context, destinationFolderName);
 
+
         // check the link mode to see if this resource has to be copied as a link.
         // only check this if the override flag "copyAsLink" is not set.
         if (!copyAsLink) {
             // if we have the copy mode "copy as link, set the override flag to true
-            if (copyMode == I_CmsConstants.C_COPY_AS_LINK) {
-                copyAsLink = true;
+            if (copyMode==I_CmsConstants.C_COPY_AS_LINK) {
+                copyAsLink=true;
             }
             // if the mode is "preservre links", we have to check the link counter
-            if (copyMode == I_CmsConstants.C_COPY_PRESERVE_LINK) {
-                if (sourceFile.getLinkCount() > 1) {
-                    copyAsLink = true;
+            if (copyMode==I_CmsConstants.C_COPY_PRESERVE_LINK) {
+                if (sourceFile.getLinkCount()>1) {
+                    copyAsLink=true;
                 }
             }
         }
+
 
         // checks, if the type is valid, i.e. the user can copy files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
         if (!isAdmin(context) && (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID || sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] copyFile() " + source, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-
+        
         // check if the user has read access to the source file and write access to the destination folder
         checkPermissions(context, sourceFile, I_CmsConstants.C_READ_ACCESS);
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // read the source properties
         properties = readProperties(context, source, null, false);
-
+        
         if (copyAsLink) {
-            // create a copy of the source file in the destination parent folder      
+        // create a copy of the source file in the destination parent folder      
             newResource = createVfsLink(context, destination, source, properties, false);
         } else {
             // create a new resource in the destination folder
@@ -1168,7 +1171,7 @@ public class CmsDriverManager extends Object {
                 // reset "labeled" link flag
                 flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             }
-
+            
             // create the file
             newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, flags, destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
             newResource.setFullResourceName(destination);
@@ -1182,21 +1185,22 @@ public class CmsDriverManager extends Object {
             while (aceList.hasNext()) {
                 CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
+
             }
-
-            m_vfsDriver.updateResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
-
-            touch(context, destination, sourceFile.getDateLastModified(), sourceFile.getUserLastModified());
-
-            if (lockCopy) {
+                        
+            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);
+            
+            touch(context,destination,sourceFile.getDateLastModified(),sourceFile.getUserLastModified());            
+        
+        if (lockCopy) {
                 lockResource(context, destination);
-            }
+        }
         }
 
         clearAccessControlListCache();
         m_accessCache.clear();
         clearResourceCache();
-
+        
         List modifiedResources = (List) new ArrayList();
         modifiedResources.add(sourceFile);
         modifiedResources.add(newResource);
@@ -1239,7 +1243,7 @@ public class CmsDriverManager extends Object {
 
         destinationFoldername = destination.substring(0, destination.substring(0, destination.length() - 1).lastIndexOf("/") + 1);
         destinationResourceName = destination.substring(destinationFoldername.length());
-        
+
         if (destinationResourceName.endsWith("/")) {
             destinationResourceName = destinationResourceName.substring(0, destinationResourceName.length()-1);
         }
@@ -1250,7 +1254,7 @@ public class CmsDriverManager extends Object {
         // check if the user has write access to the destination folder (checking read access to the source is done implicitly by read folder)
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
-        // set user and creation timestamps        
+        // set user and creation timestamps
         if (preserveTimestaps) {
             dateLastModified = sourceFolder.getDateLastModified();
             dateCreated = sourceFolder.getDateCreated();
@@ -1262,6 +1266,7 @@ public class CmsDriverManager extends Object {
             userLastModified = context.currentUser().getId();
             userCreated = context.currentUser().getId();            
         }
+
 
         // create a copy of the folder
         newResource = m_vfsDriver.createFolder(context.currentProject(), destinationFolder.getId(), CmsUUID.getNullUUID(), destinationResourceName, sourceFolder.getFlags(), dateLastModified,userLastModified, dateCreated, userCreated);
@@ -1275,7 +1280,7 @@ public class CmsDriverManager extends Object {
         m_propertyCache.clear();      
         
         if (preserveTimestaps) {
-            touch(context, destination, dateLastModified, userLastModified);
+            touch(context,destination,dateLastModified,userLastModified);
         }
 
         // copy the access control entries of this resource
@@ -1961,16 +1966,22 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Deletes the versions from the backup tables that are older then the given timestamp.<p>
-     *
+     * Deletes the versions from the backup tables that are older then the given timestamp  and/or number of remaining versions.<p>
+     * 
+     * The number of verions always wins, i.e. if the given timestamp would delete more versions than given in the
+     * versions parameter, the timestamp will be ignored.
+     * Deletion will delete file header, content and properties.
+     * 
      * @param cms The CmsObject for reading the registry
      * @param context the current request context
      * @param timestamp the max age of backup resources
      * @return int The oldest remaining version
      */
-    public int deleteBackups(CmsObject cms, CmsRequestContext context, long timestamp) throws CmsException {
+    public int deleteBackups(CmsObject cms, CmsRequestContext context, long timestamp, int versions) throws CmsException {     
         int lastVersion = 1;
-        Hashtable histproperties = cms.getRegistry().getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
+        
+        // TODO: this is the old code, remove it when this method is completed
+        /*Hashtable histproperties = cms.getRegistry().getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
         String delete = (String) histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_DELETE);
         if ("true".equalsIgnoreCase(delete)) {
             // only an Administrator can delete the backups
@@ -1979,7 +1990,24 @@ public class CmsDriverManager extends Object {
             } else {
                 throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteBackups()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                            
             }
+        } */
+        
+        // TODO: make a own method in the registry for that
+        Hashtable histproperties = cms.getRegistry().getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
+        String delete = (String) histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_DELETE);
+        if ("true".equalsIgnoreCase(delete)) {
+            // only an Administrator can delete the backups
+            if (isAdmin(context)) {
+               // List allBackupFiles=m_backupDriver.readAllBackupFileHeaders();
+               // Iterator i=allBackupFiles.iterator();
+               // while (i.hasNext()) {
+               //     CmsBackupResource res=(CmsBackupResource)i.next();                  
+               // }
+               
+            }
         }
+        
+        
         return lastVersion;
     }
     
@@ -4714,10 +4742,8 @@ public class CmsDriverManager extends Object {
             copyFolder(context, sourceName, destinationName, true, true, true);
             deleteFolder(context, sourceName);
         }
-        
         // read the moved file
         CmsResource destination = readFileHeader(context, destinationName);   
-        
         // since the resource was copied as link, we have to update the date/user lastmodified
         // its sufficient to use source instead of dest, since there is only one resource
         destination.setDateLastModified(System.currentTimeMillis());
@@ -5419,7 +5445,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, cmsFile, I_CmsConstants.C_READ_ACCESS);
 
         // access to all subfolders was granted - return the file.
-        return cmsFile;
+        return cmsFile;    
     }
 
     /**
@@ -7767,7 +7793,7 @@ public class CmsDriverManager extends Object {
             CmsFile onlineFile = readFileInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, resource.getId(), false);
             //(context, resourceName);
             readPath(context,onlineFile,true);
-
+            
             // get flags of the deleted file
             int flags = onlineFile.getFlags();
             if (resource.isLabeled()) {

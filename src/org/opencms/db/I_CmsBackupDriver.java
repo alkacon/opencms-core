@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/10 07:35:54 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/09/10 15:23:04 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2003/09/10 07:35:54 $
+ * @version $Revision: 1.18 $ $Date: 2003/09/10 15:23:04 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -119,10 +119,18 @@ public interface I_CmsBackupDriver {
      * Reads all backup file headers of a file excluding the file content.<p>.
      *
      * @param resourceId the id of the file to read
-     * @return Vector with all backup file headers
+     * @return List with all backup file headers
      * @throws CmsException if something goes wrong
      */
     List readAllBackupFileHeaders(CmsUUID resourceId) throws CmsException;
+
+    /**
+     * Reads all backup file headers  excluding the file content.<p>.
+     *
+     * @return List with all backup file headers
+     * @throws CmsException if something goes wrong
+     */
+    List readAllBackupFileHeaders() throws CmsException;
 
     /**
      * Reads a backup file including the file content.<p>
