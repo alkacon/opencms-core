@@ -181,10 +181,8 @@ function doAction(action) {
 		case 1: {
 			location.href='lock.html?file='+ kontextparam;
 			break;
-		} 
-		case 2:
-		{
-			location.href='explorer_files_lockchange.html';
+		} case 2:	{
+			location.href='lockchange.html?file='+ kontextparam;
 			break;
 		} case 3: {
 			location.href='unlock.html?file='+ kontextparam;
@@ -203,9 +201,7 @@ function doAction(action) {
 		} case 6: {
 			location.href='rename.html?file='+ kontextparam;
 			break;
-		}
-		case 7:
-		{
+		} case 7: {
 			location.href='delete.html?file='+ kontextparam;
 			break;
 		}

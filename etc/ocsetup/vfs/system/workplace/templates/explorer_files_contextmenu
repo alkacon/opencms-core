@@ -18,7 +18,7 @@
 </contextmenue>
 
 <contextmenue name="folderlock">
-	<contextentry name="explorer.context.overridelock" href="#"/>
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextdisabled name="explorer.context.rename"/>
@@ -71,7 +71,7 @@
 </contextmenue>
 
 <contextmenue name="plainlock">
-	<contextentry name="explorer.context.overridelock" href="#"/>
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
 	<contextdisabled name="explorer.context.htmledit"/>
 	<contextdisabled name="explorer.context.edit"/>
@@ -132,7 +132,7 @@
 </contextmenue>
 
 <contextmenue name="XMLTemplatelock">
-	<contextentry name="explorer.context.overridelock" href="#"/>
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
 	<contextdisabled name="explorer.context.edit"/>
 	<contextspacer/>
@@ -191,7 +191,7 @@
 </contextmenue>
 
 <contextmenue name="scriptlock">
-	<contextentry name="explorer.context.overridelock" href="#"/>
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
 	<contextdisabled name="explorer.context.edit"/>
 	<contextspacer/>
@@ -251,7 +251,7 @@
 </contextmenue>
 
 <contextmenue name="pagelock">
-	<contextentry name="explorer.context.overridelock" href="#"/>
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
 	<contextdisabled name="explorer.context.edit"/>
     <contextdisabled name="explorer.context.editcontrolfile" />
@@ -310,7 +310,7 @@
 </contextmenue>
 
 <contextmenue name="imagelock">
-	<contextentry name="explorer.context.overridelock" href="#"/>
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextdisabled name="explorer.context.rename"/>
@@ -361,7 +361,7 @@
 </contextmenue>
 
 <contextmenue name="binarylock">
-	<contextentry name="explorer.context.overridelock" href="#"/>
+	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextdisabled name="explorer.context.rename"/>
