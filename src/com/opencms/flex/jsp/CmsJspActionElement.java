@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/03/02 13:56:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/03/04 17:27:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package com.opencms.flex.jsp;
 
-import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.flex.cache.CmsFlexRequest;
@@ -59,9 +58,13 @@ import javax.servlet.jsp.PageContext;
  * &lt% cms.init(pageContext, request, response); %&gt;
  * &lt;/jsp:useBean&gt;
  * </pre>
+ * 
+ * All exceptions that occur when calling any method of this class are catched 
+ * and written to the log output only, so that a template still has a chance of
+ * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.0 beta 2
  */
@@ -152,7 +155,12 @@ public class CmsJspActionElement {
      */
     public CmsObject getCmsObject() {
         if (m_notInitialized) return null;
-        return m_request.getCmsObject();
+        try { 
+            return m_request.getCmsObject();
+        } catch (Throwable t) {
+            handleException(t);
+        }      
+        return null;            
     }
     
     /**
@@ -205,23 +213,27 @@ public class CmsJspActionElement {
      */
     public void include(String target, String element, Map parameterMap) throws JspException {
         if (m_notInitialized) return;
-        if (parameterMap != null) {
-            try {
-                // ensure parameters are always of type String[] not just String
-                Iterator i = parameterMap.keySet().iterator();
-                while (i.hasNext()) {
-                    String key = (String)i.next();
-                    Object value = parameterMap.get(key);
-                    if (value instanceof String) {
-                        String[] newValue = new String[] {(String)value };
-                        parameterMap.put(key, newValue);
+        try { 
+            if (parameterMap != null) {
+                try {
+                    // ensure parameters are always of type String[] not just String
+                    Iterator i = parameterMap.keySet().iterator();
+                    while (i.hasNext()) {
+                        String key = (String)i.next();
+                        Object value = parameterMap.get(key);
+                        if (value instanceof String) {
+                            String[] newValue = new String[] {(String)value };
+                            parameterMap.put(key, newValue);
+                        }
                     }
+                } catch (UnsupportedOperationException e) {
+                    // parameter map is immutable, just use it "as is"
                 }
-            } catch (UnsupportedOperationException e) {
-                // parameter map is immutable, just use it "as is"
             }
-        }
-        CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
+            CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
+        } catch (Throwable t) {
+            handleException(t);
+        }      
     }
             
     /**
@@ -234,11 +246,16 @@ public class CmsJspActionElement {
      * @param link the uri in the OpenCms to link to
      * @return the translated link
      * 
-     * @see  com.opencms.flex.jsp.CmsJspTagLink
+     * @see com.opencms.flex.jsp.CmsJspTagLink
      */
     public String link(String link) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
-        return CmsJspTagLink.linkTagAction(link, m_request);
+        try {        
+            return CmsJspTagLink.linkTagAction(link, m_request);
+        } catch (Throwable t) {
+            handleException(t);
+        }  
+        return "+++ error generating link to '" + link + "' +++";             
     }
     
     /**
@@ -249,63 +266,53 @@ public class CmsJspActionElement {
      * @param property the user property to display, please see the tag documentation for valid options
      * @return the value of the selected user property
      * 
-     * @see  com.opencms.flex.jsp.CmsJspTagUser
+     * @see com.opencms.flex.jsp.CmsJspTagUser
      */
     public String user(String property) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
-        return CmsJspTagUser.userTagAction(property, m_request);
+        try {
+            return CmsJspTagUser.userTagAction(property, m_request);
+        } catch (Throwable t) {
+            handleException(t);
+        }  
+        return "+++ error reading user property '" + property + "' +++";            
     }
     
     /**
      * Returns a selected file property value, same as using 
-     * the <code>&lt;cms:property name="..." file="..." /&gt;</code> tag.<p>
+     * the <code>&lt;cms:property name="..." /&gt;</code> tag or
+     * calling {@link #property(String name, <code>null</code>, <code>null</code>, <code>false</code>)}.<p>
      * 
-     * The <code>file</code> parameter controls from which file the
-     * property is read. Keep in mind that there are two basic options
-     * to read the property from: The file that was requested by the
-     * user is the obvious first option. However, a JSP might also have been 
-     * included as a sub-element on a page, and so the currently processed JSP 
-     * file is the second option.<p>
+     * @param name the name of the property to look for
+     * @return the value of the property found, or null if the property could not be found
      * 
-     * Valid options for the <code>file</code> parameter are:<br><ul>
-     * <li><code>"this"</code>: look for the property only at the currently 
-     *     processed file, which could be an included sub-element
-     * <li><code>"parent"</code>: look for the property only at the file requested by the user
-     * <li><code>"search-this":</code> look for the property at <code>"this"</code> file. 
-     *     If not found, walk all folders upwards to the root folder and look 
-     *     at the folders for the property, return the first value found.
-     * <li><code>"search-parent"</code> or <code>"search"</code>:
-     *     look for the property at the <code>"parent"</code> file.
-     *     If not found, walk all folders upwards to the root folder and look 
-     *     at the folders for the property, return the first value found.
-     * <li><code>[filename]</code>: Look for the property only at 
-     *     the file <code>[filename]</code>. This way you can read a property
-     *     from any file in the VFS.
-     * </ul><p>
-     * 
-     * If the named property could not be read from the selected file, 
-     * <code>null</code> is returned.<p>
+     * @see #property(String, String, String, boolean)
+     * @see com.opencms.flex.jsp.CmsJspTagProperty
+     */
+    public String property(String name) {
+        return this.property(name, null, null, false);       
+    }
+        
+    /**
+     * Returns a selected file property value, same as using 
+     * the <code>&lt;cms:property name="..." file="..." /&gt;</code> tag or
+     * calling {@link #property(String name, String file, <code>null</code>, <code>false</code>)}.<p>
      * 
      * @param name the name of the property to look for
      * @param file the file (or folder) to look at for the property
      * @return the value of the property found, or null if the property could not be found
      * 
+     * @see #property(String, String, String, boolean)
      * @see com.opencms.flex.jsp.CmsJspTagProperty
      */
     public String property(String name, String file) {
-        if (m_notInitialized) return C_NOT_INITIALIZED;
         return this.property(name, file, null, false);       
     }
 
     /**
      * Returns a selected file property value, same as using
-     * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag.<p>
-     *
-     * Please see the description of {@link #property(String, String)} for
-     * valid options of the <code>file</code> parameter.<p>
-     *
-     * If the named property could not be read from the selected file,
-     * the value of <code>defaultValue</code> is returned.<p>
+     * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag or
+     * calling {@link #property(String name, String file, String defaultValue, <code>false</code>)}.<p>
      *
      * @param name the name of the property to look for
      * @param file the file (or folder) to look at for the property
@@ -313,25 +320,19 @@ public class CmsJspActionElement {
      * @return the value of the property found, or the value of defaultValue
      *     if the property could not be found
      *
-     * @see  com.opencms.flex.jsp.CmsJspTagProperty
+     * @see #property(String, String, String, boolean)
+     * @see com.opencms.flex.jsp.CmsJspTagProperty
      */
     public String property(String name, String file, String defaultValue) {
-        if (m_notInitialized) return C_NOT_INITIALIZED;
         return this.property(name, file, defaultValue, false);
     }
             
     /**
-     * Returns a selected file property value, same as using 
+     * Returns a selected file property value with optional HTML escaping, same as using 
      * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag.<p>
      * 
-     * Please see the description of {@link #property(String, String)} for
+     * Please see the description of the class {@link com.opencms.flex.jsp.CmsJspTagProperty} for
      * valid options of the <code>file</code> parameter.<p>
-     * 
-     * If the named property could not be read from the selected file, 
-     * the value of <code>defaultValue</code> is returned.<p>
-     * 
-     * If the selected property is not found, the empty string "" is returned,
-     * NOT <code>null</code>.
      * 
      * @param name the name of the property to look for
      * @param file the file (or folder) to look at for the property
@@ -341,19 +342,21 @@ public class CmsJspActionElement {
      * @return the value of the property found, or the value of defaultValue 
      *     if the property could not be found
      *
-     * @see  com.opencms.flex.jsp.CmsJspTagProperty
+     * @see com.opencms.flex.jsp.CmsJspTagProperty
      */
     public String property(String name, String file, String defaultValue, boolean escapeHtml) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
         try {
+            if (file == null) file = m_request.getCmsObject().getRequestContext().getUri();
             return CmsJspTagProperty.propertyTagAction(name, file, defaultValue, escapeHtml, m_request);
-        } catch (CmsException e) {
-            if (defaultValue == null) {
-                return "+++ error reading property '" + name + "' +++";
-            } else {
-                return defaultValue;
-            }
-        }        
+        } catch (Throwable t) {
+            handleException(t);
+        }   
+        if (defaultValue == null) {
+            return "+++ error reading file property '" + name + "' on '" + file + "' +++";
+        } else {
+            return defaultValue;
+        }
     }
     
     /**
@@ -365,10 +368,15 @@ public class CmsJspActionElement {
      *  
      * @param property the property to look up
      * @return String the value of the system property
-     * @see CmsJspTagInfo
+     * @see com.opencms.flex.jsp.CmsJspTagInfo
      */
     public String info(String property) {
-        return CmsJspTagInfo.infoTagAction(property, m_request);        
+        try {        
+            return CmsJspTagInfo.infoTagAction(property, m_request);   
+        } catch (Throwable t) {
+            handleException(t);
+        }  
+        return "+++ error reading info property '" + property + "' +++";
     }
     
     /**
@@ -387,9 +395,10 @@ public class CmsJspActionElement {
         if (m_notInitialized) return C_NOT_INITIALIZED;
         try {
             return CmsJspTagLabel.wpLabelTagAction(label, m_request);
-        } catch (CmsException e) {
-            return "+++ error reading workplace label '" + label + "' +++";
-        }         
+        } catch (Throwable t) {
+            handleException(t);
+        }  
+        return "+++ error reading workplace label '" + label + "' +++";
     }    
     
     /**
@@ -399,11 +408,16 @@ public class CmsJspActionElement {
      * @param part the template element to check 
      * @return <code>true</code> if the element is active, <code>false</code> otherwise
      * 
-     * @see  com.opencms.flex.jsp.CmsJspTagUser
+     * @see com.opencms.flex.jsp.CmsJspTagUser
      */
     public boolean template(String element) {
         if (m_notInitialized) return true;        
-        return CmsJspTagTemplate.templateTagAction(element, m_request);
+        try {
+            return CmsJspTagTemplate.templateTagAction(element, m_request);
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return true;
     }
     
     /** 
@@ -413,18 +427,42 @@ public class CmsJspActionElement {
      */
     public CmsRequestContext getRequestContext() {
         if (m_notInitialized) return null;
-        return m_request.getCmsObject().getRequestContext();  
+        try {
+            return m_request.getCmsObject().getRequestContext();
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return null;
     }
     
     /**
      * Returns an initialized {@link CmsJspNavBuilder} instance.<p>
      *  
      * @return CmsJspNavBuilder an initialized <code>CmsJspNavBuilder</code>
+     * 
+     * @see com.opencms.flex.jsp.CmsJspNavBuilder
      */
     public CmsJspNavBuilder getNavigation() {
-        if (m_navigation == null) {
-            m_navigation = new CmsJspNavBuilder(m_request.getCmsObject());
+        if (m_notInitialized) return null;
+        try {
+            if (m_navigation == null) {
+                m_navigation = new CmsJspNavBuilder(m_request.getCmsObject());
+            }
+            return m_navigation;
+        } catch (Throwable t) {
+            handleException(t);
         }
-        return m_navigation;
+        return null;            
+    }
+    
+    /**
+     * Handles any exception that might occur in the context of this element to 
+     * ensure that templates are not disturbed.<p>
+     * 
+     * @param e the exception that was catched
+     */
+    private void handleException(Throwable t) {
+        System.err.println("Exception in " + this.getClass().getName() + ":");
+        t.printStackTrace(System.err);
     }
 }
