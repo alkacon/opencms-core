@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/09/04 08:37:15 $
-* Version: $Revision: 1.91 $
+* Date   : $Date: 2002/09/05 12:44:39 $
+* Version: $Revision: 1.92 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.91 $ $Date: 2002/09/04 08:37:15 $
+ * @version $Revision: 1.92 $ $Date: 2002/09/05 12:44:39 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -573,7 +573,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         String copy[] = cms.copyright();
 
         // log to error-stream
-        System.err.println("\n\nStarting OpenCms Version: " + cms.version());
+        System.err.println("\n\nStarting OpenCms, version " + cms.version());
         for(int i = 0;i < copy.length;i++) {
             System.err.println(copy[i]);
         }
