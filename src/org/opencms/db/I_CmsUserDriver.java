@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/08/21 08:16:39 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.14 $ $Date: 2003/08/21 08:16:39 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -267,7 +267,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * To obtain JDBC connections from different pools, further 
      * {online|offline|backup} pool Urls have to be specified.
      * 
-     * @param poolUrl the default connection pool URL
      * @return the SQL manager for this driver
      * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
      * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
