@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/09/07 09:30:36 $
- * Version: $Revision: 1.417 $
+ * Date   : $Date: 2004/09/17 14:29:58 $
+ * Version: $Revision: 1.418 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.417 $ $Date: 2004/09/07 09:30:36 $
+ * @version $Revision: 1.418 $ $Date: 2004/09/17 14:29:58 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4572,26 +4572,29 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * All users are granted.
      *
      * @param context the current request context
-     * @param folder the folder to get the subresources from
+     * @param path the folder to get the subresources from
      * @param propertyDefinition the name of the propertydefinition to check
      * @return list with all resources
      *
      * @throws CmsException if operation was not succesful
      */
-    public List getResourcesWithProperty(CmsRequestContext context, String folder, String propertyDefinition) throws CmsException {
+    public List getResourcesWithProperty(CmsRequestContext context, String path, String propertyDefinition) throws CmsException {
         List extractedResources = null;
         String cacheKey = null;
 
         // TODO: Currently the expiration date is ignored for the results        
-        cacheKey = getCacheKey(context.currentUser().getName() + "_SubtreeResourcesWithProperty", context.currentProject(), folder + "_" + propertyDefinition);
+        cacheKey = getCacheKey(context.currentUser().getName() + "_SubtreeResourcesWithProperty", context.currentProject(), path + "_" + propertyDefinition);
         if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
-            // get the folder tree
-            Set storage = getFolderIds(context, folder);
-            // now get all resources which contain the selected property
             List resources = m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition);
-            // filter the resources inside the tree
-            extractedResources = extractResourcesInTree(context, storage, resources);
-            // cache the calculated result list
+            extractedResources = new ArrayList();
+            
+            for (Iterator i = resources.iterator(); i.hasNext();) {
+                CmsResource res = (CmsResource)i.next();
+                if (res.getRootPath().startsWith(path, 0)) {
+                    extractedResources.add(res);
+                }
+            }
+
             m_resourceListCache.put(cacheKey, extractedResources);
         }
 
@@ -7524,38 +7527,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Extracts resources from a given resource list which are inside a given folder tree.<p>
-     * 
-     * @param context the current request context
-     * @param storage ste of CmsUUID of all folders instide the folder tree
-     * @param resources list of CmsResources
-     * @return filtered list of CsmResources which are inside the folder tree
-     * @throws CmsException if operation was not succesful
-     */
-    private List extractResourcesInTree(CmsRequestContext context, Set storage, List resources) throws CmsException {
-        List result = new ArrayList();
-        Iterator i = resources.iterator();
-
-        // now select only those resources which are in the folder tree below the given folder
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
-            // ckeck if the parent id of the resource is within the folder tree
-            CmsResource parent = m_vfsDriver.readFileHeader(
-                context.currentProject().getId(), CmsResource.getParentFolder(res.getRootPath()), true);
-            if (storage.contains(parent.getStructureId())) {
-                //this resource is inside the folder tree
-                if (PERM_ALLOWED == hasPermissions(context, res, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.IGNORE_EXPIRATION)) {
-                    // this is a valid resouce, add it to the result list
-                    result.add(res);
-                    updateContextDates(context, res);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Return a cache key build from the provided information.<p>
      * 
      * @param prefix a prefix for the key
@@ -7605,23 +7576,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
         buffer.append(resource);
         return buffer.toString();
-    }
-
-    /**
-     * Creates Set containing all CmsUUIDs of the subfolders of a given folder.<p>
-     * 
-     * This HashSet can be used to test if a resource is inside a subtree of the given folder.
-     * No permission check is performed on the set of folders, if required this has to be done
-     * in the method that calls this method.<p> 
-     *  
-     * @param context the current request context
-     * @param folder the folder to get the subresources from
-     * @return Set of CmsUUIDs
-     * @throws CmsException if operation was not succesful
-     */
-    private Set getFolderIds(CmsRequestContext context, String folder) throws CmsException {
-        CmsFolder parentFolder = readFolder(context, folder, CmsResourceFilter.IGNORE_EXPIRATION);
-        return new HashSet(m_vfsDriver.readFolderTree(context.currentProject(), parentFolder));
     }
 
     /**
