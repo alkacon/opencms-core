@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2001/01/04 14:57:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/01/16 11:25:01 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -92,7 +92,7 @@ private void fillHashtable(CmsObject cms, I_CmsRegistry reg, Hashtable table, St
 	table.put(C_MAINTENANCE, getStringValue(reg.getModuleMaintenanceEventName(module)));
 	table.put(C_AUTHOR, getStringValue(reg.getModuleAuthor(module)));
 	table.put(C_EMAIL, getStringValue(reg.getModuleAuthorEmail(module)));
-	table.put(C_DATE, getStringValue(Utils.getNiceDate(reg.getModuleCreateDate(module))));
+	table.put(C_DATE, getStringValue(Utils.getNiceShortDate(reg.getModuleCreateDate(module))));
 	// get the dependencies
 	Vector depNames = new Vector();
 	Vector minVersion = new Vector();
@@ -313,7 +313,7 @@ private void tryToCreateFolder(CmsObject cms, String folder, String newFolder) {
  */
 private void updateTheModule(CmsObject cms, I_CmsRegistry reg, Hashtable table, String module) {
 
-	SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MM.dd.yyyy");
+	SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");
 	String name = (String)table.get(C_MODULE_PACKETNAME);
 	String modulePath = "/system/modules/"+name+"/";
 	String version = (String)table.get(C_VERSION);

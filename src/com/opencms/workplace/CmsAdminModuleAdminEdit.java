@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/07 14:33:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/01/16 11:25:01 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,6 +44,28 @@ import javax.servlet.http.*;
  */
 public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_CmsConstants {
 
+	/**
+	 *  Checks if the name is correct.
+	 *  @param name the name to check..
+	 */
+	private boolean checkName(String name) {
+	if (name == null || name.length() == 0 || name.trim().length() == 0) {
+		return false;
+	}
+	for (int i=0; i<name.length(); i++) {
+		char c = name.charAt(i);
+		if ( 
+			((c < 'a') || (c > 'z')) &&
+			((c < '0') || (c > '9')) &&
+			((c < 'A') || (c > 'Z')) &&
+			(c != '-') && (c != '.') &&
+			(c != '|') && (c != '_') &&	(c != '~')
+			) {
+				return false;
+		}
+	}
+	return true;
+}
 	/**
 	 *  Checks if the type of the value is correct.
 	 *  @param type the type that the value should have..
@@ -128,8 +150,8 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 				String description = getStringValue((String)parameters.get("BESCHREIBUNG"));
 				String type = (String)parameters.get("TYP");
 				String value = (String)parameters.get("WERT");
-				// TODO: errror handling: check if all fields are filled out and if the value is correct
-				if ((! "".equals(name)) && (checkType(type, value))){
+				//  check if all fields are filled out and if the value is correct
+				if ((checkName(name)) && (checkType(type, value))){
 					paraNames.addElement(name);
 					paraDescr.addElement(description);
 					paraTyp.addElement(type);

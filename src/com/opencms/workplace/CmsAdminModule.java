@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/09/19 07:45:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/01/16 11:25:00 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -64,8 +64,15 @@ public class CmsAdminModule extends CmsWorkplaceDefault implements I_CmsConstant
 		
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
-		// I_CmsSession session = cms.getRequestContext().getSession(true);
 		
+		// Set the New Module Icon  
+		CmsRequestContext reqCont = cms.getRequestContext();
+		if(reqCont.currentProject().equals(cms.onlineProject())){
+			xmlTemplateDocument.setData("activeIcon","online");
+		}else{
+			xmlTemplateDocument.setData("activeIcon","");
+		}
+
 
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);

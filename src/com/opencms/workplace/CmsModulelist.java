@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
- * Date   : $Date: 2000/11/06 14:35:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/01/16 11:25:01 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import java.lang.reflect.*;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author: Hanjo Riege
- * @Version: $Revision: 1.2 $
+ * @Version: $Revision: 1.3 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsModulelist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -101,6 +101,15 @@ public class CmsModulelist extends A_CmsWpElement implements I_CmsWpElement, I_C
 		} catch(Exception exc2) {
 			throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
 		}
+
+		// check if we are in the onlineProject
+		CmsRequestContext reqCont = cms.getRequestContext();
+		if(reqCont.currentProject().equals(cms.onlineProject())){
+			listdef.setData("menue","menueonline");
+		}else{
+			listdef.setData("menue","modulemenue");
+		}
+
 		
 		// StringBuffer for the generated output
 		StringBuffer result = new StringBuffer();
@@ -112,8 +121,12 @@ public class CmsModulelist extends A_CmsWpElement implements I_CmsWpElement, I_C
 			listdef.setData(C_MODULELIST_NICE_NAME, reg.getModuleNiceName(currentModule));
 			listdef.setData(C_MODULELIST_VERSION, reg.getModuleVersion(currentModule)+"");
 			listdef.setData(C_MODULELIST_AUTHOR, reg.getModuleAuthor(currentModule));
-			listdef.setData(C_MODULELIST_DATECREATED, Utils.getNiceDate(reg.getModuleCreateDate(currentModule)));
-			listdef.setData(C_MODULELIST_DATEUPLOADED, Utils.getNiceDate(reg.getModuleUploadDate(currentModule)));
+			listdef.setData(C_MODULELIST_DATECREATED, Utils.getNiceShortDate(reg.getModuleCreateDate(currentModule)));
+			if (reg.getModuleUploadDate(currentModule)== -1){
+				listdef.setData(C_MODULELIST_DATEUPLOADED, "   -   ");
+			}else{
+				listdef.setData(C_MODULELIST_DATEUPLOADED, Utils.getNiceShortDate(reg.getModuleUploadDate(currentModule)));
+			}
 			listdef.setData(C_MODULELIST_IDX, new Integer(i).toString());
 			result.append(listdef.getProcessedDataValue(C_TAG_MODULELIST_DEFAULT, callingObject, parameters));
 		}		

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/10 09:17:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/01/16 11:25:01 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -60,6 +60,28 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 	private final String C_SESSION_DATA	= "module_create_data";
 	
 	/**
+	 *  Checks if the name is correct.
+	 *  @param name the name to check..
+	 */
+	private boolean checkName(String name) {
+	if (name == null || name.length() == 0 || name.trim().length() == 0) {
+		return false;
+	}
+	for (int i=0; i<name.length(); i++) {
+		char c = name.charAt(i);
+		if ( 
+			((c < 'a') || (c > 'z')) &&
+			((c < '0') || (c > '9')) &&
+			((c < 'A') || (c > 'Z')) &&
+			(c != '-') && (c != '.') &&
+			(c != '|') && (c != '_') &&	(c != '~')
+			) {
+				return false;
+		}
+	}
+	return true;
+}
+	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
 	 * with the given parameters. 
 	 * 
@@ -82,7 +104,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 		I_CmsRegistry reg = cms.getRegistry();	
 		I_CmsSession session = cms.getRequestContext().getSession(true);
 		String step = (String)parameters.get(C_STEP);
- 		SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MM.dd.yyyy");
+ 		SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");
 
 		if ((step == null) || "".equals(step)){
 	 		templateDocument.setData(C_PACKETNAME, "");
@@ -114,7 +136,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 				try{
 					v=Integer.parseInt(version);
 				}catch(Exception e){}
-				if ((packetname == null) || ("".equals(packetname)) ||(version == null)||("".equals(version))|| moduleExists || (v <0)){
+				if ((!checkName(packetname)) ||(version == null)||("".equals(version))|| moduleExists || (v <0)){
 					Hashtable sessionData = new Hashtable();
 					sessionData.put(C_MODULENAME, getStringValue(modulename));
 					sessionData.put(C_VERSION, getStringValue(version));
@@ -137,7 +159,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 					try{
 						cms.createFolder("/system/modules/", packetname);
 					}catch(Exception e){
-						//throw new CmsException("couldn't create Module, sorry ", e);
+						//couldn't create Module 
 						templateDocument.setData("details", Utils.getStackTrace(e));
 						return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
 					}

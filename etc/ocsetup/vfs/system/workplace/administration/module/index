@@ -33,7 +33,7 @@ function show_help()
 
 </head>
 
-<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="window.top.body.admin_head.location.href='head_module1.html'; start();">
+<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="window.top.body.admin_head.location.href='head_module1]]><PROCESS>activeIcon</PROCESS><![CDATA[.html'; start();">
 
 <table cellspacing=1 cellpadding=1 border=0 width="686">
 	<tr bgcolor="#c0c0c0">
@@ -55,9 +55,17 @@ function show_help()
 
 <contextmenue name="modulemenue"> 
 	<contextentry name="module.context.property" href="javascript:location.href='properties.html?view=parameter&amp;module='+kontextparam;"/>
-	<contextentry name="module.context.delete" href="javascript:location.href='module_delete.html?module='+kontextparam;"/>
+	<contextdisabled name="module.context.delete"/>
 	<contextspacer/>	
 	<contextentry name="module.context.admin" href="javascript:location.href='module_admin.html?module='+kontextparam;"/>
+	<contextentry name="module.context.export" href="javascript:location.href='module_export.html?module='+kontextparam;"/>
+</contextmenue>
+
+<contextmenue name="menueonline"> 
+	<contextentry name="module.context.property" href="javascript:location.href='properties.html?view=parameter&amp;module='+kontextparam;"/>
+	<contextentry name="module.context.delete" href="javascript:location.href='module_delete.html?module='+kontextparam;"/>
+	<contextspacer/>	
+	<contextdisabled name="module.context.admin"/>
 	<contextentry name="module.context.export" href="javascript:location.href='module_export.html?module='+kontextparam;"/>
 </contextmenue>
 
