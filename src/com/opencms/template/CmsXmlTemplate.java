@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/05/31 09:21:43 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2000/06/02 11:59:59 $
+ * Version: $Revision: 1.39 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2000/05/31 09:21:43 $
+ * @version $Revision: 1.39 $ $Date: 2000/06/02 11:59:59 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -955,7 +955,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
                 }
             }
         }
-        System.err.println("returning template file name for Element " + elementName + " in File " + doc + ": " + result);
+        //System.err.println("returning template file name for Element " + elementName + " in File " + doc + ": " + result);
         return result;            
     }               
     
