@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2003/08/22 10:23:26 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/08/25 15:12:18 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
@@ -98,8 +98,8 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
             CmsProject project = null;
             
             try {
-                m_cms.getRequestContext().saveSiteRoot();
-                m_cms.getRequestContext().setSiteRoot("/");
+                //m_cms.getRequestContext().saveSiteRoot();
+                //m_cms.getRequestContext().setSiteRoot("/");
                 // create a Project to delete the module.
                 project = m_cms.createProject(
                     "DeleteModule", 
@@ -118,7 +118,7 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
                     m_cms.copyResourceToProject((String)m_projectFiles.elementAt(i));
                 }
             } finally {
-                m_cms.getRequestContext().restoreSiteRoot();
+                //m_cms.getRequestContext().restoreSiteRoot();
             } 
             // delete the module
             m_registry.deleteModule(m_moduleName, m_conflictFiles, m_replaceMode, m_report);

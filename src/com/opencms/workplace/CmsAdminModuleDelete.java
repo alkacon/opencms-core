@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/08/25 15:12:18 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.OpenCms;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -39,7 +37,10 @@ import com.opencms.file.I_CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
 
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 import java.util.Vector;
+
+import org.opencms.main.OpenCms;
 
 /**
  * Template class for displaying OpenCms workplace administration module delete.
@@ -145,10 +146,11 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
             Vector conflictFiles = (Vector)session.getValue(C_SESSION_MODULE_EXCLUSION);
             if(conflictFiles == null) {
                 conflictFiles = new Vector();
-            }            
-            // add root folder as file list for the project
-            Vector projectFiles = new Vector();
-            projectFiles.add("/");
+            }   
+                     
+            // add the module resources to the project files
+            Vector projectFiles = CmsAdminModuleDelete.getProjectResources(cms, reg, moduleName);
+            
             A_CmsReportThread doDelete = new CmsAdminModuleDeleteThread(cms, reg, moduleName, conflictFiles, projectFiles, false);
             doDelete.start();
             session.putValue(C_MODULE_THREAD, doDelete);
@@ -158,6 +160,62 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
 
         // Now load the template file and start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+    }
+    
+    /**
+     * Collects all resource names belonging to a module in a Vector.<p>
+     * 
+     * @param cms the CmsObject
+     * @param reg the registry
+     * @param moduleName the name of the module
+     * @return Vector with path Strings of resources
+     */
+    protected static Vector getProjectResources(CmsObject cms, I_CmsRegistry reg, String moduleName) {
+        Vector resNames = new Vector();
+        
+        // add the module folder to the project resources
+        resNames.add(C_VFS_PATH_MODULES + moduleName + "/");
+        
+        if (reg.getModuleType(moduleName).equals(I_CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+            // SIMPLE MODULE
+           
+            // check if additional resources outside the system/modules/{exportName} folder were 
+            // specified as module resources by reading the property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
+            // to the module (in the module administration)
+            String additionalResources = null;
+            try {
+                additionalResources = OpenCms.getRegistry().getModuleParameterString(moduleName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
+            } catch (CmsException e) {
+                return resNames;
+            }
+            StringTokenizer additionalResourceTokens = null;
+
+            if (additionalResources != null && !additionalResources.equals("")) {
+                // add each additonal folder plus its content folder under "content/bodys"
+                additionalResourceTokens = new StringTokenizer(additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
+
+                // add each resource plus its equivalent at content/bodys to 
+                // the string array of all resources for the export
+                while (additionalResourceTokens.hasMoreTokens()) {
+                    String currentResource = additionalResourceTokens.nextToken().trim();
+                    
+                    if (! "-".equals(currentResource)) {  
+                        try {
+                            // check if the resource exists and then add it to the Vector
+                            cms.readFileHeader(currentResource);       
+                            resNames.add(currentResource);                 
+                        } catch (CmsException e) { }                        
+                    }
+                }
+            } else {
+                // no additional resources were specified...
+                return resNames;
+            }
+        } else {
+            // TRADITIONAL MODULE
+            return resNames;
+        }
+        return resNames;
     }
 
     /**

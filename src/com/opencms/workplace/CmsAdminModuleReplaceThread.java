@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleReplaceThread.java,v $
- * Date   : $Date: 2003/08/22 09:24:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/25 15:12:18 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.0
  */
 public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
@@ -75,9 +75,10 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
         m_zipName = zipName;
         m_registry = reg;
         m_conflictFiles = conflictFiles;
-        // add root folder as file list for the project
-        m_projectFiles = new Vector();
-        m_projectFiles.add("/");
+
+        // add the module resources to the project files
+        m_projectFiles = CmsAdminModuleDelete.getProjectResources(cms, reg, moduleName);
+        
         m_deleteThread = new CmsAdminModuleDeleteThread(m_cms, m_registry, m_moduleName, m_conflictFiles, m_projectFiles, true);
         m_importThread = new CmsAdminModuleImportThread(m_cms, m_registry, m_moduleName, m_zipName, m_conflictFiles);
         if (DEBUG) System.err.println("CmsAdminModuleReplaceThread() constructed"); 
