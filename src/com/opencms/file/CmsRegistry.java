@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/08/02 12:12:57 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2002/08/08 09:41:36 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.46 $ $Date: 2002/08/02 12:12:57 $
+ * @version $Revision: 1.47 $ $Date: 2002/08/08 09:41:36 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -62,6 +62,11 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
      *  A hashtable with shortcuts into the dom-structure for each module.
      */
     private Hashtable m_modules = new Hashtable();
+    
+    /**
+     *  A hashtable with all exportpoints and paths.
+     */
+    private Hashtable m_exportpoints = new Hashtable();
 
     /**
      *  The cms-object to get access to the system with the context of the current user.
@@ -88,7 +93,12 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     /**
      * Declaration of an empty module in the registry.
      */
-    private static final String[] C_EMPTY_MODULE = { "<module><name>", "</name><nicename>", "</nicename><version>", "</version><description>", "</description><author>", "</author><email/><creationdate>", "</creationdate><view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" };
+    private static final String[] C_EMPTY_MODULE = { "<module><name>", "</name><nicename>", "</nicename><version>", "</version><description>", "</description><author>", "</author><email/><creationdate>", "</creationdate>","<view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" };
+
+    /**
+     * 
+     */
+    private static final String[] C_EXPORTPOINT = { "<exportpoint><source>", "</source><destination>", "</destination></exportpoint>"};
 
 /**
  * Creates a new CmsRegistry for a user. The cms-object represents the current state of the current user.
@@ -99,6 +109,7 @@ public CmsRegistry(CmsRegistry reg, CmsObject cms) {
     super();
     // there is no need of a real copy for this parameters
     m_modules = reg.m_modules;
+    m_exportpoints = reg.m_exportpoints;
     m_regFileName = reg.m_regFileName;
     m_xmlReg = reg.m_xmlReg;
     // store the cms-object for this instance.
@@ -267,21 +278,27 @@ public void createModule(String modulename, String niceModulename, String descri
 
 
     // create the new module in the registry
+    StringBuffer moduleString = new StringBuffer();
+    moduleString.append(C_EMPTY_MODULE[0] + modulename);
+    moduleString.append(C_EMPTY_MODULE[1] + niceModulename);
+    moduleString.append(C_EMPTY_MODULE[2] + version);
+    moduleString.append(C_EMPTY_MODULE[3] + description);
+    moduleString.append(C_EMPTY_MODULE[4] + author);
+    moduleString.append(C_EMPTY_MODULE[5] + createDate);
+    moduleString.append(C_EMPTY_MODULE[6]);
+    moduleString.append(C_EXPORTPOINT[0] + "/system/modules/" + modulename +"/classes/");
+    moduleString.append(C_EXPORTPOINT[1] + "WEB-INF/classes/" + C_EXPORTPOINT[2]);
+    moduleString.append(C_EXPORTPOINT[0] + "/system/modules/" + modulename +"/lib/");
+    moduleString.append(C_EXPORTPOINT[1] + "WEB-INF/lib/" + C_EXPORTPOINT[2]);
+    moduleString.append(C_EMPTY_MODULE[7]);
 
-    String moduleString = C_EMPTY_MODULE[0] + modulename;
-    moduleString += C_EMPTY_MODULE[1] + niceModulename;
-    moduleString += C_EMPTY_MODULE[2] + version;
-    moduleString += C_EMPTY_MODULE[3] + description;
-    moduleString += C_EMPTY_MODULE[4] + author;
-    moduleString += C_EMPTY_MODULE[5] + createDate;
-    moduleString += C_EMPTY_MODULE[6];
     //[removed by Gridnine AB, 2002-06-13] Document doc = parse(moduleString);
     Document doc;
     try {
-        doc = parse(moduleString.getBytes(I_CmsXmlParser.C_XML_ENCODING));
+        doc = parse(moduleString.toString().getBytes(I_CmsXmlParser.C_XML_ENCODING));
     } catch (UnsupportedEncodingException uee) {
         // use default system encoding
-        doc = parse(moduleString.getBytes());
+        doc = parse(moduleString.toString().getBytes());
     }
     m_xmlReg.getElementsByTagName("modules").item(0).appendChild(getXmlParser().importNode(m_xmlReg, doc.getFirstChild()));
     saveRegistry();
@@ -1112,7 +1129,11 @@ public java.lang.String[] getModuleRepositories(String modulename) {
 public long getModuleUploadDate(String modulname) {
     long retValue = -1;
     try {
-        String value = getModuleData(modulname, "uploaddate");
+        //String value = getModuleData(modulname, "uploaddate");
+        Element moduleElement = getModuleElement(modulname);
+        NodeList allUploadDates = moduleElement.getElementsByTagName("uploaddate"); 
+        String value = allUploadDates.item((allUploadDates.getLength()-1)).getFirstChild().getNodeValue();
+
         retValue = m_dateFormat.parse(value).getTime();
     } catch (Exception exc) {
         // ignore the exception - reg is not welformed
@@ -1126,7 +1147,14 @@ public long getModuleUploadDate(String modulname) {
  * @return java.lang.String the user-name of the user who had uploaded the module.
  */
 public String getModuleUploadedBy(String modulename) {
-    return getModuleData(modulename, "uploadedby");
+    String retValue = "";
+    try{
+        Element moduleElement = getModuleElement(modulename);
+        NodeList allUploadDates = moduleElement.getElementsByTagName("uploadedby"); 
+        retValue = allUploadDates.item((allUploadDates.getLength()-1)).getFirstChild().getNodeValue();
+    } catch (Exception e){
+    }
+    return retValue;
 }
 /**
  * This method returns the version of the module.
@@ -1267,6 +1295,36 @@ public int getModuleExportables(Hashtable classes) {
         // no return-values
         return 0;
     }
+}
+
+/**
+ * Returns all exportpoints and paths.
+ *
+ *
+ * @return Hashtable The exportpoints and the paths.
+ */
+public Hashtable getExportpoints() {
+    if((m_exportpoints == null) || (m_exportpoints.size() == 0)){
+        m_exportpoints = new Hashtable();
+        try {
+            NodeList exportpointsList = m_xmlReg.getElementsByTagName("exportpoint");
+            for (int x = 0; x < exportpointsList.getLength(); x++) {
+                try {
+                    String curExportpoint = ((Element) exportpointsList.item(x)).getElementsByTagName("source").item(0).getFirstChild().getNodeValue();
+                    String curPath = ((Element) exportpointsList.item(x)).getElementsByTagName("destination").item(0).getFirstChild().getNodeValue();
+                    m_exportpoints.put(curExportpoint, com.opencms.boot.CmsBase.getAbsoluteWebPath(curPath));
+                } catch(Exception exc) {
+                    exc.printStackTrace();
+                    // ignore the exception and try the next view-pair.
+                }
+            }
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            // no return-values
+        } 
+    }
+    
+    return m_exportpoints;
 }
 
 /**
@@ -1558,6 +1616,9 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
  *  Inits all member-variables for the instance.
  */
 private void init() throws Exception {
+    // clear and refill the hashtable for the exportpoints
+    m_exportpoints.clear();
+    getExportpoints();
     // get the entry-points for the modules
     NodeList modules = m_xmlReg.getElementsByTagName("module");
     // create the hashtable for the shortcuts
