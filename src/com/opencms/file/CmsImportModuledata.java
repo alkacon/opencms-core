@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/02/26 15:52:33 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/03/22 07:24:53 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,9 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Encoder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -65,7 +67,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.8 $ $Date: 2003/02/26 15:52:33 $
+ * @version $Revision: 1.9 $ $Date: 2003/03/22 07:24:53 $
  */
 public class CmsImportModuledata implements I_CmsConstants, Serializable {
 
@@ -110,6 +112,9 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
      * The xml manifest-file.
      */
     private Document m_docXml;
+    
+    /** Report for the output */
+    private I_CmsReport m_report;
 
     /**
      * This constructs a new CmsImportModuledata-object which imports the moduledata.
@@ -118,12 +123,13 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
      * @param importPath the path to the cms to import into.
      * @throws CmsException the CmsException is thrown if something goes wrong.
      */
-    public CmsImportModuledata(String importFile, String importPath, CmsObject cms)
+    public CmsImportModuledata(String importFile, String importPath, CmsObject cms, I_CmsReport report)
         throws CmsException {
 
         m_importFile = importFile;
         m_importPath = importPath;
         m_cms = cms;
+        m_report = report;
 
         // open the import resource
         getImportResource();
@@ -136,7 +142,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
             m_importVersion = Integer.parseInt(
                 getTextNodeValue((Element)m_docXml.getElementsByTagName(
                     C_EXPORT_TAG_INFO).item(0) , C_EXPORT_TAG_VERSION));
-        }catch(Exception e){
+        }catch(Exception e){            
             //ignore the exception, the export file has no version number (version 0).
         }
     }
@@ -147,9 +153,14 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     public void importModuledata() throws CmsException {
         try{
             // first import the channels
-            importChannels(null, null, null, null, null);
+            m_report.println(m_report.key("report.import_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            (new CmsImport(m_cms, m_importPath, m_docXml, m_report)).importResources();
+            m_report.println(m_report.key("report.import_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);
+            
             // now import the moduledata
+            m_report.println(m_report.key("report.import_moduledata_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             importModuleMasters();
+            m_report.println(m_report.key("report.import_moduledata_end"), I_CmsReport.C_FORMAT_HEADLINE);
         } catch (CmsException e){
             throw e;
         } finally {
@@ -160,88 +171,6 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
                     throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
                 }
             }
-        }
-    }
-
-    /**
-     * Imports the resources and writes them to the cms.
-     * param excludeList filenames of files and folders which should not be (over) written in the virtual file system
-     * param writtenFilenames filenames of the files and folder which have actually been successfully written
-     *       not used when null
-     * param fileCodes code of the written files (for the registry)
-     *       not used when null
-     * param propertyName name of a property to be added to all resources
-     * param propertyValue value of that property
-     */
-    public void importChannels(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
-        NodeList fileNodes, propertyNodes;
-        Element currentElement, currentProperty;
-        String destination, type, user, group, access, dummy;
-        Hashtable properties;
-        long lastmodified = 0;
-        Vector types = new Vector(); // stores the file types for which the property already exists
-
-        // first lock the resource to import
-        try {
-            // get all file-nodes
-            fileNodes = m_docXml.getElementsByTagName(CmsExportModuledata.C_EXPORT_TAG_FILE);
-
-            // walk through all files in manifest
-            for (int i = 0; i < fileNodes.getLength(); i++) {
-                currentElement = (Element) fileNodes.item(i);
-
-                // get all information for a file-import
-                destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-                type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
-                user = getTextNodeValue(currentElement, C_EXPORT_TAG_USER);
-                group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
-                access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
-                
-                if ((dummy=getTextNodeValue(currentElement,C_EXPORT_TAG_LASTMODIFIED))!=null) {
-                    lastmodified = Long.parseLong(dummy);
-                }
-                else {
-                    lastmodified = System.currentTimeMillis();
-                }                 
-
-                if (!inExcludeList(excludeList, m_importPath + destination)) {
-                    // get all properties for this file
-                    propertyNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_PROPERTY);
-                    // clear all stores for property information
-                    properties = new Hashtable();
-                    // add the module property to properties
-                    if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
-                        if (!types.contains(type)) {
-                            types.addElement(type);
-                            createPropertydefinition(propertyName, type);
-                        }
-                        properties.put(propertyName, propertyValue);
-                    }
-                    // walk through all properties
-                    for (int j = 0; j < propertyNodes.getLength(); j++) {
-                        currentProperty = (Element) propertyNodes.item(j);
-                        // get all information for this property
-                        String name = getTextNodeValue(currentProperty, C_EXPORT_TAG_NAME);
-                        String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
-                        if(value == null) {
-                            // create an empty property
-                            value = "";
-                        }
-                        // store these informations
-                        if ((name != null) && (value != null)) {
-                            properties.put(name, value);
-                            createPropertydefinition(name, type);
-                        }
-                    }
-
-                    // import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
-                    importChannel(destination, type, user, group, access, lastmodified, properties, writtenFilenames, fileCodes);
-                } else {
-                    System.out.print("skipping " + destination);
-                }
-            }
-        } catch (Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
 
@@ -295,127 +224,15 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     }
 
     /**
-     * This method returns the resource-names that are needed to create a project for this import.
-     * It calls the method getConflictingFileNames if needed, to calculate these resources.
-     */
-    public Vector getResourcesForProject() throws CmsException {
-        NodeList fileNodes;
-        Element currentElement;
-        String destination;
-        Vector resources = new Vector();
-        try {
-            // get all file-nodes
-            fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
-            // walk through all files in manifest
-            for (int i = 0; i < fileNodes.getLength(); i++) {
-                currentElement = (Element) fileNodes.item(i);
-                destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-
-                // get the resources for a project
-                try {
-                    String resource = destination.substring(0, destination.indexOf("/",1) + 1);
-                    resource = m_importPath + resource;
-                    // add the resource, if it dosen't already exist
-                    if((!resources.contains(resource)) && (!resource.equals(m_importPath))) {
-                        try {
-                            m_cms.setContextToCos();
-                            m_cms.readFolder(resource);
-                            m_cms.setContextToVfs();
-                            // this resource exists in the current project -> add it
-                            resources.addElement(resource);
-                        } catch(CmsException exc) {
-                            m_cms.setContextToVfs();
-                            // this resource is missing - we need the root-folder
-                            resources.addElement(C_ROOT);
-                        }
-                    }
-                } catch(StringIndexOutOfBoundsException exc) {
-                    // this is a resource in root-folder: ignore the excpetion
-                }
-            }
-        } catch (Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-        if (m_importZip != null){
-            try{
-                m_importZip.close();
-            } catch (IOException exc) {
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-            }
-        }
-        if(resources.contains(C_ROOT)) {
-            // we have to import root - forget the rest!
-            resources.removeAllElements();
-            resources.addElement(C_ROOT);
-        }
-        return resources;
-    }
-
-    /**
-     * Imports a channel into the cms.
-     * @param destination the path to the destination-file in the cms
-     * @param type the resource-type of the file
-     * @param user the owner of the file
-     * @param group the group of the file
-     * @param access the access-flags of the file
-     * @param properties a hashtable with properties for this resource
-     * @param writtenFilenames filenames of the files and folder which have actually been successfully written
-     *       not used when null
-     * @param fileCodes code of the written files (for the registry)
-     *       not used when null
-     */
-    private void importChannel(String destination, String type, String user, String group, String access, long lastmodified, Hashtable properties, Vector writtenFilenames, Vector fileCodes) {
-        // print out the information for shell-users
-        System.out.print("Importing ");
-        System.out.print(destination + " ");
-        boolean success = true;
-        String fullname = null;
-        try {
-            m_cms.setContextToCos();
-            // try to read an existing channel
-            CmsResource res = null;
-            try{
-                res = m_cms.readFolder("/"+destination+"/");
-            } catch (CmsException e) {
-                // the channel does not exist, so import the channel
-            }
-            if(res == null){
-                // get a new channelid
-                int newChannelId = com.opencms.dbpool.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
-                properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
-                res = m_cms.importResource("", destination, type, user, group, access, lastmodified,
-                                            properties, "", null, m_importPath);
-            }
-            m_cms.setContextToVfs();
-            if(res != null){
-                fullname = res.getAbsolutePath();
-            }
-            System.out.println("OK");
-        } catch (Exception exc) {
-            // an error while importing the file
-            success = false;
-            System.out.println("Error: "+exc.toString());
-        } finally {
-            m_cms.setContextToVfs();
-        }
-        byte[] digestContent = {0};
-        if (success && (fullname != null)){
-            if (writtenFilenames != null){
-                writtenFilenames.addElement(fullname);
-            }
-            if (fileCodes != null){
-                fileCodes.addElement(new String(digestContent));
-            }
-        }
-    }
-
-    /**
      * Imports a single master
      * @param subId The subid of the module
      * @param classname The name of the module class
      * @param currentElement The current element of the xml-file
      */
     private void importMaster(String subId, String classname, Element currentElement) throws CmsException{
+        // print out some information to the report
+        m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
+                                 
         CmsMasterDataSet newDataset = new CmsMasterDataSet();
         Vector channelRelations = new Vector();
         Vector masterMedia = new Vector();
@@ -426,6 +243,8 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
         } catch (Exception e){
             throw new CmsException("Cannot get dataset ", e);
         }
+        m_report.print("'" + Encoder.escapeHtml(newDataset.m_title) + "' (" + classname + ")");  
+        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
         // try to get the channelrelations
         try{
             channelRelations = getMasterChannelRelation(currentElement);
@@ -456,6 +275,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
         } catch (Exception e){
             throw new CmsException("Cannot write master ", e);
         }
+        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);           
     }
 
     /**
@@ -695,46 +515,6 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
         byte[] mediacontent = getFileBytes(contentfile);
         newMedia.setMedia(mediacontent);
         return newMedia;
-    }
-
-    /**
-     * Checks whether the path is on the list of files which are excluded from the import
-     *
-     * @return boolean true if path is on the excludeList
-     * @param excludeList list of pathnames which should not be (over) written
-     * @param path a complete path of a resource
-     */
-    private boolean inExcludeList(Vector excludeList, String path) {
-        boolean onList = false;
-        if (excludeList == null) {
-            return onList;
-        }
-        int i=0;
-        while (!onList && i<excludeList.size()) {
-            onList = (path.equals(excludeList.elementAt(i)));
-            i++;
-        }
-        return onList;
-    }
-
-    /**
-     * Creates missing property definitions if needed.
-     *
-     * @param name the name of the property.
-     * @param propertyType the type of the property.
-     * @param resourceType the type of the resource.
-     *
-     * @throws throws CmsException if something goes wrong.
-     */
-    private void createPropertydefinition(String name, String resourceType)
-        throws CmsException {
-        // does the propertydefinition exists already?
-        try {
-            m_cms.readPropertydefinition(name, resourceType);
-        } catch(CmsException exc) {
-            // no: create it
-            m_cms.createPropertydefinition(name, resourceType);
-        }
     }
 
     /**

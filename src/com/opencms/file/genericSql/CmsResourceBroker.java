@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/19 11:22:40 $
-* Version: $Revision: 1.369 $
+* Date   : $Date: 2003/03/22 07:24:54 $
+* Version: $Revision: 1.370 $
 
 *
 * This library is part of OpenCms -
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.369 $ $Date: 2003/03/19 11:22:40 $
+ * @version $Revision: 1.370 $ $Date: 2003/03/22 07:24:54 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2929,10 +2929,10 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      *
      * @throws Throws CmsException if something goes wrong.
      */
-    public void exportModuledata(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportChannels, String[] exportModules, CmsObject cms)
+    public void exportModuledata(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportChannels, String[] exportModules, CmsObject cms, I_CmsReport report)
         throws CmsException {
         if(isAdmin(currentUser, currentProject)) {
-            new CmsExportModuledata(exportFile, exportChannels, exportModules, cms);
+            new CmsExportModuledata(exportFile, exportChannels, exportModules, cms, report);
         } else {
              throw new CmsException("[" + this.getClass().getName() + "] exportModuledata",
                  CmsException.C_NO_ACCESS);
@@ -4126,7 +4126,6 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                  CmsException.C_NO_ACCESS);
         }
     }
-    // Methods working with database import and export
 
     /**
      * Imports a import-resource (folder or zipfile) to the cms.
@@ -4150,7 +4149,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             // or moduledata
             String firstTag = this.getFirstTagFromManifest(importFile);
             if(I_CmsConstants.C_EXPORT_TAG_MODULEXPORT.equals(firstTag)){
-                CmsImportModuledata imp = new CmsImportModuledata(importFile, importPath, cms);
+                CmsImportModuledata imp = new CmsImportModuledata(importFile, importPath, cms, report);
                 imp.importModuledata();
             } else {
                 CmsImport imp = new CmsImport(importFile, importPath, cms, report);
@@ -4161,7 +4160,6 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                  CmsException.C_NO_ACCESS);
         }
     }
-    // Internal ResourceBroker methods
 
     /**
      * Initializes the resource broker and sets up all required modules and connections.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/03/07 15:16:36 $
-* Version: $Revision: 1.85 $
+* Date   : $Date: 2003/03/22 07:24:53 $
+* Version: $Revision: 1.86 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.85 $ $Date: 2003/03/07 15:16:36 $
+ * @version $Revision: 1.86 $ $Date: 2003/03/22 07:24:53 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -158,6 +158,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      */
     private I_CmsReport m_report = null;
     
+    /** Indicates if channel data is imported */
+    private boolean m_importingChannelData;
+    
    
     /**
      * This constructs a new CmsImport-object which imports the resources.
@@ -174,6 +177,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         m_importPath = importPath;
         m_cms = cms;
         m_report=report;     
+        m_importingChannelData = false;
 
         // create the digest
         createDigest();
@@ -194,6 +198,37 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         }
     }
     
+    public CmsImport(
+        CmsObject cms, 
+        String importPath,
+        Document docXml,
+        I_CmsReport report
+    ) throws CmsException {
+        m_cms = cms;
+        m_importPath = importPath;
+        m_docXml = docXml;
+        m_report = report;
+        m_importingChannelData = true;
+    }
+    
+    /**
+     * Imports the resources and writes them to the cms even if there already exist conflicting files.<p>
+     */
+    public void importResources() throws CmsException {
+        if (!m_importingChannelData && m_cms.isAdmin()){
+            importGroups();
+            importUsers();
+        }
+        importResources(null, null, null, null, null);
+        if (m_importZip != null){
+            try{
+                m_importZip.close();
+            } catch (IOException exc) {
+                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            }
+        }
+    }
+        
     /**
      * Read infos from the properties and create a MessageDigest
      */
@@ -346,6 +381,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         String destination;
         Vector resources = new Vector();
         try {
+            if (m_importingChannelData) m_cms.setContextToCos();
+            
             // get all file-nodes
             fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
             // walk through all files in manifest
@@ -374,6 +411,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             }
         } catch (Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            if (m_importingChannelData) m_cms.setContextToVfs();
+
         }
         if (m_importZip != null) {
             try {
@@ -446,8 +486,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         boolean success = true;
         byte[] content = null;
         String fullname = null;
-        
+                
         try {
+            if (m_importingChannelData) m_cms.setContextToCos();
             // get the file content
             if (source != null) {
                 content = getFileBytes(source);
@@ -474,10 +515,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 }   
             } 
             // version 2.0 import (since OpenCms 5.0), no content conversion required                        
-    
+            
+   
             CmsResource res = m_cms.importResource(source, destination, type, user, group, access, lastmodified,
                                         properties, launcherStartClass, content, m_importPath);
-               
+
             if(res != null){
                 fullname = res.getAbsolutePath();
                 if(C_TYPE_PAGE_NAME.equals(type)){
@@ -493,6 +535,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 // Sleep some time after an error so that the report output has a chance to keep up
                 Thread.sleep(1000);   
             } catch (Exception e) {};
+        } finally {
+            if (m_importingChannelData) m_cms.setContextToVfs();            
         }
         byte[] digestContent = {0};
         if (content != null) {
@@ -504,24 +548,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             }
             if (fileCodes != null){
                 fileCodes.addElement(new String(digestContent));
-            }
-        }
-    }
-
-    /**
-     * Imports the resources and writes them to the cms even if there already exist conflicting files.<p>
-     */
-    public void importResources() throws CmsException {
-        if (m_cms.isAdmin()){
-            importGroups();
-            importUsers();
-        }
-        importResources(null, null, null, null, null);
-        if (m_importZip != null){
-            try{
-                m_importZip.close();
-            } catch (IOException exc) {
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
             }
         }
     }
@@ -654,22 +680,22 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     m_report.println(translatedName);
                 }
             }
-            // at last we have to get the links from all new imported pages for the  linkmanagement
-            m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-            updatePageLinks();
-            m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);            
-            m_cms.joinLinksToTargets(m_report);  
+            if (!m_importingChannelData) {
+                // at last we have to get the links from all new imported pages for the  linkmanagement
+                m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                updatePageLinks();
+                m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);
+                m_cms.joinLinksToTargets(m_report);
+            }  
         } catch (Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
-        if (m_importZip != null)
-        {
-          try
-          {
-              m_importZip.close();
-          } catch (IOException exc) {
-              throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-          }
+        if (m_importZip != null) {
+            try {
+                m_importZip.close();
+            } catch (IOException exc) {
+                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            }
         }
     }
 

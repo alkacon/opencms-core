@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/03/19 08:43:10 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/03/22 07:24:54 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
 
@@ -61,7 +62,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.14 $ $Date: 2003/03/19 08:43:10 $
+ * @version $Revision: 1.15 $ $Date: 2003/03/22 07:24:54 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -145,9 +146,12 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
     private Hashtable m_channelIds = new Hashtable();
     
     /**
-     * 
+     * Holds information about contents that have already been exported
      */
     private Vector m_exportedMasters = new Vector();
+
+    /** Report for the output */
+    private I_CmsReport m_report;
 
     /**
      * This constructs a new CmsExportModuledata-object which exports the channels and modulemasters.
@@ -158,9 +162,11 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
      * @param cms the cms-object to work with.
      * @throws CmsException the CmsException is thrown if something goes wrong.
      */
-    public CmsExportModuledata(String exportFile, String[] exportChannels, String[] exportModules, CmsObject cms) throws CmsException {
+    public CmsExportModuledata(String exportFile, String[] exportChannels, String[] exportModules, CmsObject cms, I_CmsReport report) throws CmsException {
         m_exportFile = exportFile;
         m_cms = cms;
+        m_report = report;
+        
         // open the import resource
         getExportResource();
         // create the xml-config file
@@ -226,6 +232,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         try {
             m_exportZipStream.close();
         } catch(IOException exc) {
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
@@ -291,6 +298,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             m_mastersElement = m_docXml.createElement(C_EXPORT_TAG_MASTERS);
             m_docXml.getDocumentElement().appendChild(m_mastersElement);
         } catch(Exception exc) {
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
@@ -310,6 +318,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             m_exportZipStream = new ZipOutputStream(new FileOutputStream(m_exportFile));
 
         } catch(Exception exc) {
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
@@ -344,7 +353,8 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
      * @param channelNames The vector with the channelNames
      * @param channelId A vector that contains the channelid of each channel
      */
-    private void exportAllChannels(Vector channelNames) throws CmsException{
+    private void exportAllChannels(Vector channelNames) throws CmsException{        
+        m_report.println(m_report.key("report.export_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);                      
         for(int i = 0; i < channelNames.size(); i++){
             String curChannel = (String)channelNames.elementAt(i);
             // add the channelid to the vector of channel-ids
@@ -358,6 +368,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
                     }
                 }
             } catch (CmsException e){
+                m_report.println(e);
                 throw e;
             } finally {
                 m_cms.setContextToVfs();
@@ -368,6 +379,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             // walk through all subfolders and export them
             exportChannel(curChannel);
         }
+        m_report.println(m_report.key("report.export_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);                                            
     }
 
     /**
@@ -405,6 +417,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
                 }
             }
         } catch (CmsException e){
+            m_report.println(e);
             throw e;
         } finally {
             m_cms.setContextToVfs();
@@ -449,8 +462,11 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
      * @throws throws a CmsException if something goes wrong.
      */
     private void writeXmlEntrys(CmsResource resource) throws CmsException {
-        System.out.print("Exporting channel: "+resource.getAbsolutePath());
-        String source, type, user, group, access;
+        // output something to the report for the resource
+        m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
+        m_report.print(resource.getAbsolutePath());
+                
+        String source, type, user, group, access, lastmodified;
 
         // get all needed informations from the resource
         source = getSourceFilename(resource.getAbsolutePath());
@@ -458,6 +474,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         user = m_cms.readOwner(resource).getName();
         group = m_cms.readGroup(resource).getName();
         access = resource.getAccessFlags() + "";
+        lastmodified = Long.toString(resource.getDateLastModified());
 
         // write these informations to the xml-manifest
         Element file = m_docXml.createElement(C_EXPORT_TAG_FILE);
@@ -468,6 +485,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         addElement(m_docXml, file, C_EXPORT_TAG_USER, user);
         addElement(m_docXml, file, C_EXPORT_TAG_GROUP, group);
         addElement(m_docXml, file, C_EXPORT_TAG_ACCESS, access);
+        addElement(m_docXml, file, C_EXPORT_TAG_LASTMODIFIED, lastmodified); 
 
         // append the node for properties
         Element properties = m_docXml.createElement(C_EXPORT_TAG_PROPERTIES);
@@ -501,7 +519,9 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
                 addCdataElement(m_docXml, property, C_EXPORT_TAG_VALUE, value);
             }
         }
-        System.out.println("...OK");
+                             
+        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -515,6 +535,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream, null);
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
@@ -530,18 +551,22 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             Constructor co = cdClass.getConstructor(classes);
             cd = (CmsMasterContent)co.newInstance(objects);
         } catch (InvocationTargetException ite) {
+            m_report.println(ite);
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: Invocation target exception!");
             }
         } catch (NoSuchMethodException nsm) {
+            m_report.println(nsm);
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: Requested method was not found!");
             }
         } catch (InstantiationException ie) {
+            m_report.println(ie);
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: the reflected class is abstract!");
             }
         } catch (Exception e) {
+            m_report.println(e);
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + " contentDefinitionConstructor: Other exception! "+e);
             }
@@ -559,7 +584,6 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
      * @return The shrinked path.
      */
     private String getSourceFilename(String absoluteName) {
-        // String path = absoluteName.substring(m_exportPath.length());
         String path = absoluteName; // keep absolute name to distinguish resources
         if (path.startsWith("/")) {
             path = path.substring(1);
@@ -578,8 +602,11 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
      * @param channelId The Vector that includes the exported channels
      */
     private void exportData(String classname, Hashtable exportedChannels) throws CmsException {
-        // get the modulemaster for each exported channel
-        System.out.println("Export Module "+classname);
+        // output something to the report for the data
+        m_report.print(m_report.key("report.export_moduledata_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.print("<i>" + classname + "</i>", I_CmsReport.C_FORMAT_HEADLINE);        
+        m_report.println(m_report.key("report.dots"), I_CmsReport.C_FORMAT_HEADLINE);        
+                                
         Enumeration keys = exportedChannels.keys();
         // get the subId of the module
         int subId = getContentDefinition(classname, new Class[]{CmsObject.class}, new Object[]{m_cms}).getSubId();
@@ -603,27 +630,35 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
                     }
                 }
             } catch (InvocationTargetException ite) {
+                m_report.println(ite);
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + ".readAllByChannel: Invocation target exception!");
                 }
             } catch (NoSuchMethodException nsm) {
+                m_report.println(nsm);
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + ".readAllByChannel: Requested method was not found!");
                 }
             } catch (Exception e) {
+                m_report.println(e);
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsExportModuledata] "+classname + ".readAllByChannel: Other exception! "+e);
                     A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, e.getMessage() );
                 }
             }
         }
+        m_report.println(m_report.key("report.export_moduledata_end"), I_CmsReport.C_FORMAT_HEADLINE);
     }
 
     /**
      * Write the XML-entries and Documents of a contentdefinition
      */
     private void writeExportManifestEntries(String classname, CmsMasterDataSet dataset, int masterNr, int subId)
-        throws CmsException{
+        throws CmsException{            
+        // output something to the report for the resource
+        m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
+        m_report.print("'" + dataset.m_title + "' (id: " + dataset.m_masterId + ")");                          
+                         
         // the name of the XML-file where the dataset is stored
         String dataSetFile = "dataset_"+subId+"_"+masterNr+".xml";
         // create new mastercontent for getting channels and media
@@ -656,6 +691,9 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             addElement(m_docXml, mediaset, C_EXPORT_TAG_MASTER_MEDIA, mediaFile);
             writeExportMediaset((CmsMasterMedia)moduleMedia.elementAt(i), mediaFile, masterNr, subId, i);
         }
+        
+        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);        
     }
 
     /**
@@ -791,6 +829,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             A_CmsXmlContent.getXmlParser().getXmlText(xmlDoc, m_exportZipStream, null);
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
@@ -806,6 +845,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             m_exportZipStream.write(content);
             m_exportZipStream.closeEntry();
         } catch (IOException ioex){
+            m_report.println(ioex);
             System.err.println("IOException: "+ioex.getMessage());
         }
     }

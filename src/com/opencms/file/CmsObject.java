@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/03/06 17:37:18 $
-* Version: $Revision: 1.266 $
+* Date   : $Date: 2003/03/22 07:24:54 $
+* Version: $Revision: 1.267 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.266 $
+ * @version $Revision: 1.267 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1502,8 +1502,8 @@ public CmsFile exportResource(CmsFile file) throws CmsException {
      *
      * @throws Throws CmsException if something goes wrong.
      */
-    public void exportModuledata(String exportFile, String[] exportChannels, String[] exportModules) throws CmsException {
-        m_rb.exportModuledata(m_context.currentUser(), m_context.currentProject(), exportFile, exportChannels, exportModules, this);
+    public void exportModuledata(String exportFile, String[] exportChannels, String[] exportModules, I_CmsReport report) throws CmsException {
+        m_rb.exportModuledata(m_context.currentUser(), m_context.currentProject(), exportFile, exportChannels, exportModules, this, report);
     }
 
 /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/03/07 21:11:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/03/22 07:24:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.0 rc 1
  */
@@ -107,6 +107,7 @@ public class CmsHtmlReport implements I_CmsReport {
      * @see com.opencms.report.I_CmsReport#print(java.lang.String, int)
      */
     public void print(String value, int format) {
+        value = convertChars(value);
         StringBuffer buf;
         switch (format) { 
             case C_FORMAT_HEADLINE:
@@ -163,6 +164,23 @@ public class CmsHtmlReport implements I_CmsReport {
      */
     public void println(Throwable t) {
         m_content.add(t);
+    }
+    
+    /**
+     * Converts chars and removes linebreaks from a String.<p>
+     * 
+     * @param value the String to convert
+     * @return the char converted String without linebreaks
+     */
+    private String convertChars(String value) {
+        value = CmsStringSubstitution.substitute(value, "\"", "\\\"");
+        StringBuffer buf = new StringBuffer();
+        StringTokenizer tok = new StringTokenizer(value, "\r\n");
+        while (tok.hasMoreTokens()) {
+            buf.append(tok.nextToken());
+            buf.append(" ");
+        }
+        return buf.toString(); 
     }
 
     /**

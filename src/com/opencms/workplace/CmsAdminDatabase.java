@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/03/02 18:43:55 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/03/22 07:24:54 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,28 +47,29 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
- * Template class for displaying OpenCms workplace task head screens.
- * <P>
+ * This class manages the templates for import and export of the database.<p>
  *
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2003/03/02 18:43:55 $
+ * @version $Revision: 1.34 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-
 public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConstants {
 
     private static String C_DATABASE_THREAD = "databse_im_export_thread";
 
     /**
-     * Gets a database importfile from the client and copys it to the server.
+     * Gets a database importfile from the client and copys it to the server.<p>
      *
      * @param cms The CmsObject.
      * @param session The session.
      *
      * @return the name of the file.
      */
-    private String copyFileToServer(CmsObject cms, I_CmsSession session) throws CmsException{
-
+    private String copyFileToServer(
+        CmsObject cms, 
+        I_CmsSession session ) 
+    throws CmsException{
         // get the filename
         String filename = null;
         Enumeration files = cms.getRequestContext().getRequest().getFileNames();
@@ -124,9 +125,13 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName,
-            Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(
+        CmsObject cms, 
+        String templateFile, 
+        String elementName,
+        Hashtable parameters, 
+        String templateSelector
+    ) throws CmsException {               
         if(com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
                     + "getting content of element "
@@ -138,7 +143,6 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                             + ((templateSelector == null) ? "<default>" : templateSelector));
         }
 
-        //CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
@@ -155,7 +159,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         // here we show the report updates when the threads are allready running.
         // This is used for import (action=showResult) and for export (action=showExportResult).
         if("showResult".equals(action)){
-            // ok. Thread for import is started and we shoud show the report information.
+            // thread for import is started and we need to update the report information
             A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_DATABASE_THREAD);
             //still working?
             if(doTheWork.isAlive()){
@@ -170,7 +174,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
         }else if("showExportResult".equals(action)){
-            // ok. Thread for import is started and we shoud show the report information.
+            // thread for emport is started and we need to update the report information
             A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_DATABASE_THREAD);
             //still working?
             if(doTheWork.isAlive()){
@@ -187,8 +191,8 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         }
 
         if(action == null) {
-            // This is an initial request of the database administration page
-            // Generate datablocks for checkboxes in the HTML form
+            // this is an initial request of the database administration page
+            // generate datablocks for checkboxes in the HTML form
             if(!cms.getRequestContext().currentProject().isOnlineProject()) {
                 xmlTemplateDocument.setData("nounchanged",
                         xmlTemplateDocument.getProcessedDataValue("nounchangedbox", this, parameters));
@@ -200,39 +204,12 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
             xmlTemplateDocument.setData("moduleselect", this.getModuleSelectbox(cms, xmlTemplateDocument));
         }
 
-        // first we look if the thread is allready running
-        if((action != null) && ("working".equals(action))) {
-            // still working?
-            A_CmsReportThread doTheWork = (A_CmsReportThread)session.getValue(C_DATABASE_THREAD);
-            if(doTheWork != null && doTheWork.isAlive()) {
-                String time = (String)parameters.get("time");
-                int wert = Integer.parseInt(time);
-                wert += 20;
-                xmlTemplateDocument.setData("time", "" + wert);
-                return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "wait");
-            }else {
-                // thread has come to an end, was there an error?
-                String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
-                if(errordetails == null) {
-                    // im/export ready
-                    session.removeValue(C_PARA_FILE);
-                    session.removeValue(C_PARA_FILECONTENT);
-                    return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
-                }else {
-                    // get errorpage:
-                    xmlTemplateDocument.setData("details", errordetails);
-                    session.removeValue(C_SESSION_THREAD_ERROR);
-                    return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "error");
-                }
-            }
-        }
         try {
             if("export".equals(action)) {
-                // export the database
+                // export the VFS 
                 Vector resourceNames = parseResources(allResources);
                 String[] exportPaths = new String[resourceNames.size()];
                 for(int i = 0;i < resourceNames.size();i++) {
-
                     // modify the foldername if nescessary (the root folder is always given
                     // as a nice name)
                     if(lang.getLanguageValue("title.rootfolder").equals(resourceNames.elementAt(i))) {
@@ -241,37 +218,35 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                     exportPaths[i] = (String)resourceNames.elementAt(i);
                 }
                 
-                // Default content age is 0 (Unix 1970 time, this should export all resources)
+                // default content age is 0 (Unix 1970 time, this should export all resources)
                 long contentAge = 0;                
                 String contentAgePara = (String)parameters.get("contentage");
                 if (contentAgePara != null && (! "".equals(contentAgePara)) && (! "(none)".equals(contentAgePara))) {
                     try {
                         contentAge = Long.parseLong(contentAgePara);
                     } catch (NumberFormatException numEx) {
-                        // In case a invalid number was returned, use 0 (ie. export all files)
+                        // in case a invalid number was returned, use 0 (ie. export all files)
                         contentAge = 0;
                     }
                 }
                 
                 boolean excludeSystem = false;
-                if(parameters.get("nosystem") != null) {
+                if (parameters.get("nosystem") != null) {
                     excludeSystem = true;
                 }
                 boolean excludeUnchanged = false;
-                if(parameters.get("nounchanged") != null) {
+                if (parameters.get("nounchanged") != null) {
                     excludeUnchanged = true;
                 }
                 boolean exportUserdata = false;
-                if(parameters.get("userdata") != null) {
+                if (parameters.get("userdata") != null) {
                     exportUserdata = true;
                 }
                 // start the thread for: export
-                // first clear the session entry if necessary
-                if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-                    session.removeValue(C_SESSION_THREAD_ERROR);
-                }
-                A_CmsReportThread doExport = new CmsAdminDatabaseExportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
-                        + fileName, exportPaths, excludeSystem, excludeUnchanged, exportUserdata, contentAge, session);
+                A_CmsReportThread doExport = new CmsAdminDatabaseExportThread(cms, 
+                    CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator + fileName, 
+                    exportPaths, excludeSystem, excludeUnchanged, exportUserdata, contentAge);
+                    
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
                 xmlTemplateDocument.setData("time", "10");
@@ -280,10 +255,10 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                 templateSelector = "showresult";
 
             } else if("exportmoduledata".equals(action)) {
-                // export the channels and moduledata from database
+                // export the COS and the COS data
                 Vector channelNames = parseResources(allResources);
                 String[] exportChannels = new String[channelNames.size()];
-                for(int i = 0;i < channelNames.size();i++) {
+                for (int i = 0;i < channelNames.size();i++) {
                     // modify the foldername if nescessary (the root folder is always given
                     // as a nice name)
                     if(lang.getLanguageValue("title.rootfolder").equals(channelNames.elementAt(i))) {
@@ -291,69 +266,64 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                     }
                     exportChannels[i] = (String)channelNames.elementAt(i);
                 }
+                
                 // get the selected modulenames
                 Vector moduleNames = parseResources(allModules);
                 String[] exportModules = new String[moduleNames.size()];
-                for(int i = 0;i < moduleNames.size();i++) {
+                for (int i = 0;i < moduleNames.size();i++) {
                     exportModules[i] = (String)moduleNames.elementAt(i);
                 }
+                
                 // start the thread for: exportmodules
-                // first clear the session entry if necessary
-                if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-                    session.removeValue(C_SESSION_THREAD_ERROR);
-                }
-                A_CmsReportThread doExport = new CmsAdminDatabaseExportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
-                        + fileName, exportChannels, exportModules, session);
+                A_CmsReportThread doExport = new CmsAdminDatabaseExportThread(cms, 
+                    CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator + fileName, 
+                    exportChannels, exportModules);
+                            
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
                 xmlTemplateDocument.setData("time", "10");
-                templateSelector = "wait";
+                xmlTemplateDocument.setData("currenttime", "" + System.currentTimeMillis());                
+                templateSelector = "showresult";
 
             } else if("import".equals(action)) {
                 // look for the step
-                if("local".equals(step) || "server".equals(step)){
+                if ("local".equals(step) || "server".equals(step)){
                     templateSelector = step;
-                }else if("localupload".equals(step)){
+                } else if("localupload".equals(step)){
                     // get the filename and set step to 'go'
                     existingFile = copyFileToServer(cms, session);
                     step = "go";
                 }
-                if("go".equals(step) ){
+                if ("go".equals(step) ){
                     // start the thread for: import
-                    // first clear the session entry if necessary
-                    if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-                        session.removeValue(C_SESSION_THREAD_ERROR);
-                    }
-                    A_CmsReportThread doImport = new CmsAdminDatabaseImportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
-                                + existingFile, session);
+                    A_CmsReportThread doImport = new CmsAdminDatabaseImportThread(cms, 
+                        CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator + existingFile);
+                        
                     doImport.start();
                     session.putValue(C_DATABASE_THREAD, doImport);
                     xmlTemplateDocument.setData("time", "10");
                     templateSelector = "showresult";
                 }
             }
-        }
-        catch(CmsException exc) {
+        } catch (CmsException exc) {
             xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
             templateSelector = "error";
         }
 
-        // Now load the template file and start the processing
-        return startProcessing(cms, xmlTemplateDocument, elementName, parameters,
-                templateSelector);
+        // now load the template file and start the processing
+        return startProcessing (cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
 
     /**
-     * Gets all export-files from the export-path.
-     * <P>
+     * Gets all export-files from the export-path.<p>
+     * 
      * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
-     * a select box.
-     * <P>
+     * a select box.<p>
+     * 
      * <code>names</code> will contain language specific view descriptions
      * and <code>values</code> will contain the correspondig URL for each
-     * of these views after returning from this method.
-     * <P>
+     * of these views after returning from this method.<p>
      *
      * @param cms CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
@@ -363,27 +333,31 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
      * @return Index representing the user's current filter view in the vectors.
      * @throws CmsException
      */
-
-    public Integer getExportFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector values,
-            Vector names, Hashtable parameters) throws CmsException {
-
+    public Integer getExportFiles(
+        CmsObject cms, 
+        CmsXmlLanguageFile lang, 
+        Vector values, 
+        Vector names, 
+        Hashtable parameters 
+    ) throws CmsException {
         // get the systems-exportpath
         String exportpath = cms.readExportPath();
         exportpath = CmsBase.getAbsolutePath(exportpath);
         File folder = new File(exportpath);
-        if (!folder.exists()){
+        if (!folder.exists()) {
             folder.mkdirs();
         }
         // get a list of all files
         String[] list = folder.list(new FilenameFilter() {
-                public boolean accept(File dir, String fileName) {
-                        return(fileName.endsWith(".zip"));
-                }});
-        for(int i = 0;i < list.length;i++) {
+            public boolean accept(File dir, String fileName) {
+                return (fileName.endsWith(".zip"));
+            }
+        });
+        for (int i = 0; i < list.length; i++) {
             File diskFile = new File(exportpath, list[i]);
 
             // check if it is a file
-            if(diskFile.isFile()) {
+            if (diskFile.isFile()) {
                 values.addElement(list[i]);
                 names.addElement(list[i]);
             }
@@ -392,27 +366,31 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
     }
 
     /**
-     * Indicates if the results of this class are cacheable.
+     * Indicates that the results of this class are not cacheable.<p>
      *
      * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+     * @return <code>false</code>
      */
-
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
-            Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(
+        CmsObject cms, 
+        String templateFile, 
+        String elementName, 
+        Hashtable parameters, 
+        String templateSelector
+    ) {
         return false;
     }
 
     /**
-     * Gets all exportable modules for a select box
-     * <P>
+     * Gets all exportable modules for a select box.<p>
+     * 
      * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
-     * a select box.
+     * a select box.<p>
      *
      * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
@@ -421,14 +399,19 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
      * @return Index representing the current value in the vectors.
      * @throws CmsException
      */
-    public int getModules(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
-            Vector values, Hashtable parameters) throws CmsException {
+    public int getModules(
+        CmsObject cms, 
+        CmsXmlLanguageFile lang, 
+        Vector names, 
+        Vector values, 
+        Hashtable parameters
+    ) throws CmsException {        
         // get all exportable modules
         Hashtable modules = new Hashtable();
         cms.getRegistry().getModuleExportables(modules);
         Enumeration keys = modules.keys();
         // fill the names and values
-        while(keys.hasMoreElements()) {
+        while (keys.hasMoreElements()) {
             String name = (String)keys.nextElement();
             String value = (String)modules.get(name);
             names.addElement(name);
@@ -438,32 +421,35 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
     }
 
     /**
-     * Gets all exportable modules for a select box
-     * <P>
+     * Gets all exportable modules for a select box.<p>
+     * 
      * The method returns a string with option tags that contains the module information
-     * to be used for building a select box.
+     * to be used for building a select box.<p>
      *
      * @param cms CmsObject Object for accessing system resources.
      * @param template The current template
      * @return String with the modules optiontags.
      * @throws CmsException
      */
-    public String getModuleSelectbox(CmsObject cms, CmsXmlWpTemplateFile template) throws CmsException {
+    public String getModuleSelectbox(
+        CmsObject cms, 
+        CmsXmlWpTemplateFile template
+    ) throws CmsException {        
         StringBuffer selectBox = new StringBuffer();
-        if(template.hasData("selectoption")){
+        if (template.hasData("selectoption")) {
             // get all exportable modules
             Hashtable modules = new Hashtable();
             cms.getRegistry().getModuleExportables(modules);
             Enumeration keys = modules.keys();
             // fill the names and values
-            while(keys.hasMoreElements()) {
+            while (keys.hasMoreElements()) {
                 String name = (String)keys.nextElement();
                 String value = (String)modules.get(name);
-                template.setData("name",name);
-                template.setData("value",value);
-                try{
-                    selectBox.append(template.getProcessedDataValue("selectoption",this));
-                } catch (Exception e){
+                template.setData("name", name);
+                template.setData("value", value);
+                try {
+                    selectBox.append(template.getProcessedDataValue("selectoption", this));
+                } catch (Exception e) {
                     // do not throw exception because selectbox might not exist
                 }
             }
@@ -471,17 +457,19 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         return selectBox.toString();
     }
 
-    /** Parse the string which holds all resources
+    /** 
+     * Parse the string which holds all resources.<p>
      *
      * @param resources containts the full pathnames of all the resources, separated by semicolons
      * @return A vector with the same resources
      */
-
-    private Vector parseResources(String resources) {
+    private Vector parseResources(
+        String resources
+    ) {                
         Vector ret = new Vector();
-        if(resources != null) {
+        if (resources != null) {
             StringTokenizer resTokenizer = new StringTokenizer(resources, ";");
-            while(resTokenizer.hasMoreElements()) {
+            while (resTokenizer.hasMoreElements()) {
                 String path = (String)resTokenizer.nextElement();
                 ret.addElement(path);
             }
