@@ -154,20 +154,25 @@ function show_help()
 								<td class=dialogtxt>]]><PROCESS>SIZE</PROCESS><![CDATA[</td>
 							</tr>
 							<tr>
-								<td class=formular>]]><LABEL value="label.editedby" /><![CDATA[:</td>
-								<td class=dialogtxt>]]><PROCESS>EDITEDBY</PROCESS><![CDATA[</td>
 								<td class=formular>]]><LABEL value="label.editedat" /><![CDATA[:</td>
 								<td class=dialogtxt>]]><PROCESS>EDITEDAT</PROCESS><![CDATA[</td>
-							</tr>
-							<tr>
-								<td class=formular>]]><LABEL value="label.publishedby" /><![CDATA[:</td>
-								<td class=dialogtxt>]]><PROCESS>PUBLISHEDBY</PROCESS><![CDATA[</td>
 								<td class=formular>]]><LABEL value="label.publishedat" /><![CDATA[:</td>
 								<td class=dialogtxt>]]><PROCESS>PUBLISHEDAT</PROCESS><![CDATA[</td>
 							</tr>
+							<!-- not yet available
+							<tr>
+								<td class=formular>]]><LABEL value="label.editedby" /><![CDATA[:</td>
+								<td class=dialogtxt>]]><PROCESS>EDITEDBY</PROCESS><![CDATA[</td>
+								<td class=formular>]]><LABEL value="label.publishedby" /><![CDATA[:</td>
+								<td class=dialogtxt>]]><PROCESS>PUBLISHEDBY</PROCESS><![CDATA[</td>
+							</tr>
+							-->
 							<tr>
 								<td class=formular colspan=4 height=30px>&nbsp;</td>												
 							</tr>							
+							<tr>
+								<td class=formular colspan=4 >]]><LABEL value="label.projectdescription" /><![CDATA[:</td>
+							</tr>
 							<tr>
 								<td class=dialogtxt colspan=4 >]]><PROCESS>PROJECTDESCRIPTION</PROCESS><![CDATA[</td>
 							</tr>
