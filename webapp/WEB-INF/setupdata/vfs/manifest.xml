@@ -5326,6 +5326,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/replace.jsp</source>
+			<destination>system/workplace/commons/replace.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>f3763be2-f1e0-11d8-9d42-7f1f3bbc97b8</uuidresource>
+			<datelastmodified>Thu, 19 Aug 2004 16:56:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 19 Aug 2004 15:09:06 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Replace resource]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/touch.jsp</source>
 			<destination>system/workplace/commons/touch.jsp</destination>
 			<type>jsp</type>

@@ -198,7 +198,7 @@
 						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
 						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.replace" uri="replace.html?overwrite=yes&amp;mode=replace" isxml="true" rules="d d iiii aaai dddd" order="185"/>
+						<entry key="explorer.context.replace" uri="commons/replace.jsp" rules="d d iiii aaai dddd" order="185"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
 						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
 						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
@@ -278,7 +278,7 @@
 						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
 						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.replace" uri="replace.html?overwrite=yes&amp;mode=replace" isxml="true" rules="d d iiii aaai dddd" order="185"/>
+						<entry key="explorer.context.replace" uri="commons/replace.jsp" rules="d d iiii aaai dddd" order="185"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
 						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
 						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
