@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2004/10/28 15:37:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/20 10:15:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,12 +55,9 @@ import javax.servlet.jsp.PageContext;
  * and for any folders except system folders.<p>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
-    
-    /** Prefix for the localized keys of the dialog. */
-    private static final String C_KEY_PREFIX = "templateonedialog.";
     
     /** 
      * String Array with default properties.<p>
@@ -80,13 +77,16 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      */  
     private static final String[] C_EBK_PROPERTIES = {
         
+        CmsTemplateNavigation.C_PROPERTY_HEADNAV_USE,
         CmsTemplateBean.C_PROPERTY_SHOWHEADIMAGE,
         CmsTemplateBean.C_PROPERTY_HEAD_IMGURI,
         CmsTemplateBean.C_PROPERTY_HEAD_IMGLINK,
         CmsTemplateBean.C_PROPERTY_SHOW_HEADNAV,
         CmsTemplateBean.C_PROPERTY_SHOW_NAVLEFT,
         CmsTemplateBean.C_PROPERTY_NAVLEFT_ELEMENTURI,
-        CmsTemplateBean.C_PROPERTY_SIDE_URI
+        CmsTemplateBean.C_PROPERTY_SIDE_URI,
+        CmsTemplateBean.C_PROPERTY_STARTFOLDER,
+        CmsTemplateBean.C_PROPERTY_CONFIGPATH
     };
     
     /** mode used for switching between different radio types. */
@@ -94,6 +94,9 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
     
     /** mode used for switching between different radio types. */
     private static final String C_INDIVIDUAL = "individual";
+    
+    /** Prefix for the localized keys of the dialog. */
+    private static final String C_KEY_PREFIX = "templateonedialog.";
     
     /** The module path. */
     private static final String C_MODULE_PATH = "/system/modules/org.opencms.frontend.templateone/";
@@ -167,6 +170,51 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
     }
     
     /**
+     * Build the html for a property checkbox.<p>
+     * 
+     * @param propertyName the property name
+     * @param propertyValue the property value
+     * @param propertyText the property text
+     * 
+     * @return the html for a property checkbox
+     */
+    public String buildCheckBox(String propertyName, String propertyValue, String propertyText) {
+        
+        StringBuffer checkbox = new StringBuffer();
+        checkbox.append(buildTableRowStart(key(propertyText)));
+        String checked = "";        
+        if (getActiveProperties().containsKey(propertyName)) {
+            // the property is used, so create text field with checkbox and hidden field
+            CmsProperty currentProperty = (CmsProperty)getActiveProperties().get(propertyName);
+            
+            String propValue = currentProperty.getValue();
+            if (propValue != null) {
+                propValue = propValue.trim();   
+            }
+            propValue = CmsEncoder.escapeXml(propValue);
+            if (propertyValue.equals(propValue)) {
+                checked = " checked=\"checked\"";
+            }            
+        } else {
+            // check radio if param value is the default
+            if (propertyValue.equals(C_PARAM_DEFAULT)) {
+                checked = " checked=\"checked\"";
+            }
+        }
+        checkbox.append("<input type=\"checkbox\" name=\"");
+        checkbox.append(PREFIX_VALUE);
+        checkbox.append(propertyName);
+        checkbox.append("\" value=\"");
+        checkbox.append(propertyValue);
+        checkbox.append("\"");
+        checkbox.append(checked);
+        checkbox.append(">");
+        checkbox.append(buildTableRowEnd());
+        
+        return checkbox.toString();
+    }
+    
+    /**
      * Creates the HTML String for the edit properties form.<p>
      * 
      * @return the HTML output String for the edit properties form
@@ -203,6 +251,9 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             result.append(buildNavigationProperties(editable));
         }
         
+        // build head nav checkbox
+        result.append(buildCheckBox(CmsTemplateNavigation.C_PROPERTY_HEADNAV_USE, C_PARAM_TRUE, C_KEY_PREFIX + CmsTemplateNavigation.C_PROPERTY_HEADNAV_USE));
+        
         // build head image radio buttons        
         result.append(buildRadioButtons(CmsTemplateBean.C_PROPERTY_SHOWHEADIMAGE, C_INDIVIDUAL, "toggleHeadImageProperties", editable));        
         
@@ -221,6 +272,16 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_NAVLEFT_ELEMENTURI, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_NAVLEFT_ELEMENTURI, editable));
         // build side uri search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_SIDE_URI, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_SIDE_URI, editable));                        
+        
+        // build startfolder checkbox only for folders
+        if (isFolder()) {
+            result.append(buildCheckBox(CmsTemplateBean.C_PROPERTY_STARTFOLDER, C_PARAM_TRUE, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_STARTFOLDER));
+        }
+        
+        // build navleft element search input 
+        result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_CONFIGPATH, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_CONFIGPATH, editable));
+        
+        
         result.append("</table>");      
        
         return result.toString();
@@ -491,7 +552,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         }
         
         propValue = CmsEncoder.escapeXml(propValue);
-        result.append("<input type=\"text\" class=\"maxwidth\" ");
+        result.append("<input type=\"text\" style=\"width: 99%\" class=\"maxwidth\" ");
         result.append("name=\"");
         result.append(PREFIX_VALUE);
         result.append(propertyName);
@@ -595,4 +656,18 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         
         return result; 
     }   
+    
+    private boolean isFolder() {
+        
+        try {
+            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+            if (res.isFolder()) {
+                return true;
+            }
+        } catch (CmsException e) {
+            // ignore
+        }
+        
+        return false;
+    }
 }
