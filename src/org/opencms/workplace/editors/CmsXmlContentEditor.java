@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/22 15:53:58 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/10/22 15:57:48 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -394,11 +394,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             } catch (UnsupportedEncodingException e) {
                 throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
             }        
-            // the file content might have been modified during the write operation
-            boolean test = m_file.isTouched();
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error creating new XML content item '" + test + "'");
-            }      
+            // the file content might have been modified during the write operation    
             m_file = getCms().writeFile(m_file);
             m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
             m_contentDefinition = m_content.getContentDefinition(new CmsXmlEntityResolver(getCms()));
