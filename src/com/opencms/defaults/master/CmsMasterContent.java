@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/07/18 16:27:13 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2004/08/03 14:20:04 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,8 +58,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.60 $
- * $Date: 2004/07/18 16:27:13 $
+ * $Revision: 1.61 $
+ * $Date: 2004/08/03 14:20:04 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -975,7 +975,7 @@ public abstract class CmsMasterContent
                 if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
                     String folder = cms.getSitePath(resource);
                     Vector v = getAllSubChannelsOf(cms, folder);
-                    if (v.size() == 0 && hasWriteAccess(cms, resource)) {
+                    if (v.size() == 0 && cms.hasPermissions(resource, I_CmsConstants.C_VIEW_ACCESS)) {
                         allChannels.add(folder.substring(offset));
                     } else {
                         for (int j=0; j < v.size(); j++) {
@@ -1035,24 +1035,6 @@ public abstract class CmsMasterContent
      public String getRootChannel() {
         return getDbAccessObject(this.getSubId()).getRootChannel();
      }
-
-    /**
-     * has the current user the right to write the resource
-     * @return a boolean
-     */
-    protected static boolean hasWriteAccess(CmsObject cms, CmsResource resource) throws CmsException {
-        // check the rights for the current resource
-        return cms.hasPermissions(resource, I_CmsConstants.C_WRITE_ACCESS);
-        /*
-        if( ! ( accessOther(C_ACCESS_PUBLIC_WRITE, resource) ||
-                accessOwner(cms, currentUser, C_PERMISSION_WRITE, resource) ||
-                accessGroup(cms, currentUser, C_ACCESS_GROUP_WRITE, resource) ) ) {
-            // no write access to this resource!
-            return false;
-        }
-        return true;
-        */
-    }
 
     /**
      * Checks, if the owner may access this resource.
