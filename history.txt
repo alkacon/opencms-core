@@ -7,6 +7,16 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 4.0a21 Giedi Prime: Rabban - 10 March 2000
+
+! Added new workplace functions: change owner, change group, change type, change access flags.
+! Plain text files now can get a title during creation.
+! Updated file informations in multiple dialogs.
+! Page editor now is working in Netscape, too. Texteditor-Applet is exchanged with a HTML-textarea.
+* Bugfix in import module: Empty Metainformations can be imported now.
+* CmsMultipartRequest is downgraded to JSDK 2.0 for compatibility reasons.
+* Compiling problems with JDK now fixed.
  
 OpenCms 4.0a20 Giedi Prime: Rabban - 01 March 2000
 
