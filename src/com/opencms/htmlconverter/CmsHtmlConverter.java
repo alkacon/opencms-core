@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2002/02/21 16:15:40 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/06/14 11:54:44 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,6 +74,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     private String m_servletPrefix = null;
     //the url object for links that should not be replaced
     private URL m_url = null;
+    /** Vector stores tag names, after the end-tag, a "\n" is added to the output */
+    private Vector m_enterTags = new Vector();
 
     /**
      * default constructor
@@ -82,6 +84,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         m_tidy.setTidyMark(false);
         m_tidy.setShowWarnings(false);
         m_tidy.setQuiet(true);
+        initialiseTags();
     }
 
     /**
@@ -90,6 +93,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      */
     public CmsHtmlConverter(String tidyConfFileName) {
         this.setTidyConfFile(tidyConfFileName);
+        initialiseTags();
     }
 
     /**
@@ -100,6 +104,15 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     public CmsHtmlConverter(String tidyConfFileName, String confFile) {
         this.setTidyConfFile(tidyConfFileName);
         this.setConverterConfFile(confFile);
+        initialiseTags();
+    }
+
+    /** initialises Vector m_enterTags with tag names */
+    private void initialiseTags() {
+        StringTokenizer T = new StringTokenizer("p,table,tr,td,body,head,script,pre,title,style,h1,h2,h3,h4,h5,h6,ul,ol,li",",");
+        while (T.hasMoreTokens()) {
+            m_enterTags.addElement(new String(T.nextToken()));
+       }
     }
 
     /**
@@ -527,11 +540,29 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                             m_tempString.append(node.getNodeName());
                             m_tempString.append(">");
                             if (m_configuration.getGlobalAddEveryLine()) {
-                                m_tempString.append(m_configuration.getGlobalSuffix()
-                                        + "\n" + m_configuration.getGlobalPrefix());
+                                boolean added = false;
+                                for (int i=0;i<m_enterTags.size();i++) {
+                                    if (!added && node.getNodeName().equalsIgnoreCase((String)m_enterTags.elementAt(i))) {
+                                        m_tempString.append(m_configuration.getGlobalSuffix()
+                                                + "\n" + m_configuration.getGlobalPrefix());
+                                        added = true;
+                                    }
+                                    if (added) {
+                                        i = m_enterTags.size();
+                                    }
+                                }
                             }
                             else {
-                                m_tempString.append("\n");
+                                boolean added = false;
+                                for (int i=0;i<m_enterTags.size();i++) {
+                                    if (!added && node.getNodeName().equalsIgnoreCase((String)m_enterTags.elementAt(i))) {
+                                        m_tempString.append("\n");
+                                        added = true;
+                                    }
+                                    if (added) {
+                                        i = m_enterTags.size();
+                                    }
+                                }
                             }
                         }
                     }
