@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/29 15:49:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@
  */
 package org.opencms.workplace.commons;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
@@ -66,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -294,13 +293,13 @@ public class CmsChacc extends CmsDialog {
     public boolean actionInternalUse(HttpServletRequest request) {
         String internal = request.getParameter("internal");
        
-        CmsFile resource;
+        CmsResource resource;
         boolean internalValue = false;
         if (internal != null) {
             internalValue = true;
         }     
         try { 
-            resource = (CmsFile)getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+            resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
           
             int flags = resource.getFlags();
              
@@ -313,6 +312,8 @@ public class CmsChacc extends CmsDialog {
                     flags -= I_CmsConstants.C_ACCESS_INTERNAL_READ;
                 }
             }
+            
+            getCms().lockResource(getParamResource());
             getCms().chflags(getParamResource(), flags);
 
         } catch (CmsException e) {       
