@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/16 13:31:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/11/20 16:51:01 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.7 $ $Date: 2000/11/16 13:31:52 $
+ * @version $Revision: 1.8 $ $Date: 2000/11/20 16:51:01 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -720,9 +720,9 @@ public Vector getUsers(CmsUser currentUser, CmsProject currentProject, int type)
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public void init(Configurations config) throws CmsException {
-		if (A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] WARNING: this oracleplsql-resource-broker is experimentell and only for developing.");
-		}
+//		if (A_OpenCms.isLogging()) {
+//			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] WARNING: this oracleplsql-resource-broker is experimentell and only for developing.");
+//		}
 		super.init(config);
 	}
 /**
