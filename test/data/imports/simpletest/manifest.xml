@@ -93,8 +93,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>types/opencms-legacy.jar</source>
-			<destination>types/opencms-legacy.jar</destination>
+			<source>types/testdata.zip</source>
+			<destination>types/testdata.zip</destination>
 			<type>plain</type>
 			<uuidresource>030c0a6c-b3b6-11d8-9c65-514d35713fed</uuidresource>
 			<uuidcontent>030c0a6d-b3b6-11d8-9c65-514d35713fed</uuidcontent>
@@ -1406,7 +1406,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>folder1/subfolder11/subsubfolder111/opencms-legacy.jar</destination>
+			<destination>folder1/subfolder11/subsubfolder111/testdata.zip</destination>
 			<type>plain</type>
 			<uuidresource>030c0a6c-b3b6-11d8-9c65-514d35713fed</uuidresource>
 			<uuidcontent>030c0a6d-b3b6-11d8-9c65-514d35713fed</uuidcontent>

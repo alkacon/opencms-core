@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReleaseExpirationDate.java,v $
- * Date   : $Date: 2004/06/01 16:07:46 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReadFileheader.java,v $
+ * Date   : $Date: 2004/06/02 10:05:37 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,16 +42,16 @@ import org.opencms.test.OpenCmsTestCase;
  * Unit test for the "readFileHeader" method of the CmsObject to test the release and expiration date.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
-public class TestReleaseExpirationDate extends OpenCmsTestCase {
+public class TestReadFileheader extends OpenCmsTestCase {
   
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */    
-    public TestReleaseExpirationDate(String arg0) {
+    public TestReadFileheader(String arg0) {
         super(arg0);       
     }
     
@@ -65,12 +65,12 @@ public class TestReleaseExpirationDate extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
        
         
-        suite.addTest(new TestReleaseExpirationDate("testReadBeforeReleaseDate"));
-        suite.addTest(new TestReleaseExpirationDate("testReadInValidTimeRange"));
-        suite.addTest(new TestReleaseExpirationDate("testReadAfterExpirationDate"));
-        suite.addTest(new TestReleaseExpirationDate("testReadBeforeReleaseDateIgnore"));
-        suite.addTest(new TestReleaseExpirationDate("testReadInValidTimeRangeIgnore"));
-        suite.addTest(new TestReleaseExpirationDate("testReadAfterExpirationDateIgnore"));
+        suite.addTest(new TestReadFileheader("testReadBeforeReleaseDate"));
+        suite.addTest(new TestReadFileheader("testReadInValidTimeRange"));
+        suite.addTest(new TestReadFileheader("testReadAfterExpirationDate"));
+        suite.addTest(new TestReadFileheader("testReadBeforeReleaseDateIgnore"));
+        suite.addTest(new TestReadFileheader("testReadInValidTimeRangeIgnore"));
+        suite.addTest(new TestReadFileheader("testReadAfterExpirationDateIgnore"));
         
         TestSetup wrapper = new TestSetup(suite) {
 
