@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/05/29 12:32:09 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/05/30 07:28:57 $
+* Version: $Revision: 1.11 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,15 +39,12 @@ import java.util.*;
  * used keys.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2001/05/29 12:32:09 $
+ * @version $Revision: 1.11 $ $Date: 2001/05/30 07:28:57 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
     /** Bitfield for storing external cache properties */
     public int m_cd;
-
-    // indicates if the external cache properties should be automaticlay changed
-    private boolean m_changeCd = true;
 
     // everthing to get the cache key
 
@@ -72,18 +69,19 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     private CmsTimeout m_timeout;
     boolean m_timecheck = false;
 
+    // indicates if the user has set the value or if it has to be generated
+    boolean m_userSetProxyPrivate = false;
+    boolean m_userSetProxyPublic = false;
+    boolean m_userSetExport = false;
+
     /** Flag for internal cacheable */
     public static final int C_CACHE_INTERNAL = 1;
-
     /** Flag for cacheable in private proxies */
     public static final int C_CACHE_PROXY_PRIVATE  = 2;
-
     /** Flag for cacheable in public proxies */
     public static final int C_CACHE_PROXY_PUBLIC = 4;
-
     /** Flag for exportable */
     public static final int C_CACHE_EXPORT = 8;
-
     /** Flag for streamable */
     public static final int C_CACHE_STREAM = 16;
 
@@ -98,6 +96,9 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
         } else {
             m_cd = 0;
         }
+        m_userSetExport = true;
+        m_userSetProxyPrivate = true;
+        m_userSetProxyPublic = true;
     }
 
     /**
@@ -117,7 +118,9 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
         m_cd |= export?C_CACHE_EXPORT:0;
         m_cd |= stream?C_CACHE_STREAM:0;
 
-        m_changeCd = false;
+        m_userSetExport = true;
+        m_userSetProxyPrivate = true;
+        m_userSetProxyPublic = true;
     }
 
     /**
@@ -126,8 +129,9 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
      * @param stream Initial value for "streamable" property.
      */
     public CmsCacheDirectives(boolean internal, boolean stream) {
-        setExternalCaching(internal, true, true, true, stream);
-        autoSetExternalCache();
+        m_cd = 0;
+        m_cd |= internal?C_CACHE_INTERNAL:0;
+        m_cd |= stream?C_CACHE_STREAM:0;
     }
 
     /**
@@ -139,15 +143,13 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
      * @param export Initial value for "exportable" property.
      * @param stream Initial value for "streamable" property.
      */
-    public void setExternalCaching(boolean internal, boolean proxyPriv, boolean proxyPub, boolean export, boolean stream) {
+    private void setExternalCaching(boolean internal, boolean proxyPriv, boolean proxyPub, boolean export, boolean stream) {
         m_cd = 0;
         m_cd |= internal?C_CACHE_INTERNAL:0;
         m_cd |= proxyPriv?C_CACHE_PROXY_PRIVATE:0;
         m_cd |= proxyPub?C_CACHE_PROXY_PUBLIC:0;
         m_cd |= export?C_CACHE_EXPORT:0;
         m_cd |= stream?C_CACHE_STREAM:0;
-
-        m_changeCd = false;
     }
 
     /**
@@ -158,6 +160,33 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
      */
     public void merge(CmsCacheDirectives cd) {
         m_cd &= cd.m_cd;
+    }
+
+    /**
+     * enables or disables the proxy public cache for this element.
+     */
+    public void setProxyPublicCacheable(boolean proxPublic){
+        m_userSetProxyPublic = true;
+        setExternalCaching(isInternalCacheable(), isProxyPrivateCacheable(),
+                            proxPublic, isExportable(), isStreamable());
+    }
+
+    /**
+     * enables or disables the proxy private cache for this element.
+     */
+    public void setProxyPrivateCacheable(boolean proxPrivate){
+        m_userSetProxyPrivate = true;
+        setExternalCaching(isInternalCacheable(), proxPrivate,
+                            isProxyPublicCacheable(), isExportable(), isStreamable());
+    }
+
+    /**
+     * enables or disables the export for this element.
+     */
+    public void setExport(boolean export){
+        m_userSetExport = true;
+        setExternalCaching(isInternalCacheable(), isProxyPrivateCacheable(),
+                            isProxyPublicCacheable(), export, isStreamable());
     }
 
     /**
@@ -315,7 +344,7 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
      */
     public void setCacheUser(boolean userCache){
         m_user = userCache;
-        autoSetExternalCache();
+        //autoSetExternalCache();
     }
 
     /**
@@ -324,7 +353,7 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
      */
     public void setCacheUri(boolean uriCache){
         m_uri = uriCache;
-        autoSetExternalCache();
+        //autoSetExternalCache();
     }
 
     /**
@@ -334,7 +363,7 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
      */
     public void setCacheParameters(Vector parameterNames){
         m_cacheParameter = parameterNames;
-        autoSetExternalCache();
+        //autoSetExternalCache();
     }
 
     /**
@@ -348,7 +377,7 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     /**
      *
      */
-    private void autoSetExternalCache(){
+/*    private void autoSetExternalCache(){
         if (m_changeCd){
             boolean proxPriv = m_uri && (m_cacheParameter == null || m_cacheParameter.isEmpty())
                                 && isInternalCacheable();
@@ -358,4 +387,5 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
             setExternalCaching(isInternalCacheable(), proxPriv, proxPubl, export, isStreamable());
         }
     }
+*/
 }
