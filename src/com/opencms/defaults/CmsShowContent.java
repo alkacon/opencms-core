@@ -185,7 +185,8 @@ public class CmsShowContent extends CmsXmlTemplate {
             if(cdObject.isTimedContent()){
                 I_CmsTimedContentDefinition curTimed = (I_CmsTimedContentDefinition)cdObject;
                 long currentTime = System.currentTimeMillis();
-                if((currentTime < curTimed.getPublicationDate()) || (currentTime > curTimed.getPurgeDate())){
+                if(((curTimed.getPublicationDate() != 0) && (currentTime < curTimed.getPublicationDate()))
+                        || ((curTimed.getPurgeDate() != 0) && (currentTime > curTimed.getPurgeDate()))){
                     showIt = false;
                 }
             }
@@ -284,7 +285,8 @@ public class CmsShowContent extends CmsXmlTemplate {
                 A_CmsContentDefinition curCont = (A_CmsContentDefinition)cdObjects.elementAt(i);
                 if(curCont.isTimedContent()){
                     I_CmsTimedContentDefinition curTimed = (I_CmsTimedContentDefinition)curCont;
-                    if((currentTime < curTimed.getPublicationDate()) || (currentTime > curTimed.getPurgeDate())){
+                    if(((curTimed.getPublicationDate() != 0) && (currentTime < curTimed.getPublicationDate()))
+                            || ((curTimed.getPurgeDate() != 0) && (currentTime > curTimed.getPurgeDate()))){
                         showIt = false;
                     }
                 }
