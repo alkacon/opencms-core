@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2003/03/31 16:43:04 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/03/31 16:49:19 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -236,7 +236,6 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         java.util.Iterator i = m_resourceMap.keySet().iterator();
         while (i.hasNext()) {
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)m_resourceMap.get(i.next());
-            i.remove();
             java.util.Iterator allEntries = v.map.values().iterator();
             while (allEntries.hasNext()) {
                 I_CmsFlexLruCacheObject nextObject = (I_CmsFlexLruCacheObject)allEntries.next();
@@ -819,7 +818,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.16 $ 
+     * @version $Revision: 1.17 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         
