@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/02/29 16:44:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/03/08 14:38:02 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/02/29 16:44:47 $
+ * @version $Revision: 1.15 $ $Date: 2000/03/08 14:38:02 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -249,6 +249,16 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public String getParameter(String elementName, String parameterName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName);        
+    }
+     
+    /**
+     * Checks if the section with the given name is defined
+     * in this XML template file.
+     * @param name Name of the requested section.
+     * @return <code>true</code> if a section exists, <code>false</code> otherwise.
+     */
+    public boolean hasSection(String name) {
+        return hasData("template." + name);
     }
         
     public Element getBodyTag() throws CmsException {
