@@ -9,6 +9,7 @@ Legend:
 - General comment
 
 OpenCms 4.5.29 Chusuk       - xx December 2001
+- Corrected color for "changed resources" in backoffices.
 - Changed the apperance of two selectboxes in editors.
 
 OpenCms 4.5.28 Chusuk       - 07 December 2001
