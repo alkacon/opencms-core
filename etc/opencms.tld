@@ -32,6 +32,9 @@
             <name>file</name>
         </attribute>        
         <attribute>
+            <name>escapeHtml</name>
+        </attribute>         
+        <attribute>
             <name>default</name>
         </attribute> 
     </tag>        

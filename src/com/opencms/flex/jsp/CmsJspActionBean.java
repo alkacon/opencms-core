@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionBean.java,v $
- * Date   : $Date: 2002/11/17 14:00:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/12/15 10:42:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0 beta 2
  */
@@ -229,7 +229,7 @@ public class CmsJspActionBean {
      * </ul><p>
      * 
      * If the named property could not be read from the selected file, 
-     * <code>null</code> is returned.
+     * <code>null</code> is returned.<p>
      * 
      * @param name the name of the property to look for
      * @param file the file (or folder) to look at for the property
@@ -239,9 +239,32 @@ public class CmsJspActionBean {
      */
     public String property(String name, String file) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
-        return this.property(name, file, null);       
+        return this.property(name, file, null, false);       
     }
-        
+
+    /**
+     * Returns a selected file property value, same as using
+     * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag.<p>
+     *
+     * Please see the description of {@link #property(String, String)} for
+     * valid options of the <code>file</code> parameter.<p>
+     *
+     * If the named property could not be read from the selected file,
+     * the value of <code>defaultValue</code> is returned.<p>
+     *
+     * @param name the name of the property to look for
+     * @param file the file (or folder) to look at for the property
+     * @param defaultValue a default value in case the property was not found
+     * @return the value of the property found, or the value of defaultValue
+     *     if the property could not be found
+     *
+     * @see  com.opencms.flex.jsp.CmsJspTagFileProperty
+     */
+    public String property(String name, String file, String defaultValue) {
+        if (m_notInitialized) return C_NOT_INITIALIZED;
+        return this.property(name, file, defaultValue, false);
+    }
+            
     /**
      * Returns a selected file property value, same as using 
      * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag.<p>
@@ -250,20 +273,22 @@ public class CmsJspActionBean {
      * valid options of the <code>file</code> parameter.<p>
      * 
      * If the named property could not be read from the selected file, 
-     * the value of <code>defaultValue</code> is returned.
+     * the value of <code>defaultValue</code> is returned.<p>
      * 
      * @param name the name of the property to look for
      * @param file the file (or folder) to look at for the property
      * @param defaultValue a default value in case the property was not found
+     * @param escapeHtml if <code>true</code>, special HTML characters in the return value
+     *     are escaped with their number representations (e.g. &amp; becomes &amp;#38;)
      * @return the value of the property found, or the value of defaultValue 
      *     if the property could not be found
      *
      * @see  com.opencms.flex.jsp.CmsJspTagFileProperty
      */
-    public String property(String name, String file, String defaultValue) {
+    public String property(String name, String file, String defaultValue, boolean escapeHtml) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
         try {
-            return CmsJspTagFileProperty.propertyTagAction(name, file, defaultValue, m_request);
+            return CmsJspTagFileProperty.propertyTagAction(name, file, defaultValue, escapeHtml, m_request);
         } catch (CmsException e) {
             if (defaultValue == null) {
                 return "+++ error reading property '" + name + "' +++";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagFileProperty.java,v $
-* Date   : $Date: 2002/11/16 13:17:54 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/12/15 10:42:37 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,20 +31,20 @@ package com.opencms.flex.jsp;
 
 import com.opencms.core.CmsException;
 import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.util.Encoder;
 
 /**
  * This Tag provides access to the currently included files OpenCms properties.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport {
     
-    private String m_propertyName = null;
-    
-    private String m_propertyFile = null;
-    
+    private String m_propertyName = null;    
+    private String m_propertyFile = null;    
     private String m_defaultValue = null;
+    private boolean m_escapeHtml = false;
     
     public void setName(String name) {
         if (name != null) {
@@ -75,7 +75,17 @@ public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport {
     public String getFile() {
         return m_propertyFile!=null?m_propertyFile:"parent";
     }
-    
+
+    public void setEscapeHtml(String value) {
+        if (value != null) {
+            m_escapeHtml = "true".equalsIgnoreCase(value.trim());
+        }
+    }
+
+    public String getEscapeHtml() {
+        return "" + m_escapeHtml;
+    }
+        
     public void release() {
         super.release();
         m_propertyFile = null;
@@ -93,7 +103,7 @@ public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport {
             com.opencms.flex.cache.CmsFlexRequest c_req = (com.opencms.flex.cache.CmsFlexRequest)req;
 
             try {       
-                String prop = propertyTagAction(getName(), getFile(), m_defaultValue, c_req);
+                String prop = propertyTagAction(getName(), getFile(), m_defaultValue, m_escapeHtml, c_req);
                 pageContext.getOut().print(prop);
                 
             } catch (Exception ex) {
@@ -105,28 +115,31 @@ public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport {
         return SKIP_BODY;
     }
 
-    public static String propertyTagAction(String property, String action, String defaultValue, CmsFlexRequest req) 
+    public static String propertyTagAction(String property, String action, String defaultValue, boolean escape, CmsFlexRequest req) 
     throws CmsException
     {
         // Make sure that no null String is returned
         if (defaultValue == null) defaultValue = "";
+        String value;
         
         if ("parent".equals(action)) {                    
             // Read properties of parent (i.e. top requested) file
-            return req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, false, defaultValue);                  
+            value = req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, false, defaultValue);                  
         } else if ("this".equals(action)) {
             // Read properties of this file
-            return  req.getCmsObject().readProperty(req.getCmsResource(), property, false, defaultValue);
+            value = req.getCmsObject().readProperty(req.getCmsResource(), property, false, defaultValue);
         } else if ("search-this".equals(action)) {
             // Try to find property on this file and all parent folders
-            return req.getCmsObject().readProperty(req.getCmsResource(), property, true, defaultValue);
+            value = req.getCmsObject().readProperty(req.getCmsResource(), property, true, defaultValue);
         } else if ("search-parent".equals(action) || "search".equals(action)) {
             // Try to find property on parent file and all parent folders
-            return  req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, true, defaultValue);
+            value = req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, true, defaultValue);
         } else {
             // Read properties of the file named in the attribute
-            return  req.getCmsObject().readProperty(req.toAbsolute(action), property, false, defaultValue);
-        }
+            value = req.getCmsObject().readProperty(req.toAbsolute(action), property, false, defaultValue);
+        }        
+        if (escape) value = Encoder.escapeHtml(value);        
+        return value;
     }
 
 }
