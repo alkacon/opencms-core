@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/06 17:02:04 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/06 19:57:32 $
  */
  public class CmsResource extends A_CmsResource implements I_CmsConstants {
      
@@ -280,6 +280,8 @@ import com.opencms.core.*;
         output.append(m_groupId);
         output.append(" : Access=");
         output.append(getFlagString());
+        output.append(" : Resource-type=");
+        output.append(getType());
         return output.toString();
       }
                                  
