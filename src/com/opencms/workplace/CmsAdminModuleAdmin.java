@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/08 17:14:13 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2001/01/04 14:57:43 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -303,7 +303,6 @@ private void tryToCreateFolder(CmsObject cms, String folder, String newFolder) {
 	try{
 		cms.createFolder(folder, newFolder);
 	}catch(Exception e){
-System.err.println("mgm-Exception: "+e.toString());		
 	}	
 }
 /**
