@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/03 15:25:46 $
- * Version: $Revision: 1.444 $
+ * Date   : $Date: 2003/02/04 16:20:04 $
+ * Version: $Revision: 1.445 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 5.0 "release candidate" (rc) 2  Kaitain - 04 February 2003
 ! Improved editor GUI (for both source code and WYSIWYG editor) 
 ! The setup wizards now checks for the correct setting of the Java file.encoding 
 ! The com.opencms.flex.jsp.CmsJspNavElement now provides direct access to all properties of a file
+* Fixed issue #54 from Bugzilla (bodyselector not always working in editor)
 * Fixed issue with download galleries not displaying the file type icon 
 * Fixed issue with cache setting causing binary document types (like *.doc, *.pdf) not to display in the offline project
 * Fixed various issues regarding the character encoding, as a result it is now possible to use any encoding,
