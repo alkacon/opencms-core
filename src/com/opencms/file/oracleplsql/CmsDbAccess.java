@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/23 07:40:56 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2001/07/23 11:24:16 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.37 $ $Date: 2001/07/23 07:40:56 $ *
+ * @version $Revision: 1.38 $ $Date: 2001/07/23 11:24:16 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -919,7 +919,7 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 			}
 		}
 	}
-	return readFile(user.getId(), project.getId(), onlineProject.getId(), filename);
+	return readFile(project.getId(), onlineProject.getId(), filename);
 }
 // methods working with session-storage
 
@@ -1714,9 +1714,10 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
 			long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 			int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
 			int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+            int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 			resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId,
 										groupId, projectId, accessFlags, state, lockedBy, launcherType,
-										launcherClass, created, modified, modifiedBy, resSize);
+										launcherClass, created, modified, modifiedBy, resSize, lockedInProject);
 			resources.addElement(resource);
 		}
 		//res.close();
@@ -1889,184 +1890,204 @@ public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onli
 	}
         return changedResources;
 }
-/**
- * Reads a file from the Cms.<BR/>
- *
- * @param projectId The Id of the project in which the resource will be used.
- * @param onlineProjectId The online projectId of the OpenCms.
- * @param filename The complete name of the new file (including pathinformation).
- *
- * @return file The read file.
- *
- * @exception CmsException Throws CmsException if operation was not succesful
- */
-public CmsFile readFile(int currentUserId, int currentProjectId, int onlineProjectId, String filename) throws CmsException {
-	//System.out.println("PL/SQL: readFile");
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CmsFile file = null;
-	CallableStatement statement = null;
-	Connection con = null;
-	ResultSet res = null;
-	try {
-		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_READFILE"));
-		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
-		statement.setInt(2, currentUserId);
-		statement.setInt(3, currentProjectId);
-		statement.setInt(4, onlineProjectId);
-		statement.setString(5, filename);
-		statement.execute();
-		res = (ResultSet) statement.getObject(1);
-		if (res.next()) {
-			int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-			int parentId = res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-			int resType = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-			int resFlags = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-			int userId = res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-			int groupId = res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-			int fileId = res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-			int accessFlags = res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-			int state = res.getInt(m_cq.get("C_RESOURCES_STATE"));
-			int lockedBy = res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-			int launcherType = res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-			String launcherClass = res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-			long created = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-			long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-			int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-			int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-            int resProjectId = res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-			// read the file_content from an oracle blob
-			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_RESOURCES_FILE_CONTENT"));
-			byte[] content = new byte[ (int) blob.length()];
-			content = blob.getBytes(1, (int) blob.length());
-			// output for testing:
-			//		String out_buffer = new String(content);
-			//		System.out.println(out_buffer);
-			file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId,
-                               resProjectId, accessFlags, state, lockedBy, launcherType,
-                               launcherClass, created, modified, modifiedBy, content, resSize);
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
-		}
-	} catch (SQLException e) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", e);
-		throw cmsException;
-		//throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-	} catch (CmsException ex) {
-		throw ex;
-	} catch (Exception exc) {
-		throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-	} finally {
-		if (res != null) {
-			try {
-				res.close();
-			} catch (SQLException se) {
+	/**
+	 * Reads a file from the Cms.<BR/>
+	 *
+	 * @param projectId The Id of the project in which the resource will be used.
+	 * @param onlineProjectId The online projectId of the OpenCms.
+	 * @param filename The complete name of the new file (including pathinformation).
+	 *
+	 * @return file The read file.
+	 *
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public CmsFile readFile(int projectId,
+							 int onlineProjectId,
+							 String filename)
+		 throws CmsException {
+        CmsFile file = null;
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		Connection con = null;
+		String usedPool;
+        String usedStatement;
+        if (projectId == onlineProjectId) {
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+        } else {
+            usedPool = m_poolName;
+            usedStatement = "";
+        }
+		try {
+            con = DriverManager.getConnection(usedPool);
+            // if the actual project is the online project read file header and content
+			// from the online project
+			statement = con.prepareStatement(m_cq.get("C_FILES_READ"+usedStatement));
+			statement.setString(1, filename);
+			statement.setInt(2, projectId);
+			res = statement.executeQuery();
+			if(res.next()) {
+			    int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+				int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+				int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+				int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+				int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+				int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+				int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+				int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
+				int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+				int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+				String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+				long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+				// read the file_content from an oracle blob
+			    oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_RESOURCES_FILE_CONTENT"));
+			    byte[] content = new byte[ (int) blob.length()];
+			    content = blob.getBytes(1, (int) blob.length());
+                int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+				file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
+						  		   groupId,resProjectId,accessFlags,state,lockedBy,
+								   launcherType,launcherClass,created,modified,modifiedBy,
+								   content,resSize, lockedInProject);
+            } else {
+			    throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
+            }
+        } catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+ 		} catch (CmsException ex) {
+			throw ex;
+ 		} catch( Exception exc ) {
+			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		} finally {
+			// close all db-resources
+			if(res != null) {
+                try {
+				    res.close();
+                } catch(SQLException exc) {
+				    // nothing to do here
+                }
 			}
-		}
-		if (statement != null) {
-			try {
-				statement.close();
-			} catch (SQLException exc) {
+			if(statement != null) {
+				try {
+				    statement.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
 			}
-		}
-		if (con != null) {
-			try {
-				con.close();
-			} catch (SQLException se) {
+			if(con != null) {
+                try {
+				    con.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
 			}
-		}
-	}
-	return file;
-}
-/**
- * Reads a file from the Cms.<BR/>
- *
- * @param projectId The Id of the project in which the resource will be used.
- * @param onlineProjectId The online projectId of the OpenCms.
- * @param filename The complete name of the new file (including pathinformation).
- *
- * @return file The read file.
- *
- * @exception CmsException Throws CmsException if operation was not succesful
- */
-public CmsFile readFile(int currentUserId, int currentProjectId, String filename) throws CmsException {
-	//System.out.println("PL/SQL: readFile");
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CmsFile file = null;
-	CallableStatement statement = null;
-	Connection con = null;
-	ResultSet res = null;
-	try {
-		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_READFILEACC"));
-		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
-		statement.setInt(2, currentUserId);
-		statement.setInt(3, currentProjectId);
-		statement.setString(4, filename);
-		statement.execute();
-		res = (ResultSet) statement.getObject(1);
-		if (res.next()) {
-			int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-			int parentId = res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-			int resType = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-			int resFlags = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-			int userId = res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-			int groupId = res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-			int fileId = res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-			int accessFlags = res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-			int state = res.getInt(m_cq.get("C_RESOURCES_STATE"));
-			int lockedBy = res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-			int launcherType = res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-			String launcherClass = res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-			long created = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-			long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-			int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-			int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-            int resProjectId = res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-			// read the file_content from an oracle blob
-			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_RESOURCES_FILE_CONTENT"));
-			byte[] content = new byte[ (int) blob.length()];
-			content = blob.getBytes(1, (int) blob.length());
-			// output for testing:
-			//		String out_buffer = new String(content);
-			//		System.out.println(out_buffer);
+        }
+        return file;
+	 }
 
-			file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId,
-								resProjectId, accessFlags, state, lockedBy, launcherType, launcherClass,
-								created, modified, modifiedBy, content, resSize);
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
-		}
-	} catch (SQLException e) {
-		//throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", e);
-		throw cmsException;
-	} catch (CmsException ex) {
-		throw ex;
-	} catch (Exception exc) {
-		throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-	} finally {
-		if (res != null) {
-			try {
-				res.close();
-			} catch (SQLException se) {
+
+	/**
+	 * Reads a file in the project from the Cms.<BR/>
+	 *
+	 * @param projectId The Id of the project in which the resource will be used.
+	 * @param onlineProjectId The online projectId of the OpenCms.
+	 * @param filename The complete name of the new file (including pathinformation).
+	 *
+	 * @return file The read file.
+	 *
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public CmsFile readFileInProject(int projectId,
+							            int onlineProjectId,
+							            String filename)
+		 throws CmsException {
+
+        CmsFile file = null;
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		Connection con = null;
+		String usedPool;
+        String usedStatement;
+        if (projectId == onlineProjectId) {
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+        } else {
+            usedPool = m_poolName;
+            usedStatement = "";
+        }
+		try {
+            con = DriverManager.getConnection(usedPool);
+            // if the actual project is the online project read file header and content
+			// from the online project
+			statement = con.prepareStatement(m_cq.get("C_FILES_READINPROJECT"+usedStatement));
+			statement.setString(1, filename);
+			statement.setInt(2, projectId);
+			res = statement.executeQuery();
+			if(res.next()) {
+			    int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+				int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+				int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+				int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+				int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+				int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+				int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+				int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
+				int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+				int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+				String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+				long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+				// read the file_content from an oracle blob
+			    oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_RESOURCES_FILE_CONTENT"));
+			    byte[] content = new byte[ (int) blob.length()];
+			    content = blob.getBytes(1, (int) blob.length());
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+				file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
+						  		   groupId,projectId,accessFlags,state,lockedBy,
+								   launcherType,launcherClass,created,modified,modifiedBy,
+								   content,resSize, lockedInProject);
+            } else {
+			    throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
+            }
+        } catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+ 		} catch (CmsException ex) {
+			throw ex;
+ 		} catch( Exception exc ) {
+			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		} finally {
+			// close all db-resources
+			if(res != null) {
+                try {
+				    res.close();
+                } catch(SQLException exc) {
+				    // nothing to do here
+                }
 			}
-		}
-		if (statement != null) {
-			try {
-				statement.close();
-			} catch (SQLException exc) {
+			if(statement != null) {
+				try {
+				    statement.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
 			}
-		}
-		if (con != null) {
-			try {
-				con.close();
-			} catch (SQLException se) {
+			if(con != null) {
+                try {
+				    con.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
 			}
-		}
-	}
-	return file;
-}
+        }
+        return file;
+	 }
 
 	/**
 	 * Reads a file from the history of the Cms.<BR/>
@@ -2115,13 +2136,13 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 			    oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_RESOURCES_FILE_CONTENT"));
 			    byte[] content = new byte[ (int) blob.length()];
 			    content = blob.getBytes(1, (int) blob.length());
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
 				file = new CmsBackupResource(versionId,resId,parentId,fileId,filename,resType,
                                              resFlags,userId,userName,groupId,groupName,
                                              resProjectId,accessFlags,state,
 								             launcherType,launcherClass,created,modified,modifiedBy,
-								             modifiedByName,content,resSize);
+								             modifiedByName,content,resSize, lockedInProject);
             } else {
 			    throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
             }
@@ -2225,6 +2246,111 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 		}
 		return returnValue;
 	}
+
+	/**
+	 * Reads all files from the Cms, that are in one project.<BR/>
+	 *
+	 * @param project The project in which the files are.
+	 *
+	 * @return A Vecor of files.
+	 *
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+    public Vector readFiles(int projectId, boolean includeUnchanged, boolean onlyProject)
+		throws CmsException {
+
+		Vector files = new Vector();
+		CmsFile file;
+		ResultSet res = null;
+		PreparedStatement statement = null;
+		Connection con = null;
+        String usedPool;
+        String usedStatement;
+        String onlyChanged = new String();
+        String inProject = new String();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        if (projectId == onlineProject) {
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+        } else {
+            usedPool = m_poolName;
+            usedStatement = "";
+            if (onlyProject){
+                inProject = " AND CMS_RESOURCES.PROJECT_ID = CMS_PROJECTRESOURCES.PROJECT_ID";
+            }
+        }
+        if (!includeUnchanged){
+            onlyChanged = " AND STATE != "+C_STATE_UNCHANGED;
+        }
+		try {
+			con = DriverManager.getConnection(usedPool);
+			// read file data from database
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READFILESBYPROJECT"+usedStatement)+onlyChanged+inProject);
+            statement.setInt(1,projectId);
+			res = statement.executeQuery();
+            // create new file
+			while(res.next()) {
+				int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+				int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+				String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+				int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+				int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+				int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+				int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+				int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+				int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+				int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+				int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
+				int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+				int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+				String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+				long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+                oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_FILE_CONTENT"));
+				byte[] content = new byte[(int) blob.length()];
+				content = blob.getBytes(1, (int) blob.length());
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                //byte[] fileContent = new byte[0];
+				file = new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
+								groupId,projectID,accessFlags,state,lockedBy,
+								launcherType,launcherClass,created,modified,modifiedBy,
+								content,resSize,lockedInProject);
+
+				files.addElement(file);
+            }
+        } catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch (Exception ex) {
+			throw new CmsException("["+this.getClass().getName()+"]", ex);
+		} finally {
+			// close all db-resources
+			if(res != null) {
+				try {
+					res.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
+			}
+			if(statement != null) {
+				try {
+					statement.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
+			}
+			if(con != null) {
+				try {
+					con.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
+			}
+		}
+		return files;
+    }
 /**
  * Reads a session from the database.
  *
@@ -2764,9 +2890,10 @@ public Vector unlockResource(CmsUser currentUser, CmsProject currentProject, Str
 			long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 			int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
 			int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-			resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId, groupId,
+			int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+            resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId, groupId,
 										projectId, accessFlags, state, lockedBy, launcherType, launcherClass,
-										created, modified, modifiedBy, resSize);
+										created, modified, modifiedBy, resSize, lockedInProject);
 			resources.addElement(resource);
 		}
 		return resources;
