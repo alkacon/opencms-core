@@ -14,7 +14,7 @@ import java.sql.*;
 /**
  * class that controls the backoffice templates for the channels
  */
-public class NewsChannelBackoffice extends A_Backoffice {
+public class NewsChannelBackoffice extends A_CmsBackoffice {
 
 	public Class getContentDefinitionClass() {
 		return NewsChannelContentDefinition.class;
@@ -194,7 +194,7 @@ public class NewsChannelBackoffice extends A_Backoffice {
 
 			//create new cd object with the fetched values of the inputfields
 			NewsChannelContentDefinition newCD = new NewsChannelContentDefinition(name, descript);
-			newCD.setLockstate("lock");
+			// newCD.setLockstate("lock");
 			try {
 				newCD.write(cms);
 			} catch (Exception e) {

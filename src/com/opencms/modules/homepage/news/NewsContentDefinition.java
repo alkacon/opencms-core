@@ -16,7 +16,7 @@ import java.sql.*;
  * The class privides some constructors filter methods to access entries as well
  * as some methods to convert dates and strings.
  */
-public class NewsContentDefinition extends A_ContentDefinition implements I_CmsContent {
+public class NewsContentDefinition extends A_CmsContentDefinition implements I_CmsContent {
 
 	// constants for day or month selection
 	private static Integer C_FLAG_DAY = new Integer(0);
@@ -39,7 +39,7 @@ public class NewsContentDefinition extends A_ContentDefinition implements I_CmsC
 
 	private boolean newElement = false;  // indicates if an element should be written or updated
 
-	private static String m_lsvalue="lockuser"; // default for new enties;
+	private static String m_lsvalue="lock"; // default for new enties;
 	private static CmsDbPool m_pool = null;
 	// private static NewsKeyAccess m_NewsKeyAccess = null;
 
@@ -53,7 +53,7 @@ public class NewsContentDefinition extends A_ContentDefinition implements I_CmsC
 	private static Integer C_COUNT_KEY = new Integer(4);
 	private static String  C_COUNT = "select count(*) from news_entry";
 	private static Integer C_SELECT_ID_KEY = new Integer(5);
-    private static String  C_SELECT_ID = "select * from news_entry where ID = ?";
+  private static String  C_SELECT_ID = "select * from news_entry where ID = ?";
 	private static Integer C_GET_ALL_KEY = new Integer(6);
 	private static String  C_GET_ALL = "select * from news_entry";
 	private static Integer C_UPDATE_ENTRY_KEY = new Integer(7);
@@ -386,7 +386,7 @@ public class NewsContentDefinition extends A_ContentDefinition implements I_CmsC
 		Integer actChannelId = null;  // has to be Integer because of Reflection!
 	// add the always shown first filterMethod...
 		try {
-			filterMethods.addElement(new FilterMethod("Sort all by", NewsContentDefinition.class.getMethod("getSortedList", new Class[] {String.class}), new Object[] {}));
+			filterMethods.addElement(new CmsFilterMethod("Sort all by", NewsContentDefinition.class.getMethod("getSortedList", new Class[] {String.class}), new Object[] {}));
 		}catch(NoSuchMethodException e) {
 			System.err.println("Exception in NewsContentDefinition.getFilterMethods(CmsObject)!"+ e.getMessage());
 		}
@@ -395,15 +395,15 @@ public class NewsContentDefinition extends A_ContentDefinition implements I_CmsC
 			showText = ((NewsChannelContentDefinition)channels.elementAt(i)).getName();
 			actChannelId = new Integer(((NewsChannelContentDefinition)channels.elementAt(i)).getIntId());
 			try {
-				filterMethods.addElement(new FilterMethod(showText +": list first ...", NewsContentDefinition.class.getMethod("getNewsList", new Class[] {Integer.class, String.class}), new Object[] {actChannelId}, "2"));
-				filterMethods.addElement(new FilterMethod(showText +": get day ...", NewsContentDefinition.class.getMethod("getDynamicList", new Class[] {Integer.class, Integer.class, String.class}), new Object[] {actChannelId, C_FLAG_DAY}));
-				filterMethods.addElement(new FilterMethod(showText +": get month ..." ,  NewsContentDefinition.class.getMethod("getDynamicList", new Class[] {Integer.class, Integer.class, String.class}), new Object[] {actChannelId, C_FLAG_MONTH}));
+				filterMethods.addElement(new CmsFilterMethod(showText +": list first ...", NewsContentDefinition.class.getMethod("getNewsList", new Class[] {Integer.class, String.class}), new Object[] {actChannelId}, "2"));
+				filterMethods.addElement(new CmsFilterMethod(showText +": get day ...", NewsContentDefinition.class.getMethod("getDynamicList", new Class[] {Integer.class, Integer.class, String.class}), new Object[] {actChannelId, C_FLAG_DAY}));
+				filterMethods.addElement(new CmsFilterMethod(showText +": get month ..." ,  NewsContentDefinition.class.getMethod("getDynamicList", new Class[] {Integer.class, Integer.class, String.class}), new Object[] {actChannelId, C_FLAG_MONTH}));
 			}catch(NoSuchMethodException e) {
 				System.err.println("Exception in NewsContentDefinition.getFilterMethods(CmsObject)!"+ e.getMessage());
 			}
 		}
 	try {
-			filterMethods.addElement(new FilterMethod("Sort all by2", NewsContentDefinition.class.getMethod("getSortedList2", new Class[] {}), new Object[] {}));
+			filterMethods.addElement(new CmsFilterMethod("Sort all by2", NewsContentDefinition.class.getMethod("getSortedList2", new Class[] {}), new Object[] {}));
 		}catch(NoSuchMethodException e) {
 			System.err.println("Exception in NewsContentDefinition.getFilterMethods(CmsObject)!"+ e.getMessage());
 		}

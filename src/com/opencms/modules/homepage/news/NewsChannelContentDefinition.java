@@ -13,7 +13,7 @@ import java.sql.*;
 /**
  * Content Definition for News Channels
  */
-public class NewsChannelContentDefinition extends A_ContentDefinition implements I_CmsContent {
+public class NewsChannelContentDefinition extends A_CmsContentDefinition implements I_CmsContent {
 	private int m_id = -1;
 	private String m_name = "";
 	private String m_descr = "";
@@ -310,7 +310,7 @@ public class NewsChannelContentDefinition extends A_ContentDefinition implements
 	public static Vector getFilterMethods(CmsObject cms) {
 		Vector filterMethods = new Vector();
 		try {
-			filterMethods.addElement(new FilterMethod("Show all", NewsChannelContentDefinition.class.getMethod("getChannelList", new Class[] {}), new Object[] {}));
+			filterMethods.addElement(new CmsFilterMethod("Show all", NewsChannelContentDefinition.class.getMethod("getChannelList", new Class[] {}), new Object[] {}));
 		}catch(NoSuchMethodException e) {
 			System.err.println("Exception in NewsChannelContentDefinition.getFilterMethods(CmsObject)!");
 		}
