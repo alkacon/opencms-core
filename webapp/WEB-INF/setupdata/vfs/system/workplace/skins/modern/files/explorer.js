@@ -60,6 +60,7 @@ var displayResource = "/";
 var g_histLoc = 0;
 var g_history = null;
 
+
 function show_help(){
 	return help_url;
 }
@@ -83,7 +84,6 @@ function menuItem(name, link, target, rules){
 
 //            1     2     3      4     5         6     7      8        9                 10                   11           12              13           14        15        16                   17                 18
 function file(name, path, title, type, linkType, size, state, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject){
-
 	this.name = name;
 	this.path = path;
 	this.title = title;
@@ -111,7 +111,6 @@ function aF(name, path, title, type, linkType, size, state, project, dateLastMod
 	}
 	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject);
 }
-
 
 
 function vars_index() {
@@ -360,17 +359,17 @@ function printList(wo) {
 	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"20\">&nbsp;</td>");
 	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"20\">&nbsp;</td>");
 
-	if (vi.check_name)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[0] + "&nbsp;</td>");
-	if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[1] + "&nbsp;</td>");
-	if (vi.check_type)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[2] + "&nbsp;</td>");
-	if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[3] + "&nbsp;</td>");
-	if (vi.check_permissions)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[4] + "&nbsp;</td>");
+	if (vi.check_name)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[0] + "&nbsp;</td>");
+	if (vi.check_title)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[1] + "&nbsp;</td>");
+	if (vi.check_type)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[2] + "&nbsp;</td>");
+	if (vi.check_size)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[3] + "&nbsp;</td>");
+	if (vi.check_permissions)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[4] + "&nbsp;</td>");
 	if (vi.check_dateLastModified)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[5] + "&nbsp;</td>");
 	if (vi.check_userWhoLastModified)	wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;"  + vr.descr[6] + "&nbsp;</td>");
-	if (vi.check_dateCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[7] + "&nbsp;</td>");
+	if (vi.check_dateCreated)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[7] + "&nbsp;</td>");
 	if (vi.check_userWhoCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;"  + vr.descr[8] + "&nbsp;</td>");
-	if (vi.check_state)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[9] + "&nbsp;</td>");
-	if (vi.check_lockedBy)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;"  + vr.descr[10] + "&nbsp;</td>");
+	if (vi.check_state)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[9] + "&nbsp;</td>");
+	if (vi.check_lockedBy)				wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;"  + vr.descr[10] + "&nbsp;</td>");
 
 	wo.writeln("</tr>");
 
@@ -940,7 +939,9 @@ function button(href, target, image, label, type) {
 // formats a button separator line
 function buttonSep(left, right, type) {
 	var style = "starttab";
-	if (type == 1) style = "separator"
+	if (type == 1) {
+		style = "separator";
+	}
 	var result = "<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: " + left + "px;\"></span></span></td>\n"
 	+ "<td><span class=\"" + style + "\"></span></td>\n"
 	+ "<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: " + right + "px;\"></span></span></td>\n";
@@ -996,9 +997,16 @@ function updateTreeFolder(folderName) {
 }
 
 
-function reloadTreeFolder(folderName) {
+function addNodeToLoad(nodeName) {
 	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
-		window.body.explorer_body.explorer_tree.updateCurrentFolder(window.body.explorer_body.explorer_tree.tree_display.document, folderName, true);
+		window.body.explorer_body.explorer_tree.addNodeToLoad(null, nodeName);
+	}
+}
+
+
+function reloadNodeList() {
+	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
+		window.body.explorer_body.explorer_tree.loadNodeList(window.body.explorer_body.explorer_tree.tree_display.document, "&rootloaded=true");
 	}
 }
 
@@ -1078,7 +1086,9 @@ function showContext(doc, id) {
 
 	for (i=0; i<4; i++) {
 		doc.getElementById("td" + i + "_" + id).className = selectedClassName;
-		if (last_id >= 0) doc.getElementById("td" + i + "_" + last_id).className = "unselected";
+		if (last_id >= 0) {
+			doc.getElementById("td" + i + "_" + last_id).className = "unselected";
+		}
 	}
 
 	el.style.left = x + "px";
@@ -1120,7 +1130,7 @@ function findPosX(obj) {
 	var curleft = 0;
 	if (obj.offsetParent) {
 		while (obj.offsetParent) {
-			curleft += obj.offsetLeft
+			curleft += obj.offsetLeft;
 			obj = obj.offsetParent;
 		}
 	} else if (obj.x) {
@@ -1135,7 +1145,7 @@ function findPosY(obj) {
 	var curtop = 0;
 	if (obj.offsetParent) {
 		while (obj.offsetParent) {
-			curtop += obj.offsetTop
+			curtop += obj.offsetTop;
 			obj = obj.offsetParent;
 		}
 	} else if (obj.y) {
@@ -1174,8 +1184,8 @@ function openTreeWin(treeType, includeFiles, formName, fieldName, curDoc) {
 	var target = vr.servpath + "/system/workplace/jsp/tree_fs.html" + paramString;
 	treewin = openWin(target, "opencms", 300, 450);
 	if (treewin.opener == null){
-        	treewin.opener = self;
-        }
+		treewin.opener = self;
+	}
 	treeForm = formName;
 	treeField = fieldName;
 	treeDoc = curDoc;
@@ -1225,13 +1235,13 @@ function setFormValue(filename) {
 	} else if (curForm.target) {
 		curForm.target.value = filename;
 	}
-	// this calls the fillValues() function in the explorer window, if present	
+	// this calls the fillValues() function in the explorer window, if present
 	if (window.body.explorer_body && window.body.explorer_body.explorer_files) {
 		var filesDoc = window.body.explorer_body.explorer_files;
 		if (filesDoc.fillValues) {
 			filesDoc.fillValues(filename);
 		}
-	}		
+	}
 	// this fills the parameter from the hidden field to the select box
 	if (window.body.admin_content) {
 		if (treeField == "tempChannel") {

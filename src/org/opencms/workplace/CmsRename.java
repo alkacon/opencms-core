@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2004/02/09 17:05:57 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/02/11 08:38:17 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,9 @@ import com.opencms.core.CmsException;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -48,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -147,14 +150,16 @@ public class CmsRename extends CmsDialog {
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
             CmsResource resource = getCms().readFileHeader(getParamResource());
-            performRenameOperation(resource);
+            boolean isFolder = resource.isFolder();
+            performRenameOperation(isFolder);
             // if no exception is caused rename operation was successful
-            if (resource.isFolder()) {
-                // reload the explorer tree to show correct structure if folder was renamed
-                setParamOkLink(C_FILE_EXPLORER_FILELIST); 
-                setParamOkFunctions("top.reloadTreeFolder(\"" + CmsResource.getParentFolder(getParamResource()) + "\");");
+            if (isFolder) {
+                // set request attribute to reload the explorer tree view
+                List folderList = new ArrayList(1);
+                folderList.add(CmsResource.getParentFolder(getParamResource()));
+                getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);
             }
-            closeDialog();        
+            getJsp().include(C_FILE_EXPLORER_FILELIST);        
         } catch (CmsException e) {
             // prepare common message part
             String message = "<p>\n" 
@@ -173,11 +178,11 @@ public class CmsRename extends CmsDialog {
     /**
      * Performs the resource renaming.<p>
      * 
-     * @param resource the resource to rename
+     * @param isFolder true, if the resource to rename is a folder, otherwise false
      * @return true, if the resource was renamed, otherwise false
      * @throws CmsException if renaming is not successful
      */
-    private boolean performRenameOperation(CmsResource resource) throws CmsException {
+    private boolean performRenameOperation(boolean isFolder) throws CmsException {
    
         String target = getParamTarget();
         if (target == null) {
@@ -192,7 +197,7 @@ public class CmsRename extends CmsDialog {
         String parentFolder = CmsResource.getParentFolder(getParamResource());
         
         // check if resource is a folder, if so, add absolute path to parent folder to target
-        if (resource.isFolder() && !getParamResource().endsWith("/")) {
+        if (isFolder && !getParamResource().endsWith("/")) {
             target = parentFolder + target;
         }
         

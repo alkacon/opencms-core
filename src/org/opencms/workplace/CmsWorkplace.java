@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/08 20:12:56 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/02/11 08:38:17 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,11 +70,14 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 5.1
  */
 public abstract class CmsWorkplace {
+    
+    /** Key name for the request attribute to reload the folder tree view */
+    protected static final String C_REQUEST_ATTRIBUTE_RELOADTREE = "__CmsWorkplace.RELOADTREE";
     
     /** Key name for the session workplace settings */
     protected static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";

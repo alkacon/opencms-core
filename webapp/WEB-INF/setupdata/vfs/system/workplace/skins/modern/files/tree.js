@@ -572,6 +572,11 @@ function updateCurrentFolder(doc, folderName) {
 function addNodeToLoad(nodeId, nodeName) {
 	if (nodeName == null) {
 		nodeName = getNodeNameById(nodeId);
+	} else if (nodeId == null) {
+		if ((nodeName != "/") && (nodeName.charAt(nodeName.length-1) == '/')) {
+			nodeName = nodeName.substring(0, nodeName.length-1);
+		}
+		nodeId = getNodeIdByName(nodeName);
 	}
 	if (nodeName.charAt(nodeName.length-1) != '/') {
 		nodeName += "/";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/02/11 08:38:17 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 5.1
  */
@@ -307,7 +307,18 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(CmsResource.getFolderPath(getSettings().getExplorerResource()));
         }
         content.append("\");\n");
-        content.append("top.rD();\n\n");
+        content.append("top.rD();\n");
+        List reloadTreeFolders = (List)getJsp().getRequest().getAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE);
+        if (reloadTreeFolders != null) {
+            // folder tree has to be reloaded after copy, delete, move, rename operation
+            String reloadFolder = "";
+            for (int i=0; i<reloadTreeFolders.size(); i++) {
+                reloadFolder = (String)reloadTreeFolders.get(i);
+                content.append("top.addNodeToLoad(\"" + reloadFolder + "\");\n");
+            }
+            content.append("top.reloadNodeList();\n");
+        }
+        content.append("\n");
 
         // now check which filelist colums we want to show
         int preferences = getUserPreferences();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2004/02/09 13:59:08 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/02/11 08:38:17 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,9 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -53,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1
  */
@@ -140,8 +143,16 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-            if (performDeleteOperation())  {
+            CmsResource resource = getCms().readFileHeader(getParamResource());
+            boolean isFolder = resource.isFolder();
+            if (performDeleteOperation(isFolder))  {
                 // if no exception is caused and "true" is returned delete operation was successful
+                if (isFolder) {
+                    // set request attribute to reload the explorer tree view
+                    List folderList = new ArrayList(1);
+                    folderList.add(CmsResource.getParentFolder(getParamResource()));
+                    getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);
+                }
                 getJsp().include(C_FILE_EXPLORER_FILELIST);
             } else  {
                 // "false" returned, display "please wait" screen
@@ -168,15 +179,15 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
     /**
      * Performs the resource deletion.<p>
      * 
+     * @param isFolder true if the resource to delete is a folder, otherwise false
      * @return true, if the resource was deleted, otherwise false
      * @throws CmsException if deletion is not successful
      */
-    public boolean performDeleteOperation() throws CmsException {
+    public boolean performDeleteOperation(boolean isFolder) throws CmsException {
         int deleteOption = -1;     
         
         // on folder deletion display "please wait" screen, not for simple file deletion
-        CmsResource sourceRes = getCms().readFileHeader(getParamResource());
-        if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
+        if (isFolder && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }

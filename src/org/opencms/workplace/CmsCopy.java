@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2004/02/09 17:05:57 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/02/11 08:38:17 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,17 +30,20 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.site.CmsSiteManager;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-
-import org.opencms.site.CmsSiteManager;
 
 /**
  * Provides methods for the copy resources dialog.<p> 
@@ -51,7 +54,7 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
@@ -220,15 +223,20 @@ public class CmsCopy extends CmsDialog {
         CmsResource resource = null;
         try {
             resource = getCms().readFileHeader(getParamResource());
-            if (performCopyOperation())  {
+            boolean isFolder = resource.isFolder();
+            if (performCopyOperation(isFolder))  {
                 // if no exception is caused and "true" is returned copy operation was successful
-                if (resource.isFolder() && (!getParamTarget().startsWith("/") 
-                        || CmsResource.getParentFolder(getParamResource()).equals(CmsResource.getParentFolder(getParamTarget())))) {
-                    // reload the explorer tree to show correct structure if folder was copied
-                    setParamOkLink(C_FILE_EXPLORER_FILELIST); 
-                    setParamOkFunctions("top.reloadTreeFolder(\"" + CmsResource.getParentFolder(getParamResource()) + "\");");
+                if (isFolder) {
+                    // set request attribute to reload the explorer tree view
+                    List folderList = new ArrayList(2);
+                    String target = CmsResource.getParentFolder(getParamTarget());
+                    if (!target.equals(CmsResource.getParentFolder(getParamResource()))) {
+                        // update target folder if its not the same as the source folder
+                        folderList.add(target);
+                    }
+                    getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);
                 }
-                closeDialog();
+                getJsp().include(C_FILE_EXPLORER_FILELIST); 
             } else  {
                 // "false" returned, display "please wait" screen
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
@@ -283,14 +291,14 @@ public class CmsCopy extends CmsDialog {
     /**
      * Performs the resource copying.<p>
      * 
+     * @param isFolder true, if the resource to copy is a folder, otherwise false
      * @return true, if the resource was copied, otherwise false
      * @throws CmsException if copying is not successful
      */
-    private boolean performCopyOperation() throws CmsException {
+    private boolean performCopyOperation(boolean isFolder) throws CmsException {
 
         // on folder copy display "please wait" screen, not for simple file copy
-        CmsResource sourceRes = getCms().readFileHeader(getParamResource());
-        if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
+        if (isFolder && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }

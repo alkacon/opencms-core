@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/02/09 17:05:57 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/02/11 08:38:17 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1
  */
@@ -285,92 +285,105 @@ public class CmsTree extends CmsWorkplace {
      * @return the html for the explorer tree
      */
     public String getTree() {
+        StringBuffer result = new StringBuffer(2048);
         String targetFolder = getTargetFolder();
         String startFolder = getStartFolder();
+        List targetFolderList = new ArrayList();
+        boolean grey;
+        List resources = new ArrayList();
+        CmsFolder folder = null;    
+        String oldSiteRoot = getCms().getRequestContext().getSiteRoot();
         
         boolean restoreSiteRoot = false;
-        String oldSiteRoot = getCms().getRequestContext().getSiteRoot();
-        if ("channelselector".equals(getTreeType())) {
-            // change the site root for channel tree window
-            restoreSiteRoot = true;
-            getCms().getRequestContext().saveSiteRoot();
-            getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
-        } else if (getSettings().getTreeSite(getTreeType()) != null) {
-            // change the site root for popup window with site selector
-            restoreSiteRoot = true;
-            getCms().getRequestContext().saveSiteRoot();
-            if (newTree() && targetFolder == null) {
-                targetFolder = "/";
+        
+        if (targetFolder != null) {
+            // check if there is more than one folder to update (e.g. move operation)
+            StringTokenizer T = new StringTokenizer(targetFolder, "|");
+            while (T.hasMoreTokens()) {
+                String currentFolder = T.nextToken().trim();
+                targetFolderList.add(currentFolder);
             }
-            getCms().getRequestContext().setSiteRoot(getSettings().getTreeSite(getTreeType()));
-            try {
-                // check presence of target folder
-                getCms().readFolder(targetFolder);
-            } catch (CmsException e) {
-                // target folder not found, set it to "/"
-                targetFolder = "/";
-            }
+        } else {
+            targetFolderList.add(null);
         }
-      
-        StringBuffer result = new StringBuffer(2048);
+        
+        Iterator targets = targetFolderList.iterator();
         try {
-            // read the selected folder
-            CmsFolder folder;
-            try {
-                folder = getCms().readFolder(targetFolder);
-            } catch (CmsException e) {
-                // return with error
-                return printError(e);
-            }        
-    
-            // read the list of project resource to select which resource is "inside" or "outside" 
-            List projectResources;
-            try {
-                projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
-            } catch (CmsException e) {
-                // use an empty list (all resources are "outside")
-                projectResources = new ArrayList();
-            }
+        
+            while (targets.hasNext()) {
+                // iterate over all given target folders
+                String currentTargetFolder = (String)targets.next();            
             
-            boolean grey;
-            List resources;        
-            
-            if ((startFolder == null) || (! targetFolder.startsWith(startFolder))) {
-                // no (valid) start folder given, just load current folder        
-                try {
-                    if (includeFiles()) {
-                        resources = new ArrayList();
-                        resources.addAll(getCms().getResourcesInFolder(targetFolder));
-                    } else {
-                        resources = getCms().getSubFolders(targetFolder);
+                if ("channelselector".equals(getTreeType())) {
+                    // change the site root for channel tree window
+                    restoreSiteRoot = true;
+                    getCms().getRequestContext().saveSiteRoot();
+                    getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
+                } else if (getSettings().getTreeSite(getTreeType()) != null) {
+                    // change the site root for popup window with site selector
+                    restoreSiteRoot = true;
+                    getCms().getRequestContext().saveSiteRoot();
+                    if (newTree() && currentTargetFolder == null) {
+                        currentTargetFolder = "/";
                     }
+                    getCms().getRequestContext().setSiteRoot(getSettings().getTreeSite(getTreeType()));
+                    try {
+                        // check presence of target folder
+                        getCms().readFolder(currentTargetFolder);
+                    } catch (CmsException e) {
+                        // target folder not found, set it to "/"
+                        currentTargetFolder = "/";
+                    }
+                }
+              
+                
+            
+                // read the selected folder
+                
+                try {
+                    folder = getCms().readFolder(currentTargetFolder);
                 } catch (CmsException e) {
                     // return with error
                     return printError(e);
-                }
-            } else {
-                // valid start folder given, load all folders between start and current folder
-                resources = new ArrayList();
-                try {
-                    if (includeFiles()) {
-                        resources.addAll(getCms().getResourcesInFolder(startFolder));
-                    } else {
-                        resources.addAll(getCms().getSubFolders(startFolder));
-                    }                     
-                    StringTokenizer tok = new StringTokenizer(targetFolder.substring(startFolder.length()), "/");
-                    while (tok.hasMoreTokens()) {
-                        startFolder += tok.nextToken() + "/";
+                }        
+        
+                        
+                
+                if ((startFolder == null) || (! currentTargetFolder.startsWith(startFolder))) {
+                    // no (valid) start folder given, just load current folder        
+                    try {             
+                        if (includeFiles()) {                       
+                            resources.addAll(getCms().getResourcesInFolder(currentTargetFolder));
+                        } else {
+                            resources.addAll(getCms().getSubFolders(currentTargetFolder));
+                        }              
+                    } catch (CmsException e) {
+                        // return with error
+                        return printError(e);
+                    }
+                } else {
+                    // valid start folder given, load all folders between start and current folder
+                    try {
                         if (includeFiles()) {
                             resources.addAll(getCms().getResourcesInFolder(startFolder));
                         } else {
                             resources.addAll(getCms().getSubFolders(startFolder));
-                        }                      
-                    }                                             
-                } catch (CmsException e) {
-                    // return with error 
-                    return printError(e);
-                }            
-            }
+                        }                     
+                        StringTokenizer tok = new StringTokenizer(currentTargetFolder.substring(startFolder.length()), "/");
+                        while (tok.hasMoreTokens()) {
+                            startFolder += tok.nextToken() + "/";
+                            if (includeFiles()) {
+                                resources.addAll(getCms().getResourcesInFolder(startFolder));
+                            } else {
+                                resources.addAll(getCms().getSubFolders(startFolder));
+                            }                      
+                        }                                             
+                    } catch (CmsException e) {
+                        // return with error 
+                        return printError(e);
+                    }            
+                }
+            }   
     
             result.append("function init() {\n");
                   
@@ -378,6 +391,15 @@ public class CmsTree extends CmsWorkplace {
                 // new tree must be reloaded
                 result.append("parent.initTree();\n");
                 result.append(getRootNode());
+            }
+            
+            // read the list of project resource to select which resource is "inside" or "outside" 
+            List projectResources;
+            try {
+                projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
+            } catch (CmsException e) {
+                // use an empty list (all resources are "outside")
+                projectResources = new ArrayList();
             }
     
             // now output all the tree nodes

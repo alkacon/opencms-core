@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2004/02/09 17:05:57 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/02/11 08:38:17 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,17 +30,20 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.site.CmsSiteManager;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-
-import org.opencms.site.CmsSiteManager;
 
 /**
  * Provides methods for the move resources dialog.<p> 
@@ -51,7 +54,7 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -139,14 +142,22 @@ public class CmsMove extends CmsDialog {
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
             CmsResource sourceRes = getCms().readFileHeader(getParamResource());
-            if (performMoveOperation(sourceRes))  {
+            boolean isFolder = sourceRes.isFolder();
+            if (performMoveOperation(isFolder))  {
                 // if no exception is caused and "true" is returned move operation was successful
-                if (sourceRes.isFolder()) {
-                    // reload the explorer tree to show correct structure if folder was moved
-                    setParamOkLink(C_FILE_EXPLORER_FILELIST); 
-                    setParamOkFunctions("top.reloadTreeFolder(\"" + CmsResource.getParentFolder(getParamResource()) + "\");");
+                if (isFolder) {
+                    // set request attribute to reload the explorer tree view
+                    List folderList = new ArrayList(2);
+                    String sourceParent = CmsResource.getParentFolder(getParamResource());
+                    String targetParent = CmsResource.getParentFolder(getParamTarget());
+                    if (!targetParent.equals(sourceParent)) {
+                        // update target folder if its not the same as the source folder
+                        folderList.add(targetParent);
+                    }
+                    folderList.add(CmsResource.getParentFolder(getParamResource()));
+                    getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);
                 }
-                closeDialog();
+                getJsp().include(C_FILE_EXPLORER_FILELIST);
             } else  {
                 // "false" returned, display "please wait" screen
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
@@ -174,14 +185,14 @@ public class CmsMove extends CmsDialog {
     /**
      * Performs the resource moving.<p>
      * 
-     * @param sourceRes the resource to move
+     * @param isFolder true, if the resource to move is a folder, otherwise false
      * @return true, if the resource was successfully moved, otherwise false
      * @throws CmsException if copying is not successful
      */
-    private boolean performMoveOperation(CmsResource sourceRes) throws CmsException {
+    private boolean performMoveOperation(boolean isFolder) throws CmsException {
 
         // on folder move operation display "please wait" screen, not for simple file move operation
-        if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
+        if (isFolder && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }
