@@ -23,7 +23,7 @@ steps. After completing each step you are strongly advised to verify the success
         For details on 
   how to install Java on your operating system, see the documentation that comes 
   with it. </P>
-  <P><EM><STRONG>Important</STRONG> :</EM> This version of OpenCms was tested with Java 1.4 
+  <P><EM><STRONG>Important</STRONG> :</EM> This version of OpenCms was tested with Java 1.4 and 1.5
   only. Some features regarding file encoding where used that are not available 
   with Java releases before 1.4. </P></BLOCKQUOTE>
 <P></P>
@@ -34,7 +34,7 @@ steps. After completing each step you are strongly advised to verify the success
 <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
   <P>OpenCms 6 requires a Servlet 2.3 / JSP 1.2 standards compliant container. 
   Tomcat 4 is the reference implementation of this Standard. This release was 
-  tested with Tomcat 5.0.x and Tomcat 4.1.x. Older versions of Tomcat (3.x and 
+  tested with Tomcat 4.1.x, Tomcat 5.0.x and Tomcat 5.5.x. Older versions of Tomcat (3.x and 
   earlier) do not support this newer standard and are thus not usable for 
   OpenCms 6. Tomcat 4.0 was not tested but may work.</P>
   <P></P>
@@ -81,11 +81,11 @@ steps. After completing each step you are strongly advised to verify the success
   href="http://www.mysql.com/documentation/index.html" 
   target=extern>http://www.mysql.com/documentation/index.html</A></code>
         ). On Windows-based systems MySQL has to be installed on the <code>C:\</code> drive
-        and should be registered as service using <code>(your MySQL path)/mysql/bin/mysqld -install</code>. </P>
+        and should be registered as service using <code>%MYSQL_HOME%/mysql/bin/mysqld -install</code>. </P>
         
         <p>
         Start the MySQL server by running the service (WIN32) or executing 
-        <code>(your MySQL path)/mysql/bin/mysqld</code> (UNIX).
+        <code>%MYSQL_HOME%/mysql/bin/mysqld</code> (UNIX).
         </p>
         
         <p>
@@ -176,7 +176,7 @@ insert into user values ('localhost', <i>'opencmsuser'</i>, \
 	password('XXXXX'),'N','N','N','N','N','N','N','N','N',
 \
 'N','N','N','N','N'); 
-insert into db values ('localhost', <i>'opencms'</i>, <i>'oopencmsuser'</i>, \
+insert into db values ('localhost', <i>'opencms'</i>, <i>'opencmsuser'</i>, \
 'Y','Y','Y','Y','Y','Y','Y','Y','Y','Y'); 
 flush privileges; 
         </pre>
