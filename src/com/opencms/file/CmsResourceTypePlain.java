@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/08/03 09:38:27 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -258,21 +258,6 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
         }
     }
 
-
-    /**
-    * Copies a resource from the online project to a new, specified project.
-    * <br>
-    * Copying a resource will copy the file header or folder into the specified
-    * offline project and set its state to UNCHANGED.
-    *
-    * @param resource the name of the resource.
-         * @exception CmsException if operation was not successful.
-    */
-    //public byte[] copyResourceToProject(CmsObject cms, I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException {
-    public byte[] copyResourceToProject(CmsObject cms, String resourceName, byte[] content) throws CmsException {
-        return content;
-    }
-
     /**
      * Copies the resourcename to the current offline project
      * @param cms The CmsObject
@@ -389,13 +374,6 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
     }
 
     /**
-     *
-     */
-    public void linkmanagementSaveImportedResource(CmsObject cms, String importedResource) throws CmsException {
-        // nothing to do here
-    }
-
-    /**
     * Locks a given resource.
     * <br>
     * A user can lock a resource, so he is the only one who can write this
@@ -422,16 +400,6 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
     */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
         cms.doMoveFile(source, destination);
-    }
-
-    /**
-     *
-     */
-    //public byte[] publishResource(I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException {
-    public byte[] publishResource(String resourceName, byte[] content) throws CmsException {
-        // nothing to do here in terms of the linkmanagement
-        // return null. the content of the resource will not be changed
-        return null;
     }
 
     /**

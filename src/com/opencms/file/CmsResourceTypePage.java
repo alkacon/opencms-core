@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/08/02 14:28:33 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/08/03 09:38:16 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2001/08/02 14:28:33 $
+ * @version $Revision: 1.11 $ $Date: 2001/08/03 09:38:16 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -363,32 +363,6 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         }
     }
 
-
-    /**
-    * Copies a resource from the online project to a new, specified project.
-    * <br>
-    * Copying a resource will copy the file header or folder into the specified
-    * offline project and set its state to UNCHANGED.
-    *
-    * @param resource the name of the resource.
-    * @exception CmsException if operation was not successful.
-    */
-    /*public void copyResourceToProject(CmsObject cms, CmsResourceBroker resBroker, CmsUser currentUser, CmsProject currentProject, String resourceName) throws CmsException {
-        resBroker.doCopyResourceToProject(cms, currentUser, currentProject, resourceName);
-    }*/
-//    public byte[] copyResourceToProject(CmsObject cms, I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException {
-    public byte[] copyResourceToProject(CmsObject cms, String resourceName, byte[] content) throws CmsException {
-
-        //String resourceName = linkManager.getResourceName(resourceId);
-        CmsFile file = cms.readFile(resourceName);
-        //check if the file type name is page
-        String bodyPath = checkBodyPath(cms, (CmsFile)file);
-        if (bodyPath != null){
-            cms.copyResourceToProject(bodyPath);
-        }
-        return content;
-    }
-
     /**
     * Copies a resource from the online project to a new, specified project.
     * <br>
@@ -659,16 +633,6 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     }
 
     /**
-     *
-     */
-    //public byte[] publishResource(I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException {
-    public byte[] publishResource(String resourceName, byte[] content) throws CmsException {
-        // nothing to do here in terms of the linkmanagement
-        // return null. the content of the resource will not be changed
-        return null;
-    }
-
-    /**
     * Renames the file to the new name.
     *
     * @param oldname the complete path to the file which will be renamed.
@@ -906,13 +870,6 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             accessFlags = new Integer(C_ACCESS_DEFAULT_FLAGS);
         }
         chmod(cms, filename, accessFlags.intValue(), false);
-    }
-
-    /**
-     *
-     */
-    public void linkmanagementSaveImportedResource(CmsObject cms, String importedResource) throws CmsException {
-        // nothing to do here
     }
 
     /**

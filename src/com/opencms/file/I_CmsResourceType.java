@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
-* Date   : $Date: 2001/07/31 15:50:14 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/08/03 09:38:37 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -50,11 +50,6 @@ public interface I_CmsResourceType
      */
     public void init(int resourceType, int launcherType,
                            String resourceTypeName, String launcherClass);
-
-    /**
-     *
-     */
-    public void linkmanagementSaveImportedResource(CmsObject cms, String importedResource) throws CmsException;
 
      /**
      * Returns the name of the Java class loaded by the launcher.
@@ -200,19 +195,6 @@ public interface I_CmsResourceType
 
 
     /**
-    * Copies a resource from the online project to a new, specified project.
-    * <br>
-    * Copying a resource will copy the file header or folder into the specified
-    * offline project and set its state to UNCHANGED.
-    *
-    * @param resource the name of the resource.
-         * @exception CmsException if operation was not successful.
-    */
-     //public void copyResourceToProject(CmsObject cms, CmsResourceBroker resBroker, CmsUser currentUser, CmsProject currentProject, String resourceName) throws CmsException;
-    //public byte[] copyResourceToProject(CmsObject cms, I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException;
-    public byte[] copyResourceToProject(CmsObject cms, String resourceName, byte[] content) throws CmsException;
-
-    /**
      * Copies the resourcename to the current offline project
      * @param cms The CmsObject
      * @param resourceName The name of the resource
@@ -321,12 +303,6 @@ public interface I_CmsResourceType
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException;
-
-    /**
-     *
-     */
-    //public byte[] publishResource(I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException;
-    public byte[] publishResource(String resourceName, byte[] content) throws CmsException;
 
     /**
      * Undo all changes in the resource, restore the online file.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/08/03 09:37:58 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -461,21 +461,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
     }
 
-
-    /**
-    * Copies a resource from the online project to a new, specified project.
-    * <br>
-    * Copying a resource will copy the file header or folder into the specified
-    * offline project and set its state to UNCHANGED.
-    *
-    * @param resource the name of the resource.
-    * @exception CmsException if operation was not successful.
-    */
-    //public byte[] copyResourceToProject(CmsObject cms, I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException {
-    public byte[] copyResourceToProject(CmsObject cms, String resourceName, byte[] content) throws CmsException {
-        return content;
-    }
-
     /**
     * Copies a resource from the online project to a new, specified project.
     * <br>
@@ -688,13 +673,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     }
 
     /**
-     *
-     */
-    public void linkmanagementSaveImportedResource(CmsObject cms, String importedResource) throws CmsException {
-        // nothing to do here
-    }
-
-    /**
     * Locks a given resource.
     * <br>
     * A user can lock a resource, so he is the only one who can write this
@@ -756,17 +734,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
         // finaly remove the original folders
         deleteResource(cms, source);
-    }
-
-    /**
-     *
-     */
-    //public byte[] publishResource(I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException {
-    public byte[] publishResource(String resourceName, byte[] content) throws CmsException {
-
-        // nothing to do here in terms of the linkmanagement
-        // return null. the content of the resource will not be changed
-        return null;
     }
 
     /**

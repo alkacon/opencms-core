@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.183 $
+* Date   : $Date: 2001/08/03 09:37:29 $
+* Version: $Revision: 1.184 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.183 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.184 $ $Date: 2001/08/03 09:37:29 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2074,15 +2074,6 @@ public boolean isAdmin() throws CmsException {
  */
 public boolean isManagerOfProject() throws CmsException {
     return m_rb.isManagerOfProject(getRequestContext().currentUser(), getRequestContext().currentProject());
-}
-
-/**
- *
- */
-public void linkmanagementSaveImportedResource(String importedResource) throws CmsException {
-    CmsResource res = readFileHeader(importedResource);
-    I_CmsResourceType rt = getResourceType(res.getType());
-    rt.linkmanagementSaveImportedResource(this, importedResource);
 }
 
 /**
