@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/07/11 12:38:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/17 12:00:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -226,7 +226,7 @@ public class CmsCopy extends CmsDialog {
         }            
         
         // copy the resource       
-        getCms().copyResource(getParamFile(), target, "true".equals(getParamKeeprights()));
+        getCms().copyResource(getParamFile(), target, "true".equals(getParamKeeprights()), true);
         return true;
     }
 }

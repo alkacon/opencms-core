@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeLink.java,v $
- * Date   : $Date: 2003/07/15 12:17:05 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/17 12:00:40 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * All resource types are created by the factory getResourceType() in CmsObject.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsResourceTypeLink extends A_CmsResourceType {
 
@@ -176,8 +176,8 @@ public class CmsResourceTypeLink extends A_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
-    public void copyResource(CmsObject cms, String theSourceResourceName, String theDestinationResourceName, boolean keepFlags) throws CmsException {
-        super.copyResource(cms, theSourceResourceName, theDestinationResourceName, keepFlags);
+    public void copyResource(CmsObject cms, String theSourceResourceName, String theDestinationResourceName, boolean keepFlags, boolean lockCopy) throws CmsException {
+        super.copyResource(cms, theSourceResourceName, theDestinationResourceName, keepFlags, lockCopy);
 
         // update the link management
         String targetResourceName = new String(cms.readFile(theDestinationResourceName).getContents());

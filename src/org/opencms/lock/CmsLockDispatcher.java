@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/16 13:45:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/17 12:00:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,26 +32,96 @@
 package org.opencms.lock;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
+ * The CmsLockDispatcher is used by the Cms application to detect 
+ * the lock state of a resource.<p>
+ * 
+ * The lock dispatcher is used by the Cms app. to detect the exact 
+ * lock state for a specified resource name.<p>
+ * 
+ * The lock state depends on the path of the resource, and probably 
+ * locked parent folders. The result of a query to the lock dispatcher
+ * are instances of CmsLock objects.<p>
+ * 
+ * It is impossible to create more than 1 instance of this class,
+ * since this class is implemented as a singleton object.
+ * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/07/16 13:45:17 $
+ * @version $Revision: 1.2 $ $Date: 2003/07/17 12:00:40 $
  * @since 5.1.4
  */
-public class CmsLockDispatcher extends HashMap {
+public final class CmsLockDispatcher extends HashMap {
 
-    private static transient CmsLockDispatcher sharedInstance;
-    
+    /** The shared lock dispatcher instance */
+    private static CmsLockDispatcher sharedInstance;
+
+    /**
+     * Default constructor.<p>
+     * 
+     * Since this class is a singleton object, only the class itself is allowed to invoke its constructor.
+     */
     private CmsLockDispatcher() {
         super();
     }
 
+    /**
+     * Returns the shared instance of the lock dispatcher.<p>
+     * 
+     * @return the shared instance of the lock dispatcher
+     */
     public static CmsLockDispatcher getInstance() {
         if (sharedInstance == null) {
             sharedInstance = new CmsLockDispatcher();
         }
 
         return sharedInstance;
+    }
+
+    /**
+     * Returns the lock state for a specified resource.<p>
+     * 
+     * @param resourcename the name of the resource
+     * @return the lock state of the resource
+     */
+    public int getLockstate(String resourcename) {
+        String lockedPath = null;
+        Iterator i = keySet().iterator();
+
+        while (i.hasNext()) {
+            lockedPath = (String) i.next();
+
+            if (resourcename.equals(lockedPath)) {
+                return CmsLock.C_LOCK_STATE_DIRECT_LOCKED;
+            }
+            if (resourcename.indexOf(lockedPath) == 0) {
+                return CmsLock.C_LOCK_STATE_INDIRECT_LOCKED;
+            }
+        }
+
+        return CmsLock.C_LOCK_STATE_UNLOCKED;
+    }
+
+    /**
+     * Returns the lock for specified resource.<p>
+     * 
+     * @param resourcename the name of the resource
+     * @return the CmsLock if the specified resource is locked, or the shared Null lock if the resource is not locked
+     */
+    public CmsLock getLock(String resourcename) {
+        String lockedPath = null;
+        Iterator i = keySet().iterator();
+
+        while (i.hasNext()) {
+            lockedPath = (String) i.next();
+
+            if (resourcename.indexOf(lockedPath) == 0) {
+                return (CmsLock) get(lockedPath);
+            }
+        }
+
+        return CmsLock.getNullLock();
     }
 
 }

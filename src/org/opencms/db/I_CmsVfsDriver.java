@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/16 13:45:49 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/17 12:00:40 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/07/16 13:45:49 $
+ * @version $Revision: 1.13 $ $Date: 2003/07/17 12:00:40 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -98,14 +98,16 @@ public interface I_CmsVfsDriver {
     CmsFile createCmsFileFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException;
     
     /**
-     * Semi-constructor to create a CmsFolder instance from a JDBC result set.<p>
+     * Semi-constructor to create a CmsFile instance from a JDBC result set.
      * 
      * @param res the JDBC ResultSet
-     * @param hasProjectIdInResultSet true if the SQL select query includes the PROJECT_ID table attribute
+     * @param projectId ID of the current project
+     * @param hasFileContentInResultSet true if the SQL select query includes the FILE_CONTENT attribute
      * @return CmsFile the new CmsFile object
      * @throws SQLException in case the result set does not include a requested table attribute
+     * @throws CmsException if the CmsFile object cannot be created by its constructor
      */    
-    CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet, boolean hasFileContentInResultSet) throws SQLException, CmsException;
+    CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasFileContentInResultSet) throws SQLException, CmsException;
     
     CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename, boolean isVfsLink) throws CmsException;
     
@@ -418,10 +420,9 @@ public interface I_CmsVfsDriver {
     /**
      * Reads the file headers of all locked resources.<p>
      * 
-     * @param currentProject the current project
      * @return
      * @throws CmsException if something goes wrong
      */
-    List readLockedFileHeaders(CmsProject currentProject) throws CmsException;
+    List readLockedFileHeaders() throws CmsException;
         
 }

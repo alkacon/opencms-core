@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/17 08:39:27 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/07/17 12:00:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -88,8 +88,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
-    public void copyResource(CmsObject cms, String resourcename, String destination, boolean keeppermissions) throws CmsException {
-        cms.doCopyFile(resourcename, destination);
+    public void copyResource(CmsObject cms, String resourcename, String destination, boolean keeppermissions, boolean lockCopy) throws CmsException {
+        cms.doCopyFile(resourcename, destination, lockCopy);
     }
 
     /**

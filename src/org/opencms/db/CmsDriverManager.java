@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/17 09:36:44 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2003/07/17 12:00:40 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.db;
 
+import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockDispatcher;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -71,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.61 $ $Date: 2003/07/17 09:36:44 $
+ * @version $Revision: 1.62 $ $Date: 2003/07/17 12:00:40 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -148,6 +150,8 @@ public class CmsDriverManager extends Object {
 
     /** The workflow driver. */
     protected I_CmsWorkflowDriver m_workflowDriver;
+    
+    protected CmsLockDispatcher m_lockDispatcher = CmsLockDispatcher.getInstance();
 
     /**
      * Provides a method to build cache keys for groups and users that depend either on 
@@ -254,7 +258,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if the driver manager couldn't be instanciated.
      */
     public static final CmsDriverManager newInstance(Configurations configurations) throws CmsException {
-
+        
         String driverName = null;
         String driverPoolUrl = null;
 
@@ -339,7 +343,7 @@ public class CmsDriverManager extends Object {
         driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".cos.pool");
         A_OpenCms.setRuntimeProperty("cosPoolUrl", driverPoolUrl);
         CmsIdGenerator.setDefaultPool(driverPoolUrl);
-
+                
         // return the configured driver manager
         return driverManager;
     }
@@ -1126,15 +1130,13 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void copyFile(CmsRequestContext context, String source, String destination) throws CmsException {
+    public void copyFile(CmsRequestContext context, String source, String destination, boolean lockCopy) throws CmsException {
         String destinationFileName = null;
         String destinationFolderName = null;
         CmsResource newResource = null;
-        //        String sourceFileName = null;
-        //        String sourceFolderName = null;
 
         if (destination.endsWith("/")) {
-            copyFolder(context, source, destination);
+            copyFolder(context, source, destination, lockCopy);
             return;
         }
 
@@ -1145,10 +1147,6 @@ public class CmsDriverManager extends Object {
         destinationFolderName = destination.substring(0, destination.lastIndexOf("/") + 1);
         destinationFileName = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
 
-        // extract the source folder and filename
-        //        sourceFolderName = source.substring(0, source.lastIndexOf("/") + 1);
-        //        sourceFileName = source.substring(source.lastIndexOf("/") + 1, source.length());
-
         // read the source file and destination parent folder
         CmsFile sourceFile = readFile(context, source, false);
         CmsFolder destinationFolder = readFolder(context, destinationFolderName);
@@ -1158,14 +1156,13 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // create a copy of the source file in the destination parent folder      
-        m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
+        newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
 
         // remove any possibly cached resources of the destination
-        //clearResourceCache(destination, context.currentProject(), context.currentUser());
         clearResourceCache();
 
         // copy the metainfos/properties
-        newResource = lockResource(context, destination, true);
+        //newResource = lockResource(context, destination, true);
         writeProperties(context, destination, readProperties(context, source, null, false));
 
         // copy the access control entries
@@ -1175,12 +1172,15 @@ public class CmsDriverManager extends Object {
             m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
         }
+        
+        if (lockCopy) {
+            lockResource(context, destination, true);
+        }
 
         clearAccessControlListCache();
         m_accessCache.clear();
         clearResourceCache();
 
-        // inform about the file-system-change
         fileSystemChanged(false);
     }
 
@@ -1203,7 +1203,8 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void copyFolder(CmsRequestContext context, String source, String destination) throws CmsException {
+    public void copyFolder(CmsRequestContext context, String source, String destination, boolean lockCopy) throws CmsException {
+        CmsResource newResource = null;
 
         // the name of the folder.
         String destinationFoldername = null;
@@ -1222,13 +1223,12 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // create a copy of the folder
-        m_vfsDriver.createFolder(context.currentUser(), context.currentProject(), destinationFolder.getId(), CmsUUID.getNullUUID(), destinationResourceName, sourceFolder.getFlags());
+        newResource = m_vfsDriver.createFolder(context.currentUser(), context.currentProject(), destinationFolder.getId(), CmsUUID.getNullUUID(), destinationResourceName, sourceFolder.getFlags());
 
         //clearResourceCache(destination, context.currentProject(), context.currentUser());
         clearResourceCache();
 
         // copy the properties
-        CmsResource newResource = lockResource(context, destination, true);
         writeProperties(context, destination, readProperties(context, source, null, false));
 
         // copy the access control entries of this resource
@@ -1236,6 +1236,10 @@ public class CmsDriverManager extends Object {
         while (aceList.hasNext()) {
             CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
             m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
+        }
+        
+        if (lockCopy) {
+            lockResource(context, destination, true);
         }
 
         clearAccessControlListCache();
@@ -4003,7 +4007,7 @@ public class CmsDriverManager extends Object {
         Enumeration e = allResources.elements();
         String lastcheck = "#"; // just a char that is not valid in a filename
         while (e.hasMoreElements()) {
-            CmsResource res = (CmsResource) e.nextElement();
+            CmsResource res = (CmsResource)e.nextElement();
             if (! context.removeSiteRoot(readPath(context, res, false)).equals(lastcheck)) {
                 if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                     visibleResources.addElement(res);
@@ -4656,7 +4660,8 @@ public class CmsDriverManager extends Object {
      * for this resource.
      */
     public CmsUser lockedBy(CmsRequestContext context, CmsResource resource) throws CmsException {
-        return readUser(context, resource.isLockedBy());
+        //return readUser(context, resource.isLockedBy());
+        return lockedBy(context, resource.getFullResourceName());
     }
 
     /**
@@ -4674,8 +4679,9 @@ public class CmsDriverManager extends Object {
      * @throws CmsException will be thrown, if the user has not the rights
      * for this resource.
      */
-    public CmsUser lockedBy(CmsRequestContext context, String resource) throws CmsException {
-        return readUser(context, readFileHeader(context, resource).isLockedBy());
+    public CmsUser lockedBy(CmsRequestContext context, String resourcename) throws CmsException {
+        //return readUser(context, readFileHeader(context, resourcename).isLockedBy());
+        return readUser(context, m_lockDispatcher.getLock(resourcename).getUserId());
     }
 
     /**
@@ -4713,6 +4719,8 @@ public class CmsDriverManager extends Object {
         resource.setLocked(context.currentUser().getId());
         resource.setLockedInProject(context.currentProject().getId());
         m_vfsDriver.updateLockstate(resource, context.currentProject().getId());
+
+        m_lockDispatcher.put(resourcename, new CmsLock(resourcename, context.currentUser().getId(), context.currentProject().getId()));
 
         clearResourceCache();
         return resource;
@@ -6296,6 +6304,7 @@ public class CmsDriverManager extends Object {
         CmsUUID lockedByUserId = CmsUUID.getNullUUID();
         */
 
+
         tokens = new StringTokenizer(path, I_CmsConstants.C_FOLDER_SEPARATOR);
 
         // the root folder is no token in the path but a resource which has to be added to the path
@@ -6375,7 +6384,7 @@ public class CmsDriverManager extends Object {
             if (tokens.hasMoreTokens()) {
                 // this will only be false if a resource in the 
                 // top level root folder (e.g. "/index.html") was requested
-                currentResourceName = tokens.nextToken();
+            currentResourceName = tokens.nextToken();
             }
             currentPath += currentResourceName;
 
@@ -7802,8 +7811,9 @@ public class CmsDriverManager extends Object {
         // check if the user has write access to the resource
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
-        // unlock the resource if it is locked by this user
-        if (resource.isLockedBy().equals(context.currentUser().getId())) {
+        // unlock the resource if it is locked by the current user
+        CmsUUID lockUserId = m_lockDispatcher.getLock(resource.getFullResourceName()).getUserId();
+        if (lockUserId.equals(context.currentUser().getId())) {
             // unlock the resource
             resource.setLocked(CmsUUID.getNullUUID());
 
@@ -7817,6 +7827,7 @@ public class CmsDriverManager extends Object {
             return;
         }
     }
+    
     /**
      * Unlocks a resource.<br>
      *
@@ -8295,7 +8306,6 @@ public class CmsDriverManager extends Object {
         }
 
         // update the cache
-        //clearResourceCache(resource, context.currentProject(), context.currentUser());
         clearResourceCache();
     }
 
@@ -8509,5 +8519,26 @@ public class CmsDriverManager extends Object {
             throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(), CmsException.C_NO_ACCESS);
         }
     }
+
+    public List readLockedFileHeaders(CmsRequestContext context) throws CmsException {        
+        // it is safe here to pass a dummy value as the current 
+        // project ID, because we fetch only locked resources,
+        // and resources are only locked in offline projects
+        int dummyProjectId = Integer.MAX_VALUE;     
+        CmsResource currentResource = null;
+        List lockedFileHeaders = m_vfsDriver.readLockedFileHeaders();
+        Iterator i = lockedFileHeaders.iterator();
+        
+        while (i.hasNext()) {
+            currentResource = (CmsResource) i.next();
+            readPathInProject(context, dummyProjectId, currentResource, false);
+        }
+        
+        return lockedFileHeaders;
+    }
+    
+    public boolean isLocked(String resourcename) {
+        return !m_lockDispatcher.getLock(resourcename).equals(CmsLock.getNullLock());
+    }    
 
 }

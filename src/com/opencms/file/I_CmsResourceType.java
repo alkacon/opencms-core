@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/17 08:39:27 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/07/17 12:00:40 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -115,7 +115,7 @@ public interface I_CmsResourceType {
      *        <code>false</code> if the copy should get the user's default flags
      * @throws CmsException if something goes wrong
      */
-    void copyResource(CmsObject cms, String resourcename, String destination, boolean keeppermissions) throws CmsException;
+    void copyResource(CmsObject cms, String resourcename, String destination, boolean keeppermissions, boolean lockCopy) throws CmsException;
 
     /**
      * Moves a file to the given destination.<p>

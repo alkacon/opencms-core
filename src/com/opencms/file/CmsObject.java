@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/17 08:39:27 $
-* Version: $Revision: 1.329 $
+* Date   : $Date: 2003/07/17 12:00:40 $
+* Version: $Revision: 1.330 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,13 @@
 
 package com.opencms.file;
 
+import org.opencms.db.CmsDriverManager;
+import org.opencms.file.CmsSynchronize;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
+
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.flex.util.CmsResourceTranslator;
@@ -50,13 +57,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.opencms.db.CmsDriverManager;
-import org.opencms.file.CmsSynchronize;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsAccessControlList;
-import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.I_CmsPrincipal;
-
 import source.org.apache.java.util.Configurations;
 
 /**
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.329 $
+ * @version $Revision: 1.330 $
  */
 public class CmsObject extends Object {
 
@@ -524,7 +524,7 @@ public class CmsObject extends Object {
      * has not the appropriate rights to copy the file.
      */
     public void copyResource(String source, String destination) throws CmsException {
-        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, false);
+        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, false, true);
     }
 
     /**
@@ -538,8 +538,8 @@ public class CmsObject extends Object {
      * @throws CmsException if the file couldn't be copied, or the user
      * has not the appropriate rights to copy the file.
      */
-    public void copyResource(String source, String destination, boolean keepFlags) throws CmsException {
-        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, keepFlags);
+    public void copyResource(String source, String destination, boolean keepFlags, boolean lockCopy) throws CmsException {
+        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, keepFlags, lockCopy);
     }
 
     /**
@@ -1099,8 +1099,8 @@ public class CmsObject extends Object {
      * @throws CmsException if the file couldn't be copied, or the user
      * has not the appropriate rights to copy the file.
      */
-    protected void doCopyFile(String source, String destination) throws CmsException {
-        m_driverManager.copyFile(m_context, addSiteRoot(source), addSiteRoot(destination));
+    protected void doCopyFile(String source, String destination, boolean lockCopy) throws CmsException {
+        m_driverManager.copyFile(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy);
     }
 
     /**
@@ -1112,8 +1112,8 @@ public class CmsObject extends Object {
      * @throws CmsException if the folder couldn't be copied, or if the
      * user has not the appropriate rights to copy the folder.
      */
-    protected void doCopyFolder(String source, String destination) throws CmsException {
-        m_driverManager.copyFolder(m_context, addSiteRoot(source), addSiteRoot(destination));
+    protected void doCopyFolder(String source, String destination, boolean lockCopy) throws CmsException {
+        m_driverManager.copyFolder(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy);
     }
 
     /**
@@ -1410,9 +1410,9 @@ public class CmsObject extends Object {
         m_driverManager.undoChanges(m_context, addSiteRoot(resource));
     }
 
-    protected void doUnlockResource(CmsResource resource) throws CmsException {
-        m_driverManager.unlockResource(m_context, resource);
-    }
+//    protected void doUnlockResource(String resourcename) throws CmsException {
+//        m_driverManager.unlockResource(m_context, resourcename);
+//    }
 
     /**
      * Unlocks a resource.
@@ -4492,6 +4492,14 @@ public class CmsObject extends Object {
      */
     public void writeWebUser(CmsUser user) throws CmsException {
         m_driverManager.writeWebUser(m_context, user);
+    }
+    
+    public List readLockedFileHeaders() throws CmsException {
+        return m_driverManager.readLockedFileHeaders(m_context);
+    }
+    
+    public boolean isLocked(String resourcename) {
+        return m_driverManager.isLocked(resourcename);
     }
 
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/07/11 06:25:23 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/07/17 12:00:40 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.53 $ $Date: 2003/07/11 06:25:23 $
+ * @version $Revision: 1.54 $ $Date: 2003/07/17 12:00:40 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -301,6 +301,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         try {
             m_opencms.initStartupClasses(req, res);
             cms = initUser(cmsReq, cmsRes);
+            m_opencms.initLockDispatcher(cms);
             // no redirect was done - deliver the ressource normally
             CmsFile file = m_opencms.initResource(cms);
             if(file != null) {

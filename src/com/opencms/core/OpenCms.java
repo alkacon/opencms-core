@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/07/17 08:39:27 $
-* Version: $Revision: 1.137 $
+* Date   : $Date: 2003/07/17 12:00:40 $
+* Version: $Revision: 1.138 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,10 +33,13 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.exceptions.CmsCheckResourceException;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsJspLoader;
+import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockDispatcher;
 
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
 import com.opencms.file.CmsStaticExport;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsUUID;
@@ -83,7 +86,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.137 $ $Date: 2003/07/17 08:39:27 $
+ * @version $Revision: 1.138 $ $Date: 2003/07/17 12:00:40 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -170,12 +173,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
     /**
      * Flag to indicate if the startup classes have already been initialized
      */
-    private boolean m_isInitialized = false;
+    private boolean m_startupClassesInitialized = false;
     
    /**
     * Member variable to store instances to modify resources
     */
    private List m_checkFile = new ArrayList();
+   
+    private boolean m_lockDispatcherInitialized = false;            
     
     /**
      * Constructor to create a new OpenCms object.<p>
@@ -573,13 +578,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Link rules init      : non-critical error " + e.toString());
         }
         
-       
         // initialize 1 instance per class listed in the checkresource node
         try{
-                       
-           List test=getRegistry().getCheckResource();            
-                         
-                       
+            List test=getRegistry().getCheckResource();
             
             Hashtable checkresourceNode = getRegistry().getSystemValues( "checkresource" );
             if (checkresourceNode!=null) {
@@ -629,11 +630,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      * @param res the current response 
      */
     void initStartupClasses(HttpServletRequest req, HttpServletResponse res) throws CmsException {
-        if (m_isInitialized) return;
+        if (m_startupClassesInitialized) return;
 
         synchronized (this) {
             // Set the initialized flag to true
-            m_isInitialized = true;
+            m_startupClassesInitialized = true;
             
             if (res == null) {
                 // currently no init action depends on res, this might change in the future
@@ -679,7 +680,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             
     
             // initialize 1 instance per class listed in the startup node
-                        
             try{
                 Hashtable startupNode = getRegistry().getSystemValues( "startup" );
                 if (startupNode!=null) {
@@ -1041,4 +1041,36 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             }
         }
     }
+    
+    /**
+     * Initializers the lock dispatcher.<p>
+     * 
+     * To do so, all locked resources are read from the database.
+     * 
+     * @param cms
+     * @throws CmsException
+     */
+    void initLockDispatcher(CmsObject cms) throws CmsException {
+        if (m_lockDispatcherInitialized) return;       
+        
+        synchronized (this) {
+            m_lockDispatcherInitialized = true;
+            
+            CmsLockDispatcher lockDispatcher = CmsLockDispatcher.getInstance();
+            List lockedResources = cms.readLockedFileHeaders();
+            Iterator i = lockedResources.iterator();
+            CmsResource currentResource = null;
+            CmsLock currentLock = null;
+            String currentPath = null;
+                
+            while (i.hasNext()) {
+                currentResource = (CmsResource) i.next();
+                currentPath = currentResource.getFullResourceName();
+                currentLock = new CmsLock(currentPath, currentResource.isLockedBy(), currentResource.getProjectId());
+                
+                lockDispatcher.put(currentPath,currentLock);
+            }            
+        }
+    }
+    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/07/04 10:03:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/17 12:00:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,10 +48,10 @@ import source.org.apache.java.util.Configurations;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/07/04 10:03:18 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/17 12:00:40 $
  * @since 5.1
  */
-public class CmsDbPool extends Object {
+public final class CmsDbPool extends Object {
 
     /**
      * This prefix is required to make the JDBC DriverManager return pooled DBCP connections.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/17 08:39:27 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/07/17 12:00:40 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -193,7 +193,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
-    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException {
+    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags, boolean lockCopy) throws CmsException {
 
         // we have to copy the folder and all resources in the folder
         Vector allSubFolders = new Vector();
@@ -202,34 +202,40 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         validResourcename(destination);
 
         getAllResources(cms, source, allSubFiles, allSubFolders);
+        
         if (!destination.endsWith("/")) {
             destination = destination + "/";
         }
+        
         if (!destination.startsWith("/")) {
             destination = "/" + destination;
         }
+        
         // first the folder
-        cms.doCopyFolder(source, destination);
+        cms.doCopyFolder(source, destination, lockCopy);
+        
         // now the subfolders
         for (int i = 0; i < allSubFolders.size(); i++) {
             CmsFolder curFolder = (CmsFolder)allSubFolders.elementAt(i);
             if (curFolder.getState() != I_CmsConstants.C_STATE_DELETED) {
                 String curDestination = destination + cms.readAbsolutePath(curFolder).substring(source.length());
-                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination);
+                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination, false);
             }
         }
+        
         // now all the little files
         for (int i = 0; i < allSubFiles.size(); i++) {
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if (curFile.getState() != I_CmsConstants.C_STATE_DELETED) {
                 String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length());
-                cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags);
+                cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags, false);
             }
         }
+        
         if (C_BODY_MIRROR) {
             // copy the content bodys
             try {
-                copyResource(cms, I_CmsWpConstants.C_VFS_PATH_BODIES + source.substring(1), I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1), keepFlags);
+                copyResource(cms, I_CmsWpConstants.C_VFS_PATH_BODIES + source.substring(1), I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1), keepFlags, true);
                 // finaly lock the copy in content bodys if it exists.
                 cms.lockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1));
             } catch (CmsException e) { }
@@ -592,7 +598,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
             for (int i = 0; i < allSubFolders.size(); i++) {
                 CmsFolder curFolder = (CmsFolder)allSubFolders.get(i);
-                cms.doUnlockResource(curFolder);
+                cms.doUnlockResource(cms.readAbsolutePath(curFolder));
             }
         }
     }

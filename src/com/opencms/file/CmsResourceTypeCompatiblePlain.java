@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2003/07/15 18:42:07 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/17 12:00:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * some very old OpenCms version).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
 
@@ -84,8 +84,8 @@ public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
-    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException {
-        cms.doCopyFile(source, destination);
+    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags, boolean lockCopy) throws CmsException {
+        cms.doCopyFile(source, destination, true);
         cms.doChtype(destination, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
     }
     

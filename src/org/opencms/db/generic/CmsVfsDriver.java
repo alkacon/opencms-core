@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/16 16:34:49 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/07/17 12:00:40 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.34 $ $Date: 2003/07/16 16:34:49 $
+ * @version $Revision: 1.35 $ $Date: 2003/07/17 12:00:40 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -176,16 +176,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
 
     /**
-     * Semi-constructor to create a CmsFile instance from a JDBC result set.
-     * 
-     * @param res the JDBC ResultSet
-     * @param hasProjectIdInResultSet true if the SQL select query includes the PROJECT_ID table attribute
-     * @param hasFileContentInResultSet true if the SQL select query includes the FILE_CONTENT attribute
-     * @return CmsFile the new CmsFile object
-     * @throws SQLException in case the result set does not include a requested table attribute
-     * @throws CmsException if the CmsFile object cannot be created by its constructor
+     * @see org.opencms.db.I_CmsVfsDriver#createCmsFileFromResultSet(java.sql.ResultSet, int, boolean)
      */
-    public CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet, boolean hasFileContentInResultSet) throws SQLException, CmsException {                          
+    public CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasFileContentInResultSet) throws SQLException, CmsException {                          
         byte[] content = null;
         int resProjectId = I_CmsConstants.C_UNKNOWN_ID;
 
@@ -219,7 +212,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             resProjectId = lockedInProject;
         } else {
             // resource is not locked
-            resProjectId = lockedInProject = projectId;
+            resProjectId = projectId;
+            lockedInProject = projectId;
         }
 
         if (org.opencms.db.generic.CmsProjectDriver.C_USE_TARGET_DATE && resourceType == org.opencms.db.generic.CmsProjectDriver.C_RESTYPE_LINK_ID && resourceFlags > 0) {
@@ -263,7 +257,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             // resource is locked
         } else {
             // resource is not locked
-            resProjectId = lockedInProject = projectId;
+            resProjectId = projectId;
+            lockedInProject = projectId;
         }        
 
         return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, resourceState, lockedBy, launcherType, launcherClass, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, vfsLinkType);
@@ -1971,7 +1966,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             res = stmt.executeQuery();
             // create new file
             if (res.next()) {
-                file = createCmsFileFromResultSet(res, projectId, true, false);
+                file = createCmsFileFromResultSet(res, projectId, false);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -2019,7 +2014,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             res = stmt.executeQuery();
             // create new file
             if (res.next()) {
-                file = createCmsFileFromResultSet(res, projectId, true, false);
+                file = createCmsFileFromResultSet(res, projectId, false);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -2069,7 +2064,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             res = stmt.executeQuery();
 
             if (res.next()) {
-                file = createCmsFileFromResultSet(res, projectId, true, false);
+                file = createCmsFileFromResultSet(res, projectId, false);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -2134,7 +2129,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             res = stmt.executeQuery();
 
             while (res.next()) {
-                currentFile = createCmsFileFromResultSet(res, projectId, true, true);
+                currentFile = createCmsFileFromResultSet(res, projectId, true);
                 files.add(currentFile);
             }
         } catch (SQLException e) {
@@ -2172,7 +2167,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             res = stmt.executeQuery();
             // create new file
             while (res.next()) {
-                file = createCmsFileFromResultSet(res, projectId, true, true);
+                file = createCmsFileFromResultSet(res, projectId, true);
                 files.addElement(file);
             }
         } catch (SQLException e) {
@@ -3658,7 +3653,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 if (getSubFolders) {
                     currentResource = createCmsFolderFromResultSet(res, currentProject.getId(), false);
                 } else {
-                    currentResource = createCmsFileFromResultSet(res, currentProject.getId(), false, false);
+                    currentResource = createCmsFileFromResultSet(res, currentProject.getId(), false);
                 }
                 subResources.add(currentResource);
             }
@@ -3715,21 +3710,29 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         return result;
     }
     
-    public List readLockedFileHeaders(CmsProject currentProject) throws CmsException {
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readLockedFileHeaders()
+     */
+    public List readLockedFileHeaders() throws CmsException {
         List lockedFileHeaders = (List) new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
         CmsResource currentResource = null;
+        
+        // it is safe here to pass a dummy value as the current 
+        // project ID, because we fetch only locked resources,
+        // and resources are only locked in offline projects
+        int dummyProjectId = Integer.MAX_VALUE;       
 
         try {
-            conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "");
+            conn = m_sqlManager.getConnection(dummyProjectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_RESOURCES_READ_LOCKED");
             stmt.setString(1, CmsUUID.getNullUUID().toString());
             res = stmt.executeQuery();
 
-            while (res.next()) {
-                currentResource = createCmsResourceFromResultSet(res, currentProject.getId());
+            while (res.next()) {              
+                currentResource = createCmsFileFromResultSet(res, dummyProjectId, false);
                 lockedFileHeaders.add(currentResource);
             }
         } catch (SQLException e) {
