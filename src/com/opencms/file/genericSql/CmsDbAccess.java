@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/19 15:58:18 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2000/07/20 12:33:29 $
+ * Version: $Revision: 1.103 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.102 $ $Date: 2000/07/19 15:58:18 $ * 
+ * @version $Revision: 1.103 $ $Date: 2000/07/20 12:33:29 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -1164,16 +1164,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
             // write data to database     
             statement = m_pool.getPreparedStatement(C_USERS_WRITE_KEY);
 			
-			statement.setString(1,user.getDescription());
-			statement.setString(2,user.getFirstname());
-			statement.setString(3,user.getLastname());
-			statement.setString(4,user.getEmail());
+			statement.setString(1,checkNull(user.getDescription()));
+			statement.setString(2,checkNull(user.getFirstname()));
+			statement.setString(3,checkNull(user.getLastname()));
+			statement.setString(4,checkNull(user.getEmail()));
 			statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
 			statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
 			statement.setInt(7,user.getFlags());
 			statement.setBytes(8,value);
-			statement.setString(9,user.getAddress());
-			statement.setString(10,user.getSection());
+			statement.setString(9,checkNull(user.getAddress()));
+			statement.setString(10,checkNull(user.getSection()));
 			statement.setInt(11,user.getType());
             statement.setInt(12,user.getId());
 			statement.executeUpdate();
