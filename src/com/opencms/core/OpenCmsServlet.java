@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/03/24 15:27:46 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/03/27 10:02:52 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.28 $ $Date: 2000/03/24 15:27:46 $  
+* @version $Revision: 1.29 $ $Date: 2000/03/27 10:02:52 $  
 * 
 */
 
@@ -421,7 +421,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
      */
  	private void requestAuthorization(HttpServletRequest req, HttpServletResponse res) 
 		throws IOException	{
-		res.setHeader("WWW-Authenticate", "BASIC realm=\"OpenCmst\"");
+		res.setHeader("WWW-Authenticate", "BASIC realm=\"OpenCms\"");
 		res.setStatus(401);
 	}
 
