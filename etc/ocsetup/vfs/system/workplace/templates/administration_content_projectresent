@@ -51,21 +51,17 @@ function show_help()
 </body>
 </html>
 
-<!-- Contextmenues -->
+<!-- Contextmenus -->
 ]]>
 
-<contextmenue name="project_lock">
-	<contextdisabled name="project.context.createtask" href="javascript:doPAction(DO_PTASK);"/>
-	<contextspacer/>
+<contextmenue name="project_lock">   
 	<contextentry name="project.context.removelock" href="javascript:doPAction(DO_PUNLOCK);"/>
 	<contextdisabled name="project.context.publish" href="javascript:doPAction(DO_PONLINE);"/>
 	<contextspacer/>
 	<contextentry name="project.context.delete" href="javascript:doPAction(DO_PDELETE);"/>
 </contextmenue>
 
-<contextmenue name="project_unlock">
-	<contextdisabled name="project.context.createtask" href="javascript:doPAction(DO_PTASK);"/>
-	<contextspacer/>
+<contextmenue name="project_unlock">  
 	<contextdisabled name="project.context.removelock" href="javascript:doPAction(DO_PUNLOCK);"/>
 	<contextentry name="project.context.publish" href="javascript:doPAction(DO_PONLINE);"/>
 	<contextspacer/>
