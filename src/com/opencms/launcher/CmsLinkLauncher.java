@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLinkLauncher.java,v $
-* Date   : $Date: 2001/01/24 09:42:27 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/04/18 13:16:19 $
+* Version: $Revision: 1.7 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -36,6 +36,7 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.util.*;
 import javax.servlet.http.*;
+import java.io.*;
 
 /**
  * OpenCms launcher class for starting template classes implementing
@@ -44,12 +45,12 @@ import javax.servlet.http.*;
  * <P>
  * If no other start template class is given, CmsDumpTemplate will
  * be used to create output.
- * 
+ *
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2001/01/24 09:42:27 $
+ * @version $Revision: 1.7 $ $Date: 2001/04/18 13:16:19 $
  */
 public class CmsLinkLauncher extends A_CmsLauncher {
-    
+
     /**
      * Gets the ID that indicates the type of the launcher.
      * @return launcher ID
@@ -57,15 +58,15 @@ public class CmsLinkLauncher extends A_CmsLauncher {
     public int getLauncherId() {
         return C_TYPE_LINK;
     }
-    
+
     /**
      * Unitary method to start generating the output.
      * Every launcher has to implement this method.
      * In it possibly the selected file will be analyzed, and the
-     * Canonical Root will be called with the appropriate 
-     * template class, template file and parameters. At least the 
+     * Canonical Root will be called with the appropriate
+     * template class, template file and parameters. At least the
      * canonical root's output must be written to the HttpServletResponse.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
      * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
@@ -74,7 +75,20 @@ public class CmsLinkLauncher extends A_CmsLauncher {
      */
     protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
         String link = new String(file.getContents());
-        CmsFile linkFile = cms.readFile(link);
-        openCms.showResource(cms, linkFile);
+        if( link.startsWith("/") ) {
+            // internal link ...
+            CmsFile linkFile = cms.readFile(link);
+            openCms.showResource(cms, linkFile);
+        } else {
+            // redirect to external link ...
+            HttpServletResponse response =
+                (HttpServletResponse)
+                    cms.getRequestContext().getResponse().getOriginalResponse();
+            try {
+                response.sendRedirect(link);
+            } catch (IOException e) {
+
+            }
+        }
     }
 }
