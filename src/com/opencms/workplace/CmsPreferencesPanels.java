@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2002/11/16 13:23:06 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2002/12/04 14:43:08 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2002/11/16 13:23:06 $
+ * @version $Revision: 1.37 $ $Date: 2002/12/04 14:43:08 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -277,7 +277,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                     if(panel.equals(C_PANEL_START)) {
 
                         // this is the panel for setting the start preferences
-                        setStartSettings(session, parameters, reqCont, xmlTemplateDocument);
+                        setStartSettings(cms, session, parameters, reqCont, xmlTemplateDocument);
                     }
                     else {
                         if(panel.equals(C_PANEL_USER)) {
@@ -327,7 +327,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 }
             }
             session.putValue(C_PARA_OLDPANEL, panel);
-        }
+        }                
 
         // if the OK or cancel buttons are pressed return to the explorer and clear
         // the data in the session.
@@ -629,8 +629,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         Vector allLangFiles = null;
 
         // get all folders with language files
-
-        //Vector allLangFolders = cms.getSubFolders(conf.getLanguagePath());
         Vector allLangFolders = cms.getSubFolders(conf.getLanguagePath());
         String langName = null;
         Hashtable startSettings = null;
@@ -1059,13 +1057,14 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
     /**
      * Sets all data in the preference panel start settings.
      * Data is either taken form the default values, the current user or the current session.
+     * @param cms The current CmsObject.
      * @param session The current session.
      * @param parameters  Hashtable containing all request parameters.
      * @param reqCont The request context.
      * @param xmlTemplateDocument The template in which all data is added.
      */
 
-    private void setStartSettings(I_CmsSession session, Hashtable parameters,
+    private void setStartSettings(CmsObject cms, I_CmsSession session, Hashtable parameters,
             CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
 
         // get the actual user settings
@@ -1095,7 +1094,20 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             startSettings.put(C_START_LOCKDIALOG, "");
             startSettings.put(C_START_ACCESSFLAGS, new Integer(C_ACCESS_DEFAULT_FLAGS));
         }
-
+        
+        // check for languages and diasable if only one locale is found 
+        Vector langValues = new Vector();
+        try {
+            Integer currentLang = getLanguageFiles(cms, null, new Vector(), langValues, parameters);
+            if (langValues.size() == 1) {
+                // only one locale installed - deactivate the language selection
+                xmlTemplateDocument.setData("LANG_SELECT", "<input type=\"hidden\" name=\"LANGUAGE\" value=\"" + langValues.elementAt(0) + "\">");
+            }
+            // no else is required as the default behaviour is preset in the template
+        } catch (Exception e) {
+            // no exception handling is required as the default behaviour is preset in the template
+        }
+        
         // now update the data in the template
         int flags = ((Integer)startSettings.get(C_START_ACCESSFLAGS)).intValue();
         if((flags & C_ACCESS_OWNER_READ) > 0) {

@@ -93,12 +93,7 @@ Other Preference input forms will be added here
 <TEMPLATE name="start">
 <![CDATA[
 <table border=0 cellspacing=0 cellpadding=5 width=100% height=200px>
-	<tr>
-		<td class=formular>]]><LABEL value="input.lang" /><![CDATA[:</td>
-		<td class=dialogtxt>
-			]]><SELECT class="textfeld" name="LANGUAGE" width="150" method="getLanguageFiles" /><![CDATA[                            
-		</td>
-	</tr>
+	]]><PROCESS>LANG_SELECT</PROCESS><![CDATA[
 	<tr>
 		<td class=formular width=30%>]]><LABEL value="input.startupproject" /><![CDATA[:</td>
 		<td class=dialogtxt>
@@ -206,5 +201,26 @@ Other Preference input forms will be added here
 </table>
 ]]>
 </TEMPLATE>
+
+<LANG_SELECT>
+<PROCESS>LANG_ENABLED</PROCESS>
+</LANG_SELECT>
+
+<LANG_ENABLED>
+	<![CDATA[
+	<tr>
+		<td class=formular>]]><LABEL value="input.lang" /><![CDATA[:</td>
+		<td class=dialogtxt>
+			]]><SELECT class="textfeld" name="LANGUAGE" width="150" method="getLanguageFiles" /><![CDATA[                            
+		</td>
+	</tr>
+	]]>
+</LANG_ENABLED>
+
+<LANG_DISABLED>
+	<![CDATA[
+	<input type="hidden" name="LANGUAGE" value="en">
+	]]>
+</LANG_DISABLED>
 
 </WORKPLACE>
