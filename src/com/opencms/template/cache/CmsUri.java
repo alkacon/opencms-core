@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/07/04 16:24:21 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2001/07/24 12:02:17 $
+* Version: $Revision: 1.13 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -118,7 +118,8 @@ public class CmsUri implements I_CmsConstants {
         if(!resp.containsHeader("Cache-Control")) {
             // only if the resource is cacheable and if the current project is online,
             // then the browser may cache the resource
-            if(proxySettings.isProxyPrivateCacheable()){
+            if(proxySettings.isProxyPrivateCacheable()
+                        && cms.getRequestContext().currentProject().getId() == C_PROJECT_ONLINE_ID){
                 // set max-age to 5 minutes. In this time a proxy may cache this content.
                 resp.setHeader("Cache-Control", "max-age=300");
                 if(!proxySettings.isProxyPublicCacheable()){
