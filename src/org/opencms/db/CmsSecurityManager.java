@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/21 11:35:23 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/12/21 11:58:17 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -450,8 +450,6 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);           
         try {
-            // check the access permissions
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
             m_driverManager.changeLock(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, "Error changing lock of resource " + resource.getRootPath(), e);
@@ -1621,7 +1619,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context.
      * @param groupname the name of the group.
-     * 
+     *
      * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
      * 
      * @throws CmsException if operation was not succesful.
@@ -1647,7 +1645,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context.
      * @param groupname the name of the group.
-     * 
+     *
      * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
      * 
      * @throws CmsException if operation was not succesful.
@@ -1681,7 +1679,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context.
      * @param username The name of the user.
-     * 
+     *
      * @return a list of <code>{@link CmsGroup}</code> objects.
      * 
      * @throws CmsException if operation was not succesful.
@@ -1704,7 +1702,7 @@ public final class CmsSecurityManager {
      * Returns all groups.<p>
      *
      * @param context the current request context.
-     * 
+     *
      * @return a list of all <code>{@link CmsGroup}</code> objects.
      * 
      * @throws CmsException if operation was not succesful.
@@ -2040,7 +2038,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context.
      * @param groupname the name of the group to list users from.
-     * 
+     *
      * @return all <code>{@link CmsUser}</code> objects in the group.
      * 
      * @throws CmsException if operation was not succesful.
@@ -2929,7 +2927,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context.
      * @param groupId the id of the group that is to be read.
-     * 
+     *
      * @return the requested group.
      * 
      * @throws CmsException if operation was not succesful.
@@ -2977,7 +2975,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context.
      * @param project the project to read from.
-     * 
+     *
      * @return the group of a resource.
      */
     public CmsGroup readManagerGroup(CmsRequestContext context, CmsProject project) {
@@ -3950,7 +3948,7 @@ public final class CmsSecurityManager {
      * @param context the current request context.
      * @param username the name of the user that is to be removed from the group.
      * @param groupname the name of the group.
-     *
+     * 
      * @throws CmsException if operation was not succesful.
      */
     public void removeUserFromGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
@@ -4083,7 +4081,7 @@ public final class CmsSecurityManager {
      * @param parentGroupName the name of the parent group to set, 
      *                      or <code>null</code> if the parent
      *                      group should be deleted.
-     *
+     * 
      * @throws CmsException if operation was not succesfull.
      */
     public void setParentGroup(CmsRequestContext context, String groupName, String parentGroupName) throws CmsException {
@@ -4306,9 +4304,9 @@ public final class CmsSecurityManager {
      * @param context the current request context.
      * @param username the name of the user to check.
      * @param groupname the name of the group to check.
-     *
-     * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise.
      * 
+     * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise.
+     *
      * @throws CmsException if operation was not succesful.
      */
     public boolean userInGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
@@ -4429,7 +4427,7 @@ public final class CmsSecurityManager {
      * 
      * The group with the given id will be completely overriden
      * by the given data.<p>
-     * 
+     *
      * @param context the current request context.
      * @param group the group that should be written.
      *
