@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/11 15:58:19 $
- * Version: $Revision: 1.167 $
+ * Date   : $Date: 2000/10/11 16:34:48 $
+ * Version: $Revision: 1.168 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.167 $ $Date: 2000/10/11 15:58:19 $
+ * @version $Revision: 1.168 $ $Date: 2000/10/11 16:34:48 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4143,9 +4143,9 @@ public boolean isSiteLegal(CmsUser currentUser, CmsProject currentProject, int s
 	  	String off = ((CmsResource)offline.elementAt(offIndex)).getAbsolutePath();
 	  	
 			if (on.compareTo(off) < 0)
-				merged.addElement(online.elementAt(onIndex));
+				merged.addElement(online.elementAt(onIndex++));
 			else
-				merged.addElement(online.elementAt(offIndex++));
+				merged.addElement(offline.elementAt(offIndex++));
 		}
 		return(merged);
 	}
