@@ -1,3 +1,4 @@
+login Admin admin
 createPropertydefinition "Verzeichnislogo_img" folder 0
 createPropertydefinition "Verzeichnislogo_target" folder 0
 createPropertydefinition "Hauptlogo_img" folder 0
