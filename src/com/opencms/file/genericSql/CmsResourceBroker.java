@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/08 13:17:50 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2000/07/14 09:04:30 $
+ * Version: $Revision: 1.87 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.86 $ $Date: 2000/07/08 13:17:50 $
+ * @version $Revision: 1.87 $ $Date: 2000/07/14 09:04:30 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -463,7 +463,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 InputStream in=con.getInputStream();
                 in.close();      
             }
-            catch (Exception ex) {
+            catch (Exception ex) {               
                 throw new CmsException(0,ex);                       
             }
          }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/14 08:08:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/07/14 09:04:31 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.3 $ $Date: 2000/07/14 08:08:22 $ * 
+ * @version $Revision: 1.4 $ $Date: 2000/07/14 09:04:31 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2675,22 +2675,28 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                     } catch (Exception ex) {
                                          }
 				}
-							
-   				CmsFile currentOnlineFile = readFile(onlineProject.getId(),onlineProject.getId(),currentFile.getAbsolutePath());
-				try {
-					deleteAllProperties(currentOnlineFile.getResourceId());
-				} catch(CmsException exc) {
-					if(A_OpenCms.isLogging()) {
-						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
-					}
-				}
-				try {
-					deleteResource(currentOnlineFile.getResourceId());
-				} catch(CmsException exc) {
-					if(A_OpenCms.isLogging()) {
-						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
-					}
-				}	
+                try {			
+   				    CmsFile currentOnlineFile = readFile(onlineProject.getId(),onlineProject.getId(),currentFile.getAbsolutePath());
+				    try {
+    					deleteAllProperties(currentOnlineFile.getResourceId());
+	    			} catch(CmsException exc) {
+		    			if(A_OpenCms.isLogging()) {
+			    			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+				    	}
+				    }
+				    try {
+    					deleteResource(currentOnlineFile.getResourceId());
+	    			} catch(CmsException exc) {
+		    			if(A_OpenCms.isLogging()) {
+			    			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+				    	}
+				    }	
+                } catch (Exception ex) {
+                    // this exception is thrown when the file does not exist in the
+                    // online project anymore. This is OK, so do nothing.
+                }
+                
+                
 			// C_STATE_CHANGED	
 			}else if ( currentFile.getState() == C_STATE_CHANGED){
 				// export to filesystem if necessary
@@ -2773,10 +2779,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
 				}
 				// create the new file 
-				CmsFile newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(),
-											parentId.intValue(),currentFile.getAbsolutePath(), false);
-				newFile.setState(C_STATE_UNCHANGED);
-				writeFile(onlineProject, onlineProject,newFile,false);
+                    removeFile(onlineProject.getId(),currentFile.getAbsolutePath());
+				    CmsFile newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(),
+					    						parentId.intValue(),currentFile.getAbsolutePath(), false);
+				    newFile.setState(C_STATE_UNCHANGED);
+				    writeFile(onlineProject, onlineProject,newFile,false);
+            
 				// copy properties
 				try {
 					Hashtable props = readAllProperties(currentFile.getResourceId(), currentFile.getType());

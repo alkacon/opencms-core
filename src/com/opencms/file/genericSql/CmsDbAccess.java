@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/08 13:17:50 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2000/07/14 09:04:29 $
+ * Version: $Revision: 1.94 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,11 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
-<<<<<<< CmsDbAccess.java
- * @version $Revision: 1.93 $ $Date: 2000/07/08 13:17:50 $ * 
-=======
- * @version $Revision: 1.93 $ $Date: 2000/07/08 13:17:50 $ * 
->>>>>>> 1.88
+ * @version $Revision: 1.94 $ $Date: 2000/07/14 09:04:29 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3234,6 +3230,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                     statement.setInt(2,onlineProjectId);
                     res = statement.executeQuery();  
                     if(res.next()) {
+                  
+                        
+                        
                       int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
                       int parentId=res.getInt(C_RESOURCES_PARENT_ID);
                       int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
@@ -3251,7 +3250,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                       int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                       int resSize= res.getInt(C_RESOURCES_SIZE);
                       byte[] content=res.getBytes(C_RESOURCES_FILE_CONTENT);
-              
+            
+                      
+                      /*InputStream inStream = res.getBinaryStream(C_RESOURCES_FILE_CONTENT);
+               
+                      ByteArrayOutputStream outStream=new ByteArrayOutputStream();
+                      byte[] buffer= new byte[128];
+                      while (true) {
+                          int bytesRead = inStream.read(buffer);
+                          if (bytesRead ==-1) break;
+                          outStream.write(buffer,0,bytesRead);
+                      }
+                      byte[] content=outStream.toByteArray();*/
                                      
                       file=new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
                                 groupId,onlineProjectId,accessFlags,state,lockedBy,

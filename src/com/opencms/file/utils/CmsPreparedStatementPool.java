@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/07/07 09:21:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/07/14 09:04:31 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -204,8 +204,11 @@ public class CmsPreparedStatementPool {
 	 * @return a prepared statement matching the key
 	 */
 	public PreparedStatement getPreparedStatement(Integer key) throws CmsException {
-		PreparedStatement pstmt = null;
+	
+        
+        PreparedStatement pstmt = null;
 		int num;
+        //synchronized ( m_prepStatements) {
 		Vector temp = (Vector) m_prepStatements.get(key);
 		
 		synchronized (temp) {
@@ -213,7 +216,7 @@ public class CmsPreparedStatementPool {
 				pstmt =(PreparedStatement) temp.firstElement();
 				temp.removeElementAt(0);
 			}
-			else {
+			else { 
 				String sql =(String) m_prepStatementsCache.get(key);
 
 				if (count > (m_maxConn - 1)) {
@@ -228,11 +231,12 @@ public class CmsPreparedStatementPool {
 				}
 				catch (SQLException e) {
 					throw new CmsException(CmsException.C_SQL_ERROR, e);
-				}
+				} 
 			}
 			temp.notify();
+            //m_prepStatements.notify();
 		}
-		   
+		  
         //System.err.println("**** --> key: "+key+" *** "+pstmt);
 		return pstmt;
 	}
@@ -279,7 +283,7 @@ public class CmsPreparedStatementPool {
 		synchronized (temp) {
 			temp.addElement(pstmt);
 			temp.notify();
-		}
+        }    
 	}
 	
 	
