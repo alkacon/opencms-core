@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2004/08/25 07:47:21 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2004/09/27 15:22:10 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.46 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.47 $ $Date: 2004/09/27 15:22:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -306,6 +306,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                 newUser.setAddress(street);
                                 newUser.setAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE, zipcode);
                                 newUser.setAdditionalInfo(C_ADDITIONAL_INFO_TOWN, town);
+                                newUser.setAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                                 for(int z = 0;z < selectedGroups.size();z++) {
                                     String groupname = (String)selectedGroups.elementAt(z);
                                     if(!groupname.equals(defaultGroup)) {
@@ -458,6 +459,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                     theUser.setAddress(street);
                                     theUser.setAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE, zipcode);
                                     theUser.setAdditionalInfo(C_ADDITIONAL_INFO_TOWN, town);
+                                    theUser.setAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                                     if((OpenCms.getDefaultUsers().getUserAdmin().equals(theUser.getName()))
                                             && (!selectedGroups.contains(OpenCms.getDefaultUsers().getGroupAdministrators()))) {
                                         throw new CmsException("cant remove Admin from "

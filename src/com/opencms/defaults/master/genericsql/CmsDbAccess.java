@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/09/27 13:21:59 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2004/09/27 15:22:10 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,22 @@
 
 package com.opencms.defaults.master.genericsql;
 
-import com.opencms.defaults.master.CmsMasterContent;
-import com.opencms.defaults.master.CmsMasterDataSet;
-import com.opencms.defaults.master.CmsMasterMedia;
-import org.opencms.file.CmsFolder;
+import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.util.CmsUUID;
+
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Constructor;
@@ -48,15 +56,6 @@ import java.sql.Types;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
-
-import org.opencms.db.CmsDbUtil;
-import org.opencms.db.CmsPublishedResource;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsSecurityException;
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.util.CmsUUID;
 
 /**
  * This class provides methods to access the database in a generic way.
@@ -205,11 +204,23 @@ public class CmsDbAccess {
         dataset.m_userId = currentUserId;
 
         CmsUUID groupId = CmsUUID.getNullUUID();
+        String defaultGroupName = null;
         try {
-            CmsGroup users = cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers());
-            groupId = users.getId();
+            defaultGroupName = (String)cms.getRequestContext().currentUser().getAdditionalInfo(
+                I_CmsConstants.C_ADDITIONAL_INFO_DEFAULTGROUP);
+            CmsGroup defaultGroup = cms.readGroup(defaultGroupName);
+            groupId = defaultGroup.getId();
         } catch (CmsException e) {
-            // null UUID will be used 
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error(
+                    "Error reading default group "
+                        + defaultGroupName
+                        + " of user "
+                        + cms.getRequestContext().currentUser().getName(),
+                    e);
+            }
+
+            groupId = CmsUUID.getNullUUID();
         }
         dataset.m_groupId = groupId;
 
