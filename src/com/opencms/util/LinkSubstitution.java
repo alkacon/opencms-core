@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2001/11/21 15:29:33 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/11/22 09:54:34 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,6 +50,27 @@ public class LinkSubstitution {
 
     public LinkSubstitution() {
         c_perlUtil = new Perl5Util();
+    }
+
+    /**
+     * Parses the content of the body tag of a html page. It is the same as
+     * substituteEditorContent except that it expects only the part of the
+     * html page between the body tags.
+     */
+    public String substituteEditorContentBody(String body) throws CmsException{
+
+        // we have to prepare the content for the tidy
+        body = "<html><head></head><body>" + body + "</body></html>";
+        // start the tidy
+        String result = substituteEditorContent(body);
+        // remove the preparetags
+        int startIndex = result.indexOf("<body");
+        startIndex = result.indexOf(">", startIndex + 1) + 1;
+        int endIndex = result.lastIndexOf("</body>");
+        if(startIndex > 0) {
+            result = result.substring(startIndex, endIndex);
+        }
+        return result;
     }
 
     /**

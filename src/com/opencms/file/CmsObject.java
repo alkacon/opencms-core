@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/11/20 13:29:55 $
-* Version: $Revision: 1.207 $
+* Date   : $Date: 2001/11/22 09:54:34 $
+* Version: $Revision: 1.208 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.207 $ $Date: 2001/11/20 13:29:55 $
+ * @version $Revision: 1.208 $ $Date: 2001/11/22 09:54:34 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1839,7 +1839,7 @@ public Vector getSubFolders(String foldername) throws CmsException {
  * @param foldername the complete path to the folder.
  * @param includeDeleted Include if the folder is marked as deleted
  *
- * @return subfolders a Vector with all subfolders for the given folder.
+ * @return subfolders a Vector with all subfolders (CmsFolder Objects) for the given folder.
  *
  * @exception CmsException if the user has not the rights to access or read the resource.
  */

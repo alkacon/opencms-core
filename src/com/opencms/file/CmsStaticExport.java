@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2001/11/15 15:56:45 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/11/22 09:54:34 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.1 $ $Date: 2001/11/15 15:56:45 $
+ * @version $Revision: 1.2 $ $Date: 2001/11/22 09:54:34 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -75,10 +75,13 @@ public class CmsStaticExport implements I_CmsConstants{
         m_perlUtil = new Perl5Util();
 
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] starting the static export.");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] Starting the static export.");
         }
         checkExportPath();
         Vector exportLinks = getStartLinks();
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
+        }
         for(int i=0; i < exportLinks.size(); i++){
             exportLink((String)exportLinks.elementAt(i), exportLinks);
         }
@@ -90,6 +93,9 @@ public class CmsStaticExport implements I_CmsConstants{
     private void checkExportPath()throws CmsException{
 
         if(m_exportPath == null){
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] no export folder given (null).");
+            }
             throw new CmsException("[" + this.getClass().getName() + "] " + "no export folder given (null)", CmsException.C_BAD_NAME);
         }
         // we don't need the last slash
@@ -98,6 +104,9 @@ public class CmsStaticExport implements I_CmsConstants{
         }
         File discFolder = new File(m_exportPath + "/");
         if (!discFolder.exists()){
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] the export folder does not exist.");
+            }
             throw new CmsException("[" + this.getClass().getName() + "] " + "the export folder does not exist", CmsException.C_BAD_NAME);
         }
     }
@@ -258,11 +267,11 @@ public class CmsStaticExport implements I_CmsConstants{
         // the firstlevel files
         Vector files = m_cms.getFilesInFolder(folder);
         for(int i=0; i<files.size(); i++){
-            links.add(files.elementAt(i));
+            links.add(((CmsFile)files.elementAt(i)).getAbsolutePath());
         }
         Vector subFolders = m_cms.getSubFolders(folder);
         for(int i=0; i<subFolders.size(); i++){
-            addSubFiles(links, (String)subFolders.elementAt(i));
+            addSubFiles(links, ((CmsFolder)subFolders.elementAt(i)).getAbsolutePath());
         }
     }
 
