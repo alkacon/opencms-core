@@ -633,6 +633,8 @@
 			<context>
 				<delete>Löschen</delete>
 				<property>Eigenschaften</property>
+				<admin>Administieren</admin>
+				<export>Exportieren</export>
 			</context>
 			<lable>
 				<local>Lokaler Rechner</local>
@@ -656,6 +658,18 @@
 				<value>Wert</value>
 				<deletemodule>Modul löschen</deletemodule>
 				<deletetext>Soll das Modul wirklich gelöscht werden?</deletetext>
+				<modulecreate>Module erstellen</modulecreate>
+				<moduleadmin>Module administrieren</moduleadmin>
+				<packetname>Paketname</packetname>
+				<adminpoint>Administrationspunkt</adminpoint>
+				<maintenance>Ereignis-Verarbeitungsklasse</maintenance>
+				<dependon>Abhängig von</dependon>
+				<minversion>min Version</minversion>
+				<maxversion>max Version</maxversion>
+				<adminparameter>Eigenschaften bearbeiten</adminparameter>
+				<export>Modul exportieren: </export>
+				<export1>Sind Sie sicher, dass sie das Modul </export1>
+				<export2> exportieren wollen</export2>
 			</lable>
 			<error>
 				<parametertitle>Eigenschaft für Modul ändern</parametertitle>
@@ -671,6 +685,12 @@
 				<deletetext2>Welche zusätzlichen Files sollen gelöscht werden?</deletetext2>
 				<deletetext3>Folgende Dateien können nicht gelöscht werden, da sie noch von anderen Modulen benötigt werden:</deletetext3>
 				<deletetext4>Folgende Dateien fehlen bereits:</deletetext4>
+				<createtitle>Modul anlegen</createtitle>
+				<createmessage>Das Modul konnte nicht erstellt werden.</createmessage>
+				<createreason>Bitte gegen Sie einen Packet Namen und eine Version an.</createreason>
+				<empty> </empty>
+				<existsreason>Es existiert schon ein Modul mit diesem Namen.</existsreason>
+				<existsugg>Ändern Sie den Namen für ein neues Modul oder wählen Sie aus dem Kontexmenu administrieren für dieses Modul.</existsugg>
 			</error>
 		</module>
 		

@@ -629,6 +629,8 @@
 			<context>
 				<delete>Delete</delete>
 				<property>Properties</property>
+				<admin>Administer</admin>
+				<export>Export</export>
 			</context>
 			<lable>
 				<local>Local computer</local>
@@ -652,6 +654,18 @@
 				<value>Value</value>
 				<deletemodule>Delete Module</deletemodule>
 				<deletetext>Are you sure that you want to delete the module?</deletetext>
+				<modulecreate>Create module</modulecreate>
+				<moduleadmin>Module administration</moduleadmin>
+				<packetname>Packetname</packetname>
+				<adminpoint>Administrationpoint</adminpoint>
+				<maintenance>Maintenance class</maintenance>
+				<dependon>Depend on</dependon>
+				<minversion>min version</minversion>
+				<maxversion>max version</maxversion>
+				<adminparameter>edit Parameter</adminparameter>
+				<export>Export Module: </export>
+				<export1>Sind Sie sicher, dass sie das Modul </export1>
+				<export2> exportieren wollen</export2>
 			</lable>
 			<error>
 				<parametertitle>Change property for module</parametertitle>
@@ -667,6 +681,12 @@
 				<deletetext2>Which additional files should be deleted?</deletetext2>
 				<deletetext3>The following files could not be deleted, because the are used by other modules.</deletetext3>
 				<deletetext4>The following files are already missing:</deletetext4>				
+				<createtitle>Create Module</createtitle>
+				<createmessage>Sorry, the new module could not be created.</createmessage>
+				<createreason>The fields packetname and version must be filled out.</createreason>
+				<empty> </empty>
+				<existsreason>This module already exists.</existsreason>
+				<existsugg>Change the packetname.</existsugg>
 			</error>			
 		</module>
 

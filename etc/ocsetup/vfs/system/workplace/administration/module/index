@@ -53,8 +53,11 @@ function show_help()
 ]]>
 
 <contextmenue name="modulemenue"> 
-	<contextentry name="module.context.delete" href="javascript:location.href='module_delete.html?module='+kontextparam;"/>
 	<contextentry name="module.context.property" href="javascript:location.href='properties.html?view=parameter&amp;module='+kontextparam;"/>
+	<contextentry name="module.context.delete" href="javascript:location.href='module_delete.html?module='+kontextparam;"/>
+	<contextspacer/>	
+	<contextentry name="module.context.admin" href="javascript:location.href='module_admin.html?module='+kontextparam;"/>
+	<contextentry name="module.context.export" href="javascript:location.href='module_export.html?module='+kontextparam;"/>
 </contextmenue>
 
 </TEMPLATE>
