@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/06 12:52:05 $
-* Version: $Revision: 1.433 $
+* Date   : $Date: 2004/01/07 16:53:39 $
+* Version: $Revision: 1.434 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -48,7 +49,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import com.opencms.core.CmsCoreSession;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsExportRequest;
 import com.opencms.core.CmsExportResponse;
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.433 $
+ * @version $Revision: 1.434 $
  */
 public class CmsObject {
 
@@ -111,7 +111,7 @@ public class CmsObject {
     /**
      * Method that can be invoked to find out all currently logged in users.
      */
-    private CmsCoreSession m_sessionStorage;
+    private CmsSessionInfoManager m_sessionStorage;
 
     /**
      * The default constructor.
@@ -151,7 +151,7 @@ public class CmsObject {
         String user, 
         int projectId, 
         String site, 
-        CmsCoreSession sessionStorage, 
+        CmsSessionInfoManager sessionStorage, 
         CmsResourceTranslator directoryTranslator, 
         CmsResourceTranslator fileTranslator
     ) throws CmsException {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/07 09:19:22 $
- * Version: $Revision: 1.301 $
+ * Date   : $Date: 2004/01/07 16:53:39 $
+ * Version: $Revision: 1.302 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.importexport.CmsExportModuledata;
 import org.opencms.importexport.CmsImport;
 import org.opencms.importexport.CmsImportModuledata;
 import org.opencms.lock.CmsLock;
-import org.opencms.lock.CmsLockDispatcher;
+import org.opencms.lock.CmsLockManager;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.301 $ $Date: 2004/01/07 09:19:22 $
+ * @version $Revision: 1.302 $ $Date: 2004/01/07 16:53:39 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -329,9 +329,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     protected int m_limitedWorkplacePort = -1;
 
     /**
-     * The lock dispatcher
+     * The lock manager
      */
-    protected CmsLockDispatcher m_lockDispatcher = CmsLockDispatcher.getInstance();
+    protected CmsLockManager m_lockManager = OpenCms.getLockManager();
 
     /**
      * Cache for online project data
@@ -384,8 +384,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     protected String m_refresh = null;
 
     /**
-     * The Registry
-     */
+    * The Registry
+    */
     protected CmsRegistry m_registry = null;
     
     /**
@@ -919,12 +919,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // has insufficient permissions, the previous lock is restored.
 
         // save the lock of the resource's exclusive locked sibling
-        exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
+        exclusiveLock = m_lockManager.getExclusiveLockedSibling(this, context, resourcename);
         // save the lock of the resource itself
         oldLock = getLock(context, resourcename);
 
         // remove the lock
-        m_lockDispatcher.removeResource(this, context, resourcename, true);
+        m_lockManager.removeResource(this, context, resourcename, true);
 
         try {
             // check if the user has write access to the resource
@@ -933,7 +933,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         } catch (CmsSecurityException e) {
             // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
             // a new user with insufficient permissions on the resource
-            m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
+            m_lockManager.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
 
             throw e;
         }
@@ -943,7 +943,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), resource);
         }
 
-        m_lockDispatcher.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId());
+        m_lockManager.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId());
 
         clearResourceCache();
         m_permissionCache.clear();
@@ -1614,7 +1614,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // check the security
         if (isAdmin(context) || isManagerOfProject(context) || (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
             // count locks
-            return m_lockDispatcher.countExclusiveLocksInProject(project);
+            return m_lockManager.countExclusiveLocksInProject(project);
         } else if (!isAdmin(context) && !isManagerOfProject(context)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] countLockedResources()", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         } else {
@@ -1636,7 +1636,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // check the security
         if (isAdmin(context) || isManagerOfProject(context) || (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
             // count locks
-            return m_lockDispatcher.countExclusiveLocksInFolder(foldername);
+            return m_lockManager.countExclusiveLocksInFolder(foldername);
         } else if (!isAdmin(context) && !isManagerOfProject(context)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] countLockedResources()", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         } else {
@@ -2359,7 +2359,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     existsOnline = false;
                 }
 
-                m_lockDispatcher.removeResource(this, context, currentResource.getRootPath(), true);
+                m_lockManager.removeResource(this, context, currentResource.getRootPath(), true);
 
                 if (!existsOnline) {
                     // remove the properties                
@@ -2436,7 +2436,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // check if the user has write access to the folder
         checkPermissions(context, cmsFolder, I_CmsConstants.C_WRITE_ACCESS);
 
-        m_lockDispatcher.removeResource(this, context, foldername, true);
+        m_lockManager.removeResource(this, context, foldername, true);
 
         // write-acces  was granted - delete the folder and metainfos.
         if (onlineFolder == null) {
@@ -2618,7 +2618,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", delFolder)));
             }
             // unlock all resources in the project
-            m_lockDispatcher.removeResourcesInProject(deleteProject.getId());
+            m_lockManager.removeResourcesInProject(deleteProject.getId());
             clearAccessControlListCache();
             clearResourceCache();
             // set project to online project if current project is the one which will be deleted 
@@ -3632,7 +3632,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsRequestContext context, String resourcename) throws CmsException {
-        return m_lockDispatcher.getLock(this, context, resourcename);
+        return m_lockManager.getLock(this, context, resourcename);
     }
 
     /**
@@ -4675,15 +4675,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Proves if a resource is locked.<p>
-     * 
-     * @param context  the current request context
-     * @param resourcename name of the resource
-     * @return true if resource is locked
-     * @throws CmsException if something goes wrong
+     * @see org.opencms.lock.CmsLockManager#isLocked(CmsDriverManager, CmsRequestContext, String)
      */
     public boolean isLocked(CmsRequestContext context, String resourcename) throws CmsException {
-        return m_lockDispatcher.isLocked(this, context, resourcename);
+        return m_lockManager.isLocked(this, context, resourcename);
     }
 
     /**
@@ -4905,7 +4900,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException will be thrown, if the user has not the rights for this resource.
      */
     public CmsUser lockedBy(CmsRequestContext context, String resourcename) throws CmsException {
-        return readUser(m_lockDispatcher.getLock(this, context, resourcename).getUserId());
+        return readUser(m_lockManager.getLock(this, context, resourcename).getUserId());
     }
 
     /**
@@ -4927,7 +4922,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
 
         // add the resource to the lock dispatcher
-        m_lockDispatcher.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId());
+        m_lockManager.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId());
 
         // update the resource cache
         clearResourceCache();
@@ -7817,7 +7812,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         if ((isAdmin(context) || isManagerOfProject(context)) && (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
 
             // unlock all resources in the project
-            m_lockDispatcher.removeResourcesInProject(projectId);
+            m_lockManager.removeResourcesInProject(projectId);
             clearResourceCache();
             m_projectCache.clear();
             // cw/060104 we must also clear the permission cache
@@ -7838,7 +7833,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
-        CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
+        CmsLock oldLock = m_lockManager.removeResource(this, context, resourcename, false);
         clearResourceCache();
         // cw/060104 we must also clear the permission cache
         m_permissionCache.clear();

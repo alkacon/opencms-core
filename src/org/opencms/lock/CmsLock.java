@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/01/07 16:53:39 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,10 +47,10 @@ import com.opencms.core.I_CmsConstants;
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2004/01/06 09:46:26 $
+ * @version $Revision: 1.15 $ $Date: 2004/01/07 16:53:39 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(com.opencms.file.CmsResource)
- * @see org.opencms.lock.CmsLockDispatcher
+ * @see org.opencms.lock.CmsLockManager
  */
 public class CmsLock extends Object implements Cloneable {
 

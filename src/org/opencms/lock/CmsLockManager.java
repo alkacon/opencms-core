@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/11/13 10:29:27 $
- * Version: $Revision: 1.48 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
+ * Date   : $Date: 2004/01/07 16:53:39 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,24 +48,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The CmsLockDispatcher is used by the Cms application to detect 
+ * The CmsLockManager is used by the Cms application to detect 
  * the lock state of a resource.<p>
  * 
  * The lock state depends on the path of the resource, and probably 
- * locked parent folders. The result of a query to the lock dispatcher
- * are instances of CmsLock objects.
+ * locked parent folders. The result of a query to the lock manager
+ * are instances of CmsLock objects.<p>
  * 
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.48 $ $Date: 2003/11/13 10:29:27 $
+ * @author Andreas Zahner (a.zahner@alkacon.com) 
+ * @version $Revision: 1.1 $
+ * 
  * @since 5.1.4
+ * 
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
  */
-public final class CmsLockDispatcher extends Object {
+public final class CmsLockManager extends Object {
 
-    /** The shared lock dispatcher instance */
-    private static CmsLockDispatcher sharedInstance = null;
+    /** The shared lock manager instance */
+    private static CmsLockManager sharedInstance = null;
 
     /** A map holding the exclusive CmsLocks */
     private Map m_exclusiveLocks;
@@ -73,27 +76,27 @@ public final class CmsLockDispatcher extends Object {
     /**
      * Default constructor.<p>
      */
-    private CmsLockDispatcher() {
+    private CmsLockManager() {
         super();
         m_exclusiveLocks = Collections.synchronizedMap(new HashMap());
     }
 
     /**
-     * Returns the shared instance of the lock dispatcher.<p>
+     * Returns the shared instance of the lock manager.<p>
      * 
-     * @return the shared instance of the lock dispatcher
+     * @return the shared instance of the lock manager
      */
-    public static synchronized CmsLockDispatcher getInstance() {
+    public static synchronized CmsLockManager getInstance() {
         // synchronized to avoid "Double Checked Locking"
         if (sharedInstance == null) {
-            sharedInstance = new CmsLockDispatcher();
+            sharedInstance = new CmsLockManager();
         }
 
         return sharedInstance;
     }
 
     /**
-     * Adds a resource to the lock dispatcher.<p>
+     * Adds a resource to the lock manager.<p>
      * 
      * @param driverManager the driver manager
      * @param context the current request context
@@ -373,7 +376,7 @@ public final class CmsLockDispatcher extends Object {
     /**
      * Proves if a resource is locked.<p>
      * 
-     * Use {@link org.opencms.lock.CmsLockDispatcher#getLock(CmsDriverManager, CmsRequestContext, String)} 
+     * Use {@link org.opencms.lock.CmsLockManager#getLock(CmsDriverManager, CmsRequestContext, String)} 
      * to obtain a CmsLock object for the specified resource to get further information 
      * about how the resource is locked.<p>
      * 
@@ -387,9 +390,28 @@ public final class CmsLockDispatcher extends Object {
         CmsLock lock = getLock(driverManager, context, resourcename);
         return !lock.isNullLock();
     }
+    
+    /**
+     * Removes all exclusive temporary locks of a user.<p>
+     * 
+     * @param userId the ID of the user whose locks are removed
+     */
+    public void removeTempLocks(CmsUUID userId) {
+        Iterator i = m_exclusiveLocks.keySet().iterator();
+        CmsLock currentLock = null;
+
+        while (i.hasNext()) {
+            currentLock = (CmsLock)m_exclusiveLocks.get(i.next());
+
+            if (currentLock.getUserId().equals(userId)) {
+                // iterators are fail-fast!
+                i.remove();
+            }
+        }
+    }
 
     /**
-     * Removes a resource from the lock dispatcher.<p>
+     * Removes a resource from the lock manager.<p>
      * 
      * The forceUnlock option should be used with caution. forceUnlock will remove the lock
      * by ignoring any rules which may cause wrong lock states.
@@ -464,7 +486,7 @@ public final class CmsLockDispatcher extends Object {
     }
 
     /**
-     * Removes all resources that are exclusive locked in a project.<p>
+     * Removes all resources that are exclusively locked in a project.<p>
      * 
      * @param projectId the ID of the project where the resources have been locked
      */
