@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/06 06:06:51 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2001/10/18 07:06:33 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.32 $ $Date: 2001/09/06 06:06:51 $
+ * @version $Revision: 1.33 $ $Date: 2001/10/18 07:06:33 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -108,13 +108,13 @@ public boolean accessProject(CmsUser currentUser, CmsProject currentProject, int
  */
 public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 
-    Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath());
+    Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getResourceName());
     if (access != null) {
             return access.booleanValue();
     } else {
         com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
         boolean ac=dbAccess.accessRead(currentUser, currentProject, resource);
-        m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath(),new Boolean(ac));
+        m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getResourceName(),new Boolean(ac));
 
         return ac;
     }
@@ -314,7 +314,7 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 
     for (int i = 0; i < resources.size(); i++) {
         cmsResource = (CmsResource) resources.elementAt(i);
-        String resourceName = cmsResource.getAbsolutePath();
+        String resourceName = cmsResource.getResourceName();
         if (resourceName.endsWith("/")) {
             cmsFolder = new CmsFolder(cmsResource.getResourceId(), cmsResource.getParentId(),
                                     cmsResource.getFileId(), resourceName, cmsResource.getType(),
@@ -375,7 +375,7 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
 
     for (int i=0; i < resources.size(); i++) {
         cmsResource = (CmsResource)resources.elementAt(i);
-        String resourceName = cmsResource.getAbsolutePath();
+        String resourceName = cmsResource.getResourceName();
         if (resourceName.endsWith("/")) {
             cmsFolder = new CmsFolder(cmsResource.getResourceId(), cmsResource.getParentId(),
                                     cmsResource.getFileId(), resourceName, cmsResource.getType(),
