@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2004/02/04 17:18:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/01 13:47:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  */
 public class CmsLink {
 
@@ -279,7 +279,7 @@ public class CmsLink {
      * @param query the query of this link
      * @return the parameter map
      */
-    private static HashMap getParameters(String query) {
+    private static Map getParameters(String query) {
         
         HashMap parameters = new HashMap();
         String params[] = CmsStringSubstitution.split(query, "&");
@@ -287,7 +287,12 @@ public class CmsLink {
             String pair[] = CmsStringSubstitution.split(params[i], "=");
             String[] p = (String[])parameters.get(pair[0]);
             if (p == null) {
-                p = new String[]{pair[1]};
+                if (pair.length > 1) {
+                    p = new String[]{pair[1]};
+                } else {
+                    // TODO: Check what that standard API does here
+                    p = new String[0];
+                }
             } else {
                 String[] p2 = new String[p.length+1];
                 System.arraycopy(p, 0, p2, 0, p.length);

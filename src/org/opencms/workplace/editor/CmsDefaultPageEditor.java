@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/05/24 14:39:38 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/06/01 13:47:04 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlException;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 5.1.12
  */
@@ -233,7 +234,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public void actionSave() throws JspException { 
         try {
-    
+            
              // save content to temporary file
              performSaveContent(getParamElementname(), getElementLocale());
              // copy the temporary file content back to the original file
@@ -494,6 +495,12 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @see org.opencms.workplace.editor.CmsEditor#initContent()
      */
     protected void initContent() {
+        if (! CmsStringSubstitution.isEmpty(getParamContent())) {
+            if (getParamElementname().equals(getParamOldelementname()) 
+            && getParamElementlanguage().equals(getParamOldelementlanguage())) {            
+                return;
+            }
+        }
         // get the content from the temporary file        
         try {                                  
             CmsXmlPage page = CmsXmlPage.read(getCms(), getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL));
