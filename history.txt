@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/11/04 11:30:03 $
- * Version: $Revision: 1.414 $
+ * Date   : $Date: 2002/11/05 10:00:27 $
+ * Version: $Revision: 1.415 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! If an uploaded file already exists, you are now asked if you want to overwrite it (instead of OpenCms throwing an exception)
 ! New "touch" feature in Workplace Explorer and CmsObject
 ! New "file name translation" feature automatically replaces illegal chars (e.g. space, ? or &) in 
   uploaded file names (also in extracted ZIP files). Replacement rules can be set in opencms.properties.
@@ -45,6 +46,7 @@ OpenCms 5.0 (next version)
 * Fixed ElementCache for DumpLauncher. For DUMP-Elements no file.encoding translation is allowed.
 * Fixed ElementCache for MethodElements. Switched handling from byte[] to String.
 * Fixed a bug in cache settings that prevented PDFs from offline projects to be displayed in Acrobat Reader
+- The deprecated FOP based PdfLauncher was removed
 - Login dialog has moved to "/system/login", improved behaviour for active sessions
 - Changed the workplace stylesheet to fix problems displaying german umlauts. Thanks to www.gridnine.com
   for this contribution.

@@ -33,8 +33,7 @@
     <property name="build.inputlib.xerces"      value="${build.inputlib}/xerces-1_4_4.jar"/>
     <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql-connector-java-2_0_14-bin.jar"/>
     <property name="build.inputlib.fesi"        value="${build.inputlib}/fesi.jar"/>            
-    <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>
-    <property name="build.inputlib.fop"         value="${build.inputlib}/fop_bin.jar"/>     
+    <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>  
     <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2_0_6.jar"/>
     <property name="build.inputlib.tidy"        value="${build.inputlib}/Tidy.jar"/>
     
@@ -66,15 +65,10 @@
         </condition>
         
         <property name="ex.oracle"      value="com/opencms/file/oracleplsql/**"/>
-        <property name="ex.pdflaunch"   value="com/opencms/launcher/CmsPdfLauncher.java"/>
                 
         <condition property="build.excludes" value="${build.excludes},${ex.oracle}">
             <not><available file="${build.inputlib.oracle}"/></not>
-        </condition>        
-        
-        <condition property="build.excludes" value="${build.excludes},${ex.pdflaunch}">
-            <not><available file="${build.inputlib.fop}"/></not>
-        </condition>        
+        </condition>           
         
         <condition property="tomcat.home" value="${env.TOMCAT_HOME}">
             <available file="${env.TOMCAT_HOME}" type="dir"/>
