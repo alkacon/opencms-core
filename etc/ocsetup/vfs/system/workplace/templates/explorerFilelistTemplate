@@ -45,7 +45,7 @@
 	<COLUMN_ACCESS><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.access" /><![CDATA[</p></td>]]></COLUMN_ACCESS>
 	<COLUMN_LOCKED><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.locked" /><![CDATA[</p></td>]]></COLUMN_LOCKED>
 	
-	<COLUMN_PIC_VALUE><![CDATA[<td><img src="]]><PROCESS>ICON_VALUE</PROCESS><![CDATA[" border=0 width=16 height=16></a></td>]]></COLUMN_PIC_VALUE>
+	<COLUMN_PIC_VALUE><![CDATA[<td><A href="javascript:showkontext(']]><PROCESS>CONTEXT_MENU</PROCESS><![CDATA[',]]><PROCESS>CONTEXT_NUMBER</PROCESS><![CDATA[)"><img src="]]><PROCESS>ICON_VALUE</PROCESS><![CDATA[" border=0 width=16 height=16></a></td>]]></COLUMN_PIC_VALUE>
 	<COLUMN_LOCK_VALUE><PROCESS>LOCK_VALUE</PROCESS></COLUMN_LOCK_VALUE>
 	<COLUMN_LOCK_VALUE_NOLOCK><![CDATA[<td></td>]]></COLUMN_LOCK_VALUE_NOLOCK>
 	<COLUMN_LOCK_VALUE_OWN><![CDATA[<td valign=bottom><img src="]]><METHOD name="picsUrl">ic_lockuser.gif</METHOD><![CDATA[" alt="]]><PROCESS>LOCKEDBY</PROCESS><![CDATA[" border=0 width=16 height=16</td>]]></COLUMN_LOCK_VALUE_OWN>

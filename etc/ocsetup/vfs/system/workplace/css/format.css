@@ -36,6 +36,19 @@ SELECT
     FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
     FONT-SIZE: 8pt;
 }
+H2
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 14pt;
+    FONT-WEIGHT: bold;
+}
+H2.darkblue
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 14pt;
+    FONT-WEIGHT: bold;
+    COLOR:#000066;
+}
 H3
 {
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, 'sans serif';
@@ -177,15 +190,6 @@ INPUT.textfeld3
     FONT-WEIGHT: normal;
 	WIDTH: 300px
 }
-INPUT.textfeld4
-{
-    BACKGROUND-COLOR: white;
-    COLOR: black;
-    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
-    FONT-SIZE: 8pt;
-    FONT-WEIGHT: normal;
-	WIDTH: 250px
-}
 TEXTAREA.textarea
 {
     COLOR: #000000;
@@ -214,6 +218,12 @@ P.einzug
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
     TEXT-INDENT: 5px
+}
+P.normal
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-INDENT: 0px;
 }
 P.tab
 {
@@ -259,18 +269,25 @@ TD.taskviewhead2
     FONT-SIZE: 10pt;
     FONT-WEIGHT: bold;
 }
-
+TD.taskviewheadblue
+{
+    BACKGROUND-COLOR: blue;
+    COLOR: #ffffff;
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+}
 TD.taskviewheadred
 {
-    BACKGROUND-COLOR: #ffffff;
-    COLOR: #ff0000;
+    BACKGROUND-COLOR: #ff0000;
+    COLOR: #ffffff;
     FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
-    FONT-SIZE: 8pt;
+    FONT-SIZE: 10pt;
     FONT-WEIGHT: bold
 }
 TD.taskviewbold
 {
-    BACKGROUND-COLOR: #ffffff;
+    BACKGROUND-COLOR: #c0c0c0;
     COLOR: black;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
@@ -278,7 +295,7 @@ TD.taskviewbold
 }
 TD.taskviewtxt
 {
-    BACKGROUND-COLOR: #ffffff;
+    BACKGROUND-COLOR: #cccccc;
     COLOR: #000000;
     FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
     FONT-SIZE: 8pt;
@@ -286,8 +303,16 @@ TD.taskviewtxt
 }
 TD.taskviewtxtred
 {
-    BACKGROUND-COLOR: #ffffff;
+    BACKGROUND-COLOR: #cccccc;
     COLOR: #ff0000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal
+}
+TD.taskviewbackblue
+{
+    BACKGROUND-COLOR: blue;
+    COLOR: #ffffff;
     FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
     FONT-SIZE: 8pt;
     FONT-WEIGHT: normal
@@ -299,6 +324,14 @@ TD.taskviewleerzeile
     PADDING-BOTTOM: 0px;
     PADDING-LEFT: 10px;
     PADDING-RIGHT: 10px
+}
+TD.projectdescr
+{
+    BACKGROUND-COLOR: #ffffff;
+    PADDING-LEFT: 5px;
+    COLOR: #000000;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
 }
 INPUT.taskviewbutton
 {
@@ -436,7 +469,7 @@ a:hover.treefoldernip
 }
 
 /* styles for the filelist					*/
-TD.dateingeaendert
+TD.dateingeandert
 {
     COLOR: black;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
@@ -468,19 +501,19 @@ TD.dateintprojekt
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
 }
-a.dateingeaendert
+a.dateingeandert
 {
     COLOR: black;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
 }
-a:visited.dateingeaendert
+a:visited.dateingeandert
 {
     COLOR: black;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
 }
-a:hover.dateingeaendert
+a:hover.dateingeandert
 {
     BACKGROUND-COLOR: #000066;
 	COLOR: white;
@@ -571,21 +604,25 @@ DIV.kontextmenu
 {
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
-    LEFT: 0px;
     POSITION: absolute;
-    TEXT-INDENT: 15px;
     TOP: 0px;
-    VISIBILITY: hidden;
-    WIDTH: 150px;
-    Z-INDEX: 100
+    LEFT: 0px;
+    width: 150px;
+    TEXT-INDENT: 2px;
+    BACKGROUND-COLOR: #c0c0c0;
+    VISIBILITY: hidden;   
+    Z-INDEX: 100;
 }
 TABLE.filekontext
 {
+	width: 150px;
     BACKGROUND-COLOR: #c0c0c0;
-	BORDER-BOTTOM: #c0c0c0 outset 1px;
+	/*BORDER-BOTTOM: #c0c0c0 outset 1px;
     BORDER-LEFT: #c0c0c0 outset 1px;
     BORDER-RIGHT: #c0c0c0 outset 1px;
-    BORDER-TOP: #c0c0c0 outset 1px;
+    BORDER-TOP: #c0c0c0 outset 1px;*/
+    
+ 	
 }
 A.kontextlink
 {

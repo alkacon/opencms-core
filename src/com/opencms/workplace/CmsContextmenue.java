@@ -15,7 +15,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/02/08 15:58:39 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/08 18:07:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -74,8 +74,7 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement, I
 				}
 			}
 		}
-		
-		
+
 		result.append(context.getProcessedXmlDataValue("CONTEXTFOOT", callingObject, parameters));
 
 		// retur the result

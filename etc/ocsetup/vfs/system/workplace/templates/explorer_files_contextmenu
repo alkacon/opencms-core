@@ -1,36 +1,6 @@
 <?xml version="1.0"?>
 <WORKPLACE>
 <TEMPLATE>
-<![CDATA[
-<html>
-<head>
-
-<script language=JavaScript>
-<!--
-function show_help()
-{
-	return '2_1_2_2.html';
-}
-//-->
-</script>
-
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-
-<title>opencms</title>
-
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_kontextmenu.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
-</head>
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed>
-
-<table cellspacing=1 cellpadding=1 border=0 >
-]]><FILELIST method="getFiles" template="explorerFilelistTemplate"/><![CDATA[
-</table>
-
-</body>
-</html>
-]]>
 
 <contextmenue name="plainlock">
 	<contextentry name="explorer.context.overridelock" href="#"/>

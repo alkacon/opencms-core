@@ -16,7 +16,7 @@
 	</CONTEXTENTRY>
 	
 	<CONTEXTDISABLED>
-		<![CDATA[<TR><TD class=inaktiv>]]><PROCESS>name</PROCESS><![CDATA[
+     	<![CDATA[<TR><TD class=inaktiv>]]><PROCESS>name</PROCESS><![CDATA[
 		</TD></TR>]]>
 	</CONTEXTDISABLED>
 	

@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/02/08 15:31:21 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/08 18:07:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -223,6 +223,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             StringBuffer output=new StringBuffer();  
             String foldername;
             String currentFolder;
+            int contextNumber=0;
             
             String servlets=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
             
@@ -264,6 +265,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // Set output style class according to the project and state of the file.
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,folder));   
                      // set the icon
+                    template.setXmlData("CONTEXT_MENU","plainlock");
+                    template.setXmlData("CONTEXT_NUMBER",new Integer(contextNumber++).toString());
+                    
                     A_CmsResourceType type=cms.getResourceType(folder.getType());
                     String icon=icon=getIcon(cms,type,config);
                     template.setXmlData(C_ICON_VALUE,config.getPictureUrl()+icon);
@@ -313,9 +317,11 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // Set output style class according to the project and state of the file.
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));                   
                     // set the icon
+                    template.setXmlData("CONTEXT_MENU","plainlock");
+                    template.setXmlData("CONTEXT_NUMBER",new Integer(contextNumber++).toString());
+                    
                     A_CmsResourceType type=cms.getResourceType(file.getType());
                     String icon=getIcon(cms,type,config);
-                    //String icon="ic_file_"+type.getResourceName().toLowerCase()+".gif";
                     template.setXmlData(C_ICON_VALUE,config.getPictureUrl()+icon);
                     // set the link         
                     template.setXmlData(C_LINK_VALUE,servlets+file.getAbsolutePath());  
