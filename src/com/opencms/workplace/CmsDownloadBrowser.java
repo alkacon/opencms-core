@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/10/30 16:43:11 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,8 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.OpenCms;
-
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -43,12 +42,14 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.opencms.main.OpenCms;
+
 /**
  * Template class for displaying OpenCms download browser.
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.33 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.34 $ $Date: 2003/10/30 16:43:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -120,6 +121,28 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
             if(!"error_no_gallery".equals(templateSelector)) {
                 String pageText = (String)parameters.get(C_PARA_PAGE);
                 String filter = (String)parameters.get(C_PARA_FILTER);
+                
+                // check if the user requested a file deletion
+                String deleteAction = (String)parameters.get("action");
+                if ("delete".equals(deleteAction)) {
+                    String deleteResource = (String)parameters.get("resource");
+                    if (deleteResource != null && !"".equals(deleteResource)) {
+                        try {
+                            // lock and delete the resource
+                            CmsResource res = cms.readFileHeader(deleteResource);
+                            if (cms.getLock(res).isNullLock()) {
+                                cms.lockResource(deleteResource, true);
+                            }
+                            cms.deleteResource(deleteResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS);
+                        } catch (CmsException e) {
+                            xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(e));
+                            templateSelector = "error";
+                            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+                        }
+                    }
+                }
+
+
 
                 // Check if the user requested a certain page number
                 if(pageText == null || "".equals(pageText)) {
@@ -176,6 +199,13 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         String downloadPath = servletPath + cms.readAbsolutePath(res);
         filelistTemplate.setData("fullpath", downloadPath);
         filelistTemplate.setData("name_value", res.getName());
+        filelistTemplate.setData("filepath", cms.readAbsolutePath(res));
+        if ((cms.getPermissions(cms.readAbsolutePath(res)).getPermissions() & I_CmsConstants.C_ACCESS_WRITE) > 0  ) {
+            filelistTemplate.setData("delete", filelistTemplate.getProcessedDataValue("deleteentry", this));
+        } else {
+            filelistTemplate.setData("delete", "&nbsp;");
+        }
+
         String title = "";
         try {
             title = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_TITLE);
@@ -279,14 +309,16 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
 
         // Filter the files
         Vector filteredFiles = new Vector();
-        for(int i = 0;i < allFiles.size();i++) {
+        for(int i=0; i<allFiles.size(); i++) {
             CmsFile file = (CmsFile)allFiles.get(i);
-            String filename = file.getName();
-            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
-            boolean filenameFilter = inFilter(filename, filter);
-            boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
-            if(filenameFilter || titleFilter) {
-                filteredFiles.addElement(file);
+            if (file.getState() != I_CmsConstants.C_STATE_DELETED) {
+                String filename = file.getName();
+                String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+                boolean filenameFilter = inFilter(filename, filter);
+                boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
+                if (filenameFilter || titleFilter) {
+                    filteredFiles.addElement(file);
+                }
             }
         }
         return filteredFiles;
