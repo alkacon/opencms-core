@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2002/08/29 17:25:29 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2002/10/30 10:30:03 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.util;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.defaults.*;

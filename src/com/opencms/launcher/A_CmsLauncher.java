@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2002/09/12 15:20:14 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2002/10/30 10:29:15 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.launcher;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
@@ -58,7 +59,7 @@ import javax.servlet.http.*;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2002/09/12 15:20:14 $
+ * @version $Revision: 1.36 $ $Date: 2002/10/30 10:29:15 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
 
@@ -334,9 +335,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
 
                 resp.setContentLength(result.length);
                 resp.setHeader("Connection", "keep-alive");
-                                
                 out.write(result);
-                // DEBUG for BEA WEBLOGIC out.flush();
                 out.close();
             }
         }

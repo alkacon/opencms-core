@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2002/10/22 19:16:01 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2002/10/30 10:29:46 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.launcher;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
@@ -55,7 +56,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2002/10/22 19:16:01 $
+ * @version $Revision: 1.39 $ $Date: 2002/10/30 10:29:46 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
