@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/03/31 08:11:07 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/03/31 14:01:10 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
  
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsProperty;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.lock.CmsLock;
@@ -75,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsObject {
 
@@ -777,7 +778,8 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsResource createSibling(String linkName, String targetName, Map linkProperties) throws CmsException {
-        return m_driverManager.createSibling(m_context, addSiteRoot(linkName), addSiteRoot(targetName), linkProperties, true);
+        // TODO new property model: creating siblings does not support the new property model yet
+        return m_driverManager.createSibling(m_context, addSiteRoot(linkName), addSiteRoot(targetName), CmsProperty.toList(linkProperties), true);
     }
     
     /**
@@ -883,11 +885,15 @@ public class CmsObject {
      * Deletes a property for a file or folder.<p>
      *
      * @param resourcename the name of a resource for which the property should be deleted
-     * @param property the name of the property
+     * @param key the name of the property
      * @throws CmsException if something goes wrong
      */
-    public void deleteProperty(String resourcename, String property) throws CmsException {
-        m_driverManager.deleteProperty(m_context, addSiteRoot(resourcename), property);
+    public void deleteProperty(String resourcename, String key) throws CmsException {
+        CmsProperty property = new CmsProperty();
+        property.setKey(key);
+        property.setStructureValue(CmsProperty.C_DELETE_VALUE);
+        
+        m_driverManager.writePropertyObject(m_context, addSiteRoot(resourcename), property);        
     }
 
     /**
@@ -1084,7 +1090,7 @@ public class CmsObject {
      * filename is not valid or if the user has not the appropriate rights to create a new file.
      */
     protected CmsFile doCreateFile(String newFileName, byte[] contents, String type) throws CmsException {
-        CmsFile file = m_driverManager.createFile(m_context, addSiteRoot(newFileName), contents, type, new HashMap());
+        CmsFile file = m_driverManager.createFile(m_context, addSiteRoot(newFileName), contents, type, Collections.EMPTY_LIST);
         return file;
     }
 
@@ -1107,9 +1113,11 @@ public class CmsObject {
     protected CmsFile doCreateFile(String newFileName, byte[] contents, String type, Map properties) throws CmsException {
         // avoid null-pointer exceptions
         if (properties == null) {
-            properties = new Hashtable();
+            properties = Collections.EMPTY_MAP;
         }
-        CmsFile file = m_driverManager.createFile(m_context, addSiteRoot(newFileName), contents, type, properties);
+        
+        // TODO new property model: creating files does not support the new property model yet
+        CmsFile file = m_driverManager.createFile(m_context, addSiteRoot(newFileName), contents, type, CmsProperty.toList(properties));
         return file;
     }
 
@@ -1127,7 +1135,8 @@ public class CmsObject {
      *
      */
     protected CmsFolder doCreateFolder(String newFolderName, Map properties) throws CmsException {
-        CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(newFolderName), properties);
+        // TODO new property model: creating folders does not support the new property model yet
+        CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(newFolderName), CmsProperty.toList(properties));
         return cmsFolder;
     }
 
@@ -1144,7 +1153,7 @@ public class CmsObject {
      * a new folder.
      */
     protected CmsFolder doCreateFolder(String folder, String newFolderName) throws CmsException {
-        CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(folder + newFolderName + I_CmsConstants.C_FOLDER_SEPARATOR), new Hashtable());
+        CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(folder + newFolderName + I_CmsConstants.C_FOLDER_SEPARATOR), Collections.EMPTY_LIST);
         return cmsFolder;
     }
 
@@ -1191,9 +1200,9 @@ public class CmsObject {
      * a new resource
      *
      */
-    protected CmsResource doImportResource(CmsResource resource, byte content[], Map properties, String destination)
-        throws CmsException {
-        CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(destination), resource, content, properties);
+    protected CmsResource doImportResource(CmsResource resource, byte content[], Map properties, String destination) throws CmsException {
+        // TODO new property model: the import/export does not support the new property model yet
+        CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(destination), resource, content, CmsProperty.toList(properties));
         return cmsResource;
     }
 
@@ -1257,7 +1266,8 @@ public class CmsObject {
     protected CmsResource doReplaceResource(String resName, byte[] newResContent, int newResType, Map newResProps) throws CmsException {
         CmsResource res = null;
 
-        res = m_driverManager.replaceResource(m_context, addSiteRoot(resName), newResType, newResProps, newResContent);
+        // TODO new property model: replacing resource does not yet support the new property model
+        res = m_driverManager.replaceResource(m_context, addSiteRoot(resName), newResType, CmsProperty.toList(newResProps), newResContent);
         return res;
     }
 
@@ -1348,7 +1358,8 @@ public class CmsObject {
     * @throws CmsException if something goes wrong
     */
     protected void doWriteResource(String resourcename, Map properties, byte[] filecontent) throws CmsException {
-        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), properties, filecontent);
+        // TODO new property model: the import/export does not support the new property model yet
+        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), CmsProperty.toList(properties), filecontent);
     }
 
     /**
@@ -2647,17 +2658,6 @@ public class CmsObject {
     public CmsBackupProject readBackupProject(int tagId) throws CmsException {
         return (m_driverManager.readBackupProject(tagId));
     }
-    
-    /** 
-     * Reads the backed up properties of a backup resource.<p>
-     * 
-     * @param resource the backup resource
-     * @return a Map with all backed up properties
-     * @throws CmsException if something goes wrong
-     */
-    public Map readBackupProperties(CmsBackupResource resource) throws CmsException {
-        return m_driverManager.readBackupProperties(resource);
-    }
 
     /**
      * Gets the Crontable.
@@ -3080,76 +3080,6 @@ public class CmsObject {
      */
     public Vector readProjectView(int projectId, String filter) throws CmsException {
         return m_driverManager.readProjectView(m_context, projectId, filter);
-    }
-
-    /**
-     * Looks up all properties for a resource.<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @return Map of Strings representing all properties of the resource
-     * @throws CmsException in case there where problems reading the properties
-     */
-    public Map readProperties(String resource) throws CmsException {
-        return m_driverManager.readProperties(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);
-    }
-
-    /**
-     * Looks up all properties for a resource with optional direcory upward cascading.<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @param search if <code>true</code>, the properties will also be looked up on all parent folders
-     *   and the results will be merged, if <code>false</code> not (ie. normal property lookup)
-     * @return Map of Strings representing all properties of the resource
-     * @throws CmsException in case there where problems reading the properties
-     */
-    public Map readProperties(String resource, boolean search) throws CmsException {
-        return m_driverManager.readProperties(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);
-    }
-
-    /**
-     * Looks up a specified property from a resource.<p>
-     *
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @return the value of the property found, <code>null</code> if nothing was found
-     * @throws CmsException in case there where problems reading the property
-     */
-    public String readProperty(String resource, String property) throws CmsException {
-        return m_driverManager.readProperty(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
-    }
-
-    /**
-     * Looks up a specified property with optional direcory upward cascading.<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @param search if <code>true</code>, the property will be looked up on all parent folders
-     *   if it is not attached to the the resource, if false not (ie. normal 
-     *   property lookup)
-     * @return the value of the property found, <code>null</code> if nothing was found
-     * @throws CmsException in case there where problems reading the property
-     */
-    public String readProperty(String resource, String property, boolean search) throws CmsException {
-        return m_driverManager.readProperty(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
-    }
-
-    /**
-     * Looks up a specified property with optional direcory upward cascading,
-     * a default value will be returned if the property is not found on the
-     * resource (or it's parent folders in case search is set to <code>true</code>).<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @param search if <code>true</code>, the property will be looked up on all parent folders
-     *   if it is not attached to the the resource, if <code>false</code> not (ie. normal 
-     *   property lookup)
-     * @param propertyDefault a default value that will be returned if
-     *   the property was not found on the selected resource
-     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
-     * @throws CmsException in case there where problems reading the property
-     */
-    public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
-        return m_driverManager.readProperty(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search, propertyDefault);
     }
 
     /**
@@ -3775,15 +3705,14 @@ public class CmsObject {
     }
 
     /**
-     * Writes a couple of Properties for a file or folder.
+     * Writes a couple of properties as structure values for a file or folder.
      *
-     * @param name the resource-name of which the Property has to be set.
+     * @param resourceName the resource-name of which the Property has to be set.
      * @param properties a Hashtable with property-definitions and property values as Strings.
-     *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
-    public void writeProperties(String name, Map properties) throws CmsException {
-        m_driverManager.writeProperties(m_context, addSiteRoot(name), properties);
+    public void writeProperties(String resourceName, Map properties) throws CmsException {
+        m_driverManager.writePropertyObjects(m_context, addSiteRoot(resourceName), CmsProperty.toList(properties));
     }
 
     /**
@@ -3792,38 +3721,45 @@ public class CmsObject {
      * @param name the resource-name of which the Property has to be set.
      * @param properties a Hashtable with property-definitions and property values as Strings.
      * @param addDefinition flag to indicate if unknown definitions should be added
-     *
      * @throws CmsException if operation was not successful.
      */
     public void writeProperties(String name, Map properties, boolean addDefinition) throws CmsException {
-        m_driverManager.writeProperties(m_context, addSiteRoot(name), properties, addDefinition);
+        m_driverManager.writePropertyObjects(m_context, addSiteRoot(name), CmsProperty.setCreatePropertyDefinitions(CmsProperty.toList(properties), addDefinition));
     }
     
     /**
-     * Writes a property for a file or folder.
+     * Writes a property as a structure value for a file or folder.<p>
      *
-     * @param name the resource-name for which the property will be set.
-     * @param property the property-definition name.
-     * @param value the value for the property to be set.
-     *
-     * @throws CmsException if operation was not successful.
+     * @param resourceName the resource-name for which the property will be set
+     * @param key the property-definition name
+     * @param value the value for the property to be set
+     * @throws CmsException if operation was not successful
      */
-    public void writeProperty(String name, String property, String value) throws CmsException {
-        m_driverManager.writeProperty(m_context, addSiteRoot(name), property, value, false);
+    public void writeProperty(String resourceName, String key, String value) throws CmsException {
+        CmsProperty property = new CmsProperty();
+        property.setKey(key);
+        property.setStructureValue(value);
+        
+        m_driverManager.writePropertyObject(m_context, addSiteRoot(resourceName), property);        
     }
 
     /**
      * Writes a property for a file or folder.
      *
      * @param name the resource-name for which the property will be set.
-     * @param property the property-definition name.
+     * @param key the property-definition name.
      * @param value the value for the property to be set.
      * @param addDefinition flag to indicate if unknown definitions should be added
      *
      * @throws CmsException if operation was not successful.
      */
-    public void writeProperty(String name, String property, String value, boolean addDefinition) throws CmsException {
-        m_driverManager.writeProperty(m_context, addSiteRoot(name), property, value, addDefinition);
+    public void writeProperty(String name, String key, String value, boolean addDefinition) throws CmsException {
+        CmsProperty property = new CmsProperty();
+        property.setKey(key);
+        property.setStructureValue(value);
+        property.setCreatePropertyDefinition(addDefinition);
+        
+        m_driverManager.writePropertyObject(m_context, addSiteRoot(name), property); 
     }
 
     /**
@@ -4080,6 +4016,133 @@ public class CmsObject {
      */
     public CmsPublishList getPublishList(I_CmsReport report) throws Exception {
         return getPublishList(null, false, report);
+    }    
+    
+    /**
+     * Reads a property object from the database specified by it's key name mapped to a resource.<p>
+     * 
+     * Returns {@link CmsProperty#getNullProperty()} if the property is not found.<p>
+     * 
+     * @param resourceName the name of resource where the property is mapped to
+     * @param key the property key name
+     * @param search true, if the property should be searched on all parent folders  if not found on the resource
+     * @return a CmsProperty object containing the structure and/or resource value
+     * @throws CmsException if something goes wrong
+     */    
+    public CmsProperty readPropertyObject(String key, String resourceName, boolean search) throws CmsException {
+        return m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resourceName), m_context.getAdjustedSiteRoot(resourceName), key, search);
+    }
+    
+    /**
+     * Reads all property objects mapped to a specified resource from the database.<p>
+     * 
+     * Returns an empty list if no properties are found at all.<p>
+     * 
+     * @param resourceName the name of resource where the property is mapped to
+     * @param search true, if the properties should be searched on all parent folders  if not found on the resource
+     * @return a list of CmsProperty objects containing the structure and/or resource value
+     * @throws CmsException if something goes wrong
+     */    
+    public List readPropertyObjects(String resourceName, boolean search) throws CmsException {
+        return m_driverManager.readPropertyObjects(m_context, addSiteRoot(resourceName), m_context.getAdjustedSiteRoot(resourceName), search);
+    }
+    
+    /**
+     * Writes a property object to the database mapped to a specified resource.<p>
+     * 
+     * @param resourceName the name of resource where the property is mapped to
+     * @param property a CmsProperty object containing a structure and/or resource value
+     * @throws CmsException if something goes wrong
+     */    
+    public void writePropertyObject(String resourceName, CmsProperty property) throws CmsException {
+        m_driverManager.writePropertyObject(m_context, addSiteRoot(resourceName), property);
+    }
+    
+    /**
+     * Writes a list of property objects to the database mapped to a specified resource.<p>
+     * 
+     * @param resourceName the name of resource where the property is mapped to
+     * @param properties a list of CmsPropertys object containing a structure and/or resource value
+     * @throws CmsException if something goes wrong
+     */    
+    public void writePropertyObjects(String resourceName, List properties) throws CmsException {
+        m_driverManager.writePropertyObjects(m_context, addSiteRoot(resourceName), properties);
+    }      
+    
+    /**
+     * Reads the (compound) values of all properties mapped to a specified resource.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @return Map of Strings representing all properties of the resource
+     * @throws CmsException in case there where problems reading the properties
+     * @see CmsProperty#getValue()
+     */
+    public Map readProperties(String resource) throws CmsException {
+        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);
+        return CmsProperty.toMap(properties);
+    }
+
+    /**
+     * Reads the (compound) values of all properties mapped to a specified resource
+     * with optional direcory upward cascading.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @param search if <code>true</code>, the properties will also be looked up on all parent folders and the results will be merged, if <code>false</code> not (ie. normal property lookup)
+     * @return Map of Strings representing all properties of the resource
+     * @throws CmsException in case there where problems reading the properties
+     * @see CmsProperty#getValue()
+     */
+    public Map readProperties(String resource, boolean search) throws CmsException {
+        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);
+        return CmsProperty.toMap(properties);
+    }
+
+    /**
+     * Reads the (compound) value of a property mapped to a specified resource.<p>
+     *
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @return the value of the property found, <code>null</code> if nothing was found
+     * @throws CmsException in case there where problems reading the property
+     * @see CmsProperty#getValue()
+     */
+    public String readProperty(String resource, String property) throws CmsException {
+        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
+        return (value != null) ? value.getValue() : null;
+    }
+
+    /**
+     * Reads the (compound) value of a property mapped to a specified resource 
+     * with optional direcory upward cascading.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if false not (ie. normal property lookup)
+     * @return the value of the property found, <code>null</code> if nothing was found
+     * @throws CmsException in case there where problems reading the property
+     * @see CmsProperty#getValue()
+     */
+    public String readProperty(String resource, String property, boolean search) throws CmsException {
+        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        return (value != null) ? value.getValue() : null;
+    }
+
+    /**
+     * Reads the (compound) value of a property mapped to a specified resource 
+     * with optional direcory upward cascading, a default value will be returned if the property 
+     * is not found on the resource (or it's parent folders in case search is set to <code>true</code>).<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if <code>false</code> not (ie. normal property lookup)
+     * @param propertyDefault a default value that will be returned if the property was not found on the selected resource
+     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
+     * @throws CmsException in case there where problems reading the property
+     * @see CmsProperty#getValue()
+     */
+    public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
+        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        return (value != null) ? value.getValue() : propertyDefault;        
     }    
 
 }

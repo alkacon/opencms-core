@@ -105,16 +105,16 @@ create table CMS_BACKUP_PROPERTYDEF      (PROPERTYDEF_ID INT NOT NULL,
 
 create table CMS_OFFLINE_PROPERTIES     (PROPERTY_ID INT NOT NULL,
                                          PROPERTYDEF_ID INT NOT NULL,
-                                         RESOURCE_ID VARCHAR(36) BINARY NOT NULL,
-                                         RESOURCE_NAME TEXT NOT NULL,
+                                         PROPERTY_MAPPING_ID VARCHAR(36) NOT NULL,
+                                         PROPERTY_MAPPING_TYPE INT NOT NULL,
                                          PROPERTY_VALUE TEXT NOT NULL,
                                          primary key(PROPERTY_ID));
                                          
 
 create table CMS_ONLINE_PROPERTIES      (PROPERTY_ID INT NOT NULL,
                                          PROPERTYDEF_ID INT NOT NULL,
-                                         RESOURCE_ID VARCHAR(36) BINARY NOT NULL,
-                                         RESOURCE_NAME TEXT NOT NULL,
+                                         PROPERTY_MAPPING_ID VARCHAR(36) NOT NULL,
+                                         PROPERTY_MAPPING_TYPE INT NOT NULL,
                                          PROPERTY_VALUE TEXT NOT NULL,
                                          primary key(PROPERTY_ID));
                                         
@@ -122,8 +122,8 @@ create table CMS_ONLINE_PROPERTIES      (PROPERTY_ID INT NOT NULL,
 create table CMS_BACKUP_PROPERTIES      (BACKUP_ID VARCHAR(36) BINARY NOT NULL,
 										 PROPERTY_ID INT NOT NULL,
                                          PROPERTYDEF_ID INT NOT NULL,
-                                         RESOURCE_ID VARCHAR(36) BINARY NOT NULL,
-                                         RESOURCE_NAME TEXT NOT NULL,
+                                         PROPERTY_MAPPING_ID VARCHAR(36) NOT NULL,
+                                         PROPERTY_MAPPING_TYPE INT NOT NULL,
                                          PROPERTY_VALUE TEXT NOT NULL,
                                          TAG_ID INT,
                                          VERSION_ID	INT NOT NULL,

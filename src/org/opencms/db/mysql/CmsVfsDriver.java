@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/03/31 14:01:10 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,18 @@
 
 package org.opencms.db.mysql;
 
+import org.opencms.db.CmsProperty;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 /**
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.28 $ $Date: 2004/03/29 10:39:53 $
+ * @version $Revision: 1.29 $ $Date: 2004/03/31 14:01:10 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -55,36 +55,42 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readProperties(int, org.opencms.file.CmsResource, int)
+     * @see org.opencms.db.I_CmsVfsDriver#readPropertyObject(java.lang.String, org.opencms.file.CmsProject, org.opencms.file.CmsResource)
      */
-    public Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
-        Map original = super.readProperties(projectId, resource, resourceType);
-        // FIXME: Encoding in mySQL
-        if (CmsSqlManager.singleByteEncoding()) {
-            return original;
-        }
-        HashMap result = new HashMap(original.size());
-        Iterator keys = original.keySet().iterator();
-        while (keys.hasNext()) {
-            Object key = keys.next();
-            result.put(key, CmsSqlManager.unescape((String) original.get(key)));
-        }
-        original.clear();
-        return result;
+    public CmsProperty readPropertyObject(String key, CmsProject currentProject, CmsResource resource) throws CmsException {
+        CmsProperty property = super.readPropertyObject(key, currentProject, resource);
+        
+        property.setStructureValue(CmsSqlManager.unescape(property.getStructureValue()));
+        property.setResourceValue(CmsSqlManager.unescape(property.getResourceValue()));
+        
+        return property;
     }
-
+    
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readProperty(java.lang.String, int, org.opencms.file.CmsResource, int)
+     * @see org.opencms.db.I_CmsVfsDriver#writePropertyObject(org.opencms.file.CmsProject, org.opencms.file.CmsResource, org.opencms.db.CmsProperty)
      */
-    public String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
-        return CmsSqlManager.unescape(super.readProperty(meta, projectId, resource, resourceType));
+    public void writePropertyObject(CmsProject currentProject, CmsResource resource, CmsProperty property) throws CmsException {
+        property.setStructureValue(CmsSqlManager.escape(property.getStructureValue()));
+        property.setResourceValue(CmsSqlManager.escape(property.getResourceValue()));
+        
+        super.writePropertyObject(currentProject, resource, property);
     }
-
+    
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeProperty(java.lang.String, int, java.lang.String, org.opencms.file.CmsResource, int, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#readPropertyObjects(org.opencms.file.CmsProject, org.opencms.file.CmsResource)
      */
-    public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException {
-        super.writeProperty(meta, projectId, CmsSqlManager.escape(value), resource, resourceType, addDefinition);
-    }
+    public List readPropertyObjects(CmsProject currentProject, CmsResource resource) throws CmsException {
+        List properties = super.readPropertyObjects(currentProject, resource);
+        CmsProperty property = null;
+        
+        for (int i=0;i<properties.size();i++) {
+            property = (CmsProperty) properties.get(i);
+            
+            property.setStructureValue(CmsSqlManager.unescape(property.getStructureValue()));
+            property.setResourceValue(CmsSqlManager.unescape(property.getResourceValue()));            
+        }
+        
+        return properties;
+    }    
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/03/31 08:11:07 $
- * Version: $Revision: 1.157 $
+ * Date   : $Date: 2004/03/31 14:01:10 $
+ * Version: $Revision: 1.158 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.157 $ $Date: 2004/03/31 08:11:07 $
+ * @version $Revision: 1.158 $ $Date: 2004/03/31 14:01:10 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -600,7 +600,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      */
     public void publishDeletedFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder currentFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception {
         CmsFolder onlineFolder = null;
-        Map offlineProperties = null;
+        List offlineProperties = null;
 
         try {
             report.print("( " + m + " / " + n + " ) " + report.key("report.deleting.folder"), I_CmsReport.C_FORMAT_NOTE);
@@ -610,7 +610,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             try {
                 // write the folder to the backup and publishing history                
                 if (backupEnabled) {
-                    offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFolder, currentFolder.getType());
+                    offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), currentFolder);
                     m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFolder, offlineProperties, backupTagId, publishDate, maxVersions);
                 }               
                 
@@ -690,10 +690,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @see org.opencms.db.I_CmsProjectDriver#publishFile(org.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Set, boolean, long, org.opencms.util.CmsUUID, int, int)
      */
     public void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception {    
-        // CmsFile offlineFile = null;
         CmsFile newFile = null;
         CmsResource onlineFileHeader = null;
-        Map offlineProperties = null;
+        List offlineProperties = null;
 
         /*
          * Things to know:
@@ -855,8 +854,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 try {
                     // write the properties online
-                    offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
-                    m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFile, newFile.getType(), true);
+                    offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), offlineFileHeader);
+                    m_driverManager.getVfsDriver().writePropertyObjects(onlineProject, newFile, offlineProperties);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error writing properties of " + newFile.toString(), e);
@@ -886,7 +885,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         //}
                         
                         if (offlineProperties == null) {
-                            offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
+                            offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), offlineFileHeader);
                         }                        
                         m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), newFile, offlineProperties, backupTagId, publishDate, maxVersions);
                                   
@@ -946,8 +945,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 try {
                     // write the properties online
-                    offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
-                    m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFile, newFile.getType(), true);
+                    offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), offlineFileHeader);
+                    m_driverManager.getVfsDriver().writePropertyObjects(onlineProject, newFile, offlineProperties);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error writing properties of " + newFile.toString(), e);
@@ -976,7 +975,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         // }
                         
                         if (offlineProperties == null) {
-                            offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
+                            offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), offlineFileHeader);
                         } 
                         m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), newFile, offlineProperties, backupTagId, publishDate, maxVersions);
                         
@@ -1059,7 +1058,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     public void publishFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder offlineFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception {
         CmsFolder newFolder = null;
         CmsFolder onlineFolder = null;
-        Map offlineProperties = null;
+        List offlineProperties = null;
 
         try {
             report.print("( " + m + " / " + n + " ) " + report.key("report.publishing.folder"), I_CmsReport.C_FORMAT_NOTE);
@@ -1149,8 +1148,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             try {
                 // write the properties online
                 m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFolder);
-                offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFolder, offlineFolder.getType());
-                m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), onlineFolder, offlineFolder.getType(), true);
+                offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), offlineFolder);
+                m_driverManager.getVfsDriver().writePropertyObjects(onlineProject, onlineFolder, offlineProperties);
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error("Error writing properties of " + offlineFolder.toString(), e);
@@ -1163,7 +1162,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 // write the folder to the backup and publishing history
                 if (backupEnabled) {
                    if (offlineProperties == null) {
-                        offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFolder, offlineFolder.getType());
+                        offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), offlineFolder);
                     }
                     
                     m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFolder, offlineProperties, backupTagId, publishDate, maxVersions);
@@ -2067,5 +2066,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
 
         return readSystemProperty(name);
-    }
+    }    
+    
 }

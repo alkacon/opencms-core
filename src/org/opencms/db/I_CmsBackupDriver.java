@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/03/31 14:01:10 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.db;
 
-import org.opencms.util.CmsUUID;
-
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsProject;
@@ -40,12 +38,11 @@ import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -58,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.33 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.34 $ $Date: 2004/03/31 14:01:10 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -218,7 +215,7 @@ public interface I_CmsBackupDriver {
      * @return a Map of Strings representing the properties of the resource
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    HashMap readBackupProperties(CmsBackupResource resource) throws CmsException;
+    List readBackupProperties(CmsBackupResource resource) throws CmsException;
     
     /**
      * Reads a property definition for the specified resource type.<p>
@@ -259,7 +256,7 @@ public interface I_CmsBackupDriver {
      * @param versionId the version ID of the backup
      * @throws CmsException if something goes wrong
      */
-    void writeBackupProperties(CmsProject publishProject, CmsResource resource, Map properties, CmsUUID backupId, int tagId, int versionId) throws CmsException;
+    void writeBackupProperties(CmsProject publishProject, CmsResource resource, List properties, CmsUUID backupId, int tagId, int versionId) throws CmsException;
 
     /**
      * Writes a resource to the backup.<p>
@@ -273,7 +270,7 @@ public interface I_CmsBackupDriver {
      * @param maxVersions maximum number of backup versions
      * @throws CmsException if something goes wrong
      */
-    void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, Map properties, int tagId, long publishDate, int maxVersions) throws CmsException;
+    void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, List properties, int tagId, long publishDate, int maxVersions) throws CmsException;
     
     /**
      * Writes a resource content to the backup.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2004/01/07 09:19:22 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/03/31 14:01:10 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $ $Date: 2004/01/07 09:19:22 $
+ * @version $Revision: 1.19 $ $Date: 2004/03/31 14:01:10 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -84,32 +84,32 @@ public final class CmsDbPool extends Object {
     /**
      * Key for jdbc driver
      */
-    protected static final String C_KEY_JDBC_DRIVER = "jdbcDriver";
+    public static final String C_KEY_JDBC_DRIVER = "jdbcDriver";
     
     /**
      * Key for jdbc url
      */
-    protected static final String C_KEY_JDBC_URL = "jdbcUrl";
+    public static final String C_KEY_JDBC_URL = "jdbcUrl";
     
     /**
      * Key for max active connections
      */
-    protected static final String C_KEY_MAX_ACTIVE = "maxActive";
+    public static final String C_KEY_MAX_ACTIVE = "maxActive";
     
     /**
      * Key for max idle connections
      */
-    protected static final String C_KEY_MAX_IDLE = "maxIdle";
+    public static final String C_KEY_MAX_IDLE = "maxIdle";
     
     /**
      * Key for max wait time
      */
-    protected static final String C_KEY_MAX_WAIT = "maxWait";
+    public static final String C_KEY_MAX_WAIT = "maxWait";
     
     /**
      * Key for database password
      */
-    protected static final String C_KEY_PASSWORD = "password";
+    public static final String C_KEY_PASSWORD = "password";
     
     /**
      * Key for default
@@ -119,7 +119,7 @@ public final class CmsDbPool extends Object {
     /**
      * Key for pool url
      */
-    protected static final String C_KEY_POOL_URL = "poolUrl";
+    public static final String C_KEY_POOL_URL = "poolUrl";
     
     /**
      * Key for pool user
@@ -134,27 +134,27 @@ public final class CmsDbPool extends Object {
     /**
      * Key for pooling flag
      */
-    protected static final String C_KEY_POOLING = "pooling";
+    public static final String C_KEY_POOLING = "pooling";
 
     /**
      * Key for test on borrow flag
      */
-    protected static final String C_KEY_TEST_ON_BORROW = "testOnBorrow";
+    public static final String C_KEY_TEST_ON_BORROW = "testOnBorrow";
     
     /**
      * Key for test query
      */
-    protected static final String C_KEY_TEST_QUERY = "testQuery";
+    public static final String C_KEY_TEST_QUERY = "testQuery";
     
     /**
      * Comment for <code>C_KEY_USERNAME</code>
      */
-    protected static final String C_KEY_USERNAME = "user";
+    public static final String C_KEY_USERNAME = "user";
     
     /**
      * Comment for <code>C_KEY_WHEN_EXHAUSTED_ACTION</code>
      */
-    protected static final String C_KEY_WHEN_EXHAUSTED_ACTION = "whenExhaustedAction";
+    public static final String C_KEY_WHEN_EXHAUSTED_ACTION = "whenExhaustedAction";
 
     /**
      * Default constructor.<p>
@@ -247,7 +247,6 @@ public final class CmsDbPool extends Object {
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
 
         // initialize a keyed object pool to store PreparedStatements
-        // i still have to rtfm how pooling of PreparedStatements with DBCP works
         //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory();
         //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory(null, 5000, 0);
 

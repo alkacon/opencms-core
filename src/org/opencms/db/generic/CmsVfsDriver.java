@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/02/16 01:30:36 $
- * Version: $Revision: 1.161 $
+ * Date   : $Date: 2004/03/31 14:01:10 $
+ * Version: $Revision: 1.162 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,17 +33,9 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsProperty;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
-import org.opencms.main.CmsEvent;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.I_CmsEventListener;
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsAdjacencyTree;
-import org.opencms.util.CmsUUID;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
@@ -53,6 +45,14 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResourceType;
+import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.I_CmsEventListener;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsAdjacencyTree;
+import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Connection;
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.161 $ $Date: 2004/02/16 01:30:36 $
+ * @version $Revision: 1.162 $ $Date: 2004/03/31 14:01:10 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -672,48 +672,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETEALL");
             stmt.setString(1, resource.getResourceId().toString());
-            stmt.setString(2, resource.getStructureId().toString() /* resourceName */);
+            stmt.setString(2, resource.getStructureId().toString());
             stmt.executeUpdate();
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#deleteProperty(java.lang.String, int, org.opencms.file.CmsResource, int)
-     */
-    public void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
-        CmsPropertydefinition propdef = readPropertyDefinition(meta, projectId, resourceType);
-        String resourceName = resource.getRootPath();
-
-        // add folder separator to folder name if it is not present
-        if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
-        }
-
-        if (propdef == null) {
-            // there is no propdefinition with the overgiven name for the resource
-            throw new CmsException("[" + this.getClass().getName() + ".deleteProperty] " + meta, CmsException.C_NOT_FOUND);
-        } else {
-            // delete the metainfo in the db
-            Connection conn = null;
-            PreparedStatement stmt = null;
-
-            try {
-                // create statement
-                conn = m_sqlManager.getConnection(projectId);
-                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETE");
-                stmt.setInt(1, propdef.getId());
-                stmt.setString(2, resource.getResourceId().toString());
-                stmt.setString(3, resource.getStructureId().toString() /* resourceName */);
-                stmt.executeUpdate();
-            } catch (SQLException exc) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-            } finally {
-                m_sqlManager.closeAll(conn, stmt, null);
-            }
         }
     }
 
@@ -1479,79 +1443,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readProperties(int, org.opencms.file.CmsResource, int)
-     */
-    public Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
-        HashMap returnValue = new HashMap();
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        String resourceName = resource.getRootPath();
-        // hack: this never should happen, but it does.......
-        if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
-            resourceName += "/";
-        }
-
-        CmsUUID resourceId = resource.getResourceId();
-        try {
-            conn = m_sqlManager.getConnection(projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_READALL");
-            stmt.setString(1, resourceId.toString());
-            stmt.setString(2, resource.getStructureId().toString() /* resourceName */);
-            stmt.setInt(3, resourceType);
-            res = stmt.executeQuery();
-            while (res.next()) {
-                returnValue.put(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getString(m_sqlManager.readQuery("C_PROPERTY_VALUE")));
-            }
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return (returnValue);
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readProperty(java.lang.String, int, org.opencms.file.CmsResource, int)
-     */
-    public String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
-
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        String returnValue = null;
-
-        String resourceName = resource.getRootPath();
-        // hack: this never should happen, but it does.......
-        if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
-            resourceName += "/";
-        }
-
-        try {
-            conn = m_sqlManager.getConnection(projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_READ");
-
-            String resourceId = resource.getResourceId().toString();
-            stmt.setString(1, meta);
-            stmt.setInt(2, resourceType);
-            stmt.setString(3, resourceId);
-            stmt.setString(4, resource.getStructureId().toString() /* resourceName */);
-
-            res = stmt.executeQuery();
-            if (res.next()) {
-                returnValue = res.getString(m_sqlManager.readQuery("C_PROPERTY_VALUE"));
-            }
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return returnValue;
-    }
-
-    /**
      * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinition(java.lang.String, int, int)
      */
     public CmsPropertydefinition readPropertyDefinition(String name, int projectId, int type) throws CmsException {
@@ -2235,109 +2126,22 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeProperties(java.util.Map, int, org.opencms.file.CmsResource, int, boolean)
-     */
-    public void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException {
-        // get all metadefs
-        Iterator keys = propertyinfos.keySet().iterator();
-        // one metainfo-name:
-        String key;
-
-        while (keys.hasNext()) {
-            key = (String)keys.next();
-            writeProperty(key, projectId, (String)propertyinfos.get(key), resource, resourceType, addDefinition);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeProperty(java.lang.String, int, java.lang.String, org.opencms.file.CmsResource, int, boolean)
-     */
-    public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException {
-        CmsPropertydefinition propdef = null;
-
-        // TODO switch the property PK into a CmsUUID PK
-
-        try {
-            // test if the definition for the property exists
-            propdef = readPropertyDefinition(meta, projectId, resourceType);
-        } catch (CmsException ex) {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Could not read property definition " + meta + " projectId: " + projectId + " resourceType: " + resourceType, ex);
-            }
-            propdef = null;
-        }
-
-        // adjust the resource name in case of a folder that has the property attached
-        String resourceName = resource.getRootPath();
-        if (resource.isFolder() && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
-        }
-
-        if (propdef == null) {
-            // create the definition of the property optionally if it is missing
-            if (addDefinition) {
-                propdef = createPropertyDefinition(meta, projectId, resourceType);
-                if (projectId >= 0) {
-                    try {
-                        m_driverManager.getBackupDriver().createBackupPropertyDefinition(meta, resourceType);
-                    } catch (Exception ex) {
-                        // nothing has to be done here
-                    }
-                }
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + ".writeProperty/1] " + meta, CmsException.C_NOT_FOUND);
-            }
-        }
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(projectId);
-            if (readProperty(propdef.getName(), projectId, resource, resourceType) != null) {
-                // property already exists - use update statement
-                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_UPDATE");
-                stmt.setString(1, m_sqlManager.validateNull(value));
-                stmt.setString(2, resource.getResourceId().toString());
-                stmt.setString(3, resource.getStructureId().toString());
-                stmt.setInt(4, propdef.getId());
-                stmt.executeUpdate();
-            } else {
-                // property doesen't exist - use create statement
-                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_CREATE");
-                stmt.setInt(1, m_sqlManager.nextId(projectId, m_sqlManager.readQuery(projectId, "C_TABLE_PROPERTIES")));
-                stmt.setInt(2, propdef.getId());
-                stmt.setString(3, resource.getResourceId().toString());
-                stmt.setString(4, resource.getStructureId().toString());
-                stmt.setString(5, m_sqlManager.validateNull(value));
-                stmt.executeUpdate();
-            }
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
      * @see org.opencms.db.I_CmsVfsDriver#writeResource(org.opencms.file.CmsProject, org.opencms.file.CmsResource, byte[], int, org.opencms.util.CmsUUID)
-     * NOTE: the file content is only written if filecontent != null, otherwise the values of the resource are written without changes
-     *
      */
     public void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException {
+        
+        // The file content is only written if filecontent != null, otherwise the values of the resource are written without changes
+        
         PreparedStatement stmt = null;
         Connection conn = null;
         long resourceDateModified = resource.isTouched() ? resource.getDateLastModified() : System.currentTimeMillis();
 
         boolean isFolder = false;
-        //Savepoint savepoint = null;
 
         if (resource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
             isFolder = true;
         }
-        // if (filecontent == null) {
-        //     filecontent = new byte[0];
-        // }
+
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             userId = resource.getUserLastModified();
         }
@@ -2357,7 +2161,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection(project);
-            //savepoint = conn.setSavepoint("before_update");
 
             // update the resource
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
@@ -2382,14 +2185,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(3, resource.getName());
             stmt.setInt(4, structureState);
             stmt.setString(5, resource.getStructureId().toString());
-            stmt.executeUpdate();
-
-            //m_sqlManager.commit(conn);            
+            stmt.executeUpdate();           
         } catch (SQLException e) {
-            //m_sqlManager.rollback(conn, savepoint);
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            //m_sqlManager.releaseSavepoint(conn, savepoint);
             m_sqlManager.closeAll(conn, stmt, null);
         }
 
@@ -2548,5 +2347,276 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     public CmsSqlManager getSqlManager() {
         return m_sqlManager;
     }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readPropertyObject(java.lang.String, org.opencms.file.CmsProject, org.opencms.file.CmsResource)
+     */
+    public CmsProperty readPropertyObject(String key, CmsProject project, CmsResource resource) throws CmsException {
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        String propertyValue = null;
+        int mappingType = -1;
+        CmsProperty property = null;
+        int resultSize = 0;
+
+        String resourceName = resource.getRootPath();
+        if ((resource.isFolder()) && (!resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
+            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+}
+        try {
+            conn = m_sqlManager.getConnection(project.getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_READ");
+
+            stmt.setString(1, key);
+            stmt.setInt(2, resource.getType());
+            stmt.setString(3, resource.getStructureId().toString());
+            stmt.setString(4, resource.getResourceId().toString());
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                if (resultSize >= 2) {
+                    throw new CmsException("Properties for resource " + resource.getRootPath() + " are inconsitent! A resource may have set max. two property values, one mapped to it's structure and one mapped to it's resource record.", CmsException.C_UNKNOWN_EXCEPTION);
+                }
+
+                if (property == null) {
+                    property = new CmsProperty();
+                    property.setKey(key);
+                }
+
+                propertyValue = res.getString(1);
+                mappingType = res.getInt(2);
+
+                if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
+                    property.setStructureValue(propertyValue);
+                    property.setStructureId(resource.getStructureId());
+                } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
+                    property.setResourceValue(propertyValue);
+                    property.setResourceId(resource.getResourceId());
+                } else {
+                    throw new CmsException("Unknown property value mapping type found: " + mappingType, CmsException.C_UNKNOWN_EXCEPTION);
+                }
+
+                resultSize++;
+            }
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return (property != null) ? property : CmsProperty.getNullProperty();
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readPropertyObjects(org.opencms.file.CmsProject, org.opencms.file.CmsResource)
+     */
+    public List readPropertyObjects(CmsProject project, CmsResource resource) throws CmsException {
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        String propertyKey = null;
+        String propertyValue = null;
+        int mappingType = -1;
+        Map propertyMap = (Map) new HashMap();
+        CmsProperty property = null;
+
+        String resourceName = resource.getRootPath();
+        if ((resource.isFolder()) && (!resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
+            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        }
+
+        try {
+            conn = m_sqlManager.getConnection(project.getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_READALL");
+            stmt.setString(1, resource.getStructureId().toString());
+            stmt.setString(2, resource.getResourceId().toString());
+            stmt.setInt(3, resource.getType());
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                propertyKey = null;
+                propertyValue = null;
+                mappingType = -1;
+                
+                propertyKey = res.getString(1);
+                propertyValue = res.getString(2);
+                mappingType = res.getInt(3);
+
+                if ((property = (CmsProperty) propertyMap.get(propertyKey)) == null) {
+                    // there doesn't exist a property object for this key yet
+                    property = new CmsProperty();
+                    property.setKey(propertyKey);
+                    propertyMap.put(propertyKey, property);
+                }
+
+                if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
+                    // this property value is mapped to a structure record
+                    property.setStructureValue(propertyValue);
+                    property.setStructureId(resource.getStructureId());
+                } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
+                    // this property value is mapped to a resource record
+                    property.setResourceValue(propertyValue);
+                    property.setResourceId(resource.getResourceId());
+                } else {
+                    throw new CmsException("Unknown property value mapping type found: " + mappingType, CmsException.C_UNKNOWN_EXCEPTION);
+                }
+            }
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return (List) new ArrayList(propertyMap.values());
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#writePropertyObjects(org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.List)
+     */
+    public void writePropertyObjects(CmsProject project, CmsResource resource, List properties) throws CmsException {
+        CmsProperty property = null;
+        
+        for (int i=0;i<properties.size();i++) {
+            property = (CmsProperty) properties.get(i);
+            writePropertyObject(project, resource, property);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#writePropertyObject(org.opencms.file.CmsProject, org.opencms.file.CmsResource, org.opencms.db.CmsProperty)
+     */
+    public void writePropertyObject(CmsProject project, CmsResource resource, CmsProperty property) throws CmsException {
+        CmsPropertydefinition propertyDefinition = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        String value = null;
+        int mappingType = -1;
+        CmsUUID id = null;
+        CmsProperty existingProperty = null;
+        boolean existsPropertyValue = false;
+        boolean deletePropertyValue = false;
+
+        try {
+            // read the property definition
+            propertyDefinition = readPropertyDefinition(property.getKey(), project.getId(), resource.getType());
+        } catch (CmsException e) {
+            propertyDefinition = null;
+        }
+
+        if (propertyDefinition == null) {
+            if (property.createPropertyDefinition()) {
+                // create a missing property definition optionally
+                propertyDefinition = createPropertyDefinition(property.getKey(), project.getId(), resource.getType());
+                if (project.getId() >= 0) {
+                    try {
+                        // create the property definition implicitly in the backup tables
+                        m_driverManager.getBackupDriver().createBackupPropertyDefinition(property.getKey(), resource.getType());
+                    } catch (Exception e) {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error("[" + this.getClass().getName() + "] " + e.toString());
+                        }
+                    }
+                }
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + ".writePropertyObject/1] " + property.getKey(), CmsException.C_NOT_FOUND);
+            }
+        }
+        
+        String resourceName = resource.getRootPath();
+        if (resource.isFolder() && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        }        
+
+        try {
+            // read the existing property to test if we need the 
+            // insert or update query to write a property value
+            existingProperty = readPropertyObject(propertyDefinition.getName(), project, resource);
+            conn = m_sqlManager.getConnection(project.getId());
+
+            for (int i = 0; i < 2; i++) {
+                mappingType = -1;
+                value = null;
+                id = null;
+                existsPropertyValue = false;
+                deletePropertyValue = false;
+                
+                // 1) take any required decisions to choose and fill the correct SQL query
+                
+                if (i == 0) {
+                    // write/delete the *structure value* on the first cycle
+                    if (existingProperty.getStructureValue() != null && property.deleteStructureValue()) {
+                        // this property value is marked to be deleted
+                        deletePropertyValue = true;
+                    } else {
+                        value = property.getStructureValue();
+                        if (value == null) {
+                            // no structure value set, continue with the resource value
+                            continue;
+                        }                        
+                    }
+                    
+                    // set the vars to be written to the database
+                    mappingType = CmsProperty.C_STRUCTURE_RECORD_MAPPING;
+                    id = resource.getStructureId();
+                    existsPropertyValue = existingProperty.getStructureValue() != null;                    
+                } else if (i == 1) {
+                    // write/delete the *resource value* on the second cycle
+                    if (existingProperty.getResourceValue() != null && property.deleteResourceValue()) {
+                        // this property value is marked to be deleted
+                        deletePropertyValue = true;
+                    } else {                    
+                        value = property.getResourceValue();
+                        if (value == null) {
+                            // no resource value set, break out of the loop
+                            break;
+                        }                 
+                    }
+                    
+                    // set the vars to be written to the database
+                    mappingType = CmsProperty.C_RESOURCE_RECORD_MAPPING;
+                    id = resource.getResourceId();
+                    existsPropertyValue = existingProperty.getResourceValue() != null;                    
+                }
+                
+                // 2) execute the SQL query
+                
+                if (!deletePropertyValue) {
+                    // insert/update the property value                    
+                    if (existsPropertyValue) {
+                        // {structure|resource} property value already exists- use update statement
+                        stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_UPDATE");
+                        stmt.setString(1, m_sqlManager.validateNull(value));
+                        stmt.setString(2, id.toString());
+                        stmt.setInt(3, mappingType);
+                        stmt.setInt(4, propertyDefinition.getId());
+                    } else {
+                        // {structure|resource} property value doesen't exist- use create statement
+                        stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_CREATE");
+                        stmt.setInt(1, m_sqlManager.nextId(project.getId(), m_sqlManager.readQuery(project.getId(), "C_TABLE_PROPERTIES")));
+                        stmt.setInt(2, propertyDefinition.getId());
+                        stmt.setString(3, id.toString());
+                        stmt.setInt(4, mappingType);
+                        stmt.setString(5, m_sqlManager.validateNull(value));
+                    }
+                } else {
+                    // {structure|resource} property value marked as deleted- use delete statement
+                    stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_DELETE");
+                    stmt.setInt(1, propertyDefinition.getId());
+                    stmt.setString(2, id.toString());
+                    stmt.setInt(3, mappingType);                    
+                }
+                
+                stmt.executeUpdate();
+                m_sqlManager.closeAll(null, stmt, null);                
+            }         
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception ex) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }    
 
 }

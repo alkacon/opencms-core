@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/02/16 01:30:36 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2004/03/31 14:01:10 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsProperty;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsBackupDriver;
 import org.opencms.db.I_CmsDriver;
@@ -71,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.79 $ $Date: 2004/02/16 01:30:36 $
+ * @version $Revision: 1.80 $ $Date: 2004/03/31 14:01:10 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -745,36 +746,67 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProperties(org.opencms.file.CmsBackupResource)
      */
-    public HashMap readBackupProperties(CmsBackupResource resource) throws CmsException {
-        HashMap returnValue = new HashMap();
+    public List readBackupProperties(CmsBackupResource resource) throws CmsException {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
+        String propertyKey = null;
+        String propertyValue = null;
+        int mappingType = -1;
+        Map propertyMap = (Map) new HashMap();
+        CmsProperty property = null;
 
-        /*String resourceName = resource.getRootPath();
-        // hack: this never should happen, but it does.......
-        if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
-            resourceName += "/";
-        }*/
-
-        CmsUUID resourceId = resource.getResourceId();
         try {
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_READALL_BACKUP");
-            stmt.setString(1, resourceId.toString());
-            stmt.setString(2, resource.getStructureId().toString());
-            stmt.setInt(3, resource.getType());
-            stmt.setInt(4, resource.getTagId());
+            stmt.setString(1, resource.getStructureId().toString());
+            stmt.setInt(2, resource.getType());
+            stmt.setInt(3, resource.getTagId());
             res = stmt.executeQuery();
             while (res.next()) {
-                returnValue.put(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getString(m_sqlManager.readQuery("C_PROPERTY_VALUE")));
+                propertyKey = res.getString(1);
+                propertyValue = res.getString(2);
+                mappingType = res.getInt(3); 
+                
+                if ((property = (CmsProperty) propertyMap.get(propertyKey)) != null ) {
+                    // there exists already a property for this key in the result
+                    
+                    if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
+                        // this property value is mapped to a structure record
+                        property.setStructureValue(propertyValue);
+                    } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
+                        // this property value is mapped to a resource record
+                        property.setResourceValue(propertyValue);
+                    } else {
+                        throw new CmsException("Unknown property value mapping type found: " + mappingType, CmsException.C_UNKNOWN_EXCEPTION);
+            		}
+                } else {
+                    // there doesn't exist a property for this key yet
+                    property = new CmsProperty();
+                    property.setKey(propertyKey);
+                    
+                    if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
+                        // this property value is mapped to a structure record
+                        property.setStructureValue(propertyValue);
+                        property.setResourceValue(null);
+                    } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
+                        // this property value is mapped to a resource record
+                        property.setStructureValue(null);
+                        property.setResourceValue(propertyValue);                        
+                    } else {
+                        throw new CmsException("Unknown property value mapping type found: " + mappingType, CmsException.C_UNKNOWN_EXCEPTION);
+                    } 
+                    
+                    propertyMap.put(propertyKey, property);
+                }
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
-        return (returnValue);
+
+        return (List) new ArrayList(propertyMap.values());
     }
     
     /**
@@ -915,47 +947,75 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#writeBackupProperties(org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Map, org.opencms.util.CmsUUID, int, int)
+     * @see org.opencms.db.I_CmsBackupDriver#writeBackupProperties(org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.List, org.opencms.util.CmsUUID, int, int)
      */
-    public void writeBackupProperties(CmsProject publishProject, CmsResource resource, Map properties, CmsUUID backupId, int tagId, int versionId) throws CmsException {
+    public void writeBackupProperties(CmsProject publishProject, CmsResource resource, List properties, CmsUUID backupId, int tagId, int versionId) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
+        String key = null;
+        boolean hasBatch = false;
+        CmsProperty property = null;
+        int mappingType = -1;
+        String value = null;
+        CmsUUID id = null;
+        CmsPropertydefinition propdef = null;
+        
         try {
             conn = m_sqlManager.getConnectionForBackup();
-            // write the properties 
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_CREATE_BACKUP");
-            Iterator keys = properties.keySet().iterator();
-            String key = null;
-            boolean hasBatch = false;
-            while (keys.hasNext()) {
-                hasBatch = true;
-                key = (String)keys.next();
-                //CmsPropertydefinition propdef = m_driverManager.getVfsDriver().readPropertyDefinition(key, publishProject.getId(), resource.getType());
-                CmsPropertydefinition propdef = readBackupPropertyDefinition(key, resource.getType());
-                String value = (String)properties.get(key);
+            
+            Iterator dummy = properties.iterator();
+            while (dummy.hasNext()) {
+                hasBatch = false;
+                property = (CmsProperty) dummy.next();
+                key = property.getKey();
+                propdef = readBackupPropertyDefinition(key, resource.getType());
 
                 if (propdef == null) {
-                    // there is no propertydefinition for with the overgiven name for the resource
                     throw new CmsException("[" + this.getClass().getName() + "] " + key, CmsException.C_NOT_FOUND);
-                } else {
-                    // write the property into the db
-                    stmt.setString(1, backupId.toString());
-                    stmt.setInt(2, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTIES_BACKUP")));
-                    stmt.setInt(3, propdef.getId());
-                    stmt.setString(4, resource.getResourceId().toString());
-                    //stmt.setString(5, resource.getRootPath());
-                    stmt.setString(5, resource.getStructureId().toString());
-                    stmt.setString(6, m_sqlManager.validateNull(value));
-                    stmt.setInt(7, tagId);
-                    stmt.setInt(8, versionId);
-                    stmt.addBatch();
+                } else {                    
+                    for (int i = 0; i < 2; i++) {
+                        mappingType = -1;
+                        value = null;
+                        id = null;
+                        
+                        if (i == 0) {
+                            // write the structure value on the first cycle
+                            value = property.getStructureValue();
+                            mappingType = CmsProperty.C_STRUCTURE_RECORD_MAPPING;
+                            id = resource.getStructureId();   
+                            
+                            if (value == null || "".equals(value)) {
+                                continue;
+                            }
+                        } else {
+                            // write the resource value on the second cycle
+                            value = property.getResourceValue();
+                            mappingType = CmsProperty.C_RESOURCE_RECORD_MAPPING;
+                            id = resource.getResourceId();
+
+                            if (value == null || "".equals(value)) {
+                                break;
+                            }
+                        }
+
+                        stmt.setString(1, backupId.toString());
+                        stmt.setInt(2, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTIES_BACKUP")));
+                        stmt.setInt(3, propdef.getId());
+                        stmt.setString(4, id.toString());
+                        stmt.setInt(5, mappingType);
+                        stmt.setString(6, m_sqlManager.validateNull(value));
+                        stmt.setInt(7, tagId);
+                        stmt.setInt(8, versionId);
+                        stmt.addBatch();
+                        hasBatch = true;
+                    }
+                    
+                    if (hasBatch) {
+                        stmt.executeBatch();
+                    }                    
                 }
             }
-
-            if (hasBatch) {
-                stmt.executeBatch();
-            }
-
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
@@ -966,9 +1026,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#writeBackupResource(org.opencms.file.CmsUser, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Map, int, long, int)
+     * @see org.opencms.db.I_CmsBackupDriver#writeBackupResource(org.opencms.file.CmsUser, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.List, int, long, int)
      */
-    public void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, Map properties, int tagId, long publishDate, int maxVersions) throws CmsException {
+    public void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, List properties, int tagId, long publishDate, int maxVersions) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         CmsUUID backupPkId = new CmsUUID();
@@ -993,9 +1053,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             // now get the new version id for this resource
             versionId = internalReadNextVersionId(resource);
 
-        if (resource.isFile()) {
+            if (resource.isFile()) {
 
-            if (!this.internalValidateBackupResource(resource, tagId)) {
+                if (!this.internalValidateBackupResource(resource, tagId)) {
 
                     // write the file content
                     if (resource instanceof CmsFile) {

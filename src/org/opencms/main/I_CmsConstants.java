@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/03/31 14:01:10 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.10 $ $Date: 2004/03/29 10:39:53 $
+ * @version $Revision: 1.11 $ $Date: 2004/03/31 14:01:10 $
  */
 public interface I_CmsConstants {
 
@@ -227,6 +227,13 @@ public interface I_CmsConstants {
     int C_PROJECT_TYPE_TEMPORARY = 1;
 
     /**
+    /**
+     * The permission to direct publish a resource, even if the current user is not member of the
+     * projectmanagers group.
+     */
+    int C_PERMISSION_DIRECT_PUBLISH = 16;     
+    
+    /** 
      * This constant defines a unlocked project.
      * Resources may be changed in this project.
      */
@@ -289,6 +296,13 @@ public interface I_CmsConstants {
      */
      int C_PERMISSION_EMPTY  =  0;
 
+    /**
+    /**
+     * Permission set to check direct publish permissions, even if the the current user is not
+     * member of the projectmanagers group.
+     */
+    CmsPermissionSet C_DIRECT_PUBLISH = new CmsPermissionSet(C_PERMISSION_DIRECT_PUBLISH);     
+    
     /**
      * Permission set to check read acces
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/03/31 14:01:10 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.StringTokenizer;
  * <code>C_PERMISSION_VIEW</code> (v) the right to see a resource in listings (workplace)<br>
  * <code>C_PERMISSION_CONTROL</code> (c) the right to set permissions of a resource<br>
  * 
- * @version $Revision: 1.10 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.11 $ $Date: 2004/03/31 14:01:10 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
@@ -96,6 +96,7 @@ public class CmsPermissionSet {
             m_permissions.put("security.permission.write", new Integer(I_CmsConstants.C_PERMISSION_WRITE));
             m_permissions.put("security.permission.view", new Integer(I_CmsConstants.C_PERMISSION_VIEW));
             m_permissions.put("security.permission.control", new Integer(I_CmsConstants.C_PERMISSION_CONTROL));
+            m_permissions.put("security.permission.direct_publish", new Integer(I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH));
         }
         return m_permissions;
     }
@@ -135,7 +136,7 @@ public class CmsPermissionSet {
     /**
      * Constructor to create a permission set with preset allowed and denied permissions.<p>
      * The permissions are read from a string representation of permissions 
-     * in the format {{+|-}{r|w|v|c}}*.
+     * in the format {{+|-}{r|w|v|c|d}}*.
      * 
      * @param permissionString the string representation of allowed and denied permissions
      */
@@ -184,6 +185,15 @@ public class CmsPermissionSet {
                     if (prefix.charAt(0) == '-') {
                         m_denied |= I_CmsConstants.C_PERMISSION_CONTROL;
                     }
+                    break;
+                case 'D' :
+                case 'd' :
+                    if (prefix.charAt(0) == '+') {
+                        m_allowed |= I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH;
+                    }
+                    if (prefix.charAt(0) == '-') {
+                        m_denied |= I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH;
+                    }                    
                     break;
                 default :
                     // ignore
@@ -303,7 +313,7 @@ public class CmsPermissionSet {
     /**
      * Returns the string representation of the current permissions in this permission set.<p>
      * 
-     * @return string of the format {{+|-}{r|w|v|c}}*
+     * @return string of the format {{+|-}{r|w|v|c|d}}*
      */
     public String getPermissionString() {
 
@@ -314,21 +324,31 @@ public class CmsPermissionSet {
         } else if ((m_allowed & I_CmsConstants.C_PERMISSION_READ) > 0) {
             p.append("+r");
         }
+
         if ((m_denied & I_CmsConstants.C_PERMISSION_WRITE) > 0) {
             p.append("-w");
         } else if ((m_allowed & I_CmsConstants.C_PERMISSION_WRITE) > 0) {
             p.append("+w");
         }
+
         if ((m_denied & I_CmsConstants.C_PERMISSION_VIEW) > 0) {
             p.append("-v");
         } else if ((m_allowed & I_CmsConstants.C_PERMISSION_VIEW) > 0) {
             p.append("+v");
         }
+
         if ((m_denied & I_CmsConstants.C_PERMISSION_CONTROL) > 0) {
             p.append("-c");
         } else if ((m_allowed & I_CmsConstants.C_PERMISSION_CONTROL) > 0) {
             p.append("+c");
         }
+        
+        if ((m_denied & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH) > 0) {
+            p.append("-d");
+        } else if ((m_allowed & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH) > 0) {
+            p.append("+d");
+        }        
+        
         return p.toString();
     }
 

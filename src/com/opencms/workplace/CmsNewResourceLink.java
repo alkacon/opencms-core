@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2004/02/27 14:27:23 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2004/03/31 14:01:10 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import com.opencms.defaults.CmsLinkCheck;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -58,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.60 $ $Date: 2004/02/27 14:27:23 $
+ * @version $Revision: 1.61 $ $Date: 2004/03/31 14:01:10 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault {
@@ -276,7 +277,9 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
                                     if (keepTargetProperties) {
                                         try {
                                             targetProperties = cms.readProperties(targetName);
-                                        } catch (Exception e) { }
+                                        } catch (Exception e) { 
+                                            targetProperties = Collections.EMPTY_MAP;
+                                        }
                                     }
                                     
                                     // create the sibling

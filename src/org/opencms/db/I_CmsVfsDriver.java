@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2004/03/31 14:01:10 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,6 @@
 package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
-import org.opencms.util.CmsUUID;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsProject;
@@ -42,11 +40,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResourceType;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -54,7 +52,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.69 $ $Date: 2004/03/25 11:45:05 $
+ * @version $Revision: 1.70 $ $Date: 2004/03/31 14:01:10 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -196,24 +194,15 @@ public interface I_CmsVfsDriver {
     CmsResource createSibling(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
 
     /**
-     * Deletes all properties of a specified resources.<p>
+     * Deletes all properties of a specified resource.<p>
+     *
+     * Both the structure and resource values of the properties are deleted.<p>
      *
      * @param projectId the id of the project
      * @param resource the resource
      * @throws CmsException if operation was not succesful
      */
     void deleteProperties(int projectId, CmsResource resource) throws CmsException;
-
-    /**
-     * Deletes a single property of a specified resource.<p>
-     *
-     * @param meta the property-name of which the property has to be read
-     * @param projectId the id of the project
-     * @param resource the resource
-     * @param resourceType the Type of the resource
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException;
 
     /**
      * Deletes a property defintion.<p>
@@ -475,29 +464,6 @@ public interface I_CmsVfsDriver {
     List readFolders(int projectId) throws CmsException;
 
     /**
-     * Reads all properties of a specified resource.<p>
-     * 
-     * @param projectId the ID of the current project
-     * @param resource the resource where the properties are read
-     * @param resourceType the type of the resource
-     * @return HashMap all properties key/value encoded
-     * @throws CmsException if something goes wrong
-     */
-    Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException;
-
-    /**
-     * Reads a single property of a specified resource.<p>
-     * 
-     * @param meta the name of the property
-     * @param projectId the ID of the current project
-     * @param resource the resource where the property is read
-     * @param resourceType the type of the resource
-     * @return String the value of the property
-     * @throws CmsException if something goes wrong
-     */
-    String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException;
-
-    /**
      * Reads a property definition for the soecified resource type.<p>
      *
      * @param name the name of the propertydefinition to read
@@ -605,31 +571,6 @@ public interface I_CmsVfsDriver {
     void writeFolder(CmsProject project, CmsFolder folder, int changed, CmsUUID userId) throws CmsException;
     
     /**
-     * Writes the properties of an existing resource.<p>
-     * 
-     * @param propertyinfos mayp of proeprties
-     * @param projectId the ID of the current project
-     * @param resource the resurce  to update
-     * @param resourceType the type of the resource 
-     * @param addDefinition flag for creating unknown property definitions
-     * @throws CmsException if something goes wrong
-     */
-    void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException;
-
-    /**
-     * Writes a single property of an existing resource.<p>
-     *
-     * @param meta The property-name of which the property has to be read
-     * @param projectId the ID of the current project
-     * @param value The value for the property to be set
-     * @param resource The resource
-     * @param resourceType The Type of the resource
-     * @param addDefinition true if a new property definition should be added automatically
-     * @throws CmsException if operation was not succesful
-     */
-    void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException;
-
-    /**
      * Writes the complete structure and resource records of a file.<p>
      *
      * @param project the current project
@@ -647,5 +588,54 @@ public interface I_CmsVfsDriver {
      * @return the SqlManager of this driver
      */
     CmsSqlManager getSqlManager();
+
+    /**
+     * Writes a property object to the database mapped to a specified resource.<p>
+     * 
+     * @param project the current project
+     * @param resource the resource where the property should be attached to
+     * @param property a CmsProperty object containing both the structure and resource value of the property
+     * @throws CmsException if something goes wrong
+     * @see CmsProperty
+     */
+    void writePropertyObject(CmsProject project, CmsResource resource, CmsProperty property) throws CmsException;
+    
+    /**
+     * Writes a list of property objects to the database mapped to a specified resource.<p>
+     * 
+     * @param project the current project
+     * @param resource the resource where the property should be attached to
+     * @param properties a list of CmsProperty objects
+     * @throws CmsException if something goes wrong
+     * @see CmsProperty
+     */
+    void writePropertyObjects(CmsProject project, CmsResource resource, List properties) throws CmsException;
+    
+    /**
+     * Reads a property object from the database specified by it's key name mapped to a resource.<p>
+     * 
+     * The implementation must return {@link CmsProperty#getNullProperty()} if the property is not found.<p>
+     * 
+     * @param key the key of the property
+     * @param project the current project
+     * @param resource the resource where the property is attached to
+     * @return a CmsProperty object containing both the structure and resource value of the property
+     * @throws CmsException if something goes wrong
+     * @see CmsProperty
+     */
+    CmsProperty readPropertyObject(String key, CmsProject project, CmsResource resource) throws CmsException;
+    
+    /**
+     * Reads all property objects mapped to a specified resource from the database.<p>
+     * 
+     * The implementation must return an empty list if no properties are found at all.<p>
+     * 
+     * @param project the current project
+     * @param resource the resource where the property is attached to
+     * @return a list with CmsProperty objects containing both the structure and resource value of the property
+     * @throws CmsException if something goes wrong
+     * @see CmsProperty
+     */
+    List readPropertyObjects(CmsProject project, CmsResource resource) throws CmsException;   
 
 }
