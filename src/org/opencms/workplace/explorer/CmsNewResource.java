@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2004/11/26 17:35:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/03 15:06:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,8 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Armen Markarian (a.markarian@alkacon.com)
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
@@ -106,7 +107,8 @@ public class CmsNewResource extends CmsDialog {
     private String m_paramNewResourceUri;
     private String m_paramPage;
     
-    
+    /** a boolean flag that indicates if the create resource operation was successfull or not. */
+    private boolean m_resourceCreated;
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -140,14 +142,15 @@ public class CmsNewResource extends CmsDialog {
             getCms().createResource(
                 fullResourceName, 
                 OpenCms.getResourceManager().getResourceType(getParamNewResourceType()).getTypeId());           
-            setParamResource(fullResourceName);          
+            setParamResource(fullResourceName);    
+            setResourceCreated(true);
         } catch (CmsException e) {
             // error creating file, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
             setParamErrorstack(e.getStackTraceAsString());
             setParamMessage(key("error.message.newresource"));
             setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);            
         }
     }
     
@@ -160,6 +163,7 @@ public class CmsNewResource extends CmsDialog {
      * @throws JspException if an inclusion fails
      */
     public void actionEditProperties() throws IOException, JspException {
+        
         boolean editProps = Boolean.valueOf(getParamNewResourceEditProps()).booleanValue();
         if (editProps) {
             // edit properties checkbox checked, redirect to property dialog
@@ -169,7 +173,7 @@ public class CmsNewResource extends CmsDialog {
         } else {
             // edit properties not checked, close the dialog
             actionCloseDialog();
-        }
+        }        
     }
     
     /**
@@ -338,6 +342,17 @@ public class CmsNewResource extends CmsDialog {
 
         return m_paramPage;
     }
+    
+    
+    /**
+     * Returns true if the resource is created successfully; otherwise false.<p>
+     * 
+     * @return true if the resource is created successfully; otherwise false
+     */
+    public boolean isResourceCreated() {
+
+        return m_resourceCreated;
+    }
     /**
      * Sets the current folder.<p>
      *
@@ -382,6 +397,16 @@ public class CmsNewResource extends CmsDialog {
     public void setParamPage(String paramPage) {
 
         m_paramPage = paramPage;
+    }
+    
+    /**
+     * Sets the boolean flag successfullyCreated.<p>
+     *   
+     * @param successfullyCreated a boolean flag that indicates if the create resource operation was successfull or not
+     */
+    public void setResourceCreated(boolean successfullyCreated) {
+
+        m_resourceCreated = successfullyCreated;
     }
     
     /**

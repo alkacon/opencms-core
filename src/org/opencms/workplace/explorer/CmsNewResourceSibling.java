@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2004/11/05 13:54:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/03 15:06:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -156,7 +156,8 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
             }
             
             // set resource parameter to new resource name for property dialog
-            setParamResource(newResourceParam);            
+            setParamResource(newResourceParam);    
+            setResourceCreated(true);
         } catch (CmsException e) {
             // error creating pointer, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);

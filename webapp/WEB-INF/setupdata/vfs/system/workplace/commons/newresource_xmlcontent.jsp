@@ -22,7 +22,9 @@ break;
 case CmsNewResource.ACTION_SUBMITFORM:
 //////////////////// ACTION: resource name specified and form submitted
 	wp.actionCreateResource();
-	wp.actionEditProperties(); // redirects only if the edit properties option was checked
+	if (wp.isResourceCreated()) {
+		wp.actionEditProperties(); // redirects only if the edit properties option was checked
+	}
 break;
 
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2004/10/28 13:35:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/03 15:06:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -175,7 +175,8 @@ public class CmsNewResourceFolder extends CmsNewResource {
             String fullResourceName = computeFullResourceName();
             // create the folder            
             getCms().createResource(fullResourceName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);           
-            setParamResource(fullResourceName);            
+            setParamResource(fullResourceName);   
+            setResourceCreated(true);
         } catch (CmsException e) {
             // error creating folder, show error dialog
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
