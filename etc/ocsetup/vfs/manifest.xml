@@ -7652,22 +7652,6 @@
             </properties>
         </file>
         <file>
-            <source>system/workplace/restypes/pdfpage</source>
-            <destination>system/workplace/restypes/pdfpage</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>527</access>
-            <lastmodified>1046214000000</lastmodified>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[ ]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
             <source>system/workplace/restypes/plain</source>
             <destination>system/workplace/restypes/plain</destination>
             <type>plain</type>
