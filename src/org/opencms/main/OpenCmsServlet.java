@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/03/26 16:53:00 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -147,7 +147,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 if (exportData != null) {
                    synchronized (this) {
                         try {
-                            OpenCms.getStaticExportManager().export(req, res, cms, exportData);
+                            // export the resource and set the response status according to the result 
+                            // of the export operation
+                            res.setStatus(OpenCms.getStaticExportManager().export(req, res, cms, exportData));
                         } catch (Throwable t) {
                             if (OpenCms.getLog(this).isWarnEnabled()) {                    
                                 OpenCms.getLog(this).warn("Error exporting " + exportData, t);

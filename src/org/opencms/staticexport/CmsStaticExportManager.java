@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/03/25 19:34:22 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/03/26 16:53:00 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -100,6 +100,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     
     /** The additional http headers for the static export */
     private String[] m_exportHeaders;    
+
+    /** The folders in the vfs taking part in the static export */
+    private String[] m_exportVfsFolders; 
     
     /** List of all resources that have the "exportname" property set */
     private Map m_exportnameResources;
@@ -122,6 +125,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Indicates if the static export is switched to export on publish or export on demand */
     private boolean m_staticExportOnPublish;
 
+    /** Indicates if the quick static export for plain resources is enabled */
+    private boolean m_quickPlainExport;
+    
     /** The path to where the static export will be written */
     private String m_staticExportPath;
     
@@ -183,7 +189,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         // set the default value for the "export" property
         exportManager.setExportPropertyDefault("true".equalsIgnoreCase(configuration.getString("staticexport.export_default", "false")));
-        
+
+        // set if the quick plain export is enabled or not
+        exportManager.setQuickPlainExport("true".equalsIgnoreCase(configuration.getString("staticexport.quick_plain_export", "true")));
+               
         // set the export URL
         exportManager.setExportUrl(configuration.getString("staticexport.url", "http://127.0.0.1:8080/opencms/handle404"));
         
@@ -193,6 +202,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             exportSuffixes = new String[0];
         }
         exportManager.setExportSuffixes(exportSuffixes);
+        
+        
+        // set the static export folders in the vfs
+        String[] exportVfsFolders = configuration.getStringArray("staticexport.vfs_folders");
+        if (exportVfsFolders == null) {
+            exportVfsFolders = new String[0];
+        }
+        exportManager.setExportVfsFolders(exportVfsFolders);
+      
         
         // set the path for the export
         exportManager.setExportPath(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(configuration.getString("staticexport.export_path", "export")));
@@ -355,13 +373,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param res the current response
      * @param cms an initialized cms context (should be initialized with the "Guest" user only)
      * @param data the static export data set
+     * @return status code of the export operation, status codes are the same as http status codes (200,303,304)
      * @throws CmsException in case of errors accessing the VFS
      * @throws ServletException in case of errors accessing the servlet 
      * @throws IOException in case of erros writing to the export output stream
      */
-    public void export(HttpServletRequest req, HttpServletResponse res, CmsObject cms, CmsStaticExportData data) 
+    public int export(HttpServletRequest req, HttpServletResponse res, CmsObject cms, CmsStaticExportData data) 
     throws CmsException, IOException, ServletException {
 
+        int status = -1;
+                
         CmsFile file;
         // TODO: Check if setting site root to "/" still works with HTML pages that contain links
         cms.getRequestContext().setSiteRoot("/");
@@ -369,7 +390,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         String rfsName = data.getRfsName();
         CmsResource resource = data.getResource();
         String oldUri = null;
-        
+               
         // this flag signals if the export method is used for "export on demand" or 
         // "export on publish". 
         // if no request and result stream are available, it was called during "export on publish"
@@ -387,7 +408,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             vfsName = vfsName + file.getName();
             rfsName += C_EXPORT_DEFAULT_FILE;
         }
-
+       
         // check loader id for resource
         int loaderId = file.getLoaderId();
         I_CmsResourceLoader loader = OpenCms.getLoaderManager().getLoader(loaderId);
@@ -403,9 +424,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (OpenCms.getLinkManager().exportRequired(cms, vfsName)) {
             // make sure all required parent folder exist
             createExportFolder(rfsName);
-            
+            status = HttpServletResponse.SC_OK;
             // generate export file instance and output stream
             exportFile = new File(exportFileName);                 
+        } else {
+            // the resource was not used for export, so return HttpServletResponse.SC_SEE_OTHER
+            // as a signal for not exported resource
+            status = HttpServletResponse.SC_SEE_OTHER;
         }
 
         // ensure we have exactly the same setup as if called "the usual way"
@@ -424,22 +449,34 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         file = null;
         
         if (result != null) {
-            // write new exported file content
-            try {
-                exportStream = new FileOutputStream(exportFile);
-                exportStream.write(result);
-                exportStream.close();
-            } catch (Throwable t) {
-                throw new CmsException("Creation of static export output stream failed for RFS file " + exportFileName);
+            if (exportFile != null) {
+                // write new exported file content
+                try {
+                    exportStream = new FileOutputStream(exportFile);
+                    exportStream.write(result);
+                    exportStream.close();
+                    // the resource was exported, so return status ok
+                    status = HttpServletResponse.SC_OK;
+                    
+                } catch (Throwable t) {
+                    throw new CmsException("Creation of static export output stream failed for RFS file " + exportFileName);
+                }
+                // update the file with the modification date from the server
+                if (req != null) {
+                    Long dateLastModified = (Long)req.getAttribute(I_CmsConstants.C_HEADER_OPENCMS_EXPORT);
+                    if (dateLastModified != null) {
+                        exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
+                    }                                      
+                } else {
+                    // otherweise take the last modification date form the OpenCms resource
+                    exportFile.setLastModified((resource.getDateLastModified() / 1000) *1000);
+                }
             }
-            // update the file with the modification date from the server
-            if (req != null) {
-                Long dateLastModified = (Long)req.getAttribute(I_CmsConstants.C_HEADER_OPENCMS_EXPORT);
-                if (dateLastModified != null) {
-                    exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
-                }                                      
-            }            
-        }       
+        } else {
+            // the resource was not written because it was not modified. 
+            // set the status to not modified
+            status = HttpServletResponse.SC_NOT_MODIFIED;
+        }
        
         // restore context
         // we only have to do this in case of the static export on demand
@@ -452,6 +489,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             OpenCms.getLog(this).info("Static exported vfs file '" + vfsName + "' to rfs file '" + exportFileName + "'");
         }
         
+        return status;
     }    
     
     
@@ -469,34 +507,45 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public synchronized void exportOnPublish(CmsObject cms, CmsUUID publishHistoryId, I_CmsReport report)
         throws CmsException, IOException, ServletException {
-            
+        
+        boolean templatesFound;
+        
+        // export must be done in the context of the export user    
+        CmsObject cmsExportObject = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+        
         // first export all non-template resources, this can be taken from the publish history
         List publishedResources = cms.readPublishedResources(publishHistoryId);
-        exportNonTemplateResources(cms, publishedResources, report);
+        templatesFound = exportNonTemplateResources(cmsExportObject, publishedResources, report);
+
+        // we do only have to process the tempaltes resources if some of them were published or the
+        // override switch was set in the OpenCms configuration
         
-        exportTemplateResources(cms, report);
-        // exportNonVfsResources(cms, publishedResources);
-             
+        if ((templatesFound) || (!getQuickPlainExport())) {
+            exportTemplateResources(cmsExportObject, report);
+            // exportNonVfsResources(cms, publishedResources);
+        }
+        
         // delete all resources deleted during the publish process
         scrubExportFolders(publishHistoryId, true);       
     }
-    
-    
+        
     /**
      * Exports all non template resources found in a list of published resources.<p>
      * 
      * @param cms the current cms object
      * @param publishedResources the list of published resources
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
+     * @return true if some template resources were found whil looping the list of published resources
      * @throws CmsException in case of errors accessing the VFS
      * @throws IOException in case of erros writing to the export output stream
      * @throws ServletException in case of errors accessing the servlet 
      */
-    private void exportNonTemplateResources(CmsObject cms, List publishedResources, I_CmsReport report) 
+    private boolean exportNonTemplateResources(CmsObject cms, List publishedResources, I_CmsReport report) 
         throws CmsException, IOException, ServletException {
-       
-        String vfsName=null;
+                   
+        String vfsName = null;
         List resourcesToExport = new ArrayList();
+        boolean templatesFound = false;
 
         int count = 1;
 
@@ -504,7 +553,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         
         // loop through all resources
         Iterator i = publishedResources.iterator();
-      
+
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Starting export of non-template resources. "+publishedResources.size()+" possible canditates in list.");
+        }
+        
         while (i.hasNext()) {   
             CmsPublishedResource pupRes = (CmsPublishedResource)i.next();          
             
@@ -529,28 +582,48 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     } else {
                         // the resource is a template resource. so store the name of it in the DB
                         // for further use.                       
+                        templatesFound = true;
                         cms.writeStaticExportPublishedResource(exportData.getRfsName(), 0, "");                            
                     }              
                 }                    
             }
         }
-        
+                
         // now do the export
         i = resourcesToExport.iterator();
         int size = resourcesToExport.size();
+        
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Found "+size+" resources to export");
+        }
+        
         while (i.hasNext()) {
             CmsStaticExportData exportData = (CmsStaticExportData)i.next();
+            
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Exporting "+exportData.getVfsName()+" -> "+exportData.getRfsName()+"...");
+            }
+            
             report.print("("+ count++ +" / " + size + ") ", I_CmsReport.C_FORMAT_NOTE);
             report.print(report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
             report.print(exportData.getVfsName());
             report.print(report.key("report.dots"));
-            export(null, null, cms, exportData);
-            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            int status = export(null, null, cms, exportData);
+            if (status == HttpServletResponse.SC_OK) {
+                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            } else {
+                report.println(report.key("report.ignored"), I_CmsReport.C_FORMAT_NOTE);
+            }
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info("Export "+exportData.getVfsName()+" -> "+exportData.getRfsName()+" [STATUS "+status+"]");
+            }
         }
         
         resourcesToExport = null;
         
-        report.println(report.key("report.staticexport.nontemplateresources_end"), I_CmsReport.C_FORMAT_HEADLINE);       
+        report.println(report.key("report.staticexport.nontemplateresources_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        
+        return templatesFound;
        
     }
     
@@ -572,6 +645,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         int size = publishedTemplateResources.size();
         int count = 1;
 
+
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Starting export of template resources. "+size+" possible canditates in list.");
+        }
+        
+        
         report.println(report.key("report.staticexport.templateresources_begin"), I_CmsReport.C_FORMAT_HEADLINE);
 
         // now loop through all of them and request them from the server
@@ -591,6 +670,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
                 url = getExportUrl() + getRfsPrefix() + rfsName;
 
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("Sending request for "+rfsName+" with url ("+url+")...");
+                }
+                
                 // we have created an url, so request the resource
                 if (url != null) {
                     try {
@@ -612,16 +695,22 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         
                         // now perform the request
                         urlcon.connect();
-                        int result = urlcon.getResponseCode();
+                        int status = urlcon.getResponseCode();
                         urlcon.disconnect();
                         
+                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                         OpenCms.getLog(this).info("Requested "+rfsName+" with url ("+url+") [STATUS"+status+"]");
+                        }
+                        
                         // write the report
-                        if (result == HttpServletResponse.SC_OK) { 
+                        if (status == HttpServletResponse.SC_OK) { 
                             report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                        } else if (result == HttpServletResponse.SC_NOT_MODIFIED) {
-                            report.println(report.key("search.indexing_file_skipped"), I_CmsReport.C_FORMAT_NOTE);
+                        } else if (status == HttpServletResponse.SC_NOT_MODIFIED) {
+                            report.println(report.key("report.skipped"), I_CmsReport.C_FORMAT_NOTE);
+                        } else if (status == HttpServletResponse.SC_SEE_OTHER) {
+                            report.println(report.key("report.ignored"), I_CmsReport.C_FORMAT_NOTE);
                         } else {
-                            report.println(String.valueOf(result), I_CmsReport.C_FORMAT_OK);
+                            report.println(String.valueOf(status), I_CmsReport.C_FORMAT_OK);
                         }
                     } catch (IOException e) {
                         report.println(e);
@@ -860,6 +949,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public String getExportUrl() {
         return m_exportUrl;
     }
+    
+    /**
+     * Returns true if the quick plain export is enabled.<p>
+     * 
+     * @return true if the quick plain export is enabled
+     */
+    public boolean getQuickPlainExport() {
+        return m_quickPlainExport;
+    }
+    
     
     /**
      * Returns the static export rfs name for a give vfs resoure.<p>
@@ -1244,6 +1343,28 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     private void setExportUrl(String url) {
         m_exportUrl = url;
     }
+    
+
+
+    /**
+     * Sets the list of vfs export folders.<p>
+     * 
+     * @param exportVfsFolders list of vfs export folders
+     */
+    private void setExportVfsFolders(String[] exportVfsFolders) {
+        m_exportVfsFolders = exportVfsFolders;
+    }
+    
+    /**
+     * Controls if hte quick plain export is enabled.<p>
+     * 
+     * @param value if true, the quick plain export is enabled
+     */
+    private void setQuickPlainExport(boolean value) {
+        m_quickPlainExport = value;
+    }
+
+    
     
     /**
      * Sets the prefix for exported links in the "real" file system.<p>
