@@ -163,15 +163,18 @@ function checkBackwardDependencies(modulePackageName, recursionCounter) {
 function sortAvailableModules() {
 	var form = document.modules;	
 	var installModules = new Array();
+	var notInstallModules = new Array();
 
 	if (modulePackageNames.length > 1) {		
 		for (var i=0;i<modulePackageNames.length;i++) {
 			if (form.availableModules[i].checked == true) {	
 				installModules.push(modulePackageNames[i]);
+			} else {
+				notInstallModules.push(modulePackageNames[i]);
 			}
 		}
 	
-		form.installModules.value = topoSort(installModules).join("|");
+		form.installModules.value = topoSort(installModules, notInstallModules).join("|");
 	} else {
 		if (form.availableModules != null) {
 			form.installModules.value = form.availableModules.value;
@@ -181,7 +184,12 @@ function sortAvailableModules() {
 	return false;
 }
 
-function topoSort(list) {
+function topoSort(list, notInstalled) {
+    for (var i=0; i<notInstalled.length; i++) {
+		removeDependencies(notInstalled[i]);
+		moduleDependencies[getPackageNameIndex(notInstalled[i])] = new Array();
+	}
+
     var retList = new Array();
 	var finished = false;
 	while(!finished) {
