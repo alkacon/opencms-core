@@ -3142,6 +3142,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/action/chnav.html</source>
+            <destination>system/workplace/action/chnav.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/action/chown.html</source>
             <destination>system/workplace/action/chown.html</destination>
             <type>XMLTemplate</type>
@@ -10003,6 +10012,15 @@
         <file>
             <source>system/workplace/templates/chmod</source>
             <destination>system/workplace/templates/chmod</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/templates/chnav</source>
+            <destination>system/workplace/templates/chnav</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
