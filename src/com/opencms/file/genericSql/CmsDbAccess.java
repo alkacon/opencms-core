@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/31 13:11:25 $
- * Version: $Revision: 1.164 $
+ * Date   : $Date: 2000/10/31 17:07:35 $
+ * Version: $Revision: 1.165 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.164 $ $Date: 2000/10/31 13:11:25 $ * 
+ * @version $Revision: 1.165 $ $Date: 2000/10/31 17:07:35 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -4139,6 +4139,9 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 			   res.close();
 		 } catch (SQLException e){
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		 } catch(CmsException exc) {
+			   // just throw this exception
+			   throw exc;
 		} catch( Exception exc ) {
 		   throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}finally {

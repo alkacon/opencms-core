@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/31 13:11:26 $
- * Version: $Revision: 1.187 $
+ * Date   : $Date: 2000/10/31 17:07:36 $
+ * Version: $Revision: 1.188 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.187 $ $Date: 2000/10/31 13:11:26 $
+ * @version $Revision: 1.188 $ $Date: 2000/10/31 17:07:36 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3147,18 +3147,24 @@ public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String
 										  CmsProject currentProject,
 										  String foldername) 
 			throws CmsException {
-			
-		  // get the folder
-	 		CmsFolder cmsFolder = readFolder(currentUser,currentProject, currentProject.getId(), foldername);
-	 		if (cmsFolder == null)
-	 			return new Vector(); //just an empty vector.
-	 		else
+			// get the folder
+			CmsFolder cmsFolder = null;
+			try {
+		 		cmsFolder = readFolder(currentUser,currentProject, currentProject.getId(), foldername);
+			} catch(CmsException exc) {
+				if(exc.getType() == exc.C_NOT_FOUND) {
+					// ignore the exception - file dosen't exist in this project
+		 			return new Vector(); //just an empty vector.
+				} else {
+					throw exc;
+				}
+			}
+		
+	 		if (cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED)
 	 		{
-	 		  if (cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED)
-	 		  {
-	 		  	 //indicate that the folder was found, but deleted, and resources are not avaiable.
-	 		  	 return null;
-	 		  }
+	 			 //indicate that the folder was found, but deleted, and resources are not avaiable.
+	 			 return null;
+	 		}
 
 				Vector _files = m_dbAccess.getFilesInFolder(cmsFolder);
 				Vector files = new Vector(_files.size());
@@ -3176,7 +3182,6 @@ public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String
 				}
 				return files;
 			}
-		}
    	/**
    	 * A helper method for this resource-broker.
 	 * Returns a Hashtable with all subfolders.<br>
