@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/06/27 18:04:47 $
-  * Version: $Revision: 1.25 $
+  * Date   : $Date: 2001/06/28 18:58:48 $
+  * Version: $Revision: 1.26 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -1042,18 +1042,18 @@ function enableNewButton(showit){
         wo.write("</td>");
  
          if(vi.check_name){
-             if(vi.liste[i].type==0)wo.writeln("<td class="+ssclass+"><a href=javascript:top.openthisfolder('"+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>");
-                 else wo.writeln("<td class="+ssclass+"><a href=javascript:top.openwinfull('"+vr.servpath+vr.actDirectory+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>"); 
+             if(vi.liste[i].type==0)wo.writeln("<td nowrap class="+ssclass+"><a href=javascript:top.openthisfolder('"+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>");
+                 else wo.writeln("<td  nowrap class="+ssclass+"><a href=javascript:top.openwinfull('"+vr.servpath+vr.actDirectory+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>"); 
             }
          if(vi.check_title)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].title+"&nbsp;</td>");
-         if(vi.check_type)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.resource[vi.liste[i].type].text+"</td>");
+         if(vi.check_type)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.resource[vi.liste[i].type].text+"</td>");
          if(vi.check_date)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].date+"</td>");
-         if(vi.check_size)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].size+"</td>");
-         if(vi.check_status)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vr.stati[vi.liste[i].status]+"</td>");
-         if(vi.check_owner)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].owner+"</td>");
-         if(vi.check_group)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].group+"</td>");
-         if(vi.check_perm)wo.write("<td nowrap class="+ssclass+">&nbsp;"+permShow(vi.liste[i].permission,wo)+"</td>");
-         if(vi.check_lockedBy)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].lockedBy+"</td>");
+         if(vi.check_size)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.liste[i].size+"</td>");
+         if(vi.check_status)wo.writeln("<td class="+ssclass+">&nbsp;"+vr.stati[vi.liste[i].status]+"</td>");
+         if(vi.check_owner)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.liste[i].owner+"</td>");
+         if(vi.check_group)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.liste[i].group+"</td>");
+         if(vi.check_perm)wo.write("<td class="+ssclass+">&nbsp;"+permShow(vi.liste[i].permission,wo)+"</td>");
+         if(vi.check_lockedBy)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.liste[i].lockedBy+"</td>");
          wo.writeln("</td></tr>");
      }
      wo.writeln("</tr></table>");
