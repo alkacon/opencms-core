@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/10/03 13:12:29 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/10/04 09:19:30 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.19 $ $Date: 2000/10/03 13:12:29 $
+ * @version $Revision: 1.20 $ $Date: 2000/10/04 09:19:30 $
  */
 public class CmsQueries
 {
@@ -319,7 +319,12 @@ public class CmsQueries
 	public String C_COUNTRY_SELECTCOUNTRY = "SELECT NAME, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "COUNTRY WHERE COUNTRY_ID = ?";
 	public Integer C_SITES_GETSITEFROMSITEID_KEY = new Integer(472);
 	public String C_SITES_GETSITEFROMSITEID = "SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID FROM " + C_DATABASE_PREFIX + "SITES WHERE SITE_ID = ? ";
+	public Integer C_SITES_CHECKSITE_KEY = new Integer(473);
+	public String C_SITES_CHECKSITE = "SELECT NAME FROM " + C_DATABASE_PREFIX + "SITES WHERE SITE_ID <> ? AND CATEGORY_ID = ? LANGUAGE_ID = ? AND COUNTRY_ID = ?";
+	public Integer C_SITESSITEURLS_CHECKSITE_KEY = new Integer(474);
+	public String C_SITESSITEURLS_CHECKSITE = "SELECT NAME FROM " + C_DATABASE_PREFIX + "SITE_URLS, " + C_DATABASE_PREFIX + "SITES WHERE SITE_ID <> ? AND (LOWER(NAME) = ? or LOWER(URL) = ?)";
 	
+		
 	//statements needen for newSite
 	public Integer C_SITES_MAXID_KEY = new Integer(452);
 	public String C_SITES_MAXID = "SELECT MAX(SITE_ID) FROM " + C_DATABASE_PREFIX + "SITES";		
