@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsLruHashMap.java,v $
- * Date   : $Date: 2002/09/13 15:13:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2002/09/16 12:38:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import oracle.net.ano.SupervisorService;
  * with a "last-recently-used" policy of the mapped key/values.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.4 $
  * @see CmsFlexLruCache
  * @see I_CmsFlexLruCacheObject
  * @see CmsLruCacheObject
