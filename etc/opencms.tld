@@ -120,10 +120,7 @@
         </attribute>        
         <attribute>
             <name>suffix</name>
-        </attribute>
-        <attribute>
-            <name>body</name>
-        </attribute>        
+        </attribute>     
         <attribute>
             <name>element</name>
         </attribute>        
