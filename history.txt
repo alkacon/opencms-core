@@ -8,14 +8,15 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.28 Bela Tegeuse - ??
-- Added automated handling of OpenCms-version number in build.xml.
-- Reorganisation for tomcat-support.
+OpenCms 4.3.28 Bela Tegeuse - 19 July 2001
 ! new feature on the workplace: a resource can be copied to an existing project
 * when publishing a folder the subresources will be unlocked
 * fixed bug in synchronize administration
 * fixed bug when creating a project with a deleted folder: the new project is deleted immediatly if
   there are no resources in the project when the exception occurs
+* bug fixed in element-cache.
+- Added automated handling of OpenCms-version number in build.xml.
+- Reorganisation for tomcat-support.
 
 OpenCms 4.3.27 Bela Tegeuse - 18 July 2001
 * Bug in import module fixed: added the root folder in the system projects for module 
