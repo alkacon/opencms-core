@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 16:23:18 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2000/06/09 16:36:06 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.55 $ $Date: 2000/06/09 16:23:18 $ * 
+ * @version $Revision: 1.56 $ $Date: 2000/06/09 16:36:06 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3557,6 +3557,59 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                  throw new CmsException("["+this.getClass().getName()+"] "+folder.getAbsolutePath(),CmsException.C_NOT_EMPTY);  
          }
 	 }
+
+
+	 /**
+	 * Deletes the folder.
+	 * 
+	 * Only empty folders can be deleted yet.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername The complete path of the folder.
+	 * @param force If force is set to true, all sub-resources will be deleted.
+	 * If force is set to false, the folder will be deleted only if it is empty.
+	 * This parameter is not used yet as only empty folders can be deleted!
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void deleteFolder(CmsProject project, CmsFolder orgFolder, boolean force)
+         throws CmsException {
+         
+         // the current implementation only deletes empty folders
+         // check if the folder has any files in it
+         Vector files= getFilesInFolder(orgFolder);
+         files=getUndeletedResources(files);
+         if (files.size()==0) {
+             // check if the folder has any folders in it
+             Vector folders= getSubFolders(orgFolder);
+             folders=getUndeletedResources(folders);
+             if (folders.size()==0) {
+                 //this folder is empty, delete it
+                 PreparedStatement statement = null;
+                 try { 
+                    // mark the folder as deleted       
+                    statement=m_pool.getPreparedStatement(C_RESOURCES_REMOVE_KEY);  
+                    statement.setInt(1,C_STATE_DELETED);
+                    statement.setInt(2,C_UNKNOWN_ID);
+                    statement.setString(3, orgFolder.getAbsolutePath());
+                    statement.setInt(4,project.getId());
+                    statement.executeUpdate();              
+                } catch (SQLException e){
+                 throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+                }finally {
+					if( statement != null) {
+						m_pool.putPreparedStatement(C_RESOURCES_REMOVE_KEY, statement);
+					}
+				  }         
+              } else {                 
+                 throw new CmsException("["+this.getClass().getName()+"] "+orgFolder.getAbsolutePath(),CmsException.C_NOT_EMPTY);  
+              }
+         } else {
+                 throw new CmsException("["+this.getClass().getName()+"] "+orgFolder.getAbsolutePath(),CmsException.C_NOT_EMPTY);  
+         }
+     }
+	
+
 
 	/**
 	 * Copies the file.
