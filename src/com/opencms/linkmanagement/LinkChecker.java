@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/07/11 19:44:24 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@ package com.opencms.linkmanagement;
 
 import java.util.*;
 import com.opencms.file.*;
+import com.opencms.launcher.CmsXmlLauncher;
 import com.opencms.core.*;
 import com.opencms.template.*;
 import com.opencms.report.*;
@@ -63,16 +64,30 @@ public class LinkChecker {
         // get the pages content
         String bodyFileName = null;
         String bodyClassName = null;
-        CmsXmlControlFile pageControlFile = new CmsXmlControlFile(cms, page);
-        if(pageControlFile.isElementTemplateDefined(I_CmsConstants.C_TYPE_BODY_NAME)){
-            bodyFileName = pageControlFile.getElementTemplate(I_CmsConstants.C_TYPE_BODY_NAME);
-            bodyFileName = pageControlFile.validateBodyPath(cms, bodyFileName, resource);
+        CmsXmlTemplateFile bodyTemplateFile = null;
+
+        boolean isSimplePage = (null != cms.readProperty(page, CmsXmlLauncher.C_XML_CONTROL_TEMPLATE_PROPERTY));
+        
+        if (isSimplePage) {
+            
+            CmsXmlTemplate bodyClassObject = (CmsXmlTemplate)CmsTemplateClassManager.getClassInstance(cms, "com.opencms.template.CmsXmlTemplate");
+            bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms, page, I_CmsConstants.C_TYPE_BODY_NAME, null, null);
+
+        } else {
+        
+            CmsXmlControlFile pageControlFile = new CmsXmlControlFile(cms, page);
+            if(pageControlFile.isElementTemplateDefined(I_CmsConstants.C_TYPE_BODY_NAME)){
+                bodyFileName = pageControlFile.getElementTemplate(I_CmsConstants.C_TYPE_BODY_NAME);
+                bodyFileName = pageControlFile.validateBodyPath(cms, bodyFileName, resource);
+            }
+            if(pageControlFile.isElementClassDefined(I_CmsConstants.C_TYPE_BODY_NAME)){
+                bodyClassName = pageControlFile.getElementClass(I_CmsConstants.C_TYPE_BODY_NAME);
+            }
+            CmsXmlTemplate bodyClassObject = (CmsXmlTemplate)CmsTemplateClassManager.getClassInstance(cms, bodyClassName);
+            bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms,bodyFileName, I_CmsConstants.C_TYPE_BODY_NAME, null, null);
+        
         }
-        if(pageControlFile.isElementClassDefined(I_CmsConstants.C_TYPE_BODY_NAME)){
-            bodyClassName = pageControlFile.getElementClass(I_CmsConstants.C_TYPE_BODY_NAME);
-        }
-        CmsXmlTemplate bodyClassObject = (CmsXmlTemplate)CmsTemplateClassManager.getClassInstance(cms, bodyClassName);
-        CmsXmlTemplateFile bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms,bodyFileName, I_CmsConstants.C_TYPE_BODY_NAME, null, null);
+        
         Vector result = bodyTemplateFile.getAllLinkTagValues();
         // we have to cleanup the result. Relative links will be inserted as absolute links
         // and we cut the parameters.

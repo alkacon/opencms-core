@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/07/11 14:00:14 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/07/11 19:44:24 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,22 +46,22 @@ public class CmsResourceTypePlain extends Object implements I_CmsResourceType, I
      /**
       * The id of resource type.
       */
-    private int m_resourceType;
+    protected int m_resourceType;
 
     /**
      * The id of the launcher used by this resource.
      */
-    private int m_launcherType;
+    protected int m_launcherType;
 
     /**
      * The resource type name.
      */
-    private String m_resourceTypeName;
+    protected String m_resourceTypeName;
 
     /**
      * The class name of the Java class launched by the launcher.
      */
-    private String m_launcherClass;
+    protected String m_launcherClass;
     
     /**
      * Constructor, creates a new CmsResourceType object.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/07/11 06:32:38 $
- * Version: $Revision: 1.483 $
+ * Date   : $Date: 2003/07/11 19:44:24 $
+ * Version: $Revision: 1.484 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,10 @@ Legend:
 - General comment
 
 OpenCms (next version) Salusa Secundus
+- Removed chown / chgrp / chmod in resource type interface because of new ACL logic
+- OpenCms export version set to 3
+- Added optional saving of XMLTemplate body files directly in 
+  the VFS structure without the need of the "control file"
 ! Added initial functionalty for multiple site management to the OpenCms core
 ! Rewrote the "Synchronize" mechanism between VFS - FS to better deal with 
   more complex change scenarios and deleted files

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2003/07/11 14:01:40 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/07/11 19:44:24 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,14 +69,16 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2003/07/11 14:01:40 $
+ * @version $Revision: 1.49 $ $Date: 2003/07/11 19:44:24 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants {
     
     /** Magic elemet replace name */
     public static final String C_ELEMENT_REPLACE = "_CMS_ELEMENTREPLACE";
 
-    public static final String C_XML_CONTROL_FILE = ".xmlcontrol";
+    public static final String C_XML_CONTROL_FILE_SUFFIX = ".xmlcontrol";
+    
+    public static final String C_XML_CONTROL_TEMPLATE_PROPERTY = "template";
     
     /**
      * Starts generating the output.
@@ -96,7 +98,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
 
         // ladies and gentelman: and now for something completly different 
         String absolutePath = cms.readAbsolutePath(file);
-        String templateProp = cms.readProperty(absolutePath, "template");
+        String templateProp = cms.readProperty(absolutePath, C_XML_CONTROL_TEMPLATE_PROPERTY);
         String xmlTemplateContent = null;
         if (templateProp != null) {
             // i got a black magic template, 
@@ -112,7 +114,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
                 + uri
                 + "</TEMPLATE>\n</ELEMENTDEF>\n</PAGE>\n";              
             // i got a black magic template it's try'in to make a devil out of me...
-            uri += C_XML_CONTROL_FILE; 
+            uri += C_XML_CONTROL_FILE_SUFFIX; 
         }
         
         // Parameters used for element cache

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/11 14:01:12 $
-* Version: $Revision: 1.101 $
+* Date   : $Date: 2003/07/11 19:44:24 $
+* Version: $Revision: 1.102 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.util.CmsStringSubstitution;
+import com.opencms.launcher.CmsXmlLauncher;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsTemplateClassManager;
@@ -65,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.101 $ $Date: 2003/07/11 14:01:12 $
+ * @version $Revision: 1.102 $ $Date: 2003/07/11 19:44:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -370,37 +371,56 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // So we have to read all files and set some initial values.
         parameters.put("root.pagetype", cms.getResourceType(cms.readFileHeader(file).getType()).getResourceTypeName());
         parameters.put("filename_for_relative_template", file);
+        
+        // Simple page support
+        String templateProp = cms.readProperty(file, CmsXmlLauncher.C_XML_CONTROL_TEMPLATE_PROPERTY);
+        boolean isSimplePage = (templateProp != null);
+
+        // Check, if the selected page file is locked
+        CmsResource pageFileResource = cms.readFileHeader(file);
+        if(!pageFileResource.isLocked()) {
+            cms.lockResource(file);
+        }
+                                        
         if(!existsContentParam) {
-            CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
-            if(originalControlFile.isElementClassDefined(C_BODY_ELEMENT)) {
-                bodyElementClassName = originalControlFile.getElementClass(C_BODY_ELEMENT);
-            }
-            if(originalControlFile.isElementTemplateDefined(C_BODY_ELEMENT)) {
-                bodyElementFilename = originalControlFile.getElementTemplate(C_BODY_ELEMENT);
-                bodyElementFilename = originalControlFile.validateBodyPath(cms, bodyElementFilename, cms.readFileHeader(file));
-            }
-            if((bodyElementClassName == null) || (bodyElementFilename == null)) {
-                // Either the template class or the template file
-                // for the body element could not be determined.
-                // BUG: Send error here
-            }
-            // Check, if the selected page file is locked
-            CmsResource pageFileResource = cms.readFileHeader(file);
-            if(!pageFileResource.isLocked()) {
-                // BUG: Check only, dont't lock here!
-                cms.lockResource(file);
-            }
-            // The content file must be locked before editing
-            CmsResource contentFileResource = cms.readFileHeader(bodyElementFilename);
-            if(!contentFileResource.isLocked()) {
-                cms.lockResource(bodyElementFilename);
-            }
-            // Now get the currently selected master template file
-            layoutTemplateFilename = originalControlFile.getMasterTemplate();
-            layoutTemplatFilenameRelative = layoutTemplateFilename;
-            layoutTemplateFilename = Utils.mergeAbsolutePath(originalControlFile.getAbsoluteFilename()
-                                                            , layoutTemplateFilename);
-            layoutTemplateClassName = originalControlFile.getTemplateClass();
+            
+            if (isSimplePage) {
+                
+                bodyElementClassName = "com.opencms.template.CmsXmlTemplate";
+                bodyElementFilename = file;
+                layoutTemplateClassName = "com.opencms.template.CmsXmlTemplate";
+                layoutTemplateFilename = templateProp;
+                layoutTemplatFilenameRelative = templateProp;
+                
+            } else {             
+                
+                CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
+                if(originalControlFile.isElementClassDefined(C_BODY_ELEMENT)) {
+                    bodyElementClassName = originalControlFile.getElementClass(C_BODY_ELEMENT);
+                }
+                if(originalControlFile.isElementTemplateDefined(C_BODY_ELEMENT)) {
+                    bodyElementFilename = originalControlFile.getElementTemplate(C_BODY_ELEMENT);
+                    bodyElementFilename = originalControlFile.validateBodyPath(cms, bodyElementFilename, cms.readFileHeader(file));
+                }
+                if((bodyElementClassName == null) || (bodyElementFilename == null)) {
+                    // Either the template class or the template file
+                    // for the body element could not be determined.
+                    // BUG: Send error here
+                }
+
+                // The content file must be locked before editing
+                CmsResource contentFileResource = cms.readFileHeader(bodyElementFilename);
+                if(!contentFileResource.isLocked()) {
+                    cms.lockResource(bodyElementFilename);
+                }
+                // Now get the currently selected master template file
+                layoutTemplateFilename = originalControlFile.getMasterTemplate();
+                layoutTemplatFilenameRelative = layoutTemplateFilename;
+                layoutTemplateFilename = Utils.mergeAbsolutePath(originalControlFile.getAbsoluteFilename()
+                                                                , layoutTemplateFilename);
+                layoutTemplateClassName = originalControlFile.getTemplateClass();            
+            } 
+            
             int browserId;
             if(browser.indexOf("MSIE") > -1) {
                 browserId = 0;
@@ -440,14 +460,20 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             // if the parameter noactivex is set the temp file was already created,
             // so read the filename from the session
             String noactivex = (String)parameters.get("noactivex");
+            
             if(noactivex == null || "".equals(noactivex.trim())){
                 tempPageFilename = createTemporaryFile(cms, pageFileResource, tempProject, curProject);
             } else {
                 tempPageFilename = (String)session.getValue("te_temppagefile");
             }
+            
             cms.getRequestContext().setCurrentProject(curProject);
-            tempBodyFilename = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + tempPageFilename;
-
+            if (isSimplePage) {
+                tempBodyFilename = tempPageFilename;
+            } else {
+                tempBodyFilename = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + tempPageFilename;
+            }
+            
             session.putValue("te_temppagefile", tempPageFilename);
             session.putValue("te_tempbodyfile", tempBodyFilename);
         }
@@ -469,7 +495,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 tempBodyFilename, C_BODY_ELEMENT, parameters, null);
 
         // Get the temporary page file object
-        CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
+        CmsXmlControlFile temporaryControlFile = null;
+        if (! isSimplePage) temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
         if(!existsContentParam) {
             Vector allBodys = bodyTemplateFile.getAllSections();
             if(allBodys == null || allBodys.size() == 0) {
@@ -478,12 +505,14 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 body = (String)allBodys.elementAt(0);
             }
             bodytitle = body.equals("(default)") ? "" : body;
-            temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
-            temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
-            // change the current project to temp file project
-            cms.getRequestContext().setCurrentProject(tempProject);
-            temporaryControlFile.write();
-            cms.getRequestContext().setCurrentProject(curProject);
+            if (! isSimplePage) {
+                temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
+                temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
+                // change the current project to temp file project
+                cms.getRequestContext().setCurrentProject(tempProject);
+                temporaryControlFile.write();
+                cms.getRequestContext().setCurrentProject(curProject);
+            }
             try {
                 style = getStylesheet(cms, null, layoutTemplateFile, null);
                 if(style != null && !"".equals(style)) {
@@ -493,7 +522,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 style = "";
             }
             session.putValue("te_stylesheet", style);
-        }else {
+        } else {
             // There exists a content parameter.
             // We have to check all possible changes requested by the user.
             if(titlechangeRequested) {
@@ -513,7 +542,13 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
             if(templatechangeRequested) {
                 // The user requested a change of the layout template
-                temporaryControlFile.setMasterTemplate(layoutTemplatFilenameRelative );
+                if (isSimplePage) {
+                    cms.getRequestContext().setCurrentProject(tempProject);
+                    cms.writeProperty(tempPageFilename, CmsXmlLauncher.C_XML_CONTROL_TEMPLATE_PROPERTY, layoutTemplatFilenameRelative);
+                    cms.getRequestContext().setCurrentProject(curProject);                                        
+                } else { 
+                    temporaryControlFile.setMasterTemplate(layoutTemplatFilenameRelative );
+                }
                 try {
                     style = getStylesheet(cms, null, layoutTemplateFile, null);
                     if(style != null && !"".equals(style)) {
@@ -549,7 +584,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 }
             }
             if(bodychangeRequested) {
-                temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
+                if (! isSimplePage) temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
                 bodytitle = body.equals("(default)") ? "" : body;
                 if(body.equals("script")) {
                     // User wants to edit javascript code
@@ -569,8 +604,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             if(newbodyRequested) {
                 body = C_BODY_ELEMENT + bodyTemplateFile.createNewSection(C_BODY_ELEMENT);
                 bodytitle = body;
-                temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
-                temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
+                if (! isSimplePage) {
+                    temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
+                    temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
+                }
             }
             
             // check for C_PROPERTY_RELATIVEROOT property (with directory search)
@@ -587,7 +624,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
             cms.getRequestContext().setCurrentProject(tempProject);
             bodyTemplateFile.write();
-            temporaryControlFile.write();
+            if (! isSimplePage) temporaryControlFile.write();
             cms.getRequestContext().setCurrentProject(curProject);
         }
 
@@ -610,9 +647,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 if(title != null && !"".equals(title)) {
                     cms.writeProperty(file, C_PROPERTY_TITLE, title);
                 }
-                CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
-                originalControlFile.setMasterTemplate(temporaryControlFile.getMasterTemplate());
-                originalControlFile.write();
+                if (! isSimplePage) {
+                    CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
+                    originalControlFile.setMasterTemplate(temporaryControlFile.getMasterTemplate());
+                    originalControlFile.write();
+                }
                 // here we care about the linkmanagement
                 CmsPageLinks linkObject = cms.getPageLinks(file);
                 cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
@@ -657,7 +696,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         if(exitRequested && ((saveerror == null) || "".equals(saveerror))) {
 
             // First delete temporary files
-            temporaryControlFile.removeFromFileCache();
+            if (! isSimplePage) temporaryControlFile.removeFromFileCache();
             bodyTemplateFile.removeFromFileCache();
             // deleting the pagefile will delete the bodyfile too
             cms.getRequestContext().setCurrentProject(tempProject);

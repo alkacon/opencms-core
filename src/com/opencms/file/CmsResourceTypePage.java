@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/07/11 14:00:14 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/07/11 19:44:24 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,11 +33,11 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
+import com.opencms.launcher.CmsXmlLauncher;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.CmsXmlControlFile;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -46,24 +46,12 @@ import java.util.StringTokenizer;
 /**
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
- * @version $Revision: 1.65 $ $Date: 2003/07/11 14:00:14 $
+ * @version $Revision: 1.66 $ $Date: 2003/07/11 19:44:24 $
  */
-public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants {
+public class CmsResourceTypePage extends CmsResourceTypePlain {
 
     /** definition of the class name */
     private static final String C_CLASSNAME = "com.opencms.template.CmsXmlTemplate";
-
-    /** the id of resource type */
-    private int m_resourceType;
-
-    /** the id of the launcher used by this resource */
-    private int m_launcherType;
-
-    /** the resource type name */
-    private String m_resourceTypeName;
-
-    /** the class name of the Java class launched by the launcher */
-    private String m_launcherClass;
 
     /** internal debug flag */
     private static final int DEBUG = 0;
@@ -241,6 +229,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
     public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException {
+        
+        if (isSimpleType(cms, source)) {
+            super.copyResource(cms, source, destination, keepFlags);
+            return;
+        }
+        
         // Read and parse the source page file
         CmsFile file = cms.readFile(source);
         CmsXmlControlFile hXml = new CmsXmlControlFile(cms, file);
@@ -285,6 +279,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#copyResourceToProject(com.opencms.file.CmsObject, java.lang.String)
      */
     public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
+        
+        if (isSimpleType(cms, resourceName)) {
+            super.copyResourceToProject(cms, resourceName);
+            return;
+        }
+        
         //String resourceName = linkManager.getResourceName(resourceId);
         CmsFile file = cms.readFile(resourceName, true);
         cms.doCopyResourceToProject(resourceName);
@@ -299,6 +299,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String)
      */
     public void deleteResource(CmsObject cms, String filename) throws CmsException {
+        
+        if (isSimpleType(cms, filename)) {
+            super.deleteResource(cms, filename);
+            return;
+        }
+        
         CmsFile file = cms.readFile(filename);
         cms.doDeleteFile(filename);
         // linkmanagement: delete the links on the page
@@ -325,6 +331,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#undeleteResource(com.opencms.file.CmsObject, java.lang.String)
      */
     public void undeleteResource(CmsObject cms, String filename) throws CmsException {
+        
+        if (isSimpleType(cms, filename)) {
+            super.undeleteResource(cms, filename);
+            return;
+        }
+        
         CmsFile file = cms.readFile(filename, true);
         cms.doUndeleteFile(filename);
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
@@ -353,6 +365,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#moveResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
+        
+        if (isSimpleType(cms, source)) {
+            super.moveResource(cms, source, destination);
+            return;
+        }
+        
         CmsFile file = cms.readFile(source);
         String bodyPath = checkBodyPath(cms, file);
         cms.doMoveResource(source, destination);
@@ -375,6 +393,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#renameResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException {
+        
+        if (isSimpleType(cms, oldname)) {
+            super.renameResource(cms, oldname, newname);
+            return;
+        }
+        
         // the file that should be renamed
         CmsFile file = cms.readFile(oldname);
         // the current body path as it is saved in the XML page file
@@ -408,6 +432,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#restoreResource(com.opencms.file.CmsObject, int, java.lang.String)
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException {
+        
+        if (isSimpleType(cms, filename)) {
+            super.restoreResource(cms, versionId, filename);
+            return;
+        }
+        
         //if(!cms.accessWrite(filename)){
         if (!cms.hasPermissions(filename, I_CmsConstants.C_WRITE_ACCESS)) {
             throw new CmsException(filename, CmsException.C_NO_ACCESS);
@@ -448,6 +478,13 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#undoChanges(com.opencms.file.CmsObject, java.lang.String)
      */
     public void undoChanges(CmsObject cms, String resource) throws CmsException {
+        
+        if (isSimpleType(cms, resource)) {
+            super.undoChanges(cms, resource);
+            return;
+        }            
+           
+        
         //if(!cms.accessWrite(resource)){
         if (!cms.hasPermissions(resource, I_CmsConstants.C_WRITE_ACCESS)) {
             throw new CmsException(resource, CmsException.C_NO_ACCESS);
@@ -468,6 +505,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#lockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
     public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException {
+        
+        if (isSimpleType(cms, resource)) {
+            super.lockResource(cms, resource, force);
+            return;
+        }
+        
         // First read the page file.
         CmsFile pageFile = cms.readFile(resource);
 
@@ -494,6 +537,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#unlockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
     public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException {
+        
+        if (isSimpleType(cms, resource)) {
+            super.unlockResource(cms, resource, forceRecursive);
+            return;
+        }        
+        
         // First read the page file.
         CmsFile pageFile = cms.readFile(resource);
 
@@ -520,6 +569,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @see com.opencms.file.I_CmsResourceType#changeLockedInProject(com.opencms.file.CmsObject, int, java.lang.String)
      */
     public void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename) throws CmsException {
+        
+        if (isSimpleType(cms, resourcename)) {
+            super.changeLockedInProject(cms, newProjectId, resourcename);
+            return;
+        }
+        
         CmsFile file = cms.readFile(resourcename, true);
         cms.doChangeLockedInProject(newProjectId, resourcename);
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
@@ -699,6 +754,10 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             }
             completePath += foldername + "/";
         }
+    }
+    
+    private boolean isSimpleType(CmsObject cms, String path) throws CmsException {
+        return (null != cms.readProperty(path, CmsXmlLauncher.C_XML_CONTROL_TEMPLATE_PROPERTY));
     }
 
 }

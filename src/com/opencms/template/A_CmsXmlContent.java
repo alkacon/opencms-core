@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/07/11 14:01:39 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2003/07/11 19:44:24 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.76 $ $Date: 2003/07/11 14:01:39 $
+ * @version $Revision: 1.77 $ $Date: 2003/07/11 19:44:24 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels {
 
@@ -995,7 +995,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */
     public void init(CmsObject cms, String filename, String content) throws CmsException {
         m_cms = cms;
-        m_filename = filename + CmsXmlLauncher.C_XML_CONTROL_FILE;  
+        m_filename = filename + CmsXmlLauncher.C_XML_CONTROL_FILE_SUFFIX;  
         init(cms, parse(content.getBytes()), filename);
     }
 
