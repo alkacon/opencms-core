@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
- * Date   : $Date: 2000/02/21 22:30:00 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/23 19:44:16 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/02/21 22:30:00 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/23 19:44:16 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels {
     
@@ -64,26 +64,15 @@ public class CmsRootTemplate implements I_CmsLogChannels {
     public byte[] getMasterTemplate(A_CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate,
             com.opencms.launcher.I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
         
-        long timer=System.currentTimeMillis();
-        
         byte[] result;
         //String cacheKey = cms.getUrl();
         Object cacheKey = templateClass.getKey(cms, masterTemplate.getAbsolutePath(), parameters, "root");
     
-        if(A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRootTemplate] Caching key for " + masterTemplate.getName() + " is: " + cacheKey);            
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRootTemplate] isCacheable: " + templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), null, parameters, "root"));
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRootTemplate] Cache has  : " + cache.has(cacheKey));
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRootTemplate] should reload: " + templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), null, parameters, "root"));
-        }                
-        
-        if(templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), null, parameters, "root")
+        boolean cacheable = templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), null, parameters, "root");
+        if(cacheable
                 && cache.has(cacheKey) 
                 && ! templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), null, parameters, "root")) {
             result = cache.get(cacheKey);
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsRootTemplate] page " + masterTemplate.getAbsolutePath() + " was read from cache.");                                                                 
-            }
         } else {
             try {
                 result = templateClass.getContent(cms, masterTemplate.getAbsolutePath(), null, parameters, "root");
@@ -94,7 +83,7 @@ public class CmsRootTemplate implements I_CmsLogChannels {
                 }
                 throw e;
             }
-            if(templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), null, parameters, "root")) {
+            if(cacheable) {
                 cache.put(cacheKey, result);
             }
        }         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/02/21 22:45:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/23 19:44:39 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/21 22:45:22 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/23 19:44:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -85,10 +85,6 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         String pageText = (String)parameters.get(C_PARA_PAGE);
         String filter = (String)parameters.get(C_PARA_FILTER);
                 
-        System.err.println("*** REQUESTED PAGE: " + pageText);
-        System.err.println("*** REQUESTED FOLDER: " + folder);
-        System.err.println("*** REQUESTED FILTER: " + filter);
-        
         // Check if the user requested a special folder
         if(folder == null || "".equals(folder)) {
             folder = getConfigFile(cms).getCommonPicturePath();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsTemplateCache.java,v $
- * Date   : $Date: 2000/02/21 22:29:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/23 19:43:51 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -73,9 +73,7 @@ class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsTemplateCache] Getting " + key + " from cache.");            
         }
-        System.err.println("[CmsTemplateCache] Getting " + key + " from cache.");
         return (byte[])templateCache.get(key);
-     //   return null;
     }
     
     /**
