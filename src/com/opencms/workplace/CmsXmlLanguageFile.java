@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/01/31 10:03:25 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/02/03 14:18:40 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.39 $ $Date: 2003/01/31 10:03:25 $
+ * @version $Revision: 1.40 $ $Date: 2003/02/03 14:18:40 $
  */
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -98,7 +98,7 @@ public class CmsXmlLanguageFile {
         m_messages = new CmsMessages(C_BUNDLE_NAME, m_locale);        
         m_moduleMessages = collectModuleMessages(m_cms);
         Boolean flag = (Boolean)A_OpenCms.getRuntimeProperty("compatibility.support.oldlocales");
-        m_supportOldLocale = (flag!=null)?flag.booleanValue():false;        
+        m_supportOldLocale = (flag!=null)?flag.booleanValue():false;           
     }
     
     /**
@@ -146,6 +146,15 @@ public class CmsXmlLanguageFile {
             result = A_OpenCms.getDefaultEncoding();
         }
         return result;
+    }
+
+    /**
+     * Returns the messages initialized for this language file.
+     * 
+     * @return CmsMessages the messages initialized for this language file
+     */
+    public CmsMessages getMessages() {
+        return m_messages;
     }
 
     /**
