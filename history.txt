@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/07/23 13:32:42 $
- * Version: $Revision: 1.558 $
+ * Date   : $Date: 2004/08/02 14:54:30 $
+ * Version: $Revision: 1.559 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.3.6 Ix - mm dd, 2004
+OpenCms 5.3.6 Ix - August 2, 2004
 ! Improved core search configuration by adding configurable "input sources" for the indexers
 * Removed legacy dependency on search configuration
 ! Added new scheduler that replaces the old OpenCms "CronScheduler" based on OpenSymphony Quartz
