@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2001/09/21 06:36:21 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2003/01/08 09:35:42 $
+* Version: $Revision: 1.58.6.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.58 $ $Date: 2001/09/21 06:36:21 $
+ * @version $Revision: 1.58.6.1 $ $Date: 2003/01/08 09:35:42 $
  */
 
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,I_CmsWpConstants {
@@ -266,11 +266,11 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      */
 
     public void init(CmsObject cms, CmsFile file) throws CmsException {
-        String currentLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+        String currentLanguage = CmsXmlLanguageFileContent.getCurrentUserLanguage(cms);
         if(!m_langFiles.containsKey(currentLanguage)) {
-            m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
+            m_langFiles.put(currentLanguage, new CmsXmlLanguageFileContent(cms));
         }
-        m_languageFile = (CmsXmlLanguageFile)m_langFiles.get(currentLanguage);
+        m_languageFile = new CmsXmlLanguageFile((CmsXmlLanguageFileContent)m_langFiles.get(currentLanguage));
         super.init(cms, file);
     }
 
@@ -284,11 +284,11 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      */
 
     public void init(CmsObject cms, String filename) throws CmsException {
-        String currentLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+        String currentLanguage = CmsXmlLanguageFileContent.getCurrentUserLanguage(cms);
         if(!m_langFiles.containsKey(currentLanguage)) {
-            m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
+            m_langFiles.put(currentLanguage, new CmsXmlLanguageFileContent(cms));
         }
-        m_languageFile = (CmsXmlLanguageFile)m_langFiles.get(currentLanguage);
+        m_languageFile = new CmsXmlLanguageFile((CmsXmlLanguageFileContent)m_langFiles.get(currentLanguage));
         super.init(cms, filename);
     }
 
@@ -367,5 +367,16 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      */
     public void setXmlData(String tag, String data) {
         setData(tag, data);
+    }
+    
+    /**
+     * Returns the languagefile for the users language from the cache.
+     * If the languagefile does not exist in the cache the method returns null
+     * 
+     * @param userLanguage The language of the current user
+     * @return CmsXmlLanguageFileContent The language file
+     */
+    public static CmsXmlLanguageFileContent getLangFileFromCache(String userLanguage){
+    	return (CmsXmlLanguageFileContent)m_langFiles.get(userLanguage);
     }
 }
