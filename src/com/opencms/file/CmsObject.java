@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/11/05 15:55:34 $
-* Version: $Revision: 1.200 $
+* Date   : $Date: 2001/11/05 16:10:47 $
+* Version: $Revision: 1.201 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.200 $ $Date: 2001/11/05 15:55:34 $
+ * @version $Revision: 1.201 $ $Date: 2001/11/05 16:10:47 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3487,5 +3487,39 @@ public void setContextToCos(){
  */
 public void setContextTo(String name){
     getRequestContext().setContextTo(name);
+}
+
+/**
+ * Check if the history is enabled
+ *
+ * @return boolean Is true if history is enabled
+ */
+public boolean isHistoryEnabled(){
+    return m_rb.isHistoryEnabled();
+}
+
+/**
+ * Get the next version id for the published backup resources
+ *
+ * @return int The new version id
+ */
+public int getBackupVersionId(){
+    return m_rb.getBackupVersionId();
+}
+
+/**
+ * Creates a backup of the published project
+ *
+ * @param project The project in which the resource was published.
+ * @param projectresources The resources of the project
+ * @param versionId The version of the backup
+ * @param publishDate The date of publishing
+ * @param userId The id of the user who had published the project
+ *
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+
+public void backupProject(int projectId, int versionId, long publishDate) throws CmsException{
+    m_rb.backupProject(projectId, versionId, publishDate, getRequestContext().currentUser());
 }
 }

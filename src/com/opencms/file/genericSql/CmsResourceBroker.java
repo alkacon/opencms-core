@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/11/02 14:44:03 $
-* Version: $Revision: 1.287 $
+* Date   : $Date: 2001/11/05 16:10:28 $
+* Version: $Revision: 1.288 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.287 $ $Date: 2001/11/02 14:44:03 $
+ * @version $Revision: 1.288 $ $Date: 2001/11/05 16:10:28 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7270,5 +7270,40 @@ protected void validName(String name, boolean blank) throws CmsException {
     public void changeLockedInProject(int projectId, String resourcename) throws CmsException{
         m_dbAccess.changeLockedInProject(projectId, resourcename);
         m_resourceCache.remove(resourcename);
+    }
+
+    /**
+     * Check if the history is enabled
+     *
+     * @return boolean Is true if history is enabled
+     */
+    public boolean isHistoryEnabled(){
+        return this.m_enableHistory;
+    }
+
+    /**
+     * Get the next version id for the published backup resources
+     *
+     * @return int The new version id
+     */
+    public int getBackupVersionId(){
+        return m_dbAccess.getBackupVersionId();
+    }
+    /**
+     * Creates a backup of the published project
+     *
+     * @param project The project in which the resource was published.
+     * @param projectresources The resources of the project
+     * @param versionId The version of the backup
+     * @param publishDate The date of publishing
+     * @param userId The id of the user who had published the project
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+
+    public void backupProject(int projectId, int versionId,
+                              long publishDate, CmsUser currentUser) throws CmsException{
+        CmsProject project = m_dbAccess.readProject(projectId);
+        m_dbAccess.backupProject(project, versionId, publishDate, currentUser);
     }
 }
