@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,9 @@ package org.opencms.importexport;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsResourceTypePlain;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -47,7 +47,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsCompatibleCheck {
 

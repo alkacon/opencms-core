@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHistoryProperties.java,v $
-* Date   : $Date: 2004/02/13 13:41:43 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/02/13 13:45:33 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsHtmlReport;
+import org.opencms.workplace.*;
 
 /**
  * Template class for displaying OpenCms workplace administration synchronisation properties.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.file;
 
-import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.db.CmsNotImplementedException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -51,7 +51,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 

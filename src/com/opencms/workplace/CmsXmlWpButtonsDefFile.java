@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpButtonsDefFile.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2004/02/13 13:45:33 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.workplace.*;
 
 import com.opencms.template.A_CmsXmlContent;
 
@@ -40,7 +41,7 @@ import com.opencms.template.A_CmsXmlContent;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.21 $ $Date: 2004/02/13 13:45:33 $
  */
 
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent {

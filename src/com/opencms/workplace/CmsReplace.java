@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.*;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import java.util.Enumeration;
@@ -43,7 +44,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public final class CmsReplace extends CmsWorkplaceDefault {
 

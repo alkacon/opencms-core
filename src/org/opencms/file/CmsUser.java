@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,12 @@ package org.opencms.file;
 
 import java.util.Hashtable;
 
-import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.I_CmsWpConstants;
 
 /**
  * A user in the OpenCms system.<p>
@@ -46,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.workplace.*;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
@@ -43,7 +44,7 @@ import java.util.Hashtable;
  * This class is invoked for the workplace "touch" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public final class CmsTouch extends CmsWorkplaceDefault {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import com.opencms.workplace.CmsXmlLanguageFile;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.12
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,9 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.file.CmsFile;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 5.1.12
  */

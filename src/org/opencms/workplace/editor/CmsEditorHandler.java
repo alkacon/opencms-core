@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypePlain;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -40,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editor.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.1
  */

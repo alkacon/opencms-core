@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,10 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.CmsReport;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -47,7 +47,7 @@ import java.util.Locale;
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */

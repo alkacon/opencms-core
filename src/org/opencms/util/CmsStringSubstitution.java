@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.util;
 
-import com.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {

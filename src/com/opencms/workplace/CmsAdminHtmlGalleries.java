@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2004/02/13 13:45:33 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
+import org.opencms.workplace.*;
 
 import java.util.Hashtable;
 
@@ -42,7 +43,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.21 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.22 $ $Date: 2004/02/13 13:45:33 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 
-import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.security.CmsSecurityException;
 
@@ -60,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsXmlSaxWriter;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -49,7 +50,6 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.28 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.29 $ $Date: 2004/02/13 13:45:33 $
  */
 public class CmsExport implements Serializable {
 

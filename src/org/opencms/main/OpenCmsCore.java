@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.CmsResponseHttpServlet;
@@ -72,7 +73,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.*;
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  * @since 5.1
  */
 public final class OpenCmsCore {

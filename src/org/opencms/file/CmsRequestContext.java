@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,12 +37,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.CmsSession;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
 import com.opencms.core.I_CmsSession;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsRequestContext {
 

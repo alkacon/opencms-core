@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,9 +40,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 

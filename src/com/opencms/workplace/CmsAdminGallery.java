@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.workplace;
 
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.*;
 
 import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsFolder;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsFileListUsers {
      

@@ -32,6 +32,7 @@ package com.opencms.workplace;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.*;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;

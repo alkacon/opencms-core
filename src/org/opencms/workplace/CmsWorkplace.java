@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/02/13 13:45:33 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,6 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResourceType;
-import com.opencms.workplace.I_CmsWpConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -70,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 5.1
  */
