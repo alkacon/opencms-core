@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 alpha 2 Caladan</opencms_version>
+		<createdate>10/26/04 7:05 PM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.frontend.templateone.xmlcontentdemo</name>
+		<nicename><![CDATA[OpenCms 6.0 'templateone' XML content demo]]></nicename>
+		<class/>
+		<description><![CDATA[This module contains demo resources for OpenCms 6.0 XML content.
+(c) 2004 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<version>0.9.5</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Mon, 25 Oct 2004 16:37:39 CEST</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.frontend.templateone" version="0.9"/>
+			<dependency name="org.opencms.editors.htmlarea" version="0.9"/>
+		</dependencies>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/" destination="WEB-INF/classes/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/"/>
+			<resource uri="/system/workplace/resources/filetypes/article.gif"/>
+			<resource uri="/xmlcontent/"/>
+		</resources>
+		<parameters>
+			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/;/system/workplace/resources/filetypes/article.gif;/xmlcontent/</param>
+		</parameters>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 18:48:04 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 18:48:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 08 Oct 2004 17:49:48 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Oct 2004 17:49:48 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 16:58:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 16:52:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 16:58:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 16:52:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 16:58:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 16:52:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 16:58:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 16:52:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 16:58:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 16:52:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 16:58:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 16:56:37 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo/workplace.properties</source>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo/workplace.properties</destination>
+			<type>plain</type>
+			<uuidresource>99d7678b-275e-11d9-b242-1fd2a335da0f</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 18:26:03 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 16:52:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo/workplace_de.properties</source>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo/workplace_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>e5c050c6-2760-11d9-83ac-1fd2a335da0f</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 18:26:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 17:08:30 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo/workplace_en.properties</destination>
+			<type>plain</type>
+			<uuidresource>99d7678b-275e-11d9-b242-1fd2a335da0f</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 18:26:03 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 16:52:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/elements</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 06 Oct 2004 13:36:31 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Oct 2004 17:52:25 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/elements/side_article_list.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/elements/side_article_list.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>0c7b4022-1942-11d9-9027-95b5e57c814c</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 18:02:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Oct 2004 17:52:25 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article list element]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>xmlcontent</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 19:03:16 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:00:14 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.5]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[list.jsp]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/xmlcontent/detail.jsp]]></value>
+				</property>
+				<property>
+					<name>style_head_img_uri</name>
+					<value><![CDATA[/system/galleries/pics/ocms-templateone/head_img.jpg]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[XML content Demo]]></value>
+				</property>
+				<property>
+					<name>xmlcontent-demo</name>
+					<value><![CDATA[/xmlcontent/]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content Demo Pages]]></value>
+				</property>
+				<property>
+					<name>style_main_configpath</name>
+					<value><![CDATA[/demopages/_configuration/]]></value>
+				</property>
+				<property>
+					<name>properties_imprint</name>
+					<value><![CDATA[/demopages/_configuration/imprint]]></value>
+				</property>
+				<property>
+					<name>style_head_img_height</name>
+					<value><![CDATA[50]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/article.xsd</source>
+			<destination>xmlcontent/article.xsd</destination>
+			<type>plain</type>
+			<uuidresource>3416bed7-1128-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:28:15 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 10:27:15 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for articles]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/article_0001.html</source>
+			<destination>xmlcontent/article_0001.html</destination>
+			<type>article</type>
+			<uuidresource>e20dff06-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 18:59:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:16:45 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample Article 1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/article_0002.html</source>
+			<destination>xmlcontent/article_0002.html</destination>
+			<type>article</type>
+			<uuidresource>00b9d277-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Tue, 19 Oct 2004 18:59:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:10:27 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is the article 2 sample]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/article_0003.html</source>
+			<destination>xmlcontent/article_0003.html</destination>
+			<type>article</type>
+			<uuidresource>beeee83b-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Wed, 20 Oct 2004 19:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:15:46 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nice sample Article 3]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/article_0004.html</source>
+			<destination>xmlcontent/article_0004.html</destination>
+			<type>article</type>
+			<uuidresource>f7c19c2b-1140-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Thu, 21 Oct 2004 19:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:24:31 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is article number 4]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/detail.jsp</source>
+			<destination>xmlcontent/detail.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>34046f4b-1128-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:27:55 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 10:27:15 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article detail view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/detail_content.html</source>
+			<destination>xmlcontent/detail_content.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>960d3b21-1147-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:27:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 14:11:54 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Contents for detail view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/include.jsp</source>
+			<destination>xmlcontent/include.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>d13bd579-1f34-11d9-9f84-bdb3d9688e5d</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 16:19:11 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 16 Oct 2004 07:32:49 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.890625]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[cms:include Test]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Test for use of <cms:include> with XML contnet]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/list.jsp</source>
+			<destination>xmlcontent/list.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>340d9711-1128-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 18:01:24 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 10:27:15 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article demo page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/list_content.html</source>
+			<destination>xmlcontent/list_content.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>a4b2122f-1141-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 13:41:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:29:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Contents for list view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/list_tree.jsp</source>
+			<destination>xmlcontent/list_tree.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>b62c9903-2126-11d9-aca1-33454537bb5d</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 18:01:31 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Oct 2004 18:56:53 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.890625]]></value>
+				</property>
+				<property>
+					<name>xmlcontent-side-uri</name>
+					<value><![CDATA[/xmlcontent]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Tree Read demo]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content Tree Read demo]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/xmlcontent/list_tree_side.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/list_tree_side.html</source>
+			<destination>xmlcontent/list_tree_side.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>d111e85f-2757-11d9-b242-1fd2a335da0f</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 16:19:47 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 16:03:30 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tree side information element]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/side_element_demo.html</source>
+			<destination>xmlcontent/side_element_demo.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>22d10d1e-1158-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 16:00:12 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 16:10:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.59375]]></value>
+				</property>
+				<property>
+					<name>xmlcontent-side-uri</name>
+					<value><![CDATA[/xmlcontent]]></value>
+				</property>
+				<property>
+					<name>style_show_side</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Side Element Demo]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page using a sample side element]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[none]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>xmlcontent/subfolder</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 16:20:27 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 15:46:39 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.890625]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[list.jsp]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Sub tree folder]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo articles for "tree" functions]]></value>
+				</property>
+				<property>
+					<name>xmlcontent-demo</name>
+					<value><![CDATA[/xmlcontent/subfolder/]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/xmlcontent/subfolder/subtree_side.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/subfolder/article_0001.html</source>
+			<destination>xmlcontent/subfolder/article_0001.html</destination>
+			<type>article</type>
+			<uuidresource>51387b3e-2126-11d9-aca1-33454537bb5d</uuidresource>
+			<datelastmodified>Tue, 19 Oct 2004 19:01:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Oct 2004 18:54:03 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample Article in SUBFOLDER]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/subfolder/article_0002.html</source>
+			<destination>xmlcontent/subfolder/article_0002.html</destination>
+			<type>article</type>
+			<uuidresource>2e84d9f5-21f6-11d9-8e1f-33454537bb5d</uuidresource>
+			<datelastmodified>Wed, 20 Oct 2004 19:02:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Oct 2004 19:42:01 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Another sample article in the SUBFOLDER]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>xmlcontent/subfolder/list.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>340d9711-1128-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 18:01:24 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 10:27:15 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article demo page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>xmlcontent/subfolder/list_content.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>a4b2122f-1141-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 13:41:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:29:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Contents for list view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/subfolder/subtree_side.html</source>
+			<destination>xmlcontent/subfolder/subtree_side.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>1cb11f5b-275a-11d9-b242-1fd2a335da0f</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 17:48:30 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 16:19:56 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tree side information element]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 15:02:00 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>15</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:40 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/article.gif</source>
+			<destination>system/workplace/resources/filetypes/article.gif</destination>
+			<type>image</type>
+			<uuidresource>a17837da-2769-11d9-a415-1fd2a335da0f</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 18:11:01 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 18:11:01 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

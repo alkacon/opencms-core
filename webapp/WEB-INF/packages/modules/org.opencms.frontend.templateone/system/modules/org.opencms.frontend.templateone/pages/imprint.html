@@ -1,0 +1,69 @@
+<%@ page session="false" buffer="none" import="org.opencms.frontend.templateone.*" %><%
+
+// initialise Cms Action Element
+CmsTemplateImprint cms = new CmsTemplateImprint(pageContext, request, response);
+
+if (cms.template("head")) {
+	cms.includePopup("popuphead", cms.key("imprint.headline"), cms.getRequestContext().getUri());
+}
+
+if (cms.template("headline")) {
+%>
+<h1 class="popup"><%= cms.key("imprint.headline") %></h1>
+<% cms.includeSilent(cms.getIncludeTarget(), "text1"); %>
+<% 
+}
+
+if (cms.template("content")) {
+%>
+<div class="popup">
+<table class="imprint" border="0" cellpadding="2" cellspacing="1">
+<tr>
+	<td class="imprint"><%= cms.key("imprint.url") %>:</td>
+	<td class="imprint"><%= cms.getUrl() %></td>
+</tr>
+<tr>
+	<td class="imprint"><%= cms.key("imprint.title") %>:</td>
+	<td class="imprint"><%= cms.getTitle(null) %></td>
+</tr>
+<tr>
+	<td class="imprint"><%= cms.key("imprint.description") %>:</td>
+	<td class="imprint"><%= cms.getDescription(cms.key("default.description")) %></td>
+</tr>
+<tr>
+	<td class="imprint"><%= cms.key("imprint.keywords") %>:</td>
+	<td class="imprint"><%= cms.getKeywords(cms.key("default.keywords")) %></td>
+</tr>
+<tr>
+	<td class="imprint"><%= cms.key("imprint.author") %>:</td>
+	<td class="imprint"><%= cms.getAuthor("") %></td>
+</tr>
+<tr>
+	<td class="imprint"><%= cms.key("imprint.address") %>:</td>
+	<td class="imprint"><%= cms.getAddress("") %></td>
+</tr>
+<tr>
+	<td class="imprint"><%= cms.key("imprint.email") %>:</td>
+	<td class="imprint"><a href="mailto:<%= cms.getEmail("") %>"><%= cms.getEmail("") %></a></td>
+</tr>
+</table>
+</div>
+<% 
+}
+
+if (cms.template("foot")) {
+
+	String linkPrivacy = cms.getLinkPrivacy();
+	String linkLegal = cms.getLinkLegalNotes();
+	
+%>
+<% cms.includeSilent(cms.getIncludeTarget(), "text2"); %>
+<div style="width: 100%; margin-top: 8px;margin-bottom: 8px;">
+<% if (!"#".equals(linkPrivacy)) { %><a href="javascript:showFile('<%= linkPrivacy %>');"><%= cms.key("link.imprint.privacy") %></a><% if (!"#".equals(linkLegal)) { %> | <% } %><% } %>
+<% if (!"#".equals(linkLegal)) { %><a href="javascript:showFile('<%= linkLegal %>');"><%= cms.key("link.imprint.legal") %></a><% } %>
+</div>
+
+<%
+	cms.includePopup("popupfoot", null, cms.getRequestContext().getUri());
+}
+%>

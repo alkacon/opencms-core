@@ -1,0 +1,99 @@
+<%@ page session="false" buffer="none" import="org.opencms.frontend.templateone.*" %><%--
+
+--%><jsp:useBean id="cms" class="org.opencms.frontend.templateone.CmsTemplateFormRecommend" scope="request">
+</jsp:useBean><%
+
+// initialise Cms Action Element
+cms.init(pageContext, request, response);
+
+if (cms.template("html")) {
+
+CmsTemplateStyleSheet style = new CmsTemplateStyleSheet(pageContext, request, response);
+
+String mainBorder = style.getConfigValue("main.border", "#000000");
+boolean showMainBorder = true;
+if ("none".equals(mainBorder)) {
+	showMainBorder = false;
+}
+String mainFontFamily = style.getConfigValue("main.font.family", "Verdana, Arial, Helvetica, sans-serif;");
+String mainSidesBg = style.getConfigValue("main.sides.bg", "#FFFFFF");
+
+String headNavBg = style.getConfigValue("head.nav.bg", "#660033");
+String headNavFont = style.getConfigValue("head.nav.font", "#FFFFFF");
+
+String contentFont = style.getConfigValue("content.font", "#000000");
+String contentLink = style.getConfigValue("content.link", "#cc0033");
+String contentLinkHover = style.getConfigValue("content.link_hover", "#cc0033");
+String contentLinkActive = style.getConfigValue("content.link.active", contentLink);
+String contentLinkVisited = style.getConfigValue("content.link.visited", contentLink);
+
+
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="<%= cms.getRequestContext().getLocale() %>">
+<head>
+	<style type="text/css">
+		<!--
+		body { background-color: <%= mainSidesBg %>; margin: 10px; }
+		body,ul,ol,li,td,p,div,span { font-family: <%= mainFontFamily %>; font-size: 10pt; color: <%= contentFont %>; }		
+		h1			{ font-size: 10pt; font-weight: bold; padding: 2px; width: 100%; background-color: <%= headNavBg %>; color: <%= headNavFont %>; }
+		a			{ color: <%= contentLink %>; text-decoration: none; }
+		a:link		{ color: <%= contentLink %>; text-decoration: none; }
+		a:visited	{ color: <%= contentLinkVisited %>; text-decoration: none; }
+		a:hover		{ color: <%= contentLinkHover %>; text-decoration: none; }
+		a:active	{ color: <%= contentLinkActive %>; text-decoration: none; }
+		div			{ <% 
+	
+			if (showMainBorder) {
+				out.print("border: 1px solid " + mainBorder + "; ");
+			} 
+	
+			%>margin-top: 10px; width: 100%; padding: 2px; }
+		//-->
+	</style>
+</head>
+<body>
+<h1><%= cms.key("recommend.mail.title") %></h1>
+<p>
+	<%= cms.getFormText("mail_head", false) %>
+</p>
+<div>
+<p>
+	<%= cms.key("recommend.text.page") %>
+	<a href="<%= cms.getPageUrl() %>"><%= cms.getPageTitle() %></a><br />
+	<%= cms.key("recommend.text.url") %> <%= cms.getPageUrl() %>
+</p>
+<p>
+	<%= cms.getMessage() %>
+</p>
+<p>
+	<%= cms.key("recommend.mail.text.url") %><br>
+	<a href="<%= cms.getPageUrl() %>"><%= cms.getPageUrl() %></a>
+</p>
+</div>
+<p>
+	<%= cms.getFormText("mail_foot", false) %>
+</p>
+</body>
+</html>
+<%
+}
+
+if (cms.template("text")) {
+%><%= cms.key("recommend.mail.title") %>
+
+<%= cms.getFormText("mail_head", true) %>
+
+---------------------------------------------------------------------
+<%= cms.key("recommend.text.page") %> <%= cms.getPageTitle() %>
+<%= cms.key("recommend.text.url") %> <%= cms.getPageUrl() %>
+
+<%= cms.getMessage() %>
+
+<%= cms.key("recommend.mail.text.url") %>
+<%= cms.getPageUrl() %>
+---------------------------------------------------------------------
+
+<%= cms.getFormText("mail_foot", true) %>
+<%
+}
+%>

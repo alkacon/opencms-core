@@ -1,0 +1,1555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 alpha 2 Caladan</opencms_version>
+		<createdate>10/26/04 5:13 PM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.frontend.templateone</name>
+		<nicename><![CDATA[OpenCms 6.0 'templateone' frontend]]></nicename>
+		<class/>
+		<description><![CDATA[This module contains the highly configurable OpenCms frontend template one. This template can easily be used to display website contents.
+(c) 2004 by Alkacon Software (http://www.alkacon.com).
+]]></description>
+		<version>0.9.5</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Tue, 26 Oct 2004 17:12:52 CEST</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.frontend.templateone/lib/" destination="WEB-INF/lib/"/>
+			<exportpoint uri="/system/modules/org.opencms.frontend.templateone/classes/" destination="WEB-INF/classes/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/galleries/pics/ocms-templateone/"/>
+			<resource uri="/system/modules/org.opencms.frontend.templateone/"/>
+		</resources>
+		<parameters>
+			<param name="additionalresources">/system/galleries/pics/ocms-templateone/;/system/modules/org.opencms.frontend.templateone/</param>
+		</parameters>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 15:50:51 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 15:50:51 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/galleries</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 15:02:00 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/galleries/pics</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>exportname</name>
+					<value><![CDATA[/pics/]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/galleries/pics/ocms-templateone</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 23 Sep 2004 15:35:52 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 23 Sep 2004 15:35:41 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms template one images]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/galleries/pics/ocms-templateone/bg_nav.jpg</source>
+			<destination>system/galleries/pics/ocms-templateone/bg_nav.jpg</destination>
+			<type>image</type>
+			<uuidresource>918571e4-0d65-11d9-9f4f-9b4fc25bdb8f</uuidresource>
+			<datelastmodified>Thu, 23 Sep 2004 15:36:26 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 23 Sep 2004 15:36:26 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/galleries/pics/ocms-templateone/head_img.jpg</source>
+			<destination>system/galleries/pics/ocms-templateone/head_img.jpg</destination>
+			<type>image</type>
+			<uuidresource>06177255-0d68-11d9-9f4f-9b4fc25bdb8f</uuidresource>
+			<datelastmodified>Thu, 23 Sep 2004 15:54:01 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 23 Sep 2004 15:54:01 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/galleries/pics/ocms-templateone/logo_alkacon_150_t.gif</source>
+			<destination>system/galleries/pics/ocms-templateone/logo_alkacon_150_t.gif</destination>
+			<type>image</type>
+			<uuidresource>2a098fcf-0d73-11d9-b3f3-9b4fc25bdb8f</uuidresource>
+			<datelastmodified>Thu, 23 Sep 2004 17:13:46 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 23 Sep 2004 17:13:46 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/galleries/pics/ocms-templateone/logo_opencms_150.gif</source>
+			<destination>system/galleries/pics/ocms-templateone/logo_opencms_150.gif</destination>
+			<type>image</type>
+			<uuidresource>7eb3f55b-193e-11d9-9027-95b5e57c814c</uuidresource>
+			<datelastmodified>Fri, 08 Oct 2004 17:26:58 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Oct 2004 17:26:58 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 12 Oct 2004 09:56:36 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:32:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/classes</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 14 Jul 2004 10:32:29 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:32:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/classes/templateone.properties</source>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone.properties</destination>
+			<type>plain</type>
+			<uuidresource>50aeb442-d57b-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Thu, 16 Sep 2004 16:06:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 11:51:01 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/classes/templateone_de.properties</source>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>2dee3551-d63b-11d8-96ad-6dec57178f5b</uuidresource>
+			<datelastmodified>Thu, 16 Sep 2004 16:07:04 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Jul 2004 10:44:26 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_en.properties</destination>
+			<type>plain</type>
+			<uuidresource>50aeb442-d57b-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Thu, 16 Sep 2004 16:06:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 11:51:01 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/classes/templateone_form.properties</source>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_form.properties</destination>
+			<type>plain</type>
+			<uuidresource>17bdf1a3-e21e-11d8-bdbe-83d5f21447d1</uuidresource>
+			<datelastmodified>Thu, 23 Sep 2004 14:47:43 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 30 Jul 2004 13:46:28 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/classes/templateone_form_de.properties</source>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_form_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>d0e71127-e21e-11d8-bdbe-83d5f21447d1</uuidresource>
+			<datelastmodified>Thu, 23 Sep 2004 14:48:29 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 30 Jul 2004 13:51:38 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_form_en.properties</destination>
+			<type>plain</type>
+			<uuidresource>17bdf1a3-e21e-11d8-bdbe-83d5f21447d1</uuidresource>
+			<datelastmodified>Thu, 23 Sep 2004 14:47:43 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 30 Jul 2004 13:46:28 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/org</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 14 Jul 2004 10:32:29 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:32:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 14 Jul 2004 10:32:29 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:32:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 14 Jul 2004 10:32:29 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:32:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 14 Jul 2004 10:32:29 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:32:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace.properties</source>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace.properties</destination>
+			<type>plain</type>
+			<uuidresource>7c8c76d8-1ebe-11d9-88bb-efd43b41b93a</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:23:02 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Oct 2004 17:25:46 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace_de.properties</source>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>f10c60c2-1ebe-11d9-88bb-efd43b41b93a</uuidresource>
+			<datelastmodified>Wed, 20 Oct 2004 14:11:49 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Oct 2004 17:29:02 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace_en.properties</destination>
+			<type>plain</type>
+			<uuidresource>7c8c76d8-1ebe-11d9-88bb-efd43b41b93a</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:23:02 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Oct 2004 17:25:46 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/default_bodies</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 14 Jul 2004 10:32:29 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:32:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/default_bodies/1col_1row</source>
+			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/1col_1row</destination>
+			<type>plain</type>
+			<uuidresource>7f4fd05c-d570-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 15:51:01 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:33:35 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[1 column, 1 row]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/default_bodies/1col_2rows</source>
+			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/1col_2rows</destination>
+			<type>plain</type>
+			<uuidresource>8f9ade6e-e779-11d8-a573-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 15:51:13 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 Aug 2004 09:23:49 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[1 column, 2 rows]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/default_bodies/1col_3rows</source>
+			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/1col_3rows</destination>
+			<type>plain</type>
+			<uuidresource>db7f1f4b-e779-11d8-a573-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 15:51:31 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 Aug 2004 09:25:56 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[1 column, 3 rows]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/default_bodies/1col_4rows</source>
+			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/1col_4rows</destination>
+			<type>plain</type>
+			<uuidresource>f162746f-e779-11d8-a573-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 15:51:44 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 Aug 2004 09:26:33 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[1 column, 4 rows]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_1row</source>
+			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_1row</destination>
+			<type>plain</type>
+			<uuidresource>39f4a413-e77a-11d8-a573-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 15:51:57 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 Aug 2004 09:28:35 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[2 columns, 1 row]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_2rows</source>
+			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_2rows</destination>
+			<type>plain</type>
+			<uuidresource>5c434b77-e77a-11d8-a573-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 15:52:09 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 Aug 2004 09:29:32 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[2 columns, 2 rows]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_3rows</source>
+			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_3rows</destination>
+			<type>plain</type>
+			<uuidresource>80e04fab-e77a-11d8-a573-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 15:52:25 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 Aug 2004 09:30:34 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[2 columns, 3 rows]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_4rows</source>
+			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_4rows</destination>
+			<type>plain</type>
+			<uuidresource>9fc4ca03-e77a-11d8-a573-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 15:52:38 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 06 Aug 2004 09:31:25 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[2 columns, 4 rows]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/elements</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 22 Jul 2004 12:57:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 22 Jul 2004 12:57:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/elements/body_end.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/elements/body_end.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>9759a85f-0c81-11d9-b15c-9b4fc25bdb8f</uuidresource>
+			<datelastmodified>Thu, 30 Sep 2004 10:18:34 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 22 Sep 2004 12:24:31 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;params=(accessible,layout)]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Body end parts]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/elements/elements.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/elements/elements.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>ed61e049-0d41-11d9-be40-9b4fc25bdb8f</uuidresource>
+			<datelastmodified>Thu, 30 Sep 2004 10:13:59 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 23 Sep 2004 11:21:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element;locale;params=(accessible)]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page elements]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/elements/elements_old.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/elements/elements_old.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>e5443fc9-0d45-11d9-a424-9b4fc25bdb8f</uuidresource>
+			<datelastmodified>Thu, 30 Sep 2004 10:14:04 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 23 Sep 2004 11:49:43 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element;locale;params=(accessible)]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Old page elements]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/elements/foot_links.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/elements/foot_links.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>7e344f1b-dbcf-11d8-a76e-993e109d03c3</uuidresource>
+			<datelastmodified>Fri, 08 Oct 2004 12:16:55 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 22 Jul 2004 13:08:42 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(accessible)]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Foot links row]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/elements/head_image.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/elements/head_image.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>0f542c5f-dbce-11d8-a76e-993e109d03c3</uuidresource>
+			<datelastmodified>Wed, 22 Sep 2004 16:08:54 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 22 Jul 2004 12:58:27 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(imagelink)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Head image row]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/elements/head_links.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/elements/head_links.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>f1e38d5c-dbcd-11d8-a76e-993e109d03c3</uuidresource>
+			<datelastmodified>Wed, 22 Sep 2004 16:37:45 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 22 Jul 2004 12:57:38 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Head links row]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/elements/info_side.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/elements/info_side.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>e087833e-dbcf-11d8-a76e-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 15:17:39 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 22 Jul 2004 13:11:27 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(accessible)]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Info box side]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/elements/nav_breadcrumb.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/elements/nav_breadcrumb.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>3b0f64f8-dbce-11d8-a76e-993e109d03c3</uuidresource>
+			<datelastmodified>Thu, 30 Sep 2004 09:55:24 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 22 Jul 2004 12:59:40 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Bread crumb navigation]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/elements/nav_head.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/elements/nav_head.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>24e31ff2-dbce-11d8-a76e-993e109d03c3</uuidresource>
+			<datelastmodified>Thu, 30 Sep 2004 09:54:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 22 Jul 2004 12:59:03 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element;locale]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Head navigation row]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/elements/nav_left.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/elements/nav_left.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>2f3f4145-dbce-11d8-a76e-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 15:28:59 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 22 Jul 2004 12:59:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Left navigation]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/jsptemplates</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 11 Oct 2004 11:09:27 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Oct 2004 11:09:27 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/jsptemplates/letter</source>
+			<destination>system/modules/org.opencms.frontend.templateone/jsptemplates/letter</destination>
+			<type>jsp</type>
+			<uuidresource>cd04ac8d-1b66-11d9-b72e-95b5e57c814c</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 14:15:40 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Oct 2004 11:20:32 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[form_head|Form Head,form_contact|Form Contact,form_foot|Form Foot,confirm_head|Confirmation Head,confirm_foot|Confirmation Foot,mail_head|Mail Head,mail_foot|Mail Foot]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/resources/style.css]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Hidden template for letter to the editor texts]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/jsptemplates/recommend</source>
+			<destination>system/modules/org.opencms.frontend.templateone/jsptemplates/recommend</destination>
+			<type>jsp</type>
+			<uuidresource>4a98b947-1b65-11d9-b72e-95b5e57c814c</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 14:15:55 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Oct 2004 11:09:44 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[form_head|Form Head,form_foot|Form Foot,confirm_head|Confirmation Head,confirm_foot|Confirmation Foot,mail_head|Mail Head,mail_foot|Mail Foot]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/resources/style.css]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Hidden template for page recommendation texts]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/lib</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 14 Jul 2004 10:32:29 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:32:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/lib/opencms-templateone.jar</source>
+			<destination>system/modules/org.opencms.frontend.templateone/lib/opencms-templateone.jar</destination>
+			<type>binary</type>
+			<uuidresource>4f69c1cf-dcbd-11d8-9050-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:37:12 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 23 Jul 2004 17:31:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/pages</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 14 Jul 2004 15:02:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 15:02:33 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/imprint.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/imprint.html</destination>
+			<type>jsp</type>
+			<uuidresource>3213d530-dfd8-11d8-a31a-993e109d03c3</uuidresource>
+			<datelastmodified>Thu, 30 Sep 2004 12:55:35 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jul 2004 16:21:05 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element;locale;params=(uri)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Imprint]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/letter.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/letter.html</destination>
+			<type>jsp</type>
+			<uuidresource>44a2e440-e472-11d8-9697-83d5f21447d1</uuidresource>
+			<datelastmodified>Fri, 08 Oct 2004 15:55:47 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Aug 2004 12:54:03 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Contact letter handler]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/letter_confirm.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/letter_confirm.html</destination>
+			<type>jsp</type>
+			<uuidresource>6ba9a838-e48a-11d8-935f-83d5f21447d1</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 13:43:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Aug 2004 15:46:57 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Letter confirmation]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/letter_content.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/letter_content.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>4af6ac2a-e486-11d8-935f-83d5f21447d1</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 12:50:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Aug 2004 15:17:24 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/jsptemplates/letter]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Letter included contents]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/letter_input.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/letter_input.html</destination>
+			<type>jsp</type>
+			<uuidresource>076c14a6-e480-11d8-935f-83d5f21447d1</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 13:41:04 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Aug 2004 14:32:33 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Letter input form]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/letter_mail.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/letter_mail.html</destination>
+			<type>jsp</type>
+			<uuidresource>6e885d74-e5ed-11d8-a89d-993e109d03c3</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 11:11:25 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 Aug 2004 10:08:13 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(uri,resourcepath,__element)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Letter email parts]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/popup_includes.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/popup_includes.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>f060d85e-e227-11d8-959f-83d5f21447d1</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2004 11:03:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 30 Jul 2004 14:56:57 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(title,resourcepath,stylesheeturi,uri);locale;element]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Popup window page parts]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/recommend.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend.html</destination>
+			<type>jsp</type>
+			<uuidresource>11e7d1ce-e217-11d8-bdbe-83d5f21447d1</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 13:39:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 30 Jul 2004 12:56:11 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Recommend page handler]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/recommend_confirm.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend_confirm.html</destination>
+			<type>jsp</type>
+			<uuidresource>8ac54b24-e47d-11d8-b4e5-83d5f21447d1</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 13:36:40 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Aug 2004 14:14:45 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Recommend confirmation]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/recommend_content.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend_content.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>e1552564-e45b-11d8-9a30-83d5f21447d1</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 13:01:12 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Aug 2004 10:13:48 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/jsptemplates/recommend]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Recommend included contents]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/recommend_input.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend_input.html</destination>
+			<type>jsp</type>
+			<uuidresource>5d6a2c35-e477-11d8-9697-83d5f21447d1</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 13:37:11 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Aug 2004 13:30:32 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Recommend input form]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/recommend_mail.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend_mail.html</destination>
+			<type>jsp</type>
+			<uuidresource>e2e9b2aa-e545-11d8-b77c-83d5f21447d1</uuidresource>
+			<datelastmodified>Mon, 11 Oct 2004 13:26:40 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 Aug 2004 14:08:52 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(uri,resourcepath,__element)]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Recommend email parts]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/pages/search.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone/pages/search.html</destination>
+			<type>jsp</type>
+			<uuidresource>32677084-d596-11d8-ba2c-6dec57178f5b</uuidresource>
+			<datelastmodified>Fri, 08 Oct 2004 15:56:48 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 15:03:27 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Search page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 15 Jul 2004 11:51:43 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:39:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>exportname</name>
+					<value><![CDATA[/templateone/resources/]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/contact.gif</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/contact.gif</destination>
+			<type>image</type>
+			<uuidresource>46dba570-d571-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Mon, 12 Jul 2004 16:41:15 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:39:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/login.gif</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/login.gif</destination>
+			<type>image</type>
+			<uuidresource>46e2d164-d571-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Mon, 12 Jul 2004 16:41:15 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:39:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/mail.gif</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/mail.gif</destination>
+			<type>image</type>
+			<uuidresource>46e9fd58-d571-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2004 11:29:40 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:39:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/menu.js</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/menu.js</destination>
+			<type>plain</type>
+			<uuidresource>46f1294c-d571-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2004 10:03:52 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:39:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/navigation.js</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/navigation.js</destination>
+			<type>plain</type>
+			<uuidresource>46f85540-d571-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Thu, 08 Jul 2004 14:00:34 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:39:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/nav_a.gif</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/nav_a.gif</destination>
+			<type>image</type>
+			<uuidresource>879b1fb5-db26-11d8-8823-993e109d03c3</uuidresource>
+			<datelastmodified>Wed, 21 Jul 2004 16:59:13 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 21 Jul 2004 16:59:13 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/nav_bc.gif</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/nav_bc.gif</destination>
+			<type>image</type>
+			<uuidresource>4714de00-d571-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Fri, 09 Jul 2004 11:00:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:39:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/nav_i.gif</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/nav_i.gif</destination>
+			<type>image</type>
+			<uuidresource>87a24ba8-db26-11d8-8823-993e109d03c3</uuidresource>
+			<datelastmodified>Wed, 21 Jul 2004 16:59:13 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 21 Jul 2004 16:59:13 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/page.js</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/page.js</destination>
+			<type>plain</type>
+			<uuidresource>40059cb6-d5a1-11d8-b29f-6dec57178f5b</uuidresource>
+			<datelastmodified>Wed, 04 Aug 2004 13:56:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 16:22:34 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/print.gif</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/print.gif</destination>
+			<type>image</type>
+			<uuidresource>46cb0398-d571-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Mon, 12 Jul 2004 16:41:15 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:39:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/style.css</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/style.css</destination>
+			<type>jsp</type>
+			<uuidresource>46d22f8c-d571-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 12:48:15 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:39:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(uri)]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/style_accessible.css</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/style_accessible.css</destination>
+			<type>jsp</type>
+			<uuidresource>e355ce1a-dbe3-11d8-9b6a-993e109d03c3</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 17:09:05 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 22 Jul 2004 15:34:42 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(uri)]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/up.gif</source>
+			<destination>system/modules/org.opencms.frontend.templateone/resources/up.gif</destination>
+			<type>image</type>
+			<uuidresource>471c08f4-d571-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Mon, 05 Jul 2004 11:29:40 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:39:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 13 Oct 2004 12:43:16 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2004 12:43:16 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/common.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/common.xsd</destination>
+			<type>plain</type>
+			<uuidresource>5e1f50e2-1d06-11d9-8b0f-95b5e57c814c</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 13:03:09 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2004 12:55:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Common configuration schema]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/imprint.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/imprint.xsd</destination>
+			<type>plain</type>
+			<uuidresource>6ac89686-1d06-11d9-8b0f-95b5e57c814c</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 14:48:58 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2004 12:55:38 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Imprint schema]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/links.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/links.xsd</destination>
+			<type>plain</type>
+			<uuidresource>6f99a69a-1d06-11d9-8b0f-95b5e57c814c</uuidresource>
+			<datelastmodified>Wed, 20 Oct 2004 12:56:38 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2004 12:55:46 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Head links schema]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/stylesheet.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/stylesheet.xsd</destination>
+			<type>plain</type>
+			<uuidresource>72868d5e-1d06-11d9-8b0f-95b5e57c814c</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 12:41:03 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Oct 2004 12:55:51 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[CSS stylesheet schema]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/templates</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 14 Jul 2004 10:32:29 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:32:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/templates/main</source>
+			<destination>system/modules/org.opencms.frontend.templateone/templates/main</destination>
+			<type>jsp</type>
+			<uuidresource>8e1ce060-d570-11d8-b127-6dec57178f5b</uuidresource>
+			<datelastmodified>Wed, 13 Oct 2004 09:35:28 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Jul 2004 10:34:00 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element;params=(print,accessible)]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[text1*|Text Z1 S1,text2|Text Z1 S2,text3|Text Z2 S1,text4|Text Z2 S2,text5|Text Z3 S1,text6|Text Z3 S2,text7|Text Z4 S1,text8|Text Z4 S2]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/resources/style.css]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[-OpenCms Template one]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

@@ -1,0 +1,64 @@
+<%@ page session="false" buffer="none" import="org.opencms.frontend.templateone.*" %><%--
+
+--%><jsp:useBean id="cms" class="org.opencms.frontend.templateone.CmsTemplateFormRecommend" scope="request">
+</jsp:useBean><%
+
+
+// initialise Cms Action Element
+cms.init(pageContext, request, response);
+
+String errorMessage = "";
+if (cms.hasValidationErrors()) {
+	errorMessage = "<p><span class=\"formerror\">" + cms.key("form.error.validation") + "</span></p>";
+}
+
+cms.includePopup("popuphead", cms.key("recommend.title"), cms.getPageUri(true));
+
+	%>
+	<h1 class="popup"><%= cms.key("recommend.title") %></h1>
+	<div class="popup" style="padding: 2px;">
+		<p><%= cms.getFormText("form_head", false) %></p>
+		<%= errorMessage %>
+		<p>
+		<%= cms.key("recommend.text.page") %><br />
+		<a href="javascript:showFile('<%= cms.getPageUrl() %>');"><%= cms.getPageTitle() %></a><br />
+		<%= cms.key("recommend.text.url") %><br /><%= cms.getPageUrl() %>
+		</p>
+
+		<form name="recommend" method="post" action="<%= cms.getFormUri() %>">
+		<input type="hidden" name="<%= CmsTemplateForm.C_PARAM_ACTION %>" value="submit">
+		<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>">
+		<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_URI %>" value="<%= cms.getPageUri() %>">
+
+		<p>
+		<%= cms.key("recommend.form.email.recipient") %>*<br />
+		<input type="text" name="emailRecipient" value="<%= cms.getEmailRecipient() %>" class="popupform"><br />
+		<span class="formerror"><%= cms.getError("recipient") %></span>
+		</p>
+
+		<p>
+		<%= cms.key("recommend.form.message") %>*<br />
+		<textarea name="message" wrap="virtual" style="height: 120px; overflow: auto;" class="popupform"><%= cms.getMessage() %></textarea><br />
+		<span class="formerror"><%= cms.getError("message") %></span>
+		</p>
+
+		<p>
+		<%= cms.key("recommend.form.email.sender") %>*<br />
+		<input type="text" name="emailSender" value="<%= cms.getEmailSender() %>" class="popupform"><br />
+		<span class="formerror"><%= cms.getError("sender") %></span>
+		</p>
+
+		<p>
+		<input type="checkbox" name="copy" value="true"<%= cms.isCopyChecked() %>><%= cms.key("recommend.form.copy") %>
+		</p>
+
+		<p style="text-align: center;">
+		<input type="submit" value="<%= cms.key("form.submit") %>" class="formbutton"">
+		</p>
+		</form>
+
+		<p><%= cms.getFormText("form_foot", false) %></p>
+	</div>
+<%
+	cms.includePopup("popupfoot", null, cms.getPageUri(true));
+%>

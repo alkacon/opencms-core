@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:element name="configurations" type="OpenCmsConfigurations"/>
+	
+	<xsd:complexType name="OpenCmsConfigurations">
+		<xsd:sequence>
+			<xsd:element name="configuration" type="OpenCmsConfiguration" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsConfiguration">
+		<xsd:sequence>
+			<xsd:element name="area.name" type="OpenCmsString" />
+			<xsd:element name="navigation.startfolder" type="OpenCmsString" />
+			<xsd:element name="headnav.menus" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="navleft.showselected" type="OpenCmsBoolean" />
+			<xsd:element name="page.form.letter" type="OpenCmsVfsFile" />
+			<xsd:element name="page.form.recommend" type="OpenCmsVfsFile" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+</xsd:schema>

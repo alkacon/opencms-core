@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/10/26 07:49:02 $
- * Version: $Revision: 1.578 $
+ * Date   : $Date: 2004/10/26 17:26:07 $
+ * Version: $Revision: 1.579 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,10 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 25, 2004
+OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
+! Added 'templateone' default module as an extended template demo
+! Added XML content demo module based on 'templateone'
+! Added resource type "article" that demonstrates the use of XML content types
 ! Updated included libaries to their latest available release versions
 ! Split the CmsDriverManager into CmsSecurityManager and CmsDriverManager,
   for more efficient handling of permission checks during DB operations

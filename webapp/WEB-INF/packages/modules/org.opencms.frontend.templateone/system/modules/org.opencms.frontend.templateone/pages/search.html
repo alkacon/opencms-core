@@ -1,0 +1,71 @@
+<%@ page session="false" buffer="none" import="java.util.*,org.opencms.search.*,org.opencms.frontend.templateone.*" %><%--
+
+This is the search code page.
+
+--%><%
+
+// initialise the template bean
+CmsTemplateSearch cms = new CmsTemplateSearch(pageContext, request, response);
+
+// include the template head
+cms.includeWithPageUri("head");
+
+%><%--
+--%><jsp:useBean id="search" scope="request" class="org.opencms.search.CmsSearch"><%--
+--%><jsp:setProperty name="search" property="*"/><% 
+    	search.init(cms.getCmsObject()); 
+    	search.setIndex("Online project (VFS)");
+    	search.setField(new String[] {"title", "keywords", "description", "content"});
+    	search.setMatchesPerPage(10);
+    	search.setQueryLength(3);
+    	search.setDisplayPages(11); %><%--
+--%></jsp:useBean><%--
+
+--%><div style="margin: 8px;">
+<h3><%= cms.buildSearchHeadline() %></h3>
+<p style="vertical-align: middle;">
+<form style="margin: 0;" name="searchform" method="post" action="<%= cms.link("/system/modules/org.opencms.frontend.templateone/pages/search.html") %>" onsubmit="return parseSearchQuery(document.forms['searchform'], '<%= cms.key("search.error.wordlength") %>');">
+<input type="hidden" name="action" value="search" />
+<input type="hidden" name="query" value="" />
+<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_URI %>" value="<%= cms.getRequestContext().getUri() %>" />
+<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>" />
+
+<span style="vertical-align: middle; padding-left: 4px;"><input type="text" name="query2" class="search" style="width: 350px" value="<%= search.getQuery() %>" /></span>
+<span style="vertical-align: middle;"><input type="submit" value="<%= cms.key("link.search") %>" class="formbutton" /></span><br />     
+<span style="line-height: 3px; font-size: 1px;">&nbsp;</span><%
+
+if (cms.isSearchAllDisplayed()) {
+
+%><br />
+<span style="vertical-align: middle;"><input type="checkbox" name="<%= CmsTemplateSearch.C_PARAM_SEARCHALL %>" value="true"<%= cms.getSearchAllChecked() %>></span>
+<span style="vertical-align: middle;"><%= cms.key("search.text.all") %></span><%
+
+}
+
+%><br />&nbsp;
+</form>
+</p>
+<%
+
+// get the search results for the page
+List result = cms.getSearchResults(search);
+
+out.print(cms.buildSearchErrorMessages(search, result));
+
+if (result != null && result.size() > 0) {
+	
+	// show the result list
+	out.print(cms.buildSearchResultList(result));
+	
+	// show the links to other result pages
+	out.print(cms.buildSearchLinks(search));	
+	
+}
+
+%>
+</div>
+<%
+// include the template head
+cms.includeWithPageUri("foot");
+%>    
+ 

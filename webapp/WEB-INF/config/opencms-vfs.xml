@@ -45,6 +45,11 @@
 					<param name="resource.type.id">11</param>
 					<param name="resource.type.name">xmlcontent</param>
 				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+					<param name="resource.type.id">12</param>
+					<param name="resource.type.name">article</param>
+					<param name="schema">/sites/default/xmlcontent/article.xsd</param>
+				</type>				
 			</resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.CmsDefaultResourceCollector" order="100" />

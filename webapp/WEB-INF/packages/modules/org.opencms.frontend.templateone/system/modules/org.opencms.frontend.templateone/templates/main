@@ -1,0 +1,188 @@
+<%@page buffer="none" session="false" import="java.util.*, org.opencms.frontend.templateone.*" %><%
+
+// initialize action element to access the API
+CmsTemplateBean cms = new CmsTemplateBean(pageContext, request, response);
+
+if (cms.template("head")) {
+	
+	String resPath = cms.getResourcePath();
+	
+	// fill property Map with parameters for included navigation elements
+	cms.putNavigationProperties();	
+	
+	String headImgUri = "";
+	String headImgHeight = "";
+	String headImgLinkHeight = "0";
+
+	if (!cms.showPrintVersion()) {
+    	// set background image information for head image
+	    headImgUri = (String)cms.getProperties().get(CmsTemplateBean.C_PROPERTY_HEAD_IMGURI);
+	    if (headImgUri == null || "none".equals(headImgUri)) {
+	        headImgUri = "";    
+	    } else {
+	        headImgUri = cms.link(headImgUri);    
+	    }
+	    headImgHeight = (String)cms.getProperties().get(CmsTemplateBean.C_PROPERTY_HEAD_IMGHEIGHT);
+	    if (headImgHeight == null) {
+	    	headImgHeight = "0";
+	    } else {
+	    	headImgLinkHeight = CmsTemplateStyleSheet.calculateHeight(headImgHeight, -4);
+	    }
+	} 
+	
+	if (cms.getLayout().equals(CmsTemplateBean.C_PARAM_COMMON)) {
+		%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+		<html lang="<%= cms.getRequestContext().getLocale() %>">
+		<head>
+			<title><%= cms.key("prefix.title") + cms.getTitle(cms.key("default.title")) %></title>
+			<meta http-equiv="Content-Type" content="text/html; charset=<%= cms.getEncoding() %>">
+			<meta name="description" content="<%= cms.getDescription(cms.key("default.description")) %>">
+			<meta name="keywords" content="<%= cms.getKeywords(cms.key("default.keywords")) %>">
+			<meta name="robots" content="index, follow">
+			<meta name="revisit-after" content="7 days">
+			<% cms.editable(true); %>
+			<link href="<%= cms.getStyleSheetUri() %>?respath=<%= resPath %>&uri=<%= cms.getRequestContext().getUri() %>&__locale=<%= cms.getRequestContext().getLocale() %>" rel="stylesheet" type="text/css">
+			<style type="text/css">
+			<!--
+			/* head image row */
+			div.imagehead {
+				height: <%= headImgHeight %>px; 
+				background-image: url(<%= headImgUri %>);
+				background-repeat: no-repeat;
+			}
+
+			/* image link block on top of background image */
+			span.imagelink {
+				height: <%= headImgLinkHeight %>px; 
+			}
+			//-->
+			</style>
+			<script src="<%= resPath %>page.js" type="text/javascript"></script>
+			<%
+			String initHeadNav = "";
+			if (cms.showHeadNavigation()) {
+				initHeadNav = " onload=\"init();\"";
+				%><script src="<%= resPath %>menu.js" type="text/javascript"></script>
+				<script src="<%= resPath %>navigation.js" type="text/javascript"></script>
+			<%
+			}
+		%></head>
+		<body class="main"<%= initHeadNav %>>
+		<div style="visibility: hidden;"><a name="top"></a></div>
+		<%
+		if (cms.showHeadLinks()) {
+            // include head links row
+            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "head_links.jsp");
+        }
+        if (cms.showHeadImage()) {
+            // include head image row
+            cms.getProperties().put("imagelink", cms.property(CmsTemplateBean.C_PROPERTY_HEAD_IMGLINK, "search", ""));
+            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "head_image.jsp", null, cms.getProperties());
+        }
+        if (cms.showHeadNavigation()) {
+            // include head navigation row
+            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_head.jsp", "navrow", cms.getProperties());
+        }        
+		%><div class="main">
+		<table class="main" border="0" cellpadding="0" cellspacing="0">	
+		<tr>
+			<td class="navleft">
+		<%
+		// include left navigation          
+        cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_left.jsp", null, cms.getProperties());
+		%></td>
+			<td class="content">
+		<%
+		cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_breadcrumb.jsp", null, cms.getProperties());
+		
+		
+	} else if (cms.getLayout().equals(CmsTemplateBean.C_PARAM_ACCESSIBLE)) {
+		%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		<html lang="<%= cms.getRequestContext().getLocale() %>">
+		<head>
+			<title><%= cms.key("prefix.title") + cms.getTitle(cms.key("default.title")) %></title>
+			<meta http-equiv="Content-Type" content="text/html; charset=<%= cms.getEncoding() %>">
+			<meta name="description" content="<%= cms.getDescription(cms.key("default.description")) %>">
+			<meta name="keywords" content="<%= cms.getKeywords(cms.key("default.keywords")) %>">
+			<meta name="robots" content="index, follow">
+			<meta name="revisit-after" content="7 days">
+			<% cms.editable(true); %>
+			<link href="<%= cms.getStyleSheetUri() %>?respath=<%= resPath %>&uri=<%= cms.getRequestContext().getUri() %>&__locale=<%= cms.getRequestContext().getLocale() %>" rel="stylesheet" type="text/css">
+			<style type="text/css">
+			<!--
+			/* head image row */
+			div.imagehead {
+				height: <%= headImgHeight %>px; 
+				background-image: url(<%= headImgUri %>);
+				background-repeat: no-repeat;
+			}
+
+			/* image link block on top of background image */
+			span.imagelink {
+				height: <%= headImgLinkHeight %>px; 
+			}
+			//-->
+			</style>
+			<script src="<%= resPath %>page.js" type="text/javascript"></script>
+		</head>
+		<body class="main">
+		<div class="mainwrapper">
+		<div style="visibility: hidden;"><a name="top"></a></div>
+		<%
+		if (cms.showHeadLinks()) {
+            // include head links row
+            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "head_links.jsp");
+        }
+        if (cms.showHeadImage()) {
+            // include head image row
+            cms.getProperties().put("imagelink", cms.property(CmsTemplateBean.C_PROPERTY_HEAD_IMGLINK, "search", ""));
+            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "head_image.jsp", null, cms.getProperties());
+        }
+        if (cms.showHeadNavigation()) {
+            // include head navigation row
+            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_head.jsp", "navrow", cms.getProperties());
+        }        
+		%><div class="main">
+		<div class="navleft">
+		<%
+		// include left navigation          
+        cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_left.jsp", null, cms.getProperties());
+		%></div>
+	    <div class="content">
+	    <%
+	    cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_breadcrumb.jsp", null, cms.getProperties());
+	    
+	    
+	} else if (cms.getLayout().equals(CmsTemplateBean.C_PARAM_PRINT)) {
+		%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+		<html lang="<%= cms.getRequestContext().getLocale() %>">
+		<head>
+			<title><%= cms.key("prefix.title") + cms.getTitle(cms.key("default.title")) %></title>
+			<meta http-equiv="Content-Type" content="text/html; charset=<%= cms.getEncoding() %>">
+			<meta name="description" content="<%= cms.getDescription(cms.key("default.description")) %>">
+			<meta name="keywords" content="<%= cms.getKeywords(cms.key("default.keywords")) %>">
+			<meta name="robots" content="index, follow">
+			<meta name="revisit-after" content="7 days">
+			<% cms.editable(true); %>
+			<link href="<%= cms.getStyleSheetUri() %>?respath=<%= resPath %>&uri=<%= cms.getRequestContext().getUri() %>&__locale=<%= cms.getRequestContext().getLocale() %>" rel="stylesheet" type="text/css">
+			<script src="<%= resPath %>page.js" type="text/javascript"></script>
+		</head>
+		<body class="main" onload="self.print();">
+		<div style="visibility: hidden;"><a name="top"></a></div>	
+		<div class="main print">
+		<table class="main" border="0" cellpadding="0" cellspacing="0">	
+		<tr>
+		<td class="content">
+		<%
+	}
+}
+
+if (cms.template("content")) {
+	cms.includeOldElements("oldbody","oldbody2");
+	cms.includeElements();	
+}
+
+if (cms.template("foot")) {
+	cms.buildHtmlBodyEnd(); 
+}
+%>

@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 alpha 2 Caladan</opencms_version>
+		<createdate>10/26/04 5:40 PM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.frontend.templateone.democontent</name>
+		<nicename><![CDATA[OpenCms 6.0 'templateone' demo content]]></nicename>
+		<class/>
+		<description><![CDATA[Contains example pages for usage of the OpenCms Template One.
+(c) 2004 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<version>0.9.5</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Tue, 26 Oct 2004 16:53:52 CEST</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.frontend.templateone" version="0.9.0"/>
+		</dependencies>
+		<exportpoints/>
+		<resources>
+			<resource uri="/demopages/"/>
+			<resource uri="/system/galleries/pics/alkacon-templateone/"/>
+		</resources>
+		<parameters>
+			<param name="additionalresources">/demopages/;/system/galleries/pics/alkacon-templateone/</param>
+		</parameters>
+	</module>
+	<files>
+		<file>
+			<destination>demopages</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 06 Oct 2004 17:42:42 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 15:33:45 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>style_head_img_uri</name>
+					<value><![CDATA[/system/galleries/pics/ocms-templateone/head_img.jpg]]></value>
+				</property>
+				<property>
+					<name>style_head_img_link</name>
+					<value><![CDATA[/]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Templateone Demo Pages]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Templateone Demo Pages]]></value>
+				</property>
+				<property>
+					<name>style_main_configpath</name>
+					<value><![CDATA[/demopages/_configuration/]]></value>
+				</property>
+				<property>
+					<name>properties_imprint</name>
+					<value><![CDATA[/demopages/_configuration/imprint]]></value>
+				</property>
+				<property>
+					<name>style_head_img_height</name>
+					<value><![CDATA[50]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/element.html</source>
+			<destination>demopages/element.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>6ab90729-0e30-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 16:05:40 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 15:48:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>style_show_side</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Element demo]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page with 5 elements]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/demopages/side-elements/example.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/index.html</source>
+			<destination>demopages/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>cd881ea1-0e2c-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 15:59:49 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 15:22:37 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>style_show_side</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>style_head_img_uri</name>
+					<value><![CDATA[/system/galleries/pics/ocms-templateone/head_img.jpg]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Templateone Start]]></value>
+				</property>
+				<property>
+					<name>style_main_configpath</name>
+					<value><![CDATA[/demopages/_configuration/]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/demopages/side-elements/startpage.html]]></value>
+				</property>
+				<property>
+					<name>style_head_img_height</name>
+					<value><![CDATA[50]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/reduced.html</source>
+			<destination>demopages/reduced.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>bd63de8e-0e33-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Wed, 06 Oct 2004 17:58:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 16:12:16 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[11.0]]></value>
+				</property>
+				<property>
+					<name>style_show_head_nav</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>style_show_head_links</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Reduced menu page]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Reduced menu page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/utf-8.html</source>
+			<destination>demopages/utf-8.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>6e1da749-113b-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 13:26:32 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 12:44:53 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[10]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[UTF-8 demo]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[UTF-8 Demo: ՕՓԸՆՑՄՍ Հոյակապ է]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demopages/colordemo</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 28 Sep 2004 17:56:12 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 16:15:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>style_head_img_uri</name>
+					<value><![CDATA[/system/galleries/pics/alkacon-templateone/head_img_alkacon.jpg]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Style variation]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Style variation]]></value>
+				</property>
+				<property>
+					<name>style_main_configpath</name>
+					<value><![CDATA[/demopages/colordemo/_configuration/]]></value>
+				</property>
+				<property>
+					<name>style_head_img_height</name>
+					<value><![CDATA[50]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/colordemo/index.html</source>
+			<destination>demopages/colordemo/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>4083fc24-0e34-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 16:07:04 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 16:15:56 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template One color variation]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/demopages/side-elements/example.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/colordemo/subpage1.html</source>
+			<destination>demopages/colordemo/subpage1.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>be4bff5b-0e34-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Wed, 06 Oct 2004 17:59:39 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 16:19:27 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>style_head_img_uri</name>
+					<value><![CDATA[/system/galleries/pics/alkacon-templateone/head_img_alkacon2.jpg]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Subpage 1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subpage 1]]></value>
+				</property>
+				<property>
+					<name>style_head_img_height</name>
+					<value><![CDATA[50]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/colordemo/subpage2.html</source>
+			<destination>demopages/colordemo/subpage2.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>e9ce9bc2-0e34-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Wed, 06 Oct 2004 18:00:50 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 16:20:40 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>style_show_head_nav</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Subpage 2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subpage 2]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demopages/colordemo/_configuration</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 24 Sep 2004 15:38:50 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 16:16:52 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template configuration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/colordemo/_configuration/configuration_common</source>
+			<destination>demopages/colordemo/_configuration/configuration_common</destination>
+			<type>xmlcontent</type>
+			<uuidresource>8e16a2e5-2699-11d9-a19f-c3fd5bc87fcc</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:07:09 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Oct 2004 17:21:33 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Common configuration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/colordemo/_configuration/configuration_css</source>
+			<destination>demopages/colordemo/_configuration/configuration_css</destination>
+			<type>xmlcontent</type>
+			<uuidresource>a3cda547-1dc0-11d9-828b-95b5e57c814c</uuidresource>
+			<datelastmodified>Thu, 14 Oct 2004 11:22:46 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Oct 2004 11:08:40 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[CSS style sheet]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/colordemo/_configuration/configuration_links</source>
+			<destination>demopages/colordemo/_configuration/configuration_links</destination>
+			<type>xmlcontent</type>
+			<uuidresource>2dfec389-1dbf-11d9-828b-95b5e57c814c</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 16:24:27 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Oct 2004 10:58:13 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Head links]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demopages/languagedemo</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 28 Sep 2004 17:54:05 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 17:35:59 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[6.5]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[en_page.html]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Multilanguage demo]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Language demo pages]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/languagedemo/de_page.html</source>
+			<destination>demopages/languagedemo/de_page.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>2b4f4ff7-1164-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:18:25 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 17:36:30 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[de]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Deutsche Seite]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Deutsche Seite]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demopages/languagedemo/en_page.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>2b4f4ff7-1164-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:18:25 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 17:36:30 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[English page]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[English page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demopages/search-demo</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 24 Sep 2004 17:27:59 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 17:27:28 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Search demonstration]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Search demonstration documents]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/search-demo/excelsheet.xls</source>
+			<destination>demopages/search-demo/excelsheet.xls</destination>
+			<type>binary</type>
+			<uuidresource>c6155c85-0e3e-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Fri, 24 Sep 2004 17:45:04 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 17:31:15 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is an example Excel sheet]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Example Excel Sheet]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/search-demo/index.html</source>
+			<destination>demopages/search-demo/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>d1532b51-0e3e-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 13:25:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 17:31:34 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Search demonstration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/search-demo/OpenCms6_Alkacon_Business.pdf</source>
+			<destination>demopages/search-demo/OpenCms6_Alkacon_Business.pdf</destination>
+			<type>binary</type>
+			<uuidresource>89c0c6e0-2741-11d9-b67d-1fd2a335da0f</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 13:24:26 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 13:24:02 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Alkacon OpenCms 6.0 business presentation]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/search-demo/TN_0027_OpenCms_Workplace_structure.pdf</source>
+			<destination>demopages/search-demo/TN_0027_OpenCms_Workplace_structure.pdf</destination>
+			<type>binary</type>
+			<uuidresource>c66418ce-0e3e-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Fri, 24 Sep 2004 17:47:34 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 17:31:16 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[An example PDF for the Lucene search]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms technote (PDF)]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/search-demo/wordtestdocument.doc</source>
+			<destination>demopages/search-demo/wordtestdocument.doc</destination>
+			<type>binary</type>
+			<uuidresource>c636c73b-0e3e-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:14:32 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 17:31:16 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[An example Word document for the Lucene search]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Example Word document]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demopages/side-elements</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 24 Sep 2004 15:57:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 15:57:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Side elements]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/side-elements/example.html</source>
+			<destination>demopages/side-elements/example.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>e39b1c8a-0e31-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 16:05:59 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 15:59:01 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Example side element]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/side-elements/startpage.html</source>
+			<destination>demopages/side-elements/startpage.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>5dbcacd2-273b-11d9-b67d-1fd2a335da0f</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 13:08:56 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 12:39:51 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Element displayed at 'templateone' start page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demopages/_configuration</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 24 Sep 2004 15:38:50 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 15:38:39 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template configuration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/_configuration/configuration_common</source>
+			<destination>demopages/_configuration/configuration_common</destination>
+			<type>xmlcontent</type>
+			<uuidresource>735afc57-2697-11d9-a19f-c3fd5bc87fcc</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:07:09 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Oct 2004 17:06:30 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Common configuration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/_configuration/configuration_css</source>
+			<destination>demopages/_configuration/configuration_css</destination>
+			<type>xmlcontent</type>
+			<uuidresource>a9f19082-1dbf-11d9-828b-95b5e57c814c</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 13:34:09 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Oct 2004 11:01:41 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[CSS style sheet]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demopages/_configuration/configuration_links</destination>
+			<type>xmlcontent</type>
+			<uuidresource>2dfec389-1dbf-11d9-828b-95b5e57c814c</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 16:24:27 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Oct 2004 10:58:13 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Head links]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/_configuration/imprint</source>
+			<destination>demopages/_configuration/imprint</destination>
+			<type>xmlcontent</type>
+			<uuidresource>d4920099-1dbe-11d9-828b-95b5e57c814c</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 16:45:45 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Oct 2004 10:55:43 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Imprint]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 26 Oct 2004 15:50:51 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Oct 2004 15:50:51 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/galleries</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 15:02:00 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/galleries/pics</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>exportname</name>
+					<value><![CDATA[/pics/]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/galleries/pics/alkacon-templateone</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 24 Sep 2004 16:23:54 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 16:23:54 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/galleries/pics/alkacon-templateone/bg_nav_alkacon.jpg</source>
+			<destination>system/galleries/pics/alkacon-templateone/bg_nav_alkacon.jpg</destination>
+			<type>image</type>
+			<uuidresource>7a3c071c-0e35-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Fri, 24 Sep 2004 16:24:43 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 16:24:43 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/galleries/pics/alkacon-templateone/head_img_alkacon.jpg</source>
+			<destination>system/galleries/pics/alkacon-templateone/head_img_alkacon.jpg</destination>
+			<type>image</type>
+			<uuidresource>7a40c20f-0e35-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Fri, 24 Sep 2004 16:24:43 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 16:24:43 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/galleries/pics/alkacon-templateone/head_img_alkacon2.jpg</source>
+			<destination>system/galleries/pics/alkacon-templateone/head_img_alkacon2.jpg</destination>
+			<type>image</type>
+			<uuidresource>6c9caf7d-0e3a-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Fri, 24 Sep 2004 17:00:07 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 17:00:07 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="en">
+    <element name="header">
+      <links/>
+      <content><![CDATA[<H1>Simple XML content demo page</H1>
+<P>This is a simple JSP page that shows how to use the new 
+<STRONG>XML content</STRONG> feature of OpenCms 6.0. The 
+list below is dynamically generated from&nbsp;XML content objects maintained in the OpenCms VFS. This 
+text here can also be edited in the WYSIWYG editor.</P>]]></content>
+    </element>
+    <element name="footer">
+      <links>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/sites/default/xmlcontent/side_element_demo.html]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<P>Above you see a list dynamically generated using xmlcontent 
+objects.</P>
+<P><EM>Please note:</EM> A powerful 
+option of OpenCms 6.0 is&nbsp;to create such a list as a page element, and 
+include this element in your template. Click <A 
+href="${link0}" target=_self>here 
+</A>          
+      to see such a page in 
+action.</P>]]></content>
+    </element>
+  </page>
+</pages>

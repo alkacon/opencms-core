@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="de">
+    <element name="text1">
+      <links/>
+      <content/>
+    </element>
+  </page>
+  <page language="en">
+    <element name="text1">
+      <links>
+        <link name="link3" type="A" internal="true">
+          <target><![CDATA[/sites/default/demopages/search-demo/TN_0027_OpenCms_Workplace_structure.pdf]]></target>
+        </link>
+        <link name="link2" type="A" internal="true">
+          <target><![CDATA[/sites/default/demopages/search-demo/wordtestdocument.doc]]></target>
+        </link>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/sites/default/demopages/search-demo/OpenCms6_Alkacon_Business.pdf]]></target>
+        </link>
+        <link name="link1" type="A" internal="true">
+          <target><![CDATA[/sites/default/demopages/search-demo/excelsheet.xls]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<H1>Full text search in documents demo</H1>
+<P> The following documents can be found with the integrated search engine. For example, do 
+a search for the keywords "Alkacon" or "OpenCms". The seach input is 
+located on the upper right of the template.</P>
+<UL>
+	<li><A 
+  href="${link0}" 
+  target=_blank>Alkacon OpenCms&nbsp;6.0 
+  "business"&nbsp;presentation</A>&nbsp;(PDF)</li><li><A 
+  href="${link1}" 
+  target=_blank>Example Excel sheet</A></li><li><A 
+  href="${link2}" 
+  target=_blank>Example Word document</A>&nbsp;(Word)</li><li><A 
+  href="${link3}" 
+  target=_blank>OpenCms technote</A>  (PDF)</li></UL>
+<P><EM>Please note:</EM> If you did not import this tempateone demo content 
+during setup,&nbsp;you must&nbsp;rebuild the search indexes first on the 
+"Administration" screen. </P>]]></content>
+    </element>
+  </page>
+</pages>

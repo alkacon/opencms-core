@@ -1,0 +1,343 @@
+<%@page buffer="none" session="false" import="java.util.*, org.opencms.frontend.templateone.*" %><%
+
+// initialize action element to access the API
+CmsTemplateStyleSheet cms = new CmsTemplateStyleSheet(pageContext, request, response);
+
+// get the template width
+String tabWidth = cms.getTemplateWidth();
+
+// main settings
+String mainFontFamily = cms.getConfigValue("main.font.family", "Verdana, Arial, Helvetica, sans-serif;");
+String mainSidesBg = cms.getConfigValue("main.sides.bg", "#FFFFFF");
+
+String mainBorder = cms.getConfigValue("main.border", "#000000");
+boolean showMainBorder = true;
+if (mainSidesBg.equals(mainBorder)) {
+	showMainBorder = false;
+}
+
+String navFontFamily = cms.getConfigValue("nav.font.family", "Tahoma, Arial, Helvetica, sans-serif");
+
+// head image settings
+String headImgBg = cms.getConfigValue("head.img.bg", "#DDDDDD");
+
+// head links
+String headLinksBorder = cms.getConfigValue("head.links.border", "#000000");
+String headLinksBg = cms.getConfigValue("head.links.bg", "#EEEEEE");
+
+// head navigation
+String headNavBg = cms.getConfigValue("head.nav.bg", "#660033");
+String headNavFont = cms.getConfigValue("head.nav.font", "#FFFFFF");
+String headNavBgHover = cms.getConfigValue("head.nav.bg.hover", "#000000");
+String headNavFontHover = cms.getConfigValue("head.nav.font.hover", headNavFont);
+String headNavBorder = cms.getConfigValue("head.nav.border", headNavBgHover);
+
+// left navigation
+String navLeftBg = cms.getConfigValue("navleft.bg", "#CCCCCC");
+String navLeftFont = cms.getConfigValue("navleft.font", "#000000");
+
+String navLeftImgBgUri = cms.link(cms.getConfigValue("navleft.img.bg.uri", "/system/galleries/pics/ocms-templateone/bg_nav.jpg"));
+
+// content area
+String contentBg = cms.getConfigValue("content.bg", "#FFFFFF");
+String contentBorder = cms.getConfigValue("content.border", "#CCCCCC");
+String contentFont = cms.getConfigValue("content.font", "#000000");
+String contentLink = cms.getConfigValue("content.link", "#cc0033");
+String contentLinkHover = cms.getConfigValue("content.link.hover", "#cc0033");
+String contentLinkActive = cms.getConfigValue("content.link.active", contentLink);
+String contentLinkVisited = cms.getConfigValue("content.link.visited", contentLink);
+
+// side infoarea
+String sideBg = cms.getConfigValue("side.bg", contentBg);
+
+// page foot
+String footLinksBorder = cms.getConfigValue("foot.links.border", "#000000");
+String footLinksBg = cms.getConfigValue("foot.links.bg", "#EEEEEE");
+String footLinksFont = cms.getConfigValue("foot.links.font", "#000000");
+String footLinksFontHover = cms.getConfigValue("foot.links.font.hover", "#cc0033");
+String footLinksFontActive = cms.getConfigValue("foot.links.font.active", "#000000");
+String footLinksFontVisited = cms.getConfigValue("foot.links.font.visited", "#000000");
+
+// form buttons
+String formButtonBorder = cms.getConfigValue("form.button.border", headLinksBorder);
+String formButtonBg = cms.getConfigValue("form.button.bg", headLinksBg);
+String formButtonFont = cms.getConfigValue("form.button.font", footLinksFont);
+
+%>
+
+/* old styles */
+.headerwhite { font-size: 8pt; color: #ffffff; }
+.headerinfo  { font-size: 8pt; text-indent: 7px; text-align: left; }	
+.text8justify	{ font-size: 8pt; text-align: justify; }
+.text9justify	{ font-size: 9pt; text-align: justify; }
+.text10justify	{ font-size: 10pt; text-align: justify; }
+.text11justify	{ font-size: 11pt; text-align: justify; }
+.text12justify	{ font-size: 12pt; text-align: justify; }
+.text8left	{ font-size: 8pt; text-align: left; }
+.text9left	{ font-size: 9pt; text-align: left; }
+.text10left	{ font-size: 10pt; text-align: left; }
+.text11left	{ font-size: 11pt; text-align: left; }
+.text12left	{ font-size: 12pt; text-align: left; }
+
+/* global body settings */
+body.main { text-align: center; }
+body { background-color: <%= mainSidesBg %>; margin: 10px; }
+body,ul,ol,li,td,p,div,span,input,textarea,select {	font-family: <%= mainFontFamily %>; font-size: 10pt; color: <%= contentFont %>; }
+
+/* headlines */
+h1 { font-size: 14pt; font-weight: bold; }
+h2 { font-size: 12pt; font-weight: bold; }
+h3 { font-size: 11pt; font-weight: bold; }
+h4 { font-size: 10pt; font-weight: bold; }
+h5,h6 { font-size: 10pt; font-weight: normal; }
+
+/* common links */
+a			{	color: <%= contentLink %>; text-decoration: none; }
+a:link		{	color: <%= contentLink %>; text-decoration: none; }
+a:visited	{	color: <%= contentLinkVisited %>; text-decoration: none; }
+a:hover		{	color: <%= contentLinkHover %>; text-decoration: none; }
+a:active	{	color: <%= contentLinkActive %>; text-decoration: none; }
+
+/* Head navigation */
+a.navtop			{ color: <%= headNavFont %>; font-family: <%= navFontFamily %>; font-size: 10px; line-height: 17px; vertical-align: middle; white-space: nowrap; padding: 2px; font-weight: normal; text-decoration: none; }
+a.navtop:visited	{ color: <%= headNavFont %>; text-decoration: none; }
+a.navtop:hover		{ color: <%= headNavFont %>; text-decoration: none; }
+.navspacer { color: <%= headNavFont %>; font-size: 8pt; vertical-align: middle; }
+
+/* Head navigation submenu */
+div.topmenu { visibility: hidden; position: absolute; background-color: <%= headNavBorder %>; }
+a.topmenu			{ color: <%= headNavFont %>; background-color: <%= headNavBg %>; font-family: <%= navFontFamily %>; font-size: 10px; padding: 0px 1px 0px 3px; display: block; margin: 0; width: 175px; line-height: 16px; text-decoration: none; }
+a.topmenu:visited	{ color: <%= headNavFont %>; text-decoration: none; }
+a.topmenu:hover		{ color: <%= headNavFontHover %>; background-color: <%= headNavBgHover %>; text-decoration: none; }
+
+/* head and foot row links */
+a.linksheadfoot			{ font-family: <%= navFontFamily %>; font-size: 8pt; color: <%= footLinksFont %>; text-decoration: none; }
+a.linksheadfoot:link	{ color: <%= footLinksFont %>; text-decoration: none; }
+a.linksheadfoot:visited	{ color: <%= footLinksFontVisited %>; text-decoration: none; }
+a.linksheadfoot:hover	{ color: <%= footLinksFontHover %>; text-decoration: none; }
+a.linksheadfoot:active	{ color: <%= footLinksFontActive %>; text-decoration: none; }
+
+/* bread crumb navigation */
+div.breadcrumb			{ margin: 4px 8px; }
+span.breadcrumb			{ font-family: <%= navFontFamily %>; font-size: 8pt; color: <%= contentFont %>; text-decoration: none; white-space: nowrap; }
+a.breadcrumb			{ font-family: <%= navFontFamily %>; font-size: 8pt; color: <%= contentFont %>; text-decoration: none; white-space: nowrap; }
+a.breadcrumb:visited	{ color: <%= contentFont %>; text-decoration: none; }
+a.breadcrumb:hover		{ color: <%= contentFont %>; text-decoration: none; }
+
+/* head search input form */
+.search { border: 1px solid <%= footLinksFont %>; color: <%= footLinksFont %>; font-family: <%= mainFontFamily %>; background-color: <%= headLinksBg %>; font-size: 8pt; }
+.searchlinks { text-align: center; width: 100%; }
+.searchresult { margin-bottom: 10px; }
+.formbutton { font-family: <%= mainFontFamily %>; font-size: 8pt; height: 18px; background-color: <%= formButtonBg %>; color: <%= formButtonFont %>; border: 1px solid <%= formButtonBorder %>; }
+
+/* main layout table */
+table.main { padding: 0; margin: 0;	border-style: none; width: 100%; }
+
+/* border of the head navigation row */
+div.linkshead {
+	width: <%= tabWidth %>px;
+	border-left: 1px solid <%= headLinksBorder %>;
+	border-top: 1px solid <%= headLinksBorder %>;
+	border-right: 1px solid <%= headLinksBorder %>;
+	background-color: <%= headLinksBg %>;
+	vertical-align: middle;
+	text-align: right;
+	margin: 0 auto;
+	padding-bottom: 1px;
+	padding-top: 1px;
+}
+
+/* head image row */
+div.imagehead {
+	width: <%= tabWidth %>px;
+	background-color: <%= headImgBg %>;
+	text-align: left;
+	clear: both;
+	margin: 0 auto;
+	<% 
+	if (showMainBorder) {
+		out.print("border-top: 1px solid " + mainBorder + ";");
+		out.print("border-left: 1px solid " + mainBorder + ";");
+		out.print("border-right: 1px solid " + mainBorder + ";");
+	} 	
+	%>
+}
+
+/* image link block on top of background image */
+span.imagelink {
+	margin: 0; 
+	padding: 0;
+	display: block;
+	width: 175px; 
+	cursor: pointer;
+}
+
+/* top navigation row */
+div.navtop {
+	width: <%= tabWidth %>px;
+	background-color: <%= headNavBg %>;
+	vertical-align: middle;
+	text-align: left;
+	height: 18px;
+	margin: 0 auto;
+	<%
+	if (showMainBorder) {
+		out.print("border-top: 1px solid " + mainBorder + ";");
+		out.print("border-left: 1px solid " + mainBorder + ";");
+		out.print("border-right: 1px solid " + mainBorder + ";");
+	}
+	%>	
+}
+
+/* border of the foot navigation row */
+div.linksfoot {
+	width: <%= tabWidth %>px;
+	border-left: 1px solid <%= footLinksBorder %>;
+	border-bottom: 1px solid <%= footLinksBorder %>;
+	border-right: 1px solid <%= footLinksBorder %>;
+	background-color: <%= footLinksBg %>;
+	margin: 0 auto;
+	text-align: right;
+}
+
+/* block around main content row (left nav, content, infobox) */
+div.main {
+	width: <%= tabWidth %>px;
+	margin: 0 auto;
+	<% 
+	
+	if (showMainBorder) {
+		out.print("border: 1px solid " + mainBorder + ";");
+	} 
+	
+	%>
+}
+
+/* special width for print screen */
+div.print {
+	width: 100%;
+}
+
+/* content table cell */
+td.content {	
+	vertical-align: top;
+	color: <%= contentFont %>;
+	background-color: <%= contentBg %>;
+}
+
+/* content styles */
+
+/* a single content element */
+td.element {
+	vertical-align: top;
+	font-size: 10pt;
+	text-align: justify;
+	border: 1px solid <%= contentBorder %>;
+}
+
+/* a single old content element */
+td.oldelement {
+	font-size: 10pt;
+	text-align: justify;
+	vertical-align: top;
+}
+
+/* a single new content element */
+div.element {
+	margin: 5px; 
+	padding: 3px; 
+	border: 1px solid <%= contentBorder %>; 
+	text-align: justify; 
+	clear: both;
+}
+
+div.element2 {
+	margin: 5px; 
+	padding: 3px; 
+	border: 1px solid <%= contentBorder %>; 
+	text-align: left; 
+	clear: both;
+}
+
+/* infobox column */
+td.infobox {
+	width: 145px;
+	vertical-align: top;
+	background-color: <%= sideBg %>;
+	border-left: 1px solid <%= mainBorder %>;
+}
+
+/* left navigation column */
+td.navleft {
+	width: 175px;
+	vertical-align: top;
+	background-color: <%= navLeftBg %>;
+	background-image: url(<%= navLeftImgBgUri %>);
+    background-repeat: no-repeat;
+    border-right: 1px solid <%= mainBorder %>;
+}
+
+/* left navigation image row */
+span.navleftimage {
+	display: block;
+	width: 175px;
+	cursor: pointer;
+}
+
+/* left navigation list */
+ul.navleft { 
+	margin: 0 0 0 20px;
+	padding: 2px;
+} 
+
+/* left navigation list item */
+li.navleftactive { 
+    list-style-image: url(<%= cms.getResourcePath() %>nav_a.gif); 
+} 
+ 
+li.navleft { 
+    list-style-image: url(<%= cms.getResourcePath() %>nav_i.gif);
+}
+
+a.navleft { font-family: <%= navFontFamily %>; font-size: 12px; color: <%= navLeftFont %>; text-decoration:none; }
+a.navleft:link { color: <%= navLeftFont %>; text-decoration: none; }
+a.navleft:visited { color: <%= navLeftFont %>; text-decoration: none; }
+a.navleft:hover { color: <%= navLeftFont %>; text-decoration: underline; }
+a.navleft:active { color: <%= navLeftFont %>; text-decoration: none; }
+
+a.navleftactive { font-family: <%= navFontFamily %>; font-size: 12px; color: <%= navLeftFont %>; font-weight: bold; text-decoration:none; }
+a.navleftactive:link { color: <%= navLeftFont %>; text-decoration: none; }
+a.navleftactive:visited { color: <%= navLeftFont %>; text-decoration: none; }
+a.navleftactive:hover { color: <%= navLeftFont %>; text-decoration: underline; }
+a.navleftactive:active { color: <%= navLeftFont %>; text-decoration: none; }
+
+/* popup window border */
+div.popup { <% 
+	
+	if (showMainBorder) {
+		out.print("border: 1px solid " + mainBorder + ";");
+	} 
+	
+	%>
+	margin-top: 10px;
+	width: 100%;  
+}
+
+h1.popup { font-size: 10pt; padding: 2px; width: 100%; background-color: <%= headNavBg %>; color: <%= headNavFont %>; }
+.popupform { border: 1px solid <%= contentFont %>; width: 450px; }
+span.formerror { color: <%= headNavBg %>; font-weight: bold;}
+
+/* imprint */
+table.imprint {	width: 100%; }
+td.imprint { vertical-align: top; font-size: 9pt; }
+
+<%
+
+// get document styles for document management
+try {
+	out.print(cms.getContent("/system/modules/com.alkacon.documents/resources/documents.css"));
+} catch (Throwable t) {
+	// ignore, document style sheet not found
+}
+
+%>

@@ -1,0 +1,108 @@
+<%@ page session="false" buffer="none" import="java.util.*,org.opencms.frontend.templateone.*" %><%--
+
+--%><jsp:useBean id="cms" class="org.opencms.frontend.templateone.CmsTemplateFormLetter" scope="request">
+</jsp:useBean><%
+
+
+// initialise Cms Action Element
+cms.init(pageContext, request, response);
+
+String errorMessage = "";
+if (cms.hasValidationErrors()) {
+	errorMessage = "<p style=\"padding: 2px;\"><span class=\"formerror\">" + cms.key("form.error.validation") + "</span></p>";
+}
+
+cms.includePopup("popuphead", cms.key("letter.title"), cms.getPageUri(true));
+
+	%>
+	<h1 class="popup"><%= cms.key("letter.title") %></h1>
+	<div class="popup" style="padding: 2px;">
+		<div style="padding: 2px;"><%= cms.getFormText("form_head", false) %></div>
+		<%= errorMessage %>
+		<p style="padding: 2px;">
+		<%= cms.key("letter.text.page") %><br />
+		<a href="javascript:showFile('<%= cms.getPageUrl() %>');"><%= cms.getPageTitle() %></a><br />
+		<%= cms.key("letter.text.url") %><br /><%= cms.getPageUrl() %>
+		</p>
+
+		<form name="letter" method="post" action="<%= cms.getFormUri() %>">
+		<input type="hidden" name="<%= CmsTemplateForm.C_PARAM_ACTION %>" value="submit">
+		<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>">
+		<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_URI %>" value="<%= cms.getPageUri() %>">
+
+		<p style="padding: 2px;">
+		<%= cms.key("letter.form.concern.title") %>*<br />
+		<input type="radio" name="concern" value="questions"<%= cms.isConcernChecked("questions") %>> <%= cms.key("letter.form.concern.questions") %><br />
+		<input type="radio" name="concern" value="critics"<%= cms.isConcernChecked("critics") %>> <%= cms.key("letter.form.concern.critics") %><br />
+		<input type="radio" name="concern" value="information"<%= cms.isConcernChecked("information") %>> <%= cms.key("letter.form.concern.information") %><br />
+		<input type="radio" name="concern" value="other"<%= cms.isConcernChecked("other") %>> <%= cms.key("letter.form.concern.other") %> <input type="text" name="concernDetail" class="popupform" style="width: 250px;" value="<%= cms.getConcernDetail() %>"><br />
+		<br /><span class="formerror"><%= cms.getError("concern") %></span>
+		</p>
+		
+		<p style="padding: 2px;">
+		<%= cms.key("letter.form.message") %>*<br />
+		<textarea name="message" wrap="virtual" style="height: 120px; overflow: auto;" class="popupform" style="width: 100%;"><%= cms.getMessage() %></textarea><br /><span class="formerror"><%= cms.getError("message") %></span></p>
+		
+		<div style="padding: 2px;"><%= cms.getFormText("form_contact", false) %></div>
+		
+		<table border="0" cellpadding="2" cellspacing="0" style="width: 100%; font-size: 1.0em;">
+		<tr>
+			<td style="white-space: nowrap;"><%= cms.key("letter.form.salutation.title") %></td>
+			<td style="text-align: right; width: 100%;"><select name="contactSalutation" size="1" class="popupform" style="width: 300px;">
+					<option value=""><%= cms.key("letter.form.salutation.select") %></option>
+					<option value="">-------------------------</option>
+					<option value="mr"<%= cms.isSalutationSelected("mr") %>><%= cms.key("letter.form.salutation.mr") %></option>
+					<option value="mrs"<%= cms.isSalutationSelected("mrs") %>><%= cms.key("letter.form.salutation.mrs") %></option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="white-space: nowrap;"><%= cms.key("letter.form.title") %></td>
+			<td style="text-align: right;"><input type="text" name="contactTitle" value="<%= cms.getContactTitle() %>" class="popupform" style="width: 300px;"></td>
+		</tr>
+		<tr>
+			<td style="white-space: nowrap;"><%= cms.key("letter.form.firstname") %></td>
+			<td style="text-align: right;"><input type="text" name="contactFirstName" value="<%= cms.getContactFirstName() %>" class="popupform" style="width: 300px;"></td>
+		</tr>
+		<tr>
+			<td style="white-space: nowrap;"><%= cms.key("letter.form.lastname") %></td>
+			<td style="text-align: right;"><input type="text" name="contactLastName" value="<%= cms.getContactLastName() %>" class="popupform" style="width: 300px;"></td>
+		</tr>
+		<tr>
+			<td style="white-space: nowrap;"><%= cms.key("letter.form.email") %></td>
+			<td style="text-align: right;">
+				<input type="text" name="contactEmail" value="<%= cms.getContactEmail() %>" class="popupform" style="width: 300px;"><br /><span class="formerror"><%= cms.getError("email") %></span>
+			</td>
+		</tr>
+		<tr>
+			<td style="white-space: nowrap;"><%= cms.key("letter.form.phone") %></td>
+			<td style="text-align: right;"><input type="text" name="contactPhone" value="<%= cms.getContactPhone() %>" class="popupform" style="width: 300px;"></td>
+		</tr>
+		<tr>
+			<td style="white-space: nowrap;"><%= cms.key("letter.form.street") %></td>
+			<td style="text-align: right;"><input type="text" name="contactStreet" value="<%= cms.getContactStreet() %>" class="popupform" style="width: 250px;"><span style="width: 5px;">&nbsp;</span><input type="text" name="contactNumber" value="<%= cms.getContactNumber() %>" class="popupform" style="width: 45px;"></td>
+		</tr>
+		<tr>
+			<td style="white-space: nowrap;"><%= cms.key("letter.form.city") %></td>
+			<td style="text-align: right;"><input type="text" name="contactZip" value="<%= cms.getContactZip() %>" class="popupform" style="width: 45px;"><span style="width: 5px;">&nbsp;</span><input type="text" name="contactCity" value="<%= cms.getContactCity() %>" class="popupform" style="width: 250px;"></td>
+		</tr>
+		<tr>
+			<td style="white-space: nowrap;"><%= cms.key("letter.form.country") %></td>
+			<td style="text-align: right;"><input type="text" name="contactCountry" value="<%= cms.getContactCountry() %>" class="popupform" style="width: 300px;"></td>
+		</tr>
+		</table>
+		
+		<p style="padding: 2px;">
+		<input type="checkbox" name="copy" value="true"<%= cms.isCopyChecked() %>><%= cms.key("recommend.form.copy") %>
+		</p>
+
+		<p style="text-align: center; padding: 2px;">
+		<input type="submit" value="<%= cms.key("form.submit") %>" class="formbutton"">
+		</p>
+		</form>
+
+		<div style="padding: 2px;"><%= cms.getFormText("form_foot", false) %></div>
+	</div>
+<%
+cms.includePopup("popupfoot", null, cms.getPageUri(true));
+%>

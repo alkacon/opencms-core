@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />	
+	<xsd:element name="styles" type="OpenCmsStyles" />
+	
+	<xsd:complexType name="OpenCmsStyles">
+		<xsd:sequence>
+			<xsd:element name="style" type="OpenCmsStyle" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsStyle">
+		<xsd:sequence>
+			<xsd:element name="main.template.type" type="OpenCmsString" />
+			<xsd:element name="main.border" type="OpenCmsColor" />
+			<xsd:element name="main.font.family" type="OpenCmsString" />
+			<xsd:element name="main.sides.bg" type="OpenCmsColor" />
+			<xsd:element name="nav.font.family" type="OpenCmsString" />
+			<xsd:element name="head.links.border" type="OpenCmsColor" />
+			<xsd:element name="head.links.bg" type="OpenCmsColor" />
+			<xsd:element name="head.img.bg" type="OpenCmsColor" />
+			<xsd:element name="head.nav.bg" type="OpenCmsColor" />
+			<xsd:element name="head.nav.font" type="OpenCmsColor" />
+			<xsd:element name="head.nav.bg.hover" type="OpenCmsColor" />
+			<xsd:element name="head.nav.font.hover" type="OpenCmsColor" />
+			<xsd:element name="head.nav.border" type="OpenCmsColor" />
+			<xsd:element name="navleft.bg" type="OpenCmsColor" />
+			<xsd:element name="navleft.font" type="OpenCmsColor" />
+			<xsd:element name="navleft.img.bg.uri" type="OpenCmsVfsFile" />
+			<xsd:element name="content.bg" type="OpenCmsColor" />
+			<xsd:element name="content.border" type="OpenCmsColor" />
+			<xsd:element name="content.font" type="OpenCmsColor" />
+			<xsd:element name="content.link" type="OpenCmsColor" />
+			<xsd:element name="content.link.hover" type="OpenCmsColor" />
+			<xsd:element name="content.link.active" type="OpenCmsColor" />
+			<xsd:element name="content.link.visited" type="OpenCmsColor" />
+			<xsd:element name="form.button.border" type="OpenCmsColor" />
+			<xsd:element name="form.button.bg" type="OpenCmsColor" />
+			<xsd:element name="form.button.font" type="OpenCmsColor" />
+			<xsd:element name="side.bg" type="OpenCmsColor" />
+			<xsd:element name="foot.links.border" type="OpenCmsColor" />
+			<xsd:element name="foot.links.bg" type="OpenCmsColor" />
+			<xsd:element name="foot.links.font" type="OpenCmsColor" />
+			<xsd:element name="foot.links.font.hover" type="OpenCmsColor" />
+			<xsd:element name="foot.links.font.active" type="OpenCmsColor" />
+			<xsd:element name="foot.links.font.visited" type="OpenCmsColor" />			
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required" />
+	</xsd:complexType>
+
+</xsd:schema>

@@ -1,0 +1,34 @@
+<%@ page session="false" buffer="none" import="java.util.*,org.opencms.frontend.templateone.*" %><%--
+
+--%><jsp:useBean id="cms" class="org.opencms.frontend.templateone.CmsTemplateFormLetter" scope="request">
+</jsp:useBean><%
+
+
+// initialise Cms Action Element
+cms.init(pageContext, request, response);
+
+cms.includePopup("popuphead", cms.key("recommend.title"), cms.getPageUri(true));
+	%>
+	<h1 class="popup"><%= cms.key("letter.title") %></h1>
+	<div class="popup" style="padding: 2px;">
+		<%= cms.getFormText("confirm_head", false) %>
+		<p>
+			<%= cms.key("letter.text.confirmation") %>
+		</p>
+		<p>
+			<%= cms.key("letter.form.concern.title") %>
+			<%= cms.key("letter.form.concern." + cms.getConcern()) %><%
+				if ("other".equals(cms.getConcern())) {
+					out.print(": "+cms.getConcernDetail());
+				}				
+			%>
+		</p>
+		<p>
+			<%= cms.key("letter.form.message") %><br />
+			<%= cms.getMessage() %>
+		</p>
+		<%= cms.getFormText("confirm_foot", false) %>
+	</div>
+<%
+cms.includePopup("popupfoot", null, cms.getPageUri(true));
+%>

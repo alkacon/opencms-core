@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<imprints xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/imprint.xsd">
+  <imprint language="en">
+    <author><![CDATA[Alkacon Software]]></author>
+    <address><![CDATA[Eugen-Langen-Straße 8, 50968 Köln]]></address>
+    <email><![CDATA[sales@alkacon.com]]></email>
+    <includepage/>
+  </imprint>
+  <imprint language="de">
+    <author><![CDATA[Alkacon Software]]></author>
+    <address><![CDATA[Eugen-Langen-Straße 8, 50968 Köln]]></address>
+    <email><![CDATA[sales@alkacon.com]]></email>
+    <includepage/>
+  </imprint>
+</imprints>

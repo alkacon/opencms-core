@@ -59,7 +59,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
-				<newresource uri="newresource.jsp?newresourcetype=xmlcontent" order="25"/>
+				<newresource uri="newresource.jsp?newresourcetype=xmlcontent" order="55"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -101,6 +101,9 @@
 					</contextmenu>
 				</editoptions>
 			</explorertype>
+			<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
+				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25"/>
+			</explorertype>	
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
 				<newresource uri="newresource_xmlpage.jsp" order="20"/>
 				<accesscontrol>

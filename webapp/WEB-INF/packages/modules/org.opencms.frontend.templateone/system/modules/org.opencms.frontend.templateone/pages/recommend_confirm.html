@@ -1,0 +1,36 @@
+<%@ page session="false" buffer="none" import="java.util.*,org.opencms.frontend.templateone.*" %><%--
+
+--%><jsp:useBean id="cms" class="org.opencms.frontend.templateone.CmsTemplateFormRecommend" scope="request"><%--
+--%></jsp:useBean><%
+
+
+// initialise Cms Action Element
+cms.init(pageContext, request, response);
+
+	cms.includePopup("popuphead", cms.key("recommend.title"), cms.getPageUri(true));
+	
+	%>
+	<h1 class="popup"><%= cms.key("recommend.title") %></h1>
+	<div class="popup" style="padding: 2px;">
+		<%= cms.getFormText("confirm_head", false) %>
+		<p>
+		<%= cms.key("recommend.text.page") %><br />
+		<a href="javascript:showFile('<%= cms.getPageUrl() %>');"><%= cms.getPageTitle() %></a><br />
+		<%= cms.key("recommend.text.url") %><br /><%= cms.getPageUrl() %>
+		</p>
+		<p>
+		<%= cms.key("recommend.text.confirmation") %>
+		</p>
+		<p>
+		<%= cms.key("recommend.form.email.recipient") %><br />
+		<%= cms.getEmailRecipient() %>
+		</p>
+		<p>
+		<%= cms.key("recommend.form.message") %><br />
+		<%= cms.getMessage() %>
+		</p>
+		<%= cms.getFormText("confirm_foot", false) %>
+	</div>
+<%
+	cms.includePopup("popupfoot", null, cms.getPageUri(true));
+%>
