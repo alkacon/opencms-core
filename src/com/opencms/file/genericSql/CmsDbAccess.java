@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/18 07:08:05 $
-* Version: $Revision: 1.222 $
+* Date   : $Date: 2001/10/22 14:33:33 $
+* Version: $Revision: 1.223 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.222 $ $Date: 2001/10/18 07:08:05 $ *
+ * @version $Revision: 1.223 $ $Date: 2001/10/22 14:33:33 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4566,7 +4566,6 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
             // store the projectdata to the backuptables for history
             backupProject(currentProject, versionId, publishDate, user);
         }
-
         // read all folders in offlineProject
         offlineFolders = readFolders(projectId, false, true);
         for (int i = 0; i < offlineFolders.size(); i++){
@@ -4824,7 +4823,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                         // get parentId for onlineFolder either from folderIdIndex or from the database
                         Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
                         if (parentId == null){
-                            CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
+                            CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFile.getRootName()+currentFile.getParent());
                             parentId = new Integer(currentOnlineParent.getResourceId());
                             folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
                         }
@@ -5681,6 +5680,10 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                    groupId,resProjectId,accessFlags,state,lockedBy,
                                    launcherType,launcherClass,created,modified,modifiedBy,
                                    content,resSize, lockedInProject);
+                // check if this resource is marked as deleted
+                if (file.getState() == C_STATE_DELETED) {
+                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
+                }
             } else {
                 throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
             }
