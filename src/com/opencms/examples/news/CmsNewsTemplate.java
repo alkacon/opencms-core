@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/05/09 08:31:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/05/15 12:56:54 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/05/09 08:31:34 $
+ * @version $Revision: 1.10 $ $Date: 2000/05/15 12:56:54 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {
@@ -280,16 +280,16 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * @return article index
      */
 	private String getSelectedArticle(Hashtable parameters) {
-		String startArticle = (String)parameters.get("article");
+		String selectedArticle = (String)parameters.get("article");
 		
-        return startArticle;        
+        return selectedArticle;        
     }
 	
 	/**
      * Get the index of requested navigation deck. It's specified by the URL parameter <code>nav</code>.
      * The value will be taken from the user parameters or from the news constants.
      * @param parameters User parameters
-     * @return article index
+     * @return navigation index
      */
 	private String getNavDeck(Hashtable parameters) {
 		String navDeck = (String)parameters.get("nav");
@@ -324,7 +324,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
     }
 		
 	/**
-     * Creates a WML deck which either holds the main navigation or a customizable number of news articles.
+     * Creates a WML deck which either holds navigation or a certain news article.
      * <P>
      * Called by the template file using <code>&lt;METHOD name="newsWmlFactory"&gt;</code>.
      * 
