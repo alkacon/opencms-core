@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/21 09:48:11 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/21 09:48:11 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -140,6 +140,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             if (step.equals("1")) {
                 // step 1 - create the link
 	            // get folder- and filename
+         
 		        foldername=(String)session.getValue(C_PARA_FILELIST);
                 if (foldername==null) {
                    foldername=cms.rootFolder().getAbsolutePath();
@@ -148,6 +149,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                 link=(String)session.getValue(C_PARA_LINK); 
 				String title= lang.getLanguageValue("explorer.linkto") + " " + link;
 				type="link";
+   
 				if (notChange!=null && notChange.equals("false")){
 					// change old file
 					linkName =(String)parameters.get("file");
@@ -155,13 +157,19 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 					editFile.setContents(link.getBytes());
 					cms.writeFile(editFile);    
 					cms.writeProperty(linkName,C_PROPERTY_TITLE, title);   
+
 				} else{
 					// create the new file
+
 					cms.createFile(foldername,filename,link.getBytes(),type);  
+
 					cms.lockResource(foldername+filename);
+
 					cms.writeProperty(foldername+filename,C_PROPERTY_TITLE, title);    
+     
 				}   
                 // remove values from session
+                  System.err.println("4");
                 session.removeValue(C_PARA_FILE);   
                 session.removeValue(C_PARA_VIEWFILE); 
                 session.removeValue(C_PARA_LINK);  
@@ -169,14 +177,17 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                 
                 // now return to appropriate filelist
                 try {
+
 					String lastUrl = (String) session.getValue("lasturl");
 					String redirectUrl;
+  
 					if (lastUrl != null) {
 						((HttpServletResponse) cms.getRequestContext().getResponse().getOriginalResponse()).sendRedirect(lastUrl);	
 					} else {
 						cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);	
 					} 
                 } catch (Exception e) {
+ 
                       throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
                 }
                 return null;
