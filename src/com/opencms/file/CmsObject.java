@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/11/04 17:15:24 $
-* Version: $Revision: 1.248 $
+* Date   : $Date: 2002/11/08 10:20:19 $
+* Version: $Revision: 1.249 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import java.util.*;
 import javax.servlet.http.*;
 import source.org.apache.java.util.*;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.util.*;
@@ -54,7 +55,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.248 $ $Date: 2002/11/04 17:15:24 $
+ * @version $Revision: 1.249 $ $Date: 2002/11/08 10:20:19 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -105,6 +106,11 @@ public class CmsObject implements I_CmsConstants {
      */
     public CmsObject () {
     }
+    
+    /** Internal debug flag, set to 9 for maximum verbosity */
+    private static final int DEBUG = 0;
+    
+    
 /**
  * Accept a task from the Cms.
  *
@@ -2488,8 +2494,14 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
                 Utils.getModulPublishMethods(this, linkChanges);
                 this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_STATIC_EXPORT, allExportedLinks);
             } catch (Exception ex){
-                System.err.println("Error while exporting static resources:");
-                ex.printStackTrace();
+                if (DEBUG > 0) {
+                    System.err.println("Error while exporting static resources:");
+                    ex.printStackTrace();
+                }
+                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/0] Error while exporting static resources.");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/0] Exception was: " + ex);
+                }            
             }
         }else{
             if("false_ssl".equalsIgnoreCase(this.getStaticExportProperties().getStaticExportEnabledValue())){
@@ -2502,22 +2514,41 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
         }
         success = true;
     }catch (Exception e){
-        System.err.println("###################################");
-        System.err.println("PublishProject "+id+" CmsObject Time:"+new Date());
-        System.err.println("currentUser:"+m_context.currentUser().toString());
-        e.printStackTrace();
-        System.err.println("Vector of changed resources:");
-        if(changedResources != null){
-            for(int i=0; i<changedResources.size(); i++){
-                System.err.println("    -- "+i+" -->"+(String)changedResources.elementAt(i)+"<--");
+        String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + id + " Time:" + new Date();
+        String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
+        if (DEBUG > 0) {              
+            System.err.println("###################################");
+            System.err.println(stamp1);
+            System.err.println(stamp2);
+            e.printStackTrace();
+            System.err.println("Vector of changed resources:");
+            if(changedResources != null){
+                for(int i=0; i<changedResources.size(); i++){
+                    System.err.println("    -- "+i+" -->"+(String)changedResources.elementAt(i)+"<--");
+                }
             }
+        }
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp1);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp2);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
         }
     }finally{
         if(changedResources == null || changedResources.size()<1){
-            System.err.println("###################################");
-            System.err.println("PublishProject "+id+" CmsObject Time:"+new Date());
-            System.err.println("currentUser:"+m_context.currentUser().toString());
-            System.err.println("Vector was null or empty");
+            String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + id + " Time:" + new Date();
+            String stamp2 = "[" + this.getClass().getName() + ".publishProject()/2] User: " + m_context.currentUser().toString();
+            String stamp3 = "[" + this.getClass().getName() + ".publishProject()/2] Vector was null or empty";
+            if (DEBUG > 0) {
+                System.err.println("###################################");
+                System.err.println(stamp1);
+                System.err.println(stamp2);
+                System.err.println(stamp3);
+            }
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp1);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp2);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp3);
+            }
             success = false;
         }
         if(!success){
